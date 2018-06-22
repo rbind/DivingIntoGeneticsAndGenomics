@@ -17,24 +17,22 @@ weight = 5
 
 # List your qualifications (such as academic degrees).
 [[education.courses]]
-  course = "PhD in Artificial Intelligence"
-  institution = "Stanford University"
-  year = 2012
+  course = "PhD in Genetics and Genomics"
+  institution = "University of Florida"
+  year = 2014
 
 [[education.courses]]
-  course = "MEng in Artificial Intelligence"
-  institution = "Massachusetts Institute of Technology"
-  year = 2009
-
-[[education.courses]]
-  course = "BSc in Artificial Intelligence"
-  institution = "Massachusetts Institute of Technology"
+  course = "BS in Biotechnology"
+  institution = "Shanghai Jiaotong University"
   year = 2008
+
  
 +++
 
 # Biography
 
-Lena Smith is a professor of artificial intelligence at the Stanford AI Lab. Her research interests include distributed robotics, mobile computing and programmable matter. She leads the Robotic Neurobiology group, which develops self-reconfiguring robots, systems of self-organizing robots, and mobile sensor networks.
+Ming Tang is a computational biologist working on genomics, epigenomics and transcriptomics. Being tained in a wet lab in the University of Florida during my PhD has established my solid knowledge and skills in experimental molecuar cancer biology. Self-teaching and postdoctoral training in Dr.Roel Verhaak's lab has extended my bioinformatics skills in integrating analysis of TB size sequencing data sets. Verhaak lab is well known for studying genomic alterations of brain tumor by analyzing large panels of RNA-seq and DNA-seq data. I gained extensive experience in handling large-scale genomic data and pipelining workflows. I also gained intimate familiarities with public data sets such as TCGA. I
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate. 
+Now, with both experimental and computational biology skills on my belt, I am ready to tackle cancer biology problems with my expertise. My ultimate goal is to make new discoveries in cancer biology and translate the knowledge into effective new therapeutic strategies to benefit cancer patients in the end. I also have a great interest in promoting open science and reforming bioinformatics education. I frequently share my thoughts on twitter @tangming2005 and tips in my blog post. I am a certified instructor for software carpentry and data carpentry.
+
+
