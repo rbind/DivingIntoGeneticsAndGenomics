@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GEO on DNA confesses and Data speak</title>
+    <link>/tags/geo/</link>
+    <description>Recent content in GEO on DNA confesses and Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Fri, 22 Jun 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/geo/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to upload files to GEO</title>
+      <link>/post/how-to-upload-files-to-geo/</link>
+      <pubDate>Fri, 22 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-upload-files-to-geo/</guid>
+      <description>readings links: http://yeolab.github.io/onboarding/geo.html
+http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf
+https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
+1. create an account in GEO Goto NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password : Will assume &amp;ldquo;YOUR_NAME&amp;rdquo; as user id below
+I used my google account.
+2. fill in the xls sheet Downloaded the meata xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html
+## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &amp;gt; fastq_md5.txt cat fastq_md5.txt | awk &#39;{print $2}&#39; cat fastq_md5.txt | awk &#39;{print $1}&#39; cd .</description>
+    </item>
+    
+  </channel>
+</rss>
