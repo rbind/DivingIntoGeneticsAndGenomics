@@ -10,10 +10,10 @@ weight = 5
 # List your academic interests.
 [interests]
   interests = [
-    "(epi)genomics",
-    "education",
-    "machine learning",
-    "unix",
+    "(Epi)genomics",
+    "Education",
+    "Machine learning",
+    "Unix",
     "rstats"
   ]
 
