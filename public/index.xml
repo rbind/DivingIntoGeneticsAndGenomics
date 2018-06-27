@@ -25,10 +25,10 @@
 &lt;a href=&#34;http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf&#34; target=&#34;_blank&#34;&gt;http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf&lt;/a&gt;&lt;br /&gt;
 &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html&#34; target=&#34;_blank&#34;&gt;https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html&lt;/a&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;1-create-an-account-in-geo&#34;&gt;1. create an account in GEO&lt;/h3&gt;
+&lt;h3 id=&#34;1-create-account&#34;&gt;1. create account&lt;/h3&gt;
 
 &lt;p&gt;Goto NCBI GEO: &lt;a href=&#34;http://www.ncbi.nlm.nih.gov/geo/&#34; target=&#34;_blank&#34;&gt;http://www.ncbi.nlm.nih.gov/geo/&lt;/a&gt;
-Create User ID and password : Will assume &amp;ldquo;YOUR_NAME&amp;rdquo; as user id below&lt;/p&gt;
+Create User ID and password. my username is &lt;code&gt;research_guru&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;I used my google account.&lt;/p&gt;
 
@@ -41,14 +41,17 @@ Create User ID and password : Will assume &amp;ldquo;YOUR_NAME&amp;rdquo; as use
 cd 01seq
 find *fastq | parallel bgzip
 md5sum *fastq.gz &amp;gt; fastq_md5.txt 
+# copy to excle
 cat fastq_md5.txt | awk &#39;{print $2}&#39;
+
+#copy to excle
 cat fastq_md5.txt | awk &#39;{print $1}&#39;
 
 
 cd ../07bigwig
 #get the md5sum
 
-md5sum *bw | grep -v &amp;quot;mean&amp;quot; &amp;gt; bigwig_md5.txt
+md5sum *bw &amp;gt; bigwig_md5.txt
 
 # sample name, copy to excel
 cat bigwig_md5.txt | awk &#39;{print $2}&#39;
@@ -70,6 +73,8 @@ cd research_guru_KMT2D_ChIPseq
 ## fill in the xls sheet and save in this folder
 &lt;/code&gt;&lt;/pre&gt;
 
+&lt;p&gt;This is the most time-consuming/tedious step.&lt;/p&gt;
+
 &lt;h3 id=&#34;3-soft-link-peak-and-bigwig-files-to-the-folder&#34;&gt;3. soft link peak and bigwig files to the folder&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;ln -s /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/07bigwig/*bw .
@@ -84,13 +89,46 @@ ln -s /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_d
 # inside the folder: research_guru_KMT2D_ChIPseq
 ftp ftp-private.ncbi.nlm.nih.gov
 
+## type in the user name and the password
+## this is not your GEO account user name.
+## everyone uses the same `geo` and the same password below.
+
+# https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
+
+#name: geo
+#password: 33%9uyj_fCh?M16H
+
 ftp&amp;gt; prompt n
 Interactive mode off.
 
 ftp&amp;gt; cd fasp
 
 ftp&amp;gt; mkdir research_guru_ChIPseq
+
+ftp&amp;gt; cd research_guru_ChIPseq
+
+#upload all the files
+ftp&amp;gt; mput *
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;5-telling-ncbi-you-uploaded-stuff&#34;&gt;5. telling NCBI you uploaded stuff&lt;/h3&gt;
+
+&lt;p&gt;After your transfer is complete, you need to tell the NCBI.&lt;/p&gt;
+
+&lt;p&gt;After file transfer is complete, please e-mail GEO with the following information: - GEO account username (olga.botvinnik@gmail.com); - Names of the directory and files deposited; - Public release date (required - up to 3 years from now - see FAQ).&lt;/p&gt;
+
+&lt;h3 id=&#34;side-notes&#34;&gt;Side notes&lt;/h3&gt;
+
+&lt;p&gt;for paired-end sequencing data. the xls sheet requries you to fill in the average insert size and the std.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;picard CollectInsertSizeMetrics&lt;/code&gt; can do this job.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;time java -jar /scratch/genomic_med/apps/picard/picard-tools-2.13.2/picard.jar CollectInsertSizeMetrics I=4-Mll4-RasG12D-1646-2-cd45_S40_L006.sorted.bam  H=4-Mll4-RasG12D-1646-2-cd45_S40_L006_insert.pdf  O=4-Mll4-RasG12D-1646-2-cd45_S40_L006_insert.txt
+
+# finish in ~5mins
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;read &lt;a href=&#34;http://thegenomefactory.blogspot.com/2013/08/paired-end-read-confusion-library.html&#34; target=&#34;_blank&#34;&gt;http://thegenomefactory.blogspot.com/2013/08/paired-end-read-confusion-library.html&lt;/a&gt; for insert size definition.&lt;/p&gt;
 </description>
     </item>
     

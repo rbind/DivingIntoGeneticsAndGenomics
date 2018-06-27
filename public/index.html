@@ -807,7 +807,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    1 min read
+    2 min read
   </span>
   
 
@@ -843,10 +843,10 @@
     readings links: http://yeolab.github.io/onboarding/geo.html
 http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf
 https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
-1. create an account in GEO Goto NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password : Will assume &ldquo;YOUR_NAME&rdquo; as user id below
+1. create account Goto NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password. my username is research_guru
 I used my google account.
 2. fill in the xls sheet Downloaded the meata xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html
-## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &gt; fastq_md5.txt cat fastq_md5.txt | awk '{print $2}' cat fastq_md5.txt | awk '{print $1}' cd .
+## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &gt; fastq_md5.txt # copy to excle cat fastq_md5.txt | awk '{print $2}' #copy to excle cat fastq_md5.txt | awk '{print $1}' cd .
     
   </div>
   <p class="read-more" itemprop="mainEntityOfPage">

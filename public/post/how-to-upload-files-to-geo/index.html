@@ -20,10 +20,10 @@
   <meta name="description" content="readings links: http://yeolab.github.io/onboarding/geo.html
 http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf
 https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
-1. create an account in GEO Goto NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password : Will assume &ldquo;YOUR_NAME&rdquo; as user id below
+1. create account Goto NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password. my username is research_guru
 I used my google account.
 2. fill in the xls sheet Downloaded the meata xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html
-## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &gt; fastq_md5.txt cat fastq_md5.txt | awk &#39;{print $2}&#39; cat fastq_md5.txt | awk &#39;{print $1}&#39; cd .">
+## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &gt; fastq_md5.txt # copy to excle cat fastq_md5.txt | awk &#39;{print $2}&#39; #copy to excle cat fastq_md5.txt | awk &#39;{print $1}&#39; cd .">
 
   
   <link rel="alternate" hreflang="en-us" href="/post/how-to-upload-files-to-geo/">
@@ -88,10 +88,10 @@ I used my google account.
   <meta property="og:description" content="readings links: http://yeolab.github.io/onboarding/geo.html
 http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf
 https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
-1. create an account in GEO Goto NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password : Will assume &ldquo;YOUR_NAME&rdquo; as user id below
+1. create account Goto NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password. my username is research_guru
 I used my google account.
 2. fill in the xls sheet Downloaded the meata xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html
-## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &gt; fastq_md5.txt cat fastq_md5.txt | awk &#39;{print $2}&#39; cat fastq_md5.txt | awk &#39;{print $1}&#39; cd .">
+## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &gt; fastq_md5.txt # copy to excle cat fastq_md5.txt | awk &#39;{print $2}&#39; #copy to excle cat fastq_md5.txt | awk &#39;{print $1}&#39; cd .">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2018-06-22T00:00:00&#43;00:00">
@@ -280,7 +280,7 @@ I used my google account.
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    1 min read
+    2 min read
   </span>
   
 
@@ -358,10 +358,10 @@ I used my google account.
 <a href="http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf" target="_blank">http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf</a><br />
 <a href="https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html" target="_blank">https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html</a></p>
 
-<h3 id="1-create-an-account-in-geo">1. create an account in GEO</h3>
+<h3 id="1-create-account">1. create account</h3>
 
 <p>Goto NCBI GEO: <a href="http://www.ncbi.nlm.nih.gov/geo/" target="_blank">http://www.ncbi.nlm.nih.gov/geo/</a>
-Create User ID and password : Will assume &ldquo;YOUR_NAME&rdquo; as user id below</p>
+Create User ID and password. my username is <code>research_guru</code></p>
 
 <p>I used my google account.</p>
 
@@ -374,14 +374,17 @@ Create User ID and password : Will assume &ldquo;YOUR_NAME&rdquo; as user id bel
 cd 01seq
 find *fastq | parallel bgzip
 md5sum *fastq.gz &gt; fastq_md5.txt 
+# copy to excle
 cat fastq_md5.txt | awk '{print $2}'
+
+#copy to excle
 cat fastq_md5.txt | awk '{print $1}'
 
 
 cd ../07bigwig
 #get the md5sum
 
-md5sum *bw | grep -v &quot;mean&quot; &gt; bigwig_md5.txt
+md5sum *bw &gt; bigwig_md5.txt
 
 # sample name, copy to excel
 cat bigwig_md5.txt | awk '{print $2}'
@@ -403,6 +406,8 @@ cd research_guru_KMT2D_ChIPseq
 ## fill in the xls sheet and save in this folder
 </code></pre>
 
+<p>This is the most time-consuming/tedious step.</p>
+
 <h3 id="3-soft-link-peak-and-bigwig-files-to-the-folder">3. soft link peak and bigwig files to the folder</h3>
 
 <pre><code>ln -s /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/07bigwig/*bw .
@@ -417,13 +422,46 @@ ln -s /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_d
 # inside the folder: research_guru_KMT2D_ChIPseq
 ftp ftp-private.ncbi.nlm.nih.gov
 
+## type in the user name and the password
+## this is not your GEO account user name.
+## everyone uses the same `geo` and the same password below.
+
+# https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
+
+#name: geo
+#password: 33%9uyj_fCh?M16H
+
 ftp&gt; prompt n
 Interactive mode off.
 
 ftp&gt; cd fasp
 
 ftp&gt; mkdir research_guru_ChIPseq
+
+ftp&gt; cd research_guru_ChIPseq
+
+#upload all the files
+ftp&gt; mput *
 </code></pre>
+
+<h3 id="5-telling-ncbi-you-uploaded-stuff">5. telling NCBI you uploaded stuff</h3>
+
+<p>After your transfer is complete, you need to tell the NCBI.</p>
+
+<p>After file transfer is complete, please e-mail GEO with the following information: - GEO account username (olga.botvinnik@gmail.com); - Names of the directory and files deposited; - Public release date (required - up to 3 years from now - see FAQ).</p>
+
+<h3 id="side-notes">Side notes</h3>
+
+<p>for paired-end sequencing data. the xls sheet requries you to fill in the average insert size and the std.</p>
+
+<p><code>picard CollectInsertSizeMetrics</code> can do this job.</p>
+
+<pre><code class="language-bash">time java -jar /scratch/genomic_med/apps/picard/picard-tools-2.13.2/picard.jar CollectInsertSizeMetrics I=4-Mll4-RasG12D-1646-2-cd45_S40_L006.sorted.bam  H=4-Mll4-RasG12D-1646-2-cd45_S40_L006_insert.pdf  O=4-Mll4-RasG12D-1646-2-cd45_S40_L006_insert.txt
+
+# finish in ~5mins
+</code></pre>
+
+<p>read <a href="http://thegenomefactory.blogspot.com/2013/08/paired-end-read-confusion-library.html" target="_blank">http://thegenomefactory.blogspot.com/2013/08/paired-end-read-confusion-library.html</a> for insert size definition.</p>
 
     </div>
 
