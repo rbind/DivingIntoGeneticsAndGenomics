@@ -71,12 +71,14 @@ cd research_guru_KMT2D_ChIPseq
 
 This is the most time-consuming/tedious step.
 
-### 3. soft link peak and bigwig files to the folder
+### 3. hard link peak and bigwig files to the folder
+
+soft link does not work for me...
 ```
-ln -s /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/07bigwig/*bw .
+ln  /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/07bigwig/*bw .
 
 
-ln -s /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/08peak_macs1/*macs1_peaks.bed .
+ln /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/08peak_macs1/*macs1_peaks.bed .
 ```
 
 ### 4. upload to GEO
@@ -100,6 +102,7 @@ Interactive mode off.
 
 ftp> cd fasp
 
+# make a folder in the ftp site
 ftp> mkdir research_guru_ChIPseq
 
 ftp> cd research_guru_ChIPseq
@@ -111,7 +114,7 @@ ftp> mput *
 ### 5. telling NCBI you uploaded stuff
 After your transfer is complete, you need to tell the NCBI.
 
-After file transfer is complete, please e-mail GEO with the following information: - GEO account username (olga.botvinnik@gmail.com); - Names of the directory and files deposited; - Public release date (required - up to 3 years from now - see FAQ).
+After file transfer is complete, please e-mail GEO with the following information: - GEO account username (tangming2005@gmail.com); - Names of the directory and files deposited; - Public release date (required - up to 3 years from now - see FAQ).
 
 ### Side notes
 for paired-end sequencing data. the xls sheet requries you to fill in the average insert size and the std.

@@ -11,6 +11,15 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>2018-06-27-crontab-for-backup</title>
+      <link>/post/crontab-for-backup/</link>
+      <pubDate>Wed, 27 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/crontab-for-backup/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>How to upload files to GEO</title>
       <link>/post/how-to-upload-files-to-geo/</link>
       <pubDate>Fri, 22 Jun 2018 00:00:00 +0000</pubDate>
@@ -75,12 +84,14 @@ cd research_guru_KMT2D_ChIPseq
 
 &lt;p&gt;This is the most time-consuming/tedious step.&lt;/p&gt;
 
-&lt;h3 id=&#34;3-soft-link-peak-and-bigwig-files-to-the-folder&#34;&gt;3. soft link peak and bigwig files to the folder&lt;/h3&gt;
+&lt;h3 id=&#34;3-hard-link-peak-and-bigwig-files-to-the-folder&#34;&gt;3. hard link peak and bigwig files to the folder&lt;/h3&gt;
 
-&lt;pre&gt;&lt;code&gt;ln -s /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/07bigwig/*bw .
+&lt;p&gt;soft link does not work for me&amp;hellip;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ln  /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/07bigwig/*bw .
 
 
-ln -s /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/08peak_macs1/*macs1_peaks.bed .
+ln /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/08peak_macs1/*macs1_peaks.bed .
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;h3 id=&#34;4-upload-to-geo&#34;&gt;4. upload to GEO&lt;/h3&gt;
@@ -103,6 +114,7 @@ Interactive mode off.
 
 ftp&amp;gt; cd fasp
 
+# make a folder in the ftp site
 ftp&amp;gt; mkdir research_guru_ChIPseq
 
 ftp&amp;gt; cd research_guru_ChIPseq
@@ -115,7 +127,7 @@ ftp&amp;gt; mput *
 
 &lt;p&gt;After your transfer is complete, you need to tell the NCBI.&lt;/p&gt;
 
-&lt;p&gt;After file transfer is complete, please e-mail GEO with the following information: - GEO account username (olga.botvinnik@gmail.com); - Names of the directory and files deposited; - Public release date (required - up to 3 years from now - see FAQ).&lt;/p&gt;
+&lt;p&gt;After file transfer is complete, please e-mail GEO with the following information: - GEO account username (tangming2005@gmail.com); - Names of the directory and files deposited; - Public release date (required - up to 3 years from now - see FAQ).&lt;/p&gt;
 
 &lt;h3 id=&#34;side-notes&#34;&gt;Side notes&lt;/h3&gt;
 

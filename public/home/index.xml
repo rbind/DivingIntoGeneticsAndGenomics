@@ -97,6 +97,15 @@ I am a teaching instructor for the following courses at University X:
     </item>
     
     <item>
+      <title>CV</title>
+      <link>/home/cv/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 -0500</pubDate>
+      
+      <guid>/home/cv/</guid>
+      <description>Find my CV in PDF here.</description>
+    </item>
+    
+    <item>
       <title>Contact</title>
       <link>/home/contact/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 -0500</pubDate>

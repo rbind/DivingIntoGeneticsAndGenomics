@@ -35,7 +35,7 @@ I used my google account.
 
   
   
-  <meta name="theme-color" content="#0095eb">
+  <meta name="theme-color" content="#328cc1">
   
   
   
@@ -232,6 +232,23 @@ I used my google account.
         
         
         
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
           
         
 
@@ -408,12 +425,14 @@ cd research_guru_KMT2D_ChIPseq
 
 <p>This is the most time-consuming/tedious step.</p>
 
-<h3 id="3-soft-link-peak-and-bigwig-files-to-the-folder">3. soft link peak and bigwig files to the folder</h3>
+<h3 id="3-hard-link-peak-and-bigwig-files-to-the-folder">3. hard link peak and bigwig files to the folder</h3>
 
-<pre><code>ln -s /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/07bigwig/*bw .
+<p>soft link does not work for me&hellip;</p>
+
+<pre><code>ln  /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/07bigwig/*bw .
 
 
-ln -s /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/08peak_macs1/*macs1_peaks.bed .
+ln /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/08peak_macs1/*macs1_peaks.bed .
 </code></pre>
 
 <h3 id="4-upload-to-geo">4. upload to GEO</h3>
@@ -436,6 +455,7 @@ Interactive mode off.
 
 ftp&gt; cd fasp
 
+# make a folder in the ftp site
 ftp&gt; mkdir research_guru_ChIPseq
 
 ftp&gt; cd research_guru_ChIPseq
@@ -448,7 +468,7 @@ ftp&gt; mput *
 
 <p>After your transfer is complete, you need to tell the NCBI.</p>
 
-<p>After file transfer is complete, please e-mail GEO with the following information: - GEO account username (olga.botvinnik@gmail.com); - Names of the directory and files deposited; - Public release date (required - up to 3 years from now - see FAQ).</p>
+<p>After file transfer is complete, please e-mail GEO with the following information: - GEO account username (tangming2005@gmail.com); - Names of the directory and files deposited; - Public release date (required - up to 3 years from now - see FAQ).</p>
 
 <h3 id="side-notes">Side notes</h3>
 
@@ -559,6 +579,16 @@ ftp&gt; mput *
       <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
       
 
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/R.min.js"></script>
       
 
       
