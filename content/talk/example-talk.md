@@ -17,7 +17,7 @@ selected = false
 #   Associate this talk with one or more of your projects.
 #   Simply enter the filename of your project file in `content/project/`.
 #   Otherwise, set `projects = []`.
-projects = ["deep-learning.md"]
+#projects = ["deep-learning.md"]
 
 # Links (optional).
 url_pdf = ""
