@@ -31,24 +31,6 @@
     </item>
     
     <item>
-      <title>Deep-learning</title>
-      <link>/tags/deep-learning/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 -0500</pubDate>
-      
-      <guid>/tags/deep-learning/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Demo</title>
-      <link>/tags/demo/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 -0500</pubDate>
-      
-      <guid>/tags/demo/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>GEO</title>
       <link>/tags/geo/</link>
       <pubDate>Fri, 22 Jun 2018 00:00:00 +0000</pubDate>
@@ -58,29 +40,29 @@
     </item>
     
     <item>
-      <title>Plot</title>
-      <link>/tags/plot/</link>
-      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
+      <title>Genomics</title>
+      <link>/tags/genomics/</link>
+      <pubDate>Wed, 27 Apr 2016 00:00:00 -0500</pubDate>
       
-      <guid>/tags/plot/</guid>
+      <guid>/tags/genomics/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>R Markdown</title>
-      <link>/tags/r-markdown/</link>
-      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
+      <title>Pipeline</title>
+      <link>/tags/pipeline/</link>
+      <pubDate>Wed, 27 Apr 2016 00:00:00 -0500</pubDate>
       
-      <guid>/tags/r-markdown/</guid>
+      <guid>/tags/pipeline/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Regression</title>
-      <link>/tags/regression/</link>
-      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
+      <title>Snakemake</title>
+      <link>/tags/snakemake/</link>
+      <pubDate>Wed, 27 Apr 2016 00:00:00 -0500</pubDate>
       
-      <guid>/tags/regression/</guid>
+      <guid>/tags/snakemake/</guid>
       <description></description>
     </item>
     

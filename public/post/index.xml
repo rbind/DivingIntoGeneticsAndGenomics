@@ -13,12 +13,13 @@
     
     
     <item>
-      <title>2018-06-27-crontab-for-backup</title>
+      <title>Backup automatically with cron</title>
       <link>/post/crontab-for-backup/</link>
       <pubDate>Wed, 27 Jun 2018 00:00:00 +0000</pubDate>
       
       <guid>/post/crontab-for-backup/</guid>
-      <description></description>
+      <description>Data backup is an essential step in the data analysis life cycle. As shown in a pic below.
+There are so many important things you may want to back up: your raw/processed data, your code, and your dot configuration files. While for every project, I have git version control my scripts (not the data) and push it to github or gitlab to have a backup, big files can not be hosted on github or gitlab.</description>
     </item>
     
     <item>
@@ -34,17 +35,6 @@ https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
 I used my google account.
 2. fill in the xls sheet Downloaded the meata xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html
 ## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &amp;gt; fastq_md5.txt # copy to excle cat fastq_md5.txt | awk &#39;{print $2}&#39; #copy to excle cat fastq_md5.txt | awk &#39;{print $1}&#39; cd .</description>
-    </item>
-    
-    <item>
-      <title>Hello R Markdown</title>
-      <link>/post/2015-07-23-r-rmarkdown/</link>
-      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
-      
-      <guid>/post/2015-07-23-r-rmarkdown/</guid>
-      <description>R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-You can embed an R code chunk like this:
-summary(cars) ## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
     </item>
     
   </channel>

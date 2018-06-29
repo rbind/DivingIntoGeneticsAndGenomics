@@ -7,18 +7,54 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Tue, 01 Sep 2015 00:00:00 -0500</lastBuildDate>
+    <lastBuildDate>Mon, 14 Aug 2017 00:00:00 -0500</lastBuildDate>
     
 	<atom:link href="/publication_types/2/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>A Person Re-Identification System For Mobile Devices</title>
-      <link>/publication/person-re-identification/</link>
-      <pubDate>Tue, 01 Sep 2015 00:00:00 -0500</pubDate>
+      <title>Integrative Analysis Identifies Four Molecular and Clinical Subsets in Uveal Melanoma</title>
+      <link>/publication/2017-08-14-uveal-melanoma/</link>
+      <pubDate>Mon, 14 Aug 2017 00:00:00 -0500</pubDate>
       
-      <guid>/publication/person-re-identification/</guid>
+      <guid>/publication/2017-08-14-uveal-melanoma/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>Systematic analysis of telomere length and somatic alterations in 31 cancer types</title>
+      <link>/publication/2012-03-01-ctcf-angiogenesis/</link>
+      <pubDate>Wed, 01 Mar 2017 00:00:00 -0600</pubDate>
+      
+      <guid>/publication/2012-03-01-ctcf-angiogenesis/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>Systematic analysis of telomere length and somatic alterations in 31 cancer types</title>
+      <link>/publication/telomere-pan-cancer/</link>
+      <pubDate>Wed, 01 Mar 2017 00:00:00 -0600</pubDate>
+      
+      <guid>/publication/telomere-pan-cancer/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>The malignant brain tumor (MBT) domain protein SFMBT1 is an integral histone reader subunit of the LSD1 demethylase complex for chromatin association and epithelial-to-mesenchymal transition</title>
+      <link>/publication/sfmbt-snail-emt-cancer/</link>
+      <pubDate>Fri, 20 Sep 2013 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/sfmbt-snail-emt-cancer/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>Restraint of angiogenesis by zinc finger transcription factor CTCF-dependent chromatin insulation</title>
+      <link>/publication/ctcf-vegf-enhancer-blocking/</link>
+      <pubDate>Tue, 13 Sep 2011 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/ctcf-vegf-enhancer-blocking/</guid>
+      <description></description>
     </item>
     
   </channel>

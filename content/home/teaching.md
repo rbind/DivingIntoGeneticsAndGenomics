@@ -13,6 +13,8 @@ subtitle = ""
 # Order that this section will appear in.
 weight = 60
 
+list_format = 1
+
 +++
 
 This is an example of using the *custom* widget to create your own homepage section.
