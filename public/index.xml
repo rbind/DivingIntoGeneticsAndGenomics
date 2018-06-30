@@ -11,6 +11,65 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>my first try on Rmarkdown using blogdown</title>
+      <link>/post/my-first-try-on-rmarkdown-using-blogdown/</link>
+      <pubDate>Sat, 30 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/my-first-try-on-rmarkdown-using-blogdown/</guid>
+      <description>&lt;p&gt;I have used blogdown writing regular markdown posts, but the real power is from the Rmarkdown! let me try it for this post.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(tidyverse)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Warning: package &#39;tibble&#39; was built under R version 3.4.3
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Warning: package &#39;purrr&#39; was built under R version 3.4.4
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Conflicts with tidy packages ----------------------------------------------
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## filter(): dplyr, stats
+## lag():    dplyr, stats
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggplot2)
+head(mtcars)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+## Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(mtcars, aes(x = disp, y = mpg)) + geom_point()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/2018-06-30-my-first-try-on-rmarkdown-using-blogdown_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(mtcars, aes(x= as.factor(cyl), y = hp)) + geom_boxplot(aes(color = as.factor(cyl))) + geom_jitter()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/2018-06-30-my-first-try-on-rmarkdown-using-blogdown_files/figure-html/unnamed-chunk-2-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It is awesome! blogdown will knit and render the code and the output into a html file. How cool is that!!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>hugo academic theme blog down deployment (some details)</title>
       <link>/post/hugo-academic-theme-blog-down-deployment-some-details/</link>
       <pubDate>Fri, 29 Jun 2018 00:00:00 +0000</pubDate>
@@ -542,6 +601,24 @@ Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/a
       
       <guid>/project/snakemake-pipelines/</guid>
       <description>&lt;p&gt;Snakemake is a python extension for writing workflows. Genomics data processing usually requires bundling many different tools to reach a stage that is ready for downstream analysis.&lt;/p&gt;
+
+&lt;p&gt;I have been using snakemake writing workflows for various genomic and epigenomic datasets.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/crazyhottommy/pyflow-ChIPseq&#34; target=&#34;_blank&#34;&gt;ChIP-seq&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://gitlab.com/tangming2005/snakemake_DNAseq_pipeline/tree/multiRG&#34; target=&#34;_blank&#34;&gt;DNA-seq&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/crazyhottommy/pyflow-RNAseq&#34; target=&#34;_blank&#34;&gt;RNA-seq&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/crazyhottommy/pyflow-ATACseq&#34; target=&#34;_blank&#34;&gt;ATAC-seq&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://gitlab.com/tangming2005/pyflow-RRBSeq&#34; target=&#34;_blank&#34;&gt;RRBSeq&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The DNAseq Snakemake pipeline is the most complicated workflow I have written so far. I will need to think about refining it, modulizing it and adding conda env support. Eventually, I will need to put all the snakemake workflows togther using something like &lt;a href=&#34;https://github.com/nh13/snakeparse&#34; target=&#34;_blank&#34;&gt;snakeparse&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/rule_graph_lancet.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 </description>
     </item>
     

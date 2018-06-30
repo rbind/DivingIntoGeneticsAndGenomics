@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>my first try on Rmarkdown using blogdown</title>
+      <link>/post/my-first-try-on-rmarkdown-using-blogdown/</link>
+      <pubDate>Sat, 30 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/my-first-try-on-rmarkdown-using-blogdown/</guid>
+      <description>I have used blogdown writing regular markdown posts, but the real power is from the Rmarkdown! let me try it for this post.
+library(tidyverse)  ## Loading tidyverse: ggplot2 ## Loading tidyverse: tibble ## Loading tidyverse: tidyr ## Loading tidyverse: readr ## Loading tidyverse: purrr ## Loading tidyverse: dplyr  ## Warning: package &#39;tibble&#39; was built under R version 3.4.3  ## Warning: package &#39;purrr&#39; was built under R version 3.</description>
+    </item>
+    
+    <item>
       <title>hugo academic theme blog down deployment (some details)</title>
       <link>/post/hugo-academic-theme-blog-down-deployment-some-details/</link>
       <pubDate>Fri, 29 Jun 2018 00:00:00 +0000</pubDate>

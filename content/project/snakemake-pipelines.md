@@ -30,4 +30,19 @@ caption = "My caption :smile:"
 
 Snakemake is a python extension for writing workflows. Genomics data processing usually requires bundling many different tools to reach a stage that is ready for downstream analysis.
 
+I have been using snakemake writing workflows for various genomic and epigenomic datasets.
+
+* [ChIP-seq](https://github.com/crazyhottommy/pyflow-ChIPseq)
+
+* [DNA-seq](https://gitlab.com/tangming2005/snakemake_DNAseq_pipeline/tree/multiRG)
+
+* [RNA-seq](https://github.com/crazyhottommy/pyflow-RNAseq)
+
+* [ATAC-seq](https://github.com/crazyhottommy/pyflow-ATACseq)
+
+* [RRBSeq](https://gitlab.com/tangming2005/pyflow-RRBSeq)
+
+The DNAseq Snakemake pipeline is the most complicated workflow I have written so far. I will need to think about refining it, modulizing it and adding conda env support. Eventually, I will need to put all the snakemake workflows togther using something like [snakeparse](https://github.com/nh13/snakeparse)
+
+![](/img/rule_graph_lancet.png)
 

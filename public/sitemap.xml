@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/my-first-try-on-rmarkdown-using-blogdown/</loc>
+      <lastmod>2018-06-30T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/hugo-academic-theme-blog-down-deployment-some-details/</loc>
       <lastmod>2018-06-29T00:00:00+00:00</lastmod>
     </url>
@@ -150,6 +159,16 @@
     
     <url>
     
+      <loc>/tags/blogdown/</loc>
+      <lastmod>2018-06-30T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/categories/</loc>
       <priority>0</priority>
     </url>
@@ -250,7 +269,7 @@
     <url>
     
       <loc>/categories/r/</loc>
-      <lastmod>2018-06-29T00:00:00+00:00</lastmod>
+      <lastmod>2018-06-30T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
