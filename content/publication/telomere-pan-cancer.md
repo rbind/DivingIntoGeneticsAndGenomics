@@ -35,8 +35,8 @@ selected = true
 #   Otherwise, set `projects = []`.
 # projects = ["example-external-project.md"]
 
-# Links (optional).
-url_pdf = "static/files/papers/telemere.pdf"
+# Links (optional). figuring out the relative path is the key...
+url_pdf = "files/papers/telemere.pdf"
 
 
 # Custom links (optional).

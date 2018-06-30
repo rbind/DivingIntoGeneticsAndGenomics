@@ -13,6 +13,18 @@
     
     
     <item>
+      <title>hugo academic theme blog down deployment (some details)</title>
+      <link>/post/hugo-academic-theme-blog-down-deployment-some-details/</link>
+      <pubDate>Fri, 29 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/hugo-academic-theme-blog-down-deployment-some-details/</guid>
+      <description>I have been following this tutorial from Alison and tips from Leslie Myint for some customization for deploying my blogdown website
+It is quites straighforward to have a working site following Alison&amp;rsquo;s guide. However, you always want some customization of your own site.
+I took the tips from Leslie.
+changed the menue bar to black. I like it better than the default white. in the config.toml file, change the theme:</description>
+    </item>
+    
+    <item>
       <title>Backup automatically with cron</title>
       <link>/post/crontab-for-backup/</link>
       <pubDate>Wed, 27 Jun 2018 00:00:00 +0000</pubDate>

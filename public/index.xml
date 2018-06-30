@@ -11,6 +11,145 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>hugo academic theme blog down deployment (some details)</title>
+      <link>/post/hugo-academic-theme-blog-down-deployment-some-details/</link>
+      <pubDate>Fri, 29 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/hugo-academic-theme-blog-down-deployment-some-details/</guid>
+      <description>
+
+&lt;p&gt;I have been following this &lt;a href=&#34;https://alison.rbind.io/post/up-and-running-with-blogdown/&#34; target=&#34;_blank&#34;&gt;tutorial&lt;/a&gt; from Alison and tips from &lt;a href=&#34;https://lmyint.github.io/post/hugo-academic-tips/&#34; target=&#34;_blank&#34;&gt;Leslie Myint&lt;/a&gt; for some customization for deploying my blogdown website&lt;/p&gt;
+
+&lt;p&gt;It is quites straighforward to have a working site following Alison&amp;rsquo;s guide. However, you always want some customization of your own site.&lt;/p&gt;
+
+&lt;p&gt;I took the tips from Leslie.&lt;/p&gt;
+
+&lt;h3 id=&#34;changed-the-menue-bar-to-black-i-like-it-better-than-the-default-white&#34;&gt;changed the menue bar to black. I like it better than the default white.&lt;/h3&gt;
+
+&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file, change the theme:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[params]
+  # Color theme.
+  #   Choose from `default`, `ocean`, `forest`, `coffee`, `dark`, or `1950s`.
+  color_theme = &amp;quot;custom&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and make a file called &lt;code&gt;custom.toml&lt;/code&gt; in &lt;code&gt;themes/hugo-academic/data/themes/&lt;/code&gt;. I copy the same &lt;code&gt;custom.toml&lt;/code&gt; file from Leslie:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;# Theme metadata
+name = &amp;quot;custom&amp;quot;
+
+# Is theme light or dark?
+light = true
+
+# Primary
+primary = &amp;quot;#328cc1&amp;quot;
+primary_light = &amp;quot;#328cc1&amp;quot;
+primary_dark = &amp;quot;#DA2536&amp;quot;
+
+# Menu
+menu_primary = &amp;quot;#494949&amp;quot;
+menu_text = &amp;quot;#fff&amp;quot;
+menu_text_active = &amp;quot;#328cc1&amp;quot;
+menu_title = &amp;quot;#fff&amp;quot;
+
+# Backgrounds
+background = &amp;quot;#fff&amp;quot;
+home_section_odd = &amp;quot;#fff&amp;quot;
+home_section_even = &amp;quot;#f7f7f7&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;added-twitter-in-the-contact-section&#34;&gt;added twitter in the Contact section.&lt;/h3&gt;
+
+&lt;h3 id=&#34;added-a-cv-section&#34;&gt;added a CV section.&lt;/h3&gt;
+
+&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file, add the following.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[[menu.main]]
+  name = &amp;quot;CV&amp;quot;
+  url = &amp;quot;#cv&amp;quot;
+  weight = 6
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Next, I created a directory called &lt;code&gt;content/cv&lt;/code&gt; and a PDF version of my CV (&lt;code&gt;cv.pdf&lt;/code&gt;) in the folder.&lt;/p&gt;
+
+&lt;p&gt;inside the &lt;code&gt;content/home&lt;/code&gt; directory, create &lt;code&gt;cv.md&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;+++
+# Custom widget.
+# An example of using the custom widget to create your own homepage section.
+# To create more sections, duplicate this file and edit the values below as desired.
+widget = &amp;quot;custom&amp;quot;
+active = true
+date = 2016-04-20T00:00:00
+
+# Note: a full width section format can be enabled by commenting out the `title` and `subtitle` with a `#`.
+title = &amp;quot;CV&amp;quot;
+subtitle = &amp;quot;&amp;quot;
+
+# Order that this section will appear in.
+weight = 70
+
++++
+
+Find my CV in PDF [here](cv/cv.pdf).
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note that the path is &lt;code&gt;cv/cv.pdf&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;link-all-the-pdf-files-of-your-paper-in-local&#34;&gt;Link all the PDF files of your paper in local.&lt;/h3&gt;
+
+&lt;p&gt;Many of the papers are not open source, a link to the publisher&amp;rsquo;s website does not render a PDF. I downloaded all my papers and put them in a new folder &lt;code&gt;static/files/papers&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;open a &lt;code&gt;md&lt;/code&gt; file inside &lt;code&gt;content/publication/&lt;/code&gt; and add the link:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Links (optional). figuring out the relative path is the key...
+url_pdf = &amp;quot;files/papers/telemere.pdf&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;similar to the &lt;code&gt;CV&lt;/code&gt; section, figuring out the relative path is the key.&lt;/p&gt;
+
+&lt;h3 id=&#34;change-the-header-img-size&#34;&gt;change the header img size.&lt;/h3&gt;
+
+&lt;p&gt;For posts, projects or publications, one can have a image on top of the writings.
+I cropped some images from the paper and put them on top of the publication. However, the image will by default expand 100% of the width, and it does not look nice.&lt;/p&gt;
+
+&lt;p&gt;I googled and found &lt;a href=&#34;https://github.com/gcushen/hugo-academic/issues/84&#34; target=&#34;_blank&#34;&gt;https://github.com/gcushen/hugo-academic/issues/84&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;modify the css at &lt;code&gt;./themes/hugo-academic/layouts/partials/css/academic.css&lt;/code&gt; in line 124 from&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;img,
+video {
+  height: auto;
+  max-width: 100%
+  display: block;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;img,
+video {
+  height: auto;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;works fine for me, but it is not the best practice as one changed the default academic theme. following &lt;a href=&#34;https://sourcethemes.com/academic/docs/customization/#customize-style-css&#34; target=&#34;_blank&#34;&gt;https://sourcethemes.com/academic/docs/customization/#customize-style-css&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;For advanced customization of the style, you can link custom CSS assets (relative to your root static/css) from your config.toml using &lt;code&gt;custom_css = [&amp;quot;custom.css&amp;quot;]&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;so, to overide Academic’s default styles. First, define &lt;code&gt;custom_css = [&amp;quot;override.css&amp;quot;]&lt;/code&gt; in &lt;code&gt;config.toml&lt;/code&gt;. Then I created the file &lt;code&gt;static/css/custom.css&lt;/code&gt;, relative to your website root (i.e. not in the themes directory). Add your custom CSS to this file.I copy the &lt;code&gt;/themes/hugo-academic/layouts/partials/css/academic.css&lt;/code&gt; to &lt;code&gt;static/css/custom.css&lt;/code&gt; and modified line 124 as shown above.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Backup automatically with cron</title>
       <link>/post/crontab-for-backup/</link>
       <pubDate>Wed, 27 Jun 2018 00:00:00 +0000</pubDate>
@@ -236,16 +375,6 @@ ftp&amp;gt; mput *
     
     <item>
       <title>Systematic analysis of telomere length and somatic alterations in 31 cancer types</title>
-      <link>/publication/2012-03-01-ctcf-angiogenesis/</link>
-      <pubDate>Wed, 01 Mar 2017 00:00:00 -0600</pubDate>
-      
-      <guid>/publication/2012-03-01-ctcf-angiogenesis/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Systematic analysis of telomere length and somatic alterations in 31 cancer types</title>
       <link>/publication/telomere-pan-cancer/</link>
       <pubDate>Wed, 01 Mar 2017 00:00:00 -0600</pubDate>
       
@@ -280,6 +409,16 @@ ftp&amp;gt; mput *
       <pubDate>Fri, 20 Sep 2013 00:00:00 -0500</pubDate>
       
       <guid>/publication/sfmbt-snail-emt-cancer/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>CTCF-dependent chromatin insulator as a built-in attenuator of angiogenesis</title>
+      <link>/publication/2012-03-01-ctcf-angiogenesis/</link>
+      <pubDate>Thu, 01 Mar 2012 00:00:00 -0600</pubDate>
+      
+      <guid>/publication/2012-03-01-ctcf-angiogenesis/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>

@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/hugo-academic-theme-blog-down-deployment-some-details/</loc>
+      <lastmod>2018-06-29T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/crontab-for-backup/</loc>
       <lastmod>2018-06-27T00:00:00+00:00</lastmod>
     </url>
@@ -25,15 +34,6 @@
     
       <loc>/publication/2017-08-14-uveal-melanoma/</loc>
       <lastmod>2017-08-14T00:00:00-05:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication/2012-03-01-ctcf-angiogenesis/</loc>
-      <lastmod>2017-03-01T00:00:00-06:00</lastmod>
     </url>
     
   
@@ -113,6 +113,15 @@
     
     <url>
     
+      <loc>/publication/2012-03-01-ctcf-angiogenesis/</loc>
+      <lastmod>2012-03-01T00:00:00-06:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/publication/ctcf-vegf-enhancer-blocking/</loc>
       <lastmod>2011-09-13T00:00:00-05:00</lastmod>
     </url>
@@ -181,8 +190,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2018-06-22T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2016-04-27T00:00:00-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -191,8 +200,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2016-04-27T00:00:00-05:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2018-06-22T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -223,6 +232,16 @@
     
       <loc>/publication_types/</loc>
       <lastmod>2017-08-14T00:00:00-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/r/</loc>
+      <lastmod>2018-06-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

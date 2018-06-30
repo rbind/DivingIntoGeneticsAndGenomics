@@ -1,9 +1,9 @@
 +++
-title = "Systematic analysis of telomere length and somatic alterations in 31 cancer types"
-date = 2017-03-01T00:00:00
+title = "CTCF-dependent chromatin insulator as a built-in attenuator of angiogenesis"
+date = 2012-03-01T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Floris P Barthel", "Wei Wei", "Ming Tang et.al"]
+authors = ["Ming Tang", "Jianrong Lu"]
 
 # Publication type.
 # Legend:
@@ -17,17 +17,17 @@ authors = ["Floris P Barthel", "Wei Wei", "Ming Tang et.al"]
 publication_types = ["2"]
 
 # Publication name and optional abbreviated version.
-publication = "In *Nature Genetics*, Nature Genetics."
-publication_short = "In *Nature Genetics*"
+publication = "In *Transcription*, Transcription."
+publication_short = "In *Transcription*"
 
 # Abstract and optional shortened version.
-abstract = "Cancer cells survive cellular crisis through telomere maintenance mechanisms. We report telomere lengths in 18,430 samples, including tumors and non-neoplastic samples, across 31 cancer types. Telomeres were shorter in tumors than in normal tissues and longer in sarcomas and gliomas than in other cancers. Among 6,835 cancers, 73% expressed telomerase reverse transcriptase (TERT), which was associated with TERT point mutations, rearrangements, DNA amplifications and transcript fusions and predictive of telomerase activity. TERT promoter methylation provided an additional deregulatory TERT expression mechanism. Five percent of cases, characterized by undetectable TERT expression and alterations in ATRX or DAXX, demonstrated elongated telomeres and increased telomeric repeat–containing RNA (TERRA). The remaining 22% of tumors neither expressed TERT nor harbored alterations in ATRX or DAXX. In this group, telomere length positively correlated with TP53 and RB1 mutations. Our analysis integrates TERT abnormalities, telomerase activity and genomic alterations with telomere length in cancer."
+abstract = "VEGF is a pivotal pro-angiogenic growth factor and its dosage decisively impacts vascularization. We recently identified a CTCF-dependent chromatin insulator that critically restrains the transcriptional induction of VEGF and angiogenesis. We postulate that CTCF may exert enhancer blocking by mediating chromatin looping and/or RNA polymerase pausing at the VEGF locus."
 
 # Featured image thumbnail (optional)
 image_preview = ""
 
 # Is this a selected publication? (true/false)
-selected = true
+selected = false
 
 # Projects (optional).
 #   Associate this publication with one or more of your projects.
@@ -53,7 +53,7 @@ highlight = true
 # Featured image
 # Place your image in the `static/img/` folder and reference its filename below, e.g. `image = "example.jpg"`.
 [header]
-image = "headers/telomere-pan.png"
+image = "headers/CTCF_VEGF.png"
 caption = "My caption :smile:"
 
 +++
