@@ -64,6 +64,20 @@ changed the menue bar to black. I like it better than the default white. in the 
   
 
   
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
 
   
   <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses and Data speak">
@@ -406,6 +420,21 @@ home_section_even = &quot;#f7f7f7&quot;
 </code></pre>
 
 <h3 id="added-twitter-in-the-contact-section">added twitter in the Contact section.</h3>
+
+<h3 id="added-google-analytics-to-track-website-traffic">added google analytics to track website traffic</h3>
+
+<p>follow <a href="https://support.google.com/analytics/answer/1042508" target="_blank">https://support.google.com/analytics/answer/1042508</a>
+log into <a href="https://analytics.google.com/analytics/web" target="_blank">https://analytics.google.com/analytics/web</a>
+click <code>ADMIN</code> in the left bottom corner.
+create a new property, type in the website name: <code>divingintogeneticsandgenomics.rbind.io</code>.</p>
+
+<p>I got a track ID: <code>UA-84019592-2</code></p>
+
+<p>in the <code>config.toml</code> file:</p>
+
+<pre><code class="language-toml"># Enable analytics by entering your Google Analytics tracking ID
+googleAnalytics = &quot;UA-84019592-2&quot;
+</code></pre>
 
 <h3 id="added-a-cv-section">added a CV section.</h3>
 

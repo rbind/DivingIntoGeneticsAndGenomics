@@ -55,6 +55,22 @@ home_section_even = "#f7f7f7"
 
 ### added twitter in the Contact section.
 
+### added google analytics to track website traffic
+
+follow https://support.google.com/analytics/answer/1042508
+log into https://analytics.google.com/analytics/web
+click `ADMIN` in the left bottom corner.
+create a new property, type in the website name: `divingintogeneticsandgenomics.rbind.io`.
+
+I got a track ID: `UA-84019592-2`
+
+in the `config.toml` file:
+
+```toml
+# Enable analytics by entering your Google Analytics tracking ID
+googleAnalytics = "UA-84019592-2"
+```
+
 ### added a CV section.
 
 in the `config.toml` file, add the following.

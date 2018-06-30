@@ -61,6 +61,21 @@ home_section_even = &amp;quot;#f7f7f7&amp;quot;
 
 &lt;h3 id=&#34;added-twitter-in-the-contact-section&#34;&gt;added twitter in the Contact section.&lt;/h3&gt;
 
+&lt;h3 id=&#34;added-google-analytics-to-track-website-traffic&#34;&gt;added google analytics to track website traffic&lt;/h3&gt;
+
+&lt;p&gt;follow &lt;a href=&#34;https://support.google.com/analytics/answer/1042508&#34; target=&#34;_blank&#34;&gt;https://support.google.com/analytics/answer/1042508&lt;/a&gt;
+log into &lt;a href=&#34;https://analytics.google.com/analytics/web&#34; target=&#34;_blank&#34;&gt;https://analytics.google.com/analytics/web&lt;/a&gt;
+click &lt;code&gt;ADMIN&lt;/code&gt; in the left bottom corner.
+create a new property, type in the website name: &lt;code&gt;divingintogeneticsandgenomics.rbind.io&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I got a track ID: &lt;code&gt;UA-84019592-2&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;# Enable analytics by entering your Google Analytics tracking ID
+googleAnalytics = &amp;quot;UA-84019592-2&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;h3 id=&#34;added-a-cv-section&#34;&gt;added a CV section.&lt;/h3&gt;
 
 &lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file, add the following.&lt;/p&gt;
