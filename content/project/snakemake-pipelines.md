@@ -9,7 +9,7 @@ title = "Snakemake Pipelines"
 summary = "Snakemake pipelines for processing high-throughput sequencing data"
 
 # Optional image to display on homepage (relative to `static/img/` folder).
-image_preview = "bubbles.jpg"
+image_preview = "snakemake.png"
 
 # Tags: can be used for filtering projects.
 # Example: `tags = ["machine-learning", "deep-learning"]`
