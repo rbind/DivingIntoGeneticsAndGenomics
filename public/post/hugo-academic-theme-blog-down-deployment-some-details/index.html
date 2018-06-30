@@ -307,7 +307,7 @@ changed the menue bar to black. I like it better than the default white. in the 
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    3 min read
+    4 min read
   </span>
   
 
@@ -421,19 +421,42 @@ home_section_even = &quot;#f7f7f7&quot;
 
 <h3 id="added-twitter-in-the-contact-section">added twitter in the Contact section.</h3>
 
-<h3 id="added-google-analytics-to-track-website-traffic">added google analytics to track website traffic</h3>
+<p>in the <code>config.toml</code> file, add my twitter</p>
 
-<p>follow <a href="https://support.google.com/analytics/answer/1042508" target="_blank">https://support.google.com/analytics/answer/1042508</a>
-log into <a href="https://analytics.google.com/analytics/web" target="_blank">https://analytics.google.com/analytics/web</a>
-click <code>ADMIN</code> in the left bottom corner.
-create a new property, type in the website name: <code>divingintogeneticsandgenomics.rbind.io</code>.</p>
+<pre><code class="language-toml">[params]
+  # Some other stuff...
 
-<p>I got a track ID: <code>UA-84019592-2</code></p>
+  email = &quot;lmyint@macalester.edu&quot;
+  address = &quot;&quot;
+  office_hours = &quot;&quot;
+  phone = &quot;&quot;
+  skype = &quot;&quot;
+  telegram = &quot;&quot;
+  twitter = &quot;tangming2005&quot;
+</code></pre>
 
-<p>in the <code>config.toml</code> file:</p>
+<p>I also had to update <code>themes/hugo-academic/layouts/partials/widgets/contact.html</code>. I duplicated the section of the HTML that displays the e-mail address parameter</p>
 
-<pre><code class="language-toml"># Enable analytics by entering your Google Analytics tracking ID
-googleAnalytics = &quot;UA-84019592-2&quot;
+<pre><code class="language-html">{{ with $.Site.Params.email }}
+&lt;li&gt;
+  &lt;i class=&quot;fa-li fa fa-envelope fa-2x&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+  &lt;span id=&quot;person-email&quot; itemprop=&quot;email&quot;&gt;
+  {{- if $autolink }}&lt;a href=&quot;mailto:{{ . }}&quot;&gt;{{ . }}&lt;/a&gt;{{ else }}{{ . }}{{ end -}}
+  &lt;/span&gt;
+&lt;/li&gt;
+{{ end }}
+</code></pre>
+
+<p>and changed to twitter:</p>
+
+<pre><code class="language-html">{{ with $.Site.Params.twitter }}
+&lt;li&gt;
+  &lt;i class=&quot;fa-li fa fa-twitter fa-2x&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+  &lt;span&gt;
+  &lt;a href=&quot;https://twitter.com/{{ . }}&quot;&gt;{{ . }}&lt;/a&gt;
+  &lt;/span&gt;
+&lt;/li&gt;
+{{ end }}
 </code></pre>
 
 <h3 id="added-a-cv-section">added a CV section.</h3>
@@ -472,6 +495,25 @@ Find my CV in PDF [here](cv/cv.pdf).
 </code></pre>
 
 <p>Note that the path is <code>cv/cv.pdf</code>.</p>
+
+<p><strong>The above three steps followed exactly of Leslie.</strong></p>
+
+<h3 id="added-google-analytics-to-track-website-traffic">added google analytics to track website traffic</h3>
+
+<p>follow <a href="https://support.google.com/analytics/answer/1042508" target="_blank">https://support.google.com/analytics/answer/1042508</a>
+log into <a href="https://analytics.google.com/analytics/web" target="_blank">https://analytics.google.com/analytics/web</a>
+click <code>ADMIN</code> in the left bottom corner.
+create a new property, type in the website name: <code>divingintogeneticsandgenomics.rbind.io</code>.</p>
+
+<p>I got a track ID: <code>UA-84019592-2</code></p>
+
+<p>in the <code>config.toml</code> file:</p>
+
+<pre><code class="language-toml"># Enable analytics by entering your Google Analytics tracking ID
+googleAnalytics = &quot;UA-84019592-2&quot;
+</code></pre>
+
+<p>Now, you can check the traffic reports in real-time.</p>
 
 <h3 id="link-all-the-pdf-files-of-your-paper-in-local">Link all the PDF files of your paper in local.</h3>
 

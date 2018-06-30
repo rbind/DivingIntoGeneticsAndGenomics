@@ -55,20 +55,45 @@ home_section_even = "#f7f7f7"
 
 ### added twitter in the Contact section.
 
-### added google analytics to track website traffic
-
-follow https://support.google.com/analytics/answer/1042508
-log into https://analytics.google.com/analytics/web
-click `ADMIN` in the left bottom corner.
-create a new property, type in the website name: `divingintogeneticsandgenomics.rbind.io`.
-
-I got a track ID: `UA-84019592-2`
-
-in the `config.toml` file:
+in the `config.toml` file, add my twitter 
 
 ```toml
-# Enable analytics by entering your Google Analytics tracking ID
-googleAnalytics = "UA-84019592-2"
+[params]
+  # Some other stuff...
+
+  email = "lmyint@macalester.edu"
+  address = ""
+  office_hours = ""
+  phone = ""
+  skype = ""
+  telegram = ""
+  twitter = "tangming2005"
+```
+
+I also had to update `themes/hugo-academic/layouts/partials/widgets/contact.html`. I duplicated the section of the HTML that displays the e-mail address parameter 
+
+```html
+{{ with $.Site.Params.email }}
+<li>
+  <i class="fa-li fa fa-envelope fa-2x" aria-hidden="true"></i>
+  <span id="person-email" itemprop="email">
+  {{- if $autolink }}<a href="mailto:{{ . }}">{{ . }}</a>{{ else }}{{ . }}{{ end -}}
+  </span>
+</li>
+{{ end }}
+```
+
+and changed to twitter:
+
+```html
+{{ with $.Site.Params.twitter }}
+<li>
+  <i class="fa-li fa fa-twitter fa-2x" aria-hidden="true"></i>
+  <span>
+  <a href="https://twitter.com/{{ . }}">{{ . }}</a>
+  </span>
+</li>
+{{ end }}
 ```
 
 ### added a CV section.
@@ -108,6 +133,26 @@ Find my CV in PDF [here](cv/cv.pdf).
 
 ```
 Note that the path is `cv/cv.pdf`.
+
+**The above three steps followed exactly of Leslie.**
+
+### added google analytics to track website traffic
+
+follow https://support.google.com/analytics/answer/1042508
+log into https://analytics.google.com/analytics/web
+click `ADMIN` in the left bottom corner.
+create a new property, type in the website name: `divingintogeneticsandgenomics.rbind.io`.
+
+I got a track ID: `UA-84019592-2`
+
+in the `config.toml` file:
+
+```toml
+# Enable analytics by entering your Google Analytics tracking ID
+googleAnalytics = "UA-84019592-2"
+```
+Now, you can check the traffic reports in real-time.
+
 
 ### Link all the PDF files of your paper in local.
 

@@ -61,19 +61,42 @@ home_section_even = &amp;quot;#f7f7f7&amp;quot;
 
 &lt;h3 id=&#34;added-twitter-in-the-contact-section&#34;&gt;added twitter in the Contact section.&lt;/h3&gt;
 
-&lt;h3 id=&#34;added-google-analytics-to-track-website-traffic&#34;&gt;added google analytics to track website traffic&lt;/h3&gt;
+&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file, add my twitter&lt;/p&gt;
 
-&lt;p&gt;follow &lt;a href=&#34;https://support.google.com/analytics/answer/1042508&#34; target=&#34;_blank&#34;&gt;https://support.google.com/analytics/answer/1042508&lt;/a&gt;
-log into &lt;a href=&#34;https://analytics.google.com/analytics/web&#34; target=&#34;_blank&#34;&gt;https://analytics.google.com/analytics/web&lt;/a&gt;
-click &lt;code&gt;ADMIN&lt;/code&gt; in the left bottom corner.
-create a new property, type in the website name: &lt;code&gt;divingintogeneticsandgenomics.rbind.io&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[params]
+  # Some other stuff...
 
-&lt;p&gt;I got a track ID: &lt;code&gt;UA-84019592-2&lt;/code&gt;&lt;/p&gt;
+  email = &amp;quot;lmyint@macalester.edu&amp;quot;
+  address = &amp;quot;&amp;quot;
+  office_hours = &amp;quot;&amp;quot;
+  phone = &amp;quot;&amp;quot;
+  skype = &amp;quot;&amp;quot;
+  telegram = &amp;quot;&amp;quot;
+  twitter = &amp;quot;tangming2005&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file:&lt;/p&gt;
+&lt;p&gt;I also had to update &lt;code&gt;themes/hugo-academic/layouts/partials/widgets/contact.html&lt;/code&gt;. I duplicated the section of the HTML that displays the e-mail address parameter&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;# Enable analytics by entering your Google Analytics tracking ID
-googleAnalytics = &amp;quot;UA-84019592-2&amp;quot;
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;{{ with $.Site.Params.email }}
+&amp;lt;li&amp;gt;
+  &amp;lt;i class=&amp;quot;fa-li fa fa-envelope fa-2x&amp;quot; aria-hidden=&amp;quot;true&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
+  &amp;lt;span id=&amp;quot;person-email&amp;quot; itemprop=&amp;quot;email&amp;quot;&amp;gt;
+  {{- if $autolink }}&amp;lt;a href=&amp;quot;mailto:{{ . }}&amp;quot;&amp;gt;{{ . }}&amp;lt;/a&amp;gt;{{ else }}{{ . }}{{ end -}}
+  &amp;lt;/span&amp;gt;
+&amp;lt;/li&amp;gt;
+{{ end }}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and changed to twitter:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;{{ with $.Site.Params.twitter }}
+&amp;lt;li&amp;gt;
+  &amp;lt;i class=&amp;quot;fa-li fa fa-twitter fa-2x&amp;quot; aria-hidden=&amp;quot;true&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
+  &amp;lt;span&amp;gt;
+  &amp;lt;a href=&amp;quot;https://twitter.com/{{ . }}&amp;quot;&amp;gt;{{ . }}&amp;lt;/a&amp;gt;
+  &amp;lt;/span&amp;gt;
+&amp;lt;/li&amp;gt;
+{{ end }}
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;h3 id=&#34;added-a-cv-section&#34;&gt;added a CV section.&lt;/h3&gt;
@@ -112,6 +135,25 @@ Find my CV in PDF [here](cv/cv.pdf).
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Note that the path is &lt;code&gt;cv/cv.pdf&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The above three steps followed exactly of Leslie.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;added-google-analytics-to-track-website-traffic&#34;&gt;added google analytics to track website traffic&lt;/h3&gt;
+
+&lt;p&gt;follow &lt;a href=&#34;https://support.google.com/analytics/answer/1042508&#34; target=&#34;_blank&#34;&gt;https://support.google.com/analytics/answer/1042508&lt;/a&gt;
+log into &lt;a href=&#34;https://analytics.google.com/analytics/web&#34; target=&#34;_blank&#34;&gt;https://analytics.google.com/analytics/web&lt;/a&gt;
+click &lt;code&gt;ADMIN&lt;/code&gt; in the left bottom corner.
+create a new property, type in the website name: &lt;code&gt;divingintogeneticsandgenomics.rbind.io&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I got a track ID: &lt;code&gt;UA-84019592-2&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;# Enable analytics by entering your Google Analytics tracking ID
+googleAnalytics = &amp;quot;UA-84019592-2&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, you can check the traffic reports in real-time.&lt;/p&gt;
 
 &lt;h3 id=&#34;link-all-the-pdf-files-of-your-paper-in-local&#34;&gt;Link all the PDF files of your paper in local.&lt;/h3&gt;
 
