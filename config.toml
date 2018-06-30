@@ -278,10 +278,10 @@ enableGitInfo = false
   url = "#talks"
   weight = 5
   
-[[menu.main]]
-  name = "Teaching"
-  url = "#teaching"
-  weight = 6
+#[[menu.main]]
+#  name = "Teaching"
+#  url = "#teaching"
+#  weight = 6
 
 [[menu.main]]
   name = "CV"

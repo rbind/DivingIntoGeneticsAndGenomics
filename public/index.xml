@@ -460,6 +460,25 @@ ftp&amp;gt; mput *
     </item>
     
     <item>
+      <title>GS01 1143 Introduction to Bioinformatics course</title>
+      <link>/talk/2017-gsbs-chipseq-class/</link>
+      <pubDate>Thu, 02 Nov 2017 00:00:00 -0500</pubDate>
+      
+      <guid>/talk/2017-gsbs-chipseq-class/</guid>
+      <description>&lt;p&gt;I taught the ChIP-seq bioinformatics lab for the &lt;a href=&#34;https://gsbs.uth.edu/academics/courses/course-detail.htm?id=55f674c2-80a6-4eaf-8ec1-39a20a8f719c&#34; target=&#34;_blank&#34;&gt;GS01 1143 Introduction to Bioinformatics course&lt;/a&gt; to ~30 people with diverse background. Some of them did not have any experience with terminals. I walked through the materials slowly and it was well received!&lt;/p&gt;
+
+&lt;p&gt;I developed the course materials &lt;a href=&#34;https://crazyhottommy.github.io/ChIP-seq-carpentry/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;br /&gt;
+I plan to develope it to a &lt;a href=&#34;http://www.datacarpentry.org/&#34; target=&#34;_blank&#34;&gt;Data Carpentry&lt;/a&gt; type of course materials, more work to come!&lt;/p&gt;
+
+&lt;p&gt;Enjoyed the teaching a lot!&lt;/p&gt;
+
+&lt;p&gt;Teaching in action!
+&lt;img src=&#34;/img/teaching3.jpg&#34; alt=&#34;&#34; /&gt;
+Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Integrative Analysis Identifies Four Molecular and Clinical Subsets in Uveal Melanoma</title>
       <link>/publication/2017-08-14-uveal-melanoma/</link>
       <pubDate>Mon, 14 Aug 2017 00:00:00 -0500</pubDate>
