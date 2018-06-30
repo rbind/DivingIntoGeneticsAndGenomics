@@ -50,7 +50,7 @@
     </item>
     
     <item>
-      <title>Recent &amp; Upcoming Talks</title>
+      <title>Talks &amp; Workshops</title>
       <link>/home/talks/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 -0500</pubDate>
       
@@ -82,9 +82,10 @@
       <pubDate>Wed, 20 Apr 2016 00:00:00 -0500</pubDate>
       
       <guid>/home/teaching/</guid>
-      <description>This is an example of using the custom widget to create your own homepage section.
-I am a teaching instructor for the following courses at University X:
- CS101: An intro to computer science CS102: An intro to computer science CS103: An intro to computer science CS104: An intro to computer science CS105: An intro to computer science CS106: An intro to computer science CS107: An intro to computer science  </description>
+      <description>I taught the ChIP-seq bioinformatics lab for the GS01 1143 Introduction to Bioinformatics course to ~30 people with diverse background. Some of them did not have any experience with terminals. I walked through the materials slowly and it was well received!
+I developed the course materials here.
+I plan to develope it to a Data Carpentry type of course materials, more work to come!
+Enjoyed the teaching a lot!</description>
     </item>
     
     <item>

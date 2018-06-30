@@ -59,15 +59,6 @@
     
     <url>
     
-      <loc>/talk/example-talk/</loc>
-      <lastmod>2017-01-01T00:00:00-06:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/post/</loc>
       <lastmod>2017-01-01T00:00:00-06:00</lastmod>
     </url>
@@ -97,6 +88,15 @@
     
       <loc>/project/snakemake-pipelines/</loc>
       <lastmod>2016-04-27T00:00:00-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/talk/2015-miami-carpentry/</loc>
+      <lastmod>2015-04-02T00:00:00-05:00</lastmod>
     </url>
     
   

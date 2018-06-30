@@ -136,6 +136,45 @@ Note that the path is `cv/cv.pdf`.
 
 **The above three steps followed exactly of Leslie.**
 
+### add the talks & workshop to menue 
+
+in the `config.toml` file, add the following.
+
+```toml
+[[menu.main]]
+  name = "Talks & Workshops"
+  url = "#talks"
+  weight = 6
+```
+
+change the `content/home/talks.md` file
+
+from
+
+```
++++
+# Recent and Upcoming Talks widget.
+widget = "talks"
+active = true
+date = 2016-04-20T00:00:00
+
+title = "Recent & Upcoming Talks"
+subtitle = ""
+```
+to 
+
+```
++++
+# Recent and Upcoming Talks widget.
+widget = "talks"
+active = true
+date = 2016-04-20T00:00:00
+
+title = "Talks & Workshops"
+subtitle = ""
+
+```
+
 ### added google analytics to track website traffic
 
 follow https://support.google.com/analytics/answer/1042508
@@ -154,7 +193,7 @@ googleAnalytics = "UA-84019592-2"
 Now, you can check the traffic reports in real-time.
 
 
-### Link all the PDF files of your paper in local.
+### Link all the PDF files of your papers in local.
 
 Many of the papers are not open source, a link to the publisher's website does not render a PDF. I downloaded all my papers and put them in a new folder `static/files/papers`. 
 
@@ -202,5 +241,5 @@ works fine for me, but it is not the best practice as one changed the default ac
 
 so, to overide Academic’s default styles. First, define `custom_css = ["override.css"]` in `config.toml`. Then I created the file `static/css/custom.css`, relative to your website root (i.e. not in the themes directory). Add your custom CSS to this file.I copy the `/themes/hugo-academic/layouts/partials/css/academic.css` to `static/css/custom.css` and modified line 124 as shown above.
 
-
+read more on the Hugo academic page for more tutorials https://sourcethemes.com/academic/docs/writing-markdown-latex/#links
 

@@ -138,6 +138,43 @@ Find my CV in PDF [here](cv/cv.pdf).
 
 &lt;p&gt;&lt;strong&gt;The above three steps followed exactly of Leslie.&lt;/strong&gt;&lt;/p&gt;
 
+&lt;h3 id=&#34;add-the-talks-workshop-to-menue&#34;&gt;add the talks &amp;amp; workshop to menue&lt;/h3&gt;
+
+&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file, add the following.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[[menu.main]]
+  name = &amp;quot;Talks &amp;amp; Workshops&amp;quot;
+  url = &amp;quot;#talks&amp;quot;
+  weight = 6
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;change the &lt;code&gt;content/home/talks.md&lt;/code&gt; file&lt;/p&gt;
+
+&lt;p&gt;from&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;+++
+# Recent and Upcoming Talks widget.
+widget = &amp;quot;talks&amp;quot;
+active = true
+date = 2016-04-20T00:00:00
+
+title = &amp;quot;Recent &amp;amp; Upcoming Talks&amp;quot;
+subtitle = &amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;+++
+# Recent and Upcoming Talks widget.
+widget = &amp;quot;talks&amp;quot;
+active = true
+date = 2016-04-20T00:00:00
+
+title = &amp;quot;Talks &amp;amp; Workshops&amp;quot;
+subtitle = &amp;quot;&amp;quot;
+
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;h3 id=&#34;added-google-analytics-to-track-website-traffic&#34;&gt;added google analytics to track website traffic&lt;/h3&gt;
 
 &lt;p&gt;follow &lt;a href=&#34;https://support.google.com/analytics/answer/1042508&#34; target=&#34;_blank&#34;&gt;https://support.google.com/analytics/answer/1042508&lt;/a&gt;
@@ -155,7 +192,7 @@ googleAnalytics = &amp;quot;UA-84019592-2&amp;quot;
 
 &lt;p&gt;Now, you can check the traffic reports in real-time.&lt;/p&gt;
 
-&lt;h3 id=&#34;link-all-the-pdf-files-of-your-paper-in-local&#34;&gt;Link all the PDF files of your paper in local.&lt;/h3&gt;
+&lt;h3 id=&#34;link-all-the-pdf-files-of-your-papers-in-local&#34;&gt;Link all the PDF files of your papers in local.&lt;/h3&gt;
 
 &lt;p&gt;Many of the papers are not open source, a link to the publisher&amp;rsquo;s website does not render a PDF. I downloaded all my papers and put them in a new folder &lt;code&gt;static/files/papers&lt;/code&gt;.&lt;/p&gt;
 
@@ -203,6 +240,8 @@ video {
 &lt;/blockquote&gt;
 
 &lt;p&gt;so, to overide Academic’s default styles. First, define &lt;code&gt;custom_css = [&amp;quot;override.css&amp;quot;]&lt;/code&gt; in &lt;code&gt;config.toml&lt;/code&gt;. Then I created the file &lt;code&gt;static/css/custom.css&lt;/code&gt;, relative to your website root (i.e. not in the themes directory). Add your custom CSS to this file.I copy the &lt;code&gt;/themes/hugo-academic/layouts/partials/css/academic.css&lt;/code&gt; to &lt;code&gt;static/css/custom.css&lt;/code&gt; and modified line 124 as shown above.&lt;/p&gt;
+
+&lt;p&gt;read more on the Hugo academic page for more tutorials &lt;a href=&#34;https://sourcethemes.com/academic/docs/writing-markdown-latex/#links&#34; target=&#34;_blank&#34;&gt;https://sourcethemes.com/academic/docs/writing-markdown-latex/#links&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -441,22 +480,35 @@ ftp&amp;gt; mput *
     </item>
     
     <item>
-      <title>Example Talk</title>
-      <link>/talk/example-talk/</link>
-      <pubDate>Sun, 01 Jan 2017 00:00:00 -0600</pubDate>
-      
-      <guid>/talk/example-talk/</guid>
-      <description>&lt;p&gt;Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Snakemake Pipelines</title>
       <link>/project/snakemake-pipelines/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 -0500</pubDate>
       
       <guid>/project/snakemake-pipelines/</guid>
       <description>&lt;p&gt;Snakemake is a python extension for writing workflows. Genomics data processing usually requires bundling many different tools to reach a stage that is ready for downstream analysis.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>University of Miami 2-day Software Carpentry workshop</title>
+      <link>/talk/2015-miami-carpentry/</link>
+      <pubDate>Thu, 02 Apr 2015 00:00:00 -0500</pubDate>
+      
+      <guid>/talk/2015-miami-carpentry/</guid>
+      <description>&lt;p&gt;I was excited to teach Shell and R to a group of 20 biologists from the University of Miami. This event was sponsored by Software carpentry &lt;a href=&#34;https://software-carpentry.org/&#34; target=&#34;_blank&#34;&gt;https://software-carpentry.org/&lt;/a&gt; and the University of Miami. see the course info &lt;a href=&#34;http://xuf12.github.io/2015-04-02-umiami/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;It was great teaching experience for me!&lt;/p&gt;
+
+&lt;p&gt;Teaching in action!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/teaching1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Response&lt;/p&gt;
+
+&lt;p&gt;Well received by the students!
+&lt;img src=&#34;/img/teaching2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     

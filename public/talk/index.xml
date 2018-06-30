@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Recent &amp; Upcoming Talks on DNA confesses and Data speak</title>
+    <title>Talks &amp; Workshops on DNA confesses and Data speak</title>
     <link>/talk/</link>
-    <description>Recent content in Recent &amp; Upcoming Talks on DNA confesses and Data speak</description>
+    <description>Recent content in Talks &amp; Workshops on DNA confesses and Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
@@ -13,12 +13,16 @@
     
     
     <item>
-      <title>Example Talk</title>
-      <link>/talk/example-talk/</link>
-      <pubDate>Sun, 01 Jan 2017 00:00:00 -0600</pubDate>
+      <title>University of Miami 2-day Software Carpentry workshop</title>
+      <link>/talk/2015-miami-carpentry/</link>
+      <pubDate>Thu, 02 Apr 2015 00:00:00 -0500</pubDate>
       
-      <guid>/talk/example-talk/</guid>
-      <description>Embed your slides or video here using shortcodes. Further details can easily be added using Markdown and $\rm \LaTeX$ math code.</description>
+      <guid>/talk/2015-miami-carpentry/</guid>
+      <description>I was excited to teach Shell and R to a group of 20 biologists from the University of Miami. This event was sponsored by Software carpentry https://software-carpentry.org/ and the University of Miami. see the course info here.
+It was great teaching experience for me!
+Teaching in action!
+Response
+Well received by the students! Embed your slides or video here using shortcodes. Further details can easily be added using Markdown and $\rm \LaTeX$ math code.</description>
     </item>
     
   </channel>

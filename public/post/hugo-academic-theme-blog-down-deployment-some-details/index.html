@@ -227,6 +227,25 @@ changed the menue bar to black. I like it better than the default white. in the 
         
 
         <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Workshops</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
           <a href="/#teaching">
             
             <span>Teaching</span>
@@ -498,6 +517,43 @@ Find my CV in PDF [here](cv/cv.pdf).
 
 <p><strong>The above three steps followed exactly of Leslie.</strong></p>
 
+<h3 id="add-the-talks-workshop-to-menue">add the talks &amp; workshop to menue</h3>
+
+<p>in the <code>config.toml</code> file, add the following.</p>
+
+<pre><code class="language-toml">[[menu.main]]
+  name = &quot;Talks &amp; Workshops&quot;
+  url = &quot;#talks&quot;
+  weight = 6
+</code></pre>
+
+<p>change the <code>content/home/talks.md</code> file</p>
+
+<p>from</p>
+
+<pre><code>+++
+# Recent and Upcoming Talks widget.
+widget = &quot;talks&quot;
+active = true
+date = 2016-04-20T00:00:00
+
+title = &quot;Recent &amp; Upcoming Talks&quot;
+subtitle = &quot;&quot;
+</code></pre>
+
+<p>to</p>
+
+<pre><code>+++
+# Recent and Upcoming Talks widget.
+widget = &quot;talks&quot;
+active = true
+date = 2016-04-20T00:00:00
+
+title = &quot;Talks &amp; Workshops&quot;
+subtitle = &quot;&quot;
+
+</code></pre>
+
 <h3 id="added-google-analytics-to-track-website-traffic">added google analytics to track website traffic</h3>
 
 <p>follow <a href="https://support.google.com/analytics/answer/1042508" target="_blank">https://support.google.com/analytics/answer/1042508</a>
@@ -515,7 +571,7 @@ googleAnalytics = &quot;UA-84019592-2&quot;
 
 <p>Now, you can check the traffic reports in real-time.</p>
 
-<h3 id="link-all-the-pdf-files-of-your-paper-in-local">Link all the PDF files of your paper in local.</h3>
+<h3 id="link-all-the-pdf-files-of-your-papers-in-local">Link all the PDF files of your papers in local.</h3>
 
 <p>Many of the papers are not open source, a link to the publisher&rsquo;s website does not render a PDF. I downloaded all my papers and put them in a new folder <code>static/files/papers</code>.</p>
 
@@ -563,6 +619,8 @@ video {
 </blockquote>
 
 <p>so, to overide Academic’s default styles. First, define <code>custom_css = [&quot;override.css&quot;]</code> in <code>config.toml</code>. Then I created the file <code>static/css/custom.css</code>, relative to your website root (i.e. not in the themes directory). Add your custom CSS to this file.I copy the <code>/themes/hugo-academic/layouts/partials/css/academic.css</code> to <code>static/css/custom.css</code> and modified line 124 as shown above.</p>
+
+<p>read more on the Hugo academic page for more tutorials <a href="https://sourcethemes.com/academic/docs/writing-markdown-latex/#links" target="_blank">https://sourcethemes.com/academic/docs/writing-markdown-latex/#links</a></p>
 
     </div>
 
