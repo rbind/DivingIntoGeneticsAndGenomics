@@ -2,8 +2,8 @@
 date = 2017-11-02T00:00:00  # Schedule page publish date.
 
 title = "GS01 1143 Introduction to Bioinformatics course"
-time_start = 2015-04-02T09:00:00
-time_end = 2015-04-03T15:00:00
+time_start = 2017-11-02T09:00:00
+time_end = 2017-11-02T15:00:00
 abstract = ""
 abstract_short = ""
 event = "Graduate course"

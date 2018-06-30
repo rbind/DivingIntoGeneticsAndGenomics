@@ -138,14 +138,51 @@ Find my CV in PDF [here](cv/cv.pdf).
 
 &lt;p&gt;&lt;strong&gt;The above three steps followed exactly of Leslie.&lt;/strong&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;add-the-talks-workshop-to-menue&#34;&gt;add the talks &amp;amp; workshop to menue&lt;/h3&gt;
+&lt;h3 id=&#34;add-the-talks-teachings-to-menue&#34;&gt;add the talks &amp;amp; teachings to menue&lt;/h3&gt;
 
-&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file, add the following.&lt;/p&gt;
+&lt;p&gt;I do not like the &lt;code&gt;teaching&lt;/code&gt; custom widget. one can only list the courses there. I know it is called custom so one can change it, but I do not know how.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;talks&lt;/code&gt; widget is what I need. I will put both talks and teachings there. I can then click the talks and teachings to get more details.&lt;/p&gt;
+
+&lt;p&gt;First, inactivate the &lt;code&gt;teaching&lt;/code&gt; widget.&lt;/p&gt;
+
+&lt;p&gt;modify &lt;code&gt;content/home/teaching.md&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;from&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;+++
+# Custom widget.
+# An example of using the custom widget to create your own homepage section.
+# To create more sections, duplicate this file and edit the values below as desired.
+widget = &amp;quot;custom&amp;quot;
+active = true
+date = 2016-04-20T00:00:00
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;+++
+# Custom widget.
+# An example of using the custom widget to create your own homepage section.
+# To create more sections, duplicate this file and edit the values below as desired.
+widget = &amp;quot;custom&amp;quot;
+active = false
+date = 2016-04-20T00:00:00
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The wideget will be gone in the home page.&lt;/p&gt;
+
+&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file, add the following and comment out the &lt;code&gt;teaching&lt;/code&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[[menu.main]]
-  name = &amp;quot;Talks &amp;amp; Workshops&amp;quot;
+  name = &amp;quot;Talks &amp;amp; Teachings&amp;quot;
   url = &amp;quot;#talks&amp;quot;
   weight = 6
+  
+#[[menu.main]]
+#  name = &amp;quot;Teaching&amp;quot;
+#  url = &amp;quot;#teaching&amp;quot;
+#  weight = 6
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;change the &lt;code&gt;content/home/talks.md&lt;/code&gt; file&lt;/p&gt;
@@ -170,7 +207,7 @@ widget = &amp;quot;talks&amp;quot;
 active = true
 date = 2016-04-20T00:00:00
 
-title = &amp;quot;Talks &amp;amp; Workshops&amp;quot;
+title = &amp;quot;Talks &amp;amp; Teachings&amp;quot;
 subtitle = &amp;quot;&amp;quot;
 
 &lt;/code&gt;&lt;/pre&gt;

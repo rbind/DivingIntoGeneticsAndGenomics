@@ -229,7 +229,7 @@ changed the menue bar to black. I like it better than the default white. in the 
         <li class="nav-item">
           <a href="/#talks">
             
-            <span>Talks &amp; Workshops</span>
+            <span>Talks &amp; Teachings</span>
             
           </a>
         </li>
@@ -307,7 +307,7 @@ changed the menue bar to black. I like it better than the default white. in the 
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    4 min read
+    5 min read
   </span>
   
 
@@ -498,14 +498,51 @@ Find my CV in PDF [here](cv/cv.pdf).
 
 <p><strong>The above three steps followed exactly of Leslie.</strong></p>
 
-<h3 id="add-the-talks-workshop-to-menue">add the talks &amp; workshop to menue</h3>
+<h3 id="add-the-talks-teachings-to-menue">add the talks &amp; teachings to menue</h3>
 
-<p>in the <code>config.toml</code> file, add the following.</p>
+<p>I do not like the <code>teaching</code> custom widget. one can only list the courses there. I know it is called custom so one can change it, but I do not know how.</p>
+
+<p>The <code>talks</code> widget is what I need. I will put both talks and teachings there. I can then click the talks and teachings to get more details.</p>
+
+<p>First, inactivate the <code>teaching</code> widget.</p>
+
+<p>modify <code>content/home/teaching.md</code></p>
+
+<p>from</p>
+
+<pre><code>+++
+# Custom widget.
+# An example of using the custom widget to create your own homepage section.
+# To create more sections, duplicate this file and edit the values below as desired.
+widget = &quot;custom&quot;
+active = true
+date = 2016-04-20T00:00:00
+</code></pre>
+
+<p>to</p>
+
+<pre><code>+++
+# Custom widget.
+# An example of using the custom widget to create your own homepage section.
+# To create more sections, duplicate this file and edit the values below as desired.
+widget = &quot;custom&quot;
+active = false
+date = 2016-04-20T00:00:00
+</code></pre>
+
+<p>The wideget will be gone in the home page.</p>
+
+<p>in the <code>config.toml</code> file, add the following and comment out the <code>teaching</code></p>
 
 <pre><code class="language-toml">[[menu.main]]
-  name = &quot;Talks &amp; Workshops&quot;
+  name = &quot;Talks &amp; Teachings&quot;
   url = &quot;#talks&quot;
   weight = 6
+  
+#[[menu.main]]
+#  name = &quot;Teaching&quot;
+#  url = &quot;#teaching&quot;
+#  weight = 6
 </code></pre>
 
 <p>change the <code>content/home/talks.md</code> file</p>
@@ -530,7 +567,7 @@ widget = &quot;talks&quot;
 active = true
 date = 2016-04-20T00:00:00
 
-title = &quot;Talks &amp; Workshops&quot;
+title = &quot;Talks &amp; Teachings&quot;
 subtitle = &quot;&quot;
 
 </code></pre>

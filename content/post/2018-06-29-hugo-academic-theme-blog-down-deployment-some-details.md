@@ -136,15 +136,51 @@ Note that the path is `cv/cv.pdf`.
 
 **The above three steps followed exactly of Leslie.**
 
-### add the talks & workshop to menue 
+### add the talks & teachings to menue 
 
-in the `config.toml` file, add the following.
+I do not like the `teaching` custom widget. one can only list the courses there. I know it is called custom so one can change it, but I do not know how.
+
+The `talks` widget is what I need. I will put both talks and teachings there. I can then click the talks and teachings to get more details.
+
+First, inactivate the `teaching` widget.
+
+modify `content/home/teaching.md`
+
+from 
+```
++++
+# Custom widget.
+# An example of using the custom widget to create your own homepage section.
+# To create more sections, duplicate this file and edit the values below as desired.
+widget = "custom"
+active = true
+date = 2016-04-20T00:00:00
+```
+to
+
+```
++++
+# Custom widget.
+# An example of using the custom widget to create your own homepage section.
+# To create more sections, duplicate this file and edit the values below as desired.
+widget = "custom"
+active = false
+date = 2016-04-20T00:00:00
+```
+The wideget will be gone in the home page. 
+
+in the `config.toml` file, add the following and comment out the `teaching`
 
 ```toml
 [[menu.main]]
-  name = "Talks & Workshops"
+  name = "Talks & Teachings"
   url = "#talks"
   weight = 6
+  
+#[[menu.main]]
+#  name = "Teaching"
+#  url = "#teaching"
+#  weight = 6
 ```
 
 change the `content/home/talks.md` file
@@ -170,7 +206,7 @@ widget = "talks"
 active = true
 date = 2016-04-20T00:00:00
 
-title = "Talks & Workshops"
+title = "Talks & Teachings"
 subtitle = ""
 
 ```
