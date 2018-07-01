@@ -36,15 +36,15 @@ selected = true
 #projects = ["deep-learning"]
 
 # Links (optional).
-url_pdf = "http://arxiv.org/pdf/1512.04133v1"
-url_preprint = ""
-url_code = ""
-url_dataset = ""
-url_project = ""
-url_slides = ""
-url_video = ""
-url_poster = ""
-url_source = ""
+url_pdf = "files/papers/CTCF-insulator.pdf"
+# url_preprint = ""
+# url_code = ""
+# url_dataset = ""
+# url_project = ""
+# url_slides = ""
+# url_video = ""
+# url_poster = ""
+# url_source = ""
 
 # Does the content use math formatting?
 math = false

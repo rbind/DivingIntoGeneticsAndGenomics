@@ -556,6 +556,16 @@ ftp&amp;gt; mput *
     </item>
     
     <item>
+      <title>TumorFusions: an integrative resource for cancer-associated transcript fusions</title>
+      <link>/publication/2018-01-04-tumor-fusions/</link>
+      <pubDate>Thu, 04 Jan 2018 00:00:00 -0600</pubDate>
+      
+      <guid>/publication/2018-01-04-tumor-fusions/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>GS01 1143 Introduction to Bioinformatics course</title>
       <link>/talk/2017-gsbs-chipseq-class/</link>
       <pubDate>Thu, 02 Nov 2017 00:00:00 -0500</pubDate>
@@ -585,11 +595,61 @@ Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/a
     </item>
     
     <item>
+      <title>MOF Acetylates the Histone Demethylase LSD1 to Suppress Epithelial-to-Mesenchymal Transition</title>
+      <link>/publication/2016-06-21-mof-emt/</link>
+      <pubDate>Mon, 14 Aug 2017 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2016-06-21-mof-emt/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Systematic analysis of telomere length and somatic alterations in 31 cancer types</title>
-      <link>/publication/telomere-pan-cancer/</link>
+      <link>/publication/2017-03-01-telomere-pan-cancer/</link>
       <pubDate>Wed, 01 Mar 2017 00:00:00 -0600</pubDate>
       
-      <guid>/publication/telomere-pan-cancer/</guid>
+      <guid>/publication/2017-03-01-telomere-pan-cancer/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Synthetic essentiality of chromatin remodelling factor CHD1 in PTEN-deficient cancer</title>
+      <link>/publication/2017-02-23-pten-synthetic/</link>
+      <pubDate>Thu, 23 Feb 2017 00:00:00 -0600</pubDate>
+      
+      <guid>/publication/2017-02-23-pten-synthetic/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Suppression of Type I IFN Signaling in Tumors Mediates Resistance to Anti-PD-1 Treatment That Can Be Overcome by Radiotherapy</title>
+      <link>/publication/2017-02-15-ifn-signaling-tumor-pd1-resistance/</link>
+      <pubDate>Wed, 15 Feb 2017 00:00:00 -0600</pubDate>
+      
+      <guid>/publication/2017-02-15-ifn-signaling-tumor-pd1-resistance/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Epithelial-to-mesenchymal transition confers pericyte properties on cancer cells</title>
+      <link>/publication/2016-11-01-emt-pericyte/</link>
+      <pubDate>Tue, 01 Nov 2016 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2016-11-01-emt-pericyte/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Molecular Take on Malignant Rhabdoid Tumors</title>
+      <link>/publication/2016-05-31-take-rhabdoid/</link>
+      <pubDate>Tue, 31 May 2016 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2016-05-31-take-rhabdoid/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
@@ -643,35 +703,6 @@ Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/a
 
 &lt;p&gt;Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
-    </item>
-    
-    <item>
-      <title>The malignant brain tumor (MBT) domain protein SFMBT1 is an integral histone reader subunit of the LSD1 demethylase complex for chromatin association and epithelial-to-mesenchymal transition</title>
-      <link>/publication/sfmbt-snail-emt-cancer/</link>
-      <pubDate>Fri, 20 Sep 2013 00:00:00 -0500</pubDate>
-      
-      <guid>/publication/sfmbt-snail-emt-cancer/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>CTCF-dependent chromatin insulator as a built-in attenuator of angiogenesis</title>
-      <link>/publication/2012-03-01-ctcf-angiogenesis/</link>
-      <pubDate>Thu, 01 Mar 2012 00:00:00 -0600</pubDate>
-      
-      <guid>/publication/2012-03-01-ctcf-angiogenesis/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Restraint of angiogenesis by zinc finger transcription factor CTCF-dependent chromatin insulation</title>
-      <link>/publication/ctcf-vegf-enhancer-blocking/</link>
-      <pubDate>Tue, 13 Sep 2011 00:00:00 -0500</pubDate>
-      
-      <guid>/publication/ctcf-vegf-enhancer-blocking/</guid>
-      <description></description>
     </item>
     
   </channel>

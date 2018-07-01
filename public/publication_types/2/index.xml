@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Mon, 14 Aug 2017 00:00:00 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 04 Jan 2018 00:00:00 -0600</lastBuildDate>
     
 	<atom:link href="/publication_types/2/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>TumorFusions: an integrative resource for cancer-associated transcript fusions</title>
+      <link>/publication/2018-01-04-tumor-fusions/</link>
+      <pubDate>Thu, 04 Jan 2018 00:00:00 -0600</pubDate>
+      
+      <guid>/publication/2018-01-04-tumor-fusions/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
     
     <item>
       <title>Integrative Analysis Identifies Four Molecular and Clinical Subsets in Uveal Melanoma</title>
@@ -22,20 +31,65 @@
     </item>
     
     <item>
+      <title>MOF Acetylates the Histone Demethylase LSD1 to Suppress Epithelial-to-Mesenchymal Transition</title>
+      <link>/publication/2016-06-21-mof-emt/</link>
+      <pubDate>Mon, 14 Aug 2017 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2016-06-21-mof-emt/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
       <title>Systematic analysis of telomere length and somatic alterations in 31 cancer types</title>
-      <link>/publication/telomere-pan-cancer/</link>
+      <link>/publication/2017-03-01-telomere-pan-cancer/</link>
       <pubDate>Wed, 01 Mar 2017 00:00:00 -0600</pubDate>
       
-      <guid>/publication/telomere-pan-cancer/</guid>
+      <guid>/publication/2017-03-01-telomere-pan-cancer/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>Synthetic essentiality of chromatin remodelling factor CHD1 in PTEN-deficient cancer</title>
+      <link>/publication/2017-02-23-pten-synthetic/</link>
+      <pubDate>Thu, 23 Feb 2017 00:00:00 -0600</pubDate>
+      
+      <guid>/publication/2017-02-23-pten-synthetic/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>Suppression of Type I IFN Signaling in Tumors Mediates Resistance to Anti-PD-1 Treatment That Can Be Overcome by Radiotherapy</title>
+      <link>/publication/2017-02-15-ifn-signaling-tumor-pd1-resistance/</link>
+      <pubDate>Wed, 15 Feb 2017 00:00:00 -0600</pubDate>
+      
+      <guid>/publication/2017-02-15-ifn-signaling-tumor-pd1-resistance/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>Epithelial-to-mesenchymal transition confers pericyte properties on cancer cells</title>
+      <link>/publication/2016-11-01-emt-pericyte/</link>
+      <pubDate>Tue, 01 Nov 2016 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2016-11-01-emt-pericyte/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>A Molecular Take on Malignant Rhabdoid Tumors</title>
+      <link>/publication/2016-05-31-take-rhabdoid/</link>
+      <pubDate>Tue, 31 May 2016 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2016-05-31-take-rhabdoid/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
     </item>
     
     <item>
       <title>The malignant brain tumor (MBT) domain protein SFMBT1 is an integral histone reader subunit of the LSD1 demethylase complex for chromatin association and epithelial-to-mesenchymal transition</title>
-      <link>/publication/sfmbt-snail-emt-cancer/</link>
+      <link>/publication/2013-09-20-sfmbt-snail-emt-cancer/</link>
       <pubDate>Fri, 20 Sep 2013 00:00:00 -0500</pubDate>
       
-      <guid>/publication/sfmbt-snail-emt-cancer/</guid>
+      <guid>/publication/2013-09-20-sfmbt-snail-emt-cancer/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
     </item>
     
@@ -50,10 +104,10 @@
     
     <item>
       <title>Restraint of angiogenesis by zinc finger transcription factor CTCF-dependent chromatin insulation</title>
-      <link>/publication/ctcf-vegf-enhancer-blocking/</link>
+      <link>/publication/2011-09-13-ctcf-vegf-enhancer-blocking/</link>
       <pubDate>Tue, 13 Sep 2011 00:00:00 -0500</pubDate>
       
-      <guid>/publication/ctcf-vegf-enhancer-blocking/</guid>
+      <guid>/publication/2011-09-13-ctcf-vegf-enhancer-blocking/</guid>
       <description></description>
     </item>
     

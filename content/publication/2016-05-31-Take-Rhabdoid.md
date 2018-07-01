@@ -1,9 +1,9 @@
 +++
-title = "CTCF-dependent chromatin insulator as a built-in attenuator of angiogenesis"
-date = 2012-03-01T00:00:00
+title = "A Molecular Take on Malignant Rhabdoid Tumors"
+date = 2016-05-31T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Ming Tang", "Jianrong Lu"]
+authors = ["Ming Tang", "Roel Verhaak"]
 
 # Publication type.
 # Legend:
@@ -17,11 +17,11 @@ authors = ["Ming Tang", "Jianrong Lu"]
 publication_types = ["2"]
 
 # Publication name and optional abbreviated version.
-publication = "In *Transcription*, Transcription."
-publication_short = "In *Transcription*"
+publication = "In *Trends in Cancer*, Trends in Cancer."
+publication_short = "In *Trends in Cancer*"
 
 # Abstract and optional shortened version.
-abstract = "VEGF is a pivotal pro-angiogenic growth factor and its dosage decisively impacts vascularization. We recently identified a CTCF-dependent chromatin insulator that critically restrains the transcriptional induction of VEGF and angiogenesis. We postulate that CTCF may exert enhancer blocking by mediating chromatin looping and/or RNA polymerase pausing at the VEGF locus."
+abstract = "The molecular basis for the clinical heterogeneity observed in patients with malignant rhabdoid tumors is unknown. Recently, two reports revealed molecular intertumor heterogeneity in teratoid/rhabdoid tumors (ATRTs) and extra-cranial MRTs (ecMRTs) using genomic, transcriptomic, and epigenomic profiling. Distinct molecular subgroups were identified and new therapeutic targets were revealed."
 
 # Featured image thumbnail (optional)
 image_preview = ""
@@ -36,13 +36,19 @@ selected = false
 # projects = ["example-external-project.md"]
 
 # Links (optional).
-url_pdf = "files/papers/CTCF-angiogenesis.pdf"
+url_pdf = "files/papers/Uveal.pdf"
 # url_preprint = "#"
-# 
-# 
-# # Custom links (optional).
-# #   Uncomment line below to enable. For multiple links, use the form `[{...}, {...}, {...}]`.
-# url_custom = [{name = "Custom Link", url = "http://example.org"}]
+# url_code = "#"
+# url_dataset = "#"
+# url_project = "#"
+# url_slides = "#"
+# url_video = "#"
+# url_poster = "#"
+# url_source = "#"
+
+# Custom links (optional).
+#   Uncomment line below to enable. For multiple links, use the form `[{...}, {...}, {...}]`.
+#url_custom = [{name = "Custom Link", url = "http://example.org"}]
 
 # Does the content use math formatting?
 math = true
@@ -53,7 +59,7 @@ highlight = true
 # Featured image
 # Place your image in the `static/img/` folder and reference its filename below, e.g. `image = "example.jpg"`.
 [header]
-image = "headers/CTCF_VEGF.png"
+image = "headers/trends-in-cancer.png"
 caption = "My caption :smile:"
 
 +++
