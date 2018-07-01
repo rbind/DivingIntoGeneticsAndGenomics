@@ -41,6 +41,15 @@
     
     <url>
     
+      <loc>/publication/2018-04-05-jove-chipseq/</loc>
+      <lastmod>2018-04-05T00:00:00-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/publication/2018-01-04-tumor-fusions/</loc>
       <lastmod>2018-01-04T00:00:00-06:00</lastmod>
     </url>
@@ -70,6 +79,15 @@
     
       <loc>/publication/2016-06-21-mof-emt/</loc>
       <lastmod>2017-08-14T00:00:00-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/2017-06-28-tfii-i-e2f/</loc>
+      <lastmod>2017-06-28T00:00:00-05:00</lastmod>
     </url>
     
   
@@ -176,6 +194,24 @@
     
     <url>
     
+      <loc>/publication/2014-09-01-trim29-twist1-breast-cancer/</loc>
+      <lastmod>2014-09-01T00:00:00-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/2014-05-29-tfii-i-genomics/</loc>
+      <lastmod>2014-05-29T00:00:00-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/publication/2013-09-20-sfmbt-snail-emt-cancer/</loc>
       <lastmod>2013-09-20T00:00:00-05:00</lastmod>
     </url>
@@ -204,7 +240,7 @@
     <url>
     
       <loc>/publication_types/2/</loc>
-      <lastmod>2018-01-04T00:00:00-06:00</lastmod>
+      <lastmod>2018-04-05T00:00:00-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -272,8 +308,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2016-04-27T00:00:00-05:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2018-06-22T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -282,8 +318,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2018-06-22T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2016-04-27T00:00:00-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -313,7 +349,7 @@
     <url>
     
       <loc>/publication_types/</loc>
-      <lastmod>2018-01-04T00:00:00-06:00</lastmod>
+      <lastmod>2018-04-05T00:00:00-05:00</lastmod>
       <priority>0</priority>
     </url>
     

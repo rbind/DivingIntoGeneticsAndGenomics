@@ -556,6 +556,16 @@ ftp&amp;gt; mput *
     </item>
     
     <item>
+      <title>An Integrated Platform for Genome-wide Mapping of Chromatin States Using High-throughput ChIP-sequencing in Tumor Tissues</title>
+      <link>/publication/2018-04-05-jove-chipseq/</link>
+      <pubDate>Thu, 05 Apr 2018 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2018-04-05-jove-chipseq/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>TumorFusions: an integrative resource for cancer-associated transcript fusions</title>
       <link>/publication/2018-01-04-tumor-fusions/</link>
       <pubDate>Thu, 04 Jan 2018 00:00:00 -0600</pubDate>
@@ -600,6 +610,16 @@ Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/a
       <pubDate>Mon, 14 Aug 2017 00:00:00 -0500</pubDate>
       
       <guid>/publication/2016-06-21-mof-emt/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Functional interrelationship between TFII-I and E2F transcription factors at specific cell cycle gene loci</title>
+      <link>/publication/2017-06-28-tfii-i-e2f/</link>
+      <pubDate>Wed, 28 Jun 2017 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2017-06-28-tfii-i-e2f/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
@@ -651,57 +671,6 @@ Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/a
       
       <guid>/publication/2016-05-31-take-rhabdoid/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Snakemake Pipelines</title>
-      <link>/project/snakemake-pipelines/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 -0500</pubDate>
-      
-      <guid>/project/snakemake-pipelines/</guid>
-      <description>&lt;p&gt;Snakemake is a python extension for writing workflows. Genomics data processing usually requires bundling many different tools to reach a stage that is ready for downstream analysis.&lt;/p&gt;
-
-&lt;p&gt;I have been using snakemake writing workflows for various genomic and epigenomic datasets.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/crazyhottommy/pyflow-ChIPseq&#34; target=&#34;_blank&#34;&gt;ChIP-seq&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://gitlab.com/tangming2005/snakemake_DNAseq_pipeline/tree/multiRG&#34; target=&#34;_blank&#34;&gt;DNA-seq&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/crazyhottommy/pyflow-RNAseq&#34; target=&#34;_blank&#34;&gt;RNA-seq&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/crazyhottommy/pyflow-ATACseq&#34; target=&#34;_blank&#34;&gt;ATAC-seq&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://gitlab.com/tangming2005/pyflow-RRBSeq&#34; target=&#34;_blank&#34;&gt;RRBSeq&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The DNAseq Snakemake pipeline is the most complicated workflow I have written so far. I will need to think about refining it, modulizing it and adding conda env support. Eventually, I will need to put all the snakemake workflows togther using something like &lt;a href=&#34;https://github.com/nh13/snakeparse&#34; target=&#34;_blank&#34;&gt;snakeparse&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/rule_graph_lancet.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>University of Miami 2-day Software Carpentry workshop</title>
-      <link>/talk/2015-miami-carpentry/</link>
-      <pubDate>Thu, 02 Apr 2015 00:00:00 -0500</pubDate>
-      
-      <guid>/talk/2015-miami-carpentry/</guid>
-      <description>&lt;p&gt;I was excited to teach Shell and R to a group of 20 biologists from the University of Miami. This event was sponsored by Software carpentry &lt;a href=&#34;https://software-carpentry.org/&#34; target=&#34;_blank&#34;&gt;https://software-carpentry.org/&lt;/a&gt; and the University of Miami. see the course info &lt;a href=&#34;http://xuf12.github.io/2015-04-02-umiami/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;It was great teaching experience for me!&lt;/p&gt;
-
-&lt;p&gt;Teaching in action!&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/teaching1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Response&lt;/p&gt;
-
-&lt;p&gt;Well received by the students!
-&lt;img src=&#34;/img/teaching2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     

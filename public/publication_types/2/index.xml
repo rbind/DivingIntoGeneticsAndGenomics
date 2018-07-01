@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Thu, 04 Jan 2018 00:00:00 -0600</lastBuildDate>
+    <lastBuildDate>Thu, 05 Apr 2018 00:00:00 -0500</lastBuildDate>
     
 	<atom:link href="/publication_types/2/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>An Integrated Platform for Genome-wide Mapping of Chromatin States Using High-throughput ChIP-sequencing in Tumor Tissues</title>
+      <link>/publication/2018-04-05-jove-chipseq/</link>
+      <pubDate>Thu, 05 Apr 2018 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2018-04-05-jove-chipseq/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
     
     <item>
       <title>TumorFusions: an integrative resource for cancer-associated transcript fusions</title>
@@ -36,6 +45,15 @@
       <pubDate>Mon, 14 Aug 2017 00:00:00 -0500</pubDate>
       
       <guid>/publication/2016-06-21-mof-emt/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>Functional interrelationship between TFII-I and E2F transcription factors at specific cell cycle gene loci</title>
+      <link>/publication/2017-06-28-tfii-i-e2f/</link>
+      <pubDate>Wed, 28 Jun 2017 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2017-06-28-tfii-i-e2f/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
     </item>
     
@@ -81,6 +99,24 @@
       <pubDate>Tue, 31 May 2016 00:00:00 -0500</pubDate>
       
       <guid>/publication/2016-05-31-take-rhabdoid/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>TRIM29 Suppresses TWIST1 and Invasive Breast Cancer Behavior</title>
+      <link>/publication/2014-09-01-trim29-twist1-breast-cancer/</link>
+      <pubDate>Mon, 01 Sep 2014 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2014-09-01-trim29-twist1-breast-cancer/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>Genomic and proteomic analysis of transcription factor TFII-I reveals insight into the response to cellular stress</title>
+      <link>/publication/2014-05-29-tfii-i-genomics/</link>
+      <pubDate>Thu, 29 May 2014 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2014-05-29-tfii-i-genomics/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
     </item>
     
