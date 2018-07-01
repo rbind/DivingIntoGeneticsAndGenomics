@@ -36,7 +36,7 @@ selected = false
 # projects = ["example-external-project.md"]
 
 # Links (optional).
-url_pdf = "files/papers/EMT-pericyte.png"
+url_pdf = "files/papers/EMT_pericyte.pdf"
 # url_preprint = "#"
 # url_code = "#"
 # url_dataset = "#"
@@ -59,7 +59,7 @@ highlight = true
 # Featured image
 # Place your image in the `static/img/` folder and reference its filename below, e.g. `image = "example.jpg"`.
 [header]
-image = "headers/Uveal.png"
+image = "headers/EMT-pericyte.png"
 caption = "My caption :smile:"
 
 +++

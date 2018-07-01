@@ -36,7 +36,7 @@ selected = false
 # projects = ["example-external-project.md"]
 
 # Links (optional).
-url_pdf = "files/papers/Uveal.pdf"
+url_pdf = "files/papers/IFN_PD1.pdf"
 # url_preprint = "#"
 # url_code = "#"
 # url_dataset = "#"
