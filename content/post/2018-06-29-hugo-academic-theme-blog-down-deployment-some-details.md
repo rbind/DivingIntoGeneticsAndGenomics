@@ -136,6 +136,50 @@ Note that the path is `cv/cv.pdf`.
 
 **The above three steps followed exactly of Leslie.**
 
+### inactivated the selected publication widget
+
+I found the `selected_publications` widget is a bit clunky, so I inactivated it.
+change `content/home/publications_selected.md`
+
+from 
+```
++++
+# Selected Publications widget.
+# This widget displays publications from `content/publication/` which have
+# `selected = true` in their `+++` front matter.
+widget = "publications_selected"
+active = true
+```
+to
+
+```
++++
+# Selected Publications widget.
+# This widget displays publications from `content/publication/` which have
+# `selected = true` in their `+++` front matter.
+widget = "publications_selected"
+active = false
+```
+
+link the menue bar to `publications`.
+
+in the `config.toml`, change
+
+```toml
+[[menu.main]]
+  name = "Publications"
+  url = "#publications_selected"
+  weight = 2
+```
+
+to 
+
+```toml
+[[menu.main]]
+  name = "Publications"
+  url = "#publications"
+  weight = 2
+```
 ### add the talks & teachings to menue 
 
 I do not like the `teaching` custom widget. one can only list the courses there. I know it is called custom so one can change it, but I do not know how.

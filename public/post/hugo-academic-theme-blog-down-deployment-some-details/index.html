@@ -170,7 +170,7 @@ changed the menue bar to black. I like it better than the default white. in the 
         
 
         <li class="nav-item">
-          <a href="/#publications_selected">
+          <a href="/#publications">
             
             <span>Publications</span>
             
@@ -307,7 +307,7 @@ changed the menue bar to black. I like it better than the default white. in the 
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    5 min read
+    6 min read
   </span>
   
 
@@ -497,6 +497,49 @@ Find my CV in PDF [here](cv/cv.pdf).
 <p>Note that the path is <code>cv/cv.pdf</code>.</p>
 
 <p><strong>The above three steps followed exactly of Leslie.</strong></p>
+
+<h3 id="inactivated-the-selected-publication-widget">inactivated the selected publication widget</h3>
+
+<p>I found the <code>selected_publications</code> widget is a bit clunky, so I inactivated it.
+change <code>content/home/publications_selected.md</code></p>
+
+<p>from</p>
+
+<pre><code>+++
+# Selected Publications widget.
+# This widget displays publications from `content/publication/` which have
+# `selected = true` in their `+++` front matter.
+widget = &quot;publications_selected&quot;
+active = true
+</code></pre>
+
+<p>to</p>
+
+<pre><code>+++
+# Selected Publications widget.
+# This widget displays publications from `content/publication/` which have
+# `selected = true` in their `+++` front matter.
+widget = &quot;publications_selected&quot;
+active = false
+</code></pre>
+
+<p>link the menue bar to <code>publications</code>.</p>
+
+<p>in the <code>config.toml</code>, change</p>
+
+<pre><code class="language-toml">[[menu.main]]
+  name = &quot;Publications&quot;
+  url = &quot;#publications_selected&quot;
+  weight = 2
+</code></pre>
+
+<p>to</p>
+
+<pre><code class="language-toml">[[menu.main]]
+  name = &quot;Publications&quot;
+  url = &quot;#publications&quot;
+  weight = 2
+</code></pre>
 
 <h3 id="add-the-talks-teachings-to-menue">add the talks &amp; teachings to menue</h3>
 

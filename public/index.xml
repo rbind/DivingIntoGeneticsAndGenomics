@@ -197,6 +197,49 @@ Find my CV in PDF [here](cv/cv.pdf).
 
 &lt;p&gt;&lt;strong&gt;The above three steps followed exactly of Leslie.&lt;/strong&gt;&lt;/p&gt;
 
+&lt;h3 id=&#34;inactivated-the-selected-publication-widget&#34;&gt;inactivated the selected publication widget&lt;/h3&gt;
+
+&lt;p&gt;I found the &lt;code&gt;selected_publications&lt;/code&gt; widget is a bit clunky, so I inactivated it.
+change &lt;code&gt;content/home/publications_selected.md&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;from&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;+++
+# Selected Publications widget.
+# This widget displays publications from `content/publication/` which have
+# `selected = true` in their `+++` front matter.
+widget = &amp;quot;publications_selected&amp;quot;
+active = true
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;+++
+# Selected Publications widget.
+# This widget displays publications from `content/publication/` which have
+# `selected = true` in their `+++` front matter.
+widget = &amp;quot;publications_selected&amp;quot;
+active = false
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;link the menue bar to &lt;code&gt;publications&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt;, change&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[[menu.main]]
+  name = &amp;quot;Publications&amp;quot;
+  url = &amp;quot;#publications_selected&amp;quot;
+  weight = 2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[[menu.main]]
+  name = &amp;quot;Publications&amp;quot;
+  url = &amp;quot;#publications&amp;quot;
+  weight = 2
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;h3 id=&#34;add-the-talks-teachings-to-menue&#34;&gt;add the talks &amp;amp; teachings to menue&lt;/h3&gt;
 
 &lt;p&gt;I do not like the &lt;code&gt;teaching&lt;/code&gt; custom widget. one can only list the courses there. I know it is called custom so one can change it, but I do not know how.&lt;/p&gt;
