@@ -17,7 +17,7 @@
       
     
   
-  <meta name="description" content="Data backup is an essential step in the data analysis life cycle. As shown in a pic below.
+  <meta name="description" content="Data backup is an essential step in the data analysis life cycle. As shown in a pic below taken from DataOne.
 There are so many important things you may want to back up: your raw/processed data, your code, and your dot configuration files. While for every project, I have git version control my scripts (not the data) and push it to github or gitlab to have a backup, big files can not be hosted on github or gitlab.">
 
   
@@ -96,7 +96,7 @@ There are so many important things you may want to back up: your raw/processed d
   <meta property="og:site_name" content="DNA confesses and Data speak">
   <meta property="og:url" content="/post/crontab-for-backup/">
   <meta property="og:title" content="Backup automatically with cron | DNA confesses and Data speak">
-  <meta property="og:description" content="Data backup is an essential step in the data analysis life cycle. As shown in a pic below.
+  <meta property="og:description" content="Data backup is an essential step in the data analysis life cycle. As shown in a pic below taken from DataOne.
 There are so many important things you may want to back up: your raw/processed data, your code, and your dot configuration files. While for every project, I have git version control my scripts (not the data) and push it to github or gitlab to have a backup, big files can not be hosted on github or gitlab.">
   <meta property="og:locale" content="en-us">
   
@@ -303,7 +303,7 @@ There are so many important things you may want to back up: your raw/processed d
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    3 min read
+    5 min read
   </span>
   
 
@@ -374,7 +374,9 @@ There are so many important things you may want to back up: your raw/processed d
     <div class="article-style" itemprop="articleBody">
       
 
-<p>Data backup is an essential step in the data analysis life cycle. As shown in a pic below.</p>
+<p>Data backup is an essential step in the data analysis life cycle. As shown in a pic below taken from <a href="https://www.dataone.org/best-practices" target="_blank">DataOne</a>.</p>
+
+<p><img src="/img/data-life-cycle.png" alt="" /></p>
 
 <p>There are so many important things you may want to back up: your raw/processed data, your code, and your dot configuration files. While for every project, I have git version control my scripts (not the data) and push it to github or gitlab to have a backup, big files can not be hosted on github or gitlab.</p>
 
@@ -446,7 +448,37 @@ commonly used is this suppression: 30 1 * * * command &gt; /dev/null 2&gt;&amp;1
 re-enable the standard output or standard error message output
 </code></pre>
 
-<p>It turns out my ubuntu</p>
+<h3 id="my-crontab-file">My crontab file</h3>
+
+<pre><code># Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+MAILTO=&quot;tangming2005@gmail.com&quot;
+
+#rsync every Sunday 5am.
+0 5 * * 0 rsync -avhP --exclude=&quot;.aspera&quot; --exclude=&quot;.autojump&quot; --exclude=&quot;.bash_history&quot; --exclude=&quot;.bash_logout&quot; --exclude=&quot;.cache&quot; --exclude=&quot;.continuum&quot; --exclude=&quot;.gem&quot; --exclude=&quot;.gnome2&quot; --exclude=&quot;.local&quot; --exclude=&quot;.mozilla&quot; --exclude=&quot;.myconfigs&quot; --exclude=&quot;.oracle_jre_usage&quot; --exclude=&quot;.parallel&quot; --exclude=&quot;.pki&quot; --exclude=&quot;.rbenv&quot; --exclude=&quot;.Rhistory&quot; --exclude=&quot;.rstudio&quot; --exclude=&quot;.ssh&quot; --exclude=&quot;.subversion&quot; railab:.[^.]* ~/shark_dotfiles &gt;&gt; /var/log/rsync_shark_dotfiles.log 2&gt;&amp;1
+
+0 5 * * 0 rsync -avhP --exclude=&quot;.aspera&quot; --exclude=&quot;.autojump&quot; --exclude=&quot;.bash_history&quot; --exclude=&quot;.bash_logout&quot; --exclude=&quot;.cache&quot; --exclude=&quot;.continuum&quot; --exclude=&quot;.gem&quot; --exclude=&quot;.gnome2&quot; --exclude=&quot;.local&quot; --exclude=&quot;.mozilla&quot; --exclude=&quot;.myconfigs&quot; --exclude=&quot;.oracle_jre_usage&quot; --exclude=&quot;.parallel&quot; --exclude=&quot;.pki&quot; --exclude=&quot;.rbenv&quot; --exclude=&quot;.Rhistory&quot; --exclude=&quot;.rstudio&quot; --exclude=&quot;.ssh&quot; --exclude=&quot;.subversion&quot; mdaris337:.[^.]* ~/nautilus_dotfiles &gt;&gt; /var/log/rsync_nautilus_dotfiles.log 2&gt;&amp;1
+</code></pre>
 
 <h3 id="links-for-further-reading">links for further reading</h3>
 

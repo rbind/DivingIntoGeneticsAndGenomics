@@ -12,7 +12,9 @@ header:
   image: ''
 ---
 
-Data backup is an essential step in the data analysis life cycle. As shown in a pic below.
+Data backup is an essential step in the data analysis life cycle. As shown in a pic below taken from [DataOne](https://www.dataone.org/best-practices).
+
+![](/img/data-life-cycle.png)
 
 There are so many important things you may want to back up: your raw/processed data, your code, and your dot configuration files. While for every project, I have git version control my scripts (not the data) and push it to github or gitlab to have a backup, big files can not be hosted on github or gitlab.
 
@@ -85,8 +87,38 @@ commonly used is this suppression: 30 1 * * * command > /dev/null 2>&1
 re-enable the standard output or standard error message output
 ```
 
-It turns out my ubuntu 
+### My crontab file
 
+```
+# Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+MAILTO="tangming2005@gmail.com"
+
+#rsync every Sunday 5am.
+0 5 * * 0 rsync -avhP --exclude=".aspera" --exclude=".autojump" --exclude=".bash_history" --exclude=".bash_logout" --exclude=".cache" --exclude=".continuum" --exclude=".gem" --exclude=".gnome2" --exclude=".local" --exclude=".mozilla" --exclude=".myconfigs" --exclude=".oracle_jre_usage" --exclude=".parallel" --exclude=".pki" --exclude=".rbenv" --exclude=".Rhistory" --exclude=".rstudio" --exclude=".ssh" --exclude=".subversion" railab:.[^.]* ~/shark_dotfiles >> /var/log/rsync_shark_dotfiles.log 2>&1
+
+0 5 * * 0 rsync -avhP --exclude=".aspera" --exclude=".autojump" --exclude=".bash_history" --exclude=".bash_logout" --exclude=".cache" --exclude=".continuum" --exclude=".gem" --exclude=".gnome2" --exclude=".local" --exclude=".mozilla" --exclude=".myconfigs" --exclude=".oracle_jre_usage" --exclude=".parallel" --exclude=".pki" --exclude=".rbenv" --exclude=".Rhistory" --exclude=".rstudio" --exclude=".ssh" --exclude=".subversion" mdaris337:.[^.]* ~/nautilus_dotfiles >> /var/log/rsync_nautilus_dotfiles.log 2>&1
+```
 ### links for further reading
 
 http://www.adminschoice.com/crontab-quick-reference  

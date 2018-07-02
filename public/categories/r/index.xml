@@ -19,7 +19,8 @@
       
       <guid>/post/my-first-try-on-rmarkdown-using-blogdown/</guid>
       <description>I have used blogdown writing regular markdown posts, but the real power is from the Rmarkdown! let me try it for this post.
-library(tidyverse)  ## Loading tidyverse: ggplot2 ## Loading tidyverse: tibble ## Loading tidyverse: tidyr ## Loading tidyverse: readr ## Loading tidyverse: purrr ## Loading tidyverse: dplyr  ## Warning: package &#39;tibble&#39; was built under R version 3.4.3  ## Warning: package &#39;purrr&#39; was built under R version 3.</description>
+Note that you do not knit the Rmarkdown by yourself, rather you let blogdown do the heavy lift.
+library(tidyverse)  ## Loading tidyverse: ggplot2 ## Loading tidyverse: tibble ## Loading tidyverse: tidyr ## Loading tidyverse: readr ## Loading tidyverse: purrr ## Loading tidyverse: dplyr  ## Warning: package &#39;tibble&#39; was built under R version 3.</description>
     </item>
     
     <item>
