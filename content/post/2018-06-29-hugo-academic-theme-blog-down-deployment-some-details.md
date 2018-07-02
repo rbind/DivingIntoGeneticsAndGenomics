@@ -323,3 +323,14 @@ so, to overide Academic’s default styles. First, define `custom_css = ["overri
 
 read more on the Hugo academic page for more tutorials https://sourcethemes.com/academic/docs/writing-markdown-latex/#links
 
+### added disqus comment for blog posts
+
+Following [here](https://gohugo.io/content-management/comments/), go to [disqus](https://disqus.com/profile/signup/intent/), click `I want to install Disqus to my site` and then just follow the instruction. Hugo has support for disqus, so you do not need to modify any of the code for your website. Just get the short name.
+
+In the `config.toml` file, add your shortname.
+
+```
+# Enable comments by entering your Disqus shortname
+disqusShortname = "divingintogeneticsandgenomics"
+```
+A comment section will appear below the posts.
