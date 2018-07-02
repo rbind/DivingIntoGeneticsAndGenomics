@@ -28,7 +28,8 @@
       <pubDate>Wed, 20 Apr 2016 00:00:00 -0500</pubDate>
       
       <guid>/home/about/</guid>
-      <description>About me I am a computational biologist working on genomics, epigenomics and transcriptomics. Being trained in a wet lab in the University of Florida during my PhD in Dr.Jianrong Lu&amp;rsquo;s lab has established my solid knowledge and skills in experimental molecular cancer biology. Self-teaching and postdoctoral training in Dr.Roel Verhaak&amp;rsquo;s lab has extended my bioinformatics skills in integrating analysis of TB size sequencing data sets. Verhaak lab is well known for studying genomic alterations of brain tumor by analyzing large panels of RNA-seq and DNA-seq data.</description>
+      <description>About me I am a computational biologist working on genomics, epigenomics and transcriptomics. I use R primary for data wrangling and visualization in the tidyverse ecosystem; I use python for writing Snakemake workflows; I am a unix geek learning shell tricks almost every day; I care about reproducible research and open science.
+Being trained in a wet lab in the University of Florida during my PhD in Dr.Jianrong Lu&amp;rsquo;s lab has established my solid knowledge and skills in experimental molecular cancer biology.</description>
     </item>
     
     <item>
