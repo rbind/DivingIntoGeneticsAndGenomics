@@ -13,7 +13,7 @@ header:
 
 I have been following this [tutorial](https://alison.rbind.io/post/up-and-running-with-blogdown/) from Alison and tips from [Leslie Myint](https://lmyint.github.io/post/hugo-academic-tips/) for some customization for deploying my blogdown website
 
-It is quites straighforward to have a working site following Alison's guide. However, you always want some customization of your own site.
+It is quite straightforward to have a working site following Alison's guide. However, you always want some customization of your own site.
 
 I took the tips from Leslie.
 
@@ -319,7 +319,7 @@ works fine for me, but it is not the best practice as one changed the default ac
 
 >For advanced customization of the style, you can link custom CSS assets (relative to your root static/css) from your config.toml using `custom_css = ["custom.css"]`.
 
-so, to overide Academic’s default styles. First, define `custom_css = ["override.css"]` in `config.toml`. Then I created the file `static/css/custom.css`, relative to your website root (i.e. not in the themes directory). Add your custom CSS to this file.I copy the `/themes/hugo-academic/layouts/partials/css/academic.css` to `static/css/custom.css` and modified line 124 as shown above.
+so, to override Academic’s default styles. First, define `custom_css = ["override.css"]` in `config.toml`. Then I created the file `static/css/custom.css`, relative to your website root (i.e. not in the themes directory). Add your custom CSS to this file.I copy the `/themes/hugo-academic/layouts/partials/css/academic.css` to `static/css/custom.css` and modified line 124 as shown above.
 
 read more on the Hugo academic page for more tutorials https://sourcethemes.com/academic/docs/writing-markdown-latex/#links
 

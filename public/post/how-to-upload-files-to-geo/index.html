@@ -20,10 +20,10 @@
   <meta name="description" content="readings links: http://yeolab.github.io/onboarding/geo.html
 http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf
 https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
-1. create account Goto NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password. my username is research_guru
+1. create account Go to NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password. my username is research_guru
 I used my google account.
-2. fill in the xls sheet Downloaded the meata xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html
-## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &gt; fastq_md5.txt # copy to excle cat fastq_md5.txt | awk &#39;{print $2}&#39; #copy to excle cat fastq_md5.txt | awk &#39;{print $1}&#39; cd .">
+2. fill in the xls sheet Downloaded the meta xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html
+## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &gt; fastq_md5.txt # copy to excle cat fastq_md5.txt | awk &#39;{print $2}&#39; #copy to excle cat fastq_md5.">
 
   
   <link rel="alternate" hreflang="en-us" href="/post/how-to-upload-files-to-geo/">
@@ -104,10 +104,10 @@ I used my google account.
   <meta property="og:description" content="readings links: http://yeolab.github.io/onboarding/geo.html
 http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf
 https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
-1. create account Goto NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password. my username is research_guru
+1. create account Go to NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password. my username is research_guru
 I used my google account.
-2. fill in the xls sheet Downloaded the meata xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html
-## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &gt; fastq_md5.txt # copy to excle cat fastq_md5.txt | awk &#39;{print $2}&#39; #copy to excle cat fastq_md5.txt | awk &#39;{print $1}&#39; cd .">
+2. fill in the xls sheet Downloaded the meta xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html
+## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &gt; fastq_md5.txt # copy to excle cat fastq_md5.txt | awk &#39;{print $2}&#39; #copy to excle cat fastq_md5.">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2018-06-22T00:00:00&#43;00:00">
@@ -396,14 +396,14 @@ I used my google account.
 
 <h3 id="1-create-account">1. create account</h3>
 
-<p>Goto NCBI GEO: <a href="http://www.ncbi.nlm.nih.gov/geo/" target="_blank">http://www.ncbi.nlm.nih.gov/geo/</a>
+<p>Go to NCBI GEO: <a href="http://www.ncbi.nlm.nih.gov/geo/" target="_blank">http://www.ncbi.nlm.nih.gov/geo/</a>
 Create User ID and password. my username is <code>research_guru</code></p>
 
 <p>I used my google account.</p>
 
 <h3 id="2-fill-in-the-xls-sheet">2. fill in the xls sheet</h3>
 
-<p>Downloaded the meata xls sheet from <a href="https://www.ncbi.nlm.nih.gov/geo/info/seq.html" target="_blank">https://www.ncbi.nlm.nih.gov/geo/info/seq.html</a></p>
+<p>Downloaded the meta xls sheet from <a href="https://www.ncbi.nlm.nih.gov/geo/info/seq.html" target="_blank">https://www.ncbi.nlm.nih.gov/geo/info/seq.html</a></p>
 
 <pre><code class="language-bash">## bgzip the fastqs
 
@@ -491,7 +491,7 @@ ftp&gt; mput *
 
 <h3 id="side-notes">Side notes</h3>
 
-<p>for paired-end sequencing data. the xls sheet requries you to fill in the average insert size and the std.</p>
+<p>for paired-end sequencing data. the xls sheet requires you to fill in the average insert size and the std.</p>
 
 <p><code>picard CollectInsertSizeMetrics</code> can do this job.</p>
 

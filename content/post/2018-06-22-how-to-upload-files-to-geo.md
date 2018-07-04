@@ -22,14 +22,14 @@ https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
 
 ### 1. create account
 
-Goto NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/
+Go to NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/
 Create User ID and password. my username is `research_guru`
 
 I used my google account.
 
 ### 2. fill in the xls sheet 
 
-Downloaded the meata xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html  
+Downloaded the meta xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html  
 
 ```bash
 ## bgzip the fastqs
@@ -117,7 +117,7 @@ After your transfer is complete, you need to tell the NCBI.
 After file transfer is complete, please e-mail GEO with the following information: - GEO account username (tangming2005@gmail.com); - Names of the directory and files deposited; - Public release date (required - up to 3 years from now - see FAQ).
 
 ### Side notes
-for paired-end sequencing data. the xls sheet requries you to fill in the average insert size and the std.
+for paired-end sequencing data. the xls sheet requires you to fill in the average insert size and the std.
 
 `picard CollectInsertSizeMetrics` can do this job. 
 

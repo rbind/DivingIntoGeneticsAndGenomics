@@ -21,10 +21,10 @@
       <description>readings links: http://yeolab.github.io/onboarding/geo.html
 http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf
 https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
-1. create account Goto NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password. my username is research_guru
+1. create account Go to NCBI GEO: http://www.ncbi.nlm.nih.gov/geo/ Create User ID and password. my username is research_guru
 I used my google account.
-2. fill in the xls sheet Downloaded the meata xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html
-## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &amp;gt; fastq_md5.txt # copy to excle cat fastq_md5.txt | awk &#39;{print $2}&#39; #copy to excle cat fastq_md5.txt | awk &#39;{print $1}&#39; cd .</description>
+2. fill in the xls sheet Downloaded the meta xls sheet from https://www.ncbi.nlm.nih.gov/geo/info/seq.html
+## bgzip the fastqs cd 01seq find *fastq | parallel bgzip md5sum *fastq.gz &amp;gt; fastq_md5.txt # copy to excle cat fastq_md5.txt | awk &#39;{print $2}&#39; #copy to excle cat fastq_md5.</description>
     </item>
     
   </channel>

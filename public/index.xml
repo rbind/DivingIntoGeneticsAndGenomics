@@ -81,7 +81,7 @@ head(mtcars)
 
 &lt;p&gt;I have been following this &lt;a href=&#34;https://alison.rbind.io/post/up-and-running-with-blogdown/&#34; target=&#34;_blank&#34;&gt;tutorial&lt;/a&gt; from Alison and tips from &lt;a href=&#34;https://lmyint.github.io/post/hugo-academic-tips/&#34; target=&#34;_blank&#34;&gt;Leslie Myint&lt;/a&gt; for some customization for deploying my blogdown website&lt;/p&gt;
 
-&lt;p&gt;It is quites straighforward to have a working site following Alison&amp;rsquo;s guide. However, you always want some customization of your own site.&lt;/p&gt;
+&lt;p&gt;It is quite straightforward to have a working site following Alison&amp;rsquo;s guide. However, you always want some customization of your own site.&lt;/p&gt;
 
 &lt;p&gt;I took the tips from Leslie.&lt;/p&gt;
 
@@ -380,7 +380,7 @@ video {
 &lt;p&gt;For advanced customization of the style, you can link custom CSS assets (relative to your root static/css) from your config.toml using &lt;code&gt;custom_css = [&amp;quot;custom.css&amp;quot;]&lt;/code&gt;.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;so, to overide Academic’s default styles. First, define &lt;code&gt;custom_css = [&amp;quot;override.css&amp;quot;]&lt;/code&gt; in &lt;code&gt;config.toml&lt;/code&gt;. Then I created the file &lt;code&gt;static/css/custom.css&lt;/code&gt;, relative to your website root (i.e. not in the themes directory). Add your custom CSS to this file.I copy the &lt;code&gt;/themes/hugo-academic/layouts/partials/css/academic.css&lt;/code&gt; to &lt;code&gt;static/css/custom.css&lt;/code&gt; and modified line 124 as shown above.&lt;/p&gt;
+&lt;p&gt;so, to override Academic’s default styles. First, define &lt;code&gt;custom_css = [&amp;quot;override.css&amp;quot;]&lt;/code&gt; in &lt;code&gt;config.toml&lt;/code&gt;. Then I created the file &lt;code&gt;static/css/custom.css&lt;/code&gt;, relative to your website root (i.e. not in the themes directory). Add your custom CSS to this file.I copy the &lt;code&gt;/themes/hugo-academic/layouts/partials/css/academic.css&lt;/code&gt; to &lt;code&gt;static/css/custom.css&lt;/code&gt; and modified line 124 as shown above.&lt;/p&gt;
 
 &lt;p&gt;read more on the Hugo academic page for more tutorials &lt;a href=&#34;https://sourcethemes.com/academic/docs/writing-markdown-latex/#links&#34; target=&#34;_blank&#34;&gt;https://sourcethemes.com/academic/docs/writing-markdown-latex/#links&lt;/a&gt;&lt;/p&gt;
 
@@ -412,7 +412,7 @@ disqusShortname = &amp;quot;divingintogeneticsandgenomics&amp;quot;
 
 &lt;p&gt;There are so many important things you may want to back up: your raw/processed data, your code, and your dot configuration files. While for every project, I have git version control my scripts (not the data) and push it to github or gitlab to have a backup, big files can not be hosted on github or gitlab.&lt;/p&gt;
 
-&lt;p&gt;I usually back up my &lt;code&gt;projects&lt;/code&gt; folder (containg all my scripts, raw data, processed data etc) to our high performance computing cluster in the &lt;code&gt;/rsch1&lt;/code&gt; folder here at MD Anderson Cancer Center. IT stuff back up the contents there every week. In that essense, I have a copy in my local computer, a backup copy in the remote cluster and one more copy that IT stuffs backed up. I used to do &lt;code&gt;rsync -avhP ~/projects mdaris337:/rsch1/genomic_med/mtang1/tommy_mac_backup&lt;/code&gt; once a week, but then sometimes I foget about it. I need a tool to do it every once a while for me. Here comes &lt;code&gt;cron&lt;/code&gt; to help.&lt;/p&gt;
+&lt;p&gt;I usually back up my &lt;code&gt;projects&lt;/code&gt; folder (containing all my scripts, raw data, processed data etc) to our high performance computing cluster in the &lt;code&gt;/rsch1&lt;/code&gt; folder here at MD Anderson Cancer Center. IT stuff back up the contents there every week. In that essence, I have a copy in my local computer, a backup copy in the remote cluster and one more copy that IT stuffs backed up. I used to do &lt;code&gt;rsync -avhP ~/projects mdaris337:/rsch1/genomic_med/mtang1/tommy_mac_backup&lt;/code&gt; once a week, but then sometimes I forget about it. I need a tool to do it every once a while for me. Here comes &lt;code&gt;cron&lt;/code&gt; to help.&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;cron is a Unix, solaris, Linux utility that allows tasks to be automatically run in the background at regular intervals by the cron daemon.&lt;/p&gt;
@@ -447,7 +447,7 @@ crontab -v    Display the last time you edited your crontab file. (This option i
 
 &lt;h3 id=&#34;cron-not-working&#34;&gt;Cron not working?&lt;/h3&gt;
 
-&lt;p&gt;It happend to me that my cron job is not running. I googled around and found
+&lt;p&gt;It happens to me that my cron job is not running. I googled around and found
 a comprehensive checking list that you can do to debug.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;1. Is the Cron daemon running?
@@ -536,14 +536,14 @@ MAILTO=&amp;quot;tangming2005@gmail.com&amp;quot;
 
 &lt;h3 id=&#34;1-create-account&#34;&gt;1. create account&lt;/h3&gt;
 
-&lt;p&gt;Goto NCBI GEO: &lt;a href=&#34;http://www.ncbi.nlm.nih.gov/geo/&#34; target=&#34;_blank&#34;&gt;http://www.ncbi.nlm.nih.gov/geo/&lt;/a&gt;
+&lt;p&gt;Go to NCBI GEO: &lt;a href=&#34;http://www.ncbi.nlm.nih.gov/geo/&#34; target=&#34;_blank&#34;&gt;http://www.ncbi.nlm.nih.gov/geo/&lt;/a&gt;
 Create User ID and password. my username is &lt;code&gt;research_guru&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;I used my google account.&lt;/p&gt;
 
 &lt;h3 id=&#34;2-fill-in-the-xls-sheet&#34;&gt;2. fill in the xls sheet&lt;/h3&gt;
 
-&lt;p&gt;Downloaded the meata xls sheet from &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/geo/info/seq.html&#34; target=&#34;_blank&#34;&gt;https://www.ncbi.nlm.nih.gov/geo/info/seq.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Downloaded the meta xls sheet from &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/geo/info/seq.html&#34; target=&#34;_blank&#34;&gt;https://www.ncbi.nlm.nih.gov/geo/info/seq.html&lt;/a&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;## bgzip the fastqs
 
@@ -631,7 +631,7 @@ ftp&amp;gt; mput *
 
 &lt;h3 id=&#34;side-notes&#34;&gt;Side notes&lt;/h3&gt;
 
-&lt;p&gt;for paired-end sequencing data. the xls sheet requries you to fill in the average insert size and the std.&lt;/p&gt;
+&lt;p&gt;for paired-end sequencing data. the xls sheet requires you to fill in the average insert size and the std.&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;picard CollectInsertSizeMetrics&lt;/code&gt; can do this job.&lt;/p&gt;
 

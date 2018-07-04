@@ -18,7 +18,7 @@ Data backup is an essential step in the data analysis life cycle. As shown in a 
 
 There are so many important things you may want to back up: your raw/processed data, your code, and your dot configuration files. While for every project, I have git version control my scripts (not the data) and push it to github or gitlab to have a backup, big files can not be hosted on github or gitlab.
 
-I usually back up my `projects` folder (containg all my scripts, raw data, processed data etc) to our high performance computing cluster in the `/rsch1` folder here at MD Anderson Cancer Center. IT stuff back up the contents there every week. In that essense, I have a copy in my local computer, a backup copy in the remote cluster and one more copy that IT stuffs backed up. I used to do `rsync -avhP ~/projects mdaris337:/rsch1/genomic_med/mtang1/tommy_mac_backup` once a week, but then sometimes I foget about it. I need a tool to do it every once a while for me. Here comes `cron` to help.
+I usually back up my `projects` folder (containing all my scripts, raw data, processed data etc) to our high performance computing cluster in the `/rsch1` folder here at MD Anderson Cancer Center. IT stuff back up the contents there every week. In that essence, I have a copy in my local computer, a backup copy in the remote cluster and one more copy that IT stuffs backed up. I used to do `rsync -avhP ~/projects mdaris337:/rsch1/genomic_med/mtang1/tommy_mac_backup` once a week, but then sometimes I forget about it. I need a tool to do it every once a while for me. Here comes `cron` to help.
 
 >cron is a Unix, solaris, Linux utility that allows tasks to be automatically run in the background at regular intervals by the cron daemon. 
 
@@ -53,7 +53,7 @@ crontab syntax
 
 ### Cron not working?
 
-It happend to me that my cron job is not running. I googled around and found 
+It happens to me that my cron job is not running. I googled around and found 
 a comprehensive checking list that you can do to debug.
 
 ```
