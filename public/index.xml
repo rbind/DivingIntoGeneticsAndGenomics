@@ -11,6 +11,27 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>2018 Next-Gen Sequence Analysis Workshop</title>
+      <link>/talk/2018-dibsi-course/</link>
+      <pubDate>Tue, 10 Jul 2018 00:00:00 -0500</pubDate>
+      
+      <guid>/talk/2018-dibsi-course/</guid>
+      <description>&lt;p&gt;I taught the ChIP-seq lesson for 2018 ANGUS Next-Gen Sequence Analysis Workshop held in UC Davis from 7/1/2018 to 7/14/2018, and TAed for the rest of the sessions. You can find my class link &lt;a href=&#34;https://angus.readthedocs.io/en/2018/chip-seq.html&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt; and all the rest materials &lt;a href=&#34;https://angus.readthedocs.io/en/2018/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;. This is the first formal teaching I have done after I became a certified instructor for Data Carpentry. The same teaching skills applied!&lt;/p&gt;
+
+&lt;p&gt;Some tips for teaching:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Be slow in pace&lt;/li&gt;
+&lt;li&gt;Pause and have students ask questions&lt;/li&gt;
+&lt;li&gt;Draw on white borad. (I am a visual person)&lt;/li&gt;
+&lt;li&gt;Use sticky notes to get an idea of how the class room feel. red sticker means problem. green sticker means OK!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>my first try on Rmarkdown using blogdown</title>
       <link>/post/my-first-try-on-rmarkdown-using-blogdown/</link>
       <pubDate>Sat, 30 Jun 2018 00:00:00 +0000</pubDate>
@@ -749,16 +770,6 @@ Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/a
       <pubDate>Tue, 01 Nov 2016 00:00:00 -0500</pubDate>
       
       <guid>/publication/2016-11-01-emt-pericyte/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>A Molecular Take on Malignant Rhabdoid Tumors</title>
-      <link>/publication/2016-05-31-take-rhabdoid/</link>
-      <pubDate>Tue, 31 May 2016 00:00:00 -0500</pubDate>
-      
-      <guid>/publication/2016-05-31-take-rhabdoid/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
