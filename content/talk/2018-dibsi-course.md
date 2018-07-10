@@ -48,5 +48,7 @@ Some tips for teaching:
 * Draw on white borad. (I am a visual person)
 * Use sticky notes to get an idea of how the class room feel. red sticker means problem. green sticker means OK!
 
+![](/img/teaching3.jpeg)
+
 
 Embed your slides or video here using [shortcodes](https://sourcethemes.com/academic/post/writing-markdown-latex/). Further details can easily be added using *Markdown* and $\rm \LaTeX$ math code.
