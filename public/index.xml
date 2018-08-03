@@ -11,6 +11,16 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>The Tandem Duplicator Phenotype Is a Prevalent Genome-Wide Cancer Configuration Driven by Distinct Gene Mutations</title>
+      <link>/publication/2018-07-12-tandem-duplicate/</link>
+      <pubDate>Thu, 12 Jul 2018 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2018-07-12-tandem-duplicate/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>2018 Next-Gen Sequence Analysis Workshop</title>
       <link>/talk/2018-dibsi-course/</link>
       <pubDate>Tue, 10 Jul 2018 00:00:00 -0500</pubDate>
@@ -765,16 +775,6 @@ Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/a
       <pubDate>Wed, 15 Feb 2017 00:00:00 -0600</pubDate>
       
       <guid>/publication/2017-02-15-ifn-signaling-tumor-pd1-resistance/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Epithelial-to-mesenchymal transition confers pericyte properties on cancer cells</title>
-      <link>/publication/2016-11-01-emt-pericyte/</link>
-      <pubDate>Tue, 01 Nov 2016 00:00:00 -0500</pubDate>
-      
-      <guid>/publication/2016-11-01-emt-pericyte/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>

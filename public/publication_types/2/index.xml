@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Thu, 05 Apr 2018 00:00:00 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 12 Jul 2018 00:00:00 -0500</lastBuildDate>
     
 	<atom:link href="/publication_types/2/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>The Tandem Duplicator Phenotype Is a Prevalent Genome-Wide Cancer Configuration Driven by Distinct Gene Mutations</title>
+      <link>/publication/2018-07-12-tandem-duplicate/</link>
+      <pubDate>Thu, 12 Jul 2018 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2018-07-12-tandem-duplicate/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
     
     <item>
       <title>An Integrated Platform for Genome-wide Mapping of Chromatin States Using High-throughput ChIP-sequencing in Tumor Tissues</title>
