@@ -41,5 +41,9 @@ caption = "My caption :smile:"
 
 I was invited to give a talk to my PhD Genetics and Genomics program at the University of Florida. I talked about my personal experience on how I started doing bioinformatics and shared tips and resources to get the students started their own journey into bioinformatics.
 
+I am so glad to be back home!
+
+![](/img/UF_talk.jpg)
+
 
 Embed your slides or video here using [shortcodes](https://sourcethemes.com/academic/post/writing-markdown-latex/). Further details can easily be added using *Markdown* and $\rm \LaTeX$ math code.
