@@ -82,7 +82,7 @@ my_var&lt;/code&gt;&lt;/pre&gt;
 ##   [121639]  2micron [6301, 6318]      * |          0
 ##   -------
 ##   seqinfo: 18 sequences (2 circular) from sacCer2 genome&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The key is to convert any values (sequencing depth across the genome, RNA-seq counts etc) into a RleList object, then one can use the binnedAverage to calculate the average across each small bin of the genome.&lt;/p&gt;
+&lt;p&gt;The key is to convert any values (sequencing depth across the genome, RNA-seq counts etc) into a RleList object, then one can use the &lt;code&gt;binnedAverage&lt;/code&gt; to calculate the average across each small bin of the genome.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;transformation-of-grange-object-to-density-per-bin&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;Transformation of GRange object to density per bin&lt;/h4&gt;
@@ -152,7 +152,7 @@ avg_per_bin[avg_per_bin$density &amp;gt; 0]&lt;/code&gt;&lt;/pre&gt;
 ##   [52]     chr1 [55001, 55100]      * |        49
 ##   -------
 ##   seqinfo: 1 sequence from an unspecified genome&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Note that calling averagePerBin() without specifying ‘mcolnames’ is a convenient way to generate genomic bins covering the entire genome (and in that case the supplied GRanges doesn’t even need to contain ranges). similar to tileGenome.&lt;/p&gt;
+&lt;p&gt;Note that calling &lt;code&gt;averagePerBin()&lt;/code&gt; without specifying ‘mcolnames’ is a convenient way to generate genomic bins covering the entire genome (and in that case the supplied GRanges doesn’t even need to contain ranges). similar to &lt;code&gt;tileGenome&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;empty_gr &amp;lt;- GRanges(seqinfo=seqinfo(Hsapiens))
 empty_gr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## GRanges object with 0 ranges and 0 metadata columns:
@@ -180,7 +180,7 @@ empty_gr&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;how-to-compute-averages-of-a-meta-column-from-one-granges-on-the-other-granges&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;How to compute averages of a meta column from one GRanges on the other GRanges&lt;/h4&gt;
-&lt;p&gt;see &lt;a href=&#34;https://support.bioconductor.org/p/57956/&#34;&gt;post&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;see a &lt;a href=&#34;https://support.bioconductor.org/p/57956/&#34;&gt;post&lt;/a&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;size &amp;lt;- 50000
 windowSize &amp;lt;- 10
 
@@ -191,7 +191,7 @@ GRwin &amp;lt;- GRanges(&amp;quot;chr1&amp;quot;, IRanges(start=(0:(size/windowS
 
 ## make a RleList object from the data
 score &amp;lt;- coverage(dat, weight=&amp;quot;score&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Then to summarize ‘score’ on your fixed-size tiling windows, you need a summarizing function like the binnedAverage() function shown in ?tileGenome. binnedAverage() computes the average on each window but it’s easy to write a summarizing function that computes the sum:&lt;/p&gt;
+&lt;p&gt;Then to summarize ‘score’ on your fixed-size tiling windows, you need a summarizing function like the &lt;code&gt;binnedAverage()&lt;/code&gt; function shown in &lt;code&gt;?tileGenome&lt;/code&gt;. &lt;code&gt;binnedAverage()&lt;/code&gt; computes the average on each window but it’s easy to write a summarizing function that computes the sum:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;binnedSum &amp;lt;- function(bins, numvar, mcolname)
 {
   stopifnot(is(bins, &amp;quot;GRanges&amp;quot;))
@@ -247,12 +247,12 @@ coverage(gr, weight=gr$scores)&lt;/code&gt;&lt;/pre&gt;
 ## numeric-Rle of length 100 with 3 runs
 ##   Lengths: 49  6 45
 ##   Values :  0 10  0&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Depending on your needs, the ranges which aren’t present in the GRanges object may effectively have missing scores and need to be NA, and 0 is a valid score for the ranges which are present. One hack would be to add 1 to all of the scores, replace the zeros in the coverage() result with NAs and subtract 1:&lt;/p&gt;
+&lt;p&gt;Depending on your needs, the ranges which aren’t present in the GRanges object may effectively have missing scores and need to be NA, and 0 is a valid score for the ranges which are present. One hack would be to add 1 to all of the scores, replace the zeros in the &lt;code&gt;coverage()&lt;/code&gt; result with NAs and subtract 1:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gr$scores &amp;lt;- gr$scores + 1L
 cov &amp;lt;- coverage(gr, weight  = &amp;quot;scores&amp;quot;)
 cov[cov == 0L] &amp;lt;- NA
 cov &amp;lt;- cov - 1L&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Alternatively you could call coverage() a 2nd time with no weights to find the regions with no coverage, and set them to NA:&lt;/p&gt;
+&lt;p&gt;Alternatively you could call &lt;code&gt;coverage()&lt;/code&gt; a 2nd time with no weights to find the regions with no coverage, and set them to NA:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cvg &amp;lt;- coverage(gr, weight=gr$scores)
 cvg[coverage(gr) == 0] &amp;lt;- NA&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;It turns out that there are functions to convert between meta data column and RleList. Just be careful with the different behaviors of different functions.&lt;/p&gt;

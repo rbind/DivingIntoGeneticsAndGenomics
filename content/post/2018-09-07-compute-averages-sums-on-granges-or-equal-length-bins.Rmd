@@ -49,7 +49,7 @@ compute the binned average for my_var
 binnedAverage(bins, my_var, "binned_var")
 ```
 
-The key is to convert any values (sequencing depth across the genome, RNA-seq counts etc) into a RleList object, then one can use the binnedAverage to calculate the average across each small bin of the genome.
+The key is to convert any values (sequencing depth across the genome, RNA-seq counts etc) into a RleList object, then one can use the `binnedAverage` to calculate the average across each small bin of the genome.
 
 #### Transformation of GRange object to density per bin
 
@@ -111,7 +111,7 @@ avg_per_bin[avg_per_bin$density > 0]
 
 ```
 
-Note that calling averagePerBin() without specifying ‘mcolnames’ is a convenient way to generate genomic bins covering the entire genome (and in that case the supplied GRanges doesn’t even need to contain ranges). similar to tileGenome.
+Note that calling `averagePerBin()` without specifying ‘mcolnames’ is a convenient way to generate genomic bins covering the entire genome (and in that case the supplied GRanges doesn’t even need to contain ranges). similar to `tileGenome`.
 
 ```{r}
 empty_gr <- GRanges(seqinfo=seqinfo(Hsapiens))
@@ -139,7 +139,7 @@ GRwin <- GRanges("chr1", IRanges(start=(0:(size/windowSize))*windowSize, width=w
 score <- coverage(dat, weight="score")
 ```
 
-Then to summarize ‘score’ on your fixed-size tiling windows, you need a summarizing function like the binnedAverage() function shown in ?tileGenome. binnedAverage() computes the average on each window but it’s easy to write a summarizing function that computes the sum:
+Then to summarize ‘score’ on your fixed-size tiling windows, you need a summarizing function like the `binnedAverage()` function shown in `?tileGenome`. `binnedAverage()` computes the average on each window but it’s easy to write a summarizing function that computes the sum:
 
 ```{r}
 binnedSum <- function(bins, numvar, mcolname)
@@ -177,7 +177,7 @@ coverage(gr, weight=gr$scores)
 ```
 
 Depending on your needs, the ranges which aren’t present in the GRanges object may effectively have missing scores and need to be NA, and 0 is a valid score for the ranges which are present.
-One hack would be to add 1 to all of the scores, replace the zeros in the coverage() result with NAs and subtract 1:
+One hack would be to add 1 to all of the scores, replace the zeros in the `coverage()` result with NAs and subtract 1:
 
 ```{r}
 gr$scores <- gr$scores + 1L
@@ -186,7 +186,7 @@ cov[cov == 0L] <- NA
 cov <- cov - 1L
 ```
 
-Alternatively you could call coverage() a 2nd time with no weights to find the regions with no coverage, and set them to NA:
+Alternatively you could call `coverage()` a 2nd time with no weights to find the regions with no coverage, and set them to NA:
 
 ```{r}
 cvg <- coverage(gr, weight=gr$scores)
