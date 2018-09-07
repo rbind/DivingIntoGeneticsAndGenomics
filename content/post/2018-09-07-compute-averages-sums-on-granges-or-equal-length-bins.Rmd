@@ -1,0 +1,226 @@
+---
+title: Compute averages/sums on GRanges or equal length bins
+author: Ming Tang
+date: '2018-09-07'
+slug: compute-averages-sums-on-granges-or-equal-length-bins
+categories:
+  - R
+  - genomics
+tags:
+  - GRanges
+header:
+  caption: ''
+  image: ''
+---
+
+Googling is a required technique for programmers. Once I have a programming problem in mind, the first thing I do is to google to see if other people have encountered the same problem and maybe they already have a solution. Do not re-invent the wheels.
+Actually, reading other people’s code and mimicing their code is a great way of learning. Today, I am going to show you how to compute binned averages/sums along a genome or any genomic regions of interest. All the codes I am going to show I found them online.
+
+#### How to compute binned averages along a genome
+
+I found it in the [How to tutorial](https://bioconductor.org/packages/release/bioc/vignettes/GenomicRanges/inst/doc/GenomicRangesHOWTOs.pdf) of the GRanges package.
+
+```{r, message=FALSE, warning=FALSE}
+# using yeast with smaller genome
+library(BSgenome.Scerevisiae.UCSC.sacCer2)
+library(GenomicRanges)
+set.seed(55)
+my_var <- RleList(
+        lapply(seqlengths(Scerevisiae),
+        function(seqlen) {
+        tmp <- sample(50L, seqlen, replace=TRUE) %/% 50L
+        Rle(cumsum(tmp - rev(tmp)))
+        }
+        ),
+        compress=FALSE)
+
+my_var
+```
+
+tile the whole genome to 100 bp bins
+
+```{r}
+bins <- tileGenome(seqinfo(Scerevisiae), tilewidth=100,cut.last.tile.in.chrom=TRUE)
+```
+
+compute the binned average for my_var
+
+```{r}
+binnedAverage(bins, my_var, "binned_var")
+```
+
+The key is to convert any values (sequencing depth across the genome, RNA-seq counts etc) into a RleList object, then one can use the binnedAverage to calculate the average across each small bin of the genome.
+
+#### Transformation of GRange object to density per bin
+
+see [post](https://stat.ethz.ch/pipermail/bioconductor/2013-January/050445.html)
+
+```{r}
+### 'x': a GenomicRanges objects with non-NA seqlengths.
+### 'binsize': a single positive integer.
+### 'mcolnames': names of numeric metadata columns in 'x' to "average"
+###              i.e. to propagate to the result after averaging them
+###              on each bin.
+### Returns a GRanges object with: (a) the same seqinfo as 'x',
+### (b) ranges of width 'binsize' covering all the sequences in
+### 'seqinfo(x)', and (c) the "averaged" metadata columns specified
+### in 'mcolnames'.
+
+averagePerBin <- function(x, binsize, mcolnames=NULL)
+{
+     if (!is(x, "GenomicRanges"))
+         stop("'x' must be a GenomicRanges object")
+     if (any(is.na(seqlengths(x))))
+         stop("'seqlengths(x)' contains NAs")
+     bins <- IRangesList(lapply(seqlengths(x),
+                                function(seqlen)
+                                  IRanges(breakInChunks(seqlen, binsize))))
+     ans <- as(bins, "GRanges")
+     seqinfo(ans) <- seqinfo(x)
+     if (is.null(mcolnames))
+         return(ans)
+     averageMCol <- function(colname)
+     {
+         cvg <- coverage(x, weight=colname)
+         views_list <- RleViewsList(
+                           lapply(names(cvg),
+                               function(seqname)
+                                   Views(cvg[[seqname]], bins[[seqname]])))
+         unlist(viewMeans(views_list), use.names=FALSE)
+     }
+     mcols(ans) <- DataFrame(lapply(mcols(x)[mcolnames], averageMCol))
+     ans
+}
+```
+
+```{r}
+library(BSgenome.Hsapiens.UCSC.hg19)
+
+testset.gr<- GRanges("chr1", IRanges(start=seq( 50000, 55000,by = 100), width=50), strand = "+")
+
+## Set the sequence lengths.
+seqlengths(testset.gr) <- seqlengths(Hsapiens)[seqlevels(testset.gr)]
+
+## Add the density metadata col.
+mcols(testset.gr)$density <- 100
+
+## Compute the average per bin for the specified metadata cols.
+avg_per_bin <- averagePerBin(testset.gr, 100, mcolnames="density")
+
+avg_per_bin[avg_per_bin$density > 0]
+
+```
+
+Note that calling averagePerBin() without specifying ‘mcolnames’ is a convenient way to generate genomic bins covering the entire genome (and in that case the supplied GRanges doesn’t even need to contain ranges). similar to tileGenome.
+
+```{r}
+empty_gr <- GRanges(seqinfo=seqinfo(Hsapiens))
+empty_gr
+```
+
+```{r}
+averagePerBin(empty_gr, 25000000)
+```
+
+#### How to compute averages of a meta column from one GRanges on the other GRanges
+
+see a [post](https://support.bioconductor.org/p/57956/)
+
+```{r}
+size <- 50000
+windowSize <- 10
+
+dat <- GRanges("chr1", IRanges(start=1:size, width=2), strand="+",score=sample(1:size, size))
+
+# windows
+GRwin <- GRanges("chr1", IRanges(start=(0:(size/windowSize))*windowSize, width=windowSize), strand="+")
+
+## make a RleList object from the data
+score <- coverage(dat, weight="score")
+```
+
+Then to summarize ‘score’ on your fixed-size tiling windows, you need a summarizing function like the binnedAverage() function shown in ?tileGenome. binnedAverage() computes the average on each window but it’s easy to write a summarizing function that computes the sum:
+
+```{r}
+binnedSum <- function(bins, numvar, mcolname)
+{
+  stopifnot(is(bins, "GRanges"))
+  stopifnot(is(numvar, "RleList"))
+  stopifnot(identical(seqlevels(bins), names(numvar)))
+  bins_per_chrom <- split(ranges(bins), seqnames(bins))
+  sums_list <- lapply(names(numvar),
+      function(seqname) {
+          views <- Views(numvar[[seqname]],
+                         bins_per_chrom[[seqname]])
+          viewSums(views)
+      })
+  new_mcol <- unsplit(sums_list, as.factor(seqnames(bins)))
+  mcols(bins)[[mcolname]] <- new_mcol
+  bins
+}
+
+
+GRwin2 <- binnedSum(GRwin, score, "binned_score")
+
+GRwin2
+```
+
+#### turning a GRanges metadata column into RleList object.
+
+see a [post](https://support.bioconductor.org/p/50014/)
+
+```{r}
+gr<- GRanges(c("chr1", "chr2"), IRanges(c(10, 50), c(16, 55)), scores= c(20, 10))
+seqlengths(gr) <- c(100, 100)
+
+coverage(gr, weight=gr$scores)
+```
+
+Depending on your needs, the ranges which aren’t present in the GRanges object may effectively have missing scores and need to be NA, and 0 is a valid score for the ranges which are present.
+One hack would be to add 1 to all of the scores, replace the zeros in the coverage() result with NAs and subtract 1:
+
+```{r}
+gr$scores <- gr$scores + 1L
+cov <- coverage(gr, weight  = "scores")
+cov[cov == 0L] <- NA
+cov <- cov - 1L
+```
+
+Alternatively you could call coverage() a 2nd time with no weights to find the regions with no coverage, and set them to NA:
+
+```{r}
+cvg <- coverage(gr, weight=gr$scores)
+cvg[coverage(gr) == 0] <- NA
+```
+
+It turns out that there are functions to convert between meta data column and RleList. Just be careful with the different behaviors of different functions.
+
+```{r}
+# ?bindAsGRanges
+# ?mcolAsRleList
+
+mcolAsRleList(gr, varname = "scores")
+```
+
+```{r}
+bindAsGRanges(cvg)
+```
+
+```{r}
+bindAsGRanges(coverage(gr,weight=gr$scores))
+```
+
+```{r}
+# or coerce using as
+as(cvg, "GRanges")
+```
+
+```{r}
+as(coverage(gr, weight = gr$scores), "GRanges")
+```
+
+#### subset RleList with GRanges
+
+```{r}
+cov[gr]
+```

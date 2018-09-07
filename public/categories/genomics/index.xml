@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Fri, 22 Jun 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 07 Sep 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/genomics/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Compute averages/sums on GRanges or equal length bins</title>
+      <link>/post/compute-averages-sums-on-granges-or-equal-length-bins/</link>
+      <pubDate>Fri, 07 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/compute-averages-sums-on-granges-or-equal-length-bins/</guid>
+      <description>Googling is a required technique for programmers. Once I have a programming problem in mind, the first thing I do is to google to see if other people have encountered the same problem and maybe they already have a solution. Do not re-invent the wheels. Actually, reading other people’s code and mimicing their code is a great way of learning. Today, I am going to show you how to compute binned averages/sums along a genome or any genomic regions of interest.</description>
+    </item>
     
     <item>
       <title>How to upload files to GEO</title>

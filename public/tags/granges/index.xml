@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GRanges on DNA confesses and Data speak</title>
+    <link>/tags/granges/</link>
+    <description>Recent content in GRanges on DNA confesses and Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Fri, 07 Sep 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/granges/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Compute averages/sums on GRanges or equal length bins</title>
+      <link>/post/compute-averages-sums-on-granges-or-equal-length-bins/</link>
+      <pubDate>Fri, 07 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/compute-averages-sums-on-granges-or-equal-length-bins/</guid>
+      <description>Googling is a required technique for programmers. Once I have a programming problem in mind, the first thing I do is to google to see if other people have encountered the same problem and maybe they already have a solution. Do not re-invent the wheels. Actually, reading other people’s code and mimicing their code is a great way of learning. Today, I am going to show you how to compute binned averages/sums along a genome or any genomic regions of interest.</description>
+    </item>
+    
+  </channel>
+</rss>
