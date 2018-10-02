@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Sun, 01 Jan 2017 00:00:00 -0600</lastBuildDate>
+    <lastBuildDate>Sun, 01 Jan 2017 00:00:00 -0500</lastBuildDate>
     
 	<atom:link href="/talk/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>From cell line to command line: my journey to bioinformatics</title>
       <link>/talk/2018-uf-talk/</link>
-      <pubDate>Fri, 31 Aug 2018 00:00:00 -0500</pubDate>
+      <pubDate>Fri, 31 Aug 2018 00:00:00 -0400</pubDate>
       
       <guid>/talk/2018-uf-talk/</guid>
       <description>I was invited to give a talk to my PhD Genetics and Genomics program at the University of Florida. I talked about my personal experience on how I started doing bioinformatics and shared tips and resources to get the students started their own journey into bioinformatics.
@@ -26,7 +26,7 @@ Embed your slides or video here using shortcodes. Further details can easily be 
     <item>
       <title>2018 Next-Gen Sequence Analysis Workshop</title>
       <link>/talk/2018-dibsi-course/</link>
-      <pubDate>Tue, 10 Jul 2018 00:00:00 -0500</pubDate>
+      <pubDate>Tue, 10 Jul 2018 00:00:00 -0400</pubDate>
       
       <guid>/talk/2018-dibsi-course/</guid>
       <description>I taught the ChIP-seq lesson for 2018 ANGUS Next-Gen Sequence Analysis Workshop held in UC Davis from 7/1/2018 to 7/14/2018, and TAed for the rest of the sessions. You can find my class link here and all the rest materials here. This is the first formal teaching I have done after I became a certified instructor for Data Carpentry. The same teaching skills applied!
@@ -37,7 +37,7 @@ Some tips for teaching:
     <item>
       <title>GS01 1143 Introduction to Bioinformatics course</title>
       <link>/talk/2017-gsbs-chipseq-class/</link>
-      <pubDate>Thu, 02 Nov 2017 00:00:00 -0500</pubDate>
+      <pubDate>Thu, 02 Nov 2017 00:00:00 -0400</pubDate>
       
       <guid>/talk/2017-gsbs-chipseq-class/</guid>
       <description>I taught the ChIP-seq bioinformatics lab for the GS01 1143 Introduction to Bioinformatics course to ~30 people with diverse background. Some of them did not have any experience with terminals. I walked through the materials slowly and it was well received!
@@ -50,7 +50,7 @@ Teaching in action!</description>
     <item>
       <title>University of Miami 2-day Software Carpentry workshop</title>
       <link>/talk/2015-miami-carpentry/</link>
-      <pubDate>Thu, 02 Apr 2015 00:00:00 -0500</pubDate>
+      <pubDate>Thu, 02 Apr 2015 00:00:00 -0400</pubDate>
       
       <guid>/talk/2015-miami-carpentry/</guid>
       <description>I was excited to teach Shell and R to a group of 20 biologists from the University of Miami. This event was sponsored by Software carpentry https://software-carpentry.org/ and the University of Miami. see the course info here.
