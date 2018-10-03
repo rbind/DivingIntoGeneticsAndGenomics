@@ -11,6 +11,91 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>set up my new mac laptop</title>
+      <link>/post/set-up-my-new-mac-laptop/</link>
+      <pubDate>Wed, 03 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/set-up-my-new-mac-laptop/</guid>
+      <description>
+
+&lt;p&gt;I am starting my first day at Harvard FAS informatics and I will keep a note here on how I set up my new laptop.&lt;/p&gt;
+
+&lt;h3 id=&#34;customize-terminal&#34;&gt;customize terminal&lt;/h3&gt;
+
+&lt;p&gt;following &lt;a href=&#34;https://gist.github.com/kevin-smets/8568070&#34; target=&#34;_blank&#34;&gt;this gist&lt;/a&gt;:&lt;/p&gt;
+
+&lt;p&gt;download iterm2 for mac &lt;a href=&#34;https://iterm2.com/downloads.html&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;install-on-my-zsh&#34;&gt;install on-my-zsh&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sh -c &amp;quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You will have to install git first for the upper command to work.
+Now, when you fire up your terminal, it looks much more prettier! (there are many other schemes for oh my zsh, I found the default is good. You can change it by modifying the .zshrc file in your home directory.)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Selecting a Theme&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Once you find a theme that you&amp;rsquo;d like to use, you will need to edit the ~/.zshrc file. You&amp;rsquo;ll see an environment variable (all caps) in there that looks like:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ZSH_THEME=&amp;quot;robbyrussell&amp;quot;&lt;/code&gt;
+To use a different theme, simply change the value to match the name of your desired theme. For example:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ZSH_THEME=&amp;quot;agnoster&amp;quot;&lt;/code&gt; # (this is one of the fancy ones)
+see &lt;a href=&#34;https://github.com/robbyrussell/oh-my-zsh/wiki/Themes#agnoster&#34; target=&#34;_blank&#34;&gt;https://github.com/robbyrussell/oh-my-zsh/wiki/Themes#agnoster&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;install-conda&#34;&gt;install conda&lt;/h3&gt;
+
+&lt;p&gt;install &lt;code&gt;conda&lt;/code&gt;, go to &lt;a href=&#34;https://www.anaconda.com/download/#macos&#34; target=&#34;_blank&#34;&gt;https://www.anaconda.com/download/#macos&lt;/a&gt; and download the graphic installer. It is ~600 MB and take some time.&lt;/p&gt;
+
+&lt;p&gt;Usually &lt;code&gt;conda&lt;/code&gt; is installed in the home directory. Somehow, it was installed in the &lt;code&gt;/&lt;/code&gt; root.&lt;/p&gt;
+
+&lt;p&gt;add the following to the &lt;code&gt;~/.zshrc&lt;/code&gt; file&lt;/p&gt;
+
+&lt;p&gt;put conda after the &lt;code&gt;$PATH&lt;/code&gt;, otherwise somehow &lt;code&gt;oh-my-zsh&lt;/code&gt; will not work properly (the folders are not displayed with color etc)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export PATH=$PATH:&amp;quot;/anaconda3/bin&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;file-editor&#34;&gt;file editor&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;sublime&lt;/code&gt; or &lt;code&gt;Atom&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;download &lt;code&gt;sublime&lt;/code&gt; from &lt;a href=&#34;https://www.sublimetext.com/3&#34; target=&#34;_blank&#34;&gt;https://www.sublimetext.com/3&lt;/a&gt; and install it.&lt;/p&gt;
+
+&lt;p&gt;if you want to open sublime in terminal&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;open /Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl
+
+# make a symbolic link for it
+ln -s &amp;quot;/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl&amp;quot; /usr/local/bin/sublime
+
+# now you can
+sublime my.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;install-r-and-rstudio&#34;&gt;install R and Rstudio&lt;/h3&gt;
+
+&lt;p&gt;The current R version is R3.5.1. Download it from &lt;a href=&#34;https://cran.cnr.berkeley.edu&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Install Rstudio v1.2.1013-1.
+I installed the &lt;a href=&#34;https://www.rstudio.com/products/rstudio/download/preview/&#34; target=&#34;_blank&#34;&gt;preview version&lt;/a&gt; of Rstudio because it can evalute python code directly throught &lt;a href=&#34;https://github.com/rstudio/reticulate&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;reticulate&lt;/code&gt;&lt;/a&gt;. I&amp;rsquo;ve used &lt;code&gt;pycharm&lt;/code&gt; before, but it is too clunky for me. One can of course set up both R and python inside &lt;code&gt;sublime&lt;/code&gt; or &lt;code&gt;Atom&lt;/code&gt;, but I do not want to leave &lt;code&gt;Rstudio&lt;/code&gt; :)&lt;/p&gt;
+
+&lt;h3 id=&#34;install-docker&#34;&gt;install docker&lt;/h3&gt;
+
+&lt;p&gt;follow &lt;a href=&#34;https://docs.docker.com/docker-for-mac/install/&#34; target=&#34;_blank&#34;&gt;https://docs.docker.com/docker-for-mac/install/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;install-slack&#34;&gt;install slack&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://slack.com&#34; target=&#34;_blank&#34;&gt;Slack&lt;/a&gt; For team communication&lt;/p&gt;
+
+&lt;h3 id=&#34;install-notion&#34;&gt;install Notion&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.notion.so&#34; target=&#34;_blank&#34;&gt;Notion&lt;/a&gt; For to-do list&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Compute averages/sums on GRanges or equal length bins</title>
       <link>/post/compute-averages-sums-on-granges-or-equal-length-bins/</link>
       <pubDate>Fri, 07 Sep 2018 00:00:00 +0000</pubDate>
@@ -1084,16 +1169,6 @@ Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/a
       <pubDate>Mon, 14 Aug 2017 00:00:00 -0400</pubDate>
       
       <guid>/publication/2016-06-21-mof-emt/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Functional interrelationship between TFII-I and E2F transcription factors at specific cell cycle gene loci</title>
-      <link>/publication/2017-06-28-tfii-i-e2f/</link>
-      <pubDate>Wed, 28 Jun 2017 00:00:00 -0400</pubDate>
-      
-      <guid>/publication/2017-06-28-tfii-i-e2f/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>

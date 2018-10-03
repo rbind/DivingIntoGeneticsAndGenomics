@@ -13,6 +13,18 @@
     
     
     <item>
+      <title>set up my new mac laptop</title>
+      <link>/post/set-up-my-new-mac-laptop/</link>
+      <pubDate>Wed, 03 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/set-up-my-new-mac-laptop/</guid>
+      <description>I am starting my first day at Harvard FAS informatics and I will keep a note here on how I set up my new laptop.
+customize terminal following this gist:
+download iterm2 for mac here.
+install on-my-zsh sh -c &amp;quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&amp;quot;  You will have to install git first for the upper command to work. Now, when you fire up your terminal, it looks much more prettier! (there are many other schemes for oh my zsh, I found the default is good.</description>
+    </item>
+    
+    <item>
       <title>Compute averages/sums on GRanges or equal length bins</title>
       <link>/post/compute-averages-sums-on-granges-or-equal-length-bins/</link>
       <pubDate>Fri, 07 Sep 2018 00:00:00 +0000</pubDate>

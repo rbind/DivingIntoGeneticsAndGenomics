@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/set-up-my-new-mac-laptop/</loc>
+      <lastmod>2018-10-03T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/compute-averages-sums-on-granges-or-equal-length-bins/</loc>
       <lastmod>2018-09-07T00:00:00+00:00</lastmod>
     </url>
@@ -313,6 +322,16 @@
     
     <url>
     
+      <loc>/categories/config/</loc>
+      <lastmod>2018-10-03T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/</loc>
       <lastmod>2017-10-15T00:00:00-04:00</lastmod>
       <priority>0</priority>
@@ -363,6 +382,16 @@
     
     <url>
     
+      <loc>/tags/genomics/</loc>
+      <lastmod>2016-04-27T00:00:00-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/categories/genomics/</loc>
       <lastmod>2018-09-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -373,8 +402,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2016-04-27T00:00:00-04:00</lastmod>
+      <loc>/tags/mac-setup/</loc>
+      <lastmod>2018-10-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
