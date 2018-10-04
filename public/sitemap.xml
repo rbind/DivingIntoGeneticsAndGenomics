@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/set-up-ssh-odyssey-hpc/</loc>
+      <lastmod>2018-10-04T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/set-up-my-new-mac-laptop/</loc>
       <lastmod>2018-10-03T00:00:00+00:00</lastmod>
     </url>
@@ -402,6 +411,16 @@
     
     <url>
     
+      <loc>/categories/hpc/</loc>
+      <lastmod>2018-10-04T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/mac-setup/</loc>
       <lastmod>2018-10-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -454,6 +473,16 @@
     
       <loc>/tags/snakemake/</loc>
       <lastmod>2016-04-27T00:00:00-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/ssh/</loc>
+      <lastmod>2018-10-04T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

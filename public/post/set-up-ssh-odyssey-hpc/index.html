@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="request an account following here.
+ Harvard odyssey HPC requires a two-factor security login. First set up the VPN following here
+ Then read about OpenAuth here. One can download mobile apps such as Duo and google-Authenticator on your phone, but then each time you will need to type the password to the terminal. Or you can download the java program for desktop, if you have a FAS research computing account, you should be able to download it from the link FASRC send you.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/set-up-ssh-odyssey-hpc/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses and Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses and Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/set-up-ssh-odyssey-hpc/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses and Data speak">
+  <meta property="og:url" content="/post/set-up-ssh-odyssey-hpc/">
+  <meta property="og:title" content="set up ssh odyssey HPC | DNA confesses and Data speak">
+  <meta property="og:description" content="request an account following here.
+ Harvard odyssey HPC requires a two-factor security login. First set up the VPN following here
+ Then read about OpenAuth here. One can download mobile apps such as Duo and google-Authenticator on your phone, but then each time you will need to type the password to the terminal. Or you can download the java program for desktop, if you have a FAS research computing account, you should be able to download it from the link FASRC send you.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2018-10-04T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2018-10-04T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>set up ssh odyssey HPC | DNA confesses and Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses and Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">set up ssh odyssey HPC</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2018-10-04 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Oct 4, 2018
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    5 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/set-up-ssh-odyssey-hpc/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/hpc/">HPC</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=set%20up%20ssh%20odyssey%20HPC&amp;url=%2fpost%2fset-up-ssh-odyssey-hpc%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fset-up-ssh-odyssey-hpc%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fset-up-ssh-odyssey-hpc%2f&amp;title=set%20up%20ssh%20odyssey%20HPC"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fset-up-ssh-odyssey-hpc%2f&amp;title=set%20up%20ssh%20odyssey%20HPC"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=set%20up%20ssh%20odyssey%20HPC&amp;body=%2fpost%2fset-up-ssh-odyssey-hpc%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<ol>
+<li><p>request an account following <a href="https://www.rc.fas.harvard.edu/resources/faq/how-do-i-get-a-research-computing-account/" target="_blank">here</a>.</p></li>
+
+<li><p>Harvard odyssey HPC requires a two-factor security login. First set up the VPN following <a href="https://www.rc.fas.harvard.edu/resources/vpn-setup/" target="_blank">here</a></p></li>
+
+<li><p>Then read about OpenAuth <a href="https://www.rc.fas.harvard.edu/resources/documentation/openauth/" target="_blank">here</a>. One can download mobile apps such as <code>Duo</code> and <code>google-Authenticator</code> on your phone, but then each time you will need to type the password to the terminal. Or you can download the java program for desktop, if you have a FAS research computing account, you should be able to download it from the link FASRC send you. I downloaded a folder like <code>mtang-openauth</code>. The prefix will be your HPC account name.</p></li>
+</ol>
+
+<pre><code class="language-bash">cd mtang-openauth
+./mtang-openauth.sh
+No Java runtime present, requesting install.
+</code></pre>
+
+<p>You will have to install <code>java</code> first. My mac prompt a window for downloading, click <code>More Info</code>, it will bring you to a webpage for downloading.</p>
+
+<p>After you install <code>java</code>, type <code>./mtang-openauth.sh</code>, a little green box with the 6 digits verification code will show up in the upper-right corner of your screen.</p>
+
+<p>Fire-up iterm2:</p>
+
+<pre><code class="language-bash">ssh mtang@odyssey.rc.fas.harvard.edu
+
+# it will prompt for password and then the verification code.
+# type in the password for your account
+# copy the 6-digits verification code and paste to your iterm window
+</code></pre>
+
+<p>This is kind of annoying if I have to do this everytime. It takes me ~2 seconds to type or copy/paste from the java desktop app, but what if I automate this. suppose I log into the HPC 10 times a day and 300 days per year. I save <code>2x10x300 = 6000</code> seconds, that&rsquo;s  100 minutes a year :) The following may take me ~1 hour to set up, but I hope it can save you some time by following this.</p>
+
+<h4 id="generate-ssh-key-for-password-less-login">generate ssh key for password-less login</h4>
+
+<p>Note, I have done this a couple of times, but I still need to google it everytime I set it up. I have told you googling is an essential skill for bioinformaticians :)</p>
+
+<p>On your mac:</p>
+
+<pre><code class="language-bash">ssh-keygen -b 2048
+
+Generating public/private rsa key pair.
+Enter file in which to save the key (/Users/mingtang/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /Users/mingtang/.ssh/id_rsa.
+Your public key has been saved in /Users/mingtang/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:8LOJnp1rv5BZY9yoHVcrQarTnhW5Ih+eK8dA1+rxYao mingtang@huitadmins-MacBook-Pro.local
+The key's randomart image is:
++---[RSA 2048]----+
+|            .    |
+|           o .   |
+|      .   ..+ .  |
+|       o.+.o.= . |
+|       .S.@.* .  |
+|       ..^oXo.   |
+|      . B+B= .   |
+|     . ooo=..    |
+|      o.E*+.     |
++----[SHA256]-----+
+
+</code></pre>
+
+<p>tell <code>ssh-agent</code> about our key, we use <code>ssh-add</code>:</p>
+
+<pre><code class="language-bash">ssh-add
+</code></pre>
+
+<p>This creates a private key at <code>~/.ssh/id_rsa</code> and a public key at <code>~/.ssh/id_rsa.pub</code>.</p>
+
+<p>Now, <code>ssh</code> to <strong>odyssey HPC</strong>:</p>
+
+<pre><code class="language-bash">ssh mtang@odyssey.rc.fas.harvard.edu
+# type in the passowrd
+# copy paste the 6-digit verification code in the green box
+# you will be logged in your home directory
+ 
+cd .ssh
+</code></pre>
+
+<p>append your public key file (id_rsa.pub, not your private key!) on your mac (open the file, copy it) to <code>~/.ssh/authorized_keys</code> on the HPC.</p>
+
+<p>I asked Aaron in the group and it turns out one can not skip the 2-factor system for password-less login on the <code>odyssey.rc.fas.harvard.edu</code> login node.</p>
+
+<p>However, there are other nodes that are specific for our group. Let me take a note down here.</p>
+
+<pre><code># 120 TB storage space
+/n/holylfs/LABS/informatics
+
+/n/boslfs/{INSTRUMENTS,ANALYSIS}
+/n/informatics
+
+# computing nodes for our group only
+bioinf01:/scratch
+bioinf02:/scratch
+
+# files of more than 90 days old will be deleted without notification
+/n/regal/informatics
+/n/regal/informatics-public
+</code></pre>
+
+<p>The <code>bioinf0{1,2}</code> nodes are only for our group and it has 64 CPUs and can be used as computing nodes. It can be used as a login node as well and no 2-factor is needed.</p>
+
+<pre><code class="language-bash">ssh mtang@bioinf01.rc.fas.harvard.edu
+
+# it brings me to the same home direcory as in the odyssey.rc.fas.harvard.edu login node.
+# 
+# The scratch space is only for our group
+cd /scratch
+mkdir mtang
+</code></pre>
+
+<p>Because I have set up the <code>ssh-key</code>, I do not need to type any password!</p>
+
+<h4 id="otp-token-paster-for-os-x">OTP Token Paster for OS X</h4>
+
+<p>Follow <a href="https://github.com/jwm/os-x-otp-token-paster" target="_blank">here</a></p>
+
+<ul>
+<li>Install Homebrew</li>
+</ul>
+
+<pre><code class="language-bash">/usr/bin/ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;
+brew install oath-toolkit
+</code></pre>
+
+<ul>
+<li>If it isn&rsquo;t already present, enter <code>secret=YOUR_BASE32_ENCODED_SECRET</code> in <code>~/.JAuth.rc</code>.</li>
+</ul>
+
+<pre><code class="language-bash"># I have Services folder in my mac
+mkdir -p ~/Library/Services
+git clone https://github.com/jwm/os-x-otp-token-paster
+cd os-x-otp-token-paster
+mv 'Enter Current TOTP Token.workflow' ~/Library/Services
+</code></pre>
+
+<ul>
+<li>Open System Preferences -&gt; Keyboard -&gt; Keyboard Shortcuts -&gt; Services -&gt; Enter Current OTP Token (probably way down at the bottom).</li>
+<li>Click &lsquo;add shortcut&rsquo; and enter the key combination you want to use.I use <code>control + shift + U</code></li>
+</ul>
+
+<pre><code class="language-bash">ssh mtang@odyssey.rc.fas.harvard.edu
+# type in password
+# when prompt for verificartion code
+# use the short-cut: control+shift+U 
+</code></pre>
+
+<h4 id="controlmaster-for-ssh">ControlMaster for ssh</h4>
+
+<p>Please follow <a href="https://www.rc.fas.harvard.edu/resources/documentation/linux/using-ssh-controlmaster-for-single-sign-on/" target="_blank">here</a> to set it up.</p>
+
+<p>with this, you only need to type in the password and verification code once. The subsequent logins will be password-less for the <code>odyssey.rc.fas.harvard.edu</code> login node.</p>
+
+<blockquote>
+<p>OpenSSH has an option called ControlMaster that enables the sharing of multiple sessions over a single network connection. This means that you can connect to Odyssey once, enter your password and Verification code, and have all other subsequent ssh sessions (including svn, rsync, etc. that run over ssh) piggy-back off the initial connection without need for re-authentication. You can specify such options each time on the command line, but it&rsquo;s easiest if you put it in your ssh client configuration file so that it applies every time.</p>
+</blockquote>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/ssh/">ssh</a>
+  
+</div>
+
+
+
+
+    
+    
+
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/R.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+
