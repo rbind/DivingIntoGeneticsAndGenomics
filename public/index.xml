@@ -98,36 +98,6 @@ cd .ssh
 
 &lt;p&gt;I asked Aaron in the group and it turns out one can not skip the 2-factor system for password-less login on the &lt;code&gt;odyssey.rc.fas.harvard.edu&lt;/code&gt; login node.&lt;/p&gt;
 
-&lt;p&gt;However, there are other nodes that are specific for our group. Let me take a note down here.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# 120 TB storage space
-/n/holylfs/LABS/informatics
-
-/n/boslfs/{INSTRUMENTS,ANALYSIS}
-/n/informatics
-
-# computing nodes for our group only
-bioinf01:/scratch
-bioinf02:/scratch
-
-# files of more than 90 days old will be deleted without notification
-/n/regal/informatics
-/n/regal/informatics-public
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The &lt;code&gt;bioinf0{1,2}&lt;/code&gt; nodes are only for our group and it has 64 CPUs and can be used as computing nodes. It can be used as a login node as well and no 2-factor is needed.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh mtang@bioinf01.rc.fas.harvard.edu
-
-# it brings me to the same home direcory as in the odyssey.rc.fas.harvard.edu login node.
-# 
-# The scratch space is only for our group
-cd /scratch
-mkdir mtang
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Because I have set up the &lt;code&gt;ssh-key&lt;/code&gt;, I do not need to type any password!&lt;/p&gt;
-
 &lt;h4 id=&#34;otp-token-paster-for-os-x&#34;&gt;OTP Token Paster for OS X&lt;/h4&gt;
 
 &lt;p&gt;Follow &lt;a href=&#34;https://github.com/jwm/os-x-otp-token-paster&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;&lt;/p&gt;

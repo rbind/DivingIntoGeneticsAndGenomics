@@ -92,37 +92,6 @@ append your public key file (id_rsa.pub, not your private key!) on your mac (ope
 
 I asked Aaron in the group and it turns out one can not skip the 2-factor system for password-less login on the `odyssey.rc.fas.harvard.edu` login node.
 
-However, there are other nodes that are specific for our group. Let me take a note down here.
-
-```
-# 120 TB storage space
-/n/holylfs/LABS/informatics
-
-/n/boslfs/{INSTRUMENTS,ANALYSIS}
-/n/informatics
-
-# computing nodes for our group only
-bioinf01:/scratch
-bioinf02:/scratch
-
-# files of more than 90 days old will be deleted without notification
-/n/regal/informatics
-/n/regal/informatics-public
-```
-
-The `bioinf0{1,2}` nodes are only for our group and it has 64 CPUs and can be used as computing nodes. It can be used as a login node as well and no 2-factor is needed.
-
-```bash
-ssh mtang@bioinf01.rc.fas.harvard.edu
-
-# it brings me to the same home direcory as in the odyssey.rc.fas.harvard.edu login node.
-# 
-# The scratch space is only for our group
-cd /scratch
-mkdir mtang
-```
-Because I have set up the `ssh-key`, I do not need to type any password!
-
 
 #### OTP Token Paster for OS X
 
