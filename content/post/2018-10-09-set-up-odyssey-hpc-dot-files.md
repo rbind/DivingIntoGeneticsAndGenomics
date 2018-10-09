@@ -132,7 +132,7 @@ make install
 
 In the `~/.profiled.d/01_odyssey_config.sh` file, add two lines:
 
-`export ODYAPPS="${HOME}/apps`
+`export ODYAPPS="${HOME}/apps`  
 `mypathmunge $ODYPPS/ncdu/ncdu-1.13/bin after`
 
 ```bash

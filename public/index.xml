@@ -135,7 +135,7 @@ make install
 
 &lt;p&gt;In the &lt;code&gt;~/.profiled.d/01_odyssey_config.sh&lt;/code&gt; file, add two lines:&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;export ODYAPPS=&amp;quot;${HOME}/apps&lt;/code&gt;
+&lt;p&gt;&lt;code&gt;export ODYAPPS=&amp;quot;${HOME}/apps&lt;/code&gt;&lt;br /&gt;
 &lt;code&gt;mypathmunge $ODYPPS/ncdu/ncdu-1.13/bin after&lt;/code&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;source ~/.bash_profile
