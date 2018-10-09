@@ -11,6 +11,141 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>set up odyssey HPC dot files</title>
+      <link>/post/set-up-odyssey-hpc-dot-files/</link>
+      <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/set-up-odyssey-hpc-dot-files/</guid>
+      <description>
+
+&lt;h3 id=&#34;dot-files&#34;&gt;dot files&lt;/h3&gt;
+
+&lt;p&gt;Those files are originally got from &lt;a href=&#34;https://sbamin.com/about&#34; target=&#34;_blank&#34;&gt;Samir Amin&lt;/a&gt;, my labmate in &lt;a href=&#34;https://www.jax.org/research-and-faculty/faculty/roel-verhaak&#34; target=&#34;_blank&#34;&gt;Roel Verhaak&amp;rsquo;s lab&lt;/a&gt;. Thanks for sharing!&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;.screenrc&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;.bashrc&lt;/code&gt;&lt;br /&gt;
+&lt;code&gt;.bash_profile&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;and inside &lt;code&gt;.profile.d&lt;/code&gt; folder, there is a file named &lt;code&gt;01_odyssey_config.sh&lt;/code&gt;. It was executed when you login the shell.&lt;/p&gt;
+
+&lt;p&gt;You can grab my dot files in my github &lt;a href=&#34;https://github.com/crazyhottommy/odyssey_dot_files&#34; target=&#34;_blank&#34;&gt;repo&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Inside the &lt;code&gt;.bash_profile&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;if [ -d $HOME/.profile.d ]; then
+  for i in $HOME/.profile.d/*.sh; do
+    if [ -r $i ]; then
+          if [ &amp;quot;${-#*i}&amp;quot; != &amp;quot;$-&amp;quot; ]; then
+            . &amp;quot;$i&amp;quot; &amp;gt;/dev/null 2&amp;gt;&amp;amp;1
+        else
+            . &amp;quot;$i&amp;quot; &amp;gt;/dev/null 2&amp;gt;&amp;amp;1
+        fi
+    fi
+  done
+  unset i
+fi
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;add or remove path in the &lt;code&gt;01_odyssey_config.sh&lt;/code&gt; file. load modules in this file as well.&lt;/p&gt;
+
+&lt;h3 id=&#34;install-conda&#34;&gt;install conda&lt;/h3&gt;
+
+&lt;p&gt;install conda to my home directory &lt;code&gt;/n/home02/mtang&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;After finishing installing, it will ask&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Do you wish the installer to initialize Anaconda3
+in your /n/home02/mtang/.bashrc ? [yes|no]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I chosed &lt;code&gt;no&lt;/code&gt;. It showed me&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;You may wish to edit your /n/home02/mtang/.bashrc to setup Anaconda3:
+
+source /n/home02/mtang/anaconda3/etc/profile.d/conda.sh
+
+Thank you for installing Anaconda3!
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I guess I got why Samir set up the dot files (has a .profile.d folder) like this. &lt;code&gt;conda&lt;/code&gt; is doing similar with &lt;code&gt;source /n/home02/mtang/anaconda3/etc/profile.d/conda.sh&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;add conda to PATH&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;In the &lt;code&gt;~/.profiled.d/01_odyssey_config.sh&lt;/code&gt;, add one line:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;mypathmunge ${HOME}/anaconda3/bin&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;mypathmunge&lt;/code&gt; is a function inside the &lt;code&gt;.bash_profile&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
+mypathmunge () {
+    case &amp;quot;:${PATH}:&amp;quot; in
+        *:&amp;quot;$1&amp;quot;:*)
+            ;;
+        *)
+            if [ &amp;quot;$2&amp;quot; = &amp;quot;after&amp;quot; ] ; then
+                PATH=$PATH:$1
+            else
+                PATH=$1:$PATH
+            fi
+    esac
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;it will add the &lt;code&gt;${HOME}/anaconda3/bin&lt;/code&gt; in front of the $PATH. If you want to append it to $PATH, do &lt;code&gt;mypathmunge ${HOME}/anaconda3/bin after&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;source .bash_profile
+which conda
+~/anaconda3/bin/conda
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A side note. see &lt;a href=&#34;https://apple.stackexchange.com/questions/51036/what-is-the-difference-between-bash-profile-and-bashrc&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt; for the difference between &lt;code&gt;.bashrc&lt;/code&gt; and &lt;code&gt;.bash_profile&lt;/code&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;.bash_profile is executed for login shells, while .bashrc is executed for interactive non-login shells.&lt;/p&gt;
+
+&lt;p&gt;When you login (type username and password) via console, either sitting at the machine, or remotely via ssh: .bash_profile is executed to configure your shell before the initial command prompt.&lt;/p&gt;
+
+&lt;p&gt;But, if you’ve already logged into your machine and open a new terminal window (xterm) then .bashrc is executed before the window command prompt. .bashrc is also run when you start a new bash instance by typing /bin/bash in a terminal.&lt;/p&gt;
+
+&lt;p&gt;On OS X, Terminal by default runs a login shell every time, so this is a little different to most other systems, but you can configure that in the preferences.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html&#34; target=&#34;_blank&#34;&gt;This&lt;/a&gt; is a very helpful blog post to understand the differences.&lt;/p&gt;
+
+&lt;h3 id=&#34;dedicating-a-folder-for-installing-tools&#34;&gt;Dedicating a folder for installing tools&lt;/h3&gt;
+
+&lt;p&gt;usually, install tools with &lt;code&gt;conda&lt;/code&gt;. If there is no recipe in conda. I will downlad the source to &lt;code&gt;~/apps&lt;/code&gt; and compile there.&lt;/p&gt;
+
+&lt;p&gt;Then in the &lt;code&gt;~/.profiled.d/01_odyssey_config.sh&lt;/code&gt; file, add the executable to the PATH.&lt;/p&gt;
+
+&lt;p&gt;e.g. I want to install &lt;code&gt;ncdu&lt;/code&gt; to check disk usage&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;mkdir apps
+cd apps
+mkdir ncdu; cd ncdu
+wget https://dev.yorhel.nl/download/ncdu-1.13.tar.gz
+tar xvzf  ncdu-1.13.tar.gz
+cd ncdu-1.13
+
+./configure --prefix=${HOME}/apps/ncdu/ncdu-1.13
+make 
+make install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In the &lt;code&gt;~/.profiled.d/01_odyssey_config.sh&lt;/code&gt; file, add two lines:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;export ODYAPPS=&amp;quot;${HOME}/apps&lt;/code&gt;
+&lt;code&gt;mypathmunge $ODYPPS/ncdu/ncdu-1.13/bin after&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;source ~/.bash_profile
+# now ready to go
+ncdu
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
       <title>set up ssh odyssey HPC</title>
       <link>/post/set-up-ssh-odyssey-hpc/</link>
       <pubDate>Thu, 04 Oct 2018 00:00:00 +0000</pubDate>
@@ -1284,16 +1419,6 @@ I plan to develope it to a &lt;a href=&#34;http://www.datacarpentry.org/&#34; ta
 &lt;p&gt;Teaching in action!
 &lt;img src=&#34;/img/teaching3.jpg&#34; alt=&#34;&#34; /&gt;
 Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Integrative Analysis Identifies Four Molecular and Clinical Subsets in Uveal Melanoma</title>
-      <link>/publication/2017-08-14-uveal-melanoma/</link>
-      <pubDate>Mon, 14 Aug 2017 00:00:00 -0400</pubDate>
-      
-      <guid>/publication/2017-08-14-uveal-melanoma/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     

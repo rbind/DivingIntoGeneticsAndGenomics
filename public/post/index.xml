@@ -13,6 +13,22 @@
     
     
     <item>
+      <title>set up odyssey HPC dot files</title>
+      <link>/post/set-up-odyssey-hpc-dot-files/</link>
+      <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/set-up-odyssey-hpc-dot-files/</guid>
+      <description>dot files Those files are originally got from Samir Amin, my labmate in Roel Verhaak&amp;rsquo;s lab. Thanks for sharing!
+.screenrc
+.bashrc
+.bash_profile
+and inside .profile.d folder, there is a file named 01_odyssey_config.sh. It was executed when you login the shell.
+You can grab my dot files in my github repo.
+Inside the .bash_profile:
+if [ -d $HOME/.profile.d ]; then for i in $HOME/.profile.d/*.sh; do if [ -r $i ]; then if [ &amp;quot;${-#*i}&amp;quot; !</description>
+    </item>
+    
+    <item>
       <title>set up ssh odyssey HPC</title>
       <link>/post/set-up-ssh-odyssey-hpc/</link>
       <pubDate>Thu, 04 Oct 2018 00:00:00 +0000</pubDate>

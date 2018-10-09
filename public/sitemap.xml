@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/set-up-odyssey-hpc-dot-files/</loc>
+      <lastmod>2018-10-09T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/set-up-ssh-odyssey-hpc/</loc>
       <lastmod>2018-10-04T00:00:00+00:00</lastmod>
     </url>
@@ -371,6 +380,16 @@
     
     <url>
     
+      <loc>/tags/dotfile/</loc>
+      <lastmod>2018-10-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/geo/</loc>
       <lastmod>2018-06-22T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -412,7 +431,7 @@
     <url>
     
       <loc>/categories/hpc/</loc>
-      <lastmod>2018-10-04T00:00:00+00:00</lastmod>
+      <lastmod>2018-10-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
