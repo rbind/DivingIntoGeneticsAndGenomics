@@ -13,6 +13,18 @@
     
     
     <item>
+      <title>open files on remote with sublime by ssh</title>
+      <link>/post/open-files-on-remote-with-sublime-by-ssh/</link>
+      <pubDate>Wed, 10 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/open-files-on-remote-with-sublime-by-ssh/</guid>
+      <description>I am still suck at vim or emacs. I use nano to edit files on remote machines. But for more complicated editing, I prefer to use sublime.
+use this https://github.com/randy3k/RemoteSubl for editing remote files.
+Steps:
+on remote machine, install rmate ssh bio1 curl -o ~/bin/rmate https://raw.githubusercontent.com/aurora/rmate/master/rmate chmod u+x bin/rmate  on your local computer, install RemoteSubl on your local computer, open sublime, click tools &amp;ndash;&amp;gt; Command Palette &amp;ndash;&amp;gt; type Package control:Install Package &amp;ndash;&amp;gt; type RemoteSubl to install.</description>
+    </item>
+    
+    <item>
       <title>set up odyssey HPC dot files</title>
       <link>/post/set-up-odyssey-hpc-dot-files/</link>
       <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>

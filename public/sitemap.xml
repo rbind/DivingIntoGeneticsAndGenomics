@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/open-files-on-remote-with-sublime-by-ssh/</loc>
+      <lastmod>2018-10-10T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/set-up-odyssey-hpc-dot-files/</loc>
       <lastmod>2018-10-09T00:00:00+00:00</lastmod>
     </url>
@@ -410,16 +419,6 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2018-09-07T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/tags/genomics/</loc>
       <lastmod>2016-04-27T00:00:00-04:00</lastmod>
       <priority>0</priority>
@@ -430,8 +429,18 @@
     
     <url>
     
+      <loc>/categories/genomics/</loc>
+      <lastmod>2018-09-07T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/categories/hpc/</loc>
-      <lastmod>2018-10-09T00:00:00+00:00</lastmod>
+      <lastmod>2018-10-10T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -501,7 +510,7 @@
     <url>
     
       <loc>/tags/ssh/</loc>
-      <lastmod>2018-10-04T00:00:00+00:00</lastmod>
+      <lastmod>2018-10-10T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

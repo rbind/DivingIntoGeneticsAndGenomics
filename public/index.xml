@@ -11,6 +11,40 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>open files on remote with sublime by ssh</title>
+      <link>/post/open-files-on-remote-with-sublime-by-ssh/</link>
+      <pubDate>Wed, 10 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/open-files-on-remote-with-sublime-by-ssh/</guid>
+      <description>
+
+&lt;p&gt;I am still suck at &lt;code&gt;vim&lt;/code&gt; or &lt;code&gt;emacs&lt;/code&gt;. I use &lt;code&gt;nano&lt;/code&gt; to edit files on remote machines. But for more complicated editing, I prefer to use sublime.&lt;/p&gt;
+
+&lt;p&gt;use this &lt;a href=&#34;https://github.com/randy3k/RemoteSubl&#34; target=&#34;_blank&#34;&gt;https://github.com/randy3k/RemoteSubl&lt;/a&gt; for editing remote files.&lt;/p&gt;
+
+&lt;p&gt;Steps:&lt;/p&gt;
+
+&lt;h3 id=&#34;on-remote-machine-install-rmate&#34;&gt;on remote machine, install &lt;code&gt;rmate&lt;/code&gt;&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh bio1
+curl -o ~/bin/rmate https://raw.githubusercontent.com/aurora/rmate/master/rmate
+
+chmod u+x bin/rmate
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;on-your-local-computer-install-remotesubl&#34;&gt;on your local computer, install &lt;code&gt;RemoteSubl&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;on your &lt;strong&gt;local&lt;/strong&gt; computer, open &lt;code&gt;sublime&lt;/code&gt;, click &lt;code&gt;tools&lt;/code&gt; &amp;ndash;&amp;gt; &lt;code&gt;Command Palette&lt;/code&gt; &amp;ndash;&amp;gt; type Package control:Install Package &amp;ndash;&amp;gt; type &lt;code&gt;RemoteSubl&lt;/code&gt; to install.&lt;/p&gt;
+
+&lt;h3 id=&#34;change-your-ssh-config-file&#34;&gt;change your ssh config file&lt;/h3&gt;
+
+&lt;p&gt;add &lt;code&gt;RemoteForward 52698 localhost:52698&lt;/code&gt; to your &lt;code&gt;~/.ssh/config&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;p&gt;Now,  ssh to remote, and you can do &lt;code&gt;rmate my.txt&lt;/code&gt; in your remote and open sublime in your local machine.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>set up odyssey HPC dot files</title>
       <link>/post/set-up-odyssey-hpc-dot-files/</link>
       <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
@@ -1400,25 +1434,6 @@ ftp&amp;gt; mput *
       
       <guid>/publication/2018-01-04-tumor-fusions/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>GS01 1143 Introduction to Bioinformatics course</title>
-      <link>/talk/2017-gsbs-chipseq-class/</link>
-      <pubDate>Thu, 02 Nov 2017 00:00:00 -0400</pubDate>
-      
-      <guid>/talk/2017-gsbs-chipseq-class/</guid>
-      <description>&lt;p&gt;I taught the ChIP-seq bioinformatics lab for the &lt;a href=&#34;https://gsbs.uth.edu/academics/courses/course-detail.htm?id=55f674c2-80a6-4eaf-8ec1-39a20a8f719c&#34; target=&#34;_blank&#34;&gt;GS01 1143 Introduction to Bioinformatics course&lt;/a&gt; to ~30 people with diverse background. Some of them did not have any experience with terminals. I walked through the materials slowly and it was well received!&lt;/p&gt;
-
-&lt;p&gt;I developed the course materials &lt;a href=&#34;https://crazyhottommy.github.io/ChIP-seq-carpentry/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;br /&gt;
-I plan to develope it to a &lt;a href=&#34;http://www.datacarpentry.org/&#34; target=&#34;_blank&#34;&gt;Data Carpentry&lt;/a&gt; type of course materials, more work to come!&lt;/p&gt;
-
-&lt;p&gt;Enjoyed the teaching a lot!&lt;/p&gt;
-
-&lt;p&gt;Teaching in action!
-&lt;img src=&#34;/img/teaching3.jpg&#34; alt=&#34;&#34; /&gt;
-Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     
