@@ -23,6 +23,15 @@
     
     <url>
     
+      <loc>/publication/2018-10-05-hdac-inhibitor/</loc>
+      <lastmod>2018-10-05T00:00:00-04:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/set-up-ssh-odyssey-hpc/</loc>
       <lastmod>2018-10-04T00:00:00+00:00</lastmod>
     </url>
@@ -321,7 +330,7 @@
     <url>
     
       <loc>/publication_types/2/</loc>
-      <lastmod>2018-08-21T00:00:00-04:00</lastmod>
+      <lastmod>2018-10-05T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -419,8 +428,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2016-04-27T00:00:00-04:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2018-09-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -429,8 +438,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2018-09-07T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2016-04-27T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -480,7 +489,7 @@
     <url>
     
       <loc>/publication_types/</loc>
-      <lastmod>2018-08-21T00:00:00-04:00</lastmod>
+      <lastmod>2018-10-05T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
