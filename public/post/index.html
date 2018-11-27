@@ -285,6 +285,83 @@
 
   <span class="article-date">
     
+    <time datetime="2018-11-27 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Nov 27, 2018
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    2 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/three-gotchas-when-using-r-for-genomic-data-analysis/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/r/">R</a
+    >, 
+    
+    <a href="/categories/genomics/">genomics</a
+    >
+    
+  </span>
+  
+  
+
+  
+
+</div>
+
+
+  
+  
+  <h3 class="article-title" itemprop="headline">
+    <a href="/post/three-gotchas-when-using-r-for-genomic-data-analysis/" itemprop="url">Three gotchas when using R for Genomic data analysis</a>
+  </h3>
+  <div class="article-style" itemprop="articleBody">
+    
+    During my daily work with R for genomic data analysis, I encountered several instances that R gives me some (bad) surprises.
+1. The devil 1 and 0 coordinate system read detail here https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey
+some files such as bed file is 0 based. Two genomic regions:
+chr1 0 1000 chr1 1001 2000  when you import that bed file into R using rtracklayer::import(), it will become
+chr1 1 1000 chr1 1000 2000  The function convert it to 1 based internally (R is 1 based unlike python).
+    
+  </div>
+  <p class="read-more" itemprop="mainEntityOfPage">
+    <a href="/post/three-gotchas-when-using-r-for-genomic-data-analysis/" class="btn btn-primary btn-outline">
+      CONTINUE READING
+    </a>
+  </p>
+</div>
+
+    
+  
+    
+    
+      
+
+<div class="card-simple" itemscope itemprop="blogPost" itemtype="http://schema.org/BlogPosting">
+  
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
     <time datetime="2018-10-10 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
       Oct 10, 2018
     </time>

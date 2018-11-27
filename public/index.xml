@@ -11,6 +11,80 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Three gotchas when using R for Genomic data analysis</title>
+      <link>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</link>
+      <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</guid>
+      <description>
+
+&lt;p&gt;During my daily work with R for genomic data analysis, I encountered several instances that R gives me some (bad) surprises.&lt;/p&gt;
+
+&lt;h4 id=&#34;1-the-devil-1-and-0-coordinate-system&#34;&gt;1. The devil 1 and 0 coordinate system&lt;/h4&gt;
+
+&lt;p&gt;read detail here &lt;a href=&#34;https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey&#34; target=&#34;_blank&#34;&gt;https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;some files such as &lt;code&gt;bed&lt;/code&gt; file is 0 based. Two genomic regions:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;chr1    0    1000
+chr1    1001    2000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;when you import that bed file into R using &lt;code&gt;rtracklayer::import()&lt;/code&gt;, it will become&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;chr1     1    1000
+chr1    1000    2000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The function convert it to 1 based internally (R is 1 based unlike python).&lt;/p&gt;
+
+&lt;p&gt;The problem is that when you read the bed file with &lt;code&gt;read.table&lt;/code&gt; and use &lt;code&gt;GenomicRanges::makeGRangesFromDataFrame()&lt;/code&gt; to convert it to a GRanges object, do not forget to add 1 to the start before doing it.&lt;/p&gt;
+
+&lt;p&gt;Similarily, when you write a GRanges object to disk using &lt;code&gt;rtracklayer::export&lt;/code&gt;, you do not need to worry, R will convert it back to 0 based in file.&lt;/p&gt;
+
+&lt;p&gt;However, if you make a dataframe out of the GRanges object, you need to remember do &lt;code&gt;start -1&lt;/code&gt; before writing to a file.&lt;/p&gt;
+
+&lt;h4 id=&#34;2-read-tsv-column-types&#34;&gt;2. &lt;code&gt;read_tsv&lt;/code&gt; column types&lt;/h4&gt;
+
+&lt;p&gt;If you use &lt;code&gt;read_tsv&lt;/code&gt; from &lt;a href=&#34;https://github.com/tidyverse/readr&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;readr&lt;/code&gt;&lt;/a&gt;, it will use the first 1000 rows to determine the column types (integer, charater etc). For genomic data, however, especially for the chromosome column, you may or may not have &lt;code&gt;chr&lt;/code&gt; prepending.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;1    0    1000    
+1    1000    2000
+.
+.
+.
+X
+Y
+MT
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;you may fail to read rows for chromosome X, Y and MT. (To make things worse, UCSC uses chrM rather than chrMT&amp;hellip;)&lt;/p&gt;
+
+&lt;p&gt;The solution is that read in all the data as characters.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(readr)
+challenge2 &amp;lt;- read_tsv(&amp;quot;my.bed&amp;quot;, 
+  col_types = cols(.default = col_character())
+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;see &lt;a href=&#34;http://r4ds.had.co.nz/data-import.html&#34; target=&#34;_blank&#34;&gt;http://r4ds.had.co.nz/data-import.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;3-scientific-notation-for-genomic-coordinates&#34;&gt;3. Scientific notation for genomic coordinates&lt;/h4&gt;
+
+&lt;p&gt;This is kind of related to 2. &lt;code&gt;1200000&lt;/code&gt; will be written as &lt;code&gt;1.2e6&lt;/code&gt; in a dataframe if R thinks it is an integer. So, you will need to read in the columns all as characters, or if you convert the character to numeric and wants to write to a file,
+add &lt;code&gt;options(scipen=500)&lt;/code&gt; on the top of your script.&lt;/p&gt;
+
+&lt;p&gt;The scientific notation can not be disabled in &lt;code&gt;write_csv&lt;/code&gt;: &lt;a href=&#34;https://github.com/tidyverse/readr/issues/671&#34; target=&#34;_blank&#34;&gt;https://github.com/tidyverse/readr/issues/671&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;one-more-gotcha-for-rownames-and-colnames&#34;&gt;One more gotcha for rownames and colnames&lt;/h4&gt;
+
+&lt;p&gt;base R will change the name with &lt;code&gt;-&lt;/code&gt; to a &lt;code&gt;.&lt;/code&gt;. e.g. TCGA-06-ABCD will be changed to TCGA.06.ABCD. this can cause troubles when you use the name of the columns to match samples. &lt;code&gt;readr&lt;/code&gt; will maintain the &lt;code&gt;-&lt;/code&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>open files on remote with sublime by ssh</title>
       <link>/post/open-files-on-remote-with-sublime-by-ssh/</link>
       <pubDate>Wed, 10 Oct 2018 00:00:00 +0000</pubDate>
@@ -1424,16 +1498,6 @@ ftp&amp;gt; mput *
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;read &lt;a href=&#34;http://thegenomefactory.blogspot.com/2013/08/paired-end-read-confusion-library.html&#34; target=&#34;_blank&#34;&gt;http://thegenomefactory.blogspot.com/2013/08/paired-end-read-confusion-library.html&lt;/a&gt; for insert size definition.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>An Integrated Platform for Genome-wide Mapping of Chromatin States Using High-throughput ChIP-sequencing in Tumor Tissues</title>
-      <link>/publication/2018-04-05-jove-chipseq/</link>
-      <pubDate>Thu, 05 Apr 2018 00:00:00 -0400</pubDate>
-      
-      <guid>/publication/2018-04-05-jove-chipseq/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     

@@ -96,7 +96,7 @@
   <meta property="og:description" content="Bioinformatics Scientist">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2016-04-27T00:00:00-04:00">
+  <meta property="og:updated_time" content="2018-11-27T00:00:00&#43;00:00">
   
 
   
@@ -282,6 +282,19 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/three-gotchas-when-using-r-for-genomic-data-analysis/">Three gotchas when using R for Genomic data analysis</a></h2>
+    <div class="article-style">
+      
+      During my daily work with R for genomic data analysis, I encountered several instances that R gives me some (bad) surprises.
+1. The devil 1 and 0 coordinate system read detail here <a href="https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey" target="_blank">https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey</a>
+some files such as bed file is 0 based. Two genomic regions:
+chr1 0 1000 chr1 1001 2000  when you import that bed file into R using rtracklayer::import(), it will become
+chr1 1 1000 chr1 1000 2000  The function convert it to 1 based internally (R is 1 based unlike python).
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/project/snakemake-pipelines/">Snakemake Pipelines</a></h2>
