@@ -13,6 +13,18 @@
     
     
     <item>
+      <title>Merge featureCount table from RNAseq</title>
+      <link>/post/merge-featurecount-table-from-rnaseq/</link>
+      <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/merge-featurecount-table-from-rnaseq/</guid>
+      <description>featureCounts is a program to fast summarize counts from sequencing data. I use it to get gene-level RNAseq counts by
+featureCounts -p -t exon -g gene_id -a annotation.gtf -o mysample_featureCount.txt mapping_results_PE.bam
+If you have a lot of samples, you will get a lot of *featureCount.txt and you will need to merge them for downstream analysis.
+I will show you how to merge the tables using R, python and unix below.</description>
+    </item>
+    
+    <item>
       <title>Three gotchas when using R for Genomic data analysis</title>
       <link>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</link>
       <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>

@@ -11,6 +11,95 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Merge featureCount table from RNAseq</title>
+      <link>/post/merge-featurecount-table-from-rnaseq/</link>
+      <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/merge-featurecount-table-from-rnaseq/</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://bioinf.wehi.edu.au/featureCounts/&#34; target=&#34;_blank&#34;&gt;featureCounts&lt;/a&gt; is a program to fast summarize counts from sequencing data. I use it to get gene-level RNAseq counts by&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;featureCounts -p -t exon -g gene_id -a annotation.gtf -o mysample_featureCount.txt mapping_results_PE.bam&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;If you have a lot of samples, you will get a lot of &lt;code&gt;*featureCount.txt&lt;/code&gt; and you will
+need to merge them for downstream analysis.&lt;/p&gt;
+
+&lt;p&gt;I will show you how to merge the tables using &lt;code&gt;R&lt;/code&gt;, &lt;code&gt;python&lt;/code&gt; and &lt;code&gt;unix&lt;/code&gt; below.&lt;/p&gt;
+
+&lt;h4 id=&#34;r-solution&#34;&gt;R solution&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(purrr)
+library(tidyverse)
+f_files&amp;lt;- list.files(&amp;quot;results/superEnhancer/rna_expression/MSTC&amp;quot;, pattern = &amp;quot;featureCount.txt&amp;quot;, full.names = T)
+
+read_in_feature_counts&amp;lt;- function(file){
+        cnt&amp;lt;- read_tsv(file, col_names =T, comment = &amp;quot;#&amp;quot;)
+        cnt&amp;lt;- cnt %&amp;gt;% dplyr::select(-Chr, -Start, -End, -Strand, -Length)
+        return(cnt)
+}
+        
+raw_counts&amp;lt;- map(f_files, read_in_feature_counts)
+raw_counts_df&amp;lt;- purrr::reduce(raw_counts, inner_join) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;python-solution&#34;&gt;python solution&lt;/h4&gt;
+
+&lt;p&gt;I am still very crude with python :)
+It works for python2.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import os
+import csv
+import glob
+
+## after some google https://mail.python.org/pipermail/tutor/2004-November/033475.html
+## The idea is to keep the count column into a list.
+
+files = glob.glob(&amp;quot;*featureCount.txt&amp;quot;)
+list_column = []
+n = 1
+for file in files:
+    print n
+    column_data = []
+    with open(file, &#39;r&#39;) as f:
+        reader = csv.reader(f, delimiter = &amp;quot;\t&amp;quot;)
+            # skip the comment line
+        comment = next(reader)
+        if n &amp;lt;= 1:
+            for row in reader:
+                # for the first file, keep the gene column as well
+                column_data.append(row[0] + &#39;\t&#39; + row[6])
+        else:
+            for row in reader:
+                column_data.append(row[6])
+        n = n + 1
+    list_column.append(column_data)
+
+
+# This creates a list of row lists from the list of column lists
+# If any of the column lists are too short they will be padded with None
+# map function is a gem :)
+rows = map(None, *list_column)
+
+with open(&#39;output.txt&#39;,&#39;w&#39;) as f_out:
+     for row in rows:
+         f_out.write(&#39;\t&#39;.join(row))
+         f_out.write(&#39;\n&#39;)
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;unix-command-line-solution&#34;&gt;unix command line solution&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# get the count
+ls -1  *featureCount.txt | parallel &#39;cat {} | sed &#39;1d&#39; | cut -f7 {} &amp;gt; {/.}_clean.txt&#39; 
+ls -1  *featureCount.txt | head -1 | xargs cut -f1 &amp;gt; genes.txt
+paste genes.txt *featureCount_clean.txt &amp;gt; output.txt
+
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Three gotchas when using R for Genomic data analysis</title>
       <link>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</link>
       <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>
@@ -1373,131 +1462,6 @@ MAILTO=&amp;quot;tangming2005@gmail.com&amp;quot;
 
 &lt;p&gt;&lt;a href=&#34;http://www.adminschoice.com/crontab-quick-reference&#34; target=&#34;_blank&#34;&gt;http://www.adminschoice.com/crontab-quick-reference&lt;/a&gt;&lt;br /&gt;
 &lt;a href=&#34;https://stackoverflow.com/questions/22743548/cronjob-not-running&#34; target=&#34;_blank&#34;&gt;https://stackoverflow.com/questions/22743548/cronjob-not-running&lt;/a&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>How to upload files to GEO</title>
-      <link>/post/how-to-upload-files-to-geo/</link>
-      <pubDate>Fri, 22 Jun 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/how-to-upload-files-to-geo/</guid>
-      <description>
-
-&lt;h3 id=&#34;readings&#34;&gt;readings&lt;/h3&gt;
-
-&lt;p&gt;links:
-&lt;a href=&#34;http://yeolab.github.io/onboarding/geo.html&#34; target=&#34;_blank&#34;&gt;http://yeolab.github.io/onboarding/geo.html&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&#34;http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf&#34; target=&#34;_blank&#34;&gt;http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&#34;https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html&#34; target=&#34;_blank&#34;&gt;https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;1-create-account&#34;&gt;1. create account&lt;/h3&gt;
-
-&lt;p&gt;Go to NCBI GEO: &lt;a href=&#34;http://www.ncbi.nlm.nih.gov/geo/&#34; target=&#34;_blank&#34;&gt;http://www.ncbi.nlm.nih.gov/geo/&lt;/a&gt;
-Create User ID and password. my username is &lt;code&gt;research_guru&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;I used my google account.&lt;/p&gt;
-
-&lt;h3 id=&#34;2-fill-in-the-xls-sheet&#34;&gt;2. fill in the xls sheet&lt;/h3&gt;
-
-&lt;p&gt;Downloaded the meta xls sheet from &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/geo/info/seq.html&#34; target=&#34;_blank&#34;&gt;https://www.ncbi.nlm.nih.gov/geo/info/seq.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;## bgzip the fastqs
-
-cd 01seq
-find *fastq | parallel bgzip
-md5sum *fastq.gz &amp;gt; fastq_md5.txt 
-# copy to excle
-cat fastq_md5.txt | awk &#39;{print $2}&#39;
-
-#copy to excle
-cat fastq_md5.txt | awk &#39;{print $1}&#39;
-
-
-cd ../07bigwig
-#get the md5sum
-
-md5sum *bw &amp;gt; bigwig_md5.txt
-
-# sample name, copy to excel
-cat bigwig_md5.txt | awk &#39;{print $2}&#39;
-
-# md5, copy to excel
-cat bigwig_md5.txt | awk &#39;{print $1}&#39;
-
-cd ../08peak_macs1
-
-md5sum *macs1_peaks.bed &amp;gt; peaks_md5.txt
-# copy to excel
-cat peaks_md5.txt | awk &#39;{print $2}&#39;
-
-cd ..
-mkdir research_guru_KMT2D_ChIPseq
-
-cd research_guru_KMT2D_ChIPseq
-
-## fill in the xls sheet and save in this folder
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This is the most time-consuming/tedious step.&lt;/p&gt;
-
-&lt;h3 id=&#34;3-hard-link-peak-and-bigwig-files-to-the-folder&#34;&gt;3. hard link peak and bigwig files to the folder&lt;/h3&gt;
-
-&lt;p&gt;soft link does not work for me&amp;hellip;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;ln  /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/07bigwig/*bw .
-
-
-ln /rsrch2/genomic_med/krai/hunain_histone_reseq/snakemake_ChIPseq_pipeline_downsample/08peak_macs1/*macs1_peaks.bed .
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;4-upload-to-geo&#34;&gt;4. upload to GEO&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
-# inside the folder: research_guru_KMT2D_ChIPseq
-ftp ftp-private.ncbi.nlm.nih.gov
-
-## type in the user name and the password
-## this is not your GEO account user name.
-## everyone uses the same `geo` and the same password below.
-
-# https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html
-
-#name: geo
-#password: 33%9uyj_fCh?M16H
-
-ftp&amp;gt; prompt n
-Interactive mode off.
-
-ftp&amp;gt; cd fasp
-
-# make a folder in the ftp site
-ftp&amp;gt; mkdir research_guru_ChIPseq
-
-ftp&amp;gt; cd research_guru_ChIPseq
-
-#upload all the files
-ftp&amp;gt; mput *
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;5-telling-ncbi-you-uploaded-stuff&#34;&gt;5. telling NCBI you uploaded stuff&lt;/h3&gt;
-
-&lt;p&gt;After your transfer is complete, you need to tell the NCBI.&lt;/p&gt;
-
-&lt;p&gt;After file transfer is complete, please e-mail GEO with the following information: - GEO account username (tangming2005@gmail.com); - Names of the directory and files deposited; - Public release date (required - up to 3 years from now - see FAQ).&lt;/p&gt;
-
-&lt;h3 id=&#34;side-notes&#34;&gt;Side notes&lt;/h3&gt;
-
-&lt;p&gt;for paired-end sequencing data. the xls sheet requires you to fill in the average insert size and the std.&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;picard CollectInsertSizeMetrics&lt;/code&gt; can do this job.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;time java -jar /scratch/genomic_med/apps/picard/picard-tools-2.13.2/picard.jar CollectInsertSizeMetrics I=4-Mll4-RasG12D-1646-2-cd45_S40_L006.sorted.bam  H=4-Mll4-RasG12D-1646-2-cd45_S40_L006_insert.pdf  O=4-Mll4-RasG12D-1646-2-cd45_S40_L006_insert.txt
-
-# finish in ~5mins
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;read &lt;a href=&#34;http://thegenomefactory.blogspot.com/2013/08/paired-end-read-confusion-library.html&#34; target=&#34;_blank&#34;&gt;http://thegenomefactory.blogspot.com/2013/08/paired-end-read-confusion-library.html&lt;/a&gt; for insert size definition.&lt;/p&gt;
 </description>
     </item>
     
