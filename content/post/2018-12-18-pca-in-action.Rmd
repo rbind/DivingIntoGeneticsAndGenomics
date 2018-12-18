@@ -152,7 +152,7 @@ for(i in 1:length(D)){
 cumvar
 ```
 
-It is the same as the result of cumsum(pca_prcomp$sdev^2)/sum(pca_prcomp$sdev^2) above.
+It is the same as the result of `cumsum(pca_prcomp$sdev^2)/sum(pca_prcomp$sdev^2)` above.
 
 Screeplot
 
