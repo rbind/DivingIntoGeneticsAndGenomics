@@ -623,7 +623,7 @@ cumvar</code></pre>
 ## [50] 0.9514103 0.9565874 0.9614860 0.9662284 0.9708055 0.9751019 0.9792776
 ## [57] 0.9832045 0.9868178 0.9901928 0.9931137 0.9955657 0.9979035 1.0000000
 ## [64] 1.0000000</code></pre>
-<p>It is the same as the result of cumsum(pca_prcomp<span class="math inline">\(sdev^2)/sum(pca_prcomp\)</span>sdev^2) above.</p>
+<p>It is the same as the result of <code>cumsum(pca_prcomp$sdev^2)/sum(pca_prcomp$sdev^2)</code> above.</p>
 <p>Screeplot</p>
 <pre class="r"><code>par(mfrow=c(1,2))
 plot(1:length(D),varex,type=&quot;l&quot;,lwd=2,xlab=&quot;PC&quot;,ylab=&quot;% Variance Explained&quot;)

@@ -1,3 +1,17 @@
+---
+title: PCA in action
+author: Ming Tang
+date: '2018-12-18'
+slug: pca-in-action
+categories:
+  - genomics
+tags:
+  - PCA
+header:
+  caption: ''
+  image: ''
+---
+
 
 
 <div id="pca-in-practice." class="section level3">
@@ -32,7 +46,7 @@ ncidat[1:6,1:6]</code></pre>
 pca_prcomp&lt;- prcomp(t(ncidat), center = TRUE, scale. = FALSE)</code></pre>
 <p>How much variantion is explained by each component:</p>
 <pre class="r"><code>plot(pca_prcomp)</code></pre>
-<p><img src="2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <pre class="r"><code>summary(pca_prcomp)</code></pre>
 <pre><code>## Importance of components:
 ##                            PC1      PC2      PC3      PC4      PC5
@@ -123,7 +137,7 @@ head(pca_prcomp$x[,1:2])</code></pre>
 ## plot PCA plot
 library(ggplot2)
 ggplot(PC1_and_PC2, aes(x=PC1, y=PC2, col=type)) + geom_point() + geom_text(aes(label = type), hjust=0, vjust=0)</code></pre>
-<p><img src="2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <pre class="r"><code>#This returns each principal components loadings
 pca_prcomp$rotation[1:6, 1:6]</code></pre>
 <pre><code>##            PC1           PC2         PC3          PC4          PC5
@@ -223,7 +237,7 @@ pca_prcomp$rotation[1:6, 1:6]</code></pre>
 
 pc_dat&lt;- data.frame(type = rownames(Z), PC1 = Z[,1], PC2= Z[,2])
 ggplot(pc_dat,aes(x=PC1, y=PC2, col=type)) + geom_point() + geom_text(aes(label = type), hjust=0, vjust=0)</code></pre>
-<p><img src="2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>We get the same results as from the <code>prcomp</code> function.</p>
 </div>
 <div id="variance-explained-for-each-pc" class="section level3">
@@ -253,5 +267,5 @@ cumvar</code></pre>
 <pre class="r"><code>par(mfrow=c(1,2))
 plot(1:length(D),varex,type=&quot;l&quot;,lwd=2,xlab=&quot;PC&quot;,ylab=&quot;% Variance Explained&quot;)
 plot(1:length(D),cumvar,type=&quot;l&quot;,lwd=2,xlab=&quot;PC&quot;,ylab=&quot;Cummulative Variance Explained&quot;)</code></pre>
-<p><img src="2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>

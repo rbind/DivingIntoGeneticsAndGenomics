@@ -264,7 +264,7 @@ cumvar&lt;/code&gt;&lt;/pre&gt;
 ## [50] 0.9514103 0.9565874 0.9614860 0.9662284 0.9708055 0.9751019 0.9792776
 ## [57] 0.9832045 0.9868178 0.9901928 0.9931137 0.9955657 0.9979035 1.0000000
 ## [64] 1.0000000&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;It is the same as the result of cumsum(pca_prcomp&lt;span class=&#34;math inline&#34;&gt;\(sdev^2)/sum(pca_prcomp\)&lt;/span&gt;sdev^2) above.&lt;/p&gt;
+&lt;p&gt;It is the same as the result of &lt;code&gt;cumsum(pca_prcomp$sdev^2)/sum(pca_prcomp$sdev^2)&lt;/code&gt; above.&lt;/p&gt;
 &lt;p&gt;Screeplot&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;par(mfrow=c(1,2))
 plot(1:length(D),varex,type=&amp;quot;l&amp;quot;,lwd=2,xlab=&amp;quot;PC&amp;quot;,ylab=&amp;quot;% Variance Explained&amp;quot;)
