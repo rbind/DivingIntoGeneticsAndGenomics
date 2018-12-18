@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="PCA in practice. Principle Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).
+Let’s use a microarray data for demonstration.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/pca-in-action/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/pca-in-action/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/pca-in-action/">
+  <meta property="og:title" content="PCA in action | DNA confesses Data speak">
+  <meta property="og:description" content="PCA in practice. Principle Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).
+Let’s use a microarray data for demonstration.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2018-12-18T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2018-12-18T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>PCA in action | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">PCA in action</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2018-12-18 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Dec 18, 2018
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    9 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/pca-in-action/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/genomics/">genomics</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=PCA%20in%20action&amp;url=%2fpost%2fpca-in-action%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fpca-in-action%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fpca-in-action%2f&amp;title=PCA%20in%20action"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fpca-in-action%2f&amp;title=PCA%20in%20action"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=PCA%20in%20action&amp;body=%2fpost%2fpca-in-action%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <div id="pca-in-practice." class="section level3">
+<h3>PCA in practice.</h3>
+<p>Principle Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).</p>
+<p>Let’s use a microarray data for demonstration. One thing to note is that in linear algebra, a matrix is coded as <code>n (rows are observations) X p (columns are features)</code>.However, in the microarray/RNA-seq case, the matrix is represented as <code>p (rows are features/genes) X n (columns are observations/samples)</code>. That’s why we need to transpose the matrix before feeding the matrix to <code>prcomp</code> or <code>SVD</code>.</p>
+<pre class="r"><code>library(ISLR)
+
+# transpose the data
+ncidat&lt;- t(NCI60$data)
+colnames(ncidat)&lt;- NCI60$labs
+
+dim(ncidat)</code></pre>
+<pre><code>## [1] 6830   64</code></pre>
+<pre class="r"><code>## it is a data matrix with 64 columns (different tissues) and 6830 rows (genes)
+ncidat[1:6,1:6]</code></pre>
+<pre><code>##      CNS      CNS    CNS         RENAL BREAST    CNS
+## 1  0.300 0.679961  0.940  2.800000e-01  0.485  0.310
+## 2  1.180 1.289961 -0.040 -3.100000e-01 -0.465 -0.030
+## 3  0.550 0.169961 -0.170  6.800000e-01  0.395 -0.100
+## 4  1.140 0.379961 -0.040 -8.100000e-01  0.905 -0.460
+## 5 -0.265 0.464961 -0.605  6.250000e-01  0.200 -0.205
+## 6 -0.070 0.579961  0.000 -1.387779e-17 -0.005 -0.540</code></pre>
+</div>
+<div id="use-prcomp" class="section level3">
+<h3>Use prcomp</h3>
+<p>The default R package stats comes with function <code>prcomp()</code> to perform principal component analysis. This means that we don’t need to install anything (although there are other options using external packages).</p>
+<p>We take the transpose of ncidat because <strong><code>prcomp</code> assumes: units/samples in row and features (genes) in columns</strong>.</p>
+<pre class="r"><code>## please look at the help page to see the meanings of  center and scale. parameters.
+## center and scale can affect the result a lot. Usually we center the data.
+
+pca_prcomp&lt;- prcomp(t(ncidat), center = TRUE, scale. = FALSE)</code></pre>
+<p>How much variantion is explained by each component:</p>
+<pre class="r"><code>plot(pca_prcomp)</code></pre>
+<p><img src="/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>summary(pca_prcomp)</code></pre>
+<pre><code>## Importance of components:
+##                            PC1      PC2      PC3      PC4      PC5
+## Standard deviation     25.1638 18.78637 16.73078 13.53082 12.78895
+## Proportion of Variance  0.1489  0.08301  0.06584  0.04306  0.03847
+## Cumulative Proportion   0.1489  0.23194  0.29777  0.34083  0.37930
+##                             PC6      PC7      PC8      PC9    PC10   PC11
+## Standard deviation     12.21052 11.05840 10.94492 10.59140 9.57657 9.4493
+## Proportion of Variance  0.03507  0.02876  0.02817  0.02638 0.02157 0.0210
+## Cumulative Proportion   0.41437  0.44313  0.47130  0.49769 0.51926 0.5403
+##                           PC12   PC13    PC14    PC15   PC16    PC17
+## Standard deviation     9.22659 8.8220 8.66863 8.43185 8.2746 8.19031
+## Proportion of Variance 0.02002 0.0183 0.01767 0.01672 0.0161 0.01578
+## Cumulative Proportion  0.56028 0.5786 0.59626 0.61298 0.6291 0.64486
+##                           PC18    PC19    PC20    PC21    PC22   PC23
+## Standard deviation     7.86272 7.84561 7.74753 7.64167 7.41462 7.3207
+## Proportion of Variance 0.01454 0.01448 0.01412 0.01373 0.01293 0.0126
+## Cumulative Proportion  0.65940 0.67388 0.68799 0.70173 0.71466 0.7273
+##                           PC24   PC25    PC26    PC27   PC28    PC29
+## Standard deviation     7.09512 7.0817 6.86791 6.71857 6.6190 6.57295
+## Proportion of Variance 0.01184 0.0118 0.01109 0.01062 0.0103 0.01016
+## Cumulative Proportion  0.73910 0.7509 0.76199 0.77261 0.7829 0.79307
+##                           PC30    PC31    PC32    PC33    PC34    PC35
+## Standard deviation     6.50142 6.38411 6.31688 6.10274 6.07004 5.96433
+## Proportion of Variance 0.00994 0.00959 0.00938 0.00876 0.00867 0.00837
+## Cumulative Proportion  0.80302 0.81260 0.82199 0.83075 0.83941 0.84778
+##                           PC36    PC37    PC38    PC39    PC40   PC41
+## Standard deviation     5.93322 5.87286 5.82866 5.67923 5.63268 5.5707
+## Proportion of Variance 0.00828 0.00811 0.00799 0.00759 0.00746 0.0073
+## Cumulative Proportion  0.85606 0.86417 0.87216 0.87975 0.88721 0.8945
+##                           PC42   PC43    PC44    PC45   PC46    PC47
+## Standard deviation     5.51265 5.4555 5.37942 5.32142 5.1743 5.14470
+## Proportion of Variance 0.00715 0.0070 0.00681 0.00666 0.0063 0.00623
+## Cumulative Proportion  0.90165 0.9086 0.91546 0.92212 0.9284 0.93464
+##                           PC48    PC49    PC50    PC51   PC52    PC53
+## Standard deviation     5.01790 4.82436 4.77879 4.69168 4.5637 4.49039
+## Proportion of Variance 0.00592 0.00547 0.00537 0.00518 0.0049 0.00474
+## Cumulative Proportion  0.94057 0.94604 0.95141 0.95659 0.9615 0.96623
+##                           PC54   PC55    PC56    PC57    PC58    PC59
+## Standard deviation     4.41142 4.2741 4.21355 4.08613 3.91956 3.78810
+## Proportion of Variance 0.00458 0.0043 0.00418 0.00393 0.00361 0.00337
+## Cumulative Proportion  0.97081 0.9751 0.97928 0.98320 0.98682 0.99019
+##                           PC60    PC61    PC62   PC63      PC64
+## Standard deviation     3.52405 3.22882 3.15278 2.9856 1.341e-14
+## Proportion of Variance 0.00292 0.00245 0.00234 0.0021 0.000e+00
+## Cumulative Proportion  0.99311 0.99557 0.99790 1.0000 1.000e+00</code></pre>
+<pre class="r"><code>#sdev refers to the standard deviation of principal components.
+pca_prcomp$sdev</code></pre>
+<pre><code>##  [1] 2.516378e+01 1.878637e+01 1.673078e+01 1.353082e+01 1.278895e+01
+##  [6] 1.221052e+01 1.105840e+01 1.094492e+01 1.059140e+01 9.576574e+00
+## [11] 9.449313e+00 9.226590e+00 8.821954e+00 8.668634e+00 8.431849e+00
+## [16] 8.274578e+00 8.190308e+00 7.862721e+00 7.845612e+00 7.747529e+00
+## [21] 7.641665e+00 7.414624e+00 7.320674e+00 7.095120e+00 7.081674e+00
+## [26] 6.867907e+00 6.718573e+00 6.618968e+00 6.572955e+00 6.501420e+00
+## [31] 6.384107e+00 6.316878e+00 6.102743e+00 6.070035e+00 5.964333e+00
+## [36] 5.933221e+00 5.872856e+00 5.828663e+00 5.679232e+00 5.632684e+00
+## [41] 5.570718e+00 5.512649e+00 5.455510e+00 5.379416e+00 5.321422e+00
+## [46] 5.174272e+00 5.144699e+00 5.017899e+00 4.824356e+00 4.778789e+00
+## [51] 4.691679e+00 4.563740e+00 4.490394e+00 4.411423e+00 4.274070e+00
+## [56] 4.213548e+00 4.086132e+00 3.919560e+00 3.788098e+00 3.524054e+00
+## [61] 3.228818e+00 3.152782e+00 2.985601e+00 1.341106e-14</code></pre>
+<pre class="r"><code>## variance explained by each PC cumulatively
+cumsum(pca_prcomp$sdev^2)/sum(pca_prcomp$sdev^2)</code></pre>
+<pre><code>##  [1] 0.1489294 0.2319364 0.2977720 0.3408323 0.3793002 0.4143671 0.4431287
+##  [8] 0.4713030 0.4976867 0.5192567 0.5402571 0.5602793 0.5785838 0.5962576
+## [15] 0.6129791 0.6290826 0.6448598 0.6594001 0.6738773 0.6879947 0.7017289
+## [22] 0.7146592 0.7272638 0.7391037 0.7508988 0.7619925 0.7726091 0.7829132
+## [29] 0.7930745 0.8030158 0.8126016 0.8219866 0.8307461 0.8394120 0.8477786
+## [36] 0.8560582 0.8641702 0.8721606 0.8797465 0.8872086 0.8945074 0.9016548
+## [43] 0.9086548 0.9154609 0.9221211 0.9284180 0.9346431 0.9405652 0.9460392
+## [50] 0.9514103 0.9565874 0.9614860 0.9662284 0.9708055 0.9751019 0.9792776
+## [57] 0.9832045 0.9868178 0.9901928 0.9931137 0.9955657 0.9979035 1.0000000
+## [64] 1.0000000</code></pre>
+<p>what’s in the prca_prcomp object</p>
+<pre class="r"><code>names(pca_prcomp)</code></pre>
+<pre><code>## [1] &quot;sdev&quot;     &quot;rotation&quot; &quot;center&quot;   &quot;scale&quot;    &quot;x&quot;</code></pre>
+<pre class="r"><code>## the first two PCs for the first 6 tissues
+head(pca_prcomp$x[,1:2])</code></pre>
+<pre><code>##              PC1         PC2
+## CNS    -19.79578   0.1152691
+## CNS    -21.54610  -1.4573503
+## CNS    -25.05662   1.5260929
+## RENAL  -37.40954 -11.3894784
+## BREAST -50.21864  -1.3461737
+## CNS    -26.43520   0.4629819</code></pre>
+<pre class="r"><code>PC1_and_PC2&lt;- data.frame(PC1=pca_prcomp$x[,1], PC2= pca_prcomp$x[,2], type = rownames(pca_prcomp$x))
+
+## plot PCA plot
+library(ggplot2)
+ggplot(PC1_and_PC2, aes(x=PC1, y=PC2, col=type)) + geom_point() + geom_text(aes(label = type), hjust=0, vjust=0)</code></pre>
+<p><img src="/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>#This returns each principal components loadings
+pca_prcomp$rotation[1:6, 1:6]</code></pre>
+<pre><code>##            PC1           PC2         PC3          PC4          PC5
+## 1 -0.005096247  0.0009839929 0.002116058  0.007628801 -0.012118316
+## 2 -0.001642354  0.0034355664 0.008049350  0.004910196 -0.007412249
+## 3 -0.002509243 -0.0015838271 0.004746350  0.008769557 -0.012426296
+## 4  0.004940063  0.0078435347 0.013716214  0.011378816 -0.014851587
+## 5 -0.003365039 -0.0002680479 0.010677453 -0.005249648 -0.003317312
+## 6  0.001382038 -0.0034431320 0.003167842  0.007425971 -0.002879251
+##             PC6
+## 1  0.0061392242
+## 2  0.0114429879
+## 3 -0.0002860562
+## 4 -0.0065009935
+## 5 -0.0003513787
+## 6  0.0003210365</code></pre>
+</div>
+<div id="use-singluar-value-decomposition" class="section level3">
+<h3>Use singluar value decomposition</h3>
+<p>in a svd analysis, a matrix n x p matrix X is decomposed by <code>X = U*D*V</code>:</p>
+<p>1.U is an m×n orthogonal matrix.<br />
+2.V is an n×n orthogonal matrix.<br />
+3.D is an n×n diagonal matrix.</p>
+<p>PCs: <strong>Z = XV or Z = UD (U are un-scaled PCs)</strong></p>
+<p>Some facts of PCA:</p>
+<p><strong>k th column of Z, Z(k), is the k th PC.(the k th pattern)</strong></p>
+<p>PC loadings: V k th column of V, V(k) is the k th PC loading (feature weights). aka. <strong>the k th column of V encodes the associated k th pattern in feature space.</strong></p>
+<p>PC loadings: U k th column of U, U(k) is the k th PC loading (observation weights). aka. <strong>the k th column of U encodes the associated k th pattern in observation space.</strong></p>
+<p>Diagnal matrix: D diagnals in D: <strong>d(k) gives the strength of the k th pattern.</strong></p>
+<p>Variance explained by k th PC: d(k)^2 Total variance of the data: <code>sum(d(k1)^2 + d(k2)^2 + …..d(k)^2+….)</code></p>
+<p>proportion of variane explained by k th PC: <code>d(k)^2 / sum(d(k1)^2 + d(k2)^2 + …..d(k)^2+….)</code></p>
+<pre class="r"><code>X&lt;- t(scale(t(ncidat),center=TRUE,scale=FALSE))
+# we transpose X again for svd
+# usually there is no need to transpose the matrix and then transpose it back, but svd was written that rows are observations and columns are 
+# features.however, most genomic data represent observations (e.g. samples) in columns and features (e.g. genes) in columns.
+
+sv&lt;- svd(t(X))
+U&lt;- sv$u
+V&lt;- sv$v
+D&lt;- sv$d
+
+
+## U are un-scaled PC, Z is scaled
+Z&lt;- t(X)%*%V
+
+## PCs
+Z[1:6, 1:6]</code></pre>
+<pre><code>##             [,1]        [,2]       [,3]      [,4]       [,5]     [,6]
+## CNS    -19.79578   0.1152691  -5.968917  4.753293  -4.882164 18.92591
+## CNS    -21.54610  -1.4573503  -9.019584  6.767942  -2.247604 17.07273
+## CNS    -25.05662   1.5260929  -6.959653  2.785913 -10.819648 16.45389
+## RENAL  -37.40954 -11.3894784  -5.407097 15.442094 -16.011475 33.09651
+## BREAST -50.21864  -1.3461737 -17.599944 15.099862 -13.852847 16.94340
+## CNS    -26.43520   0.4629819 -16.931456 11.389195  -6.742920 11.85838</code></pre>
+<pre class="r"><code>## is the same as
+pca_prcomp$x[1:6, 1:6]</code></pre>
+<pre><code>##              PC1         PC2        PC3       PC4        PC5      PC6
+## CNS    -19.79578   0.1152691  -5.968917  4.753293  -4.882164 18.92591
+## CNS    -21.54610  -1.4573503  -9.019584  6.767942  -2.247604 17.07273
+## CNS    -25.05662   1.5260929  -6.959653  2.785913 -10.819648 16.45389
+## RENAL  -37.40954 -11.3894784  -5.407097 15.442094 -16.011475 33.09651
+## BREAST -50.21864  -1.3461737 -17.599944 15.099862 -13.852847 16.94340
+## CNS    -26.43520   0.4629819 -16.931456 11.389195  -6.742920 11.85838</code></pre>
+<pre class="r"><code>## PC loadings
+V[1:6, 1:6]</code></pre>
+<pre><code>##              [,1]          [,2]        [,3]         [,4]         [,5]
+## [1,] -0.005096247  0.0009839929 0.002116058  0.007628801 -0.012118316
+## [2,] -0.001642354  0.0034355664 0.008049350  0.004910196 -0.007412249
+## [3,] -0.002509243 -0.0015838271 0.004746350  0.008769557 -0.012426296
+## [4,]  0.004940063  0.0078435347 0.013716214  0.011378816 -0.014851587
+## [5,] -0.003365039 -0.0002680479 0.010677453 -0.005249648 -0.003317312
+## [6,]  0.001382038 -0.0034431320 0.003167842  0.007425971 -0.002879251
+##               [,6]
+## [1,]  0.0061392242
+## [2,]  0.0114429879
+## [3,] -0.0002860562
+## [4,] -0.0065009935
+## [5,] -0.0003513787
+## [6,]  0.0003210365</code></pre>
+<pre class="r"><code>## is the same as 
+pca_prcomp$rotation[1:6, 1:6]</code></pre>
+<pre><code>##            PC1           PC2         PC3          PC4          PC5
+## 1 -0.005096247  0.0009839929 0.002116058  0.007628801 -0.012118316
+## 2 -0.001642354  0.0034355664 0.008049350  0.004910196 -0.007412249
+## 3 -0.002509243 -0.0015838271 0.004746350  0.008769557 -0.012426296
+## 4  0.004940063  0.0078435347 0.013716214  0.011378816 -0.014851587
+## 5 -0.003365039 -0.0002680479 0.010677453 -0.005249648 -0.003317312
+## 6  0.001382038 -0.0034431320 0.003167842  0.007425971 -0.002879251
+##             PC6
+## 1  0.0061392242
+## 2  0.0114429879
+## 3 -0.0002860562
+## 4 -0.0065009935
+## 5 -0.0003513787
+## 6  0.0003210365</code></pre>
+<pre class="r"><code># plot PC1 vs PC2
+
+pc_dat&lt;- data.frame(type = rownames(Z), PC1 = Z[,1], PC2= Z[,2])
+ggplot(pc_dat,aes(x=PC1, y=PC2, col=type)) + geom_point() + geom_text(aes(label = type), hjust=0, vjust=0)</code></pre>
+<p><img src="/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>We get the same results as from the <code>prcomp</code> function.</p>
+</div>
+<div id="variance-explained-for-each-pc" class="section level3">
+<h3>Variance explained for each PC</h3>
+<pre class="r"><code>varex = 0
+cumvar = 0
+denom = sum(D^2)
+for(i in 1:length(D)){
+  varex[i] = D[i]^2/denom
+  cumvar[i] = sum(D[1:i]^2)/denom
+}
+
+## variance explained by each PC cumulatively
+cumvar</code></pre>
+<pre><code>##  [1] 0.1489294 0.2319364 0.2977720 0.3408323 0.3793002 0.4143671 0.4431287
+##  [8] 0.4713030 0.4976867 0.5192567 0.5402571 0.5602793 0.5785838 0.5962576
+## [15] 0.6129791 0.6290826 0.6448598 0.6594001 0.6738773 0.6879947 0.7017289
+## [22] 0.7146592 0.7272638 0.7391037 0.7508988 0.7619925 0.7726091 0.7829132
+## [29] 0.7930745 0.8030158 0.8126016 0.8219866 0.8307461 0.8394120 0.8477786
+## [36] 0.8560582 0.8641702 0.8721606 0.8797465 0.8872086 0.8945074 0.9016548
+## [43] 0.9086548 0.9154609 0.9221211 0.9284180 0.9346431 0.9405652 0.9460392
+## [50] 0.9514103 0.9565874 0.9614860 0.9662284 0.9708055 0.9751019 0.9792776
+## [57] 0.9832045 0.9868178 0.9901928 0.9931137 0.9955657 0.9979035 1.0000000
+## [64] 1.0000000</code></pre>
+<p>It is the same as the result of cumsum(pca_prcomp<span class="math inline">\(sdev^2)/sum(pca_prcomp\)</span>sdev^2) above.</p>
+<p>Screeplot</p>
+<pre class="r"><code>par(mfrow=c(1,2))
+plot(1:length(D),varex,type=&quot;l&quot;,lwd=2,xlab=&quot;PC&quot;,ylab=&quot;% Variance Explained&quot;)
+plot(1:length(D),cumvar,type=&quot;l&quot;,lwd=2,xlab=&quot;PC&quot;,ylab=&quot;Cummulative Variance Explained&quot;)</code></pre>
+<p><img src="/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/pca/">PCA</a>
+  
+</div>
+
+
+
+
+    
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/merge-featurecount-table-from-rnaseq/" rel="prev">Merge featureCount table from RNAseq</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/R.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+

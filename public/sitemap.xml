@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/pca-in-action/</loc>
+      <lastmod>2018-12-18T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/merge-featurecount-table-from-rnaseq/</loc>
       <lastmod>2018-11-27T00:00:00+00:00</lastmod>
     </url>
@@ -457,7 +466,7 @@
     <url>
     
       <loc>/categories/genomics/</loc>
-      <lastmod>2018-11-27T00:00:00+00:00</lastmod>
+      <lastmod>2018-12-18T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -478,6 +487,16 @@
     
       <loc>/tags/mac-setup/</loc>
       <lastmod>2018-10-03T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/pca/</loc>
+      <lastmod>2018-12-18T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

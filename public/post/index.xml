@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on DNA confesses and Data speak</title>
+    <title>Posts on DNA confesses Data speak</title>
     <link>/post/</link>
-    <description>Recent content in Posts on DNA confesses and Data speak</description>
+    <description>Recent content in Posts on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
@@ -11,6 +11,16 @@
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>PCA in action</title>
+      <link>/post/pca-in-action/</link>
+      <pubDate>Tue, 18 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-in-action/</guid>
+      <description>PCA in practice. Principle Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).
+Let’s use a microarray data for demonstration.</description>
+    </item>
     
     <item>
       <title>Merge featureCount table from RNAseq</title>
