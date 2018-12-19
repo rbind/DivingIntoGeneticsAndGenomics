@@ -11,6 +11,191 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>A tale of two heatmap functions</title>
+      <link>/post/a-tale-of-two-heatmap-functions/</link>
+      <pubDate>Wed, 19 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/a-tale-of-two-heatmap-functions/</guid>
+      <description>&lt;p&gt;You probably do not understand heatmap! Please read &lt;a href=&#34;http://www.opiniomics.org/you-probably-dont-understand-heatmaps/&#34;&gt;You probably don’t understand heatmaps by Mick Watson&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In the blog post, Mick used &lt;code&gt;heatmap&lt;/code&gt; function in the &lt;code&gt;stats&lt;/code&gt; package, I will try to walk you through comparing &lt;code&gt;heatmap&lt;/code&gt;, and &lt;code&gt;heatmap.2&lt;/code&gt; from &lt;code&gt;gplots&lt;/code&gt; package.&lt;/p&gt;
+&lt;p&gt;Before I start, I want to quote this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“The defaults of almost every heat map function in R does the hierarchical clustering first, then scales the rows then displays the image”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;see these two posts in biostar: &lt;a href=&#34;https://www.biostars.org/p/85527/&#34;&gt;post1&lt;/a&gt;&lt;br /&gt;
+and &lt;a href=&#34;https://www.biostars.org/p/15285/&#34;&gt;post2&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In other words, the &lt;code&gt;scale&lt;/code&gt; parameter inside the &lt;code&gt;heatmap&lt;/code&gt; functions only plays a role in displaying the colors, but does not involve clustering. This is critical to know! We will test to see if this hold true.&lt;/p&gt;
+&lt;div id=&#34;heatmap-function-in-stats-package&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;heatmap function in stats package&lt;/h3&gt;
+&lt;p&gt;Simulate the data. The example is exactly the same as in the Mick Watson’s blog post.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(stats)
+library(gplots)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &amp;#39;gplots&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following object is masked from &amp;#39;package:stats&amp;#39;:
+## 
+##     lowess&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;h1 &amp;lt;- c(10,20,10,20,10,20,10,20)
+h2 &amp;lt;- c(20,10,20,10,20,10,20,10)
+
+l1 &amp;lt;- c(1,3,1,3,1,3,1,3)
+l2 &amp;lt;- c(3,1,3,1,3,1,3,1)
+
+mat &amp;lt;- rbind(h1,h2,l1,l2)
+
+par(mfrow =c(1,1), mar=c(4,4,1,1))
+plot(1:8,rep(0,8), ylim=c(0,35), pch=&amp;quot;&amp;quot;, xlab=&amp;quot;Time&amp;quot;, ylab=&amp;quot;Gene Expression&amp;quot;)
+
+for (i in 1:nrow(mat)) {
+lines(1:8,mat[i,], lwd=3, col=i)
+}
+
+legend(1,35,rownames(mat), 1:4, cex=0.7)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In this dummy example, we have four genes (l1, l2, h1, h2) that are measured in 8 time points.&lt;/p&gt;
+&lt;p&gt;when we do clustering, we want to cluster l1 h1 together, and l2 h2 together as they have the same trend across the time points. However, you will notice that the scale of the expression levels of these four genes are different: with h1 and h2 are high, and l1 l2 are low.&lt;/p&gt;
+&lt;p&gt;If we calculate the distance:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#?dist to see other distance measures
+dist(mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##           h1        h2        l1
+## h2 28.284271                    
+## l1 38.470768 40.496913          
+## l2 40.496913 38.470768  5.656854&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## I will use the default for linkage method: complete
+plot(hclust(dist(mat)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The default distance measure is &lt;a href=&#34;https://en.wikipedia.org/wiki/Euclidean_distance&#34;&gt;Eucledian distance&lt;/a&gt;, and you will see h1 and h2 are closer (28.284271), l1 and l2 are closer. This simply becasue hwo eucldidan distance is defined.&lt;/p&gt;
+&lt;p&gt;Let’s check the help for &lt;code&gt;?heatmap&lt;/code&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is “row” if symm false, and “none” otherwise.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;symm
+logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;So the default is scale row inside the &lt;code&gt;heatmap&lt;/code&gt;.&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## default, I will give parameters explicitly
+heatmap(mat, Colv=NA, col=greenred(10), scale = &amp;quot;row&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We do see h1,h2 cluster together; l1 l2 cluster together. Inside heatmap function, the default distance measure is the same as default of &lt;code&gt;dist&lt;/code&gt;, the linkage method is the same as &lt;code&gt;hclust&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;If you read the heatmap carefully, you will find that h1,h2 are with large values, but they have the same red color as l1,l2. &lt;strong&gt;This confirms that heatmap does clustering first, and then scale the row for representing the color!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;How about if we turn off scale inside &lt;code&gt;heatmap&lt;/code&gt;?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap(mat, Colv = NA, col=greenred(10), scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You will see the &lt;strong&gt;clustering does not change, but the color changed!&lt;/strong&gt; l1 and l2 are all green now (small values)&lt;/p&gt;
+&lt;p&gt;How about if we scale the genes before we feed into heatmap? scale works on columns, transpose for rows.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mat.scaled&amp;lt;- t(scale(t(mat), center=TRUE, scale = TRUE))
+mat.scaled&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          [,1]       [,2]       [,3]       [,4]       [,5]       [,6]
+## h1 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143
+## h2  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143
+## l1 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143
+## l2  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143
+##          [,7]       [,8]
+## h1 -0.9354143  0.9354143
+## h2  0.9354143 -0.9354143
+## l1 -0.9354143  0.9354143
+## l2  0.9354143 -0.9354143
+## attr(,&amp;quot;scaled:center&amp;quot;)
+## h1 h2 l1 l2 
+## 15 15  2  2 
+## attr(,&amp;quot;scaled:scale&amp;quot;)
+##       h1       h2       l1       l2 
+## 5.345225 5.345225 1.069045 1.069045&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s see how the distance change among genes:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dist(mat.scaled)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          h1       h2       l1
+## h2 5.291503                  
+## l1 0.000000 5.291503         
+## l2 5.291503 0.000000 5.291503&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(hclust(dist(mat.scaled)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Wow! h1 and l1 are clustered together; l2 and h2 are clustered together.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap(mat.scaled, Colv = NA, col=greenred(10), scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;I hope you understand now how scale the data &lt;strong&gt;before or after&lt;/strong&gt; can affect the lookings of your heatmaps.&lt;/p&gt;
+&lt;p&gt;If we do not scale the data beforehand, but we still want l1 and h1 cluster together; l2 and h2 cluster together, we can use a different distance measure.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## correlation among the genes
+cor(t(mat))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    h1 h2 l1 l2
+## h1  1 -1  1 -1
+## h2 -1  1 -1  1
+## l1  1 -1  1 -1
+## l2 -1  1 -1  1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## 1- correation to define the distance
+1- cor(t(mat))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    h1 h2 l1 l2
+## h1  0  2  0  2
+## h2  2  0  2  0
+## l1  0  2  0  2
+## l2  2  0  2  0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;hc &amp;lt;- hclust(as.dist(1-cor(t(mat))))
+plot(hc)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Indeed, h1 nad l1 are together; h2 and l2 are together.&lt;/p&gt;
+&lt;p&gt;Now, we plot the heatmap, but set scale = “none” inside heatmap&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap(mat, Colv = NA, Rowv=as.dendrogram(hc), col=greenred(10), scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Is this what you expect?! Yes, l1 and h2 are clustered together; l1 and h1 clustered together. but because the value range are different, you see l1 and l2 are green (small values); h1 and h2 are red (big values).&lt;/p&gt;
+&lt;p&gt;The magic will happen if we set scale =“row” which is the default:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap(mat, Colv = NA, Rowv=as.dendrogram(hc), col=greenred(10), scale = &amp;quot;row&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;I hope I have clarified a bit for the complications of heatmaps.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;heatmap.2-function-in-gplots-package&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;heatmap.2 function in gplots package&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is “none”.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;The default is none!!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Please also pay attention to the Color Key of the heatmap.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## defaults of heatmap.2, scale is none
+heatmap.2(mat, trace = &amp;quot;none&amp;quot;, Colv= NA, dendrogram = &amp;quot;row&amp;quot;, scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## FACT of heatmap functions in R: it does clustering first and then use the scale argument (if set) to represent the data.
+heatmap.2(mat, trace = &amp;quot;none&amp;quot;, Colv= NA, dendrogram = &amp;quot;row&amp;quot;, scale = &amp;quot;row&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;how about we scale the data explicitly first and use eucledian distance. works fine!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap.2(t(scale(t(mat), center=TRUE, scale=TRUE)), trace = &amp;quot;none&amp;quot;, Colv= NA, dendrogram = &amp;quot;row&amp;quot;, scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;use-1--corx-as-distance-and-do-not-scale-before-hand&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;use 1- cor(x) as distance and do not scale before hand&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap.2(mat, trace = &amp;quot;none&amp;quot;, 
+          Colv= NA, dendrogram = &amp;quot;row&amp;quot;,
+          scale = &amp;quot;none&amp;quot;,
+          hclust=function(x) hclust(x, method=&amp;#39;complete&amp;#39;), distfun=function(x) as.dist(1-cor(t(x))))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;use-1--corx-as-distance-and-do-not-scale-before-hand-but-use-scale-in-the-heatmap.2-function-to-represent-the-colors&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;use 1- cor(x) as distance and do not scale before hand, but use scale in the heatmap.2 function to represent the colors&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap.2(mat, trace = &amp;quot;none&amp;quot;, 
+          Colv= NA, dendrogram = &amp;quot;row&amp;quot;,
+          scale = &amp;quot;row&amp;quot;,
+          hclust=function(x) hclust(x, method=&amp;#39;complete&amp;#39;), distfun=function(x) as.dist(1-cor(t(x))))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;scale-before-hand-and-use-1--corx-as-distance&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;scale before hand and use 1- cor(x) as distance&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap.2(t(scale(t(mat), center=TRUE, scale=TRUE)), trace = &amp;quot;none&amp;quot;, 
+          Colv= NA, dendrogram = &amp;quot;row&amp;quot;,
+          hclust=function(x) hclust(x, method=&amp;#39;complete&amp;#39;), distfun=function(x) as.dist(1-cor(t(x))))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that the dendegram can be rotated and without changing the clustering. Check &lt;a href=&#34;https://cran.r-project.org/web/packages/dendsort/index.html&#34;&gt;Dendersort&lt;/a&gt; if you want to specify the order of the dendgram.&lt;/p&gt;
+&lt;p&gt;The &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/&#34;&gt;ComplexHeatmap&lt;/a&gt; package which now I am using mainly &lt;strong&gt;does not&lt;/strong&gt; do any scaling inside the Heatmap function.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;take-home-messages&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Take home messages&lt;/h3&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Generate heatmap is easy, but make sure to understand the parameters in each heatmap function.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Understand your data and what you are looking for. Do you need to scale your data before clustering?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Distance measure and linkage method can drastically affect your clustering. Choose the right one for your data!. Please also read my &lt;a href=&#34;https://rpubs.com/crazyhottommy/heatmap_demystified&#34;&gt;last post&lt;/a&gt; on this theme.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>PCA in action</title>
       <link>/post/pca-in-action/</link>
       <pubDate>Tue, 18 Dec 2018 00:00:00 +0000</pubDate>
@@ -1278,333 +1463,6 @@ head(mtcars)
 &lt;p&gt;&lt;img src=&#34;/post/2018-06-30-my-first-try-on-rmarkdown-using-blogdown_files/figure-html/unnamed-chunk-2-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;It is awesome! blogdown will knit and render the code and the output into a html file. How cool is that!!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>hugo academic theme blog down deployment (some details)</title>
-      <link>/post/hugo-academic-theme-blog-down-deployment-some-details/</link>
-      <pubDate>Fri, 29 Jun 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/hugo-academic-theme-blog-down-deployment-some-details/</guid>
-      <description>
-
-&lt;p&gt;I have been following this &lt;a href=&#34;https://alison.rbind.io/post/up-and-running-with-blogdown/&#34; target=&#34;_blank&#34;&gt;tutorial&lt;/a&gt; from Alison and tips from &lt;a href=&#34;https://lmyint.github.io/post/hugo-academic-tips/&#34; target=&#34;_blank&#34;&gt;Leslie Myint&lt;/a&gt; for some customization for deploying my blogdown website&lt;/p&gt;
-
-&lt;p&gt;It is quite straightforward to have a working site following Alison&amp;rsquo;s guide. However, you always want some customization of your own site.&lt;/p&gt;
-
-&lt;p&gt;I took the tips from Leslie.&lt;/p&gt;
-
-&lt;h3 id=&#34;changed-the-menue-bar-to-black-i-like-it-better-than-the-default-white&#34;&gt;changed the menue bar to black. I like it better than the default white.&lt;/h3&gt;
-
-&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file, change the theme:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[params]
-  # Color theme.
-  #   Choose from `default`, `ocean`, `forest`, `coffee`, `dark`, or `1950s`.
-  color_theme = &amp;quot;custom&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and make a file called &lt;code&gt;custom.toml&lt;/code&gt; in &lt;code&gt;themes/hugo-academic/data/themes/&lt;/code&gt;. I copy the same &lt;code&gt;custom.toml&lt;/code&gt; file from Leslie:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;# Theme metadata
-name = &amp;quot;custom&amp;quot;
-
-# Is theme light or dark?
-light = true
-
-# Primary
-primary = &amp;quot;#328cc1&amp;quot;
-primary_light = &amp;quot;#328cc1&amp;quot;
-primary_dark = &amp;quot;#DA2536&amp;quot;
-
-# Menu
-menu_primary = &amp;quot;#494949&amp;quot;
-menu_text = &amp;quot;#fff&amp;quot;
-menu_text_active = &amp;quot;#328cc1&amp;quot;
-menu_title = &amp;quot;#fff&amp;quot;
-
-# Backgrounds
-background = &amp;quot;#fff&amp;quot;
-home_section_odd = &amp;quot;#fff&amp;quot;
-home_section_even = &amp;quot;#f7f7f7&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;added-twitter-in-the-contact-section&#34;&gt;added twitter in the Contact section.&lt;/h3&gt;
-
-&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file, add my twitter&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[params]
-  # Some other stuff...
-
-  email = &amp;quot;lmyint@macalester.edu&amp;quot;
-  address = &amp;quot;&amp;quot;
-  office_hours = &amp;quot;&amp;quot;
-  phone = &amp;quot;&amp;quot;
-  skype = &amp;quot;&amp;quot;
-  telegram = &amp;quot;&amp;quot;
-  twitter = &amp;quot;tangming2005&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I also had to update &lt;code&gt;themes/hugo-academic/layouts/partials/widgets/contact.html&lt;/code&gt;. I duplicated the section of the HTML that displays the e-mail address parameter&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;{{ with $.Site.Params.email }}
-&amp;lt;li&amp;gt;
-  &amp;lt;i class=&amp;quot;fa-li fa fa-envelope fa-2x&amp;quot; aria-hidden=&amp;quot;true&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
-  &amp;lt;span id=&amp;quot;person-email&amp;quot; itemprop=&amp;quot;email&amp;quot;&amp;gt;
-  {{- if $autolink }}&amp;lt;a href=&amp;quot;mailto:{{ . }}&amp;quot;&amp;gt;{{ . }}&amp;lt;/a&amp;gt;{{ else }}{{ . }}{{ end -}}
-  &amp;lt;/span&amp;gt;
-&amp;lt;/li&amp;gt;
-{{ end }}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and changed to twitter:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;{{ with $.Site.Params.twitter }}
-&amp;lt;li&amp;gt;
-  &amp;lt;i class=&amp;quot;fa-li fa fa-twitter fa-2x&amp;quot; aria-hidden=&amp;quot;true&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
-  &amp;lt;span&amp;gt;
-  &amp;lt;a href=&amp;quot;https://twitter.com/{{ . }}&amp;quot;&amp;gt;{{ . }}&amp;lt;/a&amp;gt;
-  &amp;lt;/span&amp;gt;
-&amp;lt;/li&amp;gt;
-{{ end }}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;added-a-cv-section&#34;&gt;added a CV section.&lt;/h3&gt;
-
-&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file, add the following.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[[menu.main]]
-  name = &amp;quot;CV&amp;quot;
-  url = &amp;quot;#cv&amp;quot;
-  weight = 6
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Next, I created a directory called &lt;code&gt;content/cv&lt;/code&gt; and a PDF version of my CV (&lt;code&gt;cv.pdf&lt;/code&gt;) in the folder.&lt;/p&gt;
-
-&lt;p&gt;inside the &lt;code&gt;content/home&lt;/code&gt; directory, create &lt;code&gt;cv.md&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;+++
-# Custom widget.
-# An example of using the custom widget to create your own homepage section.
-# To create more sections, duplicate this file and edit the values below as desired.
-widget = &amp;quot;custom&amp;quot;
-active = true
-date = 2016-04-20T00:00:00
-
-# Note: a full width section format can be enabled by commenting out the `title` and `subtitle` with a `#`.
-title = &amp;quot;CV&amp;quot;
-subtitle = &amp;quot;&amp;quot;
-
-# Order that this section will appear in.
-weight = 70
-
-+++
-
-Find my CV in PDF [here](cv/cv.pdf).
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Note that the path is &lt;code&gt;cv/cv.pdf&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;The above three steps followed exactly of Leslie.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;inactivated-the-selected-publication-widget&#34;&gt;inactivated the selected publication widget&lt;/h3&gt;
-
-&lt;p&gt;I found the &lt;code&gt;selected_publications&lt;/code&gt; widget is a bit clunky, so I inactivated it.
-change &lt;code&gt;content/home/publications_selected.md&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;from&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;+++
-# Selected Publications widget.
-# This widget displays publications from `content/publication/` which have
-# `selected = true` in their `+++` front matter.
-widget = &amp;quot;publications_selected&amp;quot;
-active = true
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;to&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;+++
-# Selected Publications widget.
-# This widget displays publications from `content/publication/` which have
-# `selected = true` in their `+++` front matter.
-widget = &amp;quot;publications_selected&amp;quot;
-active = false
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;link the menue bar to &lt;code&gt;publications&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt;, change&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[[menu.main]]
-  name = &amp;quot;Publications&amp;quot;
-  url = &amp;quot;#publications_selected&amp;quot;
-  weight = 2
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;to&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[[menu.main]]
-  name = &amp;quot;Publications&amp;quot;
-  url = &amp;quot;#publications&amp;quot;
-  weight = 2
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;add-the-talks-teachings-to-menue&#34;&gt;add the talks &amp;amp; teachings to menue&lt;/h3&gt;
-
-&lt;p&gt;I do not like the &lt;code&gt;teaching&lt;/code&gt; custom widget. one can only list the courses there. I know it is called custom so one can change it, but I do not know how.&lt;/p&gt;
-
-&lt;p&gt;The &lt;code&gt;talks&lt;/code&gt; widget is what I need. I will put both talks and teachings there. I can then click the talks and teachings to get more details.&lt;/p&gt;
-
-&lt;p&gt;First, inactivate the &lt;code&gt;teaching&lt;/code&gt; widget.&lt;/p&gt;
-
-&lt;p&gt;modify &lt;code&gt;content/home/teaching.md&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;from&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;+++
-# Custom widget.
-# An example of using the custom widget to create your own homepage section.
-# To create more sections, duplicate this file and edit the values below as desired.
-widget = &amp;quot;custom&amp;quot;
-active = true
-date = 2016-04-20T00:00:00
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;to&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;+++
-# Custom widget.
-# An example of using the custom widget to create your own homepage section.
-# To create more sections, duplicate this file and edit the values below as desired.
-widget = &amp;quot;custom&amp;quot;
-active = false
-date = 2016-04-20T00:00:00
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The wideget will be gone in the home page.&lt;/p&gt;
-
-&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file, add the following and comment out the &lt;code&gt;teaching&lt;/code&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;[[menu.main]]
-  name = &amp;quot;Talks &amp;amp; Teachings&amp;quot;
-  url = &amp;quot;#talks&amp;quot;
-  weight = 6
-  
-#[[menu.main]]
-#  name = &amp;quot;Teaching&amp;quot;
-#  url = &amp;quot;#teaching&amp;quot;
-#  weight = 6
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;change the &lt;code&gt;content/home/talks.md&lt;/code&gt; file&lt;/p&gt;
-
-&lt;p&gt;from&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;+++
-# Recent and Upcoming Talks widget.
-widget = &amp;quot;talks&amp;quot;
-active = true
-date = 2016-04-20T00:00:00
-
-title = &amp;quot;Recent &amp;amp; Upcoming Talks&amp;quot;
-subtitle = &amp;quot;&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;to&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;+++
-# Recent and Upcoming Talks widget.
-widget = &amp;quot;talks&amp;quot;
-active = true
-date = 2016-04-20T00:00:00
-
-title = &amp;quot;Talks &amp;amp; Teachings&amp;quot;
-subtitle = &amp;quot;&amp;quot;
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;added-google-analytics-to-track-website-traffic&#34;&gt;added google analytics to track website traffic&lt;/h3&gt;
-
-&lt;p&gt;follow &lt;a href=&#34;https://support.google.com/analytics/answer/1042508&#34; target=&#34;_blank&#34;&gt;https://support.google.com/analytics/answer/1042508&lt;/a&gt;
-log into &lt;a href=&#34;https://analytics.google.com/analytics/web&#34; target=&#34;_blank&#34;&gt;https://analytics.google.com/analytics/web&lt;/a&gt;
-click &lt;code&gt;ADMIN&lt;/code&gt; in the left bottom corner.
-create a new property, type in the website name: &lt;code&gt;divingintogeneticsandgenomics.rbind.io&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;I got a track ID: &lt;code&gt;UA-84019592-2&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;in the &lt;code&gt;config.toml&lt;/code&gt; file:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;# Enable analytics by entering your Google Analytics tracking ID
-googleAnalytics = &amp;quot;UA-84019592-2&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now, you can check the traffic reports in real-time.&lt;/p&gt;
-
-&lt;h3 id=&#34;link-all-the-pdf-files-of-your-papers-in-local&#34;&gt;Link all the PDF files of your papers in local.&lt;/h3&gt;
-
-&lt;p&gt;Many of the papers are not open source, a link to the publisher&amp;rsquo;s website does not render a PDF. I downloaded all my papers and put them in a new folder &lt;code&gt;static/files/papers&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;open a &lt;code&gt;md&lt;/code&gt; file inside &lt;code&gt;content/publication/&lt;/code&gt; and add the link:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# Links (optional). figuring out the relative path is the key...
-url_pdf = &amp;quot;files/papers/telemere.pdf&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;similar to the &lt;code&gt;CV&lt;/code&gt; section, figuring out the relative path is the key.&lt;/p&gt;
-
-&lt;h3 id=&#34;change-the-header-img-size&#34;&gt;change the header img size.&lt;/h3&gt;
-
-&lt;p&gt;For posts, projects or publications, one can have a image on top of the writings.
-I cropped some images from the paper and put them on top of the publication. However, the image will by default expand 100% of the width, and it does not look nice.&lt;/p&gt;
-
-&lt;p&gt;I googled and found &lt;a href=&#34;https://github.com/gcushen/hugo-academic/issues/84&#34; target=&#34;_blank&#34;&gt;https://github.com/gcushen/hugo-academic/issues/84&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;modify the css at &lt;code&gt;./themes/hugo-academic/layouts/partials/css/academic.css&lt;/code&gt; in line 124 from&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;img,
-video {
-  height: auto;
-  max-width: 100%
-  display: block;
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;to&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;img,
-video {
-  height: auto;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;works fine for me, but it is not the best practice as one changed the default academic theme. following &lt;a href=&#34;https://sourcethemes.com/academic/docs/customization/#customize-style-css&#34; target=&#34;_blank&#34;&gt;https://sourcethemes.com/academic/docs/customization/#customize-style-css&lt;/a&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;For advanced customization of the style, you can link custom CSS assets (relative to your root static/css) from your config.toml using &lt;code&gt;custom_css = [&amp;quot;custom.css&amp;quot;]&lt;/code&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;so, to override Academic’s default styles. First, define &lt;code&gt;custom_css = [&amp;quot;override.css&amp;quot;]&lt;/code&gt; in &lt;code&gt;config.toml&lt;/code&gt;. Then I created the file &lt;code&gt;static/css/custom.css&lt;/code&gt;, relative to your website root (i.e. not in the themes directory). Add your custom CSS to this file.I copy the &lt;code&gt;/themes/hugo-academic/layouts/partials/css/academic.css&lt;/code&gt; to &lt;code&gt;static/css/custom.css&lt;/code&gt; and modified line 124 as shown above.&lt;/p&gt;
-
-&lt;p&gt;read more on the Hugo academic page for more tutorials &lt;a href=&#34;https://sourcethemes.com/academic/docs/writing-markdown-latex/#links&#34; target=&#34;_blank&#34;&gt;https://sourcethemes.com/academic/docs/writing-markdown-latex/#links&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;added-disqus-comment-for-blog-posts&#34;&gt;added disqus comment for blog posts&lt;/h3&gt;
-
-&lt;p&gt;Following &lt;a href=&#34;https://gohugo.io/content-management/comments/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;, go to &lt;a href=&#34;https://disqus.com/profile/signup/intent/&#34; target=&#34;_blank&#34;&gt;disqus&lt;/a&gt;, click &lt;code&gt;I want to install Disqus to my site&lt;/code&gt; and then just follow the instruction. Hugo has support for disqus, so you do not need to modify any of the code for your website. Just get the short name.&lt;/p&gt;
-
-&lt;p&gt;In the &lt;code&gt;config.toml&lt;/code&gt; file, add your shortname.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# Enable comments by entering your Disqus shortname
-disqusShortname = &amp;quot;divingintogeneticsandgenomics&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;A comment section will appear below the posts.&lt;/p&gt;
 </description>
     </item>
     

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="You probably do not understand heatmap! Please read You probably don’t understand heatmaps by Mick Watson
+In the blog post, Mick used heatmap function in the stats package, I will try to walk you through comparing heatmap, and heatmap.2 from gplots package.
+Before I start, I want to quote this:
+ “The defaults of almost every heat map function in R does the hierarchical clustering first, then scales the rows then displays the image”">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/a-tale-of-two-heatmap-functions/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/a-tale-of-two-heatmap-functions/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/a-tale-of-two-heatmap-functions/">
+  <meta property="og:title" content="A tale of two heatmap functions | DNA confesses Data speak">
+  <meta property="og:description" content="You probably do not understand heatmap! Please read You probably don’t understand heatmaps by Mick Watson
+In the blog post, Mick used heatmap function in the stats package, I will try to walk you through comparing heatmap, and heatmap.2 from gplots package.
+Before I start, I want to quote this:
+ “The defaults of almost every heat map function in R does the hierarchical clustering first, then scales the rows then displays the image”">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2018-12-19T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2018-12-19T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>A tale of two heatmap functions | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">A tale of two heatmap functions</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2018-12-19 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Dec 19, 2018
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/a-tale-of-two-heatmap-functions/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/visualization/">visualization</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=A%20tale%20of%20two%20heatmap%20functions&amp;url=%2fpost%2fa-tale-of-two-heatmap-functions%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fa-tale-of-two-heatmap-functions%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fa-tale-of-two-heatmap-functions%2f&amp;title=A%20tale%20of%20two%20heatmap%20functions"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fa-tale-of-two-heatmap-functions%2f&amp;title=A%20tale%20of%20two%20heatmap%20functions"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=A%20tale%20of%20two%20heatmap%20functions&amp;body=%2fpost%2fa-tale-of-two-heatmap-functions%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>You probably do not understand heatmap! Please read <a href="http://www.opiniomics.org/you-probably-dont-understand-heatmaps/">You probably don’t understand heatmaps by Mick Watson</a></p>
+<p>In the blog post, Mick used <code>heatmap</code> function in the <code>stats</code> package, I will try to walk you through comparing <code>heatmap</code>, and <code>heatmap.2</code> from <code>gplots</code> package.</p>
+<p>Before I start, I want to quote this:</p>
+<blockquote>
+<p>“The defaults of almost every heat map function in R does the hierarchical clustering first, then scales the rows then displays the image”</p>
+</blockquote>
+<p>see these two posts in biostar: <a href="https://www.biostars.org/p/85527/">post1</a><br />
+and <a href="https://www.biostars.org/p/15285/">post2</a></p>
+<p>In other words, the <code>scale</code> parameter inside the <code>heatmap</code> functions only plays a role in displaying the colors, but does not involve clustering. This is critical to know! We will test to see if this hold true.</p>
+<div id="heatmap-function-in-stats-package" class="section level3">
+<h3>heatmap function in stats package</h3>
+<p>Simulate the data. The example is exactly the same as in the Mick Watson’s blog post.</p>
+<pre class="r"><code>library(stats)
+library(gplots)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;gplots&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     lowess</code></pre>
+<pre class="r"><code>h1 &lt;- c(10,20,10,20,10,20,10,20)
+h2 &lt;- c(20,10,20,10,20,10,20,10)
+
+l1 &lt;- c(1,3,1,3,1,3,1,3)
+l2 &lt;- c(3,1,3,1,3,1,3,1)
+
+mat &lt;- rbind(h1,h2,l1,l2)
+
+par(mfrow =c(1,1), mar=c(4,4,1,1))
+plot(1:8,rep(0,8), ylim=c(0,35), pch=&quot;&quot;, xlab=&quot;Time&quot;, ylab=&quot;Gene Expression&quot;)
+
+for (i in 1:nrow(mat)) {
+lines(1:8,mat[i,], lwd=3, col=i)
+}
+
+legend(1,35,rownames(mat), 1:4, cex=0.7)</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>In this dummy example, we have four genes (l1, l2, h1, h2) that are measured in 8 time points.</p>
+<p>when we do clustering, we want to cluster l1 h1 together, and l2 h2 together as they have the same trend across the time points. However, you will notice that the scale of the expression levels of these four genes are different: with h1 and h2 are high, and l1 l2 are low.</p>
+<p>If we calculate the distance:</p>
+<pre class="r"><code>#?dist to see other distance measures
+dist(mat)</code></pre>
+<pre><code>##           h1        h2        l1
+## h2 28.284271                    
+## l1 38.470768 40.496913          
+## l2 40.496913 38.470768  5.656854</code></pre>
+<pre class="r"><code>## I will use the default for linkage method: complete
+plot(hclust(dist(mat)))</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>The default distance measure is <a href="https://en.wikipedia.org/wiki/Euclidean_distance">Eucledian distance</a>, and you will see h1 and h2 are closer (28.284271), l1 and l2 are closer. This simply becasue hwo eucldidan distance is defined.</p>
+<p>Let’s check the help for <code>?heatmap</code>:</p>
+<blockquote>
+<p>scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is “row” if symm false, and “none” otherwise.</p>
+</blockquote>
+<blockquote>
+<p>symm
+logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.</p>
+</blockquote>
+<p><strong>So the default is scale row inside the <code>heatmap</code>.</strong></p>
+<pre class="r"><code>## default, I will give parameters explicitly
+heatmap(mat, Colv=NA, col=greenred(10), scale = &quot;row&quot;)</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>We do see h1,h2 cluster together; l1 l2 cluster together. Inside heatmap function, the default distance measure is the same as default of <code>dist</code>, the linkage method is the same as <code>hclust</code>.</p>
+<p>If you read the heatmap carefully, you will find that h1,h2 are with large values, but they have the same red color as l1,l2. <strong>This confirms that heatmap does clustering first, and then scale the row for representing the color!</strong></p>
+<p>How about if we turn off scale inside <code>heatmap</code>?</p>
+<pre class="r"><code>heatmap(mat, Colv = NA, col=greenred(10), scale = &quot;none&quot;)</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>You will see the <strong>clustering does not change, but the color changed!</strong> l1 and l2 are all green now (small values)</p>
+<p>How about if we scale the genes before we feed into heatmap? scale works on columns, transpose for rows.</p>
+<pre class="r"><code>mat.scaled&lt;- t(scale(t(mat), center=TRUE, scale = TRUE))
+mat.scaled</code></pre>
+<pre><code>##          [,1]       [,2]       [,3]       [,4]       [,5]       [,6]
+## h1 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143
+## h2  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143
+## l1 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143
+## l2  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143
+##          [,7]       [,8]
+## h1 -0.9354143  0.9354143
+## h2  0.9354143 -0.9354143
+## l1 -0.9354143  0.9354143
+## l2  0.9354143 -0.9354143
+## attr(,&quot;scaled:center&quot;)
+## h1 h2 l1 l2 
+## 15 15  2  2 
+## attr(,&quot;scaled:scale&quot;)
+##       h1       h2       l1       l2 
+## 5.345225 5.345225 1.069045 1.069045</code></pre>
+<p>Let’s see how the distance change among genes:</p>
+<pre class="r"><code>dist(mat.scaled)</code></pre>
+<pre><code>##          h1       h2       l1
+## h2 5.291503                  
+## l1 0.000000 5.291503         
+## l2 5.291503 0.000000 5.291503</code></pre>
+<pre class="r"><code>plot(hclust(dist(mat.scaled)))</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Wow! h1 and l1 are clustered together; l2 and h2 are clustered together.</p>
+<pre class="r"><code>heatmap(mat.scaled, Colv = NA, col=greenred(10), scale = &quot;none&quot;)</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>I hope you understand now how scale the data <strong>before or after</strong> can affect the lookings of your heatmaps.</p>
+<p>If we do not scale the data beforehand, but we still want l1 and h1 cluster together; l2 and h2 cluster together, we can use a different distance measure.</p>
+<pre class="r"><code>## correlation among the genes
+cor(t(mat))</code></pre>
+<pre><code>##    h1 h2 l1 l2
+## h1  1 -1  1 -1
+## h2 -1  1 -1  1
+## l1  1 -1  1 -1
+## l2 -1  1 -1  1</code></pre>
+<pre class="r"><code>## 1- correation to define the distance
+1- cor(t(mat))</code></pre>
+<pre><code>##    h1 h2 l1 l2
+## h1  0  2  0  2
+## h2  2  0  2  0
+## l1  0  2  0  2
+## l2  2  0  2  0</code></pre>
+<pre class="r"><code>hc &lt;- hclust(as.dist(1-cor(t(mat))))
+plot(hc)</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Indeed, h1 nad l1 are together; h2 and l2 are together.</p>
+<p>Now, we plot the heatmap, but set scale = “none” inside heatmap</p>
+<pre class="r"><code>heatmap(mat, Colv = NA, Rowv=as.dendrogram(hc), col=greenred(10), scale = &quot;none&quot;)</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Is this what you expect?! Yes, l1 and h2 are clustered together; l1 and h1 clustered together. but because the value range are different, you see l1 and l2 are green (small values); h1 and h2 are red (big values).</p>
+<p>The magic will happen if we set scale =“row” which is the default:</p>
+<pre class="r"><code>heatmap(mat, Colv = NA, Rowv=as.dendrogram(hc), col=greenred(10), scale = &quot;row&quot;)</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>I hope I have clarified a bit for the complications of heatmaps.</p>
+</div>
+<div id="heatmap.2-function-in-gplots-package" class="section level3">
+<h3>heatmap.2 function in gplots package</h3>
+<blockquote>
+<p>scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is “none”.</p>
+</blockquote>
+<p><strong>The default is none!!</strong></p>
+<p>Please also pay attention to the Color Key of the heatmap.</p>
+<pre class="r"><code>## defaults of heatmap.2, scale is none
+heatmap.2(mat, trace = &quot;none&quot;, Colv= NA, dendrogram = &quot;row&quot;, scale = &quot;none&quot;)</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>## FACT of heatmap functions in R: it does clustering first and then use the scale argument (if set) to represent the data.
+heatmap.2(mat, trace = &quot;none&quot;, Colv= NA, dendrogram = &quot;row&quot;, scale = &quot;row&quot;)</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>how about we scale the data explicitly first and use eucledian distance. works fine!</p>
+<pre class="r"><code>heatmap.2(t(scale(t(mat), center=TRUE, scale=TRUE)), trace = &quot;none&quot;, Colv= NA, dendrogram = &quot;row&quot;, scale = &quot;none&quot;)</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="use-1--corx-as-distance-and-do-not-scale-before-hand" class="section level3">
+<h3>use 1- cor(x) as distance and do not scale before hand</h3>
+<pre class="r"><code>heatmap.2(mat, trace = &quot;none&quot;, 
+          Colv= NA, dendrogram = &quot;row&quot;,
+          scale = &quot;none&quot;,
+          hclust=function(x) hclust(x, method=&#39;complete&#39;), distfun=function(x) as.dist(1-cor(t(x))))</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+</div>
+<div id="use-1--corx-as-distance-and-do-not-scale-before-hand-but-use-scale-in-the-heatmap.2-function-to-represent-the-colors" class="section level3">
+<h3>use 1- cor(x) as distance and do not scale before hand, but use scale in the heatmap.2 function to represent the colors</h3>
+<pre class="r"><code>heatmap.2(mat, trace = &quot;none&quot;, 
+          Colv= NA, dendrogram = &quot;row&quot;,
+          scale = &quot;row&quot;,
+          hclust=function(x) hclust(x, method=&#39;complete&#39;), distfun=function(x) as.dist(1-cor(t(x))))</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="scale-before-hand-and-use-1--corx-as-distance" class="section level3">
+<h3>scale before hand and use 1- cor(x) as distance</h3>
+<pre class="r"><code>heatmap.2(t(scale(t(mat), center=TRUE, scale=TRUE)), trace = &quot;none&quot;, 
+          Colv= NA, dendrogram = &quot;row&quot;,
+          hclust=function(x) hclust(x, method=&#39;complete&#39;), distfun=function(x) as.dist(1-cor(t(x))))</code></pre>
+<p><img src="/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Note that the dendegram can be rotated and without changing the clustering. Check <a href="https://cran.r-project.org/web/packages/dendsort/index.html">Dendersort</a> if you want to specify the order of the dendgram.</p>
+<p>The <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/">ComplexHeatmap</a> package which now I am using mainly <strong>does not</strong> do any scaling inside the Heatmap function.</p>
+</div>
+<div id="take-home-messages" class="section level3">
+<h3>Take home messages</h3>
+<ol style="list-style-type: decimal">
+<li><p>Generate heatmap is easy, but make sure to understand the parameters in each heatmap function.</p></li>
+<li><p>Understand your data and what you are looking for. Do you need to scale your data before clustering?</p></li>
+<li><p>Distance measure and linkage method can drastically affect your clustering. Choose the right one for your data!. Please also read my <a href="https://rpubs.com/crazyhottommy/heatmap_demystified">last post</a> on this theme.</p></li>
+</ol>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/heatmap/">heatmap</a>
+  
+</div>
+
+
+
+
+    
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/pca-in-action/" rel="prev">PCA in action</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/R.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+

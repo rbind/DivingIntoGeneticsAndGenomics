@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/a-tale-of-two-heatmap-functions/</loc>
+      <lastmod>2018-12-19T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/pca-in-action/</loc>
       <lastmod>2018-12-18T00:00:00+00:00</lastmod>
     </url>
@@ -485,6 +494,16 @@
     
     <url>
     
+      <loc>/tags/heatmap/</loc>
+      <lastmod>2018-12-19T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/mac-setup/</loc>
       <lastmod>2018-10-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -577,6 +596,16 @@
     
       <loc>/tags/</loc>
       <lastmod>2017-01-01T00:00:00-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/visualization/</loc>
+      <lastmod>2018-12-19T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
