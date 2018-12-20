@@ -65,7 +65,7 @@ dist(mat)
 plot(hclust(dist(mat)))
 ```
 
-The default distance measure is [Eucledian distance](https://en.wikipedia.org/wiki/Euclidean_distance), and you will see h1 and h2 are closer (28.284271), l1 and l2 are closer. This simply becasue hwo eucldidan distance is defined.
+The default distance measure is [Eucledian distance](https://en.wikipedia.org/wiki/Euclidean_distance), and you will see h1 and h2 are closer (28.284271), l1 and l2 are closer. This simply because how euclidean distance is defined.
 
 Let’s check the help for `?heatmap`:
 
@@ -113,7 +113,7 @@ Wow! h1 and l1 are clustered together; l2 and h2 are clustered together.
 heatmap(mat.scaled, Colv = NA, col=greenred(10), scale = "none")
 ```
 
-I hope you understand now how scale the data **before or after** can affect the lookings of your heatmaps.
+I hope you understand now how scale the data **before or after** can affect the looking of your heatmaps.
 
 If we do not scale the data beforehand, but we still want l1 and h1 cluster together; l2 and h2 cluster together, we can use a different distance measure.
 
@@ -128,7 +128,7 @@ hc <- hclust(as.dist(1-cor(t(mat))))
 plot(hc)
 ```
 
-Indeed, h1 nad l1 are together; h2 and l2 are together.
+Indeed, h1 and l1 are together; h2 and l2 are together.
 
 Now, we plot the heatmap, but set scale = “none” inside heatmap
 
@@ -164,7 +164,7 @@ heatmap.2(mat, trace = "none", Colv= NA, dendrogram = "row", scale = "none")
 heatmap.2(mat, trace = "none", Colv= NA, dendrogram = "row", scale = "row")
 ```
 
-how about we scale the data explicitly first and use eucledian distance. works fine!
+how about we scale the data explicitly first and use euclidean distance. works fine!
 
 ```{r}
 heatmap.2(t(scale(t(mat), center=TRUE, scale=TRUE)), trace = "none", Colv= NA, dendrogram = "row", scale = "none")
@@ -196,7 +196,7 @@ heatmap.2(t(scale(t(mat), center=TRUE, scale=TRUE)), trace = "none",
           hclust=function(x) hclust(x, method='complete'), distfun=function(x) as.dist(1-cor(t(x))))
 ```
 
-Note that the dendegram can be rotated and without changing the clustering. Check [Dendersort](https://cran.r-project.org/web/packages/dendsort/index.html) if you want to specify the order of the dendgram.
+Note that the dendrogram can be rotated and without changing the clustering. Check [Dendersort](https://cran.r-project.org/web/packages/dendsort/index.html) if you want to specify the order of the dendrogram.
 
 The [ComplexHeatmap](https://jokergoo.github.io/ComplexHeatmap-reference/book/) package which now I am using mainly **does not** do any scaling inside the Heatmap function.
 

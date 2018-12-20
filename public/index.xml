@@ -64,7 +64,7 @@ dist(mat)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## I will use the default for linkage method: complete
 plot(hclust(dist(mat)))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;The default distance measure is &lt;a href=&#34;https://en.wikipedia.org/wiki/Euclidean_distance&#34;&gt;Eucledian distance&lt;/a&gt;, and you will see h1 and h2 are closer (28.284271), l1 and l2 are closer. This simply becasue hwo eucldidan distance is defined.&lt;/p&gt;
+&lt;p&gt;The default distance measure is &lt;a href=&#34;https://en.wikipedia.org/wiki/Euclidean_distance&#34;&gt;Eucledian distance&lt;/a&gt;, and you will see h1 and h2 are closer (28.284271), l1 and l2 are closer. This simply because how euclidean distance is defined.&lt;/p&gt;
 &lt;p&gt;Let’s check the help for &lt;code&gt;?heatmap&lt;/code&gt;:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is “row” if symm false, and “none” otherwise.&lt;/p&gt;
@@ -113,7 +113,7 @@ mat.scaled&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Wow! h1 and l1 are clustered together; l2 and h2 are clustered together.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap(mat.scaled, Colv = NA, col=greenred(10), scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;I hope you understand now how scale the data &lt;strong&gt;before or after&lt;/strong&gt; can affect the lookings of your heatmaps.&lt;/p&gt;
+&lt;p&gt;I hope you understand now how scale the data &lt;strong&gt;before or after&lt;/strong&gt; can affect the looking of your heatmaps.&lt;/p&gt;
 &lt;p&gt;If we do not scale the data beforehand, but we still want l1 and h1 cluster together; l2 and h2 cluster together, we can use a different distance measure.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## correlation among the genes
 cor(t(mat))&lt;/code&gt;&lt;/pre&gt;
@@ -132,7 +132,7 @@ cor(t(mat))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;hc &amp;lt;- hclust(as.dist(1-cor(t(mat))))
 plot(hc)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Indeed, h1 nad l1 are together; h2 and l2 are together.&lt;/p&gt;
+&lt;p&gt;Indeed, h1 and l1 are together; h2 and l2 are together.&lt;/p&gt;
 &lt;p&gt;Now, we plot the heatmap, but set scale = “none” inside heatmap&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap(mat, Colv = NA, Rowv=as.dendrogram(hc), col=greenred(10), scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
@@ -155,7 +155,7 @@ heatmap.2(mat, trace = &amp;quot;none&amp;quot;, Colv= NA, dendrogram = &amp;quo
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## FACT of heatmap functions in R: it does clustering first and then use the scale argument (if set) to represent the data.
 heatmap.2(mat, trace = &amp;quot;none&amp;quot;, Colv= NA, dendrogram = &amp;quot;row&amp;quot;, scale = &amp;quot;row&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;how about we scale the data explicitly first and use eucledian distance. works fine!&lt;/p&gt;
+&lt;p&gt;how about we scale the data explicitly first and use euclidean distance. works fine!&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap.2(t(scale(t(mat), center=TRUE, scale=TRUE)), trace = &amp;quot;none&amp;quot;, Colv= NA, dendrogram = &amp;quot;row&amp;quot;, scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
@@ -181,7 +181,7 @@ heatmap.2(mat, trace = &amp;quot;none&amp;quot;, Colv= NA, dendrogram = &amp;quo
           Colv= NA, dendrogram = &amp;quot;row&amp;quot;,
           hclust=function(x) hclust(x, method=&amp;#39;complete&amp;#39;), distfun=function(x) as.dist(1-cor(t(x))))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Note that the dendegram can be rotated and without changing the clustering. Check &lt;a href=&#34;https://cran.r-project.org/web/packages/dendsort/index.html&#34;&gt;Dendersort&lt;/a&gt; if you want to specify the order of the dendgram.&lt;/p&gt;
+&lt;p&gt;Note that the dendrogram can be rotated and without changing the clustering. Check &lt;a href=&#34;https://cran.r-project.org/web/packages/dendsort/index.html&#34;&gt;Dendersort&lt;/a&gt; if you want to specify the order of the dendrogram.&lt;/p&gt;
 &lt;p&gt;The &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/&#34;&gt;ComplexHeatmap&lt;/a&gt; package which now I am using mainly &lt;strong&gt;does not&lt;/strong&gt; do any scaling inside the Heatmap function.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;take-home-messages&#34; class=&#34;section level3&#34;&gt;
