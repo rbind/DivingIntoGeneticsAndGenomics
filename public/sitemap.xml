@@ -464,8 +464,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2018-12-18T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2018-11-27T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -474,8 +474,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2018-11-27T00:00:00+00:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2018-12-18T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -554,7 +554,7 @@
     
     <url>
     
-      <loc>/categories/r/</loc>
+      <loc>/tags/r/</loc>
       <lastmod>2018-11-27T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -564,7 +564,7 @@
     
     <url>
     
-      <loc>/tags/r/</loc>
+      <loc>/categories/r/</loc>
       <lastmod>2018-11-27T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
