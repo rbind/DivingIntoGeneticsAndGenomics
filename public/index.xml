@@ -11,6 +11,56 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>The end of 2018</title>
+      <link>/post/the-end-of-2018/</link>
+      <pubDate>Fri, 28 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/the-end-of-2018/</guid>
+      <description>
+
+&lt;p&gt;It is almost the end of 2018. It is a good time to review what I have achieved during the year
+and look forward to a brand new 2019. I wrote a similar post for 2017 &lt;a href=&#34;http://crazyhottommy.blogspot.com/2017/12/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;some-highlights-of-the-year-2018&#34;&gt;Some highlights of the year 2018:&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;My son Noah Tang was born in April. He is so lovely and we love him so much. Can&amp;rsquo;t believe he is
+almost 9 months old.
+&lt;img src=&#34;/img/noah.jpg&#34; alt=&#34;&#34; /&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Our epigenomic project was selected by the &lt;a href=&#34;https://bigdatau.ini.usc.edu/roadtrip&#34; target=&#34;_blank&#34;&gt;Data Science Road-Trip program&lt;/a&gt; by USC. I spent 2 weeks in PNNL and worked closely with &lt;a href=&#34;https://www.pnnl.gov/science/staff/staff_info.asp?staff_num=8785&#34; target=&#34;_blank&#34;&gt;Lisa Bramer&lt;/a&gt; and developed a pipeline to do feature selection using machine learning from a lot of chromHMM data sets. You can find the github repo &lt;a href=&#34;https://github.com/crazyhottommy/pyflow-chromForest/tree/vsurf_merge&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;. I kept a note for everyday what I did as well at &lt;a href=&#34;https://github.com/crazyhottommy/Epigenome_RoadTrip&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;. I will think about writing it up.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I finally migrated my &lt;a href=&#34;http://crazyhottommy.blogspot.com/&#34; target=&#34;_blank&#34;&gt;previous blog&lt;/a&gt; to blogdown which you are reading now :) Oh my, I love it. It makes blogging so much fun.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I taught the ChIP-seq lesson for &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/talk/2018-dibsi-course/&#34; target=&#34;_blank&#34;&gt;2018 ANGUS Next-Gen Sequence Analysis Workshop&lt;/a&gt; held in UC Davis from 7/1/2018 to 7/14/2018, and TAed for the rest of the sessions. It was a great teaching experience for me. I got to know many people and built connections. Most importantly, I enjoyed the teaching very much! Thanks &lt;a href=&#34;https://biology.ucdavis.edu/people/c-titus-brown&#34; target=&#34;_blank&#34;&gt;Titus Brown&lt;/a&gt; for the invitation. I highly recommend you to attend this workshop if you want to start learning sequencing data analysis. The environment is so welcoming and Titus is so hilarious:) I was in the workshop to learn in 2014 and now I am back to teach!&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I went back to University of Florida where I did my PhD to give a &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/talk/2018-uf-talk/&#34; target=&#34;_blank&#34;&gt;talk&lt;/a&gt;. It was very nice to be back home and catch up with my supervisor, other professors and some church friends!&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Two papers are out in Biorxiv. I am co-first author in one of them. Both papers describe how epigenetic regulator KMT2D mediate tumor progression in melanoma and lung cancer, respectively. We are in the process submitting those papers to journals, but you can read more details at &lt;a href=&#34;https://www.biorxiv.org/content/early/2018/12/28/507202&#34; target=&#34;_blank&#34;&gt;https://www.biorxiv.org/content/early/2018/12/28/507202&lt;/a&gt; and &lt;a href=&#34;https://www.biorxiv.org/content/early/2018/12/27/507327&#34; target=&#34;_blank&#34;&gt;https://www.biorxiv.org/content/early/2018/12/27/507327&lt;/a&gt;.&lt;br /&gt;
+The work was done in &lt;a href=&#34;http://railab.org/people.html&#34; target=&#34;_blank&#34;&gt;Kunal Rai&amp;rsquo;s lab&lt;/a&gt; where I had a chance to play with large amount of ChIP-seq data sets. My &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/project/snakemake-pipelines/&#34; target=&#34;_blank&#34;&gt;Snakemake pipeline&lt;/a&gt; is being used in the lab by others and has processed thousands of ChIP-seq data sets.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I joined Harvard FAS Informatics as a bioinformatics scientist in October and started working on single-cell RNAseq with &lt;a href=&#34;https://www.dulaclab.com/&#34; target=&#34;_blank&#34;&gt;Dulac lab&lt;/a&gt; and will have chance to play with other single molecule transcriptome data generated from &lt;a href=&#34;http://zhuang.harvard.edu/&#34; target=&#34;_blank&#34;&gt;Xiaowei Zhuang&amp;rsquo;s lab&lt;/a&gt;. I am really excited about learning more!&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I have my green card approved. This is important so I can work in the US without worrying about my visa status. Thanks to my previous postdoc adviser &lt;a href=&#34;https://www.jax.org/research-and-faculty/faculty/roel-verhaak&#34; target=&#34;_blank&#34;&gt;Roel Verhaak&lt;/a&gt;, &lt;a href=&#34;http://pinellolab.org/&#34; target=&#34;_blank&#34;&gt;Luca Pinello&lt;/a&gt;, &lt;a href=&#34;https://www.ialbert.me/&#34; target=&#34;_blank&#34;&gt;Istvan Albert&lt;/a&gt;,  &lt;a href=&#34;https://blogs.cornell.edu/sethupathylab/&#34; target=&#34;_blank&#34;&gt;Praveen Sethupathy&lt;/a&gt; and &lt;a href=&#34;https://medicine.iu.edu/faculty/14584/cheng-liang/&#34; target=&#34;_blank&#34;&gt;Liang Cheng&lt;/a&gt; for writing recommendation letters. I will need to visit Luca&amp;rsquo;s lab to say thanks personally, I have not had a chance to meet him after I moved to Harvard.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I finally got a chance to write an R package. It is now in github private repo and works. I implemented some functions for visualizing single cell data and evaluate cluster stability. I will make it public once I clean up a bit. I was so satisfied to have it installed by &lt;code&gt;devtools::install_github()&lt;/code&gt; and all functions and help pages are readily available as a package. I mean I am gradually transiting myself from an R user to R programmer. I know I still have a lot to learn, but this is exciting! By the way, I highly recommend the &lt;a href=&#34;https://github.com/r-lib/usethis&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;usethis&lt;/code&gt;&lt;/a&gt; package for writing R packages and read the &lt;a href=&#34;http://r-pkgs.had.co.nz/&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;R pacakges book&lt;/code&gt;&lt;/a&gt; by Hadley Wickham. read &lt;a href=&#34;https://blog.methodsconsultants.com/posts/developing-r-packages-using-gitlab-ci-part-i/&#34; target=&#34;_blank&#34;&gt;this&lt;/a&gt; and &lt;a href=&#34;https://www.hvitfeldt.me/blog/usethis-workflow-for-package-development/&#34; target=&#34;_blank&#34;&gt;this&lt;/a&gt; blog post to get started on how to write a minimal functional R package.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;what-to-expect-in-2019&#34;&gt;What to expect in 2019&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;I will have a lot of opportunities to teach workshops on R, Unix and single-cell RNAseq at my current position.&lt;/li&gt;
+&lt;li&gt;A lot to learn on neuroscience. I will audit classes taught by Catherine Dulac.&lt;/li&gt;
+&lt;li&gt;I will guest lecture a few lessons for &lt;a href=&#34;https://canvas.harvard.edu/courses/39391&#34; target=&#34;_blank&#34;&gt;STAT 115: Introduction to Computational Biology and Bioinformatics&lt;/a&gt; taught by &lt;a href=&#34;http://liulab.dfci.harvard.edu/&#34; target=&#34;_blank&#34;&gt;Sheirly Liu&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;I would love to learn more on deep learning and apply it to single cell data analysis. Currently, I am taking classes from Coursera.&lt;/li&gt;
+&lt;li&gt;Attend several conferences. Would love to catch up with the twitter-verse in person.&lt;/li&gt;
+&lt;li&gt;A few more papers to write. I have at least 2 first author papers to finish. It&amp;rsquo;s hanging there forever.&lt;/li&gt;
+&lt;li&gt;Of course, spend time with the family.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
       <title>A tale of two heatmap functions</title>
       <link>/post/a-tale-of-two-heatmap-functions/</link>
       <pubDate>Wed, 19 Dec 2018 00:00:00 +0000</pubDate>
@@ -1402,67 +1452,6 @@ as(cvg, &amp;quot;GRanges&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;Instructors and TAs group picture&lt;/strong&gt;
 &lt;img src=&#34;/img/instructors_dibsi2018.jpg&#34; alt=&#34;&#34; /&gt;
 Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>my first try on Rmarkdown using blogdown</title>
-      <link>/post/my-first-try-on-rmarkdown-using-blogdown/</link>
-      <pubDate>Sat, 30 Jun 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/my-first-try-on-rmarkdown-using-blogdown/</guid>
-      <description>&lt;p&gt;I have used blogdown writing regular markdown posts, but the real power is from the Rmarkdown! let me try it for this post.&lt;/p&gt;
-
-&lt;p&gt;Note that you do not knit the Rmarkdown by yourself, rather you let blogdown do the heavy lift.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(tidyverse)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code&gt;## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code&gt;## Warning: package &#39;tibble&#39; was built under R version 3.4.3
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code&gt;## Warning: package &#39;purrr&#39; was built under R version 3.4.4
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code&gt;## Conflicts with tidy packages ----------------------------------------------
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code&gt;## filter(): dplyr, stats
-## lag():    dplyr, stats
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggplot2)
-head(mtcars)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code&gt;##                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
-## Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
-## Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
-## Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
-## Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
-## Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
-## Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(mtcars, aes(x = disp, y = mpg)) + geom_point()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;img src=&#34;/post/2018-06-30-my-first-try-on-rmarkdown-using-blogdown_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(mtcars, aes(x= as.factor(cyl), y = hp)) + geom_boxplot(aes(color = as.factor(cyl))) + geom_jitter()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;img src=&#34;/post/2018-06-30-my-first-try-on-rmarkdown-using-blogdown_files/figure-html/unnamed-chunk-2-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;It is awesome! blogdown will knit and render the code and the output into a html file. How cool is that!!&lt;/p&gt;
 </description>
     </item>
     
