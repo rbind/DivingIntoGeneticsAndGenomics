@@ -1,0 +1,146 @@
+---
+title: permutate test for PCA components
+author: Ming Tang
+date: '2019-01-04'
+slug: permutate-test-for-pca-components
+categories:
+  - R
+tags:
+  - PCA
+header:
+  caption: ''
+  image: ''
+---
+
+
+
+<p>PCA is a critical method for dimension reduction for high-dimensional data.
+High-dimensional data are data with features (p) a lot more than observations (n).
+However, this is changing with single-cell RNAseq data. Now, we can sequence millions (n)
+of single cells and each cell has ~20,000 genes/features (p).</p>
+<p>I suggest you read my <a href="https://divingintogeneticsandgenomics.rbind.io/post/pca-in-action/">previous blog post</a> on using <code>svd</code> to calculate PCs.</p>
+<div id="single-cell-expression-data-pca" class="section level3">
+<h3>Single-cell expression data PCA</h3>
+<p>In single-cell RNAseq analysis, feature selection will be performed first. e.g. In <a href="https://github.com/satijalab/seurat"><code>Seruat</code></a>, most variable genes will be calculated by <code>FindVariableGenes</code> and will be used for downstream analysis. The number of variable genes is in
+the range of a couple of thousands (~2000). This further reduced number of features(p).</p>
+<p>Let’s take a look at the <a href="https://github.com/satijalab/seurat/blob/master/R/dimensional_reduction.R#L70">source code of <code>Seurat</code></a> for
+PCA:</p>
+<pre><code>if (rev.pca) {
+    pcs.compute &lt;- min(pcs.compute, ncol(x = data.use)-1)
+    pca.results &lt;- irlba(A = data.use, nv = pcs.compute, ...)
+    sdev &lt;- pca.results$d/sqrt(max(1, nrow(data.use) - 1))
+    if(weight.by.var){
+      gene.loadings &lt;- pca.results$u %*% diag(pca.results$d)
+    } else{
+      gene.loadings &lt;- pca.results$u
+    }
+    cell.embeddings &lt;- pca.results$v
+  }
+  else {
+    pcs.compute &lt;- min(pcs.compute, nrow(x = data.use)-1)
+    pca.results &lt;- irlba(A = t(x = data.use), nv = pcs.compute, ...)
+    gene.loadings &lt;- pca.results$v
+    sdev &lt;- pca.results$d/sqrt(max(1, ncol(data.use) - 1))
+    if(weight.by.var){
+      cell.embeddings &lt;- pca.results$u %*% diag(pca.results$d)
+    } else {
+      cell.embeddings &lt;- pca.results$u
+    }
+  }
+  rownames(x = gene.loadings) &lt;- rownames(x = data.use)
+  colnames(x = gene.loadings) &lt;- paste0(reduction.key, 1:pcs.compute)
+  rownames(x = cell.embeddings) &lt;- colnames(x = data.use)
+  colnames(x = cell.embeddings) &lt;- colnames(x = gene.loadings)
+</code></pre>
+<p>and the help page for <code>{Seruat::RunPCA}</code>:</p>
+<pre><code>pc.genes    
+Genes to use as input for PCA. Default is object@var.genes
+
+rev.pca 
+By default computes the PCA on the cell x gene matrix. Setting to true will compute it on gene x cell matrix.</code></pre>
+<p><code>Seurat</code> uses <a href="https://cran.r-project.org/web/packages/irlba/index.html">irlba</a> (Fast Truncated Singular Value Decomposition and Principal Components Analysis for Large Dense and Sparse Matrices) for PCA.
+The <code>irlba</code> is both faster and more memory efficient than the usual R <code>svd</code> function for computing a few of the largest singular vectors and corresponding singular values of a matrix.</p>
+<p>By default, <code>RunPCA</code> computes the PCA on the <code>cell (n) x gene (p)</code> matrix.
+One thing to note is that in linear algebra, a matrix is coded as n (rows are observations) X p (columns are features). That’s why by default, the <code>gene x cell</code> original matrix is transposed first to <code>cell x gene</code>: <code>irlba(A = t(x = data.use), nv = pcs.compute, ...)</code>.
+After <code>irlba</code>, the <code>v</code> matrix is the gene loadings, the <code>u</code> matrix is the cell embeddings.</p>
+</div>
+<div id="number-of-significant-pcs" class="section level3">
+<h3>number of significant PCs</h3>
+<p>For downstream analysis, e.g. <code>{Seurat::FindClusters}</code> only the PCs that significantly contribute to the variation of the data are used. <code>Seruat</code> uses <code>JackStraw</code> and <code>JackStrawplot</code> function to achieve it.</p>
+<p><code>JackStraw</code>:</p>
+<blockquote>
+<p>Randomly permutes a subset of data, and calculates projected PCA scores for these ‘random’ genes. Then compares the PCA scores for the ‘random’ genes with the observed PCA scores to determine statistical significance. End result is a <strong>p-value for each gene’s association with each principal component</strong>.</p>
+</blockquote>
+<p><code>JackStrawplot</code>:</p>
+<blockquote>
+<p>Plots the results of the JackStraw analysis for PCA significance. For each PC, plots a QQ-plot comparing the distribution of p-values for all genes across each PC, compared with a uniform distribution. Also determines a p-value for the overall significance of each PC.The p-value for each PC is based on a proportion test comparing the number of genes with a p-value below a particular threshold (score.thresh), compared with the proportion of genes expected under a uniform distribution of p-values.</p>
+</blockquote>
+<p>The other day, I saw a tweet on permute the original matrix to calculate the significance of the PCs.
+I forget the original tweet, but this is from a retweet: <a href="https://twitter.com/MattOldach/status/1075037756563382274" class="uri">https://twitter.com/MattOldach/status/1075037756563382274</a></p>
+<p>references:
+This is called Horn’s Parallel Analysis (original paper <a href="https://link.springer.com/article/10.1007%2FBF02289447" class="uri">https://link.springer.com/article/10.1007%2FBF02289447</a> and a modification <a href="https://journals.sagepub.com/doi/abs/10.1177/0013164495055003002?journalCode=epma" class="uri">https://journals.sagepub.com/doi/abs/10.1177/0013164495055003002?journalCode=epma</a>. It’s a great method for removing noisy components.</p>
+<p>This is not exactly the same as what <code>Seurat</code> is doing, but the idea is similar.
+I want to put it down here for my future reference.</p>
+</div>
+<div id="permutation-test-for-pca" class="section level3">
+<h3>permutation “test” for PCA</h3>
+<p>The code below is copied from that tweet, credit goes to the author.</p>
+<pre class="r"><code>pca_eigenperm&lt;- function(data, nperm = 1000){
+        pca_out&lt;- prcomp(data, scale. = T)
+        eigenperm&lt;- data.frame(matrix(NA, nperm, ncol(data)))
+        n&lt;- ncol(data)
+        data_i&lt;- data.frame(matrix(NA, nrow(data), ncol(data)))
+        for (j in 1: nperm){
+        for (i in 1:n){
+                data_i[,i]&lt;- sample(data[,i], replace = F)
+        }
+        pca.perm&lt;- prcomp(data_i, scale. = T)
+        eigenperm[j,]&lt;- pca.perm$sdev^2
+        }
+        colnames(eigenperm)&lt;- colnames(pca_out$rotation)
+        eigenperm
+        
+}</code></pre>
+<p>We will use the same <code>NCI60</code> data set for demonstration.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ──────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.8
+## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
+## ✔ readr   1.3.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(ggplot2)
+
+library(ISLR)
+
+ncidat&lt;- NCI60$data
+rownames(ncidat)&lt;- NCI60$labs
+
+dim(ncidat)</code></pre>
+<pre><code>## [1]   64 6830</code></pre>
+<pre class="r"><code>fa_pca_perm&lt;- pca_eigenperm(t(ncidat))
+fa_pca&lt;- prcomp(t(ncidat))
+fa_pca_rand95&lt;- 
+        data.frame(Random_Eigenvalues = sapply(fa_pca_perm, quantile, 0.95)) %&gt;%
+        #95% percentile of randome eigenvalues
+        mutate(PC = colnames(fa_pca$rotation)) %&gt;%
+        #add PC IDs as discrete var
+        cbind(Eigenvalues = fa_pca$sdev^2)
+#combine rand95 with real eigenvals
+
+## only the first 9 PCs
+fa_pca_rand95_long&lt;-
+        gather(fa_pca_rand95[1:9, ], key = Variable, value = Value, -PC)
+
+ggplot(fa_pca_rand95_long, aes(PC, Value, fill = Variable)) +
+        geom_bar(stat = &quot;identity&quot;, position = position_dodge())+
+        labs(y=&quot;Eigenvalue&quot;, x=&quot;&quot;, fill= &quot;&quot;) +
+        theme_classic()</code></pre>
+<p><img src="/post/2019-01-04-permutate-test-for-pca-components_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>We see after PC6, the Eigenvalues are almost the same with the permuted data.
+For single cell data, permutation can take a long time, that’s why in <code>JackStraw</code> there is an
+option <code>prop.freq</code> (Proportion of the data to randomly permute for each replicate) to
+permute only a subset of the data matrix.</p>
+</div>

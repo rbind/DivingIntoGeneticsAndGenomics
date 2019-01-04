@@ -11,6 +11,145 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>permutate test for PCA components</title>
+      <link>/post/permutate-test-for-pca-components/</link>
+      <pubDate>Fri, 04 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/permutate-test-for-pca-components/</guid>
+      <description>&lt;p&gt;PCA is a critical method for dimension reduction for high-dimensional data.
+High-dimensional data are data with features (p) a lot more than observations (n).
+However, this is changing with single-cell RNAseq data. Now, we can sequence millions (n)
+of single cells and each cell has ~20,000 genes/features (p).&lt;/p&gt;
+&lt;p&gt;I suggest you read my &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/pca-in-action/&#34;&gt;previous blog post&lt;/a&gt; on using &lt;code&gt;svd&lt;/code&gt; to calculate PCs.&lt;/p&gt;
+&lt;div id=&#34;single-cell-expression-data-pca&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Single-cell expression data PCA&lt;/h3&gt;
+&lt;p&gt;In single-cell RNAseq analysis, feature selection will be performed first. e.g. In &lt;a href=&#34;https://github.com/satijalab/seurat&#34;&gt;&lt;code&gt;Seruat&lt;/code&gt;&lt;/a&gt;, most variable genes will be calculated by &lt;code&gt;FindVariableGenes&lt;/code&gt; and will be used for downstream analysis. The number of variable genes is in
+the range of a couple of thousands (~2000). This further reduced number of features(p).&lt;/p&gt;
+&lt;p&gt;Let’s take a look at the &lt;a href=&#34;https://github.com/satijalab/seurat/blob/master/R/dimensional_reduction.R#L70&#34;&gt;source code of &lt;code&gt;Seurat&lt;/code&gt;&lt;/a&gt; for
+PCA:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;if (rev.pca) {
+    pcs.compute &amp;lt;- min(pcs.compute, ncol(x = data.use)-1)
+    pca.results &amp;lt;- irlba(A = data.use, nv = pcs.compute, ...)
+    sdev &amp;lt;- pca.results$d/sqrt(max(1, nrow(data.use) - 1))
+    if(weight.by.var){
+      gene.loadings &amp;lt;- pca.results$u %*% diag(pca.results$d)
+    } else{
+      gene.loadings &amp;lt;- pca.results$u
+    }
+    cell.embeddings &amp;lt;- pca.results$v
+  }
+  else {
+    pcs.compute &amp;lt;- min(pcs.compute, nrow(x = data.use)-1)
+    pca.results &amp;lt;- irlba(A = t(x = data.use), nv = pcs.compute, ...)
+    gene.loadings &amp;lt;- pca.results$v
+    sdev &amp;lt;- pca.results$d/sqrt(max(1, ncol(data.use) - 1))
+    if(weight.by.var){
+      cell.embeddings &amp;lt;- pca.results$u %*% diag(pca.results$d)
+    } else {
+      cell.embeddings &amp;lt;- pca.results$u
+    }
+  }
+  rownames(x = gene.loadings) &amp;lt;- rownames(x = data.use)
+  colnames(x = gene.loadings) &amp;lt;- paste0(reduction.key, 1:pcs.compute)
+  rownames(x = cell.embeddings) &amp;lt;- colnames(x = data.use)
+  colnames(x = cell.embeddings) &amp;lt;- colnames(x = gene.loadings)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and the help page for &lt;code&gt;{Seruat::RunPCA}&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pc.genes    
+Genes to use as input for PCA. Default is object@var.genes
+
+rev.pca 
+By default computes the PCA on the cell x gene matrix. Setting to true will compute it on gene x cell matrix.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;Seurat&lt;/code&gt; uses &lt;a href=&#34;https://cran.r-project.org/web/packages/irlba/index.html&#34;&gt;irlba&lt;/a&gt; (Fast Truncated Singular Value Decomposition and Principal Components Analysis for Large Dense and Sparse Matrices) for PCA.
+The &lt;code&gt;irlba&lt;/code&gt; is both faster and more memory efficient than the usual R &lt;code&gt;svd&lt;/code&gt; function for computing a few of the largest singular vectors and corresponding singular values of a matrix.&lt;/p&gt;
+&lt;p&gt;By default, &lt;code&gt;RunPCA&lt;/code&gt; computes the PCA on the &lt;code&gt;cell (n) x gene (p)&lt;/code&gt; matrix.
+One thing to note is that in linear algebra, a matrix is coded as n (rows are observations) X p (columns are features). That’s why by default, the &lt;code&gt;gene x cell&lt;/code&gt; original matrix is transposed first to &lt;code&gt;cell x gene&lt;/code&gt;: &lt;code&gt;irlba(A = t(x = data.use), nv = pcs.compute, ...)&lt;/code&gt;.
+After &lt;code&gt;irlba&lt;/code&gt;, the &lt;code&gt;v&lt;/code&gt; matrix is the gene loadings, the &lt;code&gt;u&lt;/code&gt; matrix is the cell embeddings.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;number-of-significant-pcs&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;number of significant PCs&lt;/h3&gt;
+&lt;p&gt;For downstream analysis, e.g. &lt;code&gt;{Seurat::FindClusters}&lt;/code&gt; only the PCs that significantly contribute to the variation of the data are used. &lt;code&gt;Seruat&lt;/code&gt; uses &lt;code&gt;JackStraw&lt;/code&gt; and &lt;code&gt;JackStrawplot&lt;/code&gt; function to achieve it.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;JackStraw&lt;/code&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Randomly permutes a subset of data, and calculates projected PCA scores for these ‘random’ genes. Then compares the PCA scores for the ‘random’ genes with the observed PCA scores to determine statistical significance. End result is a &lt;strong&gt;p-value for each gene’s association with each principal component&lt;/strong&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;JackStrawplot&lt;/code&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Plots the results of the JackStraw analysis for PCA significance. For each PC, plots a QQ-plot comparing the distribution of p-values for all genes across each PC, compared with a uniform distribution. Also determines a p-value for the overall significance of each PC.The p-value for each PC is based on a proportion test comparing the number of genes with a p-value below a particular threshold (score.thresh), compared with the proportion of genes expected under a uniform distribution of p-values.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The other day, I saw a tweet on permute the original matrix to calculate the significance of the PCs.
+I forget the original tweet, but this is from a retweet: &lt;a href=&#34;https://twitter.com/MattOldach/status/1075037756563382274&#34; class=&#34;uri&#34;&gt;https://twitter.com/MattOldach/status/1075037756563382274&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;references:
+This is called Horn’s Parallel Analysis (original paper &lt;a href=&#34;https://link.springer.com/article/10.1007%2FBF02289447&#34; class=&#34;uri&#34;&gt;https://link.springer.com/article/10.1007%2FBF02289447&lt;/a&gt; and a modification &lt;a href=&#34;https://journals.sagepub.com/doi/abs/10.1177/0013164495055003002?journalCode=epma&#34; class=&#34;uri&#34;&gt;https://journals.sagepub.com/doi/abs/10.1177/0013164495055003002?journalCode=epma&lt;/a&gt;. It’s a great method for removing noisy components.&lt;/p&gt;
+&lt;p&gt;This is not exactly the same as what &lt;code&gt;Seurat&lt;/code&gt; is doing, but the idea is similar.
+I want to put it down here for my future reference.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;permutation-test-for-pca&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;permutation “test” for PCA&lt;/h3&gt;
+&lt;p&gt;The code below is copied from that tweet, credit goes to the author.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pca_eigenperm&amp;lt;- function(data, nperm = 1000){
+        pca_out&amp;lt;- prcomp(data, scale. = T)
+        eigenperm&amp;lt;- data.frame(matrix(NA, nperm, ncol(data)))
+        n&amp;lt;- ncol(data)
+        data_i&amp;lt;- data.frame(matrix(NA, nrow(data), ncol(data)))
+        for (j in 1: nperm){
+        for (i in 1:n){
+                data_i[,i]&amp;lt;- sample(data[,i], replace = F)
+        }
+        pca.perm&amp;lt;- prcomp(data_i, scale. = T)
+        eigenperm[j,]&amp;lt;- pca.perm$sdev^2
+        }
+        colnames(eigenperm)&amp;lt;- colnames(pca_out$rotation)
+        eigenperm
+        
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We will use the same &lt;code&gt;NCI60&lt;/code&gt; data set for demonstration.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Attaching packages ──────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.8
+## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
+## ✔ readr   1.3.1     ✔ forcats 0.3.0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+
+library(ISLR)
+
+ncidat&amp;lt;- NCI60$data
+rownames(ncidat)&amp;lt;- NCI60$labs
+
+dim(ncidat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]   64 6830&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fa_pca_perm&amp;lt;- pca_eigenperm(t(ncidat))
+fa_pca&amp;lt;- prcomp(t(ncidat))
+fa_pca_rand95&amp;lt;- 
+        data.frame(Random_Eigenvalues = sapply(fa_pca_perm, quantile, 0.95)) %&amp;gt;%
+        #95% percentile of randome eigenvalues
+        mutate(PC = colnames(fa_pca$rotation)) %&amp;gt;%
+        #add PC IDs as discrete var
+        cbind(Eigenvalues = fa_pca$sdev^2)
+#combine rand95 with real eigenvals
+
+## only the first 9 PCs
+fa_pca_rand95_long&amp;lt;-
+        gather(fa_pca_rand95[1:9, ], key = Variable, value = Value, -PC)
+
+ggplot(fa_pca_rand95_long, aes(PC, Value, fill = Variable)) +
+        geom_bar(stat = &amp;quot;identity&amp;quot;, position = position_dodge())+
+        labs(y=&amp;quot;Eigenvalue&amp;quot;, x=&amp;quot;&amp;quot;, fill= &amp;quot;&amp;quot;) +
+        theme_classic()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-01-04-permutate-test-for-pca-components_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see after PC6, the Eigenvalues are almost the same with the permuted data.
+For single cell data, permutation can take a long time, that’s why in &lt;code&gt;JackStraw&lt;/code&gt; there is an
+option &lt;code&gt;prop.freq&lt;/code&gt; (Proportion of the data to randomly permute for each replicate) to
+permute only a subset of the data matrix.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>The end of 2018</title>
       <link>/post/the-end-of-2018/</link>
       <pubDate>Fri, 28 Dec 2018 00:00:00 +0000</pubDate>
@@ -1430,32 +1569,6 @@ as(cvg, &amp;quot;GRanges&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
       
       <guid>/publication/2018-07-12-tandem-duplicate/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>2018 Next-Gen Sequence Analysis Workshop</title>
-      <link>/talk/2018-dibsi-course/</link>
-      <pubDate>Tue, 10 Jul 2018 00:00:00 -0400</pubDate>
-      
-      <guid>/talk/2018-dibsi-course/</guid>
-      <description>&lt;p&gt;I taught the ChIP-seq lesson for 2018 ANGUS Next-Gen Sequence Analysis Workshop held in UC Davis from 7/1/2018 to 7/14/2018, and TAed for the rest of the sessions. You can find my class link &lt;a href=&#34;https://angus.readthedocs.io/en/2018/chip-seq.html&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt; and all the rest materials &lt;a href=&#34;https://angus.readthedocs.io/en/2018/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;. This is the first formal teaching I have done after I became a certified instructor for Data Carpentry. The same teaching skills applied!&lt;/p&gt;
-
-&lt;p&gt;Some tips for teaching:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Be slow in pace&lt;/li&gt;
-&lt;li&gt;Pause and have students ask questions&lt;/li&gt;
-&lt;li&gt;Draw on white borad. (I am a visual person)&lt;/li&gt;
-&lt;li&gt;Use sticky notes to get an idea of how the class room feel. red sticker means problem. green sticker means OK!&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;See how many students we have!&lt;/strong&gt;
-&lt;img src=&#34;/img/teaching3.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Instructors and TAs group picture&lt;/strong&gt;
-&lt;img src=&#34;/img/instructors_dibsi2018.jpg&#34; alt=&#34;&#34; /&gt;
-Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     
