@@ -13,11 +13,11 @@
     
     
     <item>
-      <title>permutate test for PCA components</title>
-      <link>/post/permutate-test-for-pca-components/</link>
+      <title>permutation test for PCA components</title>
+      <link>/post/permute-test-for-pca-components/</link>
       <pubDate>Fri, 04 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/permutate-test-for-pca-components/</guid>
+      <guid>/post/permute-test-for-pca-components/</guid>
       <description>PCA is a critical method for dimension reduction for high-dimensional data. High-dimensional data are data with features (p) a lot more than observations (n). However, this is changing with single-cell RNAseq data. Now, we can sequence millions (n) of single cells and each cell has ~20,000 genes/features (p).
 I suggest you read my previous blog post on using svd to calculate PCs.
 Single-cell expression data PCA In single-cell RNAseq analysis, feature selection will be performed first.</description>

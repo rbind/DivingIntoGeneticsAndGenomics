@@ -1,8 +1,8 @@
 ---
-title: permutate test for PCA components
+title: permutation test for PCA components
 author: Ming Tang
 date: '2019-01-04'
-slug: permutate-test-for-pca-components
+slug: permute-test-for-pca-components
 categories:
   - R
 tags:
@@ -81,13 +81,13 @@ For downstream analysis, e.g. `{Seurat::FindClusters}` only the PCs that signifi
 
 `JackStraw`:  
 
->Randomly permutates a subset of data, and calculates projected PCA scores for these 'random' genes. Then compares the PCA scores for the 'random' genes with the observed PCA scores to determine statistical significance. End result is a **p-value for each gene's association with each principal component**.
+>Randomly permutes a subset of data, and calculates projected PCA scores for these 'random' genes. Then compares the PCA scores for the 'random' genes with the observed PCA scores to determine statistical significance. End result is a **p-value for each gene's association with each principal component**.
 
 `JackStrawplot`:  
 
 >Plots the results of the JackStraw analysis for PCA significance. For each PC, plots a QQ-plot comparing the distribution of p-values for all genes across each PC, compared with a uniform distribution. Also determines a p-value for the overall significance of each PC.The p-value for each PC is based on a proportion test comparing the number of genes with a p-value below a particular threshold (score.thresh), compared with the proportion of genes expected under a uniform distribution of p-values.
 
-The other day, I saw a tweet on permutate the original matrix to calculate the significance of the PCs.
+The other day, I saw a tweet on permute the original matrix to calculate the significance of the PCs.
 I forget the original tweet, but this is from a retweet: https://twitter.com/MattOldach/status/1075037756563382274
 
 references:
@@ -153,10 +153,10 @@ ggplot(fa_pca_rand95_long, aes(PC, Value, fill = Variable)) +
 
 ```
 
-We see after PC6, the Eigenvalues are almost the same with the permutated data.
+We see after PC6, the Eigenvalues are almost the same with the permuted data.
 For single cell data, permutation can take a long time, that's why in `JackStraw` there is an
-option `prop.freq` (Proportion of the data to randomly permutate for each replicate) to
-permutate only a subset of the data matrix.
+option `prop.freq` (Proportion of the data to randomly permute for each replicate) to
+permute only a subset of the data matrix.
 
 
 

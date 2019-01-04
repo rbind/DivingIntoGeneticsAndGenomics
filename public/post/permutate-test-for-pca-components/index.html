@@ -432,13 +432,13 @@ After <code>irlba</code>, the <code>v</code> matrix is the gene loadings, the <c
 <p>For downstream analysis, e.g. <code>{Seurat::FindClusters}</code> only the PCs that significantly contribute to the variation of the data are used. <code>Seruat</code> uses <code>JackStraw</code> and <code>JackStrawplot</code> function to achieve it.</p>
 <p><code>JackStraw</code>:</p>
 <blockquote>
-<p>Randomly permutes a subset of data, and calculates projected PCA scores for these ‘random’ genes. Then compares the PCA scores for the ‘random’ genes with the observed PCA scores to determine statistical significance. End result is a <strong>p-value for each gene’s association with each principal component</strong>.</p>
+<p>Randomly permutates a subset of data, and calculates projected PCA scores for these ‘random’ genes. Then compares the PCA scores for the ‘random’ genes with the observed PCA scores to determine statistical significance. End result is a <strong>p-value for each gene’s association with each principal component</strong>.</p>
 </blockquote>
 <p><code>JackStrawplot</code>:</p>
 <blockquote>
 <p>Plots the results of the JackStraw analysis for PCA significance. For each PC, plots a QQ-plot comparing the distribution of p-values for all genes across each PC, compared with a uniform distribution. Also determines a p-value for the overall significance of each PC.The p-value for each PC is based on a proportion test comparing the number of genes with a p-value below a particular threshold (score.thresh), compared with the proportion of genes expected under a uniform distribution of p-values.</p>
 </blockquote>
-<p>The other day, I saw a tweet on permute the original matrix to calculate the significance of the PCs.
+<p>The other day, I saw a tweet on permutate the original matrix to calculate the significance of the PCs.
 I forget the original tweet, but this is from a retweet: <a href="https://twitter.com/MattOldach/status/1075037756563382274" class="uri">https://twitter.com/MattOldach/status/1075037756563382274</a></p>
 <p>references:
 This is called Horn’s Parallel Analysis (original paper <a href="https://link.springer.com/article/10.1007%2FBF02289447" class="uri">https://link.springer.com/article/10.1007%2FBF02289447</a> and a modification <a href="https://journals.sagepub.com/doi/abs/10.1177/0013164495055003002?journalCode=epma" class="uri">https://journals.sagepub.com/doi/abs/10.1177/0013164495055003002?journalCode=epma</a>. It’s a great method for removing noisy components.</p>
@@ -502,10 +502,10 @@ ggplot(fa_pca_rand95_long, aes(PC, Value, fill = Variable)) +
         labs(y=&quot;Eigenvalue&quot;, x=&quot;&quot;, fill= &quot;&quot;) +
         theme_classic()</code></pre>
 <p><img src="/post/2019-01-04-permutate-test-for-pca-components_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>We see after PC6, the Eigenvalues are almost the same with the permuted data.
+<p>We see after PC6, the Eigenvalues are almost the same with the permutated data.
 For single cell data, permutation can take a long time, that’s why in <code>JackStraw</code> there is an
-option <code>prop.freq</code> (Proportion of the data to randomly permute for each replicate) to
-permute only a subset of the data matrix.</p>
+option <code>prop.freq</code> (Proportion of the data to randomly permutate for each replicate) to
+permutate only a subset of the data matrix.</p>
 </div>
 
     </div>
