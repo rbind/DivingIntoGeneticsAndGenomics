@@ -132,3 +132,20 @@ with this, you only need to type in the password and verification code once. The
 
 
 >OpenSSH has an option called ControlMaster that enables the sharing of multiple sessions over a single network connection. This means that you can connect to Odyssey once, enter your password and Verification code, and have all other subsequent ssh sessions (including svn, rsync, etc. that run over ssh) piggy-back off the initial connection without need for re-authentication. You can specify such options each time on the command line, but it's easiest if you put it in your ssh client configuration file so that it applies every time.
+
+### Mosh, a mobile shell
+
+If your internet is not stable you may want to install [mosh](https://mosh.org/)
+
+>Remote terminal application that allows roaming, supports intermittent connectivity, and provides intelligent local echo and line editing of user keystrokes.
+
+After installing it, instead of doing 
+
+```bash
+ssh mtang@odyssey.rc.fas.harvard.edu
+
+# do this
+mosh mtang@odyssey.rc.fas.harvard.edu
+```
+Even your internet is dropped or the VPN is disconnected, after you reconnect, you shell 
+session will be alive without logging in. Pretty cool!

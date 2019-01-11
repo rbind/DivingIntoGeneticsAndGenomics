@@ -503,6 +503,25 @@ mv 'Enter Current TOTP Token.workflow' ~/Library/Services
 <p>OpenSSH has an option called ControlMaster that enables the sharing of multiple sessions over a single network connection. This means that you can connect to Odyssey once, enter your password and Verification code, and have all other subsequent ssh sessions (including svn, rsync, etc. that run over ssh) piggy-back off the initial connection without need for re-authentication. You can specify such options each time on the command line, but it&rsquo;s easiest if you put it in your ssh client configuration file so that it applies every time.</p>
 </blockquote>
 
+<h3 id="mosh-a-mobile-shell">Mosh, a mobile shell</h3>
+
+<p>If your internet is not stable you may want to install <a href="https://mosh.org/" target="_blank">mosh</a></p>
+
+<blockquote>
+<p>Remote terminal application that allows roaming, supports intermittent connectivity, and provides intelligent local echo and line editing of user keystrokes.</p>
+</blockquote>
+
+<p>After installing it, instead of doing</p>
+
+<pre><code class="language-bash">ssh mtang@odyssey.rc.fas.harvard.edu
+
+# do this
+mosh mtang@odyssey.rc.fas.harvard.edu
+</code></pre>
+
+<p>Even your internet is dropped or the VPN is disconnected, after you reconnect, you shell
+session will be alive without logging in. Pretty cool!</p>
+
     </div>
 
     
