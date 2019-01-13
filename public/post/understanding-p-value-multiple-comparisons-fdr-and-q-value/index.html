@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="This was an old post I wrote more than 3 years ago after I took HarvardX: PH525.3x Advanced Statistics for the Life Sciences on edx taught by Rafael Irizarry. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn. I am reposting it here using blogdown to give myself a refresh.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">
+  <meta property="og:title" content="Understanding p value, multiple comparisons, FDR and q value | DNA confesses Data speak">
+  <meta property="og:description" content="This was an old post I wrote more than 3 years ago after I took HarvardX: PH525.3x Advanced Statistics for the Life Sciences on edx taught by Rafael Irizarry. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn. I am reposting it here using blogdown to give myself a refresh.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-01-13T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-01-13T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Understanding p value, multiple comparisons, FDR and q value | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Understanding p value, multiple comparisons, FDR and q value</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2019-01-13 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Jan 13, 2019
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    10 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/r/">R</a
+    >, 
+    
+    <a href="/categories/genomics/">genomics</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value&amp;url=%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f&amp;title=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f&amp;title=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value&amp;body=%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>This was an <a href="http://crazyhottommy.blogspot.com/2015/03/understanding-p-value-multiple.html">old post</a> I wrote more than 3 years ago after I took HarvardX: <a href="https://courses.edx.org/courses/course-v1:HarvardX+PH525.3x+1T2018/0b42cffa7c6e4c559bf74f93fb864a59/">PH525.3x Advanced Statistics for the Life Sciences on edx</a> taught by <a href="http://rafalab.github.io/">Rafael Irizarry</a>. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn. I am reposting it here using blogdown to give myself a refresh.</p>
+<p>I am writing this post for my own later references. Deep understanding of p-value, FDR and q-value is not trivial, and many biologists are misusing and/or misinterpreting them. Please also read this Nature Biotech primer <a href="https://www.nature.com/articles/nbt1209-1135">How does multiple testing correction work?</a></p>
+<p>For biologists’ sake, I will use an example of gene expression. Suppose we have two groups of cells: control and treatment (can be anything like chemical treatment, radiation treatment etc..). We are looking if Gene A is deferentially expressed or not under treatment. Each group we have 12 replicates.</p>
+<p>What we usually do is take the average of 12 replicates of each group and do a t-test to compare if the difference is significant or not (assume normal distribution). We then get a p-value, say p = 0.035. We know it is smaller than 0.05 (a threshold we set), and we conclude that after treatment, expression of Gene A is significantly changed. However, what does it mean by saying a p value of 0.035?</p>
+<p>Everything starts with a null hypothesis:<br />
+<strong>H0 : There are no difference of gene expression for Gene A after treatment.</strong></p>
+<p>and an alternative hypothesis:<br />
+<strong>H1: After treatment, expression of Gene A changes.</strong></p>
+<p>The definition of every P value begins by assuming a null hypothesis is True <span class="citation">Motulsky (<a href="#ref-motulsky2014intuitive">2014</a>)</span> Th rid edition page 127. With a p-value of 0.035, it means that under the Null, the probability that we see the difference of gene expression after treatment is 0.035, which is very low. If we choose a significant level of alpha=0.05, we then reject the Null hypothesis and accept the alternative hypothesis. So, if you can not state what the null hypothesis is, you can not understand the P value <span class="citation">Motulsky (<a href="#ref-motulsky2014intuitive">2014</a>)</span> Th rid edition page 127.</p>
+<p>For a typical genomic study, there are thousands of genes we want to compare. How do we report the gene list containing the genes that are differentially expressed? We can perform a-test for each single gene and if the p-value is smaller than 0.05, we report it. However, it will give us a lot of false positives because we did not consider multiple tests.</p>
+<p>Let’s start using a microarray data set in which thousands of genes are assayed at the same time.</p>
+<pre class="r"><code>### This part is from the Edx online Harvard course 
+## HarvardX: PH525.3x Advanced Statistics for the Life Sciences, week1
+
+library(devtools)
+library(qvalue)</code></pre>
+<pre><code>## Warning: package &#39;qvalue&#39; was built under R version 3.5.2</code></pre>
+<pre class="r"><code>#install_github(&quot;genomicsclass/GSE5859Subset&quot;)
+
+library(GSE5859Subset)
+data(GSE5859Subset)
+dim(geneExpression)</code></pre>
+<pre><code>## [1] 8793   24</code></pre>
+<p>Have a look at the data and objects available</p>
+<pre class="r"><code>geneExpression[1:6, 1:6]</code></pre>
+<pre><code>##           GSM136508.CEL.gz GSM136530.CEL.gz GSM136517.CEL.gz
+## 1007_s_at         6.543954         6.401470         6.298943
+## 1053_at           7.546708         7.263547         7.201699
+## 117_at            5.402622         5.050546         5.024917
+## 121_at            7.892544         7.707754         7.461886
+## 1255_g_at         3.242779         3.222804         3.185605
+## 1294_at           7.531754         7.090270         7.466018
+##           GSM136576.CEL.gz GSM136566.CEL.gz GSM136574.CEL.gz
+## 1007_s_at         6.837899         6.470689         6.450220
+## 1053_at           7.052761         6.980207         7.096195
+## 117_at            5.304313         5.214149         5.173731
+## 121_at            7.558130         7.819013         7.641136
+## 1255_g_at         3.195363         3.251915         3.324934
+## 1294_at           7.122145         7.058973         6.992396</code></pre>
+<pre class="r"><code>dim(sampleInfo)</code></pre>
+<pre><code>## [1] 24  4</code></pre>
+<pre class="r"><code>head(sampleInfo)</code></pre>
+<pre><code>##     ethnicity       date         filename group
+## 107       ASN 2005-06-23 GSM136508.CEL.gz     1
+## 122       ASN 2005-06-27 GSM136530.CEL.gz     1
+## 113       ASN 2005-06-27 GSM136517.CEL.gz     1
+## 163       ASN 2005-10-28 GSM136576.CEL.gz     1
+## 153       ASN 2005-10-07 GSM136566.CEL.gz     1
+## 161       ASN 2005-10-07 GSM136574.CEL.gz     1</code></pre>
+<pre class="r"><code>sampleInfo$filename</code></pre>
+<pre><code>##  [1] &quot;GSM136508.CEL.gz&quot; &quot;GSM136530.CEL.gz&quot; &quot;GSM136517.CEL.gz&quot;
+##  [4] &quot;GSM136576.CEL.gz&quot; &quot;GSM136566.CEL.gz&quot; &quot;GSM136574.CEL.gz&quot;
+##  [7] &quot;GSM136575.CEL.gz&quot; &quot;GSM136569.CEL.gz&quot; &quot;GSM136568.CEL.gz&quot;
+## [10] &quot;GSM136559.CEL.gz&quot; &quot;GSM136565.CEL.gz&quot; &quot;GSM136573.CEL.gz&quot;
+## [13] &quot;GSM136523.CEL.gz&quot; &quot;GSM136509.CEL.gz&quot; &quot;GSM136727.CEL.gz&quot;
+## [16] &quot;GSM136510.CEL.gz&quot; &quot;GSM136515.CEL.gz&quot; &quot;GSM136522.CEL.gz&quot;
+## [19] &quot;GSM136507.CEL.gz&quot; &quot;GSM136524.CEL.gz&quot; &quot;GSM136514.CEL.gz&quot;
+## [22] &quot;GSM136563.CEL.gz&quot; &quot;GSM136564.CEL.gz&quot; &quot;GSM136572.CEL.gz&quot;</code></pre>
+<pre class="r"><code>head(geneAnnotation)</code></pre>
+<pre><code>##      PROBEID  CHR     CHRLOC SYMBOL
+## 1  1007_s_at chr6   30852327   DDR1
+## 30   1053_at chr7  -73645832   RFC2
+## 31    117_at chr1  161494036  HSPA6
+## 32    121_at chr2 -113973574   PAX8
+## 33 1255_g_at chr6   42123144 GUCA1A
+## 34   1294_at chr3  -49842638   UBA7</code></pre>
+<p>let’s look at one single gene</p>
+<pre class="r"><code>g&lt;- sampleInfo$group
+
+e&lt;- geneExpression[25,]
+
+# t-test, expression should be normal distribution
+qqnorm(e[g==1])
+qqline(e[g==1])</code></pre>
+<p><img src="/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>qqnorm(e[g==0])
+qqline(e[g==1])</code></pre>
+<p><img src="/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<pre class="r"><code># perform t-test
+t.test(e[g==1], e[g==0])</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  e[g == 1] and e[g == 0]
+## t = 0.28382, df = 21.217, p-value = 0.7793
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.1431452  0.1884244
+## sample estimates:
+## mean of x mean of y 
+##  10.52505  10.50241</code></pre>
+<p>do t-test for all the genes</p>
+<pre class="r"><code>mytest&lt;- function(x) t.test(x[g==1], x[g==0], var.equal=T)$p.value
+
+## or we can use the genefilter package from bioconductor
+## library(genefilter)
+## results&lt;- rowttests(geneExpression, factor(g))
+
+pvals&lt;- apply(geneExpression, 1, mytest)
+
+sum(pvals&lt; 0.05)  # how many pvalues are smaller than 0.05</code></pre>
+<pre><code>## [1] 1383</code></pre>
+<p>have a look at the p-value distribution</p>
+<pre class="r"><code># there are 1383 genes with p value smaller than 0.05
+# are all of them statistically different?
+hist(pvals)</code></pre>
+<p><img src="/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<div id="simulate-multiple-comparisons-with-random-data" class="section level3">
+<h3>simulate multiple comparisons with random data</h3>
+<pre class="r"><code>m&lt;- nrow(geneExpression)
+n&lt;- ncol(geneExpression)
+
+# generate random numbers
+randomData&lt;- matrix(rnorm(n*m), m, n)
+nullpvalues&lt;- apply(randomData, 1, mytest)
+hist(nullpvalues)</code></pre>
+<p><img src="/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>compare this histogram with the histogram above. what do you see?
+Even if we randomly generated the data, you still see some pvalues are smaller than 0.05!! We randomly generated data, there should be no genes that deferentially expressed. However, we see a flat line across different p values.</p>
+<p>p values are random variables. Mathematically, one can <a href="https://joyeuserrance.wordpress.com/2011/04/22/proof-that-p-values-under-the-null-are-uniformly-distributed/">demonstrate</a> that under the null hypothesis (and some assumptions are met, in this case, the test statistic T follows standard normal distribution), p-values follow a uniform (0,1) distribution, which means that P(p &lt; p1) = p1. This means that the probability see a p value smaller than p1 is equal to p1. That being said, with a 100 t-tests, under the null (no difference between control and treatment), we will see 1 test with a p value smaller than 0.01. And we will see 2 tests with a p value smaller than 0.02 etc…
+This explains why we see some p-values are smaller than 0.05 in our randomly generated numbers.</p>
+<p>In fact, checking the p-value distribution by histogram is a very important step during data analysis.
+You may want to read a blog post by David Robinson <a href="http://varianceexplained.org/statistics/interpreting-pvalue-histogram/">How to interpret a p-value histogram</a>.</p>
+</div>
+<div id="how-do-we-control-the-false-positives-for-multiple-comparisons" class="section level3">
+<h3>How do we control the false positives for multiple comparisons?</h3>
+<p>One way is to use the Bonferroni correction to correct the familywise error rate (FWER):
+define a particular comparison as statistically significant only when the P value is less than alpha(often 0.05) divided by the number of comparisons (p &lt; alpha/m) <span class="citation">Motulsky (<a href="#ref-motulsky2014intuitive">2014</a>)</span> Third edition page 187. Say we computed 100 t-tests, and got 100 p values, we only consider the genes with a p value smaller than 0.05/100 as significant. This approach is very conservative and is used in Genome-wide association studies (GWAS). Since we often compare millions of genetic variations between (tens of thousands) cases and controls, this threshold will be very small! <span class="citation">Motulsky (<a href="#ref-motulsky2014intuitive">2014</a>)</span> Third edition page 188.</p>
+<p>Alternatively, we can use False Discovery Rate (FDR) to report the gene list.
+<strong>FDR = #false positives/# called significant.</strong><br />
+This approach does not use the term statistically significant but instead use the term discovery.
+Let’s control FDR for a gene list with <code>FDR = 0.05</code>.
+<strong>It means that of all the discoveries, 5% of them is expected to be false positives.</strong></p>
+<p>Benjamini &amp; Hochberg (BH method) in 1995 proposed a way to control FDR:
+Let k be the largest i such that <code>p(i) &lt;= (i/m) * alpha</code>, (m is the number of comparisons)
+then reject H(i) for i =1, 2, …k</p>
+<p>This process controls the FDR at level alpha. The method sets a different threshold p value for each comparison. Say we computed 100 t-tests, and got 100 p values, and we want to control the FDR =0.05. We then rank the p values from small to big.
+if p(1) &lt;= 1/100 * 0.05, we then reject null hypothesis and accept the alternative.
+if p(2) &lt; = 2/100 * 0.05, we then reject the null and accept the alternative..
+…..</p>
+<pre class="r"><code>## order the pvals computed above and plot it.
+alpha = 0.05
+m = length(pvals)
+#m is the number of 8793 comparisons 
+
+plot(x=seq(1,100), y=pvals[order(pvals)][1:100])
+abline(a=0, b=alpha/m)
+title(&quot;slop is alpha/m&quot;)</code></pre>
+<p><img src="/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code># let&#39;s zoom in to look at the first 15 p values from small to big
+
+plot(x=seq(1,100), y=pvals[order(pvals)][1:100], xlim=c(1,15))
+abline(a=0, b=alpha/m)
+title(&quot;slop is alpha/m&quot;)</code></pre>
+<p><img src="/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<pre class="r"><code># we can see that the 14th p value is bigger than its own threshold 
+# which is computed by (0.05/m) * 14 = 7.960878e-05
+
+# we will use p.adjust function and the method &quot;fdr&quot; or &quot;BH&quot; to
+# correct the p value, what the p.adjust function does to to
+# recalculate the p-value. ?p.adjust to see more
+# p(i)&lt;= (i/m) * alpha 
+# p(i) * m/i &lt;= alpha
+# we can then only accept the returned if p.adjust(pvals) &lt;= alpha
+# number of p values smaller than their own thresholds after controlling FDR=0.05</code></pre>
+<p>we can see that the 14th p value is bigger than its own threshold ,which is computed by (0.05/m) * 14 = 7.960878e-05
+we will use p.adjust function and the method “fdr” or “BH” to correct the p value, what the p.adjust function does is to recalculate the p-values.
+p(i)&lt;= (i/m) * alpha
+p(i) * m/i &lt;= alpha
+we can then only accept the returned the p values if p.adjust(pvals) &lt;= alpha</p>
+<pre class="r"><code>sum( p.adjust(pvals, method=&quot;fdr&quot;) &lt; 0.05 )</code></pre>
+<pre><code>## [1] 13</code></pre>
+<p>it is 13, the same as we saw from the figure.</p>
+<p>Another method by Storey in 2002 is the direct approach to FDR:
+Let K be the largest i such that pi_0 * p(i) &lt; (i/m) * alpha
+then reject H(i) for i =1,2,…k
+pi_0 is the estimate of the proportion of null hypothesis in the gene list is true, range from 0 to 1.
+so when pi_0 is 1, then we have the Benjamini &amp; Hochberg correction.
+This method is less conservative than the BH method.
+Use the qvalue function in the bioconductor package “qvalue”</p>
+<pre class="r"><code>sum( qvalue(pvals)$qvalues &lt; 0.05)</code></pre>
+<pre><code>## [1] 22</code></pre>
+<p>it is 22, less conservative than the BH method.</p>
+<p><strong>Note that FDR is a property of a list of genes. q value is defined for a specific gene:</strong></p>
+<p>HarvardX: PH525.3x Advanced Statistics for the Life Sciences, week1, video lecture for FDR.</p>
+<blockquote>
+<p>“But if you do want to assign a number to each gene, a simple thing you can do, is you can go gene by gene, and decide what would be the smallest FDR I would consider, that would include this gene in the list. And once you do that, then you have defined a q-value. And this is something that is very often reported in the list of genes”[4]</p>
+</blockquote>
+<p>HarvardX: PH525.3x Advanced Statistics for the Life Sciences, week1, quiz for FDR:</p>
+<blockquote>
+<p>“To define the q-value we order features we tested by p-value then compute the FDRs for a list with the most significant, the two most significant, the three most significant, etc… The FDR of the list with the, say, m most significant tests is defined as the q-value of the m-th most significant feature. In other words, the q-value of a feature, is the FDR of the biggest list that includes that gene” [5]</p>
+</blockquote>
+<p>I hope this post helps you better understand p values, FDR and q values. Sadly, many biologists do not understand them well and try to do p-hacking.</p>
+<p>Further read <a href="https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002106">The Extent and Consequences of P-Hacking in Science</a> and <a href="https://www.thermofisher.com/blog/proteomics/whats-true-whats-false-proteostats-and-the-fdr/">What’s True? What’s False? ProteoStats and the FDR</a></p>
+<div id="refs" class="references">
+<div id="ref-motulsky2014intuitive">
+<p>Motulsky, Harvey. 2014. <em>Intuitive Biostatistics: A Nonmathematical Guide to Statistical Thinking</em>. Oxford University Press, USA.</p>
+</div>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/fdr/">FDR</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/pvalue/">pvalue</a>
+  
+</div>
+
+
+
+
+    
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/permute-test-for-pca-components/" rel="prev">permutation test for PCA components</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/R.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+

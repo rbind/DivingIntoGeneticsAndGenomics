@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</loc>
+      <lastmod>2019-01-13T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/permute-test-for-pca-components/</loc>
       <lastmod>2019-01-04T00:00:00+00:00</lastmod>
     </url>
@@ -462,6 +471,16 @@
     
     <url>
     
+      <loc>/tags/fdr/</loc>
+      <lastmod>2019-01-13T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/geo/</loc>
       <lastmod>2018-06-22T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -482,8 +501,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2018-11-27T00:00:00+00:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2019-01-13T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -492,8 +511,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2018-12-18T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2018-11-27T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -572,8 +591,8 @@
     
     <url>
     
-      <loc>/tags/r/</loc>
-      <lastmod>2018-11-27T00:00:00+00:00</lastmod>
+      <loc>/tags/pvalue/</loc>
+      <lastmod>2019-01-13T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -583,7 +602,17 @@
     <url>
     
       <loc>/categories/r/</loc>
-      <lastmod>2019-01-04T00:00:00+00:00</lastmod>
+      <lastmod>2019-01-13T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/r/</loc>
+      <lastmod>2018-11-27T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
