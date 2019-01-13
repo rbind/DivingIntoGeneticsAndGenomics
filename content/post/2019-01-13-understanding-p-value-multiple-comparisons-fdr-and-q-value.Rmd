@@ -30,7 +30,7 @@ Everything starts with a null hypothesis:
 and an alternative hypothesis:  
 **H1:  After treatment, expression of Gene A changes.**
 
-The definition of every P value begins by assuming a null hypothesis is True @motulsky2014intuitive Th rid edition page 127. With a p-value of 0.035, it means that under the Null, the probability that we see the difference of gene expression after treatment is 0.035, which is very low. If we choose a significant level of alpha=0.05, we then reject the Null hypothesis and accept the alternative hypothesis. So, if you can not state what the null hypothesis is, you can not understand the P value @motulsky2014intuitive Th rid edition page 127.
+The definition of every P value begins by assuming a null hypothesis is True @motulsky2014intuitive Th rid edition page 127. With a p-value of 0.035, it means that under the Null, the probability that we see the difference of gene expression after treatment is 0.035, which is very low. If we choose a significant level of alpha=0.05, we then reject the Null hypothesis and accept the alternative hypothesis. So, if you can not state what the null hypothesis is, you can not understand the P value @motulsky2014intuitive Third edition page 127.
 
 For a typical genomic study, there are thousands of genes we want to compare. How do we report the gene list containing the genes that are differentially expressed? We can perform a-test for each single gene and if the p-value is smaller than 0.05, we report it. However, it will give us a lot of false positives because we did not consider multiple tests.
 
