@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/how-to-make-a-transcript-to-gene-mapping-file/</loc>
+      <lastmod>2019-01-28T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</loc>
       <lastmod>2019-01-13T00:00:00+00:00</lastmod>
     </url>
@@ -402,6 +411,16 @@
     
     <url>
     
+      <loc>/categories/bioinformatics/</loc>
+      <lastmod>2019-01-28T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/blogdown/</loc>
       <lastmod>2018-12-28T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -413,6 +432,7 @@
     <url>
     
       <loc>/categories/</loc>
+      <lastmod>2019-01-28T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -501,8 +521,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2019-01-13T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2018-11-27T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -511,8 +531,18 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2018-11-27T00:00:00+00:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2019-01-28T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/gff/</loc>
+      <lastmod>2019-01-28T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -601,8 +631,8 @@
     
     <url>
     
-      <loc>/categories/r/</loc>
-      <lastmod>2019-01-13T00:00:00+00:00</lastmod>
+      <loc>/tags/python/</loc>
+      <lastmod>2019-01-28T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -613,6 +643,16 @@
     
       <loc>/tags/r/</loc>
       <lastmod>2018-11-27T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/r/</loc>
+      <lastmod>2019-01-13T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -653,6 +693,16 @@
     
       <loc>/tags/</loc>
       <lastmod>2017-01-01T00:00:00-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/unix/</loc>
+      <lastmod>2019-01-28T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

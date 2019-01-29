@@ -13,12 +13,23 @@
     
     
     <item>
+      <title>How to make a transcript to gene mapping file</title>
+      <link>/post/how-to-make-a-transcript-to-gene-mapping-file/</link>
+      <pubDate>Mon, 28 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-make-a-transcript-to-gene-mapping-file/</guid>
+      <description>I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
+Please read the specifications of those two file formats.</description>
+    </item>
+    
+    <item>
       <title>Understanding p value, multiple comparisons, FDR and q value</title>
       <link>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</link>
       <pubDate>Sun, 13 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</guid>
-      <description>This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advanced Statistics for the Life Sciences on edx taught by Rafael Irizarry. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn. I am reposting it here using blogdown to give myself a refresh.</description>
+      <description>UPDATE 01/29/2019. Read this awesome paper Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations.
+This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advanced Statistics for the Life Sciences on edx taught by Rafael Irizarry. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn.</description>
     </item>
     
     <item>

@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
+Please read the specifications of those two file formats.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/how-to-make-a-transcript-to-gene-mapping-file/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/how-to-make-a-transcript-to-gene-mapping-file/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/how-to-make-a-transcript-to-gene-mapping-file/">
+  <meta property="og:title" content="How to make a transcript to gene mapping file | DNA confesses Data speak">
+  <meta property="og:description" content="I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
+Please read the specifications of those two file formats.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-01-28T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-01-28T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>How to make a transcript to gene mapping file | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">How to make a transcript to gene mapping file</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2019-01-28 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Jan 28, 2019
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/how-to-make-a-transcript-to-gene-mapping-file/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/genomics/">genomics</a
+    >, 
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=How%20to%20make%20a%20transcript%20to%20gene%20mapping%20file&amp;url=%2fpost%2fhow-to-make-a-transcript-to-gene-mapping-file%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fhow-to-make-a-transcript-to-gene-mapping-file%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fhow-to-make-a-transcript-to-gene-mapping-file%2f&amp;title=How%20to%20make%20a%20transcript%20to%20gene%20mapping%20file"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fhow-to-make-a-transcript-to-gene-mapping-file%2f&amp;title=How%20to%20make%20a%20transcript%20to%20gene%20mapping%20file"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=How%20to%20make%20a%20transcript%20to%20gene%20mapping%20file&amp;body=%2fpost%2fhow-to-make-a-transcript-to-gene-mapping-file%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>I need a transcript to gene mapping file for <code>Salmon</code>. I am aware of annotation <code>bioconductor</code> packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.</p>
+<p>Please read the <a href="https://useast.ensembl.org/info/website/upload/gff.html">specifications</a> of those two file formats.</p>
+<div id="download-drosophila-gtf-file-from-ensemble-and-gff-file-from-ncbi" class="section level3">
+<h3>Download drosophila gtf file from ENSEMBLE and gff file from NCBI</h3>
+<p>Find the <code>gff</code> file at <a href="https://www.ncbi.nlm.nih.gov/genome/?term=drosophila+melanogaster" class="uri">https://www.ncbi.nlm.nih.gov/genome/?term=drosophila+melanogaster</a><br />
+Find the <code>gtf</code> file at <a href="ftp://ftp.ensembl.org/pub/release-95/gtf/drosophila_melanogaster/" class="uri">ftp://ftp.ensembl.org/pub/release-95/gtf/drosophila_melanogaster/</a></p>
+<pre class="bash"><code>#gtf file
+zless -S ~/Downloads/Drosophila_melanogaster.BDGP6.95.gtf.gz | grep -v &quot;#&quot; | cut -f3 | sort | uniq -c</code></pre>
+<pre><code>## 160859 CDS
+##    4 Selenocysteine
+## 187373 exon
+## 46299 five_prime_utr
+## 17737 gene
+## 30492 start_codon
+## 33892 three_prime_utr
+## 34767 transcript</code></pre>
+<pre class="bash"><code>#gff file
+zless -S ~/Downloads/GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.gff.gz| grep -v &quot;#&quot; | cut -f3 | sort | uniq -c</code></pre>
+<pre><code>## 160949 CDS
+##    1 RNase_MRP_RNA
+##    2 RNase_P_RNA
+##    2 SRP_RNA
+##  584 antisense_RNA
+## 187809 exon
+## 17421 gene
+## 2275 lnc_RNA
+## 30480 mRNA
+##  479 miRNA
+## 5416 mobile_genetic_element
+##   77 ncRNA
+##  263 primary_transcript
+##  308 pseudogene
+##  134 rRNA
+## 1870 region
+##    1 sequence_feature
+##   32 snRNA
+##  289 snoRNA
+##  319 tRNA</code></pre>
+</div>
+<div id="use-unix-command-to-make-a-transcripts-to-gene-mapping-file-from-gtf-file" class="section level3">
+<h3>Use unix command to make a transcripts to gene mapping file from gtf file</h3>
+<p>We see the feature types are quite different although they are both annotation files for the same species.
+The <code>gtf</code> file is relatively well formatted, and we can make a transcripts to gene mapping file easily using
+unix command line.</p>
+<pre class="bash"><code>zless -S ~/Downloads/Drosophila_melanogaster.BDGP6.95.gtf.gz | grep -v &quot;#&quot; | awk &#39;$3==&quot;transcript&quot;&#39; | cut -f9 | tr -s &quot;;&quot; &quot; &quot; | awk &#39;{print$4&quot;\t&quot;$2}&#39; | sort | uniq |  sed &#39;s/\&quot;//g&#39; | tee tx2gene_ensemble.tsv| head</code></pre>
+<pre><code>## FBgn0013687  FBgn0013687
+## FBtr0005088  FBgn0260439
+## FBtr0006151  FBgn0000056
+## FBtr0070000  FBgn0031081
+## FBtr0070001  FBgn0052826
+## FBtr0070002  FBgn0031085
+## FBtr0070003  FBgn0062565
+## FBtr0070006  FBgn0031089
+## FBtr0070007  FBgn0031092
+## FBtr0070008  FBgn0031094</code></pre>
+<p>hmm…why the first line has both genes in the two columns?…
+sanity check:</p>
+<pre class="bash"><code>zless -S ~/Downloads/Drosophila_melanogaster.BDGP6.95.gtf.gz | grep &quot;FBgn0013687&quot; | less -S</code></pre>
+<pre><code>## mitochondrion_genome FlyBase gene    14917   19524   .   +   .   gene_id &quot;FBgn0013687&quot;; gene_name &quot;mt:ori&quot;; gene_source &quot;FlyBase&quot;; gene_biotype &quot;pseudogene&quot;;
+## mitochondrion_genome FlyBase transcript  14917   19524   .   +   .   gene_id &quot;FBgn0013687&quot;; transcript_id &quot;FBgn0013687&quot;; gene_name &quot;mt:ori&quot;; gene_source &quot;FlyBase&quot;; gene_biotype &quot;pseudogene&quot;; transcript_source &quot;FlyBase&quot;; transcript_biotype &quot;pseudogene&quot;;
+## mitochondrion_genome FlyBase exon    14917   19524   .   +   .   gene_id &quot;FBgn0013687&quot;; transcript_id &quot;FBgn0013687&quot;; exon_number &quot;1&quot;; gene_name &quot;mt:ori&quot;; gene_source &quot;FlyBase&quot;; gene_biotype &quot;pseudogene&quot;; transcript_source &quot;FlyBase&quot;; transcript_biotype &quot;pseudogene&quot;; exon_id &quot;FBgn0013687-E1&quot;;</code></pre>
+<p>Indeed it is in the original gtf file.</p>
+</div>
+<div id="use-gffutilsto-make-a-transcripts-to-gene-mapping-file-from-gff-file" class="section level3">
+<h3>Use <code>gffutils</code>to make a transcripts to gene mapping file from gff file</h3>
+<p>The <code>gff</code> file is not that well defined. One may still be able to use some unix tricks to get the tx2gene.tsv file from a gff file, but it can be rather awkward especially for gff files from other not well annotated species. Instead, let’s use <code>gffutils</code>, a python package to do the same.</p>
+<p>install <code>gffutils</code> in terminal:</p>
+<p><code>source activate snakemake</code><br />
+<code>conda install gffutils</code></p>
+<p>Note, I am running python through Rsutdio/ First read how to set python path for <code>reticulate</code> at <a href="https://rstudio.github.io/reticulate/articles/versions.html" class="uri">https://rstudio.github.io/reticulate/articles/versions.html</a>
+read more on <a href="https://cran.r-project.org/web/packages/reticulate/vignettes/versions.html" class="uri">https://cran.r-project.org/web/packages/reticulate/vignettes/versions.html</a></p>
+<p>Somehow, I have to create a <code>.Rprofile</code> in the same folder of <code>.Rproj</code> file with the following line to use my snakemake conda environment which is python3:</p>
+<p><code>Sys.setenv(PATH = paste(&quot;/anaconda3/envs/snakemake/bin/&quot;, Sys.getenv(&quot;PATH&quot;), sep=&quot;:&quot;))</code></p>
+<pre class="r"><code>library(reticulate)
+
+# check which python I am using
+py_discover_config()</code></pre>
+<pre><code>## python:         /anaconda3/envs/snakemake/bin//python
+## libpython:      /anaconda3/envs/snakemake/lib/libpython3.6m.dylib
+## pythonhome:     /anaconda3/envs/snakemake:/anaconda3/envs/snakemake
+## version:        3.6.7 |Anaconda, Inc.| (default, Oct 23 2018, 14:01:38)  [GCC 4.2.1 Compatible Clang 4.0.1 (tags/RELEASE_401/final)]
+## numpy:          /anaconda3/envs/snakemake/lib/python3.6/site-packages/numpy
+## numpy_version:  1.15.3
+## 
+## python versions found: 
+##  /anaconda3/envs/snakemake/bin//python
+##  /usr/bin/python
+##  /anaconda3/envs/py27/bin/python
+##  /anaconda3/envs/snakemake/bin/python</code></pre>
+<pre class="r"><code># these did not work for me...
+# use_condaenv(&quot;snakemake&quot;, required = TRUE)
+# use_python(&quot;/anaconda3/envs/snakemake/bin/python&quot;)</code></pre>
+<pre class="python"><code>import sys
+print(sys.version)</code></pre>
+<pre><code>## 3.6.7 |Anaconda, Inc.| (default, Oct 23 2018, 14:05:31) 
+## [GCC 4.2.1 Compatible Clang 4.0.1 (tags/RELEASE_401/final)]</code></pre>
+<pre class="python"><code>import gffutils
+import itertools
+import os
+os.listdir()
+db = gffutils.create_db(&quot;GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.gff.gz&quot;, &quot;:memory:&quot;, force = True,merge_strategy=&quot;merge&quot;, id_spec={&#39;gene&#39;: &#39;Dbxref&#39;})
+list(db.featuretypes())
+# one can do it for one type of features, say mRNA
+for mRNA in itertools.islice(db.features_of_type(&#39;mRNA&#39;), 10):
+        print(mRNA[&#39;transcript_id&#39;][0], mRNA[&#39;gene&#39;][0])
+        #print(mRNA.attributes.items())
+        
+## but I then have to do the same for lnc_RNA and others.        
+## instead, loop over all features in the database</code></pre>
+<pre><code>## NM_001103384.3 CG17636
+## NM_001258513.2 CG17636
+## NM_001258512.2 CG17636
+## NM_001297796.1 RhoGAP1A
+## NM_001297795.1 RhoGAP1A
+## NM_001103385.2 RhoGAP1A
+## NM_001103386.2 RhoGAP1A
+## NM_001169155.1 RhoGAP1A
+## NM_001297797.1 RhoGAP1A
+## NM_001297801.1 tyn</code></pre>
+<pre class="python"><code>tx_and_gene=[]
+with open(&quot;tx2gene_NCBI.tsv&quot;, &quot;w&quot;) as f:
+        for feature in db.all_features():
+                transcript = feature.attributes.get(&#39;transcript_id&#39;, [None])[0]
+                gene = feature.attributes.get(&#39;gene&#39;, [None])[0]
+                if gene and transcript and ([transcript, gene] not in tx_and_gene):
+                        tx_and_gene.append([transcript, gene])
+                        f.write(transcript + &quot;\t&quot; + gene + &quot;\n&quot;)</code></pre>
+<p>These lines of codes are not hard to write. It takes more time to read the package documentation and understand how to use the package. One problem with bioinFORMATics is that there are so many different file formats. To make things worse, even for gff file format, many files do not follow the exact specification. You can have a taste of that at <a href="http://daler.github.io/gffutils/examples.html" class="uri">http://daler.github.io/gffutils/examples.html</a>.</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/gff/">gff</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/python/">python</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/unix/">unix</a>
+  
+</div>
+
+
+
+
+    
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/" rel="prev">Understanding p value, multiple comparisons, FDR and q value</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/R.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+
