@@ -1,0 +1,117 @@
+---
+title: How to make a transcript to gene mapping file
+author: Ming Tang
+date: '2019-01-28'
+slug: how-to-make-a-transcript-to-gene-mapping-file
+categories:
+  - genomics
+  - bioinformatics
+tags:
+  - gff
+  - python
+  - unix
+header:
+  caption: ''
+  image: ''
+---
+
+I need a transcript to gene mapping file for `Salmon`. I am aware of annotation `bioconductor` packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
+ 
+Please read the [specifications](https://useast.ensembl.org/info/website/upload/gff.html) of those two file formats.
+
+### Download drosophila gtf file from ENSEMBLE and gff file from NCBI
+
+Find the `gff` file at https://www.ncbi.nlm.nih.gov/genome/?term=drosophila+melanogaster  
+Find the `gtf` file at ftp://ftp.ensembl.org/pub/release-95/gtf/drosophila_melanogaster/
+
+
+```{bash}
+#gtf file
+zless -S ~/Downloads/Drosophila_melanogaster.BDGP6.95.gtf.gz | grep -v "#" | cut -f3 | sort | uniq -c
+```
+
+
+```{bash}
+#gff file
+zless -S ~/Downloads/GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.gff.gz| grep -v "#" | cut -f3 | sort | uniq -c
+```
+
+### Use unix command to make a transcripts to gene mapping file from gtf file
+
+We see the feature types are quite different although they are both annotation files for the same species.
+The `gtf` file is relatively well formatted, and we can make a transcripts to gene mapping file easily using
+unix command line.
+
+```{bash}
+zless -S ~/Downloads/Drosophila_melanogaster.BDGP6.95.gtf.gz | grep -v "#" | awk '$3=="transcript"' | cut -f9 | tr -s ";" " " | awk '{print$4"\t"$2}' | sort | uniq |  sed 's/\"//g' | tee tx2gene_ensemble.tsv| head
+```
+
+hmm...why the first line has both genes in the two columns?...
+sanity check:
+```{bash}
+zless -S ~/Downloads/Drosophila_melanogaster.BDGP6.95.gtf.gz | grep "FBgn0013687" | less -S
+```
+Indeed it is in the original gtf file.
+
+### Use `gffutils`to  make a transcripts to gene mapping file from gff file
+
+The `gff` file is not that well defined. One may still be able to use some unix tricks to get the tx2gene.tsv file from a gff file, but it can be rather awkward especially for gff files from other not well annotated species. Instead, let's use `gffutils`, a python package to do the same.
+
+install `gffutils` in terminal:
+
+`source activate snakemake`  
+`conda install gffutils`
+
+
+Note, I am running python through Rsutdio/ First read how to set python path for `reticulate` at https://rstudio.github.io/reticulate/articles/versions.html
+read more on https://cran.r-project.org/web/packages/reticulate/vignettes/versions.html
+
+Somehow, I have to create a `.Rprofile` in the same folder of `.Rproj` file with the following line to use my snakemake conda environment which is python3:
+
+`Sys.setenv(PATH = paste("/anaconda3/envs/snakemake/bin/", Sys.getenv("PATH"), sep=":"))`
+
+```{r}
+library(reticulate)
+
+# check which python I am using
+py_discover_config()
+
+# these did not work for me...
+# use_condaenv("snakemake", required = TRUE)
+# use_python("/anaconda3/envs/snakemake/bin/python")
+```
+
+
+```{python}
+import sys
+print(sys.version)
+```
+
+```{python}
+import gffutils
+import itertools
+import os
+os.listdir()
+db = gffutils.create_db("GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.gff.gz", ":memory:", force = True,merge_strategy="merge", id_spec={'gene': 'Dbxref'})
+
+list(db.featuretypes())
+
+# one can do it for one type of features, say mRNA
+for mRNA in itertools.islice(db.features_of_type('mRNA'), 10):
+        print(mRNA['transcript_id'][0], mRNA['gene'][0])
+        #print(mRNA.attributes.items())
+        
+## but I then have to do the same for lnc_RNA and others.        
+## instead, loop over all features in the database
+
+tx_and_gene=[]
+with open("tx2gene_NCBI.tsv", "w") as f:
+        for feature in db.all_features():
+                transcript = feature.attributes.get('transcript_id', [None])[0]
+                gene = feature.attributes.get('gene', [None])[0]
+                if gene and transcript and ([transcript, gene] not in tx_and_gene):
+                        tx_and_gene.append([transcript, gene])
+                        f.write(transcript + "\t" + gene + "\n")
+```
+
+These lines of codes are not hard to write. It takes more time to read the package documentation and understand how to use the package. One problem with bioinFORMATics is that there are so many different file formats. To make things worse, even for gff file format, many files do not follow the exact specification. You can have a taste of that at http://daler.github.io/gffutils/examples.html.

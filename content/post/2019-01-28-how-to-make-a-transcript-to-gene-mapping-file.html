@@ -1,0 +1,148 @@
+---
+title: How to make a transcript to gene mapping file
+author: Ming Tang
+date: '2019-01-28'
+slug: how-to-make-a-transcript-to-gene-mapping-file
+categories:
+  - genomics
+  - bioinformatics
+tags:
+  - gff
+  - python
+  - unix
+header:
+  caption: ''
+  image: ''
+---
+
+
+
+<p>I need a transcript to gene mapping file for <code>Salmon</code>. I am aware of annotation <code>bioconductor</code> packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.</p>
+<p>Please read the <a href="https://useast.ensembl.org/info/website/upload/gff.html">specifications</a> of those two file formats.</p>
+<div id="download-drosophila-gtf-file-from-ensemble-and-gff-file-from-ncbi" class="section level3">
+<h3>Download drosophila gtf file from ENSEMBLE and gff file from NCBI</h3>
+<p>Find the <code>gff</code> file at <a href="https://www.ncbi.nlm.nih.gov/genome/?term=drosophila+melanogaster" class="uri">https://www.ncbi.nlm.nih.gov/genome/?term=drosophila+melanogaster</a><br />
+Find the <code>gtf</code> file at <a href="ftp://ftp.ensembl.org/pub/release-95/gtf/drosophila_melanogaster/" class="uri">ftp://ftp.ensembl.org/pub/release-95/gtf/drosophila_melanogaster/</a></p>
+<pre class="bash"><code>#gtf file
+zless -S ~/Downloads/Drosophila_melanogaster.BDGP6.95.gtf.gz | grep -v &quot;#&quot; | cut -f3 | sort | uniq -c</code></pre>
+<pre><code>## 160859 CDS
+##    4 Selenocysteine
+## 187373 exon
+## 46299 five_prime_utr
+## 17737 gene
+## 30492 start_codon
+## 33892 three_prime_utr
+## 34767 transcript</code></pre>
+<pre class="bash"><code>#gff file
+zless -S ~/Downloads/GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.gff.gz| grep -v &quot;#&quot; | cut -f3 | sort | uniq -c</code></pre>
+<pre><code>## 160949 CDS
+##    1 RNase_MRP_RNA
+##    2 RNase_P_RNA
+##    2 SRP_RNA
+##  584 antisense_RNA
+## 187809 exon
+## 17421 gene
+## 2275 lnc_RNA
+## 30480 mRNA
+##  479 miRNA
+## 5416 mobile_genetic_element
+##   77 ncRNA
+##  263 primary_transcript
+##  308 pseudogene
+##  134 rRNA
+## 1870 region
+##    1 sequence_feature
+##   32 snRNA
+##  289 snoRNA
+##  319 tRNA</code></pre>
+</div>
+<div id="use-unix-command-to-make-a-transcripts-to-gene-mapping-file-from-gtf-file" class="section level3">
+<h3>Use unix command to make a transcripts to gene mapping file from gtf file</h3>
+<p>We see the feature types are quite different although they are both annotation files for the same species.
+The <code>gtf</code> file is relatively well formatted, and we can make a transcripts to gene mapping file easily using
+unix command line.</p>
+<pre class="bash"><code>zless -S ~/Downloads/Drosophila_melanogaster.BDGP6.95.gtf.gz | grep -v &quot;#&quot; | awk &#39;$3==&quot;transcript&quot;&#39; | cut -f9 | tr -s &quot;;&quot; &quot; &quot; | awk &#39;{print$4&quot;\t&quot;$2}&#39; | sort | uniq |  sed &#39;s/\&quot;//g&#39; | tee tx2gene_ensemble.tsv| head</code></pre>
+<pre><code>## FBgn0013687  FBgn0013687
+## FBtr0005088  FBgn0260439
+## FBtr0006151  FBgn0000056
+## FBtr0070000  FBgn0031081
+## FBtr0070001  FBgn0052826
+## FBtr0070002  FBgn0031085
+## FBtr0070003  FBgn0062565
+## FBtr0070006  FBgn0031089
+## FBtr0070007  FBgn0031092
+## FBtr0070008  FBgn0031094</code></pre>
+<p>hmm…why the first line has both genes in the two columns?…
+sanity check:</p>
+<pre class="bash"><code>zless -S ~/Downloads/Drosophila_melanogaster.BDGP6.95.gtf.gz | grep &quot;FBgn0013687&quot; | less -S</code></pre>
+<pre><code>## mitochondrion_genome FlyBase gene    14917   19524   .   +   .   gene_id &quot;FBgn0013687&quot;; gene_name &quot;mt:ori&quot;; gene_source &quot;FlyBase&quot;; gene_biotype &quot;pseudogene&quot;;
+## mitochondrion_genome FlyBase transcript  14917   19524   .   +   .   gene_id &quot;FBgn0013687&quot;; transcript_id &quot;FBgn0013687&quot;; gene_name &quot;mt:ori&quot;; gene_source &quot;FlyBase&quot;; gene_biotype &quot;pseudogene&quot;; transcript_source &quot;FlyBase&quot;; transcript_biotype &quot;pseudogene&quot;;
+## mitochondrion_genome FlyBase exon    14917   19524   .   +   .   gene_id &quot;FBgn0013687&quot;; transcript_id &quot;FBgn0013687&quot;; exon_number &quot;1&quot;; gene_name &quot;mt:ori&quot;; gene_source &quot;FlyBase&quot;; gene_biotype &quot;pseudogene&quot;; transcript_source &quot;FlyBase&quot;; transcript_biotype &quot;pseudogene&quot;; exon_id &quot;FBgn0013687-E1&quot;;</code></pre>
+<p>Indeed it is in the original gtf file.</p>
+</div>
+<div id="use-gffutilsto-make-a-transcripts-to-gene-mapping-file-from-gff-file" class="section level3">
+<h3>Use <code>gffutils</code>to make a transcripts to gene mapping file from gff file</h3>
+<p>The <code>gff</code> file is not that well defined. One may still be able to use some unix tricks to get the tx2gene.tsv file from a gff file, but it can be rather awkward especially for gff files from other not well annotated species. Instead, let’s use <code>gffutils</code>, a python package to do the same.</p>
+<p>install <code>gffutils</code> in terminal:</p>
+<p><code>source activate snakemake</code><br />
+<code>conda install gffutils</code></p>
+<p>Note, I am running python through Rsutdio/ First read how to set python path for <code>reticulate</code> at <a href="https://rstudio.github.io/reticulate/articles/versions.html" class="uri">https://rstudio.github.io/reticulate/articles/versions.html</a>
+read more on <a href="https://cran.r-project.org/web/packages/reticulate/vignettes/versions.html" class="uri">https://cran.r-project.org/web/packages/reticulate/vignettes/versions.html</a></p>
+<p>Somehow, I have to create a <code>.Rprofile</code> in the same folder of <code>.Rproj</code> file with the following line to use my snakemake conda environment which is python3:</p>
+<p><code>Sys.setenv(PATH = paste(&quot;/anaconda3/envs/snakemake/bin/&quot;, Sys.getenv(&quot;PATH&quot;), sep=&quot;:&quot;))</code></p>
+<pre class="r"><code>library(reticulate)
+
+# check which python I am using
+py_discover_config()</code></pre>
+<pre><code>## python:         /anaconda3/envs/snakemake/bin//python
+## libpython:      /anaconda3/envs/snakemake/lib/libpython3.6m.dylib
+## pythonhome:     /anaconda3/envs/snakemake:/anaconda3/envs/snakemake
+## version:        3.6.7 |Anaconda, Inc.| (default, Oct 23 2018, 14:01:38)  [GCC 4.2.1 Compatible Clang 4.0.1 (tags/RELEASE_401/final)]
+## numpy:          /anaconda3/envs/snakemake/lib/python3.6/site-packages/numpy
+## numpy_version:  1.15.3
+## 
+## python versions found: 
+##  /anaconda3/envs/snakemake/bin//python
+##  /usr/bin/python
+##  /anaconda3/envs/py27/bin/python
+##  /anaconda3/envs/snakemake/bin/python</code></pre>
+<pre class="r"><code># these did not work for me...
+# use_condaenv(&quot;snakemake&quot;, required = TRUE)
+# use_python(&quot;/anaconda3/envs/snakemake/bin/python&quot;)</code></pre>
+<pre class="python"><code>import sys
+print(sys.version)</code></pre>
+<pre><code>## 3.6.7 |Anaconda, Inc.| (default, Oct 23 2018, 14:05:31) 
+## [GCC 4.2.1 Compatible Clang 4.0.1 (tags/RELEASE_401/final)]</code></pre>
+<pre class="python"><code>import gffutils
+import itertools
+import os
+os.listdir()
+db = gffutils.create_db(&quot;GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.gff.gz&quot;, &quot;:memory:&quot;, force = True,merge_strategy=&quot;merge&quot;, id_spec={&#39;gene&#39;: &#39;Dbxref&#39;})
+list(db.featuretypes())
+# one can do it for one type of features, say mRNA
+for mRNA in itertools.islice(db.features_of_type(&#39;mRNA&#39;), 10):
+        print(mRNA[&#39;transcript_id&#39;][0], mRNA[&#39;gene&#39;][0])
+        #print(mRNA.attributes.items())
+        
+## but I then have to do the same for lnc_RNA and others.        
+## instead, loop over all features in the database</code></pre>
+<pre><code>## NM_001103384.3 CG17636
+## NM_001258513.2 CG17636
+## NM_001258512.2 CG17636
+## NM_001297796.1 RhoGAP1A
+## NM_001297795.1 RhoGAP1A
+## NM_001103385.2 RhoGAP1A
+## NM_001103386.2 RhoGAP1A
+## NM_001169155.1 RhoGAP1A
+## NM_001297797.1 RhoGAP1A
+## NM_001297801.1 tyn</code></pre>
+<pre class="python"><code>tx_and_gene=[]
+with open(&quot;tx2gene_NCBI.tsv&quot;, &quot;w&quot;) as f:
+        for feature in db.all_features():
+                transcript = feature.attributes.get(&#39;transcript_id&#39;, [None])[0]
+                gene = feature.attributes.get(&#39;gene&#39;, [None])[0]
+                if gene and transcript and ([transcript, gene] not in tx_and_gene):
+                        tx_and_gene.append([transcript, gene])
+                        f.write(transcript + &quot;\t&quot; + gene + &quot;\n&quot;)</code></pre>
+<p>These lines of codes are not hard to write. It takes more time to read the package documentation and understand how to use the package. One problem with bioinFORMATics is that there are so many different file formats. To make things worse, even for gff file format, many files do not follow the exact specification. You can have a taste of that at <a href="http://daler.github.io/gffutils/examples.html" class="uri">http://daler.github.io/gffutils/examples.html</a>.</p>
+</div>
