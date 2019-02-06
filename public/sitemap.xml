@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/project/evaluating-scrnaseq-cluster/</loc>
+      <lastmod>2019-02-05T00:00:00-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/how-to-make-a-transcript-to-gene-mapping-file/</loc>
       <lastmod>2019-01-28T00:00:00+00:00</lastmod>
     </url>
@@ -450,6 +459,16 @@
     
     <url>
     
+      <loc>/tags/cluster/</loc>
+      <lastmod>2019-02-05T00:00:00-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/categories/config/</loc>
       <lastmod>2018-10-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -611,7 +630,7 @@
     <url>
     
       <loc>/project/</loc>
-      <lastmod>2016-04-27T00:00:00-04:00</lastmod>
+      <lastmod>2019-02-05T00:00:00-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -651,7 +670,7 @@
     <url>
     
       <loc>/tags/r/</loc>
-      <lastmod>2018-11-27T00:00:00+00:00</lastmod>
+      <lastmod>2019-02-05T00:00:00-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -672,6 +691,16 @@
     
       <loc>/categories/review/</loc>
       <lastmod>2018-12-28T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/scrnaseq/</loc>
+      <lastmod>2019-02-05T00:00:00-05:00</lastmod>
       <priority>0</priority>
     </url>
     
