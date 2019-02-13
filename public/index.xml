@@ -39,13 +39,13 @@
 &lt;p&gt;Each sample index provided in the Chromium i7 Sample Index Kit combines 4 different sequences in order to balance across all 4 nucleotides.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;After &lt;code&gt;cellranger mkfastq&lt;/code&gt;, four &lt;code&gt;fastq.gz&lt;/code&gt; files will be produced: &lt;code&gt;I1&lt;/code&gt;, &lt;code&gt;R1&lt;/code&gt; and &lt;code&gt;R2&lt;/code&gt;. &lt;code&gt;I1&lt;/code&gt; is the 8 bp sample barcode, &lt;code&gt;R1&lt;/code&gt; is the 16bp &lt;code&gt;feature barcode&lt;/code&gt; + 10 bp &lt;code&gt;UMI&lt;/code&gt;, &lt;code&gt;R2&lt;/code&gt; is the reads mapped to the transcriptome.&lt;/p&gt;
+&lt;p&gt;After &lt;code&gt;cellranger mkfastq&lt;/code&gt;, three &lt;code&gt;fastq.gz&lt;/code&gt; files will be produced: &lt;code&gt;I1&lt;/code&gt;, &lt;code&gt;R1&lt;/code&gt; and &lt;code&gt;R2&lt;/code&gt;. &lt;code&gt;I1&lt;/code&gt; is the 8 bp sample barcode, &lt;code&gt;R1&lt;/code&gt; is the 16bp &lt;code&gt;feature barcode&lt;/code&gt; + 10 bp &lt;code&gt;UMI&lt;/code&gt;, &lt;code&gt;R2&lt;/code&gt; is the reads mapped to the transcriptome.&lt;/p&gt;
 
 &lt;p&gt;Feature barcode whitelist can be found at the cellranger installation path:  &lt;code&gt;cellranger-2.1.0/cellranger-cs/2.1.0/lib/python/cellranger/barcodes/737K-august-2016.txt&lt;/code&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;single-cell-atac&#34;&gt;single cell ATAC&lt;/h3&gt;
 
-&lt;p&gt;after &lt;code&gt;cellranger-atac mkfastq&lt;/code&gt;, there three &lt;code&gt;fastq.gz&lt;/code&gt; files will be generated. &lt;code&gt;I1&lt;/code&gt;, &lt;code&gt;R1&lt;/code&gt;, &lt;code&gt;R2&lt;/code&gt; and &lt;code&gt;R3&lt;/code&gt;.
+&lt;p&gt;after &lt;code&gt;cellranger-atac mkfastq&lt;/code&gt;, there four &lt;code&gt;fastq.gz&lt;/code&gt; files will be generated. &lt;code&gt;I1&lt;/code&gt;, &lt;code&gt;R1&lt;/code&gt;, &lt;code&gt;R2&lt;/code&gt; and &lt;code&gt;R3&lt;/code&gt;.
 &lt;code&gt;I1&lt;/code&gt; is the 8 bp sample barcode, &lt;code&gt;R1&lt;/code&gt; is the forward read, &lt;code&gt;R2&lt;/code&gt; is the 16 bp &lt;code&gt;10x feature barcode&lt;/code&gt; and &lt;code&gt;R3&lt;/code&gt; is the reverse read. Thanks &lt;a href=&#34;https://twitter.com/Itti_Q&#34; target=&#34;_blank&#34;&gt;Aditi Qamra&lt;/a&gt; for pointing it out.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;/img/posts_img/atac_library.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;

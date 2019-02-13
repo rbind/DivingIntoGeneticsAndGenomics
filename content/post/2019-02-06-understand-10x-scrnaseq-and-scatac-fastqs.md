@@ -33,13 +33,13 @@ From the 10x manual:
 
 >Each sample index provided in the Chromium i7 Sample Index Kit combines 4 different sequences in order to balance across all 4 nucleotides.
 
-After `cellranger mkfastq`, four `fastq.gz` files will be produced: `I1`, `R1` and `R2`. `I1` is the 8 bp sample barcode, `R1` is the 16bp `feature barcode` + 10 bp `UMI`, `R2` is the reads mapped to the transcriptome.
+After `cellranger mkfastq`, three `fastq.gz` files will be produced: `I1`, `R1` and `R2`. `I1` is the 8 bp sample barcode, `R1` is the 16bp `feature barcode` + 10 bp `UMI`, `R2` is the reads mapped to the transcriptome.
 
 Feature barcode whitelist can be found at the cellranger installation path:  `cellranger-2.1.0/cellranger-cs/2.1.0/lib/python/cellranger/barcodes/737K-august-2016.txt`
 
 ### single cell ATAC
 
-after `cellranger-atac mkfastq`, there three `fastq.gz` files will be generated. `I1`, `R1`, `R2` and `R3`.
+after `cellranger-atac mkfastq`, there four `fastq.gz` files will be generated. `I1`, `R1`, `R2` and `R3`.
 `I1` is the 8 bp sample barcode, `R1` is the forward read, `R2` is the 16 bp `10x feature barcode` and `R3` is the reverse read. Thanks [Aditi Qamra](https://twitter.com/Itti_Q) for pointing it out.
 
 ![](/img/posts_img/atac_library.png)
