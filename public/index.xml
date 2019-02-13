@@ -11,6 +11,74 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>understand 10x scRNAseq and scATAC fastqs</title>
+      <link>/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
+      <pubDate>Wed, 06 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/understand-10x-scrnaseq-and-scatac-fastqs/</guid>
+      <description>
+
+&lt;h3 id=&#34;single-cell-rnaseq&#34;&gt;single cell RNAseq&lt;/h3&gt;
+
+&lt;p&gt;Please read the following posts by Dave Tang. When I google, I always find his posts on top of the pages. Thanks for sharing your knowledge.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://davetang.org/muse/2018/06/06/10x-single-cell-bam-files/&#34; target=&#34;_blank&#34;&gt;https://davetang.org/muse/2018/06/06/10x-single-cell-bam-files/&lt;/a&gt;
+&lt;a href=&#34;https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/&#34; target=&#34;_blank&#34;&gt;https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;From the 10x manual:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The final Single Cell 3’ Libraries contain the P5 and P7 primers used in Illumina bridge amplification PCR. The 10x Barcode and Read 1 (primer site for sequencing read 1) is added to the molecules during the GEMRT incubation. The P5 primer, Read 2 (primer site for sequencing read 2), Sample Index and P7 primer will be added during library construction&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/posts_img/rnaseq_library.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A Single Cell 3’ Library comprises standard Illumina paired-end constructs which begin and end with P5 and P7. The Single Cell 3’ v2 16 bp 10x Barcodes are encoded at the start of Read 1, while sample index sequences are incorporated as the i7 index read. Read 1 and Read 2 are standard Illumina sequencing primer sites used in paired-end sequencing. Read 1 is used to sequence the 16 bp 10x Barcode and 10 bp UMI, while Read 2 is used to sequence the cDNA fragment.&lt;/p&gt;
+
+&lt;p&gt;Each sample index provided in the Chromium i7 Sample Index Kit combines 4 different sequences in order to balance across all 4 nucleotides.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;After &lt;code&gt;cellranger mkfastq&lt;/code&gt;, four &lt;code&gt;fastq.gz&lt;/code&gt; files will be produced: &lt;code&gt;I1&lt;/code&gt;, &lt;code&gt;R1&lt;/code&gt; and &lt;code&gt;R2&lt;/code&gt;. &lt;code&gt;I1&lt;/code&gt; is the 8 bp sample barcode, &lt;code&gt;R1&lt;/code&gt; is the 16bp &lt;code&gt;feature barcode&lt;/code&gt; + 10 bp &lt;code&gt;UMI&lt;/code&gt;, &lt;code&gt;R2&lt;/code&gt; is the reads mapped to the transcriptome.&lt;/p&gt;
+
+&lt;p&gt;Feature barcode whitelist can be found at the cellranger installation path:  &lt;code&gt;cellranger-2.1.0/cellranger-cs/2.1.0/lib/python/cellranger/barcodes/737K-august-2016.txt&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;single-cell-atac&#34;&gt;single cell ATAC&lt;/h3&gt;
+
+&lt;p&gt;after &lt;code&gt;cellranger-atac mkfastq&lt;/code&gt;, there three &lt;code&gt;fastq.gz&lt;/code&gt; files will be generated. &lt;code&gt;I1&lt;/code&gt;, &lt;code&gt;R1&lt;/code&gt;, &lt;code&gt;R2&lt;/code&gt; and &lt;code&gt;R3&lt;/code&gt;.
+&lt;code&gt;I1&lt;/code&gt; is the 8 bp sample barcode, &lt;code&gt;R1&lt;/code&gt; is the forward read, &lt;code&gt;R2&lt;/code&gt; is the 16 bp &lt;code&gt;10x feature barcode&lt;/code&gt; and &lt;code&gt;R3&lt;/code&gt; is the reverse read. Thanks &lt;a href=&#34;https://twitter.com/Itti_Q&#34; target=&#34;_blank&#34;&gt;Aditi Qamra&lt;/a&gt; for pointing it out.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/posts_img/atac_library.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The 16bp feature barcode whitelist can be found at cellranger-atac installation path:&lt;code&gt;cellranger-atac-1.0.1/cellranger-atac-cs/1.0.1/lib/python/barcodes/737K-cratac-v1.txt&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Note that I have put the sample barcodes and feature barcodes files at &lt;a href=&#34;https://osf.io/2z9gj/files/&#34; target=&#34;_blank&#34;&gt;https://osf.io/2z9gj/files/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;are-the-feature-barcode-whitelist-the-same-for-scrnaseq-and-scatac&#34;&gt;Are the feature barcode whitelist the same for scRNAseq and scATAC?&lt;/h3&gt;
+
+&lt;p&gt;In theory, 16bp barcode can have &lt;code&gt;4^16&lt;/code&gt; (4,294,967,296) combinations, but you will want some diversities of the sequences to better distinguish 2 barcodes.Keep in mind that there are PCR or sequencing errors for the barcodes.&lt;/p&gt;
+
+&lt;p&gt;Both are 737K, but are the sequences the same?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat 737K-august-2016.txt | sort | uniq &amp;gt; scRNAseq_barcode.txt
+cat 737K-cratac-v1.txt | sort | uniq &amp;gt; scATAC_barcode.txt
+
+wc -l scRNAseq_barcode.txt
+737280 scRNAseq_barcode.txt
+
+wc -l scATAC_barcode.txt
+737280 scATAC_barcode.txt
+
+## only 10812 cell barcodes are common  
+comm -12 scRNAseq_barcode.txt scATAC_barcode.txt  | wc -l
+10812
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, 10x uses quite different cell barcodes for scRNAseq and scATACseq applications.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Evaluating single cell RNAseq cluster stability</title>
       <link>/project/evaluating-scrnaseq-cluster/</link>
       <pubDate>Tue, 05 Feb 2019 00:00:00 -0500</pubDate>
@@ -1594,16 +1662,6 @@ I installed the &lt;a href=&#34;https://www.rstudio.com/products/rstudio/downloa
 &lt;h3 id=&#34;install-notion&#34;&gt;install Notion&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://www.notion.so&#34; target=&#34;_blank&#34;&gt;Notion&lt;/a&gt; For to-do list&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Landscape of EGFR-Dependent and -Independent Resistance Mechanisms to Osimertinib and Continuation Therapy Beyond Progression in EGFR-Mutant NSCLC</title>
-      <link>/publication/2019-09-18-egfr-nsclc/</link>
-      <pubDate>Tue, 18 Sep 2018 00:00:00 -0400</pubDate>
-      
-      <guid>/publication/2019-09-18-egfr-nsclc/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     
