@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>Split a 10xscATAC bam file by cluster</title>
+      <link>/post/split-a-10xscatac-bam-file-by-cluster/</link>
+      <pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/split-a-10xscatac-bam-file-by-cluster/</guid>
+      <description>I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in IGV.
+The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.</description>
+    </item>
+    
+    <item>
       <title>understand 10x scRNAseq and scATAC fastqs</title>
       <link>/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
       <pubDate>Wed, 06 Feb 2019 00:00:00 +0000</pubDate>

@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in IGV.
+The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/split-a-10xscatac-bam-file-by-cluster/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/split-a-10xscatac-bam-file-by-cluster/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/split-a-10xscatac-bam-file-by-cluster/">
+  <meta property="og:title" content="Split a 10xscATAC bam file by cluster | DNA confesses Data speak">
+  <meta property="og:description" content="I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in IGV.
+The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-02-14T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-02-14T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Split a 10xscATAC bam file by cluster | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Split a 10xscATAC bam file by cluster</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2019-02-14 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Feb 14, 2019
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/split-a-10xscatac-bam-file-by-cluster/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/python/">python</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Split%20a%2010xscATAC%20bam%20file%20by%20cluster&amp;url=%2fpost%2fsplit-a-10xscatac-bam-file-by-cluster%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fsplit-a-10xscatac-bam-file-by-cluster%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fsplit-a-10xscatac-bam-file-by-cluster%2f&amp;title=Split%20a%2010xscATAC%20bam%20file%20by%20cluster"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fsplit-a-10xscatac-bam-file-by-cluster%2f&amp;title=Split%20a%2010xscATAC%20bam%20file%20by%20cluster"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Split%20a%2010xscATAC%20bam%20file%20by%20cluster&amp;body=%2fpost%2fsplit-a-10xscatac-bam-file-by-cluster%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<p>I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in <code>IGV</code>.</p>
+
+<p>The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.</p>
+
+<p>I decided to write one myself. The following is my journey for this small task.</p>
+
+<p>download the 5k pbmc scATAC data from <a href="https://support.10xgenomics.com/single-cell-atac/datasets/1.0.1/atac_v1_pbmc_5k" target="_blank">https://support.10xgenomics.com/single-cell-atac/datasets/1.0.1/atac_v1_pbmc_5k</a></p>
+
+<h3 id="split-the-cell-barcodes-by-cluster-id">split the cell barcodes by cluster id</h3>
+
+<pre><code class="language-bash">cd analysis/clustering/graphclust
+head clusters.csv
+Barcode,Cluster
+AAACGAAAGCGCAATG-1,1
+AAACGAAAGGGTATCG-1,4
+AAACGAAAGTAACATG-1,8
+AAACGAAAGTTACACC-1,1
+AAACGAACAGAGATGC-1,4
+AAACGAACATGCTATG-1,5
+AAACGAAGTGCATCAT-1,3
+AAACGAAGTGGACGAT-1,3
+AAACGAAGTGGCCTCA-1,7
+
+# there are ^M characters at the end of the line if you do cat -A you will see it.
+# change it to unix
+dos2unix clusters.csv
+</code></pre>
+
+<pre><code class="language-bash">awk -F&quot;,&quot; 'NR&gt;1{print $1 &gt;&gt; &quot;cluster_&quot;$2&quot;.csv&quot;}' clusters.csv
+wc -l *csv
+   330 cluster_10.csv
+   322 cluster_11.csv
+   258 cluster_12.csv
+   191 cluster_13.csv
+   608 cluster_1.csv
+   563 cluster_2.csv
+   559 cluster_3.csv
+   532 cluster_4.csv
+   483 cluster_5.csv
+   425 cluster_6.csv
+   366 cluster_7.csv
+   360 cluster_8.csv
+   338 cluster_9.csv
+  5336 clusters.csv
+</code></pre>
+
+<h3 id="use-bamtools">use bamtools</h3>
+
+<pre><code class="language-bash">time bamtools filter -tag CB:Z:AAACTGCAGAGCAGCT-1 -in atac_v1_pbmc_5k_possorted_bam.bam -out AAACTGCAGAGCAGCT-1.bam
+</code></pre>
+
+<p>This takes a little over 1 hour for one barcode! And there is no easy way
+to specify a group of barcodes.</p>
+
+<h3 id="use-the-linux-tricks">use the linux tricks</h3>
+
+<p>inspired partly by this post <a href="https://www.biostars.org/p/263346/" target="_blank">https://www.biostars.org/p/263346/</a></p>
+
+<pre><code class="language-bash">wc -l clusters.csv
+5336 clusters.csv
+</code></pre>
+
+<p>and let&rsquo;s see how fast each regular expression takes for <code>awk</code></p>
+
+<pre><code class="language-bash">time samtools view atac_v1_pbmc_5k_possorted_bam.bam | awk -v tag=&quot;CB:Z:AAACTGCAGAGCAGCT-1&quot; 'index($0,tag)&gt;0' &gt;&gt; AAACTGCAGAGCAGCT-1.sam
+
+real    27m14.332s
+user    48m36.883s
+sys     4m37.908s
+</code></pre>
+
+<p>It is not too bad, but if we loops over the <code>clusters.csv</code> files for 5335 times,</p>
+
+<pre><code class="language-bash">samtools view -H atac_v1_pbmc_5k_possorted_bam.bam &gt; header.txt
+
+cat clusters.csv \
+| sed '1d' \
+| while IFS=',' read -r barcode cluster
+    do samtools view atac_v1_pbmc_5k_possorted_bam.bam |  awk -v tag=&quot;CB:Z:$barcode&quot; 'index($0,tag)&gt;0' &gt;&gt; &quot;$cluster.sam&quot;
+    done
+
+## then cat the header with the sam.
+
+</code></pre>
+
+<p>it will take ~30min * 5335 = ~100 days to finish.</p>
+
+<p>we can do better to parallize by GNU parallel</p>
+
+<pre><code class="language-bash">## not tested...
+cat clusters.csv \
+| sed '1d' \
+| parallel --colsep ',' -j 40 'samtools view atac_v1_pbmc_5k_possorted_bam.bam |awk -v tag=&quot;CB:Z:{1}&quot; 'index(\$0,tag)&gt;0' &gt;&gt; {2}.sam'
+</code></pre>
+
+<p>Again, using 40 cores may reduce our time to <sup>100</sup>&frasl;<sub>40</sub> = 5 days.</p>
+
+<h3 id="use-pysam">use pysam</h3>
+
+<p>Let&rsquo;s only loop over the sam file once</p>
+
+<pre><code class="language-python">import pysam
+import csv
+
+cluster_dict = {}
+with open('clusters.csv') as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    #skip header
+    header = next(csv_reader)
+    for row in csv_reader:
+        cluster_dict[row[0]] = row[1]
+
+clusters = set(x for x in cluster_dict.values())
+
+
+fin = pysam.AlignmentFile(&quot;atac_v1_pbmc_5k_possorted_bam.bam&quot;, &quot;rb&quot;)
+
+# open the number of bam files as the same number of clusters, and map the out file handler to the cluster id, write to a bam with wb
+fouts_dict = {}
+for cluster in clusters:
+    fout = pysam.AlignmentFile(&quot;cluster&quot; + cluster + &quot;.bam&quot;, &quot;wb&quot;, template = fin)
+    fouts_dict[cluster] = fout
+
+for read in fin:
+    tags = read.tags
+    CB_list = [ x for x in tags if x[0] == &quot;CB&quot;]
+    if CB_list:
+        cell_barcode = CB_list[0][1]
+    # the bam files may contain reads not in the final clustered barcodes
+    # will be None if the barcode is not in the clusters.csv file
+    else: 
+        continue
+    cluster_id = cluster_dict.get(cell_barcode)
+    if cluster_id:
+        fouts_dict[cluster_id].write(read)
+
+## do not forget to close the files
+fin.close()
+for fout in fouts_dict.values():
+    fout.close()
+</code></pre>
+
+<p>real    172m58.758s
+user    172m10.678s
+sys     0m46.071s</p>
+
+<p>Note, some read record in the bam file do not have <code>CB</code> but only <code>CR</code>.</p>
+
+<p>from <a href="https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/output/bam" target="_blank">https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/output/bam</a></p>
+
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>CB</td>
+<td>Chromium cellular barcode sequence that is error-corrected and confirmed against a list of known-good barcode sequences.</td>
+</tr>
+
+<tr>
+<td>CR</td>
+<td>Chromium cellular barcode sequence as reported by the sequencer.</td>
+</tr>
+</tbody>
+</table>
+
+<p>How many of those reads with <code>CR</code>?</p>
+
+<pre><code class="language-bash"># every read has a CR tag
+samtools view atac_v1_pbmc_5k_possorted_bam.bam| grep -v &quot;CR&quot; | wc -l
+0 
+
+# not every read has a CB tag.
+samtools view atac_v1_pbmc_5k_possorted_bam.bam| grep -v &quot;CB&quot; | wc -l
+10647804
+
+</code></pre>
+
+<h3 id="use-pybam">use pybam</h3>
+
+<p><a href="https://www.biostars.org/p/186732/" target="_blank">https://www.biostars.org/p/186732/</a></p>
+
+<p><a href="https://github.com/JohnLonginotto/pybam" target="_blank">https://github.com/JohnLonginotto/pybam</a></p>
+
+<p>Note that pybam is python2.x</p>
+
+<pre><code class="language-bash">source activate py27
+cd ~/apps
+git clone https://github.com/JohnLonginotto/pybam
+</code></pre>
+
+<p>inside python:</p>
+
+<pre><code class="language-python">import pybam
+import csv
+
+cluster_dict = {}
+with open('clusters.csv') as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    #skip header
+    header = next(csv_reader)
+    for row in csv_reader:
+        cluster_dict[row[0]] = row[1]
+
+clusters = set(x for x in cluster_dict.values())
+
+
+# open the number of bam files as the same number of clusters, and map the out file handler to the cluster id
+
+header = pybam.read('atac_v1_pbmc_5k_possorted_bam.bam').file_header
+fouts_dict = {}
+for cluster in clusters:
+    fout = open(&quot;cluster&quot; + cluster + &quot;.sam&quot;, &quot;w&quot;)
+    fout.write(header)
+    fouts_dict[cluster] = fout
+
+for read in pybam.read('possorted_bam.bam'):
+        ## not always the same position in the list for the CB tag
+        ## there could be no CB tag for a certian read as well
+        ## it will return empty list
+        CB_list = [ x for x in read.sam_tags_list if x[0] == &quot;CB&quot;]
+        if CB_list:
+            cell_barcode = CB_list[0][2]
+            cluster_id = cluster_dict.get(cell_barcode)
+            if cluster_id:
+                fouts_dict[cluster_id].write(read.sam + '\n')
+        
+## do not forget to close the files
+for fout in fouts_dict.values():
+    fout.close()
+</code></pre>
+
+<p>real    1262m30.849s
+user    1240m11.906s
+sys     22m9.325s</p>
+
+<p>Did not find how to write to a bam file, so I have to write to a sam file. I asked on github issues but no responses. The author is not actively maintaining the library anymore.</p>
+
+<h3 id="use-hts-nim">use hts-nim</h3>
+
+<p><a href="https://github.com/brentp/hts-nim-tools/issues/5" target="_blank">https://github.com/brentp/hts-nim-tools/issues/5</a></p>
+
+<p>Thanks Brent for providing the code.</p>
+
+<h4 id="htslib-need-to-be-in-ld-library-path">htslib need to be in <code>$LD_LIBRARY_PATH</code>:</h4>
+
+<pre><code class="language-bash">wget https://github.com/samtools/htslib/releases/download/1.6/htslib-1.6.tar.bz2
+tar xjf htslib-1.6.tar.bz2
+cd htslib-1.6
+./configure ~/bin/
+
+make
+
+# add this to .bashrc and source ~/.bashrc
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/n/home02/mtang/apps/htslib-1.6
+</code></pre>
+
+<h4 id="install-nim-and-hts-nim">install <code>nim</code> and <code>hts-nim</code></h4>
+
+<pre><code class="language-bash">wget https://raw.githubusercontent.com/brentp/hts-nim/master/scripts/simple-install.sh
+
+chmod u+x simple-install.sh
+./simple-install.sh
+
+# add nim to PATH
+
+git clone https://github.com/brentp/hts-nim
+cd hts-nim
+nimble install -y
+</code></pre>
+
+<pre><code class="language-python">import hts
+import os
+import strutils
+import tables
+var ibam:Bam
+
+# lookup from cb -&gt; cluster
+var clusterTbl = initTable[string,string]()
+# lookup from cluster -&gt; bam
+var tbl = initTable[string, Bam]()
+
+for x in paramStr(1).lines:
+  var toks = x.strip().split(&quot;,&quot;)
+  clusterTbl[toks[0]] = toks[1]
+
+if not open(ibam, paramStr(2)):
+   quit &quot;couldn't open bam&quot;
+
+for aln in ibam:
+  var cb = tag[string](aln, &quot;CB&quot;).get
+  if cb.isNullOrEmpty: continue
+  if cb notin clusterTbl: continue
+  var cluster = clusterTbl[cb]
+  if cluster notin tbl:
+    var obam: Bam
+    if not open(obam, &quot;out-cluster-&quot; &amp; cluster &amp; &quot;.bam&quot;, mode=&quot;w&quot;):
+      quit &quot;couldn't open bam for writing&quot;
+    obam.write_header(ibam.hdr)
+    tbl[cluster] = obam
+  tbl[cluster].write(aln)
+
+for k, bam in tbl:
+  bam.close()
+ibam.close()
+</code></pre>
+
+<h4 id="compile">compile</h4>
+
+<p>save it to <code>split_scATAC_bam.nim</code> and compile:</p>
+
+<pre><code class="language-bash">nim compile -d:release scATAC_split_scATAC_bam.nim
+split_scATAC_bam clusters.csv atac_v1_pbmc_5k_possorted_bam.bam
+</code></pre>
+
+<p>real    105m17.140s
+user    102m17.214s
+sys     2m58.312s</p>
+
+<p>it is <sup>172</sup>&frasl;<sub>105</sub> <strong>~1.6 times faster</strong> in <code>hts-nim</code> than in <code>pysam</code>.</p>
+
+<h3 id="speed-up">speed up</h3>
+
+<ul>
+<li>parallize by chromosome</li>
+<li>pysam parallization</li>
+<li><code>hts-nim</code> from Brent:</li>
+</ul>
+
+<blockquote>
+<p>you can add <code>threads=2</code> (or 3) to the <code>open</code> calls to get a bit more speed on de/compressing the bam which will be the most CPU time</p>
+</blockquote>
+
+<ul>
+<li>C htslib, I expect the speed will be similar to <code>hts-nim</code> since <code>hts-nim</code> is a wrapper around it.</li>
+</ul>
+
+<h3 id="lessons-learned">Lessons learned</h3>
+
+<p>I had <a href="https://github.com/brentp/hts-nim-tools/issues/5#issuecomment-464114496" target="_blank">a bug</a> in my <code>pysam</code> code and it pulls out some reads without the <code>CB</code> tag. Thanks Brent for catching it. I spent some time to debug and could not find it.</p>
+
+<p>Lessons that I have learned:</p>
+
+<ul>
+<li>How to make sure the output of the software is correct is very difficult. unit testing is important.</li>
+<li>It is good to have someone else with more programming experience to look at the code for you. You are so used to the code that you write and can not find the &ldquo;obvious&rdquo; problem.</li>
+<li>Do not use libraries that are not well maintained. The <code>pybam</code> author is not maintaining the library now and it is written in python2.x. I am writing all my python code in python3.x</li>
+</ul>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/atacseq/">ATACseq</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/single-cell/">single-cell</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/understand-10x-scrnaseq-and-scatac-fastqs/">understand 10x scRNAseq and scATAC fastqs</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/understand-10x-scrnaseq-and-scatac-fastqs/" rel="prev">understand 10x scRNAseq and scATAC fastqs</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/R.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+

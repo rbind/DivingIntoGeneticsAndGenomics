@@ -11,6 +11,370 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Split a 10xscATAC bam file by cluster</title>
+      <link>/post/split-a-10xscatac-bam-file-by-cluster/</link>
+      <pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/split-a-10xscatac-bam-file-by-cluster/</guid>
+      <description>
+
+&lt;p&gt;I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in &lt;code&gt;IGV&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.&lt;/p&gt;
+
+&lt;p&gt;I decided to write one myself. The following is my journey for this small task.&lt;/p&gt;
+
+&lt;p&gt;download the 5k pbmc scATAC data from &lt;a href=&#34;https://support.10xgenomics.com/single-cell-atac/datasets/1.0.1/atac_v1_pbmc_5k&#34; target=&#34;_blank&#34;&gt;https://support.10xgenomics.com/single-cell-atac/datasets/1.0.1/atac_v1_pbmc_5k&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;split-the-cell-barcodes-by-cluster-id&#34;&gt;split the cell barcodes by cluster id&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cd analysis/clustering/graphclust
+head clusters.csv
+Barcode,Cluster
+AAACGAAAGCGCAATG-1,1
+AAACGAAAGGGTATCG-1,4
+AAACGAAAGTAACATG-1,8
+AAACGAAAGTTACACC-1,1
+AAACGAACAGAGATGC-1,4
+AAACGAACATGCTATG-1,5
+AAACGAAGTGCATCAT-1,3
+AAACGAAGTGGACGAT-1,3
+AAACGAAGTGGCCTCA-1,7
+
+# there are ^M characters at the end of the line if you do cat -A you will see it.
+# change it to unix
+dos2unix clusters.csv
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;awk -F&amp;quot;,&amp;quot; &#39;NR&amp;gt;1{print $1 &amp;gt;&amp;gt; &amp;quot;cluster_&amp;quot;$2&amp;quot;.csv&amp;quot;}&#39; clusters.csv
+wc -l *csv
+   330 cluster_10.csv
+   322 cluster_11.csv
+   258 cluster_12.csv
+   191 cluster_13.csv
+   608 cluster_1.csv
+   563 cluster_2.csv
+   559 cluster_3.csv
+   532 cluster_4.csv
+   483 cluster_5.csv
+   425 cluster_6.csv
+   366 cluster_7.csv
+   360 cluster_8.csv
+   338 cluster_9.csv
+  5336 clusters.csv
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;use-bamtools&#34;&gt;use bamtools&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;time bamtools filter -tag CB:Z:AAACTGCAGAGCAGCT-1 -in atac_v1_pbmc_5k_possorted_bam.bam -out AAACTGCAGAGCAGCT-1.bam
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This takes a little over 1 hour for one barcode! And there is no easy way
+to specify a group of barcodes.&lt;/p&gt;
+
+&lt;h3 id=&#34;use-the-linux-tricks&#34;&gt;use the linux tricks&lt;/h3&gt;
+
+&lt;p&gt;inspired partly by this post &lt;a href=&#34;https://www.biostars.org/p/263346/&#34; target=&#34;_blank&#34;&gt;https://www.biostars.org/p/263346/&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;wc -l clusters.csv
+5336 clusters.csv
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and let&amp;rsquo;s see how fast each regular expression takes for &lt;code&gt;awk&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;time samtools view atac_v1_pbmc_5k_possorted_bam.bam | awk -v tag=&amp;quot;CB:Z:AAACTGCAGAGCAGCT-1&amp;quot; &#39;index($0,tag)&amp;gt;0&#39; &amp;gt;&amp;gt; AAACTGCAGAGCAGCT-1.sam
+
+real    27m14.332s
+user    48m36.883s
+sys     4m37.908s
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is not too bad, but if we loops over the &lt;code&gt;clusters.csv&lt;/code&gt; files for 5335 times,&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;samtools view -H atac_v1_pbmc_5k_possorted_bam.bam &amp;gt; header.txt
+
+cat clusters.csv \
+| sed &#39;1d&#39; \
+| while IFS=&#39;,&#39; read -r barcode cluster
+    do samtools view atac_v1_pbmc_5k_possorted_bam.bam |  awk -v tag=&amp;quot;CB:Z:$barcode&amp;quot; &#39;index($0,tag)&amp;gt;0&#39; &amp;gt;&amp;gt; &amp;quot;$cluster.sam&amp;quot;
+    done
+
+## then cat the header with the sam.
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;it will take ~30min * 5335 = ~100 days to finish.&lt;/p&gt;
+
+&lt;p&gt;we can do better to parallize by GNU parallel&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;## not tested...
+cat clusters.csv \
+| sed &#39;1d&#39; \
+| parallel --colsep &#39;,&#39; -j 40 &#39;samtools view atac_v1_pbmc_5k_possorted_bam.bam |awk -v tag=&amp;quot;CB:Z:{1}&amp;quot; &#39;index(\$0,tag)&amp;gt;0&#39; &amp;gt;&amp;gt; {2}.sam&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Again, using 40 cores may reduce our time to &lt;sup&gt;100&lt;/sup&gt;&amp;frasl;&lt;sub&gt;40&lt;/sub&gt; = 5 days.&lt;/p&gt;
+
+&lt;h3 id=&#34;use-pysam&#34;&gt;use pysam&lt;/h3&gt;
+
+&lt;p&gt;Let&amp;rsquo;s only loop over the sam file once&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import pysam
+import csv
+
+cluster_dict = {}
+with open(&#39;clusters.csv&#39;) as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=&#39;,&#39;)
+    #skip header
+    header = next(csv_reader)
+    for row in csv_reader:
+        cluster_dict[row[0]] = row[1]
+
+clusters = set(x for x in cluster_dict.values())
+
+
+fin = pysam.AlignmentFile(&amp;quot;atac_v1_pbmc_5k_possorted_bam.bam&amp;quot;, &amp;quot;rb&amp;quot;)
+
+# open the number of bam files as the same number of clusters, and map the out file handler to the cluster id, write to a bam with wb
+fouts_dict = {}
+for cluster in clusters:
+    fout = pysam.AlignmentFile(&amp;quot;cluster&amp;quot; + cluster + &amp;quot;.bam&amp;quot;, &amp;quot;wb&amp;quot;, template = fin)
+    fouts_dict[cluster] = fout
+
+for read in fin:
+    tags = read.tags
+    CB_list = [ x for x in tags if x[0] == &amp;quot;CB&amp;quot;]
+    if CB_list:
+        cell_barcode = CB_list[0][1]
+    # the bam files may contain reads not in the final clustered barcodes
+    # will be None if the barcode is not in the clusters.csv file
+    else: 
+        continue
+    cluster_id = cluster_dict.get(cell_barcode)
+    if cluster_id:
+        fouts_dict[cluster_id].write(read)
+
+## do not forget to close the files
+fin.close()
+for fout in fouts_dict.values():
+    fout.close()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;real    172m58.758s
+user    172m10.678s
+sys     0m46.071s&lt;/p&gt;
+
+&lt;p&gt;Note, some read record in the bam file do not have &lt;code&gt;CB&lt;/code&gt; but only &lt;code&gt;CR&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;from &lt;a href=&#34;https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/output/bam&#34; target=&#34;_blank&#34;&gt;https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/output/bam&lt;/a&gt;&lt;/p&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Tag&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;CB&lt;/td&gt;
+&lt;td&gt;Chromium cellular barcode sequence that is error-corrected and confirmed against a list of known-good barcode sequences.&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;CR&lt;/td&gt;
+&lt;td&gt;Chromium cellular barcode sequence as reported by the sequencer.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;How many of those reads with &lt;code&gt;CR&lt;/code&gt;?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# every read has a CR tag
+samtools view atac_v1_pbmc_5k_possorted_bam.bam| grep -v &amp;quot;CR&amp;quot; | wc -l
+0 
+
+# not every read has a CB tag.
+samtools view atac_v1_pbmc_5k_possorted_bam.bam| grep -v &amp;quot;CB&amp;quot; | wc -l
+10647804
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;use-pybam&#34;&gt;use pybam&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.biostars.org/p/186732/&#34; target=&#34;_blank&#34;&gt;https://www.biostars.org/p/186732/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/JohnLonginotto/pybam&#34; target=&#34;_blank&#34;&gt;https://github.com/JohnLonginotto/pybam&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Note that pybam is python2.x&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;source activate py27
+cd ~/apps
+git clone https://github.com/JohnLonginotto/pybam
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;inside python:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import pybam
+import csv
+
+cluster_dict = {}
+with open(&#39;clusters.csv&#39;) as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=&#39;,&#39;)
+    #skip header
+    header = next(csv_reader)
+    for row in csv_reader:
+        cluster_dict[row[0]] = row[1]
+
+clusters = set(x for x in cluster_dict.values())
+
+
+# open the number of bam files as the same number of clusters, and map the out file handler to the cluster id
+
+header = pybam.read(&#39;atac_v1_pbmc_5k_possorted_bam.bam&#39;).file_header
+fouts_dict = {}
+for cluster in clusters:
+    fout = open(&amp;quot;cluster&amp;quot; + cluster + &amp;quot;.sam&amp;quot;, &amp;quot;w&amp;quot;)
+    fout.write(header)
+    fouts_dict[cluster] = fout
+
+for read in pybam.read(&#39;possorted_bam.bam&#39;):
+        ## not always the same position in the list for the CB tag
+        ## there could be no CB tag for a certian read as well
+        ## it will return empty list
+        CB_list = [ x for x in read.sam_tags_list if x[0] == &amp;quot;CB&amp;quot;]
+        if CB_list:
+            cell_barcode = CB_list[0][2]
+            cluster_id = cluster_dict.get(cell_barcode)
+            if cluster_id:
+                fouts_dict[cluster_id].write(read.sam + &#39;\n&#39;)
+        
+## do not forget to close the files
+for fout in fouts_dict.values():
+    fout.close()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;real    1262m30.849s
+user    1240m11.906s
+sys     22m9.325s&lt;/p&gt;
+
+&lt;p&gt;Did not find how to write to a bam file, so I have to write to a sam file. I asked on github issues but no responses. The author is not actively maintaining the library anymore.&lt;/p&gt;
+
+&lt;h3 id=&#34;use-hts-nim&#34;&gt;use hts-nim&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/brentp/hts-nim-tools/issues/5&#34; target=&#34;_blank&#34;&gt;https://github.com/brentp/hts-nim-tools/issues/5&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks Brent for providing the code.&lt;/p&gt;
+
+&lt;h4 id=&#34;htslib-need-to-be-in-ld-library-path&#34;&gt;htslib need to be in &lt;code&gt;$LD_LIBRARY_PATH&lt;/code&gt;:&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;wget https://github.com/samtools/htslib/releases/download/1.6/htslib-1.6.tar.bz2
+tar xjf htslib-1.6.tar.bz2
+cd htslib-1.6
+./configure ~/bin/
+
+make
+
+# add this to .bashrc and source ~/.bashrc
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/n/home02/mtang/apps/htslib-1.6
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;install-nim-and-hts-nim&#34;&gt;install &lt;code&gt;nim&lt;/code&gt; and &lt;code&gt;hts-nim&lt;/code&gt;&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;wget https://raw.githubusercontent.com/brentp/hts-nim/master/scripts/simple-install.sh
+
+chmod u+x simple-install.sh
+./simple-install.sh
+
+# add nim to PATH
+
+git clone https://github.com/brentp/hts-nim
+cd hts-nim
+nimble install -y
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import hts
+import os
+import strutils
+import tables
+var ibam:Bam
+
+# lookup from cb -&amp;gt; cluster
+var clusterTbl = initTable[string,string]()
+# lookup from cluster -&amp;gt; bam
+var tbl = initTable[string, Bam]()
+
+for x in paramStr(1).lines:
+  var toks = x.strip().split(&amp;quot;,&amp;quot;)
+  clusterTbl[toks[0]] = toks[1]
+
+if not open(ibam, paramStr(2)):
+   quit &amp;quot;couldn&#39;t open bam&amp;quot;
+
+for aln in ibam:
+  var cb = tag[string](aln, &amp;quot;CB&amp;quot;).get
+  if cb.isNullOrEmpty: continue
+  if cb notin clusterTbl: continue
+  var cluster = clusterTbl[cb]
+  if cluster notin tbl:
+    var obam: Bam
+    if not open(obam, &amp;quot;out-cluster-&amp;quot; &amp;amp; cluster &amp;amp; &amp;quot;.bam&amp;quot;, mode=&amp;quot;w&amp;quot;):
+      quit &amp;quot;couldn&#39;t open bam for writing&amp;quot;
+    obam.write_header(ibam.hdr)
+    tbl[cluster] = obam
+  tbl[cluster].write(aln)
+
+for k, bam in tbl:
+  bam.close()
+ibam.close()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;compile&#34;&gt;compile&lt;/h4&gt;
+
+&lt;p&gt;save it to &lt;code&gt;split_scATAC_bam.nim&lt;/code&gt; and compile:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;nim compile -d:release scATAC_split_scATAC_bam.nim
+split_scATAC_bam clusters.csv atac_v1_pbmc_5k_possorted_bam.bam
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;real    105m17.140s
+user    102m17.214s
+sys     2m58.312s&lt;/p&gt;
+
+&lt;p&gt;it is &lt;sup&gt;172&lt;/sup&gt;&amp;frasl;&lt;sub&gt;105&lt;/sub&gt; &lt;strong&gt;~1.6 times faster&lt;/strong&gt; in &lt;code&gt;hts-nim&lt;/code&gt; than in &lt;code&gt;pysam&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;speed-up&#34;&gt;speed up&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;parallize by chromosome&lt;/li&gt;
+&lt;li&gt;pysam parallization&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hts-nim&lt;/code&gt; from Brent:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;you can add &lt;code&gt;threads=2&lt;/code&gt; (or 3) to the &lt;code&gt;open&lt;/code&gt; calls to get a bit more speed on de/compressing the bam which will be the most CPU time&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+&lt;li&gt;C htslib, I expect the speed will be similar to &lt;code&gt;hts-nim&lt;/code&gt; since &lt;code&gt;hts-nim&lt;/code&gt; is a wrapper around it.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;lessons-learned&#34;&gt;Lessons learned&lt;/h3&gt;
+
+&lt;p&gt;I had &lt;a href=&#34;https://github.com/brentp/hts-nim-tools/issues/5#issuecomment-464114496&#34; target=&#34;_blank&#34;&gt;a bug&lt;/a&gt; in my &lt;code&gt;pysam&lt;/code&gt; code and it pulls out some reads without the &lt;code&gt;CB&lt;/code&gt; tag. Thanks Brent for catching it. I spent some time to debug and could not find it.&lt;/p&gt;
+
+&lt;p&gt;Lessons that I have learned:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;How to make sure the output of the software is correct is very difficult. unit testing is important.&lt;/li&gt;
+&lt;li&gt;It is good to have someone else with more programming experience to look at the code for you. You are so used to the code that you write and can not find the &amp;ldquo;obvious&amp;rdquo; problem.&lt;/li&gt;
+&lt;li&gt;Do not use libraries that are not well maintained. The &lt;code&gt;pybam&lt;/code&gt; author is not maintaining the library now and it is written in python2.x. I am writing all my python code in python3.x&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
       <title>understand 10x scRNAseq and scATAC fastqs</title>
       <link>/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
       <pubDate>Wed, 06 Feb 2019 00:00:00 +0000</pubDate>
@@ -1577,91 +1941,6 @@ mosh mtang@odyssey.rc.fas.harvard.edu
 
 &lt;p&gt;Even your internet is dropped or the VPN is disconnected, after you reconnect, you shell
 session will be alive without logging in. Pretty cool!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>set up my new mac laptop</title>
-      <link>/post/set-up-my-new-mac-laptop/</link>
-      <pubDate>Wed, 03 Oct 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/set-up-my-new-mac-laptop/</guid>
-      <description>
-
-&lt;p&gt;I am starting my first day at Harvard FAS informatics and I will keep a note here on how I set up my new laptop.&lt;/p&gt;
-
-&lt;h3 id=&#34;customize-terminal&#34;&gt;customize terminal&lt;/h3&gt;
-
-&lt;p&gt;following &lt;a href=&#34;https://gist.github.com/kevin-smets/8568070&#34; target=&#34;_blank&#34;&gt;this gist&lt;/a&gt;:&lt;/p&gt;
-
-&lt;p&gt;download iterm2 for mac &lt;a href=&#34;https://iterm2.com/downloads.html&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&#34;install-on-my-zsh&#34;&gt;install on-my-zsh&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sh -c &amp;quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You will have to install git first for the upper command to work.
-Now, when you fire up your terminal, it looks much more prettier! (there are many other schemes for oh my zsh, I found the default is good. You can change it by modifying the .zshrc file in your home directory.)&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Selecting a Theme&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Once you find a theme that you&amp;rsquo;d like to use, you will need to edit the ~/.zshrc file. You&amp;rsquo;ll see an environment variable (all caps) in there that looks like:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;ZSH_THEME=&amp;quot;robbyrussell&amp;quot;&lt;/code&gt;
-To use a different theme, simply change the value to match the name of your desired theme. For example:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;ZSH_THEME=&amp;quot;agnoster&amp;quot;&lt;/code&gt; # (this is one of the fancy ones)
-see &lt;a href=&#34;https://github.com/robbyrussell/oh-my-zsh/wiki/Themes#agnoster&#34; target=&#34;_blank&#34;&gt;https://github.com/robbyrussell/oh-my-zsh/wiki/Themes#agnoster&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;install-conda&#34;&gt;install conda&lt;/h3&gt;
-
-&lt;p&gt;install &lt;code&gt;conda&lt;/code&gt;, go to &lt;a href=&#34;https://www.anaconda.com/download/#macos&#34; target=&#34;_blank&#34;&gt;https://www.anaconda.com/download/#macos&lt;/a&gt; and download the graphic installer. It is ~600 MB and take some time.&lt;/p&gt;
-
-&lt;p&gt;Usually &lt;code&gt;conda&lt;/code&gt; is installed in the home directory. Somehow, it was installed in the &lt;code&gt;/&lt;/code&gt; root.&lt;/p&gt;
-
-&lt;p&gt;add the following to the &lt;code&gt;~/.zshrc&lt;/code&gt; file&lt;/p&gt;
-
-&lt;p&gt;put conda after the &lt;code&gt;$PATH&lt;/code&gt;, otherwise somehow &lt;code&gt;oh-my-zsh&lt;/code&gt; will not work properly (the folders are not displayed with color etc)&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;export PATH=$PATH:&amp;quot;/anaconda3/bin&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;file-editor&#34;&gt;file editor&lt;/h3&gt;
-
-&lt;p&gt;&lt;code&gt;sublime&lt;/code&gt; or &lt;code&gt;Atom&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;download &lt;code&gt;sublime&lt;/code&gt; from &lt;a href=&#34;https://www.sublimetext.com/3&#34; target=&#34;_blank&#34;&gt;https://www.sublimetext.com/3&lt;/a&gt; and install it.&lt;/p&gt;
-
-&lt;p&gt;if you want to open sublime in terminal&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;open /Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl
-
-# make a symbolic link for it
-ln -s &amp;quot;/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl&amp;quot; /usr/local/bin/sublime
-
-# now you can
-sublime my.txt
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;install-r-and-rstudio&#34;&gt;install R and Rstudio&lt;/h3&gt;
-
-&lt;p&gt;The current R version is R3.5.1. Download it from &lt;a href=&#34;https://cran.cnr.berkeley.edu&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Install Rstudio v1.2.1013-1.
-I installed the &lt;a href=&#34;https://www.rstudio.com/products/rstudio/download/preview/&#34; target=&#34;_blank&#34;&gt;preview version&lt;/a&gt; of Rstudio because it can evalute python code directly throught &lt;a href=&#34;https://github.com/rstudio/reticulate&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;reticulate&lt;/code&gt;&lt;/a&gt;. I&amp;rsquo;ve used &lt;code&gt;pycharm&lt;/code&gt; before, but it is too clunky for me. One can of course set up both R and python inside &lt;code&gt;sublime&lt;/code&gt; or &lt;code&gt;Atom&lt;/code&gt;, but I do not want to leave &lt;code&gt;Rstudio&lt;/code&gt; :)&lt;/p&gt;
-
-&lt;h3 id=&#34;install-docker&#34;&gt;install docker&lt;/h3&gt;
-
-&lt;p&gt;follow &lt;a href=&#34;https://docs.docker.com/docker-for-mac/install/&#34; target=&#34;_blank&#34;&gt;https://docs.docker.com/docker-for-mac/install/&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;install-slack&#34;&gt;install slack&lt;/h3&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://slack.com&#34; target=&#34;_blank&#34;&gt;Slack&lt;/a&gt; For team communication&lt;/p&gt;
-
-&lt;h3 id=&#34;install-notion&#34;&gt;install Notion&lt;/h3&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://www.notion.so&#34; target=&#34;_blank&#34;&gt;Notion&lt;/a&gt; For to-do list&lt;/p&gt;
 </description>
     </item>
     

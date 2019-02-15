@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/split-a-10xscatac-bam-file-by-cluster/</loc>
+      <lastmod>2019-02-14T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/understand-10x-scrnaseq-and-scatac-fastqs/</loc>
       <lastmod>2019-02-06T00:00:00+00:00</lastmod>
     </url>
@@ -439,7 +448,7 @@
     <url>
     
       <loc>/tags/atacseq/</loc>
-      <lastmod>2019-02-06T00:00:00+00:00</lastmod>
+      <lastmod>2019-02-14T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -449,7 +458,7 @@
     <url>
     
       <loc>/categories/bioinformatics/</loc>
-      <lastmod>2019-01-28T00:00:00+00:00</lastmod>
+      <lastmod>2019-02-14T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -469,7 +478,7 @@
     <url>
     
       <loc>/categories/</loc>
-      <lastmod>2019-01-28T00:00:00+00:00</lastmod>
+      <lastmod>2019-02-14T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -688,6 +697,16 @@
     
     <url>
     
+      <loc>/categories/python/</loc>
+      <lastmod>2019-02-14T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/r/</loc>
       <lastmod>2019-02-05T00:00:00-05:00</lastmod>
       <priority>0</priority>
@@ -720,6 +739,16 @@
     
       <loc>/tags/scrnaseq/</loc>
       <lastmod>2019-02-06T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/single-cell/</loc>
+      <lastmod>2019-02-14T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
