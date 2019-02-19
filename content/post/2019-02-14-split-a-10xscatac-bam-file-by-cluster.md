@@ -362,4 +362,4 @@ Lessons that I have learned:
 * It is good to have someone else with more programming experience to look at the code for you. You are so used to the code that you write and can not find the "obvious" problem. 
 * Do not use libraries that are not well maintained. The `pybam` author is not maintaining the library now and it is written in python2.x. I am writing all my python code in python3.x
 
-I have put the python and nim code at [scATACutils](https://github.com/crazyhottommy/scATACutils)
+I have put the python and nim code at [scATACutils](https://github.com/crazyhottommy/scATACutils). The `pysam` code and `hts-nim` code generate exactly the same results.
