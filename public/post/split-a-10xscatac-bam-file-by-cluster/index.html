@@ -718,6 +718,14 @@ sys     2m58.312s</p>
 <p>you can add <code>threads=2</code> (or 3) to the <code>open</code> calls to get a bit more speed on de/compressing the bam which will be the most CPU time</p>
 </blockquote>
 
+<p>I tested using <code>threads = 3</code> for the same bam file, it took</p>
+
+<p>real    92m11.205s
+user    100m11.622s
+sys     6m3.067s</p>
+
+<p>one saved another 105-92 = 13 mins using multi-thread <code>hts-nim</code>.</p>
+
 <ul>
 <li>C htslib, I expect the speed will be similar to <code>hts-nim</code> since <code>hts-nim</code> is a wrapper around it.</li>
 </ul>

@@ -342,6 +342,14 @@ it is 172/105 **~1.6 times faster** in `hts-nim` than in `pysam`.
 
 > you can add `threads=2` (or 3) to the `open` calls to get a bit more speed on de/compressing the bam which will be the most CPU time
 
+I tested using `threads = 3` for the same bam file, it took 
+
+real    92m11.205s
+user    100m11.622s
+sys     6m3.067s
+
+one saved another 105-92 = 13 mins using multi-thread `hts-nim`.
+
 * C htslib, I expect the speed will be similar to `hts-nim` since `hts-nim` is a wrapper around it.
 
 ### Lessons learned

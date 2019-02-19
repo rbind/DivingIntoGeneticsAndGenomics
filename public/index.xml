@@ -356,6 +356,14 @@ sys     2m58.312s&lt;/p&gt;
 &lt;p&gt;you can add &lt;code&gt;threads=2&lt;/code&gt; (or 3) to the &lt;code&gt;open&lt;/code&gt; calls to get a bit more speed on de/compressing the bam which will be the most CPU time&lt;/p&gt;
 &lt;/blockquote&gt;
 
+&lt;p&gt;I tested using &lt;code&gt;threads = 3&lt;/code&gt; for the same bam file, it took&lt;/p&gt;
+
+&lt;p&gt;real    92m11.205s
+user    100m11.622s
+sys     6m3.067s&lt;/p&gt;
+
+&lt;p&gt;one saved another 105-92 = 13 mins using multi-thread &lt;code&gt;hts-nim&lt;/code&gt;.&lt;/p&gt;
+
 &lt;ul&gt;
 &lt;li&gt;C htslib, I expect the speed will be similar to &lt;code&gt;hts-nim&lt;/code&gt; since &lt;code&gt;hts-nim&lt;/code&gt; is a wrapper around it.&lt;/li&gt;
 &lt;/ul&gt;
