@@ -361,3 +361,5 @@ Lessons that I have learned:
 * How to make sure the output of the software is correct is very difficult. unit testing is important.
 * It is good to have someone else with more programming experience to look at the code for you. You are so used to the code that you write and can not find the "obvious" problem. 
 * Do not use libraries that are not well maintained. The `pybam` author is not maintaining the library now and it is written in python2.x. I am writing all my python code in python3.x
+
+I have put the python and nim code at [scATACutils](https://github.com/crazyhottommy/scATACutils)
