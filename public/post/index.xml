@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>Use docopt to write command line R utilities </title>
+      <link>/post/use-docopt-to-write-command-line-r-utilities/</link>
+      <pubDate>Fri, 22 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/use-docopt-to-write-command-line-r-utilities/</guid>
+      <description>I was writing an R script to plot the ATACseq fragment length distribution and wanted to turn the R script to a command line utility.
+I then (re)discovered this awesome docopt.R. One just needs to write the help message the you want to display and docopt() will parse the options, arguments and return a named list which can be accessed inside the R script. check http://docopt.org/ for more information as well.</description>
+    </item>
+    
+    <item>
       <title>Split a 10xscATAC bam file by cluster</title>
       <link>/post/split-a-10xscatac-bam-file-by-cluster/</link>
       <pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>

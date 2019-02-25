@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="I was writing an R script to plot the ATACseq fragment length distribution and wanted to turn the R script to a command line utility.
+I then (re)discovered this awesome docopt.R. One just needs to write the help message the you want to display and docopt() will parse the options, arguements and return a named list which can be accessed inside the R script. check http://docopt.org/ for more information as well.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/use-docopt-to-write-command-line-r-utilties/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/use-docopt-to-write-command-line-r-utilties/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/use-docopt-to-write-command-line-r-utilties/">
+  <meta property="og:title" content="Use docopt to write command line R utilties  | DNA confesses Data speak">
+  <meta property="og:description" content="I was writing an R script to plot the ATACseq fragment length distribution and wanted to turn the R script to a command line utility.
+I then (re)discovered this awesome docopt.R. One just needs to write the help message the you want to display and docopt() will parse the options, arguements and return a named list which can be accessed inside the R script. check http://docopt.org/ for more information as well.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-02-22T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-02-22T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Use docopt to write command line R utilties  | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Use docopt to write command line R utilties </h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2019-02-22 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Feb 22, 2019
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/use-docopt-to-write-command-line-r-utilties/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/r/">R</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Use%20docopt%20to%20write%20command%20line%20R%20utilties%20&amp;url=%2fpost%2fuse-docopt-to-write-command-line-r-utilties%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fuse-docopt-to-write-command-line-r-utilties%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fuse-docopt-to-write-command-line-r-utilties%2f&amp;title=Use%20docopt%20to%20write%20command%20line%20R%20utilties%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fuse-docopt-to-write-command-line-r-utilties%2f&amp;title=Use%20docopt%20to%20write%20command%20line%20R%20utilties%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Use%20docopt%20to%20write%20command%20line%20R%20utilties%20&amp;body=%2fpost%2fuse-docopt-to-write-command-line-r-utilties%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>I was writing an R script to plot the ATACseq fragment length distribution and wanted
+to turn the R script to a command line utility.</p>
+
+<p>I then (re)discovered this awesome <a href="https://github.com/docopt/docopt.R" target="_blank">docopt.R</a>.
+One just needs to write the help message the you want to display and <code>docopt()</code> will
+parse the options, arguements and return a named list which can be accessed inside the
+R script. check <a href="http://docopt.org/" target="_blank">http://docopt.org/</a> for more information as well.</p>
+
+<p>See below for an example.</p>
+
+<pre><code class="language-r">
+#! /usr/bin/env Rscript
+'Plot fragment length distribution from ATACseq data
+Usage:
+    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width --height] &lt;input&gt; &lt;output&gt;
+    
+Options:
+    -h --help  Show this screen.
+    -v --version  Show version.
+    --bin=&lt;bp&gt;  Bin size [default: 5]
+    --poly  Plot frequency polygon.
+    --hist  Plot histogram.
+    --pdf  Save to pdf.
+    --png  Save to png.
+    --width=&lt;width&gt;  Width of the output [default: 4]
+    --height=&lt;height&gt; Height of the output [default: 4]
+
+Arguments:
+    input  fragment length in a one column dataframe without header or stdin
+    output  output filename
+' -&gt; doc
+
+suppressMessages(library(ggplot2))
+# check this awesome docoptR https://github.com/docopt/docopt.R
+## make sure use the development version, the CRAN version not working for me
+# library(devtools) 
+# devtools::install_github(&quot;docopt/docopt.R&quot;)
+suppressMessages(library(docopt))
+suppressMessages(library(dplyr))
+
+# this will give error if try interactively, because no input and output argument are given
+# https://github.com/docopt/docopt.R/issues/27
+arguments &lt;- docopt(doc, version = 'plot_atac_frag_distribution v1.0\n\n')
+
+# for testing interactively
+#arguments &lt;- docopt(doc, version = 'FragmentSizeDistribution v1.0', args = c(&quot;scripts/fragment3.txt&quot;,&quot;my.pdf&quot;))
+#print(arguments)
+
+## File Read ##
+# taken from https://stackoverflow.com/questions/26152998/how-to-make-r-script-takes-input-from-pipe-and-user-given-parameter
+# if the input is stdin one can do 
+# cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf stdin  out.pdf
+# cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf - out.pdf
+# ./plot_atac_frag_distribution.R --poly --pdf &lt;(cat fragment.txt)  out.pdf
+
+
+OpenRead &lt;- function(arg) {
+    if (arg %in% c(&quot;-&quot;, &quot;/dev/stdin&quot;)) {
+        file(&quot;stdin&quot;, open = &quot;r&quot;)
+    } else if (grepl(&quot;^/dev/fd/&quot;, arg)) {
+        fifo(arg, open = &quot;r&quot;)
+    } else {
+        file(arg, open = &quot;r&quot;)
+    }
+}
+
+dat.con &lt;- OpenRead(arguments$input)
+fragment &lt;- read.table(dat.con, header = FALSE)
+
+#fragment&lt;- read.table(arguments$input, header = F)
+
+names(fragment)&lt;- c(&quot;length&quot;)
+
+plot_hist&lt;- function(fragment, bin) {
+        g&lt;- ggplot(fragment %&gt;% filter(length &lt;=2000), aes(x = length)) + 
+                geom_histogram(binwidth = bin, aes(y=..density..), fill = &quot;red&quot;) +
+                geom_density(alpha=.2, fill=&quot;#FF6666&quot;, col = &quot;black&quot;) +
+                coord_cartesian(xlim = c(0,1000)) +
+                scale_x_continuous(breaks = c(0, 100, 200, 300, 400, 800)) +
+                theme_minimal(base_size = 14)
+        return(g)
+        
+}
+
+plot_polygon&lt;- function(fragment, bin){
+        g&lt;- ggplot(fragment %&gt;% filter(length &lt;=2000), aes(x = length, stat(density))) + 
+                geom_freqpoly(binwidth = bin, col = &quot;blue&quot;) +
+                coord_cartesian(xlim = c(0,1000)) +
+                scale_x_continuous(breaks = c(0, 100, 200, 300, 400, 800)) +
+                theme_minimal(base_size = 14)
+        return(g)
+}
+
+
+main&lt;- function(fragment, arguments){
+    if (arguments$poly){
+        g&lt;- plot_polygon(fragment, as.numeric(arguments$bin))
+    } else if (arguments$hist){
+        g&lt;- plot_hist(fragment, as.numeric(arguments$bin))
+    }
+    device&lt;- ifelse(arguments$pdf, &quot;pdf&quot;, &quot;png&quot;)
+    
+    ggsave(arguments$output, plot = g,  device = device, width =as.numeric(arguments$width), 
+           height = as.numeric(arguments$height) )
+    
+}
+
+main(fragment, arguments)
+</code></pre>
+
+<p>save it to <code>plot_atac_frag_distribution.R</code>.</p>
+
+<p>on commnad line, one can do:</p>
+
+<pre><code class="language-bash">
+./plot_atac_frag_distribution.R -h
+Plot fragment length distribution from ATACseq data
+Usage:
+    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width --height] &lt;input&gt; &lt;output&gt;
+
+Options:
+    -h --help  Show this screen.
+    -v --version  Show version.
+    --bin=&lt;bp&gt;  Bin size [default: 5]
+    --poly  Plot frequency polygon.
+    --hist  Plot histogram.
+    --pdf  Save to pdf.
+    --png  Save to png.
+    --width=&lt;width&gt;  Width of the output [default: 4]
+    --height=&lt;height&gt; Height of the output [default: 4]
+
+Arguments:
+    input  fragment length in a one column dataframe without header or stdin
+    output  output filename
+
+./plot_atac_frag_distribution.R --poly --png fragment.txt out.png
+cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf stdin  out.pdf
+cat fragment.txt | ./plot_atac_frag_distribution.R --hist --pdf - out.pdf
+./plot_atac_frag_distribution.R --hist --pdf &lt;(cat fragment.txt)  out.pdf
+
+samtools view my.bam | awk '$9&gt;0' | cut -f 9 |./plot_atac_frag_distribution.R --poly --pdf - out.pdf
+
+</code></pre>
+
+<p>histogram:</p>
+
+<p><img src="/img/posts_img/out2.png" alt="" /></p>
+
+<p>polygon:</p>
+
+<p><img src="/img/posts_img/out3.png" alt="" />
+Pretty cool!!</p>
+
+<p><strong>Important notes:</strong></p>
+
+<ul>
+<li>[default: 4]  The space after <code>:</code> is needed.</li>
+<li>use two spaces to separate the option and the explaination</li>
+<li>use four spaces to ident</li>
+<li>use the development version of optdoc.R</li>
+<li>when testing interactively. docopt() may give error when the mandatory arugments
+are not specified, but running on command line is fine.</li>
+</ul>
+
+<p>see <a href="https://github.com/docopt/docopt.R/issues/24" target="_blank">https://github.com/docopt/docopt.R/issues/24</a></p>
+
+<p>Also check <a href="http://dirk.eddelbuettel.com/code/littler.examples.html" target="_blank"><code>littler</code></a></p>
+
+<blockquote>
+<p>littler provides the r program, a simplified command-line interface for GNU R. This allows direct execution of commands, use in piping where the output of one program supplies the input of the next, as well as adding the ability for writing hash-bang scripts, i.e. creating executable files starting with, say, #!/usr/bin/r.</p>
+</blockquote>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/atacseq/">ATACseq</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/r/">R</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/split-a-10xscatac-bam-file-by-cluster/">Split a 10xscATAC bam file by cluster</a></li>
+        
+        <li><a href="/post/understand-10x-scrnaseq-and-scatac-fastqs/">understand 10x scRNAseq and scATAC fastqs</a></li>
+        
+        <li><a href="/project/evaluating-scrnaseq-cluster/">Evaluating single cell RNAseq cluster stability</a></li>
+        
+        <li><a href="/post/three-gotchas-when-using-r-for-genomic-data-analysis/">Three gotchas when using R for Genomic data analysis</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/split-a-10xscatac-bam-file-by-cluster/" rel="prev">Split a 10xscATAC bam file by cluster</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/R.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+

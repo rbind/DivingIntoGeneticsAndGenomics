@@ -11,6 +11,186 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Use docopt to write command line R utilities </title>
+      <link>/post/use-docopt-to-write-command-line-r-utilities/</link>
+      <pubDate>Fri, 22 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/use-docopt-to-write-command-line-r-utilities/</guid>
+      <description>&lt;p&gt;I was writing an R script to plot the ATACseq fragment length distribution and wanted
+to turn the R script to a command line utility.&lt;/p&gt;
+
+&lt;p&gt;I then (re)discovered this awesome &lt;a href=&#34;https://github.com/docopt/docopt.R&#34; target=&#34;_blank&#34;&gt;docopt.R&lt;/a&gt;.
+One just needs to write the help message the you want to display and &lt;code&gt;docopt()&lt;/code&gt; will
+parse the options, arguments and return a named list which can be accessed inside the
+R script. check &lt;a href=&#34;http://docopt.org/&#34; target=&#34;_blank&#34;&gt;http://docopt.org/&lt;/a&gt; for more information as well.&lt;/p&gt;
+
+&lt;p&gt;See below for an example. You can download it at &lt;a href=&#34;https://github.com/crazyhottommy/scATACutils/blob/master/R/plot_atac_frag_distribution.R&#34; target=&#34;_blank&#34;&gt;https://github.com/crazyhottommy/scATACutils/blob/master/R/plot_atac_frag_distribution.R&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;
+#! /usr/bin/env Rscript
+&#39;Plot fragment length distribution from ATACseq data
+Usage:
+    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width --height] &amp;lt;input&amp;gt; &amp;lt;output&amp;gt;
+    
+Options:
+    -h --help  Show this screen.
+    -v --version  Show version.
+    --bin=&amp;lt;bp&amp;gt;  Bin size [default: 5]
+    --poly  Plot frequency polygon.
+    --hist  Plot histogram.
+    --pdf  Save to pdf.
+    --png  Save to png.
+    --width=&amp;lt;width&amp;gt;  Width of the output [default: 4]
+    --height=&amp;lt;height&amp;gt; Height of the output [default: 4]
+
+Arguments:
+    input  fragment length in a one column dataframe without header or stdin
+    output  output filename
+&#39; -&amp;gt; doc
+
+suppressMessages(library(ggplot2))
+# check this awesome docoptR https://github.com/docopt/docopt.R
+## make sure use the development version, the CRAN version not working for me
+# library(devtools) 
+# devtools::install_github(&amp;quot;docopt/docopt.R&amp;quot;)
+suppressMessages(library(docopt))
+suppressMessages(library(dplyr))
+
+# this will give error if try interactively, because no input and output argument are given
+# https://github.com/docopt/docopt.R/issues/27
+arguments &amp;lt;- docopt(doc, version = &#39;plot_atac_frag_distribution v1.0\n\n&#39;)
+
+# for testing interactively
+#arguments &amp;lt;- docopt(doc, version = &#39;FragmentSizeDistribution v1.0&#39;, args = c(&amp;quot;scripts/fragment3.txt&amp;quot;,&amp;quot;my.pdf&amp;quot;))
+#print(arguments)
+
+## File Read ##
+# taken from https://stackoverflow.com/questions/26152998/how-to-make-r-script-takes-input-from-pipe-and-user-given-parameter
+# if the input is stdin one can do 
+# cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf stdin  out.pdf
+# cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf - out.pdf
+# ./plot_atac_frag_distribution.R --poly --pdf &amp;lt;(cat fragment.txt)  out.pdf
+
+
+OpenRead &amp;lt;- function(arg) {
+    if (arg %in% c(&amp;quot;-&amp;quot;, &amp;quot;/dev/stdin&amp;quot;)) {
+        file(&amp;quot;stdin&amp;quot;, open = &amp;quot;r&amp;quot;)
+    } else if (grepl(&amp;quot;^/dev/fd/&amp;quot;, arg)) {
+        fifo(arg, open = &amp;quot;r&amp;quot;)
+    } else {
+        file(arg, open = &amp;quot;r&amp;quot;)
+    }
+}
+
+dat.con &amp;lt;- OpenRead(arguments$input)
+fragment &amp;lt;- read.table(dat.con, header = FALSE)
+
+#fragment&amp;lt;- read.table(arguments$input, header = F)
+
+names(fragment)&amp;lt;- c(&amp;quot;length&amp;quot;)
+
+plot_hist&amp;lt;- function(fragment, bin) {
+        g&amp;lt;- ggplot(fragment %&amp;gt;% filter(length &amp;lt;=2000), aes(x = length)) + 
+                geom_histogram(binwidth = bin, aes(y=..density..), fill = &amp;quot;red&amp;quot;) +
+                geom_density(alpha=.2, fill=&amp;quot;#FF6666&amp;quot;, col = &amp;quot;black&amp;quot;) +
+                coord_cartesian(xlim = c(0,1000)) +
+                scale_x_continuous(breaks = c(0, 100, 200, 300, 400, 800)) +
+                theme_minimal(base_size = 14)
+        return(g)
+        
+}
+
+plot_polygon&amp;lt;- function(fragment, bin){
+        g&amp;lt;- ggplot(fragment %&amp;gt;% filter(length &amp;lt;=2000), aes(x = length, stat(density))) + 
+                geom_freqpoly(binwidth = bin, col = &amp;quot;blue&amp;quot;) +
+                coord_cartesian(xlim = c(0,1000)) +
+                scale_x_continuous(breaks = c(0, 100, 200, 300, 400, 800)) +
+                theme_minimal(base_size = 14)
+        return(g)
+}
+
+
+main&amp;lt;- function(fragment, arguments){
+    if (arguments$poly){
+        g&amp;lt;- plot_polygon(fragment, as.numeric(arguments$bin))
+    } else if (arguments$hist){
+        g&amp;lt;- plot_hist(fragment, as.numeric(arguments$bin))
+    }
+    device&amp;lt;- ifelse(arguments$pdf, &amp;quot;pdf&amp;quot;, &amp;quot;png&amp;quot;)
+    
+    ggsave(arguments$output, plot = g,  device = device, width =as.numeric(arguments$width), 
+           height = as.numeric(arguments$height) )
+    
+}
+
+main(fragment, arguments)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;save it to &lt;code&gt;plot_atac_frag_distribution.R&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;on command line, one can do:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
+./plot_atac_frag_distribution.R -h
+Plot fragment length distribution from ATACseq data
+Usage:
+    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width --height] &amp;lt;input&amp;gt; &amp;lt;output&amp;gt;
+
+Options:
+    -h --help  Show this screen.
+    -v --version  Show version.
+    --bin=&amp;lt;bp&amp;gt;  Bin size [default: 5]
+    --poly  Plot frequency polygon.
+    --hist  Plot histogram.
+    --pdf  Save to pdf.
+    --png  Save to png.
+    --width=&amp;lt;width&amp;gt;  Width of the output [default: 4]
+    --height=&amp;lt;height&amp;gt; Height of the output [default: 4]
+
+Arguments:
+    input  fragment length in a one column dataframe without header or stdin
+    output  output filename
+
+./plot_atac_frag_distribution.R --poly --png fragment.txt out.png
+cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf stdin  out.pdf
+cat fragment.txt | ./plot_atac_frag_distribution.R --hist --pdf - out.pdf
+./plot_atac_frag_distribution.R --hist --pdf &amp;lt;(cat fragment.txt)  out.pdf
+
+samtools view my.bam | awk &#39;$9&amp;gt;0&#39; | cut -f 9 |./plot_atac_frag_distribution.R --poly --pdf - out.pdf
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;histogram:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/posts_img/out2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;polygon:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/posts_img/out3.png&#34; alt=&#34;&#34; /&gt;
+Pretty cool!!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Important notes:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[default: 4]  The space after &lt;code&gt;:&lt;/code&gt; is needed.&lt;/li&gt;
+&lt;li&gt;use two spaces to separate the option and the explanation&lt;/li&gt;
+&lt;li&gt;use four spaces to indent&lt;/li&gt;
+&lt;li&gt;use the development version of optdoc.R&lt;/li&gt;
+&lt;li&gt;when testing interactively. docopt() may give error when the mandatory arguments
+are not specified, but running on command line is fine.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;see &lt;a href=&#34;https://github.com/docopt/docopt.R/issues/24&#34; target=&#34;_blank&#34;&gt;https://github.com/docopt/docopt.R/issues/24&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Also check &lt;a href=&#34;http://dirk.eddelbuettel.com/code/littler.examples.html&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;littler&lt;/code&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;littler provides the r program, a simplified command-line interface for GNU R. This allows direct execution of commands, use in piping where the output of one program supplies the input of the next, as well as adding the ability for writing hash-bang scripts, i.e. creating executable files starting with, say, #!/usr/bin/r.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Split a 10xscATAC bam file by cluster</title>
       <link>/post/split-a-10xscatac-bam-file-by-cluster/</link>
       <pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>
@@ -379,6 +559,8 @@ sys     6m3.067s&lt;/p&gt;
 &lt;li&gt;It is good to have someone else with more programming experience to look at the code for you. You are so used to the code that you write and can not find the &amp;ldquo;obvious&amp;rdquo; problem.&lt;/li&gt;
 &lt;li&gt;Do not use libraries that are not well maintained. The &lt;code&gt;pybam&lt;/code&gt; author is not maintaining the library now and it is written in python2.x. I am writing all my python code in python3.x&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;I have put the python and nim code at &lt;a href=&#34;https://github.com/crazyhottommy/scATACutils&#34; target=&#34;_blank&#34;&gt;scATACutils&lt;/a&gt;. The &lt;code&gt;pysam&lt;/code&gt; code and &lt;code&gt;hts-nim&lt;/code&gt; code generate exactly the same results.&lt;/p&gt;
 </description>
     </item>
     
@@ -1796,159 +1978,6 @@ ncdu
       
       <guid>/publication/2018-10-05-hdac-inhibitor/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>set up ssh odyssey HPC</title>
-      <link>/post/set-up-ssh-odyssey-hpc/</link>
-      <pubDate>Thu, 04 Oct 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/set-up-ssh-odyssey-hpc/</guid>
-      <description>
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;request an account following &lt;a href=&#34;https://www.rc.fas.harvard.edu/resources/faq/how-do-i-get-a-research-computing-account/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Harvard odyssey HPC requires a two-factor security login. First set up the VPN following &lt;a href=&#34;https://www.rc.fas.harvard.edu/resources/vpn-setup/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Then read about OpenAuth &lt;a href=&#34;https://www.rc.fas.harvard.edu/resources/documentation/openauth/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;. One can download mobile apps such as &lt;code&gt;Duo&lt;/code&gt; and &lt;code&gt;google-Authenticator&lt;/code&gt; on your phone, but then each time you will need to type the password to the terminal. Or you can download the java program for desktop, if you have a FAS research computing account, you should be able to download it from the link FASRC send you. I downloaded a folder like &lt;code&gt;mtang-openauth&lt;/code&gt;. The prefix will be your HPC account name.&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cd mtang-openauth
-./mtang-openauth.sh
-No Java runtime present, requesting install.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You will have to install &lt;code&gt;java&lt;/code&gt; first. My mac prompt a window for downloading, click &lt;code&gt;More Info&lt;/code&gt;, it will bring you to a webpage for downloading.&lt;/p&gt;
-
-&lt;p&gt;After you install &lt;code&gt;java&lt;/code&gt;, type &lt;code&gt;./mtang-openauth.sh&lt;/code&gt;, a little green box with the 6 digits verification code will show up in the upper-right corner of your screen.&lt;/p&gt;
-
-&lt;p&gt;Fire-up iterm2:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh mtang@odyssey.rc.fas.harvard.edu
-
-# it will prompt for password and then the verification code.
-# type in the password for your account
-# copy the 6-digits verification code and paste to your iterm window
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This is kind of annoying if I have to do this everytime. It takes me ~2 seconds to type or copy/paste from the java desktop app, but what if I automate this. suppose I log into the HPC 10 times a day and 300 days per year. I save &lt;code&gt;2x10x300 = 6000&lt;/code&gt; seconds, that&amp;rsquo;s  100 minutes a year :) The following may take me ~1 hour to set up, but I hope it can save you some time by following this.&lt;/p&gt;
-
-&lt;h4 id=&#34;generate-ssh-key-for-password-less-login&#34;&gt;generate ssh key for password-less login&lt;/h4&gt;
-
-&lt;p&gt;Note, I have done this a couple of times, but I still need to google it everytime I set it up. I have told you googling is an essential skill for bioinformaticians :)&lt;/p&gt;
-
-&lt;p&gt;On your mac:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh-keygen -b 2048
-
-Generating public/private rsa key pair.
-Enter file in which to save the key (/Users/mingtang/.ssh/id_rsa):
-Enter passphrase (empty for no passphrase):
-Enter same passphrase again:
-Your identification has been saved in /Users/mingtang/.ssh/id_rsa.
-Your public key has been saved in /Users/mingtang/.ssh/id_rsa.pub.
-The key fingerprint is:
-SHA256:8LOJnp1rv5BZY9yoHVcrQarTnhW5Ih+eK8dA1+rxYao mingtang@huitadmins-MacBook-Pro.local
-The key&#39;s randomart image is:
-+---[RSA 2048]----+
-|            .    |
-|           o .   |
-|      .   ..+ .  |
-|       o.+.o.= . |
-|       .S.@.* .  |
-|       ..^oXo.   |
-|      . B+B= .   |
-|     . ooo=..    |
-|      o.E*+.     |
-+----[SHA256]-----+
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;tell &lt;code&gt;ssh-agent&lt;/code&gt; about our key, we use &lt;code&gt;ssh-add&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh-add
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This creates a private key at &lt;code&gt;~/.ssh/id_rsa&lt;/code&gt; and a public key at &lt;code&gt;~/.ssh/id_rsa.pub&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Now, &lt;code&gt;ssh&lt;/code&gt; to &lt;strong&gt;odyssey HPC&lt;/strong&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh mtang@odyssey.rc.fas.harvard.edu
-# type in the passowrd
-# copy paste the 6-digit verification code in the green box
-# you will be logged in your home directory
- 
-cd .ssh
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;append your public key file (id_rsa.pub, not your private key!) on your mac (open the file, copy it) to &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; on the HPC.&lt;/p&gt;
-
-&lt;p&gt;I asked Aaron in the group and it turns out one can not skip the 2-factor system for password-less login on the &lt;code&gt;odyssey.rc.fas.harvard.edu&lt;/code&gt; login node.&lt;/p&gt;
-
-&lt;h4 id=&#34;otp-token-paster-for-os-x&#34;&gt;OTP Token Paster for OS X&lt;/h4&gt;
-
-&lt;p&gt;Follow &lt;a href=&#34;https://github.com/jwm/os-x-otp-token-paster&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Install Homebrew&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;/usr/bin/ruby -e &amp;quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&amp;quot;
-brew install oath-toolkit
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;If it isn&amp;rsquo;t already present, enter &lt;code&gt;secret=YOUR_BASE32_ENCODED_SECRET&lt;/code&gt; in &lt;code&gt;~/.JAuth.rc&lt;/code&gt;.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# I have Services folder in my mac
-mkdir -p ~/Library/Services
-git clone https://github.com/jwm/os-x-otp-token-paster
-cd os-x-otp-token-paster
-mv &#39;Enter Current TOTP Token.workflow&#39; ~/Library/Services
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Open System Preferences -&amp;gt; Keyboard -&amp;gt; Keyboard Shortcuts -&amp;gt; Services -&amp;gt; Enter Current OTP Token (probably way down at the bottom).&lt;/li&gt;
-&lt;li&gt;Click &amp;lsquo;add shortcut&amp;rsquo; and enter the key combination you want to use.I use &lt;code&gt;control + shift + U&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh mtang@odyssey.rc.fas.harvard.edu
-# type in password
-# when prompt for verificartion code
-# use the short-cut: control+shift+U 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;controlmaster-for-ssh&#34;&gt;ControlMaster for ssh&lt;/h4&gt;
-
-&lt;p&gt;Please follow &lt;a href=&#34;https://www.rc.fas.harvard.edu/resources/documentation/linux/using-ssh-controlmaster-for-single-sign-on/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt; to set it up.&lt;/p&gt;
-
-&lt;p&gt;with this, you only need to type in the password and verification code once. The subsequent logins will be password-less for the &lt;code&gt;odyssey.rc.fas.harvard.edu&lt;/code&gt; login node.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;OpenSSH has an option called ControlMaster that enables the sharing of multiple sessions over a single network connection. This means that you can connect to Odyssey once, enter your password and Verification code, and have all other subsequent ssh sessions (including svn, rsync, etc. that run over ssh) piggy-back off the initial connection without need for re-authentication. You can specify such options each time on the command line, but it&amp;rsquo;s easiest if you put it in your ssh client configuration file so that it applies every time.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&#34;mosh-a-mobile-shell&#34;&gt;Mosh, a mobile shell&lt;/h3&gt;
-
-&lt;p&gt;If your internet is not stable you may want to install &lt;a href=&#34;https://mosh.org/&#34; target=&#34;_blank&#34;&gt;mosh&lt;/a&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Remote terminal application that allows roaming, supports intermittent connectivity, and provides intelligent local echo and line editing of user keystrokes.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;After installing it, instead of doing&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh mtang@odyssey.rc.fas.harvard.edu
-
-# do this
-mosh mtang@odyssey.rc.fas.harvard.edu
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Even your internet is dropped or the VPN is disconnected, after you reconnect, you shell
-session will be alive without logging in. Pretty cool!&lt;/p&gt;
 </description>
     </item>
     
