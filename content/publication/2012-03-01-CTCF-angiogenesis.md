@@ -3,7 +3,7 @@ title = "CTCF-dependent chromatin insulator as a built-in attenuator of angiogen
 date = 2012-03-01T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Ming Tang", "Jianrong Lu"]
+authors = ["**Ming Tang**", "Jianrong Lu"]
 
 # Publication type.
 # Legend:

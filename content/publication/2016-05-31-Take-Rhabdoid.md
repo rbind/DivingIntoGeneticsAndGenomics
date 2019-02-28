@@ -3,7 +3,7 @@ title = "A Molecular Take on Malignant Rhabdoid Tumors"
 date = 2016-05-31T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Ming Tang", "Roel Verhaak"]
+authors = ["**Ming Tang**", "and Roel Verhaak"]
 
 # Publication type.
 # Legend:

@@ -3,7 +3,7 @@ title = "Integrative Analysis Identifies Four Molecular and Clinical Subsets in 
 date = 2017-08-14T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["A. Gordon Robertson", "TCGA network", "Ming Tang et.al"]
+authors = ["A. Gordon Robertson", "TCGA network", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

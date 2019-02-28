@@ -3,7 +3,7 @@ title = "Synthetic essentiality of chromatin remodelling factor CHD1 in PTEN-def
 date = 2017-02-23T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Di Zhao", "...", "Ming Tang et.al"]
+authors = ["Di Zhao", "...", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

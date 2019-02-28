@@ -3,7 +3,7 @@ title = "The Tandem Duplicator Phenotype Is a Prevalent Genome-Wide Cancer Confi
 date = 2018-07-12T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Francesca Menghi", "Floris P. Barthel", "Vinod Yadav", "Ming Tang et.al"]
+authors = ["Francesca Menghi", "Floris P. Barthel", "Vinod Yadav", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

@@ -3,7 +3,7 @@ title = "TumorFusions: an integrative resource for cancer-associated transcript 
 date = 2018-01-04T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Xin Hu", "Qianghu Wang", "Ming Tang et.al"]
+authors = ["Xin Hu", "Qianghu Wang", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

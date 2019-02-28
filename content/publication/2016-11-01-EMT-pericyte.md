@@ -3,7 +3,7 @@ title = "Epithelial-to-mesenchymal transition confers pericyte properties on can
 date = 2016-11-01T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Anitha K. Shenoy", "...", "Ming Tang et.al"]
+authors = ["Anitha K. Shenoy", "...", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

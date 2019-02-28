@@ -3,7 +3,7 @@ title = "TRIM29 Suppresses TWIST1 and Invasive Breast Cancer Behavior"
 date = 2014-09-01T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Lingbao Ai", "Wan-Ju Kim", "Merve Alpay", "Ming Tang et.al"]
+authors = ["Lingbao Ai", "Wan-Ju Kim", "Merve Alpay", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

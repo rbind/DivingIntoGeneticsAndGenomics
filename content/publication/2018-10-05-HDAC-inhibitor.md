@@ -3,7 +3,7 @@ title = "Histone deacetylase inhibitor targets CD123/CD47-positive cells and rev
 date = 2018-10-05T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Bowen Yan", "Qinwei Chen", "Koji Shimada", "Ming Tang et.al"]
+authors = ["Bowen Yan", "Qinwei Chen", "Koji Shimada", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

@@ -28,7 +28,7 @@ See below for an example. You can download it at https://github.com/crazyhottomm
 #! /usr/bin/env Rscript
 'Plot fragment length distribution from ATACseq data
 Usage:
-    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width --height] <input> <output>
+    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width=<width> --height=<height> --bin=<bp>] <input> <output>
     
 Options:
     -h --help  Show this screen.
@@ -133,7 +133,7 @@ on command line, one can do:
 ./plot_atac_frag_distribution.R -h
 Plot fragment length distribution from ATACseq data
 Usage:
-    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width --height] <input> <output>
+    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width=<width> --height=<height> --bin=<bp>] <input> <output>
 
 Options:
     -h --help  Show this screen.
@@ -150,7 +150,7 @@ Arguments:
     input  fragment length in a one column dataframe without header or stdin
     output  output filename
 
-./plot_atac_frag_distribution.R --poly --png fragment.txt out.png
+./plot_atac_frag_distribution.R --poly --png  --bin 10 fragment.txt out.png
 cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf stdin  out.pdf
 cat fragment.txt | ./plot_atac_frag_distribution.R --hist --pdf - out.pdf
 ./plot_atac_frag_distribution.R --hist --pdf <(cat fragment.txt)  out.pdf

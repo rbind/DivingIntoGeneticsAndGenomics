@@ -3,7 +3,7 @@ title = "An Integrated Platform for Genome-wide Mapping of Chromatin States Usin
 date = 2018-04-05T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Christopher Terranova", "Ming Tang et.al"]
+authors = ["Christopher Terranova", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

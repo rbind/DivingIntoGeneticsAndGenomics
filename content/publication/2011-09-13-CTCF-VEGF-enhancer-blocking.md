@@ -3,7 +3,7 @@ title = "Restraint of angiogenesis by zinc finger transcription factor CTCF-depe
 date = 2011-09-13T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Ming Tang et.al"]
+authors = ["**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

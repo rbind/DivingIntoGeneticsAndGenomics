@@ -3,7 +3,7 @@ title = "Systematic analysis of telomere length and somatic alterations in 31 ca
 date = 2017-03-01T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Floris P Barthel", "Wei Wei", "Ming Tang et.al"]
+authors = ["Floris P Barthel", "Wei Wei", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

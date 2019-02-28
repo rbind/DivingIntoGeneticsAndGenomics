@@ -389,7 +389,7 @@ R script. check <a href="http://docopt.org/" target="_blank">http://docopt.org/<
 #! /usr/bin/env Rscript
 'Plot fragment length distribution from ATACseq data
 Usage:
-    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width --height] &lt;input&gt; &lt;output&gt;
+    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width=&lt;width&gt; --height=&lt;height&gt; --bin=&lt;bp&gt;] &lt;input&gt; &lt;output&gt;
     
 Options:
     -h --help  Show this screen.
@@ -493,7 +493,7 @@ main(fragment, arguments)
 ./plot_atac_frag_distribution.R -h
 Plot fragment length distribution from ATACseq data
 Usage:
-    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width --height] &lt;input&gt; &lt;output&gt;
+    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width=&lt;width&gt; --height=&lt;height&gt; --bin=&lt;bp&gt;] &lt;input&gt; &lt;output&gt;
 
 Options:
     -h --help  Show this screen.
@@ -510,7 +510,7 @@ Arguments:
     input  fragment length in a one column dataframe without header or stdin
     output  output filename
 
-./plot_atac_frag_distribution.R --poly --png fragment.txt out.png
+./plot_atac_frag_distribution.R --poly --png  --bin 10 fragment.txt out.png
 cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf stdin  out.pdf
 cat fragment.txt | ./plot_atac_frag_distribution.R --hist --pdf - out.pdf
 ./plot_atac_frag_distribution.R --hist --pdf &lt;(cat fragment.txt)  out.pdf

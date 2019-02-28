@@ -3,7 +3,7 @@ title = "Suppression of Type I IFN Signaling in Tumors Mediates Resistance to An
 date = 2017-02-15T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Xiaohong Wang", "...", "Ming Tang et.al"]
+authors = ["Xiaohong Wang", "...", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

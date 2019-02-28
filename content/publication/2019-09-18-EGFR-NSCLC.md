@@ -3,7 +3,7 @@ title = "Landscape of EGFR-Dependent and -Independent Resistance Mechanisms to O
 date = 2018-09-18T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Xiuning Le", "Sonam Puri", "...", "Ming Tang et.al"]
+authors = ["Xiuning Le", "Sonam Puri", "...", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:

@@ -3,7 +3,7 @@ title = "Genomic and proteomic analysis of transcription factor TFII-I reveals i
 date = 2014-05-29T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Alex Xiucheng Fan", "...", "Ming Tang et.al"]
+authors = ["Alex Xiucheng Fan", "...", "**Ming Tang** et.al"]
 
 # Publication type.
 # Legend:
