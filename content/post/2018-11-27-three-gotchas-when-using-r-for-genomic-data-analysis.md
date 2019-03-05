@@ -29,7 +29,7 @@ when you import that bed file into R using `rtracklayer::import()`, it will beco
 
 ```{r}
 chr1     1    1000
-chr1    1000    2000
+chr1    1002    2000
 ```
 The function convert it to 1 based internally (R is 1 based unlike python). 
 

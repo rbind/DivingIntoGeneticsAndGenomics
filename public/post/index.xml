@@ -129,7 +129,7 @@ I will show you how to merge the tables using R, python and unix below.</descrip
 1. The devil 1 and 0 coordinate system read detail here https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey
 some files such as bed file is 0 based. Two genomic regions:
 chr1 0 1000 chr1 1001 2000  when you import that bed file into R using rtracklayer::import(), it will become
-chr1 1 1000 chr1 1000 2000  The function convert it to 1 based internally (R is 1 based unlike python).</description>
+chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 1 based unlike python).</description>
     </item>
     
     <item>

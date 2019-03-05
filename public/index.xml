@@ -1751,7 +1751,7 @@ chr1    1001    2000
 &lt;p&gt;when you import that bed file into R using &lt;code&gt;rtracklayer::import()&lt;/code&gt;, it will become&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;chr1     1    1000
-chr1    1000    2000
+chr1    1002    2000
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;The function convert it to 1 based internally (R is 1 based unlike python).&lt;/p&gt;

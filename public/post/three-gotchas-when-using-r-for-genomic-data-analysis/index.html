@@ -21,7 +21,7 @@
 1. The devil 1 and 0 coordinate system read detail here https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey
 some files such as bed file is 0 based. Two genomic regions:
 chr1 0 1000 chr1 1001 2000  when you import that bed file into R using rtracklayer::import(), it will become
-chr1 1 1000 chr1 1000 2000  The function convert it to 1 based internally (R is 1 based unlike python).">
+chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 1 based unlike python).">
 
   
   <link rel="alternate" hreflang="en-us" href="/post/three-gotchas-when-using-r-for-genomic-data-analysis/">
@@ -103,7 +103,7 @@ chr1 1 1000 chr1 1000 2000  The function convert it to 1 based internally (R is 
 1. The devil 1 and 0 coordinate system read detail here https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey
 some files such as bed file is 0 based. Two genomic regions:
 chr1 0 1000 chr1 1001 2000  when you import that bed file into R using rtracklayer::import(), it will become
-chr1 1 1000 chr1 1000 2000  The function convert it to 1 based internally (R is 1 based unlike python).">
+chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 1 based unlike python).">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2018-11-27T00:00:00&#43;00:00">
@@ -401,7 +401,7 @@ chr1    1001    2000
 <p>when you import that bed file into R using <code>rtracklayer::import()</code>, it will become</p>
 
 <pre><code class="language-r">chr1     1    1000
-chr1    1000    2000
+chr1    1002    2000
 </code></pre>
 
 <p>The function convert it to 1 based internally (R is 1 based unlike python).</p>
