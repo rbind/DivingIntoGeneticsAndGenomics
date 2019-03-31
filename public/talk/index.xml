@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>Reproducible research in bioinformatics</title>
+      <link>/talk/2019-bunkerhill-talk/</link>
+      <pubDate>Thu, 28 Mar 2019 14:30:00 -0400</pubDate>
+      
+      <guid>/talk/2019-bunkerhill-talk/</guid>
+      <description>I was invited to give a talk on reproducible bioinformatics research to the students in the Bunker Hill Community College in Boston, MA. I was so glad to introduce bioinformatics to the students and share my own perspectives on reproducible research.
+The movie Good Will Hunting was shot there :)
+Embed your slides or video here using shortcodes. Further details can easily be added using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
       <title>From cell line to command line: my journey to bioinformatics</title>
       <link>/talk/2018-uf-talk/</link>
       <pubDate>Fri, 31 Aug 2018 00:00:00 -0400</pubDate>
