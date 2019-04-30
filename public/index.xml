@@ -11,6 +11,204 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>plot 10x scATAC coverage by cluster/group</title>
+      <link>/post/plot-10x-scatac-coverage-by-cluster-group/</link>
+      <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
+      <description>&lt;p&gt;This post was inspired by &lt;a href=&#34;https://twitter.com/ahill_tweets&#34;&gt;Andrew Hill&lt;/a&gt;’s &lt;a href=&#34;http://andrewjohnhill.com/blog/2019/04/12/streamlining-scatac-seq-visualization-and-analysis/&#34;&gt;recent blog post&lt;/a&gt;.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Inspired by some nice posts by &lt;a href=&#34;https://twitter.com/timoast?ref_src=twsrc%5Etfw&#34;&gt;@timoast&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/tangming2005?ref_src=twsrc%5Etfw&#34;&gt;@tangming2005&lt;/a&gt; and work from &lt;a href=&#34;https://twitter.com/10xGenomics?ref_src=twsrc%5Etfw&#34;&gt;@10xGenomics&lt;/a&gt;. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!&lt;/p&gt;&amp;mdash; Andrew J Hill (@ahill_tweets) &lt;a href=&#34;https://twitter.com/ahill_tweets/status/1116875339303493634?ref_src=twsrc%5Etfw&#34;&gt;April 13, 2019&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Andrew wrote that blog post in light of my other &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/split-a-10xscatac-bam-file-by-cluster/&#34;&gt;recent blog post&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/timoast&#34;&gt;Tim&lt;/a&gt;’s (developer of the almighty &lt;a href=&#34;https://satijalab.org/seurat/&#34;&gt;Seurat&lt;/a&gt; package) &lt;a href=&#34;https://timoast.github.io/blog/sinto/&#34;&gt;blog post&lt;/a&gt;. Writing blog post is fun and I am happy to see so many new ideas can be generated through online communications.&lt;/p&gt;
+&lt;p&gt;I took Andrew’s idea of reading in the reads in a certain window by taking advantages of tabix indexed file fragment.tsv.gz which is an output from 10x &lt;code&gt;cellranger-atac&lt;/code&gt;. I then split the reads by a grouping file which specifies which group each cell belongs to and a total number of reads in each cell. For visualization, instead of using ggplot2, I used the awesome &lt;a href=&#34;https://bernatgel.github.io/karyoploter_tutorial/&#34;&gt;karyoploteR&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I experimented a bit and came up with a function below. Note the script is fast as only the reads fall in the specified region are read into R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(readr)
+library(tidyr)
+library(dplyr)
+library(tibble)
+library(Rsamtools)
+library(karyoploteR)
+library(org.Hs.eg.db)
+library(org.Mm.eg.db)
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+
+
+extend &amp;lt;- function(x, upstream=0, downstream=0)     
+{
+        if (any(strand(x) == &amp;quot;*&amp;quot;))
+                warning(&amp;quot;&amp;#39;*&amp;#39; ranges were treated as &amp;#39;+&amp;#39;&amp;quot;)
+        on_plus &amp;lt;- strand(x) == &amp;quot;+&amp;quot; | strand(x) == &amp;quot;*&amp;quot;
+        new_start &amp;lt;- start(x) - ifelse(on_plus, upstream, downstream)
+        new_end &amp;lt;- end(x) + ifelse(on_plus, downstream, upstream)
+        ranges(x) &amp;lt;- IRanges(new_start, new_end)
+        trim(x)
+}
+
+
+addGeneNameToTxdb&amp;lt;- function(txdb = TxDb.Hsapiens.UCSC.hg19.knownGene, 
+                             eg.db = org.Hs.eg.db){
+        gene&amp;lt;- genes(txdb)
+        ## 1: 1 mapping
+        ss&amp;lt;- AnnotationDbi::select(eg.db, keys = gene$gene_id,  
+                              keytype=&amp;quot;ENTREZID&amp;quot;, columns = &amp;quot;SYMBOL&amp;quot; )
+        gene$symbol&amp;lt;- ss[, 2]
+        return(gene)
+}
+
+
+plotCoverageByGroup&amp;lt;- function(chrom = NULL, start = NULL, end = NULL, gene_name = NULL, upstream = 2000,
+                               downstream = 2000, fragment, grouping,
+                               genome =&amp;#39;hg19&amp;#39;, txdb = TxDb.Hsapiens.UCSC.hg19.knownGene,
+                               eg.db = org.Hs.eg.db,
+                               ymax = NULL, label_cex = 1, 
+                               yaxis_cex = 1, track_col = &amp;quot;cadetblue2&amp;quot;,
+                               tick.dist = 10000, minor.tick.dist = 2000,
+                               tick_label_cex = 1){
+        grouping&amp;lt;- readr::read_tsv(grouping)
+        if(! all(c(&amp;quot;cell&amp;quot;, &amp;quot;cluster&amp;quot;, &amp;quot;depth&amp;quot;) %in% colnames(grouping))) {
+                stop(&amp;#39;Grouping dataframe must have cell, cluster, and depth columns.&amp;#39;)
+        }
+        ## get number of reads per group for normalization. 
+        ## not furthur normalize by the cell number in each group.
+        grouping&amp;lt;-  grouping %&amp;gt;%
+                group_by(cluster) %&amp;gt;%
+                dplyr::mutate(cells_in_group = n(), total_depth_in_group = sum(depth)) %&amp;gt;%
+                # reads per million (RPM)
+                dplyr::mutate(scaling_factor = 1e6/(total_depth_in_group)) %&amp;gt;%
+                ungroup() %&amp;gt;%
+                dplyr::select(cell, cluster, scaling_factor)
+        
+        
+        if (is.null(chrom) &amp;amp; is.null(start) &amp;amp; is.null(end) &amp;amp; !is.null(gene_name)){
+                gene &amp;lt;- genes(txdb)
+                gene &amp;lt;- addGeneNameToTxdb(txdb = txdb, eg.db = eg.db)
+                gr&amp;lt;- gene[which(gene$symbol == gene_name)]
+                if (length(gr) == 0){
+                        stop(&amp;quot;gene name is not found in the database&amp;quot;)
+                } else if (length(gr) &amp;gt; 1) {
+                        gr&amp;lt;- gr[1]
+                        warning(&amp;quot;multiple GRanges found for the gene, using the first one&amp;quot;)
+                } else {
+                        gr&amp;lt;- extend(gr, upstream = upstream, downstream = downstream)
+                } 
+                
+        } else if (!is.null(chrom) &amp;amp; !is.null(start) &amp;amp; !is.null(end)){
+                gr&amp;lt;- GRanges(seq = chrom, IRanges(start = start, end = end ))
+        }
+        
+        
+        ## read in the fragment.tsv.gz file
+        ## with &amp;quot;chr&amp;quot;, &amp;quot;start&amp;quot;, &amp;quot;end&amp;quot;, &amp;quot;cell&amp;quot;, &amp;quot;duplicate&amp;quot; columns. output from cellranger-atac
+        # this returns a list
+        reads&amp;lt;- scanTabix(fragment, param = gr)
+        
+        reads&amp;lt;- reads[[1]] %&amp;gt;% 
+                tibble::enframe() %&amp;gt;% 
+                dplyr::select(-name) %&amp;gt;%
+                tidyr::separate(value, into = c(&amp;quot;chr&amp;quot;, &amp;quot;start&amp;quot;, &amp;quot;end&amp;quot;, &amp;quot;cell&amp;quot;, &amp;quot;duplicate&amp;quot;), sep = &amp;quot;\t&amp;quot;) %&amp;gt;%
+                dplyr::mutate_at(.vars = c(&amp;quot;start&amp;quot;, &amp;quot;end&amp;quot;), as.numeric) %&amp;gt;% 
+                # make it 1 based for R, the fragment.tsv is 0 based
+                dplyr::mutate(start = start + 1) %&amp;gt;% 
+                inner_join(grouping) %&amp;gt;%
+                makeGRangesFromDataFrame(keep.extra.columns = TRUE)
+        # GRangesList object by group/cluster
+        reads_by_group&amp;lt;- split(reads, reads$cluster)
+        
+        ## plotting
+        pp &amp;lt;- getDefaultPlotParams(plot.type=1)
+        pp$leftmargin &amp;lt;- 0.15
+        pp$topmargin &amp;lt;- 15
+        pp$bottommargin &amp;lt;- 15
+        pp$ideogramheight &amp;lt;- 5
+        pp$data1inmargin &amp;lt;- 10
+        kp &amp;lt;- plotKaryotype(genome = genome, zoom = gr, plot.params = pp)
+        kp&amp;lt;- kpAddBaseNumbers(kp, tick.dist = tick.dist, minor.tick.dist = minor.tick.dist,
+                              add.units = TRUE, cex= tick_label_cex, digits = 6)
+        ## calculate the normalized coverage
+        normalized_coverage&amp;lt;- function(x){
+                if (!is(x, &amp;quot;GRangesList&amp;quot;))
+                        stop(&amp;quot;&amp;#39;x&amp;#39; must be a GRangesList object&amp;quot;)
+                # specify the width to the whole chromosome to incldue the 0s
+                cvgs&amp;lt;- lapply(x, function(x) coverage(x, width = kp$chromosome.lengths) * x$scaling_factor[1])
+                return(cvgs)
+        }
+        
+        coverage_norm&amp;lt;- normalized_coverage(reads_by_group)
+        
+        ## calculate the max coverage if not specified 
+        if (is.null(ymax)) {
+                yaxis_common&amp;lt;- ceiling(max(lapply(coverage_norm, max) %&amp;gt;% unlist()))
+        } else {
+                yaxis_common&amp;lt;- ymax
+        }
+        ## add gene information
+        genes.data &amp;lt;- makeGenesDataFromTxDb(txdb,
+                                            karyoplot=kp,
+                                            plot.transcripts = TRUE, 
+                                            plot.transcripts.structure = TRUE)
+        genes.data &amp;lt;- addGeneNames(genes.data)
+        genes.data &amp;lt;- mergeTranscripts(genes.data)
+        
+        kp&amp;lt;- kpPlotGenes(kp, data=genes.data, r0=0, r1=0.05, gene.name.cex = 1)
+        
+        for(i in seq_len(length(coverage_norm))) {
+                read &amp;lt;- coverage_norm[[i]]
+                at &amp;lt;- autotrack(i, length(coverage_norm), r0=0.1, r1=1, margin = 0.1)
+                kp &amp;lt;- kpPlotCoverage(kp, data=read,
+                                     r0=at$r0, r1=at$r1, col = track_col, ymax = yaxis_common)
+                kpAxis(kp, ymin=0, ymax=yaxis_common, numticks = 2, r0=at$r0, r1=at$r1, cex = yaxis_cex, labels = c(&amp;quot;&amp;quot;, yaxis_common))
+                kpAddLabels(kp, labels = names(coverage_norm)[i], r0=at$r0, r1=at$r1, 
+                            cex=label_cex, label.margin = 0.005)
+        }
+        
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;usage&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Usage&lt;/h3&gt;
+&lt;p&gt;The example files can be downloaded from &lt;a href=&#34;https://osf.io/q5dwj/&#34; class=&#34;uri&#34;&gt;https://osf.io/q5dwj/&lt;/a&gt;.
+&lt;code&gt;atac_v1_pbmc_10k_fragments.tsv.gz&lt;/code&gt; is the 10k pbmc atac data downloaded from 10x website. Thanks for making the
+data public available. Make sure put the tabix index &lt;code&gt;atac_v1_pbmc_10k_fragments.tsv.gz.tbi&lt;/code&gt; in the same folder.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;grouping.txt&lt;/code&gt; is a 3 column tsv file containing header: cell, cluster, and depth. The cluster label was transferred from the 10x pbmc scRNAseq data set using &lt;code&gt;Seurat&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;LYZ gene is a marker for CD16+ cells.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## LYZ gene 
+chrom&amp;lt;-  &amp;quot;chr12&amp;quot;
+start&amp;lt;-  69730394
+end&amp;lt;- 69760971
+
+plotCoverageByGroup(chrom = chrom, start = start, end = end, fragment = &amp;quot;atac_v1_pbmc_10k_fragments.tsv.gz&amp;quot;,
+                    grouping = &amp;quot;grouping.txt&amp;quot;, track_col = &amp;quot;red&amp;quot;, label_cex = 0.75)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-29-plot-10x-scatac-coverage-by-cluster-group_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;NKG7 is a marker for NK cells.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plotCoverageByGroup(gene_name = &amp;quot;NKG7&amp;quot;, fragment = &amp;quot;atac_v1_pbmc_10k_fragments.tsv.gz&amp;quot;,
+                    grouping = &amp;quot;grouping.txt&amp;quot;, tick_label_cex = 1, tick.dist = 5000,
+                    minor.tick.dist = 1000, label_cex = 0.75)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-29-plot-10x-scatac-coverage-by-cluster-group_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;what I did for some extra work:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;I normalized each track by total number of reads in that group in reads per million. I did not do
+any further normalization on the cell number of each group as Andrew did. I am open to discussion on how to
+best normalize the tracks.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;I calculated the max value of all the tracks and set a common y-axis for all the tracks. Users can set a customerized &lt;code&gt;ymax&lt;/code&gt; as well.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;I added some functionality of specifying only a gene name, and one can extend that gene ranges by padding upstream (from transcription start site) and downstream (from transcription end site) bps.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;One can either plot Human or Mouse data. Other organisims can be easily supported by modifying the script.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;what-to-do-next&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;what to do next&lt;/h3&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;customer specified cluster (a subset of clusters in a certain order) to plot.
+When one has a lot of clusters (e.g. over 50), one probably does not want to plot all of them.&lt;/li&gt;
+&lt;li&gt;specify color for each cluster track.&lt;/li&gt;
+&lt;li&gt;bam support by using&lt;code&gt;Rsamtools::ScanBam&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;smooth window? The plots showed above were not smoothed and they look good to me. Not sure needed.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Any suggestions/discussions are welcomed!&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Reproducible research in bioinformatics</title>
       <link>/talk/2019-bunkerhill-talk/</link>
       <pubDate>Thu, 28 Mar 2019 14:30:00 -0400</pubDate>
@@ -1825,40 +2023,6 @@ add &lt;code&gt;options(scipen=500)&lt;/code&gt; on the top of your script.&lt;/
 &lt;h4 id=&#34;one-more-gotcha-for-rownames-and-colnames&#34;&gt;One more gotcha for rownames and colnames&lt;/h4&gt;
 
 &lt;p&gt;base R will change the name with &lt;code&gt;-&lt;/code&gt; to a &lt;code&gt;.&lt;/code&gt;. e.g. TCGA-06-ABCD will be changed to TCGA.06.ABCD. this can cause troubles when you use the name of the columns to match samples. &lt;code&gt;readr&lt;/code&gt; will maintain the &lt;code&gt;-&lt;/code&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>open files on remote with sublime by ssh</title>
-      <link>/post/open-files-on-remote-with-sublime-by-ssh/</link>
-      <pubDate>Wed, 10 Oct 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/open-files-on-remote-with-sublime-by-ssh/</guid>
-      <description>
-
-&lt;p&gt;I am still suck at &lt;code&gt;vim&lt;/code&gt; or &lt;code&gt;emacs&lt;/code&gt;. I use &lt;code&gt;nano&lt;/code&gt; to edit files on remote machines. But for more complicated editing, I prefer to use sublime.&lt;/p&gt;
-
-&lt;p&gt;use this &lt;a href=&#34;https://github.com/randy3k/RemoteSubl&#34; target=&#34;_blank&#34;&gt;https://github.com/randy3k/RemoteSubl&lt;/a&gt; for editing remote files.&lt;/p&gt;
-
-&lt;p&gt;Steps:&lt;/p&gt;
-
-&lt;h3 id=&#34;on-remote-machine-install-rmate&#34;&gt;on remote machine, install &lt;code&gt;rmate&lt;/code&gt;&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh bio1
-curl -o ~/bin/rmate https://raw.githubusercontent.com/aurora/rmate/master/rmate
-
-chmod u+x bin/rmate
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;on-your-local-computer-install-remotesubl&#34;&gt;on your local computer, install &lt;code&gt;RemoteSubl&lt;/code&gt;&lt;/h3&gt;
-
-&lt;p&gt;on your &lt;strong&gt;local&lt;/strong&gt; computer, open &lt;code&gt;sublime&lt;/code&gt;, click &lt;code&gt;tools&lt;/code&gt; &amp;ndash;&amp;gt; &lt;code&gt;Command Palette&lt;/code&gt; &amp;ndash;&amp;gt; type Package control:Install Package &amp;ndash;&amp;gt; type &lt;code&gt;RemoteSubl&lt;/code&gt; to install.&lt;/p&gt;
-
-&lt;h3 id=&#34;change-your-ssh-config-file&#34;&gt;change your ssh config file&lt;/h3&gt;
-
-&lt;p&gt;add &lt;code&gt;RemoteForward 52698 localhost:52698&lt;/code&gt; to your &lt;code&gt;~/.ssh/config&lt;/code&gt; file.&lt;/p&gt;
-
-&lt;p&gt;Now,  ssh to remote, and you can do &lt;code&gt;rmate my.txt&lt;/code&gt; in your remote and open sublime in your local machine.&lt;/p&gt;
 </description>
     </item>
     

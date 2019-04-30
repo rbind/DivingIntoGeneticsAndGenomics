@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="This post was inspired by Andrew Hill’s recent blog post.
+Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
+&mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/plot-10x-scatac-coverage-by-cluster-group/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/plot-10x-scatac-coverage-by-cluster-group/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/plot-10x-scatac-coverage-by-cluster-group/">
+  <meta property="og:title" content="plot 10x scATAC coverage by cluster/group | DNA confesses Data speak">
+  <meta property="og:description" content="This post was inspired by Andrew Hill’s recent blog post.
+Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
+&mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-04-29T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-04-29T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>plot 10x scATAC coverage by cluster/group | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">plot 10x scATAC coverage by cluster/group</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2019-04-29 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Apr 29, 2019
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/plot-10x-scatac-coverage-by-cluster-group/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/r/">R</a
+    >, 
+    
+    <a href="/categories/single-cell/">single-cell</a
+    >, 
+    
+    <a href="/categories/visualization/">visualization</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=plot%2010x%20scATAC%20coverage%20by%20cluster%2fgroup&amp;url=%2fpost%2fplot-10x-scatac-coverage-by-cluster-group%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fplot-10x-scatac-coverage-by-cluster-group%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fplot-10x-scatac-coverage-by-cluster-group%2f&amp;title=plot%2010x%20scATAC%20coverage%20by%20cluster%2fgroup"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fplot-10x-scatac-coverage-by-cluster-group%2f&amp;title=plot%2010x%20scATAC%20coverage%20by%20cluster%2fgroup"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=plot%2010x%20scATAC%20coverage%20by%20cluster%2fgroup&amp;body=%2fpost%2fplot-10x-scatac-coverage-by-cluster-group%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>This post was inspired by <a href="https://twitter.com/ahill_tweets">Andrew Hill</a>’s <a href="http://andrewjohnhill.com/blog/2019/04/12/streamlining-scatac-seq-visualization-and-analysis/">recent blog post</a>.</p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Inspired by some nice posts by <a href="https://twitter.com/timoast?ref_src=twsrc%5Etfw">@timoast</a> and <a href="https://twitter.com/tangming2005?ref_src=twsrc%5Etfw">@tangming2005</a> and work from <a href="https://twitter.com/10xGenomics?ref_src=twsrc%5Etfw">@10xGenomics</a>. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!</p>&mdash; Andrew J Hill (@ahill_tweets) <a href="https://twitter.com/ahill_tweets/status/1116875339303493634?ref_src=twsrc%5Etfw">April 13, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>Andrew wrote that blog post in light of my other <a href="https://divingintogeneticsandgenomics.rbind.io/post/split-a-10xscatac-bam-file-by-cluster/">recent blog post</a> and <a href="https://twitter.com/timoast">Tim</a>’s (developer of the almighty <a href="https://satijalab.org/seurat/">Seurat</a> package) <a href="https://timoast.github.io/blog/sinto/">blog post</a>. Writing blog post is fun and I am happy to see so many new ideas can be generated through online communications.</p>
+<p>I took Andrew’s idea of reading in the reads in a certain window by taking advantages of tabix indexed file fragment.tsv.gz which is an output from 10x <code>cellranger-atac</code>. I then split the reads by a grouping file which specifies which group each cell belongs to and a total number of reads in each cell. For visualization, instead of using ggplot2, I used the awesome <a href="https://bernatgel.github.io/karyoploter_tutorial/">karyoploteR</a>.</p>
+<p>I experimented a bit and came up with a function below. Note the script is fast as only the reads fall in the specified region are read into R.</p>
+<pre class="r"><code>library(readr)
+library(tidyr)
+library(dplyr)
+library(tibble)
+library(Rsamtools)
+library(karyoploteR)
+library(org.Hs.eg.db)
+library(org.Mm.eg.db)
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+
+
+extend &lt;- function(x, upstream=0, downstream=0)     
+{
+        if (any(strand(x) == &quot;*&quot;))
+                warning(&quot;&#39;*&#39; ranges were treated as &#39;+&#39;&quot;)
+        on_plus &lt;- strand(x) == &quot;+&quot; | strand(x) == &quot;*&quot;
+        new_start &lt;- start(x) - ifelse(on_plus, upstream, downstream)
+        new_end &lt;- end(x) + ifelse(on_plus, downstream, upstream)
+        ranges(x) &lt;- IRanges(new_start, new_end)
+        trim(x)
+}
+
+
+addGeneNameToTxdb&lt;- function(txdb = TxDb.Hsapiens.UCSC.hg19.knownGene, 
+                             eg.db = org.Hs.eg.db){
+        gene&lt;- genes(txdb)
+        ## 1: 1 mapping
+        ss&lt;- AnnotationDbi::select(eg.db, keys = gene$gene_id,  
+                              keytype=&quot;ENTREZID&quot;, columns = &quot;SYMBOL&quot; )
+        gene$symbol&lt;- ss[, 2]
+        return(gene)
+}
+
+
+plotCoverageByGroup&lt;- function(chrom = NULL, start = NULL, end = NULL, gene_name = NULL, upstream = 2000,
+                               downstream = 2000, fragment, grouping,
+                               genome =&#39;hg19&#39;, txdb = TxDb.Hsapiens.UCSC.hg19.knownGene,
+                               eg.db = org.Hs.eg.db,
+                               ymax = NULL, label_cex = 1, 
+                               yaxis_cex = 1, track_col = &quot;cadetblue2&quot;,
+                               tick.dist = 10000, minor.tick.dist = 2000,
+                               tick_label_cex = 1){
+        grouping&lt;- readr::read_tsv(grouping)
+        if(! all(c(&quot;cell&quot;, &quot;cluster&quot;, &quot;depth&quot;) %in% colnames(grouping))) {
+                stop(&#39;Grouping dataframe must have cell, cluster, and depth columns.&#39;)
+        }
+        ## get number of reads per group for normalization. 
+        ## not furthur normalize by the cell number in each group.
+        grouping&lt;-  grouping %&gt;%
+                group_by(cluster) %&gt;%
+                dplyr::mutate(cells_in_group = n(), total_depth_in_group = sum(depth)) %&gt;%
+                # reads per million (RPM)
+                dplyr::mutate(scaling_factor = 1e6/(total_depth_in_group)) %&gt;%
+                ungroup() %&gt;%
+                dplyr::select(cell, cluster, scaling_factor)
+        
+        
+        if (is.null(chrom) &amp; is.null(start) &amp; is.null(end) &amp; !is.null(gene_name)){
+                gene &lt;- genes(txdb)
+                gene &lt;- addGeneNameToTxdb(txdb = txdb, eg.db = eg.db)
+                gr&lt;- gene[which(gene$symbol == gene_name)]
+                if (length(gr) == 0){
+                        stop(&quot;gene name is not found in the database&quot;)
+                } else if (length(gr) &gt; 1) {
+                        gr&lt;- gr[1]
+                        warning(&quot;multiple GRanges found for the gene, using the first one&quot;)
+                } else {
+                        gr&lt;- extend(gr, upstream = upstream, downstream = downstream)
+                } 
+                
+        } else if (!is.null(chrom) &amp; !is.null(start) &amp; !is.null(end)){
+                gr&lt;- GRanges(seq = chrom, IRanges(start = start, end = end ))
+        }
+        
+        
+        ## read in the fragment.tsv.gz file
+        ## with &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;cell&quot;, &quot;duplicate&quot; columns. output from cellranger-atac
+        # this returns a list
+        reads&lt;- scanTabix(fragment, param = gr)
+        
+        reads&lt;- reads[[1]] %&gt;% 
+                tibble::enframe() %&gt;% 
+                dplyr::select(-name) %&gt;%
+                tidyr::separate(value, into = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;cell&quot;, &quot;duplicate&quot;), sep = &quot;\t&quot;) %&gt;%
+                dplyr::mutate_at(.vars = c(&quot;start&quot;, &quot;end&quot;), as.numeric) %&gt;% 
+                # make it 1 based for R, the fragment.tsv is 0 based
+                dplyr::mutate(start = start + 1) %&gt;% 
+                inner_join(grouping) %&gt;%
+                makeGRangesFromDataFrame(keep.extra.columns = TRUE)
+        # GRangesList object by group/cluster
+        reads_by_group&lt;- split(reads, reads$cluster)
+        
+        ## plotting
+        pp &lt;- getDefaultPlotParams(plot.type=1)
+        pp$leftmargin &lt;- 0.15
+        pp$topmargin &lt;- 15
+        pp$bottommargin &lt;- 15
+        pp$ideogramheight &lt;- 5
+        pp$data1inmargin &lt;- 10
+        kp &lt;- plotKaryotype(genome = genome, zoom = gr, plot.params = pp)
+        kp&lt;- kpAddBaseNumbers(kp, tick.dist = tick.dist, minor.tick.dist = minor.tick.dist,
+                              add.units = TRUE, cex= tick_label_cex, digits = 6)
+        ## calculate the normalized coverage
+        normalized_coverage&lt;- function(x){
+                if (!is(x, &quot;GRangesList&quot;))
+                        stop(&quot;&#39;x&#39; must be a GRangesList object&quot;)
+                # specify the width to the whole chromosome to incldue the 0s
+                cvgs&lt;- lapply(x, function(x) coverage(x, width = kp$chromosome.lengths) * x$scaling_factor[1])
+                return(cvgs)
+        }
+        
+        coverage_norm&lt;- normalized_coverage(reads_by_group)
+        
+        ## calculate the max coverage if not specified 
+        if (is.null(ymax)) {
+                yaxis_common&lt;- ceiling(max(lapply(coverage_norm, max) %&gt;% unlist()))
+        } else {
+                yaxis_common&lt;- ymax
+        }
+        ## add gene information
+        genes.data &lt;- makeGenesDataFromTxDb(txdb,
+                                            karyoplot=kp,
+                                            plot.transcripts = TRUE, 
+                                            plot.transcripts.structure = TRUE)
+        genes.data &lt;- addGeneNames(genes.data)
+        genes.data &lt;- mergeTranscripts(genes.data)
+        
+        kp&lt;- kpPlotGenes(kp, data=genes.data, r0=0, r1=0.05, gene.name.cex = 1)
+        
+        for(i in seq_len(length(coverage_norm))) {
+                read &lt;- coverage_norm[[i]]
+                at &lt;- autotrack(i, length(coverage_norm), r0=0.1, r1=1, margin = 0.1)
+                kp &lt;- kpPlotCoverage(kp, data=read,
+                                     r0=at$r0, r1=at$r1, col = track_col, ymax = yaxis_common)
+                kpAxis(kp, ymin=0, ymax=yaxis_common, numticks = 2, r0=at$r0, r1=at$r1, cex = yaxis_cex, labels = c(&quot;&quot;, yaxis_common))
+                kpAddLabels(kp, labels = names(coverage_norm)[i], r0=at$r0, r1=at$r1, 
+                            cex=label_cex, label.margin = 0.005)
+        }
+        
+}</code></pre>
+<div id="usage" class="section level3">
+<h3>Usage</h3>
+<p>The example files can be downloaded from <a href="https://osf.io/q5dwj/" class="uri">https://osf.io/q5dwj/</a>.
+<code>atac_v1_pbmc_10k_fragments.tsv.gz</code> is the 10k pbmc atac data downloaded from 10x website. Thanks for making the
+data public available. Make sure put the tabix index <code>atac_v1_pbmc_10k_fragments.tsv.gz.tbi</code> in the same folder.</p>
+<p><code>grouping.txt</code> is a 3 column tsv file containing header: cell, cluster, and depth. The cluster label was transferred from the 10x pbmc scRNAseq data set using <code>Seurat</code>.</p>
+<p>LYZ gene is a marker for CD16+ cells.</p>
+<pre class="r"><code>## LYZ gene 
+chrom&lt;-  &quot;chr12&quot;
+start&lt;-  69730394
+end&lt;- 69760971
+
+plotCoverageByGroup(chrom = chrom, start = start, end = end, fragment = &quot;atac_v1_pbmc_10k_fragments.tsv.gz&quot;,
+                    grouping = &quot;grouping.txt&quot;, track_col = &quot;red&quot;, label_cex = 0.75)</code></pre>
+<p><img src="/post/2019-04-29-plot-10x-scatac-coverage-by-cluster-group_files/figure-html/unnamed-chunk-3-1.png" width="100%" /></p>
+<p>NKG7 is a marker for NK cells.</p>
+<pre class="r"><code>plotCoverageByGroup(gene_name = &quot;NKG7&quot;, fragment = &quot;atac_v1_pbmc_10k_fragments.tsv.gz&quot;,
+                    grouping = &quot;grouping.txt&quot;, tick_label_cex = 1, tick.dist = 5000,
+                    minor.tick.dist = 1000, label_cex = 0.75)</code></pre>
+<p><img src="/post/2019-04-29-plot-10x-scatac-coverage-by-cluster-group_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>what I did for some extra work:</p>
+<ul>
+<li><p>I normalized each track by total number of reads in that group in reads per million. I did not do
+any further normalization on the cell number of each group as Andrew did. I am open to discussion on how to
+best normalize the tracks.</p></li>
+<li><p>I calculated the max value of all the tracks and set a common y-axis for all the tracks. Users can set a customerized <code>ymax</code> as well.</p></li>
+<li><p>I added some functionality of specifying only a gene name, and one can extend that gene ranges by padding upstream (from transcription start site) and downstream (from transcription end site) bps.</p></li>
+<li><p>One can either plot Human or Mouse data. Other organisims can be easily supported by modifying the script.</p></li>
+</ul>
+</div>
+<div id="what-to-do-next" class="section level3">
+<h3>what to do next</h3>
+<ol style="list-style-type: decimal">
+<li>customer specified cluster (a subset of clusters in a certain order) to plot.
+When one has a lot of clusters (e.g. over 50), one probably does not want to plot all of them.</li>
+<li>specify color for each cluster track.</li>
+<li>bam support by using<code>Rsamtools::ScanBam</code>.</li>
+<li>smooth window? The plots showed above were not smoothed and they look good to me. Not sure needed.</li>
+</ol>
+<p>Any suggestions/discussions are welcomed!</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/atacseq/">ATACseq</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/genomics/">genomics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/granges/">GRanges</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/r/">R</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/single-cell/">single-cell</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/use-docopt-to-write-command-line-r-utilities/">Use docopt to write command line R utilities </a></li>
+        
+        <li><a href="/post/split-a-10xscatac-bam-file-by-cluster/">Split a 10xscATAC bam file by cluster</a></li>
+        
+        <li><a href="/post/understand-10x-scrnaseq-and-scatac-fastqs/">understand 10x scRNAseq and scATAC fastqs</a></li>
+        
+        <li><a href="/post/three-gotchas-when-using-r-for-genomic-data-analysis/">Three gotchas when using R for Genomic data analysis</a></li>
+        
+        <li><a href="/project/evaluating-scrnaseq-cluster/">Evaluating single cell RNAseq cluster stability</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/use-docopt-to-write-command-line-r-utilities/" rel="prev">Use docopt to write command line R utilities </a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+

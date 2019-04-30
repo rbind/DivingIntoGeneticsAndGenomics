@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
@@ -18,7 +16,7 @@
   <meta name="description" content="Bioinformatics Scientist">
 
   
-  <link rel="alternate" hreflang="en-us" href="/tags/genomics/">
+  <link rel="alternate" hreflang="en-us" href="/post/">
 
   
 
@@ -34,13 +32,6 @@
   
     
   
-  
-    
-    
-      
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-      
-    
   
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
@@ -75,15 +66,15 @@
   
 
   
-  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
-  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="alternate" href="/post/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/post/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/tags/genomics/">
+  <link rel="canonical" href="/post/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -91,18 +82,18 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="DNA confesses Data speak">
-  <meta property="og:url" content="/tags/genomics/">
-  <meta property="og:title" content="Genomics | DNA confesses Data speak">
+  <meta property="og:url" content="/post/">
+  <meta property="og:title" content="Posts | DNA confesses Data speak">
   <meta property="og:description" content="Bioinformatics Scientist">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2019-04-29T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2018-06-22T00:00:00&#43;00:00">
   
 
   
   
 
-  <title>Genomics | DNA confesses Data speak</title>
+  <title>Posts | DNA confesses Data speak</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -277,59 +268,34 @@
 
 <div class="universal-wrapper">
 
-  <h1>Genomics</h1>
+  <h1>Posts</h1>
 
   
 
   
   
-  <div>
-    <h2><a href="/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></h2>
-    <div class="article-style">
+    
+    
       
-      This post was inspired by Andrew Hill’s recent blog post.
-Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
-&mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/understand-10x-scrnaseq-and-scatac-fastqs/">understand 10x scRNAseq and scATAC fastqs</a></h2>
-    <div class="article-style">
-      
-      single cell RNAseq Please read the following posts by Dave Tang. When I google, I always find his posts on top of the pages. Thanks for sharing your knowledge.
-<a href="https://davetang.org/muse/2018/06/06/10x-single-cell-bam-files/" target="_blank">https://davetang.org/muse/2018/06/06/10x-single-cell-bam-files/</a> <a href="https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/" target="_blank">https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/</a>
-From the 10x manual:
- The final Single Cell 3’ Libraries contain the P5 and P7 primers used in Illumina bridge amplification PCR. The 10x Barcode and Read 1 (primer site for sequencing read 1) is added to the molecules during the GEMRT incubation.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/three-gotchas-when-using-r-for-genomic-data-analysis/">Three gotchas when using R for Genomic data analysis</a></h2>
-    <div class="article-style">
-      
-      During my daily work with R for genomic data analysis, I encountered several instances that R gives me some (bad) surprises.
-1. The devil 1 and 0 coordinate system read detail here <a href="https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey" target="_blank">https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey</a>
-some files such as bed file is 0 based. Two genomic regions:
-chr1 0 1000 chr1 1001 2000  when you import that bed file into R using rtracklayer::import(), it will become
-chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 1 based unlike python).
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/project/snakemake-pipelines/">Snakemake Pipelines</a></h2>
-    <div class="article-style">
-      
-      Snakemake pipelines for processing high-throughput sequencing data
-      
-    </div>
-  </div>
+
+<div class="pub-list-item" itemscope itemprop="blogPost" itemtype="http://schema.org/BlogPosting">
+  <i class="fa fa-newspaper-o pub-icon" aria-hidden="true"></i>
+  <a href="/post/how-to-upload-files-to-geo/" itemprop="url"><span itemprop="headline">How to upload files to GEO</span></a>
+</div>
+
+    
   
 
   
+<nav>
+  <ul class="pager">
+    
+    <li><a href="/post/page/2/">&lt;</a></li>
+    
+    
+  </ul>
+</nav>
+
 
 
 </div>
@@ -401,33 +367,10 @@ chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 
 
     
     
-      
-      
-      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
-      
-
-      
-      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
-      
-      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
-      
-      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
-      
-      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
-      
-      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
-      
-
-      
-
-      <script>hljs.initHighlightingOnLoad();</script>
-    
 
     
     
 
   </body>
 </html>
-
-
 

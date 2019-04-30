@@ -1,0 +1,209 @@
+---
+title: plot 10x scATAC coverage by cluster/group
+author: Ming Tang
+date: '2019-04-29'
+slug: plot-10x-scatac-coverage-by-cluster-group
+categories:
+  - R
+  - single-cell
+  - visualization
+tags:
+  - ATACseq
+  - genomics
+  - GRanges
+  - R
+  - single-cell
+header:
+  caption: ''
+  image: ''
+---
+
+
+
+<p>This post was inspired by <a href="https://twitter.com/ahill_tweets">Andrew Hill</a>’s <a href="http://andrewjohnhill.com/blog/2019/04/12/streamlining-scatac-seq-visualization-and-analysis/">recent blog post</a>.</p>
+{{% tweet "1116875339303493634" %}}
+<p>Andrew wrote that blog post in light of my other <a href="https://divingintogeneticsandgenomics.rbind.io/post/split-a-10xscatac-bam-file-by-cluster/">recent blog post</a> and <a href="https://twitter.com/timoast">Tim</a>’s (developer of the almighty <a href="https://satijalab.org/seurat/">Seurat</a> package) <a href="https://timoast.github.io/blog/sinto/">blog post</a>. Writing blog post is fun and I am happy to see so many new ideas can be generated through online communications.</p>
+<p>I took Andrew’s idea of reading in the reads in a certain window by taking advantages of tabix indexed file fragment.tsv.gz which is an output from 10x <code>cellranger-atac</code>. I then split the reads by a grouping file which specifies which group each cell belongs to and a total number of reads in each cell. For visualization, instead of using ggplot2, I used the awesome <a href="https://bernatgel.github.io/karyoploter_tutorial/">karyoploteR</a>.</p>
+<p>I experimented a bit and came up with a function below. Note the script is fast as only the reads fall in the specified region are read into R.</p>
+<pre class="r"><code>library(readr)
+library(tidyr)
+library(dplyr)
+library(tibble)
+library(Rsamtools)
+library(karyoploteR)
+library(org.Hs.eg.db)
+library(org.Mm.eg.db)
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+
+
+extend &lt;- function(x, upstream=0, downstream=0)     
+{
+        if (any(strand(x) == &quot;*&quot;))
+                warning(&quot;&#39;*&#39; ranges were treated as &#39;+&#39;&quot;)
+        on_plus &lt;- strand(x) == &quot;+&quot; | strand(x) == &quot;*&quot;
+        new_start &lt;- start(x) - ifelse(on_plus, upstream, downstream)
+        new_end &lt;- end(x) + ifelse(on_plus, downstream, upstream)
+        ranges(x) &lt;- IRanges(new_start, new_end)
+        trim(x)
+}
+
+
+addGeneNameToTxdb&lt;- function(txdb = TxDb.Hsapiens.UCSC.hg19.knownGene, 
+                             eg.db = org.Hs.eg.db){
+        gene&lt;- genes(txdb)
+        ## 1: 1 mapping
+        ss&lt;- AnnotationDbi::select(eg.db, keys = gene$gene_id,  
+                              keytype=&quot;ENTREZID&quot;, columns = &quot;SYMBOL&quot; )
+        gene$symbol&lt;- ss[, 2]
+        return(gene)
+}
+
+
+plotCoverageByGroup&lt;- function(chrom = NULL, start = NULL, end = NULL, gene_name = NULL, upstream = 2000,
+                               downstream = 2000, fragment, grouping,
+                               genome =&#39;hg19&#39;, txdb = TxDb.Hsapiens.UCSC.hg19.knownGene,
+                               eg.db = org.Hs.eg.db,
+                               ymax = NULL, label_cex = 1, 
+                               yaxis_cex = 1, track_col = &quot;cadetblue2&quot;,
+                               tick.dist = 10000, minor.tick.dist = 2000,
+                               tick_label_cex = 1){
+        grouping&lt;- readr::read_tsv(grouping)
+        if(! all(c(&quot;cell&quot;, &quot;cluster&quot;, &quot;depth&quot;) %in% colnames(grouping))) {
+                stop(&#39;Grouping dataframe must have cell, cluster, and depth columns.&#39;)
+        }
+        ## get number of reads per group for normalization. 
+        ## not furthur normalize by the cell number in each group.
+        grouping&lt;-  grouping %&gt;%
+                group_by(cluster) %&gt;%
+                dplyr::mutate(cells_in_group = n(), total_depth_in_group = sum(depth)) %&gt;%
+                # reads per million (RPM)
+                dplyr::mutate(scaling_factor = 1e6/(total_depth_in_group)) %&gt;%
+                ungroup() %&gt;%
+                dplyr::select(cell, cluster, scaling_factor)
+        
+        
+        if (is.null(chrom) &amp; is.null(start) &amp; is.null(end) &amp; !is.null(gene_name)){
+                gene &lt;- genes(txdb)
+                gene &lt;- addGeneNameToTxdb(txdb = txdb, eg.db = eg.db)
+                gr&lt;- gene[which(gene$symbol == gene_name)]
+                if (length(gr) == 0){
+                        stop(&quot;gene name is not found in the database&quot;)
+                } else if (length(gr) &gt; 1) {
+                        gr&lt;- gr[1]
+                        warning(&quot;multiple GRanges found for the gene, using the first one&quot;)
+                } else {
+                        gr&lt;- extend(gr, upstream = upstream, downstream = downstream)
+                } 
+                
+        } else if (!is.null(chrom) &amp; !is.null(start) &amp; !is.null(end)){
+                gr&lt;- GRanges(seq = chrom, IRanges(start = start, end = end ))
+        }
+        
+        
+        ## read in the fragment.tsv.gz file
+        ## with &quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;cell&quot;, &quot;duplicate&quot; columns. output from cellranger-atac
+        # this returns a list
+        reads&lt;- scanTabix(fragment, param = gr)
+        
+        reads&lt;- reads[[1]] %&gt;% 
+                tibble::enframe() %&gt;% 
+                dplyr::select(-name) %&gt;%
+                tidyr::separate(value, into = c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;cell&quot;, &quot;duplicate&quot;), sep = &quot;\t&quot;) %&gt;%
+                dplyr::mutate_at(.vars = c(&quot;start&quot;, &quot;end&quot;), as.numeric) %&gt;% 
+                # make it 1 based for R, the fragment.tsv is 0 based
+                dplyr::mutate(start = start + 1) %&gt;% 
+                inner_join(grouping) %&gt;%
+                makeGRangesFromDataFrame(keep.extra.columns = TRUE)
+        # GRangesList object by group/cluster
+        reads_by_group&lt;- split(reads, reads$cluster)
+        
+        ## plotting
+        pp &lt;- getDefaultPlotParams(plot.type=1)
+        pp$leftmargin &lt;- 0.15
+        pp$topmargin &lt;- 15
+        pp$bottommargin &lt;- 15
+        pp$ideogramheight &lt;- 5
+        pp$data1inmargin &lt;- 10
+        kp &lt;- plotKaryotype(genome = genome, zoom = gr, plot.params = pp)
+        kp&lt;- kpAddBaseNumbers(kp, tick.dist = tick.dist, minor.tick.dist = minor.tick.dist,
+                              add.units = TRUE, cex= tick_label_cex, digits = 6)
+        ## calculate the normalized coverage
+        normalized_coverage&lt;- function(x){
+                if (!is(x, &quot;GRangesList&quot;))
+                        stop(&quot;&#39;x&#39; must be a GRangesList object&quot;)
+                # specify the width to the whole chromosome to incldue the 0s
+                cvgs&lt;- lapply(x, function(x) coverage(x, width = kp$chromosome.lengths) * x$scaling_factor[1])
+                return(cvgs)
+        }
+        
+        coverage_norm&lt;- normalized_coverage(reads_by_group)
+        
+        ## calculate the max coverage if not specified 
+        if (is.null(ymax)) {
+                yaxis_common&lt;- ceiling(max(lapply(coverage_norm, max) %&gt;% unlist()))
+        } else {
+                yaxis_common&lt;- ymax
+        }
+        ## add gene information
+        genes.data &lt;- makeGenesDataFromTxDb(txdb,
+                                            karyoplot=kp,
+                                            plot.transcripts = TRUE, 
+                                            plot.transcripts.structure = TRUE)
+        genes.data &lt;- addGeneNames(genes.data)
+        genes.data &lt;- mergeTranscripts(genes.data)
+        
+        kp&lt;- kpPlotGenes(kp, data=genes.data, r0=0, r1=0.05, gene.name.cex = 1)
+        
+        for(i in seq_len(length(coverage_norm))) {
+                read &lt;- coverage_norm[[i]]
+                at &lt;- autotrack(i, length(coverage_norm), r0=0.1, r1=1, margin = 0.1)
+                kp &lt;- kpPlotCoverage(kp, data=read,
+                                     r0=at$r0, r1=at$r1, col = track_col, ymax = yaxis_common)
+                kpAxis(kp, ymin=0, ymax=yaxis_common, numticks = 2, r0=at$r0, r1=at$r1, cex = yaxis_cex, labels = c(&quot;&quot;, yaxis_common))
+                kpAddLabels(kp, labels = names(coverage_norm)[i], r0=at$r0, r1=at$r1, 
+                            cex=label_cex, label.margin = 0.005)
+        }
+        
+}</code></pre>
+<div id="usage" class="section level3">
+<h3>Usage</h3>
+<p>The example files can be downloaded from <a href="https://osf.io/q5dwj/" class="uri">https://osf.io/q5dwj/</a>.
+<code>atac_v1_pbmc_10k_fragments.tsv.gz</code> is the 10k pbmc atac data downloaded from 10x website. Thanks for making the
+data public available. Make sure put the tabix index <code>atac_v1_pbmc_10k_fragments.tsv.gz.tbi</code> in the same folder.</p>
+<p><code>grouping.txt</code> is a 3 column tsv file containing header: cell, cluster, and depth. The cluster label was transferred from the 10x pbmc scRNAseq data set using <code>Seurat</code>.</p>
+<p>LYZ gene is a marker for CD16+ cells.</p>
+<pre class="r"><code>## LYZ gene 
+chrom&lt;-  &quot;chr12&quot;
+start&lt;-  69730394
+end&lt;- 69760971
+
+plotCoverageByGroup(chrom = chrom, start = start, end = end, fragment = &quot;atac_v1_pbmc_10k_fragments.tsv.gz&quot;,
+                    grouping = &quot;grouping.txt&quot;, track_col = &quot;red&quot;, label_cex = 0.75)</code></pre>
+<p><img src="/post/2019-04-29-plot-10x-scatac-coverage-by-cluster-group_files/figure-html/unnamed-chunk-3-1.png" width="100%" /></p>
+<p>NKG7 is a marker for NK cells.</p>
+<pre class="r"><code>plotCoverageByGroup(gene_name = &quot;NKG7&quot;, fragment = &quot;atac_v1_pbmc_10k_fragments.tsv.gz&quot;,
+                    grouping = &quot;grouping.txt&quot;, tick_label_cex = 1, tick.dist = 5000,
+                    minor.tick.dist = 1000, label_cex = 0.75)</code></pre>
+<p><img src="/post/2019-04-29-plot-10x-scatac-coverage-by-cluster-group_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>what I did for some extra work:</p>
+<ul>
+<li><p>I normalized each track by total number of reads in that group in reads per million. I did not do
+any further normalization on the cell number of each group as Andrew did. I am open to discussion on how to
+best normalize the tracks.</p></li>
+<li><p>I calculated the max value of all the tracks and set a common y-axis for all the tracks. Users can set a customerized <code>ymax</code> as well.</p></li>
+<li><p>I added some functionality of specifying only a gene name, and one can extend that gene ranges by padding upstream (from transcription start site) and downstream (from transcription end site) bps.</p></li>
+<li><p>One can either plot Human or Mouse data. Other organisims can be easily supported by modifying the script.</p></li>
+</ul>
+</div>
+<div id="what-to-do-next" class="section level3">
+<h3>what to do next</h3>
+<ol style="list-style-type: decimal">
+<li>customer specified cluster (a subset of clusters in a certain order) to plot.
+When one has a lot of clusters (e.g. over 50), one probably does not want to plot all of them.</li>
+<li>specify color for each cluster track.</li>
+<li>bam support by using<code>Rsamtools::ScanBam</code>.</li>
+<li>smooth window? The plots showed above were not smoothed and they look good to me. Not sure needed.</li>
+</ol>
+<p>Any suggestions/discussions are welcomed!</p>
+</div>
