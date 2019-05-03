@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/clustering-scatacseq-data-the-tf-idf-way/</loc>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/plot-10x-scatac-coverage-by-cluster-group/</loc>
       <lastmod>2019-04-29T00:00:00+00:00</lastmod>
     </url>
@@ -484,7 +493,7 @@
     <url>
     
       <loc>/tags/atacseq/</loc>
-      <lastmod>2019-04-29T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -494,7 +503,7 @@
     <url>
     
       <loc>/categories/bioinformatics/</loc>
-      <lastmod>2019-02-14T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -514,7 +523,7 @@
     <url>
     
       <loc>/categories/</loc>
-      <lastmod>2019-02-14T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -744,7 +753,7 @@
     <url>
     
       <loc>/tags/r/</loc>
-      <lastmod>2019-04-29T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -754,7 +763,7 @@
     <url>
     
       <loc>/categories/r/</loc>
-      <lastmod>2019-04-29T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -765,6 +774,16 @@
     
       <loc>/categories/review/</loc>
       <lastmod>2018-12-28T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/scatacseq/</loc>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -784,7 +803,7 @@
     <url>
     
       <loc>/tags/single-cell/</loc>
-      <lastmod>2019-04-29T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -794,7 +813,7 @@
     <url>
     
       <loc>/categories/single-cell/</loc>
-      <lastmod>2019-04-29T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

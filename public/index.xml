@@ -11,6 +11,426 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>clustering scATACseq data: the TF-IDF way</title>
+      <link>/post/clustering-scatacseq-data-the-tf-idf-way/</link>
+      <pubDate>Fri, 03 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/clustering-scatacseq-data-the-tf-idf-way/</guid>
+      <description>&lt;p&gt;scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of
+scATACseq data, there are some preprocessing steps need to be done.&lt;/p&gt;
+&lt;p&gt;I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.ncbi.nlm.nih.gov/pubmed/30078704&#34;&gt;A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility&lt;/a&gt;
+Darren et.al Cell 2018&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;Latent Semantic Indexing Cluster Analysis&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In order to get an initial sense of the relationship between individual cells, &lt;strong&gt;we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.&lt;/strong&gt; Based on this matrix, we retained the top 20,000 most commonly used sites in each tissue (this number could extend a little above 20,000 because we included tied sites at the threshold) and then filtered out the bottom 5% of cells in terms of the number of 5kb windows with any insertions. We then reduced the dimensionality of these large binary matrices using a term &lt;strong&gt;frequency-inverse document frequency (‘‘TF-IDF’’) transformation.&lt;/strong&gt; To do this, we first weighted all the sites for individual cells by the total number of sites accessible in that cell (‘‘term frequency’’). We then multiplied these weighted values by log(1 + the inverse frequency of each site across all cells), the ‘‘inverse document frequency.’’ We then used singular value decomposition on the TF-IDF matrix to generate a lower dimensional representation of the data by only retaining the 2nd through 10th dimensions (because the first dimension tends to be highly correlated with read depth). These LSI-transformed scores of accessibility were then standardized by row (i.e., mean subtracted and divided by standard deviation), capped at ± 1.5, and used to bi-cluster cells and windows based on cosine distances using the ward algorithm in R. Visual examination of the resulting heatmaps identified between 2 and 7 distinct clusters of cells, de- pending on the tissue. These relatively crude groups of cells were used for peak calling (described below) to maintain enough cells in each group for identifying peaks while also retaining sufficient sensitivity to identify peaks that were restricted to subset of cells.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;t-distributed Stochastic Neighbor Embedding and Iterative Cluster Analysis&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To take a more holistic approach to understanding the relationships of different cell types across the entire dataset, we combined all cells from all tissues and used the t-distributed stochastic neighbor embedding dimensionality reduction technique to visualize the full dataset and identify clusters of cells representing individual cell types. &lt;strong&gt;As with the LSI analysis above, we started by generating a large binary matrix of sites by cells, but instead of scoring cells for reads overlapping 5kb windows in the genome we scored cells for reads overlapping the master list of potential regulatory elements we had previously identified based on LSI clusters.&lt;/strong&gt; Starting with all cells that passed our nucleosome signal and read depth thresholds, we again wanted to remove the most sparsely sampled sites and cells to more clearly define differences between cell types. To do so, we first filtered out any sites that were not observed as accessible in at least 5% of cells in at least one LSI cluster and then filtered out cells that were more than 1 standard deviation below the mean number of sites observed. We then transformed this matrix with the TF-IDF algorithm described above. Finally, we generated a lower dimen- sional representation of the data by including the first 50 dimensions of the singular value decomposition of this TF-IDF-transformed matrix. This representation was then used as input for the Rtsne package in R (Krijthe, 2015). To identify clusters of cells in this two dimensional representation of the data, we used the Louvain clustering algorithm implemented in Seurat (Satija et al., 2015). Resolu- tion and K parameters for Louvain clustering were chosen for each major cluster to produce reasonable groupings of cells that are well- separated in each t-SNE embedding. This analysis identified 30 distinct clusters of cells, but to get at even finer structure, we subset TF-IDF normalized data on each of these 30 clusters of cells and repeated SVD and t-SNE to identify subclusters, again using Louvain clustering. Through this round of ‘‘iterative’’ t-SNE, we identified a total of 85 distinct clusters. Note that for one major cluster, major cluster 12, we found that Monocle 20s implementation of density peak clustering (Qiu et al., 2017; Trapnell et al., 2014) seemed to produce more reasonable clusters. Rho and delta parameters were set in the same manner as for Louvain clustering.&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.biorxiv.org/content/10.1101/610550v1&#34;&gt;Massively parallel single-cell chromatin landscapes of human immune cell development and intratumoral T cell exhaustion&lt;/a&gt;
+Ansuman et.al 2019 biorxiv&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;ATAC-seq-centric Latent Semantic Indexing clustering and visualization&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We clustered scATAC-seq data using an approach that does not require bulk data or prior
+knowledge. To achieve this, we adopted the strategy by Cusanovich et. al9, to compute
+the term frequency-inverse document frequency (“TF-IDF”) transformation. Briefly we
+divided each index by the colSums of the matrix to compute the cell “term frequency.”
+Next, we multiplied these values by log(1 + ncol(matrix) / rowSums(matrix)), which
+represents the “inverse document frequency.” This resulted in a TF-IDF matrix that was
+used as input to irlba’s singular value decomposition (SVD) implementation in R. We then
+used the first 50 reduced dimensions as input into a Seurat object and then crude clusters
+were identified by using Seurat’s (v2.3) SNN graph clustering “FindClusters” with a default
+resolution of 0.8. We found that there was detectable batch effect that confounded further
+analyses. To attenuate this batch effect, we calculated the cluster sums from the binarized
+accessibility matrix and then log-normalized by using edgeR’s “cpm(matrix , log = TRUE,
+prior.count = 3)” in R. Next, we identified the top 25,000 varying peaks across all clusters
+using “rowVars” in R. This was done on the cluster log-normalized matrix vs the sparse
+binary matrix because: (1) it reduced biases due to cluster cell sizes, and (2) it attenuated
+the mean-variability relationship by converting to log space with a scaled prior count.
+These 25,000 variable peaks were then used to subset the sparse binarized accessibility
+matrix and recomputed the “TF-IDF” transform. We used singular value decomposition
+on the TF-IDF matrix to generate a lower dimensional representation of the data by
+retaining the first 50 dimensions. We then used these reduced dimensions as input into
+a Seurat object and then crude clusters were identified by using Seurat’s (v2.3) SNN
+graph clustering “FindClusters” with a default resolution of 0.8. These same reduced
+dimensions were used as input to Seurat’s “RunUMAP” with default parameters and
+plotted in ggplot2 using R&lt;/p&gt;
+&lt;p&gt;Both papers used the so called &lt;code&gt;Latent Semantic Indexing&lt;/code&gt; or &lt;a href=&#34;https://en.wikipedia.org/wiki/Latent_semantic_analysis&#34;&gt;LSI method&lt;/a&gt; and used a transformation of the
+binarized scATAC count matrix called ’TF-IDF` (term frequency–inverse document frequency) which is
+used in text mining. TF-IDF can be used for scRNAseq data as well. see &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6101073/&#34;&gt;Single cell RNA-seq data clustering using TF-IDF based methods&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The transformation is not complicated as described above:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Briefly we divided each index by the colSums of the matrix to compute the cell “term frequency.”
+Next, we multiplied these values by log(1 + ncol(matrix) / rowSums(matrix)), which
+represents the “inverse document frequency.” This resulted in a TF-IDF matrix&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;Seurat&lt;/code&gt; version 3 has a function called &lt;a href=&#34;https://github.com/satijalab/seurat/blob/master/R/preprocessing.R#L1253&#34;&gt;&lt;code&gt;TF.IDF&lt;/code&gt;&lt;/a&gt; for that purpose.&lt;/p&gt;
+&lt;p&gt;But note that, it does not do the log transformation in this function, but do it at &lt;a href=&#34;https://github.com/satijalab/seurat/blob/master/R/dimensional_reduction.R#L669&#34; class=&#34;uri&#34;&gt;https://github.com/satijalab/seurat/blob/master/R/dimensional_reduction.R#L669&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I will first show you the long way to do the clustering through which I want to gain some more
+deep understanding of the whole process and I will show you how to use &lt;code&gt;Seurat&lt;/code&gt; V3 for that.&lt;/p&gt;
+&lt;p&gt;I am going to use the 10k pbmc scATAC data from 10x for demonstration. You can download the data from
+&lt;a href=&#34;https://support.10xgenomics.com/single-cell-atac/datasets/1.1.0/atac_v1_pbmc_10k&#34; class=&#34;uri&#34;&gt;https://support.10xgenomics.com/single-cell-atac/datasets/1.1.0/atac_v1_pbmc_10k&lt;/a&gt;&lt;/p&gt;
+&lt;div id=&#34;the-long-way&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The long way&lt;/h3&gt;
+&lt;p&gt;read in the sparse matrix&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Matrix)
+library(readr)
+library(dplyr)
+mat&amp;lt;- readMM(&amp;quot;/Users/mingtang/github_repos/blogdown_data/filtered_peak_bc_matrix/matrix.mtx&amp;quot;)
+peaks&amp;lt;- read_tsv(&amp;quot;/Users/mingtang/github_repos/blogdown_data/filtered_peak_bc_matrix/peaks.bed&amp;quot;, col_names = F)
+peaks&amp;lt;- peaks %&amp;gt;%
+        mutate(id1 = paste(X2, X3, sep = &amp;quot;-&amp;quot;)) %&amp;gt;%
+        mutate(id = paste(X1, id1, sep = &amp;quot;:&amp;quot;))
+        
+barcodes&amp;lt;- read_tsv(&amp;quot;/Users/mingtang/github_repos/blogdown_data/filtered_peak_bc_matrix/barcodes.tsv&amp;quot;, col_names =F)
+
+rownames(mat)&amp;lt;- peaks$id1
+colnames(mat)&amp;lt;- barcodes$X1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;binarize the data and do TF-IDF transformation.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# binarize the matrix 
+mat@x[mat@x &amp;gt;0]&amp;lt;- 1 
+
+TF.IDF.custom &amp;lt;- function(data, verbose = TRUE) {
+  if (class(x = data) == &amp;quot;data.frame&amp;quot;) {
+    data &amp;lt;- as.matrix(x = data)
+  }
+  if (class(x = data) != &amp;quot;dgCMatrix&amp;quot;) {
+    data &amp;lt;- as(object = data, Class = &amp;quot;dgCMatrix&amp;quot;)
+  }
+  if (verbose) {
+    message(&amp;quot;Performing TF-IDF normalization&amp;quot;)
+  }
+  npeaks &amp;lt;- Matrix::colSums(x = data)
+  tf &amp;lt;- t(x = t(x = data) / npeaks)
+  # log transformation
+  idf &amp;lt;- log(1+ ncol(x = data) / Matrix::rowSums(x = data))
+  norm.data &amp;lt;- Diagonal(n = length(x = idf), x = idf) %*% tf
+  norm.data[which(x = is.na(x = norm.data))] &amp;lt;- 0
+  return(norm.data)
+}
+
+
+mat&amp;lt;- TF.IDF.custom(mat)
+
+# what&amp;#39;s the range after transformation?
+range(mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.00000000 0.01111942&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dim(mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 89796  8728&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Dimension reduction with SVD, use &lt;code&gt;irlba::irlba&lt;/code&gt; for approximated calculation.&lt;/p&gt;
+&lt;p&gt;Note: &lt;code&gt;svd&lt;/code&gt; singular value decomposition gives the same results as &lt;code&gt;prcomp&lt;/code&gt;for exact PC calculation.
+see my previous &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/pca-in-action/&#34;&gt;blog post&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(irlba)
+set.seed(123)
+mat.lsi&amp;lt;- irlba(mat, 50)
+
+d_diagtsne &amp;lt;- matrix(0, 50, 50)
+diag(d_diagtsne) &amp;lt;- mat.lsi$d
+mat_pcs &amp;lt;- t(d_diagtsne %*% t(mat.lsi$v))
+dim(mat_pcs)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 8728   50&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## PCA plot PC1 vs PC2
+plot(mat_pcs[,1], mat_pcs[,2])&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-05-03-clustering-scatacseq-data-the-tf-idf-way_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rownames(mat_pcs)&amp;lt;- colnames(mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;clustering in the PCA space using KNN.&lt;/p&gt;
+&lt;p&gt;I took some code from &lt;a href=&#34;https://jef.works/blog/2017/09/13/graph-based-community-detection-for-clustering-analysis/&#34;&gt;Jean Fan’s blog post&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(RANN)
+knn.info&amp;lt;- RANN::nn2(mat_pcs, k = 30)
+
+## convert to adjacancy matrix
+knn &amp;lt;- knn.info$nn.idx
+
+adj &amp;lt;- matrix(0, nrow(mat_pcs), nrow(mat_pcs))
+rownames(adj) &amp;lt;- colnames(adj) &amp;lt;- rownames(mat_pcs)
+
+for(i in seq_len(nrow(mat_pcs))) {
+    adj[i,rownames(mat_pcs)[knn[i,]]] &amp;lt;- 1
+}
+
+## convert to graph
+library(igraph)
+g &amp;lt;- igraph::graph.adjacency(adj, mode=&amp;quot;undirected&amp;quot;)
+g &amp;lt;- simplify(g) ## remove self loops
+
+## identify communities, many algorithums. Use the Louvain clustering
+
+km &amp;lt;- igraph::cluster_louvain(g)
+
+com &amp;lt;- km$membership
+names(com) &amp;lt;- km$names
+
+# cluster id for each barcode
+head(com)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## AAACGAAAGAGCGAAA-1 AAACGAAAGAGTTTGA-1 AAACGAAAGCGAGCTA-1 
+##                  7                 14                  2 
+## AAACGAAAGGCTTCGC-1 AAACGAAAGTGCTGAG-1 AAACGAACAAGGGTAC-1 
+##                 11                  1                 10&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## total 13 clusters
+table(com)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## com
+##    1    2    3    4    5    6    7    8    9   10   11   12   13   14 
+## 1776  389  482   34 1100  520  491  640  781  487  204  888  173  763&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;t-SNE for visualization&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Rtsne)
+library(ggplot2)
+library(tibble)
+set.seed(345)
+
+mat_tsne&amp;lt;- Rtsne(mat_pcs,  dims = 2, perplexity = 30, verbose = TRUE, 
+               max_iter = 1000, check_duplicates = FALSE, is_distance = FALSE, 
+               theta = 0.5, pca = FALSE, exaggeration_factor = 12)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Read the 8728 x 50 data matrix successfully!
+## OpenMP is working. 1 threads.
+## Using no_dims = 2, perplexity = 30.000000, and theta = 0.500000
+## Computing input similarities...
+## Building tree...
+## Done in 1.81 seconds (sparsity = 0.015574)!
+## Learning embedding...
+## Iteration 50: error is 94.027001 (50 iterations in 1.63 seconds)
+## Iteration 100: error is 80.430931 (50 iterations in 1.34 seconds)
+## Iteration 150: error is 77.384844 (50 iterations in 1.10 seconds)
+## Iteration 200: error is 76.435871 (50 iterations in 1.12 seconds)
+## Iteration 250: error is 75.985857 (50 iterations in 1.16 seconds)
+## Iteration 300: error is 2.655848 (50 iterations in 1.02 seconds)
+## Iteration 350: error is 2.321504 (50 iterations in 1.02 seconds)
+## Iteration 400: error is 2.140627 (50 iterations in 1.05 seconds)
+## Iteration 450: error is 2.024543 (50 iterations in 1.06 seconds)
+## Iteration 500: error is 1.944114 (50 iterations in 1.06 seconds)
+## Iteration 550: error is 1.884803 (50 iterations in 1.10 seconds)
+## Iteration 600: error is 1.840703 (50 iterations in 1.14 seconds)
+## Iteration 650: error is 1.806387 (50 iterations in 1.06 seconds)
+## Iteration 700: error is 1.780991 (50 iterations in 1.07 seconds)
+## Iteration 750: error is 1.761708 (50 iterations in 1.07 seconds)
+## Iteration 800: error is 1.747014 (50 iterations in 1.10 seconds)
+## Iteration 850: error is 1.735953 (50 iterations in 1.07 seconds)
+## Iteration 900: error is 1.728716 (50 iterations in 1.11 seconds)
+## Iteration 950: error is 1.725798 (50 iterations in 1.13 seconds)
+## Iteration 1000: error is 1.724810 (50 iterations in 1.21 seconds)
+## Fitting performed in 22.62 seconds.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df_tsne&amp;lt;- as.data.frame(mat_tsne$Y)
+colnames(df_tsne)&amp;lt;- c(&amp;quot;tSNE1&amp;quot;, &amp;quot;tSNE2&amp;quot;)
+df_tsne$barcode&amp;lt;- rownames(mat_pcs)
+
+df_tsne&amp;lt;- left_join(df_tsne, enframe(com), by = c(&amp;quot;barcode&amp;quot; = &amp;quot;name&amp;quot;)) %&amp;gt;%
+        dplyr::rename(cluster = value) %&amp;gt;%
+        mutate(cluster = as.factor(cluster))
+
+
+ggplot(df_tsne, aes(x = tSNE1, y = tSNE2)) + 
+        geom_point(aes(col = cluster), size = 0.5) +
+        theme_bw(base_size = 14)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-05-03-clustering-scatacseq-data-the-tf-idf-way_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This looks pretty good :)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-easier-way-use-seurat&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The easier way: use Seurat&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Seurat)
+peaks &amp;lt;- Read10X_h5(filename = &amp;quot;/Users/mingtang/github_repos/blogdown_data/atac_v1_pbmc_10k_filtered_peak_bc_matrix.h5&amp;quot;)
+
+# binarize the matrix
+peaks@x[peaks@x &amp;gt;0]&amp;lt;- 1 
+
+## create a seurat object
+atac.lsi &amp;lt;- CreateSeuratObject(counts = peaks, assay = &amp;#39;ATAC&amp;#39;, project = &amp;#39;10k_pbmc&amp;#39;)
+
+atac.lsi &amp;lt;- RunLSI(object = atac.lsi, n = 50, scale.max = NULL)
+
+# atac.lsi@reductions
+
+atac.lsi&amp;lt;- FindNeighbors(atac.lsi, reduction = &amp;quot;lsi&amp;quot;, dims = 1:50)
+atac.lsi&amp;lt;- FindClusters(atac.lsi, resolution = 0.8)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+## 
+## Number of nodes: 8728
+## Number of edges: 246454
+## 
+## Running Louvain algorithm...
+## Maximum modularity in 10 random starts: 0.9129
+## Number of communities: 20
+## Elapsed time: 0 seconds&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;atac.lsi &amp;lt;- RunTSNE(object = atac.lsi, reduction = &amp;quot;lsi&amp;quot;, dims = 1:50)
+DimPlot(object = atac.lsi, reduction = &amp;#39;tsne&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-05-03-clustering-scatacseq-data-the-tf-idf-way_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You may argue those two t-SNE graphs look very different in terms of number of clusters
+and the shape of the clusters. And I agree. There are many reasons for that.
+I hope &lt;code&gt;Seurat&lt;/code&gt; team can give some insights.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;The &lt;code&gt;TF-IDF&lt;/code&gt; function in &lt;code&gt;Seurat&lt;/code&gt; does not do log transformation
+as in the papers: &lt;code&gt;idf &amp;lt;- log(1+ ncol(x = data) / Matrix::rowSums(x = data))&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;but rather do a log transformation &lt;a href=&#34;https://github.com/satijalab/seurat/blob/master/R/dimensional_reduction.R#L669&#34;&gt;later&lt;/a&gt;: &lt;code&gt;tf.idf &amp;lt;- LogNorm(data = tf.idf, display_progress = verbose, scale_factor = 1e4)&lt;/code&gt;&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;I am not an expert in the graph clustering, but the clustering algorithm in
+&lt;code&gt;Seurat&lt;/code&gt; is probably not exactly the same with &lt;code&gt;igraph::cluster_louvain&lt;/code&gt;.
+Moreover, one can always tweak the k.param and resolution parameters, and the cluster number changes.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We can compare the cell identities for each cluster&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# https://github.com/crazyhottommy/scclusteval
+library(scclusteval)
+
+# takes two named vector, and calculate the pairwise Jaccard similarity score
+# for all clusters
+PairWiseJaccardSetsHeatmap(com, Idents(atac.lsi))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-05-03-clustering-scatacseq-data-the-tf-idf-way_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;some-other-notes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Some other notes&lt;/h3&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;It is known that first dimension is correlated with sequencing depth (although Ansuman et.al did not find such). Nevertheless, if you see such correlation, when cluster
+cells in the PC space, you can exclude the first PC. e.g. &lt;code&gt;atac.lsi&amp;lt;- FindNeighbors(atac.lsi, reduction = &amp;quot;lsi&amp;quot;, dims = 2:50)&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;I did not do &lt;code&gt;LSI&lt;/code&gt; first for crude clustering using the titled 5kb genome bin matrix and call peaks for each crude cluster and then get the count matrix per peak per cell. I am not sure how much this extra work can benefit the clustering.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;It turns out the &lt;code&gt;TF-IDF&lt;/code&gt; transformation is critical for this sparse matrix. If you do not do it, you will find your t-SNE plot looks really funky! do not trust me, try it yourself:)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;for clustering scATAC data, one can use the peak x cell matrix or derive a gene activity score by tools such as &lt;a href=&#34;https://cole-trapnell-lab.github.io/cicero-release/&#34;&gt;&lt;code&gt;Cicero&lt;/code&gt;&lt;/a&gt; to generate a gene x cell matrix. This is useful when you want to transfer the RNAseq cell type labels to the scATACseq data. see more details in the &lt;a href=&#34;https://www.biorxiv.org/content/10.1101/460147v1&#34;&gt;Seurat V3 paper&lt;/a&gt;. The question is then, which matrix should we use for clustering? The clustering of these two different matrix can be different but there should be no surprise. We can use the gene activity score matrix as a label transferring mediator and get the cell labels and then super-impose the cluster id to the t-SNE plot clustered by the peak x cell matrix.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;acknowledgements&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Acknowledgements&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;I want to thank 10x genomics for making the data publicly available.&lt;/li&gt;
+&lt;li&gt;I want to thank &lt;a href=&#34;https://jef.works/blog/2017/09/13/graph-based-community-detection-for-clustering-analysis/&#34;&gt;Jean Fan&lt;/a&gt; for putting up some nice posts.&lt;/li&gt;
+&lt;li&gt;I want to thank Tim Stuart for answering questions with &lt;code&gt;Seurat&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;I got some ideas from &lt;a href=&#34;https://github.com/jaychung10010/Mammary_snATAC-seq&#34; class=&#34;uri&#34;&gt;https://github.com/jaychung10010/Mammary_snATAC-seq&lt;/a&gt; as well. Thanks for posting the codes.&lt;/li&gt;
+&lt;li&gt;I want to thank everyone else who give help and suggestions along my adventure of analyzing scATACseq data.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;update&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;UPDATE&lt;/h3&gt;
+&lt;p&gt;Do the IF-IDF Seurat way&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Matrix)
+library(readr)
+library(dplyr)
+mat&amp;lt;- readMM(&amp;quot;/Users/mingtang/github_repos/blogdown_data/filtered_peak_bc_matrix/matrix.mtx&amp;quot;)
+peaks&amp;lt;- read_tsv(&amp;quot;/Users/mingtang/github_repos/blogdown_data/filtered_peak_bc_matrix/peaks.bed&amp;quot;, col_names = F)
+peaks&amp;lt;- peaks %&amp;gt;%
+        mutate(id1 = paste(X2, X3, sep = &amp;quot;-&amp;quot;)) %&amp;gt;%
+        mutate(id = paste(X1, id1, sep = &amp;quot;:&amp;quot;))
+        
+barcodes&amp;lt;- read_tsv(&amp;quot;/Users/mingtang/github_repos/blogdown_data/filtered_peak_bc_matrix/barcodes.tsv&amp;quot;, col_names =F)
+
+rownames(mat)&amp;lt;- peaks$id1
+colnames(mat)&amp;lt;- barcodes$X1
+# binarize the matrix 
+mat@x[mat@x &amp;gt;0]&amp;lt;- 1 
+# Seurat version TF-IDF
+mat&amp;lt;- TF.IDF(mat)
+mat&amp;lt;- LogNormalize(mat,scale_factor = 1e4)
+
+### SVD
+library(irlba)
+set.seed(123)
+mat.lsi&amp;lt;- irlba(mat, 50)
+
+d_diagtsne &amp;lt;- matrix(0, 50, 50)
+diag(d_diagtsne) &amp;lt;- mat.lsi$d
+mat_pcs &amp;lt;- t(d_diagtsne %*% t(mat.lsi$v))
+dim(mat_pcs)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 8728   50&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## PCA plot PC1 vs PC2
+plot(mat_pcs[,1], mat_pcs[,2])&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-05-03-clustering-scatacseq-data-the-tf-idf-way_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rownames(mat_pcs)&amp;lt;- colnames(mat)
+
+library(RANN)
+knn.info&amp;lt;- RANN::nn2(mat_pcs, k = 30)
+
+## convert to adjacancy matrix
+knn &amp;lt;- knn.info$nn.idx
+
+adj &amp;lt;- matrix(0, nrow(mat_pcs), nrow(mat_pcs))
+rownames(adj) &amp;lt;- colnames(adj) &amp;lt;- rownames(mat_pcs)
+
+for(i in seq_len(nrow(mat_pcs))) {
+    adj[i,rownames(mat_pcs)[knn[i,]]] &amp;lt;- 1
+}
+
+## convert to graph
+library(igraph)
+g &amp;lt;- igraph::graph.adjacency(adj, mode=&amp;quot;undirected&amp;quot;)
+g &amp;lt;- simplify(g) ## remove self loops
+
+## identify communities, many algorithums. Use the Louvain clustering
+
+km &amp;lt;- igraph::cluster_louvain(g)
+
+com &amp;lt;- km$membership
+names(com) &amp;lt;- km$names
+
+# cluster id for each barcode
+head(com)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## AAACGAAAGAGCGAAA-1 AAACGAAAGAGTTTGA-1 AAACGAAAGCGAGCTA-1 
+##                 13                  7                 12 
+## AAACGAAAGGCTTCGC-1 AAACGAAAGTGCTGAG-1 AAACGAACAAGGGTAC-1 
+##                 14                 13                 16&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## total 13 clusters
+table(com)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## com
+##    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+##  801  376  617  629  572   56  607  435  280  390  131  417 2554  490  241 
+##   16 
+##  132&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;### T-sne visualization
+library(Rtsne)
+library(ggplot2)
+library(tibble)
+set.seed(345)
+
+mat_tsne&amp;lt;- Rtsne(mat_pcs,  dims = 2, perplexity = 30, verbose = TRUE, 
+               max_iter = 1000, check_duplicates = FALSE, is_distance = FALSE, 
+               theta = 0.5, pca = FALSE, exaggeration_factor = 12)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Read the 8728 x 50 data matrix successfully!
+## OpenMP is working. 1 threads.
+## Using no_dims = 2, perplexity = 30.000000, and theta = 0.500000
+## Computing input similarities...
+## Building tree...
+## Done in 2.57 seconds (sparsity = 0.014984)!
+## Learning embedding...
+## Iteration 50: error is 94.871477 (50 iterations in 1.48 seconds)
+## Iteration 100: error is 84.409610 (50 iterations in 1.50 seconds)
+## Iteration 150: error is 82.319098 (50 iterations in 1.18 seconds)
+## Iteration 200: error is 81.831573 (50 iterations in 1.35 seconds)
+## Iteration 250: error is 81.608255 (50 iterations in 1.40 seconds)
+## Iteration 300: error is 3.039995 (50 iterations in 1.20 seconds)
+## Iteration 350: error is 2.691975 (50 iterations in 1.14 seconds)
+## Iteration 400: error is 2.508723 (50 iterations in 1.24 seconds)
+## Iteration 450: error is 2.390684 (50 iterations in 1.14 seconds)
+## Iteration 500: error is 2.308249 (50 iterations in 1.16 seconds)
+## Iteration 550: error is 2.248218 (50 iterations in 1.12 seconds)
+## Iteration 600: error is 2.201765 (50 iterations in 1.27 seconds)
+## Iteration 650: error is 2.166028 (50 iterations in 1.21 seconds)
+## Iteration 700: error is 2.137659 (50 iterations in 1.13 seconds)
+## Iteration 750: error is 2.115987 (50 iterations in 1.11 seconds)
+## Iteration 800: error is 2.098913 (50 iterations in 1.16 seconds)
+## Iteration 850: error is 2.086752 (50 iterations in 1.08 seconds)
+## Iteration 900: error is 2.079435 (50 iterations in 1.07 seconds)
+## Iteration 950: error is 2.078012 (50 iterations in 1.14 seconds)
+## Iteration 1000: error is 2.076638 (50 iterations in 1.12 seconds)
+## Fitting performed in 24.21 seconds.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df_tsne&amp;lt;- as.data.frame(mat_tsne$Y)
+colnames(df_tsne)&amp;lt;- c(&amp;quot;tSNE1&amp;quot;, &amp;quot;tSNE2&amp;quot;)
+df_tsne$barcode&amp;lt;- rownames(mat_pcs)
+
+df_tsne&amp;lt;- left_join(df_tsne, enframe(com), by = c(&amp;quot;barcode&amp;quot; = &amp;quot;name&amp;quot;)) %&amp;gt;%
+        dplyr::rename(cluster = value) %&amp;gt;%
+        mutate(cluster = as.factor(cluster))
+
+ggplot(df_tsne, aes(x = tSNE1, y = tSNE2)) + 
+        geom_point(aes(col = cluster), size = 0.5) +
+        theme_bw(base_size = 14)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-05-03-clustering-scatacseq-data-the-tf-idf-way_files/figure-html/unnamed-chunk-8-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Well, it still looks different from the &lt;code&gt;Seurat&lt;/code&gt; output. Any comments?&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>plot 10x scATAC coverage by cluster/group</title>
       <link>/post/plot-10x-scatac-coverage-by-cluster-group/</link>
       <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
@@ -1949,80 +2369,6 @@ ls -1  *featureCount.txt | head -1 | xargs cut -f1 &amp;gt; genes.txt
 paste genes.txt *featureCount_clean.txt &amp;gt; output.txt
 
 &lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Three gotchas when using R for Genomic data analysis</title>
-      <link>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</link>
-      <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</guid>
-      <description>
-
-&lt;p&gt;During my daily work with R for genomic data analysis, I encountered several instances that R gives me some (bad) surprises.&lt;/p&gt;
-
-&lt;h4 id=&#34;1-the-devil-1-and-0-coordinate-system&#34;&gt;1. The devil 1 and 0 coordinate system&lt;/h4&gt;
-
-&lt;p&gt;read detail here &lt;a href=&#34;https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey&#34; target=&#34;_blank&#34;&gt;https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;some files such as &lt;code&gt;bed&lt;/code&gt; file is 0 based. Two genomic regions:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;chr1    0    1000
-chr1    1001    2000
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;when you import that bed file into R using &lt;code&gt;rtracklayer::import()&lt;/code&gt;, it will become&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;chr1     1    1000
-chr1    1002    2000
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The function convert it to 1 based internally (R is 1 based unlike python).&lt;/p&gt;
-
-&lt;p&gt;The problem is that when you read the bed file with &lt;code&gt;read.table&lt;/code&gt; and use &lt;code&gt;GenomicRanges::makeGRangesFromDataFrame()&lt;/code&gt; to convert it to a GRanges object, do not forget to add 1 to the start before doing it.&lt;/p&gt;
-
-&lt;p&gt;Similarily, when you write a GRanges object to disk using &lt;code&gt;rtracklayer::export&lt;/code&gt;, you do not need to worry, R will convert it back to 0 based in file.&lt;/p&gt;
-
-&lt;p&gt;However, if you make a dataframe out of the GRanges object, you need to remember do &lt;code&gt;start -1&lt;/code&gt; before writing to a file.&lt;/p&gt;
-
-&lt;h4 id=&#34;2-read-tsv-column-types&#34;&gt;2. &lt;code&gt;read_tsv&lt;/code&gt; column types&lt;/h4&gt;
-
-&lt;p&gt;If you use &lt;code&gt;read_tsv&lt;/code&gt; from &lt;a href=&#34;https://github.com/tidyverse/readr&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;readr&lt;/code&gt;&lt;/a&gt;, it will use the first 1000 rows to determine the column types (integer, charater etc). For genomic data, however, especially for the chromosome column, you may or may not have &lt;code&gt;chr&lt;/code&gt; prepending.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;1    0    1000    
-1    1000    2000
-.
-.
-.
-X
-Y
-MT
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;you may fail to read rows for chromosome X, Y and MT. (To make things worse, UCSC uses chrM rather than chrMT&amp;hellip;)&lt;/p&gt;
-
-&lt;p&gt;The solution is that read in all the data as characters.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(readr)
-challenge2 &amp;lt;- read_tsv(&amp;quot;my.bed&amp;quot;, 
-  col_types = cols(.default = col_character())
-)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;see &lt;a href=&#34;http://r4ds.had.co.nz/data-import.html&#34; target=&#34;_blank&#34;&gt;http://r4ds.had.co.nz/data-import.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;h4 id=&#34;3-scientific-notation-for-genomic-coordinates&#34;&gt;3. Scientific notation for genomic coordinates&lt;/h4&gt;
-
-&lt;p&gt;This is kind of related to 2. &lt;code&gt;1200000&lt;/code&gt; will be written as &lt;code&gt;1.2e6&lt;/code&gt; in a dataframe if R thinks it is an integer. So, you will need to read in the columns all as characters, or if you convert the character to numeric and wants to write to a file,
-add &lt;code&gt;options(scipen=500)&lt;/code&gt; on the top of your script.&lt;/p&gt;
-
-&lt;p&gt;The scientific notation can not be disabled in &lt;code&gt;write_csv&lt;/code&gt;: &lt;a href=&#34;https://github.com/tidyverse/readr/issues/671&#34; target=&#34;_blank&#34;&gt;https://github.com/tidyverse/readr/issues/671&lt;/a&gt;&lt;/p&gt;
-
-&lt;h4 id=&#34;one-more-gotcha-for-rownames-and-colnames&#34;&gt;One more gotcha for rownames and colnames&lt;/h4&gt;
-
-&lt;p&gt;base R will change the name with &lt;code&gt;-&lt;/code&gt; to a &lt;code&gt;.&lt;/code&gt;. e.g. TCGA-06-ABCD will be changed to TCGA.06.ABCD. this can cause troubles when you use the name of the columns to match samples. &lt;code&gt;readr&lt;/code&gt; will maintain the &lt;code&gt;-&lt;/code&gt;.&lt;/p&gt;
 </description>
     </item>
     
