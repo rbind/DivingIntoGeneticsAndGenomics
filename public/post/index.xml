@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>Calculate scATACseq TSS enrichment score</title>
+      <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
+      <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/calculate-scatacseq-tss-enrichment-score/</guid>
+      <description>TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
+From the Encode page:
+ Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).</description>
+    </item>
+    
+    <item>
       <title>clustering scATACseq data: the TF-IDF way</title>
       <link>/post/clustering-scatacseq-data-the-tf-idf-way/</link>
       <pubDate>Fri, 03 May 2019 00:00:00 +0000</pubDate>

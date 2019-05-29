@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/calculate-scatacseq-tss-enrichment-score/</loc>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/clustering-scatacseq-data-the-tf-idf-way/</loc>
       <lastmod>2019-05-03T00:00:00+00:00</lastmod>
     </url>
@@ -493,7 +502,7 @@
     <url>
     
       <loc>/tags/atacseq/</loc>
-      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -503,7 +512,7 @@
     <url>
     
       <loc>/categories/bioinformatics/</loc>
-      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -523,7 +532,7 @@
     <url>
     
       <loc>/categories/</loc>
-      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -613,7 +622,7 @@
     <url>
     
       <loc>/tags/granges/</loc>
-      <lastmod>2019-04-29T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -623,7 +632,7 @@
     <url>
     
       <loc>/tags/genomics/</loc>
-      <lastmod>2019-04-29T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -633,7 +642,7 @@
     <url>
     
       <loc>/categories/genomics/</loc>
-      <lastmod>2019-02-06T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -783,7 +792,7 @@
     <url>
     
       <loc>/categories/scatacseq/</loc>
-      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -813,7 +822,7 @@
     <url>
     
       <loc>/categories/single-cell/</loc>
-      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
