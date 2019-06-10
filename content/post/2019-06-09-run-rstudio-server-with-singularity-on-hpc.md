@@ -53,7 +53,7 @@ singularity pull --name rstudio.simg docker://rocker/tidyverse:latest
 
 # This example bind mounts the /project directory on the host into the Singularity container.
 # By default the only host file systems mounted within the container are $HOME, /tmp, /proc, /sys, and /dev.
-# type in the password you want to set 
+# type in the password you want to set, make it more complicated than this dummy one
 PASSWORD='xyz' singularity exec --bind=/project  rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
 
 ```
@@ -70,6 +70,8 @@ ssh -Nf -L 8787:localhost:8787 bio1
 
 on my local mac, open `localhost:8787` in web browser, type in the Odyssey (HPC) user name and password (xyz in this dummy example). Rstudio server now is ready for me! Magic!!!
 
+Note: if mulitple people using the same node for Rstudio sever, you will need to pick a different
+port than `8787`.
 ### One more note on R packages
 
 create an `.Renviron` file in your home diretory
