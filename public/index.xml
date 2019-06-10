@@ -11,6 +11,99 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Run Rstudio server with singularity on HPC</title>
+      <link>/post/run-rstudio-server-with-singularity-on-hpc/</link>
+      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/run-rstudio-server-with-singularity-on-hpc/</guid>
+      <description>
+
+&lt;h3 id=&#34;background&#34;&gt;Background&lt;/h3&gt;
+
+&lt;p&gt;Please read the following before go ahead:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;what is &lt;a href=&#34;https://www.docker.com/&#34; target=&#34;_blank&#34;&gt;docker&lt;/a&gt;?&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;what is &lt;a href=&#34;https://www.rocker-project.org/&#34; target=&#34;_blank&#34;&gt;Rocker&lt;/a&gt;?&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;what is &lt;a href=&#34;https://www.sylabs.io/docs/&#34; target=&#34;_blank&#34;&gt;singularity&lt;/a&gt;?&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;from Harvard Research computing website: &lt;a href=&#34;https://www.rc.fas.harvard.edu/resources/documentation/software/singularity-on-odyssey/&#34; target=&#34;_blank&#34;&gt;Odyssey has singularity installed&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Why Singularity?
+There are some important differences between Docker and Singularity:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Docker and Singularity have their own container formats.&lt;/li&gt;
+&lt;li&gt;Docker containers may be imported to run via Singularity.&lt;/li&gt;
+&lt;li&gt;Docker containers need root privileges for full functionality which is not suitable for a shared HPC environment.&lt;/li&gt;
+&lt;li&gt;Singularity allows working with containers as a regular user. No sudo is required,&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Our &lt;a href=&#34;https://informatics.fas.harvard.edu/&#34; target=&#34;_blank&#34;&gt;informatics group&lt;/a&gt; has several big memory (1TB) computing nodes that allow us to run interactive jobs. I want to have big memory to run Rstudio for my scRNAseq data.&lt;/p&gt;
+
+&lt;h3 id=&#34;run-rstudio-server-with-singularity&#34;&gt;Run Rstudio server with singularity&lt;/h3&gt;
+
+&lt;p&gt;I basically followed this tutorial &lt;a href=&#34;https://www.rocker-project.org/use/singularity/&#34; target=&#34;_blank&#34;&gt;https://www.rocker-project.org/use/singularity/&lt;/a&gt; written by my colleague Nathan Weeks sitting in the same office with me. Thanks!&lt;/p&gt;
+
+&lt;p&gt;First, go to &lt;a href=&#34;https://www.rocker-project.org/images/&#34; target=&#34;_blank&#34;&gt;https://www.rocker-project.org/images/&lt;/a&gt; choose the image you want. I use &lt;code&gt;tidyverse&lt;/code&gt; heavily, so I downloaded the &lt;code&gt;tidyverse&lt;/code&gt; image buit upon &lt;code&gt;Rstudio&lt;/code&gt; image&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;## ssh to remote HPC and pull the docker image by singularity
+ssh bio1
+mkdir singularity-images; cd !$
+singularity pull --name rstudio.simg docker://rocker/tidyverse:latest
+
+
+# This example bind mounts the /project directory on the host into the Singularity container.
+# By default the only host file systems mounted within the container are $HOME, /tmp, /proc, /sys, and /dev.
+# type in the password you want to set 
+PASSWORD=&#39;xyz&#39; singularity exec --bind=/project  rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;back to my mac and connect to it via &lt;a href=&#34;https://www.ssh.com/ssh/tunneling/&#34; target=&#34;_blank&#34;&gt;SSH tunnel&lt;/a&gt;:&lt;/p&gt;
+
+&lt;p&gt;Nathan explained by drawing the following.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/ssh_tunnel.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh -Nf -L 8787:localhost:8787 bio1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;on my local mac, open &lt;code&gt;localhost:8787&lt;/code&gt; in web browser, type in the Odyssey (HPC) user name and password (xyz in this dummy example). Rstudio server now is ready for me! Magic!!!&lt;/p&gt;
+
+&lt;h3 id=&#34;one-more-note-on-r-packages&#34;&gt;One more note on R packages&lt;/h3&gt;
+
+&lt;p&gt;create an &lt;code&gt;.Renviron&lt;/code&gt; file in your home diretory&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# User-installed R packages go into their home directory
+echo &#39;R_LIBS_USER=~/R/%p-library/%v&#39; &amp;gt;&amp;gt; ${HOME}/.Renviron
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The platform and version will be replaced by the corresponding R versions&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ls ~/R/x86_64-pc-linux-gnu-library/
+3.6
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;install packages inside Rstudio and the packages will be installed to &lt;code&gt;~/R/x86_64-pc-linux-gnu-library/3.6&lt;/code&gt;. R version in this singularity image is R3.6. Note that if you use R on command line at the remote machine and use the same version of R. the library may not be compatible. e.g. singularity container is based on debian （Ubuntu) and HPC is based on RPM (CentOS). One may need to have mulitiple &lt;code&gt;.Renviron&lt;/code&gt; file and switch back and forth depending on which R one is using. If you have better options, please let me know!&lt;/p&gt;
+
+&lt;h3 id=&#34;jump-to-other-folders&#34;&gt;Jump to other folders&lt;/h3&gt;
+
+&lt;p&gt;by default, Rstudio opens the home directory. if you want to go to other folders, you can click &lt;code&gt;...&lt;/code&gt; in the file pane.
+You can then type in the path you want to jump to.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/change_path.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;submit-a-slurm-job&#34;&gt;Submit a slurm job&lt;/h3&gt;
+
+&lt;p&gt;If you do not have a big computing node that you can run interactive job, you can follow Nathan&amp;rsquo;s &lt;a href=&#34;https://www.rocker-project.org/use/singularity/&#34; target=&#34;_blank&#34;&gt;tutorial&lt;/a&gt; on how to submit slurm job to run Rstudio server with singularity.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Calculate scATACseq TSS enrichment score</title>
       <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
       <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
@@ -2254,270 +2347,6 @@ heatmap.2(mat, trace = &amp;quot;none&amp;quot;, Colv= NA, dendrogram = &amp;quo
 &lt;li&gt;&lt;p&gt;Understand your data and what you are looking for. Do you need to scale your data before clustering?&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Distance measure and linkage method can drastically affect your clustering. Choose the right one for your data!. Please also read my &lt;a href=&#34;https://rpubs.com/crazyhottommy/heatmap_demystified&#34;&gt;last post&lt;/a&gt; on this theme.&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>PCA in action</title>
-      <link>/post/pca-in-action/</link>
-      <pubDate>Tue, 18 Dec 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/pca-in-action/</guid>
-      <description>&lt;div id=&#34;pca-in-practice.&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;PCA in practice.&lt;/h3&gt;
-&lt;p&gt;Principle Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).&lt;/p&gt;
-&lt;p&gt;Let’s use a microarray data for demonstration. One thing to note is that in linear algebra, a matrix is coded as &lt;code&gt;n (rows are observations) X p (columns are features)&lt;/code&gt;.However, in the microarray/RNA-seq case, the matrix is represented as &lt;code&gt;p (rows are features/genes) X n (columns are observations/samples)&lt;/code&gt;. That’s why we need to transpose the matrix before feeding the matrix to &lt;code&gt;prcomp&lt;/code&gt; or &lt;code&gt;SVD&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ISLR)
-
-# transpose the data
-ncidat&amp;lt;- t(NCI60$data)
-colnames(ncidat)&amp;lt;- NCI60$labs
-
-dim(ncidat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 6830   64&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## it is a data matrix with 64 columns (different tissues) and 6830 rows (genes)
-ncidat[1:6,1:6]&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##      CNS      CNS    CNS         RENAL BREAST    CNS
-## 1  0.300 0.679961  0.940  2.800000e-01  0.485  0.310
-## 2  1.180 1.289961 -0.040 -3.100000e-01 -0.465 -0.030
-## 3  0.550 0.169961 -0.170  6.800000e-01  0.395 -0.100
-## 4  1.140 0.379961 -0.040 -8.100000e-01  0.905 -0.460
-## 5 -0.265 0.464961 -0.605  6.250000e-01  0.200 -0.205
-## 6 -0.070 0.579961  0.000 -1.387779e-17 -0.005 -0.540&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;use-prcomp&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Use prcomp&lt;/h3&gt;
-&lt;p&gt;The default R package stats comes with function &lt;code&gt;prcomp()&lt;/code&gt; to perform principal component analysis. This means that we don’t need to install anything (although there are other options using external packages).&lt;/p&gt;
-&lt;p&gt;We take the transpose of ncidat because &lt;strong&gt;&lt;code&gt;prcomp&lt;/code&gt; assumes: units/samples in row and features (genes) in columns&lt;/strong&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## please look at the help page to see the meanings of  center and scale. parameters.
-## center and scale can affect the result a lot. Usually we center the data.
-
-pca_prcomp&amp;lt;- prcomp(t(ncidat), center = TRUE, scale. = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;How much variantion is explained by each component:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(pca_prcomp)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(pca_prcomp)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Importance of components:
-##                            PC1      PC2      PC3      PC4      PC5
-## Standard deviation     25.1638 18.78637 16.73078 13.53082 12.78895
-## Proportion of Variance  0.1489  0.08301  0.06584  0.04306  0.03847
-## Cumulative Proportion   0.1489  0.23194  0.29777  0.34083  0.37930
-##                             PC6      PC7      PC8      PC9    PC10   PC11
-## Standard deviation     12.21052 11.05840 10.94492 10.59140 9.57657 9.4493
-## Proportion of Variance  0.03507  0.02876  0.02817  0.02638 0.02157 0.0210
-## Cumulative Proportion   0.41437  0.44313  0.47130  0.49769 0.51926 0.5403
-##                           PC12   PC13    PC14    PC15   PC16    PC17
-## Standard deviation     9.22659 8.8220 8.66863 8.43185 8.2746 8.19031
-## Proportion of Variance 0.02002 0.0183 0.01767 0.01672 0.0161 0.01578
-## Cumulative Proportion  0.56028 0.5786 0.59626 0.61298 0.6291 0.64486
-##                           PC18    PC19    PC20    PC21    PC22   PC23
-## Standard deviation     7.86272 7.84561 7.74753 7.64167 7.41462 7.3207
-## Proportion of Variance 0.01454 0.01448 0.01412 0.01373 0.01293 0.0126
-## Cumulative Proportion  0.65940 0.67388 0.68799 0.70173 0.71466 0.7273
-##                           PC24   PC25    PC26    PC27   PC28    PC29
-## Standard deviation     7.09512 7.0817 6.86791 6.71857 6.6190 6.57295
-## Proportion of Variance 0.01184 0.0118 0.01109 0.01062 0.0103 0.01016
-## Cumulative Proportion  0.73910 0.7509 0.76199 0.77261 0.7829 0.79307
-##                           PC30    PC31    PC32    PC33    PC34    PC35
-## Standard deviation     6.50142 6.38411 6.31688 6.10274 6.07004 5.96433
-## Proportion of Variance 0.00994 0.00959 0.00938 0.00876 0.00867 0.00837
-## Cumulative Proportion  0.80302 0.81260 0.82199 0.83075 0.83941 0.84778
-##                           PC36    PC37    PC38    PC39    PC40   PC41
-## Standard deviation     5.93322 5.87286 5.82866 5.67923 5.63268 5.5707
-## Proportion of Variance 0.00828 0.00811 0.00799 0.00759 0.00746 0.0073
-## Cumulative Proportion  0.85606 0.86417 0.87216 0.87975 0.88721 0.8945
-##                           PC42   PC43    PC44    PC45   PC46    PC47
-## Standard deviation     5.51265 5.4555 5.37942 5.32142 5.1743 5.14470
-## Proportion of Variance 0.00715 0.0070 0.00681 0.00666 0.0063 0.00623
-## Cumulative Proportion  0.90165 0.9086 0.91546 0.92212 0.9284 0.93464
-##                           PC48    PC49    PC50    PC51   PC52    PC53
-## Standard deviation     5.01790 4.82436 4.77879 4.69168 4.5637 4.49039
-## Proportion of Variance 0.00592 0.00547 0.00537 0.00518 0.0049 0.00474
-## Cumulative Proportion  0.94057 0.94604 0.95141 0.95659 0.9615 0.96623
-##                           PC54   PC55    PC56    PC57    PC58    PC59
-## Standard deviation     4.41142 4.2741 4.21355 4.08613 3.91956 3.78810
-## Proportion of Variance 0.00458 0.0043 0.00418 0.00393 0.00361 0.00337
-## Cumulative Proportion  0.97081 0.9751 0.97928 0.98320 0.98682 0.99019
-##                           PC60    PC61    PC62   PC63      PC64
-## Standard deviation     3.52405 3.22882 3.15278 2.9856 1.341e-14
-## Proportion of Variance 0.00292 0.00245 0.00234 0.0021 0.000e+00
-## Cumulative Proportion  0.99311 0.99557 0.99790 1.0000 1.000e+00&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#sdev refers to the standard deviation of principal components.
-pca_prcomp$sdev&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##  [1] 2.516378e+01 1.878637e+01 1.673078e+01 1.353082e+01 1.278895e+01
-##  [6] 1.221052e+01 1.105840e+01 1.094492e+01 1.059140e+01 9.576574e+00
-## [11] 9.449313e+00 9.226590e+00 8.821954e+00 8.668634e+00 8.431849e+00
-## [16] 8.274578e+00 8.190308e+00 7.862721e+00 7.845612e+00 7.747529e+00
-## [21] 7.641665e+00 7.414624e+00 7.320674e+00 7.095120e+00 7.081674e+00
-## [26] 6.867907e+00 6.718573e+00 6.618968e+00 6.572955e+00 6.501420e+00
-## [31] 6.384107e+00 6.316878e+00 6.102743e+00 6.070035e+00 5.964333e+00
-## [36] 5.933221e+00 5.872856e+00 5.828663e+00 5.679232e+00 5.632684e+00
-## [41] 5.570718e+00 5.512649e+00 5.455510e+00 5.379416e+00 5.321422e+00
-## [46] 5.174272e+00 5.144699e+00 5.017899e+00 4.824356e+00 4.778789e+00
-## [51] 4.691679e+00 4.563740e+00 4.490394e+00 4.411423e+00 4.274070e+00
-## [56] 4.213548e+00 4.086132e+00 3.919560e+00 3.788098e+00 3.524054e+00
-## [61] 3.228818e+00 3.152782e+00 2.985601e+00 1.341106e-14&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## variance explained by each PC cumulatively
-cumsum(pca_prcomp$sdev^2)/sum(pca_prcomp$sdev^2)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##  [1] 0.1489294 0.2319364 0.2977720 0.3408323 0.3793002 0.4143671 0.4431287
-##  [8] 0.4713030 0.4976867 0.5192567 0.5402571 0.5602793 0.5785838 0.5962576
-## [15] 0.6129791 0.6290826 0.6448598 0.6594001 0.6738773 0.6879947 0.7017289
-## [22] 0.7146592 0.7272638 0.7391037 0.7508988 0.7619925 0.7726091 0.7829132
-## [29] 0.7930745 0.8030158 0.8126016 0.8219866 0.8307461 0.8394120 0.8477786
-## [36] 0.8560582 0.8641702 0.8721606 0.8797465 0.8872086 0.8945074 0.9016548
-## [43] 0.9086548 0.9154609 0.9221211 0.9284180 0.9346431 0.9405652 0.9460392
-## [50] 0.9514103 0.9565874 0.9614860 0.9662284 0.9708055 0.9751019 0.9792776
-## [57] 0.9832045 0.9868178 0.9901928 0.9931137 0.9955657 0.9979035 1.0000000
-## [64] 1.0000000&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;what’s in the prca_prcomp object&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;names(pca_prcomp)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;sdev&amp;quot;     &amp;quot;rotation&amp;quot; &amp;quot;center&amp;quot;   &amp;quot;scale&amp;quot;    &amp;quot;x&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## the first two PCs for the first 6 tissues
-head(pca_prcomp$x[,1:2])&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##              PC1         PC2
-## CNS    -19.79578   0.1152691
-## CNS    -21.54610  -1.4573503
-## CNS    -25.05662   1.5260929
-## RENAL  -37.40954 -11.3894784
-## BREAST -50.21864  -1.3461737
-## CNS    -26.43520   0.4629819&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;PC1_and_PC2&amp;lt;- data.frame(PC1=pca_prcomp$x[,1], PC2= pca_prcomp$x[,2], type = rownames(pca_prcomp$x))
-
-## plot PCA plot
-library(ggplot2)
-ggplot(PC1_and_PC2, aes(x=PC1, y=PC2, col=type)) + geom_point() + geom_text(aes(label = type), hjust=0, vjust=0)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#This returns each principal components loadings
-pca_prcomp$rotation[1:6, 1:6]&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##            PC1           PC2         PC3          PC4          PC5
-## 1 -0.005096247  0.0009839929 0.002116058  0.007628801 -0.012118316
-## 2 -0.001642354  0.0034355664 0.008049350  0.004910196 -0.007412249
-## 3 -0.002509243 -0.0015838271 0.004746350  0.008769557 -0.012426296
-## 4  0.004940063  0.0078435347 0.013716214  0.011378816 -0.014851587
-## 5 -0.003365039 -0.0002680479 0.010677453 -0.005249648 -0.003317312
-## 6  0.001382038 -0.0034431320 0.003167842  0.007425971 -0.002879251
-##             PC6
-## 1  0.0061392242
-## 2  0.0114429879
-## 3 -0.0002860562
-## 4 -0.0065009935
-## 5 -0.0003513787
-## 6  0.0003210365&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;use-singluar-value-decomposition&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Use singluar value decomposition&lt;/h3&gt;
-&lt;p&gt;in a svd analysis, a matrix n x p matrix X is decomposed by &lt;code&gt;X = U*D*V&lt;/code&gt;:&lt;/p&gt;
-&lt;p&gt;1.U is an m×n orthogonal matrix.&lt;br /&gt;
-2.V is an n×n orthogonal matrix.&lt;br /&gt;
-3.D is an n×n diagonal matrix.&lt;/p&gt;
-&lt;p&gt;PCs: &lt;strong&gt;Z = XV or Z = UD (U are un-scaled PCs)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Some facts of PCA:&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;k th column of Z, Z(k), is the k th PC.(the k th pattern)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;PC loadings: V k th column of V, V(k) is the k th PC loading (feature weights). aka. &lt;strong&gt;the k th column of V encodes the associated k th pattern in feature space.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;PC loadings: U k th column of U, U(k) is the k th PC loading (observation weights). aka. &lt;strong&gt;the k th column of U encodes the associated k th pattern in observation space.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Diagnal matrix: D diagnals in D: &lt;strong&gt;d(k) gives the strength of the k th pattern.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Variance explained by k th PC: d(k)^2 Total variance of the data: &lt;code&gt;sum(d(k1)^2 + d(k2)^2 + …..d(k)^2+….)&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;proportion of variane explained by k th PC: &lt;code&gt;d(k)^2 / sum(d(k1)^2 + d(k2)^2 + …..d(k)^2+….)&lt;/code&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;X&amp;lt;- t(scale(t(ncidat),center=TRUE,scale=FALSE))
-# we transpose X again for svd
-# usually there is no need to transpose the matrix and then transpose it back, but svd was written that rows are observations and columns are 
-# features.however, most genomic data represent observations (e.g. samples) in columns and features (e.g. genes) in columns.
-
-sv&amp;lt;- svd(t(X))
-U&amp;lt;- sv$u
-V&amp;lt;- sv$v
-D&amp;lt;- sv$d
-
-
-## U are un-scaled PC, Z is scaled
-Z&amp;lt;- t(X)%*%V
-
-## PCs
-Z[1:6, 1:6]&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##             [,1]        [,2]       [,3]      [,4]       [,5]     [,6]
-## CNS    -19.79578   0.1152691  -5.968917  4.753293  -4.882164 18.92591
-## CNS    -21.54610  -1.4573503  -9.019584  6.767942  -2.247604 17.07273
-## CNS    -25.05662   1.5260929  -6.959653  2.785913 -10.819648 16.45389
-## RENAL  -37.40954 -11.3894784  -5.407097 15.442094 -16.011475 33.09651
-## BREAST -50.21864  -1.3461737 -17.599944 15.099862 -13.852847 16.94340
-## CNS    -26.43520   0.4629819 -16.931456 11.389195  -6.742920 11.85838&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## is the same as
-pca_prcomp$x[1:6, 1:6]&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##              PC1         PC2        PC3       PC4        PC5      PC6
-## CNS    -19.79578   0.1152691  -5.968917  4.753293  -4.882164 18.92591
-## CNS    -21.54610  -1.4573503  -9.019584  6.767942  -2.247604 17.07273
-## CNS    -25.05662   1.5260929  -6.959653  2.785913 -10.819648 16.45389
-## RENAL  -37.40954 -11.3894784  -5.407097 15.442094 -16.011475 33.09651
-## BREAST -50.21864  -1.3461737 -17.599944 15.099862 -13.852847 16.94340
-## CNS    -26.43520   0.4629819 -16.931456 11.389195  -6.742920 11.85838&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## PC loadings
-V[1:6, 1:6]&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##              [,1]          [,2]        [,3]         [,4]         [,5]
-## [1,] -0.005096247  0.0009839929 0.002116058  0.007628801 -0.012118316
-## [2,] -0.001642354  0.0034355664 0.008049350  0.004910196 -0.007412249
-## [3,] -0.002509243 -0.0015838271 0.004746350  0.008769557 -0.012426296
-## [4,]  0.004940063  0.0078435347 0.013716214  0.011378816 -0.014851587
-## [5,] -0.003365039 -0.0002680479 0.010677453 -0.005249648 -0.003317312
-## [6,]  0.001382038 -0.0034431320 0.003167842  0.007425971 -0.002879251
-##               [,6]
-## [1,]  0.0061392242
-## [2,]  0.0114429879
-## [3,] -0.0002860562
-## [4,] -0.0065009935
-## [5,] -0.0003513787
-## [6,]  0.0003210365&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## is the same as 
-pca_prcomp$rotation[1:6, 1:6]&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##            PC1           PC2         PC3          PC4          PC5
-## 1 -0.005096247  0.0009839929 0.002116058  0.007628801 -0.012118316
-## 2 -0.001642354  0.0034355664 0.008049350  0.004910196 -0.007412249
-## 3 -0.002509243 -0.0015838271 0.004746350  0.008769557 -0.012426296
-## 4  0.004940063  0.0078435347 0.013716214  0.011378816 -0.014851587
-## 5 -0.003365039 -0.0002680479 0.010677453 -0.005249648 -0.003317312
-## 6  0.001382038 -0.0034431320 0.003167842  0.007425971 -0.002879251
-##             PC6
-## 1  0.0061392242
-## 2  0.0114429879
-## 3 -0.0002860562
-## 4 -0.0065009935
-## 5 -0.0003513787
-## 6  0.0003210365&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# plot PC1 vs PC2
-
-pc_dat&amp;lt;- data.frame(type = rownames(Z), PC1 = Z[,1], PC2= Z[,2])
-ggplot(pc_dat,aes(x=PC1, y=PC2, col=type)) + geom_point() + geom_text(aes(label = type), hjust=0, vjust=0)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We get the same results as from the &lt;code&gt;prcomp&lt;/code&gt; function.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;variance-explained-for-each-pc&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Variance explained for each PC&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;varex = 0
-cumvar = 0
-denom = sum(D^2)
-for(i in 1:length(D)){
-  varex[i] = D[i]^2/denom
-  cumvar[i] = sum(D[1:i]^2)/denom
-}
-
-## variance explained by each PC cumulatively
-cumvar&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##  [1] 0.1489294 0.2319364 0.2977720 0.3408323 0.3793002 0.4143671 0.4431287
-##  [8] 0.4713030 0.4976867 0.5192567 0.5402571 0.5602793 0.5785838 0.5962576
-## [15] 0.6129791 0.6290826 0.6448598 0.6594001 0.6738773 0.6879947 0.7017289
-## [22] 0.7146592 0.7272638 0.7391037 0.7508988 0.7619925 0.7726091 0.7829132
-## [29] 0.7930745 0.8030158 0.8126016 0.8219866 0.8307461 0.8394120 0.8477786
-## [36] 0.8560582 0.8641702 0.8721606 0.8797465 0.8872086 0.8945074 0.9016548
-## [43] 0.9086548 0.9154609 0.9221211 0.9284180 0.9346431 0.9405652 0.9460392
-## [50] 0.9514103 0.9565874 0.9614860 0.9662284 0.9708055 0.9751019 0.9792776
-## [57] 0.9832045 0.9868178 0.9901928 0.9931137 0.9955657 0.9979035 1.0000000
-## [64] 1.0000000&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;It is the same as the result of &lt;code&gt;cumsum(pca_prcomp$sdev^2)/sum(pca_prcomp$sdev^2)&lt;/code&gt; above.&lt;/p&gt;
-&lt;p&gt;Screeplot&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;par(mfrow=c(1,2))
-plot(1:length(D),varex,type=&amp;quot;l&amp;quot;,lwd=2,xlab=&amp;quot;PC&amp;quot;,ylab=&amp;quot;% Variance Explained&amp;quot;)
-plot(1:length(D),cumvar,type=&amp;quot;l&amp;quot;,lwd=2,xlab=&amp;quot;PC&amp;quot;,ylab=&amp;quot;Cummulative Variance Explained&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

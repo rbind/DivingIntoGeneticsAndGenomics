@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/run-rstudio-server-with-singularity-on-hpc/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/calculate-scatacseq-tss-enrichment-score/</loc>
       <lastmod>2019-05-29T00:00:00+00:00</lastmod>
     </url>
@@ -591,6 +600,26 @@
     
     <url>
     
+      <loc>/tags/docker/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/docker/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/dotfile/</loc>
       <lastmod>2018-10-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -642,7 +671,7 @@
     <url>
     
       <loc>/categories/genomics/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -661,8 +690,18 @@
     
     <url>
     
+      <loc>/tags/hpc/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/categories/hpc/</loc>
-      <lastmod>2018-10-10T00:00:00+00:00</lastmod>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -802,7 +841,7 @@
     <url>
     
       <loc>/tags/scrnaseq/</loc>
-      <lastmod>2019-02-06T00:00:00+00:00</lastmod>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -823,6 +862,26 @@
     
       <loc>/categories/single-cell/</loc>
       <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/singularity/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/singularity/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
