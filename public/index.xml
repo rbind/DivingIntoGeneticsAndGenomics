@@ -277,8 +277,6 @@ TssEnrichmentFromFrags &amp;lt;- function(frag_gz_file,
         # to get 0 coverages if there are no reads there. 
         cvgs&amp;lt;- bplapply(frags_valid_per_cell, function(x) coverage(x), BPPARAM = multicoreParam)
         
-        ## return only transcripts with a coverage 
-        txs&amp;lt;- keepSeqlevels(txs, seqlev, pruning.mode=&amp;quot;coarse&amp;quot;)
         txs &amp;lt;- unique(txs)
         
         txs.flanks&amp;lt;- promoters(txs, upstream = flank, 
