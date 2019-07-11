@@ -190,7 +190,7 @@ TssEnrichmentFromFrags <- function(frag_gz_file,
 TssEnrichmentSingleCell<- function(cvg, txs.flanks){
         ## remove tss not in the coverage and assign a unique id for each tss: X_rank
         txs.flanks<- constrainRanges(cvg, txs.flanks)
-        
+        txs.length<- length(txs.flanks)
         if(length(txs.flanks)!=txs.length){
               warning(paste0(txs.length-length(txs.flanks),
                              " Tss removed because they fall out of the coverage"))
