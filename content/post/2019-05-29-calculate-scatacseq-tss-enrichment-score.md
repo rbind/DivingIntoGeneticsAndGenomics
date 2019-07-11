@@ -185,13 +185,13 @@ TssEnrichmentFromFrags <- function(frag_gz_file,
                             downstream = flank)
         txs.length<- length(txs.flanks)
         
-        TssEnrichmentScores<- BiocParallel::bplapply(cvgs, TssEnrichmentSingleCell, txs.flanks, BPPARAM = multicoreParam)
+        TssEnrichmentScores<- BiocParallel::bplapply(cvgs, TssEnrichmentSingleCell, txs.flanks, BPPARAM = multicoreParam, strand.aware = strand.aware)
 
         enrichment<- do.call("rbind", TssEnrichmentScores)
         return(enrichment)
 }    
 
-TssEnrichmentSingleCell<- function(cvg, txs.flanks){
+TssEnrichmentSingleCell<- function(cvg, txs.flanks, strand.aware = TRUE){
         ## remove tss not in the coverage and assign a unique id for each tss: X_rank
         txs.flanks<- constrainRanges(cvg, txs.flanks)
         txs.length<- length(txs.flanks)
