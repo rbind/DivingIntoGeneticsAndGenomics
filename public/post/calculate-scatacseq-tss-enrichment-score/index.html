@@ -305,7 +305,7 @@ From the Encode page:
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    6 min read
+    7 min read
   </span>
   
 
@@ -540,6 +540,10 @@ TssEnrichmentFromFrags &lt;- function(frag_gz_file,
                 validBarcodes&lt;- read_tsv(barcodeList, col_names = F)
                 frags_valid&lt;- frags_valid[frags_valid$V4 %in% validBarcodes$X1]
         }
+        
+        # common chromosome names, do it per cell instead, see TssEnrichmentSingleCell
+        seqlev&lt;- intersect(seqlevels(frags_valid), seqlevels(txs))
+        frags_valid&lt;- keepSeqlevels(frags_valid, seqlev, pruning.mode=&quot;coarse&quot;)
         
         # calculate coverage per cell
         frags_valid_per_cell&lt;- split(frags_valid, frags_valid$V4)

@@ -267,6 +267,10 @@ TssEnrichmentFromFrags &amp;lt;- function(frag_gz_file,
                 frags_valid&amp;lt;- frags_valid[frags_valid$V4 %in% validBarcodes$X1]
         }
         
+        # common chromosome names, do it per cell instead, see TssEnrichmentSingleCell
+        seqlev&amp;lt;- intersect(seqlevels(frags_valid), seqlevels(txs))
+        frags_valid&amp;lt;- keepSeqlevels(frags_valid, seqlev, pruning.mode=&amp;quot;coarse&amp;quot;)
+        
         # calculate coverage per cell
         frags_valid_per_cell&amp;lt;- split(frags_valid, frags_valid$V4)
         

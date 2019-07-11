@@ -165,6 +165,10 @@ TssEnrichmentFromFrags <- function(frag_gz_file,
                 frags_valid<- frags_valid[frags_valid$V4 %in% validBarcodes$X1]
         }
         
+        # common chromosome names, do it per cell instead, see TssEnrichmentSingleCell
+        seqlev<- intersect(seqlevels(frags_valid), seqlevels(txs))
+        frags_valid<- keepSeqlevels(frags_valid, seqlev, pruning.mode="coarse")
+        
         # calculate coverage per cell
         frags_valid_per_cell<- split(frags_valid, frags_valid$V4)
         
