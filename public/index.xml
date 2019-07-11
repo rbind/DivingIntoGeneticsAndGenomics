@@ -287,13 +287,16 @@ TssEnrichmentFromFrags &amp;lt;- function(frag_gz_file,
                             downstream = flank)
         txs.length&amp;lt;- length(txs.flanks)
         
-        TssEnrichmentScores&amp;lt;- BiocParallel::bplapply(cvgs, TssEnrichmentSingleCell, txs.flanks, BPPARAM = multicoreParam, strand.aware = strand.aware)
+        TssEnrichmentScores&amp;lt;- BiocParallel::bplapply(cvgs, TssEnrichmentSingleCell, txs.flanks, strand.aware = strand.aware, endFlank = endFlank, flank = flank, highest_tss_flank, smooth = smooth, BPPARAM = multicoreParam)
 
         enrichment&amp;lt;- do.call(&amp;quot;rbind&amp;quot;, TssEnrichmentScores)
         return(enrichment)
 }    
 
-TssEnrichmentSingleCell&amp;lt;- function(cvg, txs.flanks, strand.aware = TRUE){
+TssEnrichmentSingleCell&amp;lt;- function(cvg, txs.flanks, strand.aware = TRUE, flank = 1000,
+                               endFlank = 100,
+                               highest_tss_flank= 50,
+                               smooth = 50 ){
         ## remove tss not in the coverage and assign a unique id for each tss: X_rank
         txs.flanks&amp;lt;- constrainRanges(cvg, txs.flanks)
         txs.length&amp;lt;- length(txs.flanks)
