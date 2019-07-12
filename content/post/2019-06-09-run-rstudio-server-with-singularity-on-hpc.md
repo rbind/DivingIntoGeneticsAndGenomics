@@ -97,3 +97,41 @@ You can then type in the path you want to jump to.
 ### Submit a slurm job
 
 If you do not have a big computing node that you can run interactive job, you can follow Nathan's [tutorial](https://www.rocker-project.org/use/singularity/) on how to submit slurm job to run Rstudio server with singularity.
+
+### Fix home directory filled up issue
+
+I am enjoying Rstudio with my HPC large computing nodes and suddenly I got emails from the HPC staff saying I am using up my home directory space. It turns out Rstudio writes the suspended session files to `~/.rstudio/` folder. I `ncdu` the folder and it is 34G! I googled around and found exactly this [Filling up the home directory with RStudio Server](https://support.rstudio.com/hc/en-us/articles/218417097-Filling-up-the-home-directory-with-RStudio-Server). 
+
+One of the solution is to turn off session time out. 
+
+put  `session-timeout-minutes=0` in the `/etc/rstudio/rsession.conf` file.
+
+Let me take a look at the file inside the container:
+
+```bash
+singularity shell rstudio.simg
+
+cat /etc/rstudio/rsession.conf
+# R Session Configuration File
+
+```
+
+It is an empty file. I will make a 
+rsession.conf file in the home directory of the host machine
+adding that one line.
+
+Now, bind the modified rsession.conf file in host to the ression.conf file
+inside the container:
+
+```bash
+cat ~/resession.conf
+# R Session Configuration File
+session-timeout-minutes=0
+
+# now open rstudio server
+PASSWORD='xyz' singularity exec --bind=~/rsession.conf:/etc/rstudio/rsession.conf  rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
+
+```
+
+This should fix the problem :)
+

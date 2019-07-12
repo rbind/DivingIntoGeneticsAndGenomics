@@ -313,7 +313,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    3 min read
+    4 min read
   </span>
   
 
@@ -481,6 +481,41 @@ You can then type in the path you want to jump to.</p>
 <h3 id="submit-a-slurm-job">Submit a slurm job</h3>
 
 <p>If you do not have a big computing node that you can run interactive job, you can follow Nathan&rsquo;s <a href="https://www.rocker-project.org/use/singularity/" target="_blank">tutorial</a> on how to submit slurm job to run Rstudio server with singularity.</p>
+
+<h3 id="fix-home-directory-filled-up-issue">Fix home directory filled up issue</h3>
+
+<p>I am enjoying Rstudio with my HPC large computing nodes and suddenly I got emails from the HPC staff saying I am using up my home directory space. It turns out Rstudio writes the suspended session files to <code>~/.rstudio/</code> folder. I <code>ncdu</code> the folder and it is 34G! I googled around and found exactly this <a href="https://support.rstudio.com/hc/en-us/articles/218417097-Filling-up-the-home-directory-with-RStudio-Server" target="_blank">Filling up the home directory with RStudio Server</a>.</p>
+
+<p>One of the solution is to turn off session time out.</p>
+
+<p>put  <code>session-timeout-minutes=0</code> in the <code>/etc/rstudio/rsession.conf</code> file.</p>
+
+<p>Let me take a look at the file inside the container:</p>
+
+<pre><code class="language-bash">singularity shell rstudio.simg
+
+cat /etc/rstudio/rsession.conf
+# R Session Configuration File
+
+</code></pre>
+
+<p>It is an empty file. I will make a
+rsession.conf file in the home directory of the host machine
+adding that one line.</p>
+
+<p>Now, bind the modified rsession.conf file in host to the ression.conf file
+inside the container:</p>
+
+<pre><code class="language-bash">cat ~/resession.conf
+# R Session Configuration File
+session-timeout-minutes=0
+
+# now open rstudio server
+PASSWORD='xyz' singularity exec --bind=~/rsession.conf:/etc/rstudio/rsession.conf  rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
+
+</code></pre>
+
+<p>This should fix the problem :)</p>
 
     </div>
 

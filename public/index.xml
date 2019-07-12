@@ -103,6 +103,41 @@ You can then type in the path you want to jump to.&lt;/p&gt;
 &lt;h3 id=&#34;submit-a-slurm-job&#34;&gt;Submit a slurm job&lt;/h3&gt;
 
 &lt;p&gt;If you do not have a big computing node that you can run interactive job, you can follow Nathan&amp;rsquo;s &lt;a href=&#34;https://www.rocker-project.org/use/singularity/&#34; target=&#34;_blank&#34;&gt;tutorial&lt;/a&gt; on how to submit slurm job to run Rstudio server with singularity.&lt;/p&gt;
+
+&lt;h3 id=&#34;fix-home-directory-filled-up-issue&#34;&gt;Fix home directory filled up issue&lt;/h3&gt;
+
+&lt;p&gt;I am enjoying Rstudio with my HPC large computing nodes and suddenly I got emails from the HPC staff saying I am using up my home directory space. It turns out Rstudio writes the suspended session files to &lt;code&gt;~/.rstudio/&lt;/code&gt; folder. I &lt;code&gt;ncdu&lt;/code&gt; the folder and it is 34G! I googled around and found exactly this &lt;a href=&#34;https://support.rstudio.com/hc/en-us/articles/218417097-Filling-up-the-home-directory-with-RStudio-Server&#34; target=&#34;_blank&#34;&gt;Filling up the home directory with RStudio Server&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;One of the solution is to turn off session time out.&lt;/p&gt;
+
+&lt;p&gt;put  &lt;code&gt;session-timeout-minutes=0&lt;/code&gt; in the &lt;code&gt;/etc/rstudio/rsession.conf&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;p&gt;Let me take a look at the file inside the container:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;singularity shell rstudio.simg
+
+cat /etc/rstudio/rsession.conf
+# R Session Configuration File
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is an empty file. I will make a
+rsession.conf file in the home directory of the host machine
+adding that one line.&lt;/p&gt;
+
+&lt;p&gt;Now, bind the modified rsession.conf file in host to the ression.conf file
+inside the container:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat ~/resession.conf
+# R Session Configuration File
+session-timeout-minutes=0
+
+# now open rstudio server
+PASSWORD=&#39;xyz&#39; singularity exec --bind=~/rsession.conf:/etc/rstudio/rsession.conf  rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This should fix the problem :)&lt;/p&gt;
 </description>
     </item>
     

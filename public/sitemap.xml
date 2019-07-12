@@ -600,7 +600,7 @@
     
     <url>
     
-      <loc>/categories/docker/</loc>
+      <loc>/tags/docker/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -610,7 +610,7 @@
     
     <url>
     
-      <loc>/tags/docker/</loc>
+      <loc>/categories/docker/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -660,8 +660,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -670,8 +670,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -690,7 +690,7 @@
     
     <url>
     
-      <loc>/categories/hpc/</loc>
+      <loc>/tags/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -700,7 +700,7 @@
     
     <url>
     
-      <loc>/tags/hpc/</loc>
+      <loc>/categories/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -780,16 +780,6 @@
     
     <url>
     
-      <loc>/categories/python/</loc>
-      <lastmod>2019-02-14T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/tags/python/</loc>
       <lastmod>2019-01-28T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -800,8 +790,8 @@
     
     <url>
     
-      <loc>/categories/r/</loc>
-      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <loc>/categories/python/</loc>
+      <lastmod>2019-02-14T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -811,6 +801,16 @@
     <url>
     
       <loc>/tags/r/</loc>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/r/</loc>
       <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -850,16 +850,6 @@
     
     <url>
     
-      <loc>/categories/single-cell/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/tags/single-cell/</loc>
       <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -870,8 +860,8 @@
     
     <url>
     
-      <loc>/categories/singularity/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <loc>/categories/single-cell/</loc>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -881,6 +871,16 @@
     <url>
     
       <loc>/tags/singularity/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/singularity/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
