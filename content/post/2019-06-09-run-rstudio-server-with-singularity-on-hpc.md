@@ -135,3 +135,12 @@ PASSWORD='xyz' singularity exec --bind=~/rsession.conf:/etc/rstudio/rsession.con
 
 This should fix the problem :)
 
+Nathan dived into the source code of Rsutido server https://github.com/rstudio/rstudio/blob/master/src/cpp/server/ServerSessionManager.cpp#L111
+and documentation https://docs.rstudio.com/ide/server-pro/r-sessions.html#user-and-group-profiles
+
+The enironment name of time out is `RSTUDIO_SESSION_TIMEOUT`, so one can do 
+
+```bash
+PASSWORD='xyz' RSTUDIO_SESSION_TIMEOUT='0' singularity exec rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
+```
+to have the same effect of setting up the `rsession.conf` file.

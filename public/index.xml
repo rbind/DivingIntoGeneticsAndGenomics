@@ -138,6 +138,16 @@ PASSWORD=&#39;xyz&#39; singularity exec --bind=~/rsession.conf:/etc/rstudio/rses
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;This should fix the problem :)&lt;/p&gt;
+
+&lt;p&gt;Nathan dived into the source code of Rsutido server &lt;a href=&#34;https://github.com/rstudio/rstudio/blob/master/src/cpp/server/ServerSessionManager.cpp#L111&#34; target=&#34;_blank&#34;&gt;https://github.com/rstudio/rstudio/blob/master/src/cpp/server/ServerSessionManager.cpp#L111&lt;/a&gt;
+and documentation &lt;a href=&#34;https://docs.rstudio.com/ide/server-pro/r-sessions.html#user-and-group-profiles&#34; target=&#34;_blank&#34;&gt;https://docs.rstudio.com/ide/server-pro/r-sessions.html#user-and-group-profiles&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The enironment name of time out is &lt;code&gt;RSTUDIO_SESSION_TIMEOUT&lt;/code&gt;, so one can do&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;PASSWORD=&#39;xyz&#39; RSTUDIO_SESSION_TIMEOUT=&#39;0&#39; singularity exec rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to have the same effect of setting up the &lt;code&gt;rsession.conf&lt;/code&gt; file.&lt;/p&gt;
 </description>
     </item>
     
