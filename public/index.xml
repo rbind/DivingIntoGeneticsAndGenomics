@@ -11,6 +11,26 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Snakemake pipeline post-processing scATAC-seq</title>
+      <link>/project/single-cell-atacseq/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
+      
+      <guid>/project/single-cell-atacseq/</guid>
+      <description>
+
+&lt;h3 id=&#34;what-does-it-do&#34;&gt;What does it do?&lt;/h3&gt;
+
+&lt;p&gt;For single cell ATACseq experiment, one gets a merged bam file for all cells. After going through clustering, one groups similar cells into cell types (cell states). This workflow will split the bam by clusters to create a pseudo bulk bam for each cluster, create bigwig tracks for visulization, call peaks for each cluster and merge the peaks across the clusters. Finally it will count reads per peak per cell from the original bam file on the merged peaks.&lt;/p&gt;
+
+&lt;p&gt;In the future, the peak calling software should be barcode aware, so one does not need to split the bam file by cluster. But for now, I have this work for me.&lt;/p&gt;
+
+&lt;p&gt;You can find the workflow at my &lt;a href=&#34;https://github.com/crazyhottommy/pyflow-scATACseq&#34; target=&#34;_blank&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/rulegraph_scATAC.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Run Rstudio server with singularity on HPC</title>
       <link>/post/run-rstudio-server-with-singularity-on-hpc/</link>
       <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
@@ -2216,191 +2236,6 @@ The work was done in &lt;a href=&#34;http://railab.org/people.html&#34; target=&
 &lt;li&gt;A few more papers to write. I have at least 2 first author papers to finish. It&amp;rsquo;s hanging there forever.&lt;/li&gt;
 &lt;li&gt;Of course, spend time with the family.&lt;/li&gt;
 &lt;/ul&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>A tale of two heatmap functions</title>
-      <link>/post/a-tale-of-two-heatmap-functions/</link>
-      <pubDate>Wed, 19 Dec 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/a-tale-of-two-heatmap-functions/</guid>
-      <description>&lt;p&gt;You probably do not understand heatmap! Please read &lt;a href=&#34;http://www.opiniomics.org/you-probably-dont-understand-heatmaps/&#34;&gt;You probably don’t understand heatmaps by Mick Watson&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;In the blog post, Mick used &lt;code&gt;heatmap&lt;/code&gt; function in the &lt;code&gt;stats&lt;/code&gt; package, I will try to walk you through comparing &lt;code&gt;heatmap&lt;/code&gt;, and &lt;code&gt;heatmap.2&lt;/code&gt; from &lt;code&gt;gplots&lt;/code&gt; package.&lt;/p&gt;
-&lt;p&gt;Before I start, I want to quote this:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;“The defaults of almost every heat map function in R does the hierarchical clustering first, then scales the rows then displays the image”&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;see these two posts in biostar: &lt;a href=&#34;https://www.biostars.org/p/85527/&#34;&gt;post1&lt;/a&gt;&lt;br /&gt;
-and &lt;a href=&#34;https://www.biostars.org/p/15285/&#34;&gt;post2&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;In other words, the &lt;code&gt;scale&lt;/code&gt; parameter inside the &lt;code&gt;heatmap&lt;/code&gt; functions only plays a role in displaying the colors, but does not involve clustering. This is critical to know! We will test to see if this hold true.&lt;/p&gt;
-&lt;div id=&#34;heatmap-function-in-stats-package&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;heatmap function in stats package&lt;/h3&gt;
-&lt;p&gt;Simulate the data. The example is exactly the same as in the Mick Watson’s blog post.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(stats)
-library(gplots)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-## Attaching package: &amp;#39;gplots&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## The following object is masked from &amp;#39;package:stats&amp;#39;:
-## 
-##     lowess&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;h1 &amp;lt;- c(10,20,10,20,10,20,10,20)
-h2 &amp;lt;- c(20,10,20,10,20,10,20,10)
-
-l1 &amp;lt;- c(1,3,1,3,1,3,1,3)
-l2 &amp;lt;- c(3,1,3,1,3,1,3,1)
-
-mat &amp;lt;- rbind(h1,h2,l1,l2)
-
-par(mfrow =c(1,1), mar=c(4,4,1,1))
-plot(1:8,rep(0,8), ylim=c(0,35), pch=&amp;quot;&amp;quot;, xlab=&amp;quot;Time&amp;quot;, ylab=&amp;quot;Gene Expression&amp;quot;)
-
-for (i in 1:nrow(mat)) {
-lines(1:8,mat[i,], lwd=3, col=i)
-}
-
-legend(1,35,rownames(mat), 1:4, cex=0.7)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In this dummy example, we have four genes (l1, l2, h1, h2) that are measured in 8 time points.&lt;/p&gt;
-&lt;p&gt;when we do clustering, we want to cluster l1 h1 together, and l2 h2 together as they have the same trend across the time points. However, you will notice that the scale of the expression levels of these four genes are different: with h1 and h2 are high, and l1 l2 are low.&lt;/p&gt;
-&lt;p&gt;If we calculate the distance:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#?dist to see other distance measures
-dist(mat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##           h1        h2        l1
-## h2 28.284271                    
-## l1 38.470768 40.496913          
-## l2 40.496913 38.470768  5.656854&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## I will use the default for linkage method: complete
-plot(hclust(dist(mat)))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;The default distance measure is &lt;a href=&#34;https://en.wikipedia.org/wiki/Euclidean_distance&#34;&gt;Eucledian distance&lt;/a&gt;, and you will see h1 and h2 are closer (28.284271), l1 and l2 are closer. This simply because how euclidean distance is defined.&lt;/p&gt;
-&lt;p&gt;Let’s check the help for &lt;code&gt;?heatmap&lt;/code&gt;:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is “row” if symm false, and “none” otherwise.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;symm
-logical indicating if x should be treated symmetrically; can only be true when x is a square matrix.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;strong&gt;So the default is scale row inside the &lt;code&gt;heatmap&lt;/code&gt;.&lt;/strong&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## default, I will give parameters explicitly
-heatmap(mat, Colv=NA, col=greenred(10), scale = &amp;quot;row&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We do see h1,h2 cluster together; l1 l2 cluster together. Inside heatmap function, the default distance measure is the same as default of &lt;code&gt;dist&lt;/code&gt;, the linkage method is the same as &lt;code&gt;hclust&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;If you read the heatmap carefully, you will find that h1,h2 are with large values, but they have the same red color as l1,l2. &lt;strong&gt;This confirms that heatmap does clustering first, and then scale the row for representing the color!&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;How about if we turn off scale inside &lt;code&gt;heatmap&lt;/code&gt;?&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap(mat, Colv = NA, col=greenred(10), scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;You will see the &lt;strong&gt;clustering does not change, but the color changed!&lt;/strong&gt; l1 and l2 are all green now (small values)&lt;/p&gt;
-&lt;p&gt;How about if we scale the genes before we feed into heatmap? scale works on columns, transpose for rows.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mat.scaled&amp;lt;- t(scale(t(mat), center=TRUE, scale = TRUE))
-mat.scaled&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##          [,1]       [,2]       [,3]       [,4]       [,5]       [,6]
-## h1 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143
-## h2  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143
-## l1 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143
-## l2  0.9354143 -0.9354143  0.9354143 -0.9354143  0.9354143 -0.9354143
-##          [,7]       [,8]
-## h1 -0.9354143  0.9354143
-## h2  0.9354143 -0.9354143
-## l1 -0.9354143  0.9354143
-## l2  0.9354143 -0.9354143
-## attr(,&amp;quot;scaled:center&amp;quot;)
-## h1 h2 l1 l2 
-## 15 15  2  2 
-## attr(,&amp;quot;scaled:scale&amp;quot;)
-##       h1       h2       l1       l2 
-## 5.345225 5.345225 1.069045 1.069045&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Let’s see how the distance change among genes:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dist(mat.scaled)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##          h1       h2       l1
-## h2 5.291503                  
-## l1 0.000000 5.291503         
-## l2 5.291503 0.000000 5.291503&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(hclust(dist(mat.scaled)))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Wow! h1 and l1 are clustered together; l2 and h2 are clustered together.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap(mat.scaled, Colv = NA, col=greenred(10), scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;I hope you understand now how scale the data &lt;strong&gt;before or after&lt;/strong&gt; can affect the looking of your heatmaps.&lt;/p&gt;
-&lt;p&gt;If we do not scale the data beforehand, but we still want l1 and h1 cluster together; l2 and h2 cluster together, we can use a different distance measure.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## correlation among the genes
-cor(t(mat))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##    h1 h2 l1 l2
-## h1  1 -1  1 -1
-## h2 -1  1 -1  1
-## l1  1 -1  1 -1
-## l2 -1  1 -1  1&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## 1- correation to define the distance
-1- cor(t(mat))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##    h1 h2 l1 l2
-## h1  0  2  0  2
-## h2  2  0  2  0
-## l1  0  2  0  2
-## l2  2  0  2  0&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;hc &amp;lt;- hclust(as.dist(1-cor(t(mat))))
-plot(hc)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Indeed, h1 and l1 are together; h2 and l2 are together.&lt;/p&gt;
-&lt;p&gt;Now, we plot the heatmap, but set scale = “none” inside heatmap&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap(mat, Colv = NA, Rowv=as.dendrogram(hc), col=greenred(10), scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Is this what you expect?! Yes, l1 and h2 are clustered together; l1 and h1 clustered together. but because the value range are different, you see l1 and l2 are green (small values); h1 and h2 are red (big values).&lt;/p&gt;
-&lt;p&gt;The magic will happen if we set scale =“row” which is the default:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap(mat, Colv = NA, Rowv=as.dendrogram(hc), col=greenred(10), scale = &amp;quot;row&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;I hope I have clarified a bit for the complications of heatmaps.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;heatmap.2-function-in-gplots-package&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;heatmap.2 function in gplots package&lt;/h3&gt;
-&lt;blockquote&gt;
-&lt;p&gt;scale character indicating if the values should be centered and scaled in either the row direction or the column direction, or none. The default is “none”.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;strong&gt;The default is none!!&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Please also pay attention to the Color Key of the heatmap.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## defaults of heatmap.2, scale is none
-heatmap.2(mat, trace = &amp;quot;none&amp;quot;, Colv= NA, dendrogram = &amp;quot;row&amp;quot;, scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## FACT of heatmap functions in R: it does clustering first and then use the scale argument (if set) to represent the data.
-heatmap.2(mat, trace = &amp;quot;none&amp;quot;, Colv= NA, dendrogram = &amp;quot;row&amp;quot;, scale = &amp;quot;row&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;how about we scale the data explicitly first and use euclidean distance. works fine!&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap.2(t(scale(t(mat), center=TRUE, scale=TRUE)), trace = &amp;quot;none&amp;quot;, Colv= NA, dendrogram = &amp;quot;row&amp;quot;, scale = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;use-1--corx-as-distance-and-do-not-scale-before-hand&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;use 1- cor(x) as distance and do not scale before hand&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap.2(mat, trace = &amp;quot;none&amp;quot;, 
-          Colv= NA, dendrogram = &amp;quot;row&amp;quot;,
-          scale = &amp;quot;none&amp;quot;,
-          hclust=function(x) hclust(x, method=&amp;#39;complete&amp;#39;), distfun=function(x) as.dist(1-cor(t(x))))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;use-1--corx-as-distance-and-do-not-scale-before-hand-but-use-scale-in-the-heatmap.2-function-to-represent-the-colors&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;use 1- cor(x) as distance and do not scale before hand, but use scale in the heatmap.2 function to represent the colors&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap.2(mat, trace = &amp;quot;none&amp;quot;, 
-          Colv= NA, dendrogram = &amp;quot;row&amp;quot;,
-          scale = &amp;quot;row&amp;quot;,
-          hclust=function(x) hclust(x, method=&amp;#39;complete&amp;#39;), distfun=function(x) as.dist(1-cor(t(x))))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;scale-before-hand-and-use-1--corx-as-distance&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;scale before hand and use 1- cor(x) as distance&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;heatmap.2(t(scale(t(mat), center=TRUE, scale=TRUE)), trace = &amp;quot;none&amp;quot;, 
-          Colv= NA, dendrogram = &amp;quot;row&amp;quot;,
-          hclust=function(x) hclust(x, method=&amp;#39;complete&amp;#39;), distfun=function(x) as.dist(1-cor(t(x))))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-19-a-tale-of-two-heatmap-functions_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Note that the dendrogram can be rotated and without changing the clustering. Check &lt;a href=&#34;https://cran.r-project.org/web/packages/dendsort/index.html&#34;&gt;Dendersort&lt;/a&gt; if you want to specify the order of the dendrogram.&lt;/p&gt;
-&lt;p&gt;The &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/&#34;&gt;ComplexHeatmap&lt;/a&gt; package which now I am using mainly &lt;strong&gt;does not&lt;/strong&gt; do any scaling inside the Heatmap function.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;take-home-messages&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Take home messages&lt;/h3&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;Generate heatmap is easy, but make sure to understand the parameters in each heatmap function.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Understand your data and what you are looking for. Do you need to scale your data before clustering?&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Distance measure and linkage method can drastically affect your clustering. Choose the right one for your data!. Please also read my &lt;a href=&#34;https://rpubs.com/crazyhottommy/heatmap_demystified&#34;&gt;last post&lt;/a&gt; on this theme.&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
 </description>
     </item>
     

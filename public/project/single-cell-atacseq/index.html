@@ -17,12 +17,10 @@
       
     
   
-  <meta name="description" content="The goal of scclusteval(Single Cell Cluster Evaluation) is to evaluate the single cell clustering stability by boostrapping/subsampling the cells and provide many visualization methods for comparing clusters.
-for Theory behind the method, see Christian Henning, “Cluster-wise assessment of cluster stability,” Research Report 271, Dept. of Statistical Science, University College London, December 2006)
-You can find the package at my github.">
+  <meta name="description" content="What does it do? For single cell ATACseq experiment, one gets a merged bam file for all cells. After going through clustering, one groups similar cells into cell types (cell states). This workflow will split the bam by clusters to create a pseudo bulk bam for each cluster, create bigwig tracks for visulization, call peaks for each cluster and merge the peaks across the clusters. Finally it will count reads per peak per cell from the original bam file on the merged peaks.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/project/evaluating-scrnaseq-cluster/">
+  <link rel="alternate" hreflang="en-us" href="/project/single-cell-atacseq/">
 
   
 
@@ -87,7 +85,7 @@ You can find the package at my github.">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/project/evaluating-scrnaseq-cluster/">
+  <link rel="canonical" href="/project/single-cell-atacseq/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -95,22 +93,20 @@ You can find the package at my github.">
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="DNA confesses Data speak">
-  <meta property="og:url" content="/project/evaluating-scrnaseq-cluster/">
-  <meta property="og:title" content="Evaluating single cell RNAseq cluster stability | DNA confesses Data speak">
-  <meta property="og:description" content="The goal of scclusteval(Single Cell Cluster Evaluation) is to evaluate the single cell clustering stability by boostrapping/subsampling the cells and provide many visualization methods for comparing clusters.
-for Theory behind the method, see Christian Henning, “Cluster-wise assessment of cluster stability,” Research Report 271, Dept. of Statistical Science, University College London, December 2006)
-You can find the package at my github."><meta property="og:image" content="/img/headers/scclusteval.png">
+  <meta property="og:url" content="/project/single-cell-atacseq/">
+  <meta property="og:title" content="Snakemake pipeline post-processing scATAC-seq | DNA confesses Data speak">
+  <meta property="og:description" content="What does it do? For single cell ATACseq experiment, one gets a merged bam file for all cells. After going through clustering, one groups similar cells into cell types (cell states). This workflow will split the bam by clusters to create a pseudo bulk bam for each cluster, create bigwig tracks for visulization, call peaks for each cluster and merge the peaks across the clusters. Finally it will count reads per peak per cell from the original bam file on the merged peaks."><meta property="og:image" content="/img/headers/bubbles-wide.jpg">
   <meta property="og:locale" content="en-us">
   
-  <meta property="article:published_time" content="2019-02-05T00:00:00-05:00">
+  <meta property="article:published_time" content="2019-07-17T00:00:00-04:00">
   
-  <meta property="article:modified_time" content="2019-02-05T00:00:00-05:00">
-  
-
-  
+  <meta property="article:modified_time" content="2019-07-17T00:00:00-04:00">
   
 
-  <title>Evaluating single cell RNAseq cluster stability | DNA confesses Data speak</title>
+  
+  
+
+  <title>Snakemake pipeline post-processing scATAC-seq | DNA confesses Data speak</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -286,7 +282,7 @@ You can find the package at my github."><meta property="og:image" content="/img/
 <div class="article-header">
   
   
-    <img src="/img/headers/scclusteval.png" class="article-banner" itemprop="image">
+    <img src="/img/headers/bubbles-wide.jpg" class="article-banner" itemprop="image">
   
 
   <span class="article-header-caption">My caption 😄</span>
@@ -297,7 +293,7 @@ You can find the package at my github."><meta property="og:image" content="/img/
   <div class="article-container">
 
     <div class="pub-title">
-      <h1 itemprop="name">Evaluating single cell RNAseq cluster stability</h1>
+      <h1 itemprop="name">Snakemake pipeline post-processing scATAC-seq</h1>
       <span class="pub-authors" itemprop="author">&nbsp;</span>
       <span class="pull-right">
         
@@ -305,35 +301,35 @@ You can find the package at my github."><meta property="og:image" content="/img/
   <ul class="share">
     <li>
       <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=Evaluating%20single%20cell%20RNAseq%20cluster%20stability&amp;url=%2fproject%2fevaluating-scrnaseq-cluster%2f"
+         href="https://twitter.com/intent/tweet?text=Snakemake%20pipeline%20post-processing%20scATAC-seq&amp;url=%2fproject%2fsingle-cell-atacseq%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-twitter"></i>
       </a>
     </li>
     <li>
       <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=%2fproject%2fevaluating-scrnaseq-cluster%2f"
+         href="https://www.facebook.com/sharer.php?u=%2fproject%2fsingle-cell-atacseq%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-facebook"></i>
       </a>
     </li>
     <li>
       <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fproject%2fevaluating-scrnaseq-cluster%2f&amp;title=Evaluating%20single%20cell%20RNAseq%20cluster%20stability"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fproject%2fsingle-cell-atacseq%2f&amp;title=Snakemake%20pipeline%20post-processing%20scATAC-seq"
          target="_blank" rel="noopener">
         <i class="fa fa-linkedin"></i>
       </a>
     </li>
     <li>
       <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=%2fproject%2fevaluating-scrnaseq-cluster%2f&amp;title=Evaluating%20single%20cell%20RNAseq%20cluster%20stability"
+         href="http://service.weibo.com/share/share.php?url=%2fproject%2fsingle-cell-atacseq%2f&amp;title=Snakemake%20pipeline%20post-processing%20scATAC-seq"
          target="_blank" rel="noopener">
         <i class="fa fa-weibo"></i>
       </a>
     </li>
     <li>
       <a class="email"
-         href="mailto:?subject=Evaluating%20single%20cell%20RNAseq%20cluster%20stability&amp;body=%2fproject%2fevaluating-scrnaseq-cluster%2f">
+         href="mailto:?subject=Snakemake%20pipeline%20post-processing%20scATAC-seq&amp;body=%2fproject%2fsingle-cell-atacseq%2f">
         <i class="fa fa-envelope"></i>
       </a>
     </li>
@@ -347,13 +343,17 @@ You can find the package at my github."><meta property="og:image" content="/img/
     
 
     <div class="article-style" itemprop="articleBody">
-      <p>The goal of scclusteval(Single Cell Cluster Evaluation) is to evaluate the single cell clustering stability by boostrapping/subsampling the cells and provide many visualization methods for comparing clusters.</p>
+      
 
-<p>for Theory behind the method, see Christian Henning, “Cluster-wise assessment of cluster stability,” Research Report 271, Dept. of Statistical Science, University College London, December 2006)</p>
+<h3 id="what-does-it-do">What does it do?</h3>
 
-<p>You can find the package at my <a href="https://github.com/crazyhottommy/scclusteval" target="_blank">github</a>.</p>
+<p>For single cell ATACseq experiment, one gets a merged bam file for all cells. After going through clustering, one groups similar cells into cell types (cell states). This workflow will split the bam by clusters to create a pseudo bulk bam for each cluster, create bigwig tracks for visulization, call peaks for each cluster and merge the peaks across the clusters. Finally it will count reads per peak per cell from the original bam file on the merged peaks.</p>
 
-<p><img src="/img/raincloud_cluster.png" alt="" /></p>
+<p>In the future, the peak calling software should be barcode aware, so one does not need to split the bam file by cluster. But for now, I have this work for me.</p>
+
+<p>You can find the workflow at my <a href="https://github.com/crazyhottommy/pyflow-scATACseq" target="_blank">github</a>.</p>
+
+<p><img src="/img/rulegraph_scATAC.png" alt="" /></p>
 
     </div>
 
@@ -362,11 +362,11 @@ You can find the package at my github."><meta property="og:image" content="/img/
 
 <div class="article-tags">
   
-  <a class="btn btn-primary btn-outline" href="/tags/r/">R</a>
+  <a class="btn btn-primary btn-outline" href="/tags/python/">python</a>
   
-  <a class="btn btn-primary btn-outline" href="/tags/scrnaseq/">scRNAseq</a>
+  <a class="btn btn-primary btn-outline" href="/tags/scatacseq/">scATACseq</a>
   
-  <a class="btn btn-primary btn-outline" href="/tags/cluster/">cluster</a>
+  <a class="btn btn-primary btn-outline" href="/tags/snakemake/">snakemake</a>
   
 </div>
 
@@ -396,15 +396,10 @@ You can find the package at my github."><meta property="og:image" content="/img/
 <div class="article-container article-widget">
   <div class="post-nav">
   
-  <div class="post-nav-item">
-    <div class="meta-nav">Next</div>
-    <a href="/project/single-cell-atacseq/" rel="next">Snakemake pipeline post-processing scATAC-seq</a>
-  </div>
-  
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="/project/snakemake-pipelines/" rel="prev">Snakemake Pipelines</a>
+    <a href="/project/evaluating-scrnaseq-cluster/" rel="prev">Evaluating single cell RNAseq cluster stability</a>
   </div>
   
 </div>

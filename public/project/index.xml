@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Tue, 05 Feb 2019 00:00:00 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 17 Jul 2019 00:00:00 -0400</lastBuildDate>
     
 	<atom:link href="/project/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Snakemake pipeline post-processing scATAC-seq</title>
+      <link>/project/single-cell-atacseq/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
+      
+      <guid>/project/single-cell-atacseq/</guid>
+      <description>What does it do? For single cell ATACseq experiment, one gets a merged bam file for all cells. After going through clustering, one groups similar cells into cell types (cell states). This workflow will split the bam by clusters to create a pseudo bulk bam for each cluster, create bigwig tracks for visulization, call peaks for each cluster and merge the peaks across the clusters. Finally it will count reads per peak per cell from the original bam file on the merged peaks.</description>
+    </item>
     
     <item>
       <title>Evaluating single cell RNAseq cluster stability</title>
