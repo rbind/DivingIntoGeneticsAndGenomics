@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/develop-bioconductor-packages-with-docker-container/</loc>
+      <lastmod>2019-08-06T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/project/single-cell-atacseq/</loc>
       <lastmod>2019-07-17T00:00:00-04:00</lastmod>
     </url>
@@ -529,8 +538,18 @@
     
     <url>
     
+      <loc>/tags/bioconductor/</loc>
+      <lastmod>2019-08-06T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/categories/bioinformatics/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <lastmod>2019-08-06T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -550,7 +569,7 @@
     <url>
     
       <loc>/categories/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <lastmod>2019-08-06T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -749,6 +768,16 @@
     
     <url>
     
+      <loc>/categories/package/</loc>
+      <lastmod>2019-08-06T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/pipeline/</loc>
       <lastmod>2016-04-27T00:00:00-04:00</lastmod>
       <priority>0</priority>
@@ -820,7 +849,7 @@
     <url>
     
       <loc>/categories/r/</loc>
-      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <lastmod>2019-08-06T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

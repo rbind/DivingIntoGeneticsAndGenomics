@@ -13,6 +13,21 @@
     
     
     <item>
+      <title>Develop Bioconductor packages with docker container</title>
+      <link>/post/develop-bioconductor-packages-with-docker-container/</link>
+      <pubDate>Tue, 06 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/develop-bioconductor-packages-with-docker-container/</guid>
+      <description>Readings links to read:
+ https://www.bioconductor.org/developers/package-guidelines/#rcode
+ https://github.com/Bioconductor/Contributions
+ use container https://github.com/Bioconductor/bioconductor_full
+  I am following the last link.
+pull the container docker pull bioconductor/bioconductor_full:devel docker images REPOSITORY TAG IMAGE ID CREATED SIZE bioconductor/bioconductor_full devel ae3ec2be7376 3 hours ago 5.7GB seuratv3 latest 9b358ab1fd63 2 days ago 2.76GB  It is 5.7G in size.
+start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.</description>
+    </item>
+    
+    <item>
       <title>Run Rstudio server with singularity on HPC</title>
       <link>/post/run-rstudio-server-with-singularity-on-hpc/</link>
       <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>

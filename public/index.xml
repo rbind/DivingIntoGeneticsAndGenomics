@@ -11,6 +11,113 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Develop Bioconductor packages with docker container</title>
+      <link>/post/develop-bioconductor-packages-with-docker-container/</link>
+      <pubDate>Tue, 06 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/develop-bioconductor-packages-with-docker-container/</guid>
+      <description>
+
+&lt;h3 id=&#34;readings&#34;&gt;Readings&lt;/h3&gt;
+
+&lt;p&gt;links to read:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.bioconductor.org/developers/package-guidelines/#rcode&#34; target=&#34;_blank&#34;&gt;https://www.bioconductor.org/developers/package-guidelines/#rcode&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/Bioconductor/Contributions&#34; target=&#34;_blank&#34;&gt;https://github.com/Bioconductor/Contributions&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;use container  &lt;a href=&#34;https://github.com/Bioconductor/bioconductor_full&#34; target=&#34;_blank&#34;&gt;https://github.com/Bioconductor/bioconductor_full&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I am following the last link.&lt;/p&gt;
+
+&lt;h3 id=&#34;pull-the-container&#34;&gt;pull the container&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;docker pull bioconductor/bioconductor_full:devel
+docker images 
+
+REPOSITORY                       TAG                  IMAGE ID            CREATED             SIZE
+bioconductor/bioconductor_full   devel                ae3ec2be7376        3 hours ago         5.7GB
+seuratv3                         latest               9b358ab1fd63        2 days ago          2.76GB
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is 5.7G in size.&lt;/p&gt;
+
+&lt;p&gt;start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.g. 8080).  docker Rstudio default port is &lt;code&gt;8787&lt;/code&gt;, change the host port to &lt;code&gt;8080&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;mkdir -p ~/R/host-site-library
+
+docker run                                      \
+  -e PASSWORD=&amp;quot;xyz&amp;quot;                   \
+  -p 8080:8787                                \
+  -v ~/R/host-site-library:/usr/local/lib/R/host-site-library  \
+  -v ~/github_repos:/home/rstudio \
+  bioconductor/bioconductor_full:devel
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;NOTE: The path &lt;code&gt;~/R/host-site-library&lt;/code&gt; is mapped to .libPaths() in R. So, when R is started, all the libraries in the host directory &lt;code&gt;host-site-library&lt;/code&gt; are available to R. It is stored on your machine mounted from the volume you fill in place of host-site-library.&lt;/p&gt;
+
+&lt;p&gt;The mounted path must be an &lt;strong&gt;absolute path&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;I also mounted the &lt;code&gt;github_repo&lt;/code&gt; folder in my host machine to the docker home directory. Because every time you exit a container and start it again, the modification you did to the container will be gone (unless you make an modified image and use that for the next time). I will save the R package in my &lt;code&gt;~/github_repo&lt;/code&gt; folder in the host machine.&lt;/p&gt;
+
+&lt;p&gt;type &lt;code&gt;localhost:8080&lt;/code&gt;, you should see the Rstudio login page. username is &lt;code&gt;rstudio&lt;/code&gt;, password is &lt;code&gt;xyz&lt;/code&gt; in this dummy example.&lt;/p&gt;
+
+&lt;p&gt;In Rstudio:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;&amp;gt; .libPaths()
+[1] &amp;quot;/usr/local/lib/R/host-site-library&amp;quot; &amp;quot;/usr/local/lib/R/site-library&amp;quot;     
+[3] &amp;quot;/usr/local/lib/R/library&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;you will see &lt;code&gt;/usr/local/lib/R/host-site-library&lt;/code&gt; is in the &lt;code&gt;libpath&lt;/code&gt;, that corresponds to the &lt;code&gt;~/R/host-site-library&lt;/code&gt; in the host machine, if you do package installation, it will be installed in the&lt;code&gt;~/R/host-site-library&lt;/code&gt; .&lt;/p&gt;
+
+&lt;h3 id=&#34;start-an-r-package-use-usethis&#34;&gt;start an R package use usethis&lt;/h3&gt;
+
+&lt;p&gt;follow these two blog posts and &lt;a href=&#34;http://r-pkgs.had.co.nz/&#34; target=&#34;_blank&#34;&gt;R packages book&lt;/a&gt; by Hadley Wickham:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://blog.methodsconsultants.com/posts/developing-r-packages-using-gitlab-ci-part-i/&#34; target=&#34;_blank&#34;&gt;https://blog.methodsconsultants.com/posts/developing-r-packages-using-gitlab-ci-part-i/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.hvitfeldt.me/blog/usethis-workflow-for-package-development/&#34; target=&#34;_blank&#34;&gt;https://www.hvitfeldt.me/blog/usethis-workflow-for-package-development/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;install.packages(c(&amp;quot;devtools&amp;quot;, &amp;quot;roxygen2&amp;quot;, &amp;quot;usethis&amp;quot;, &amp;quot;available&amp;quot;, &amp;quot;rmarkdown&amp;quot;))
+
+## check if the package name is avaiable (not used by others)
+library(available)
+available(&amp;quot;myawesomepackage&amp;quot;)
+
+library(usethis)
+usethis::create_package(&amp;quot;~/myawesomepackage&amp;quot;)
+
+use_git()
+use_github()
+use_mit_license(&amp;quot;Ming Tang&amp;quot;)
+usethis::use_pipe()
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add a function&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;usethis::use_r(&amp;quot;myawesomefunc&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On mac:&lt;br /&gt;
+&lt;code&gt;command + option + shift + R&lt;/code&gt; for inserting roxygen comment.&lt;br /&gt;
+&lt;code&gt;command + shift + D&lt;/code&gt; for documentation.&lt;br /&gt;
+&lt;code&gt;command + shfit + B&lt;/code&gt; for building package.&lt;/p&gt;
+
+&lt;p&gt;add more functions, repeat.&lt;/p&gt;
+
+&lt;h3 id=&#34;next&#34;&gt;Next&lt;/h3&gt;
+
+&lt;p&gt;Next is to add test and setup some continuous integration. Read this &lt;a href=&#34;https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/&#34; target=&#34;_blank&#34;&gt;Automate testing of your R package using Travis CI, Codecov, and testthat&lt;/a&gt; by Jean Fan.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Snakemake pipeline post-processing scATAC-seq</title>
       <link>/project/single-cell-atacseq/</link>
       <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
@@ -2182,60 +2289,6 @@ For single cell data, permutation can take a long time, that’s why in &lt;code
 option &lt;code&gt;prop.freq&lt;/code&gt; (Proportion of the data to randomly permute for each replicate) to
 permute only a subset of the data matrix.&lt;/p&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>The end of 2018</title>
-      <link>/post/the-end-of-2018/</link>
-      <pubDate>Fri, 28 Dec 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/the-end-of-2018/</guid>
-      <description>
-
-&lt;p&gt;It is almost the end of 2018. It is a good time to review what I have achieved during the year
-and look forward to a brand new 2019. I wrote a similar post for 2017 &lt;a href=&#34;http://crazyhottommy.blogspot.com/2017/12/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&#34;some-highlights-of-the-year-2018&#34;&gt;Some highlights of the year 2018:&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;My son Noah Tang was born in April. He is so lovely and we love him so much. Can&amp;rsquo;t believe he is
-almost 9 months old.
-&lt;img src=&#34;/img/noah.jpg&#34; alt=&#34;&#34; /&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Our epigenomic project was selected by the &lt;a href=&#34;https://bigdatau.ini.usc.edu/roadtrip&#34; target=&#34;_blank&#34;&gt;Data Science Road-Trip program&lt;/a&gt; by USC. I spent 2 weeks in PNNL and worked closely with &lt;a href=&#34;https://www.pnnl.gov/science/staff/staff_info.asp?staff_num=8785&#34; target=&#34;_blank&#34;&gt;Lisa Bramer&lt;/a&gt; and developed a pipeline to do feature selection using machine learning from a lot of chromHMM data sets. You can find the github repo &lt;a href=&#34;https://github.com/crazyhottommy/pyflow-chromForest/tree/vsurf_merge&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;. I kept a note for everyday what I did as well at &lt;a href=&#34;https://github.com/crazyhottommy/Epigenome_RoadTrip&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;. I will think about writing it up.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;I finally migrated my &lt;a href=&#34;http://crazyhottommy.blogspot.com/&#34; target=&#34;_blank&#34;&gt;previous blog&lt;/a&gt; to blogdown which you are reading now :) Oh my, I love it. It makes blogging so much fun.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;I taught the ChIP-seq lesson for &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/talk/2018-dibsi-course/&#34; target=&#34;_blank&#34;&gt;2018 ANGUS Next-Gen Sequence Analysis Workshop&lt;/a&gt; held in UC Davis from 7/1/2018 to 7/14/2018, and TAed for the rest of the sessions. It was a great teaching experience for me. I got to know many people and built connections. Most importantly, I enjoyed the teaching very much! Thanks &lt;a href=&#34;https://biology.ucdavis.edu/people/c-titus-brown&#34; target=&#34;_blank&#34;&gt;Titus Brown&lt;/a&gt; for the invitation. I highly recommend you to attend this workshop if you want to start learning sequencing data analysis. The environment is so welcoming and Titus is so hilarious:) I was in the workshop to learn in 2014 and now I am back to teach!&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;I went back to University of Florida where I did my PhD to give a &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/talk/2018-uf-talk/&#34; target=&#34;_blank&#34;&gt;talk&lt;/a&gt;. It was very nice to be back home and catch up with my supervisor, other professors and some church friends!&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Several co-author &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/&#34; target=&#34;_blank&#34;&gt;papers/see the publications section&lt;/a&gt; are out in 2018. My first video shot for JOVE can be found at &lt;a href=&#34;https://www.jove.com/video/56972/an-integrated-platform-for-genome-wide-mapping-chromatin-states-using&#34; target=&#34;_blank&#34;&gt;https://www.jove.com/video/56972/an-integrated-platform-for-genome-wide-mapping-chromatin-states-using&lt;/a&gt;. I was nervous but It was fun.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;In addition, two papers are out in Biorxiv at the end of 2018. I am co-first author in one of them. Both papers describe how epigenetic regulator KMT2D mediate tumor progression in melanoma and lung cancer, respectively. We are in the process submitting those papers to journals, but you can read more details at &lt;a href=&#34;https://www.biorxiv.org/content/early/2018/12/28/507202&#34; target=&#34;_blank&#34;&gt;https://www.biorxiv.org/content/early/2018/12/28/507202&lt;/a&gt; and &lt;a href=&#34;https://www.biorxiv.org/content/early/2018/12/27/507327&#34; target=&#34;_blank&#34;&gt;https://www.biorxiv.org/content/early/2018/12/27/507327&lt;/a&gt;.&lt;br /&gt;
-The work was done in &lt;a href=&#34;http://railab.org/people.html&#34; target=&#34;_blank&#34;&gt;Kunal Rai&amp;rsquo;s lab&lt;/a&gt; where I had a chance to play with large amount of ChIP-seq data sets. My &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/project/snakemake-pipelines/&#34; target=&#34;_blank&#34;&gt;Snakemake pipeline&lt;/a&gt; is being used in the lab by others and has processed thousands of ChIP-seq data sets.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;My three &lt;a href=&#34;https://github.com/crazyhottommy&#34; target=&#34;_blank&#34;&gt;most stared github repos&lt;/a&gt; were cited in a paper &lt;a href=&#34;https://www.frontiersin.org/articles/10.3389/fbioe.2018.00198/full&#34; target=&#34;_blank&#34;&gt;GitHub Statistics as a Measure of the Impact of Open-Source Bioinformatics Software&lt;/a&gt; by &lt;a href=&#34;https://medschool.vcu.edu/expertise/detail.html?id=mdozmorov&#34; target=&#34;_blank&#34;&gt;Mikhail G. Dozmorov&lt;/a&gt;. The table summarizing the popular github repos can be found at &lt;a href=&#34;https://github.com/mdozmorov/bioinformatics-impact/blob/master/tables/table_1.md&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;. It&amp;rsquo;s over three years&amp;rsquo; cumulative work for those repos.  I am so glad that my notes are helpful for other researchers. I am always supportive for open science and believe sharing knowledge is the way to promote science progress.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;I joined Harvard FAS Informatics as a bioinformatics scientist in October and started working on single-cell RNAseq with &lt;a href=&#34;https://www.dulaclab.com/&#34; target=&#34;_blank&#34;&gt;Dulac lab&lt;/a&gt; and will have a chance to play with other single molecule transcriptome data generated from &lt;a href=&#34;http://zhuang.harvard.edu/&#34; target=&#34;_blank&#34;&gt;Xiaowei Zhuang&amp;rsquo;s lab&lt;/a&gt;. I am really excited about learning more!&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;I have my green card approved. This is important so I can work in the US without worrying about my visa status. Thanks to my previous postdoc adviser &lt;a href=&#34;https://www.jax.org/research-and-faculty/faculty/roel-verhaak&#34; target=&#34;_blank&#34;&gt;Roel Verhaak&lt;/a&gt;, &lt;a href=&#34;http://pinellolab.org/&#34; target=&#34;_blank&#34;&gt;Luca Pinello&lt;/a&gt;, &lt;a href=&#34;https://www.ialbert.me/&#34; target=&#34;_blank&#34;&gt;Istvan Albert&lt;/a&gt;,  &lt;a href=&#34;https://blogs.cornell.edu/sethupathylab/&#34; target=&#34;_blank&#34;&gt;Praveen Sethupathy&lt;/a&gt; and &lt;a href=&#34;https://medicine.iu.edu/faculty/14584/cheng-liang/&#34; target=&#34;_blank&#34;&gt;Liang Cheng&lt;/a&gt; for writing recommendation letters. I will need to visit Luca&amp;rsquo;s lab to say thanks personally, I have not had a chance to meet him after I moved to Harvard.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;I finally got a chance to write my frist R packagefor single cell cluster stability testing. It is in github: &lt;a href=&#34;https://github.com/crazyhottommy/scclusteval&#34; target=&#34;_blank&#34;&gt;scclusteval&lt;/a&gt;. I implemented some functions for visualizing single cell data and evaluating cluster stability. I will make it public once I clean up a bit. I was so satisfied to have it installed by &lt;code&gt;devtools::install_github()&lt;/code&gt; and all functions and help pages are readily available as a package. I mean I am gradually transiting myself from an R user to R programmer. I know I still have a lot to learn, but this is exciting! By the way, I highly recommend the &lt;a href=&#34;https://github.com/r-lib/usethis&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;usethis&lt;/code&gt;&lt;/a&gt; package for writing R packages and read the &lt;a href=&#34;http://r-pkgs.had.co.nz/&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;R pacakges book&lt;/code&gt;&lt;/a&gt; by Hadley Wickham. read &lt;a href=&#34;https://blog.methodsconsultants.com/posts/developing-r-packages-using-gitlab-ci-part-i/&#34; target=&#34;_blank&#34;&gt;this&lt;/a&gt; and &lt;a href=&#34;https://www.hvitfeldt.me/blog/usethis-workflow-for-package-development/&#34; target=&#34;_blank&#34;&gt;this&lt;/a&gt; blog post to get started on how to write a minimal functional R package.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;what-to-expect-in-2019&#34;&gt;What to expect in 2019&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;I will have a lot of opportunities to teach workshops on R, Unix and single-cell RNAseq at my current position.&lt;/li&gt;
-&lt;li&gt;A lot to learn on neuroscience. I will audit classes taught by Catherine Dulac.&lt;/li&gt;
-&lt;li&gt;I will guest lecture a few lessons for &lt;a href=&#34;https://canvas.harvard.edu/courses/39391&#34; target=&#34;_blank&#34;&gt;STAT 115: Introduction to Computational Biology and Bioinformatics&lt;/a&gt; taught by &lt;a href=&#34;http://liulab.dfci.harvard.edu/&#34; target=&#34;_blank&#34;&gt;Sheirly Liu&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;I would love to learn more on deep learning and apply it to single cell data analysis. Currently, I am taking classes from Coursera.&lt;/li&gt;
-&lt;li&gt;Attend several conferences. Would love to catch up with the twitter-verse in person.&lt;/li&gt;
-&lt;li&gt;A few more papers to write. I have at least 2 first author papers to finish. It&amp;rsquo;s hanging there forever.&lt;/li&gt;
-&lt;li&gt;Of course, spend time with the family.&lt;/li&gt;
-&lt;/ul&gt;
 </description>
     </item>
     

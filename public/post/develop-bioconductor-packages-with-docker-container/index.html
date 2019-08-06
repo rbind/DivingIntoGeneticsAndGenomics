@@ -17,16 +17,16 @@
       
     
   
-  <meta name="description" content="Background Please read the following before go ahead:
- what is docker?
- what is Rocker?
- what is singularity?
-  from Harvard Research computing website: Odyssey has singularity installed.
- Why Singularity? There are some important differences between Docker and Singularity:
-  Docker and Singularity have their own container formats. Docker containers may be imported to run via Singularity. Docker containers need root privileges for full functionality which is not suitable for a shared HPC environment.">
+  <meta name="description" content="Readings links to read:
+ https://www.bioconductor.org/developers/package-guidelines/#rcode
+ https://github.com/Bioconductor/Contributions
+ use container https://github.com/Bioconductor/bioconductor_full
+  I am following the last link.
+pull the container docker pull bioconductor/bioconductor_full:devel docker images REPOSITORY TAG IMAGE ID CREATED SIZE bioconductor/bioconductor_full devel ae3ec2be7376 3 hours ago 5.7GB seuratv3 latest 9b358ab1fd63 2 days ago 2.76GB  It is 5.7G in size.
+start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/post/run-rstudio-server-with-singularity-on-hpc/">
+  <link rel="alternate" hreflang="en-us" href="/post/develop-bioconductor-packages-with-docker-container/">
 
   
 
@@ -91,7 +91,7 @@
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/post/run-rstudio-server-with-singularity-on-hpc/">
+  <link rel="canonical" href="/post/develop-bioconductor-packages-with-docker-container/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -99,26 +99,26 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="DNA confesses Data speak">
-  <meta property="og:url" content="/post/run-rstudio-server-with-singularity-on-hpc/">
-  <meta property="og:title" content="Run Rstudio server with singularity on HPC | DNA confesses Data speak">
-  <meta property="og:description" content="Background Please read the following before go ahead:
- what is docker?
- what is Rocker?
- what is singularity?
-  from Harvard Research computing website: Odyssey has singularity installed.
- Why Singularity? There are some important differences between Docker and Singularity:
-  Docker and Singularity have their own container formats. Docker containers may be imported to run via Singularity. Docker containers need root privileges for full functionality which is not suitable for a shared HPC environment.">
+  <meta property="og:url" content="/post/develop-bioconductor-packages-with-docker-container/">
+  <meta property="og:title" content="Develop Bioconductor packages with docker container | DNA confesses Data speak">
+  <meta property="og:description" content="Readings links to read:
+ https://www.bioconductor.org/developers/package-guidelines/#rcode
+ https://github.com/Bioconductor/Contributions
+ use container https://github.com/Bioconductor/bioconductor_full
+  I am following the last link.
+pull the container docker pull bioconductor/bioconductor_full:devel docker images REPOSITORY TAG IMAGE ID CREATED SIZE bioconductor/bioconductor_full devel ae3ec2be7376 3 hours ago 5.7GB seuratv3 latest 9b358ab1fd63 2 days ago 2.76GB  It is 5.7G in size.
+start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.">
   <meta property="og:locale" content="en-us">
   
-  <meta property="article:published_time" content="2019-06-09T00:00:00&#43;00:00">
+  <meta property="article:published_time" content="2019-08-06T00:00:00&#43;00:00">
   
-  <meta property="article:modified_time" content="2019-06-09T00:00:00&#43;00:00">
-  
-
-  
+  <meta property="article:modified_time" content="2019-08-06T00:00:00&#43;00:00">
   
 
-  <title>Run Rstudio server with singularity on HPC | DNA confesses Data speak</title>
+  
+  
+
+  <title>Develop Bioconductor packages with docker container | DNA confesses Data speak</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -294,7 +294,7 @@
 
 
   <div class="article-container">
-    <h1 itemprop="name">Run Rstudio server with singularity on HPC</h1>
+    <h1 itemprop="name">Develop Bioconductor packages with docker container</h1>
 
     
 
@@ -302,8 +302,8 @@
 
   <span class="article-date">
     
-    <time datetime="2019-06-09 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
-      Jun 9, 2019
+    <time datetime="2019-08-06 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Aug 6, 2019
     </time>
   </span>
   <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
@@ -313,14 +313,14 @@
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    4 min read
+    2 min read
   </span>
   
 
   
   
   <span class="middot-divider"></span>
-  <a href="/post/run-rstudio-server-with-singularity-on-hpc/#disqus_thread"></a>
+  <a href="/post/develop-bioconductor-packages-with-docker-container/#disqus_thread"></a>
   
 
   
@@ -330,16 +330,13 @@
   <span class="article-categories">
     <i class="fa fa-folder"></i>
     
-    <a href="/categories/hpc/">HPC</a
+    <a href="/categories/r/">R</a
     >, 
     
-    <a href="/categories/docker/">docker</a
+    <a href="/categories/bioinformatics/">bioinformatics</a
     >, 
     
-    <a href="/categories/singularity/">singularity</a
-    >, 
-    
-    <a href="/categories/genomics/">genomics</a
+    <a href="/categories/package/">package</a
     >
     
   </span>
@@ -352,35 +349,35 @@
   <ul class="share">
     <li>
       <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=Run%20Rstudio%20server%20with%20singularity%20on%20HPC&amp;url=%2fpost%2frun-rstudio-server-with-singularity-on-hpc%2f"
+         href="https://twitter.com/intent/tweet?text=Develop%20Bioconductor%20packages%20with%20docker%20container&amp;url=%2fpost%2fdevelop-bioconductor-packages-with-docker-container%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-twitter"></i>
       </a>
     </li>
     <li>
       <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=%2fpost%2frun-rstudio-server-with-singularity-on-hpc%2f"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fdevelop-bioconductor-packages-with-docker-container%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-facebook"></i>
       </a>
     </li>
     <li>
       <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2frun-rstudio-server-with-singularity-on-hpc%2f&amp;title=Run%20Rstudio%20server%20with%20singularity%20on%20HPC"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fdevelop-bioconductor-packages-with-docker-container%2f&amp;title=Develop%20Bioconductor%20packages%20with%20docker%20container"
          target="_blank" rel="noopener">
         <i class="fa fa-linkedin"></i>
       </a>
     </li>
     <li>
       <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=%2fpost%2frun-rstudio-server-with-singularity-on-hpc%2f&amp;title=Run%20Rstudio%20server%20with%20singularity%20on%20HPC"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fdevelop-bioconductor-packages-with-docker-container%2f&amp;title=Develop%20Bioconductor%20packages%20with%20docker%20container"
          target="_blank" rel="noopener">
         <i class="fa fa-weibo"></i>
       </a>
     </li>
     <li>
       <a class="email"
-         href="mailto:?subject=Run%20Rstudio%20server%20with%20singularity%20on%20HPC&amp;body=%2fpost%2frun-rstudio-server-with-singularity-on-hpc%2f">
+         href="mailto:?subject=Develop%20Bioconductor%20packages%20with%20docker%20container&amp;body=%2fpost%2fdevelop-bioconductor-packages-with-docker-container%2f">
         <i class="fa fa-envelope"></i>
       </a>
     </li>
@@ -396,136 +393,102 @@
     <div class="article-style" itemprop="articleBody">
       
 
-<h3 id="background">Background</h3>
+<h3 id="readings">Readings</h3>
 
-<p>Please read the following before go ahead:</p>
-
-<ul>
-<li>what is <a href="https://www.docker.com/" target="_blank">docker</a>?<br /></li>
-<li>what is <a href="https://www.rocker-project.org/" target="_blank">Rocker</a>?<br /></li>
-<li>what is <a href="https://www.sylabs.io/docs/" target="_blank">singularity</a>?<br /></li>
-</ul>
-
-<p>from Harvard Research computing website: <a href="https://www.rc.fas.harvard.edu/resources/documentation/software/singularity-on-odyssey/" target="_blank">Odyssey has singularity installed</a>.</p>
-
-<blockquote>
-<p>Why Singularity?
-There are some important differences between Docker and Singularity:</p>
-</blockquote>
+<p>links to read:</p>
 
 <ul>
-<li>Docker and Singularity have their own container formats.</li>
-<li>Docker containers may be imported to run via Singularity.</li>
-<li>Docker containers need root privileges for full functionality which is not suitable for a shared HPC environment.</li>
-<li>Singularity allows working with containers as a regular user. No sudo is required,</li>
+<li><p><a href="https://www.bioconductor.org/developers/package-guidelines/#rcode" target="_blank">https://www.bioconductor.org/developers/package-guidelines/#rcode</a></p></li>
+
+<li><p><a href="https://github.com/Bioconductor/Contributions" target="_blank">https://github.com/Bioconductor/Contributions</a></p></li>
+
+<li><p>use container  <a href="https://github.com/Bioconductor/bioconductor_full" target="_blank">https://github.com/Bioconductor/bioconductor_full</a></p></li>
 </ul>
 
-<p>Our <a href="https://informatics.fas.harvard.edu/" target="_blank">informatics group</a> has several big memory (1TB) computing nodes that allow us to run interactive jobs. I want to have big memory to run Rstudio for my scRNAseq data.</p>
+<p>I am following the last link.</p>
 
-<h3 id="run-rstudio-server-with-singularity">Run Rstudio server with singularity</h3>
+<h3 id="pull-the-container">pull the container</h3>
 
-<p>I basically followed this tutorial <a href="https://www.rocker-project.org/use/singularity/" target="_blank">https://www.rocker-project.org/use/singularity/</a> written by my colleague Nathan Weeks sitting in the same office with me. Thanks!</p>
+<pre><code class="language-bash">docker pull bioconductor/bioconductor_full:devel
+docker images 
 
-<p>First, go to <a href="https://www.rocker-project.org/images/" target="_blank">https://www.rocker-project.org/images/</a> choose the image you want. I use <code>tidyverse</code> heavily, so I downloaded the <code>tidyverse</code> image buit upon <code>Rstudio</code> image</p>
+REPOSITORY                       TAG                  IMAGE ID            CREATED             SIZE
+bioconductor/bioconductor_full   devel                ae3ec2be7376        3 hours ago         5.7GB
+seuratv3                         latest               9b358ab1fd63        2 days ago          2.76GB
+</code></pre>
 
-<pre><code class="language-bash">## ssh to remote HPC and pull the docker image by singularity
-ssh bio1
-mkdir singularity-images; cd !$
-singularity pull --name rstudio.simg docker://rocker/tidyverse:latest
+<p>It is 5.7G in size.</p>
 
+<p>start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.g. 8080).  docker Rstudio default port is <code>8787</code>, change the host port to <code>8080</code>.</p>
 
-# This example bind mounts the /project directory on the host into the Singularity container.
-# By default the only host file systems mounted within the container are $HOME, /tmp, /proc, /sys, and /dev.
-# type in the password you want to set, make it more complicated than this dummy one
-PASSWORD='xyz' singularity exec --bind=/project  rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
+<pre><code class="language-bash">mkdir -p ~/R/host-site-library
+
+docker run                                      \
+  -e PASSWORD=&quot;xyz&quot;                   \
+  -p 8080:8787                                \
+  -v ~/R/host-site-library:/usr/local/lib/R/host-site-library  \
+  -v ~/github_repos:/home/rstudio \
+  bioconductor/bioconductor_full:devel
+</code></pre>
+
+<p>NOTE: The path <code>~/R/host-site-library</code> is mapped to .libPaths() in R. So, when R is started, all the libraries in the host directory <code>host-site-library</code> are available to R. It is stored on your machine mounted from the volume you fill in place of host-site-library.</p>
+
+<p>The mounted path must be an <strong>absolute path</strong>.</p>
+
+<p>I also mounted the <code>github_repo</code> folder in my host machine to the docker home directory. Because every time you exit a container and start it again, the modification you did to the container will be gone (unless you make an modified image and use that for the next time). I will save the R package in my <code>~/github_repo</code> folder in the host machine.</p>
+
+<p>type <code>localhost:8080</code>, you should see the Rstudio login page. username is <code>rstudio</code>, password is <code>xyz</code> in this dummy example.</p>
+
+<p>In Rstudio:</p>
+
+<pre><code class="language-r">&gt; .libPaths()
+[1] &quot;/usr/local/lib/R/host-site-library&quot; &quot;/usr/local/lib/R/site-library&quot;     
+[3] &quot;/usr/local/lib/R/library&quot;
+</code></pre>
+
+<p>you will see <code>/usr/local/lib/R/host-site-library</code> is in the <code>libpath</code>, that corresponds to the <code>~/R/host-site-library</code> in the host machine, if you do package installation, it will be installed in the<code>~/R/host-site-library</code> .</p>
+
+<h3 id="start-an-r-package-use-usethis">start an R package use usethis</h3>
+
+<p>follow these two blog posts and <a href="http://r-pkgs.had.co.nz/" target="_blank">R packages book</a> by Hadley Wickham:</p>
+
+<ul>
+<li><p><a href="https://blog.methodsconsultants.com/posts/developing-r-packages-using-gitlab-ci-part-i/" target="_blank">https://blog.methodsconsultants.com/posts/developing-r-packages-using-gitlab-ci-part-i/</a></p></li>
+
+<li><p><a href="https://www.hvitfeldt.me/blog/usethis-workflow-for-package-development/" target="_blank">https://www.hvitfeldt.me/blog/usethis-workflow-for-package-development/</a></p></li>
+</ul>
+
+<pre><code class="language-r">install.packages(c(&quot;devtools&quot;, &quot;roxygen2&quot;, &quot;usethis&quot;, &quot;available&quot;, &quot;rmarkdown&quot;))
+
+## check if the package name is avaiable (not used by others)
+library(available)
+available(&quot;myawesomepackage&quot;)
+
+library(usethis)
+usethis::create_package(&quot;~/myawesomepackage&quot;)
+
+use_git()
+use_github()
+use_mit_license(&quot;Ming Tang&quot;)
+usethis::use_pipe()
 
 </code></pre>
 
-<p>back to my mac and connect to it via <a href="https://www.ssh.com/ssh/tunneling/" target="_blank">SSH tunnel</a>:</p>
+<p>Add a function</p>
 
-<p>Nathan explained by drawing the following.</p>
-
-<p><img src="/img/ssh_tunnel.jpg" alt="" /></p>
-
-<pre><code class="language-bash">ssh -Nf -L 8787:localhost:8787 bio1
+<pre><code class="language-r">usethis::use_r(&quot;myawesomefunc&quot;)
 </code></pre>
 
-<p>on my local mac, open <code>localhost:8787</code> in web browser, type in the Odyssey (HPC) user name and password (xyz in this dummy example). Rstudio server now is ready for me! Magic!!!</p>
+<p>On mac:<br />
+<code>command + option + shift + R</code> for inserting roxygen comment.<br />
+<code>command + shift + D</code> for documentation.<br />
+<code>command + shfit + B</code> for building package.</p>
 
-<p>Note: if mulitple people using the same node for Rstudio sever, you will need to pick a different
-port than <code>8787</code>.</p>
+<p>add more functions, repeat.</p>
 
-<h3 id="one-more-note-on-r-packages">One more note on R packages</h3>
+<h3 id="next">Next</h3>
 
-<p>create an <code>.Renviron</code> file in your home diretory</p>
-
-<pre><code class="language-bash"># User-installed R packages go into their home directory
-echo 'R_LIBS_USER=~/R/%p-library/%v' &gt;&gt; ${HOME}/.Renviron
-</code></pre>
-
-<p>The platform and version will be replaced by the corresponding R versions</p>
-
-<pre><code class="language-bash">ls ~/R/x86_64-pc-linux-gnu-library/
-3.6
-</code></pre>
-
-<p>install packages inside Rstudio and the packages will be installed to <code>~/R/x86_64-pc-linux-gnu-library/3.6</code>. R version in this singularity image is R3.6. Note that if you use R on command line at the remote machine and use the same version of R. the library may not be compatible. e.g. singularity container is based on debian （Ubuntu) and HPC is based on RPM (CentOS). One may need to have mulitiple <code>.Renviron</code> file and switch back and forth depending on which R one is using. If you have better options, please let me know!</p>
-
-<h3 id="jump-to-other-folders">Jump to other folders</h3>
-
-<p>by default, Rstudio opens the home directory. if you want to go to other folders, you can click <code>...</code> in the file pane.
-You can then type in the path you want to jump to.</p>
-
-<p><img src="/img/change_path.png" alt="" /></p>
-
-<h3 id="submit-a-slurm-job">Submit a slurm job</h3>
-
-<p>If you do not have a big computing node that you can run interactive job, you can follow Nathan&rsquo;s <a href="https://www.rocker-project.org/use/singularity/" target="_blank">tutorial</a> on how to submit slurm job to run Rstudio server with singularity.</p>
-
-<h3 id="fix-home-directory-filled-up-issue">Fix home directory filled up issue</h3>
-
-<p>I am enjoying Rstudio with my HPC large computing nodes and suddenly I got emails from the HPC staff saying I am using up my home directory space. It turns out Rstudio writes the suspended session files to <code>~/.rstudio/</code> folder. I <code>ncdu</code> the folder and it is 34G! I googled around and found exactly this <a href="https://support.rstudio.com/hc/en-us/articles/218417097-Filling-up-the-home-directory-with-RStudio-Server" target="_blank">Filling up the home directory with RStudio Server</a>.</p>
-
-<p>One of the solution is to turn off session time out.</p>
-
-<p>put  <code>session-timeout-minutes=0</code> in the <code>/etc/rstudio/rsession.conf</code> file.</p>
-
-<p>Let me take a look at the file inside the container:</p>
-
-<pre><code class="language-bash">singularity shell rstudio.simg
-
-cat /etc/rstudio/rsession.conf
-# R Session Configuration File
-
-</code></pre>
-
-<p>It is an empty file. I will make a
-rsession.conf file in the home directory of the host machine
-adding that one line.</p>
-
-<p>Now, bind the modified rsession.conf file in host to the ression.conf file
-inside the container:</p>
-
-<pre><code class="language-bash">cat ~/resession.conf
-# R Session Configuration File
-session-timeout-minutes=0
-
-# now open rstudio server
-PASSWORD='xyz' singularity exec --bind=~/rsession.conf:/etc/rstudio/rsession.conf  rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
-
-</code></pre>
-
-<p>This should fix the problem :)</p>
-
-<p>Nathan dived into the source code of Rsutido server <a href="https://github.com/rstudio/rstudio/blob/master/src/cpp/server/ServerSessionManager.cpp#L111" target="_blank">https://github.com/rstudio/rstudio/blob/master/src/cpp/server/ServerSessionManager.cpp#L111</a>
-and documentation <a href="https://docs.rstudio.com/ide/server-pro/r-sessions.html#user-and-group-profiles" target="_blank">https://docs.rstudio.com/ide/server-pro/r-sessions.html#user-and-group-profiles</a></p>
-
-<p>The enironment name of time out is <code>RSTUDIO_SESSION_TIMEOUT</code>, so one can do</p>
-
-<pre><code class="language-bash">PASSWORD='xyz' RSTUDIO_SESSION_TIMEOUT='0' singularity exec rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
-</code></pre>
-
-<p>to have the same effect of setting up the <code>rsession.conf</code> file.</p>
+<p>Next is to add test and setup some continuous integration. Read this <a href="https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/" target="_blank">Automate testing of your R package using Travis CI, Codecov, and testthat</a> by Jean Fan.</p>
 
     </div>
 
@@ -534,13 +497,7 @@ and documentation <a href="https://docs.rstudio.com/ide/server-pro/r-sessions.ht
 
 <div class="article-tags">
   
-  <a class="btn btn-primary btn-outline" href="/tags/scrnaseq/">scRNAseq</a>
-  
-  <a class="btn btn-primary btn-outline" href="/tags/hpc/">HPC</a>
-  
-  <a class="btn btn-primary btn-outline" href="/tags/docker/">docker</a>
-  
-  <a class="btn btn-primary btn-outline" href="/tags/singularity/">singularity</a>
+  <a class="btn btn-primary btn-outline" href="/tags/bioconductor/">Bioconductor</a>
   
 </div>
 
@@ -549,32 +506,15 @@ and documentation <a href="https://docs.rstudio.com/ide/server-pro/r-sessions.ht
 
     
     
-    <div class="article-widget">
-      <div class="hr-light"></div>
-      <h3>Related</h3>
-      <ul>
-        
-        <li><a href="/post/understand-10x-scrnaseq-and-scatac-fastqs/">understand 10x scRNAseq and scATAC fastqs</a></li>
-        
-        <li><a href="/project/evaluating-scrnaseq-cluster/">Evaluating single cell RNAseq cluster stability</a></li>
-        
-      </ul>
-    </div>
-    
 
     
     <div class="article-widget">
       <div class="post-nav">
   
-  <div class="post-nav-item">
-    <div class="meta-nav">Next</div>
-    <a href="/post/develop-bioconductor-packages-with-docker-container/" rel="next">Develop Bioconductor packages with docker container</a>
-  </div>
-  
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="/post/calculate-scatacseq-tss-enrichment-score/" rel="prev">Calculate scATACseq TSS enrichment score</a>
+    <a href="/post/run-rstudio-server-with-singularity-on-hpc/" rel="prev">Run Rstudio server with singularity on HPC</a>
   </div>
   
 </div>
