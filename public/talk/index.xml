@@ -13,6 +13,19 @@
     
     
     <item>
+      <title>Harvard FAS informatics nanocourse</title>
+      <link>/talk/2019-harvard-fas-workshop/</link>
+      <pubDate>Mon, 19 Aug 2019 00:00:00 -0400</pubDate>
+      
+      <guid>/talk/2019-harvard-fas-workshop/</guid>
+      <description>In this 2-week long Harvard FAS informatics nanocourse, I co-taught snakemake for one afternoon and lead-instructed scRNAseq analysis for a full day.
+ The snakemake workshop material was adapted from Titus Brown and can be found at https://github.com/crazyhottommy/2019-snakemake-Harvard-Informatics-nanocourse
+ The scRNAseq workshop material was developed using workflowr and can be found at https://crazyhottommy.github.io/scRNA-seq-workshop-Fall-2019/
+ The rest of the nanocourse material can be found at https://github.com/harvardinformatics/micro-course
+  I used the carpentries teaching style.</description>
+    </item>
+    
+    <item>
       <title>Reproducible research in bioinformatics</title>
       <link>/talk/2019-bunkerhill-talk/</link>
       <pubDate>Thu, 28 Mar 2019 14:30:00 -0400</pubDate>
