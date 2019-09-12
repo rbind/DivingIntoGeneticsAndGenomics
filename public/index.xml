@@ -11,6 +11,97 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>My opinionated selection of books/urls for bioinformatics/data science curriculum</title>
+      <link>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</link>
+      <pubDate>Thu, 12 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</guid>
+      <description>
+
+&lt;p&gt;There was a paper on this topic: &lt;a href=&#34;https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003662&#34; target=&#34;_blank&#34;&gt;A New Online Computational Biology Curriculum&lt;/a&gt;.&lt;br /&gt;
+I am going to provide a biased list below (I have read most of the books if not all). I say it is biased because you will see many books of R are from Hadely Wickham. I now use &lt;a href=&#34;https://www.tidyverse.org/&#34; target=&#34;_blank&#34;&gt;tidyverse&lt;/a&gt; most of the time.&lt;/p&gt;
+
+&lt;h2 id=&#34;unix&#34;&gt;Unix&lt;/h2&gt;
+
+&lt;p&gt;I suggest people who want to learn bioinformatics starting to learn unix commands first. It is so powerful and also omnipresent in high-performance computing settings (clouding computing etc). You can not survive without knowing it.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://linuxcommand.org/tlcl.php&#34; target=&#34;_blank&#34;&gt;The linux command line&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://nostarch.com/howlinuxworks2&#34; target=&#34;_blank&#34;&gt;How Linux works&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.datascienceatthecommandline.com/&#34; target=&#34;_blank&#34;&gt;Data science at the command line&lt;/a&gt;
+It was a fun reading for me and learned many tricks from this book.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://rik.smith-unna.com/command_line_bootcamp&#34; target=&#34;_blank&#34;&gt;command line bootcamp&lt;/a&gt; interactive online session to learn unix. it is not working anymore unfortunately.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;computational-biology&#34;&gt;Computational biology&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://library.open.oregonstate.edu/computationalbiology/&#34; target=&#34;_blank&#34;&gt;A Primer for Computational Biology&lt;/a&gt; by Shawn T. O&amp;rsquo;Neil&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://practicalcomputing.org/&#34; target=&#34;_blank&#34;&gt;Practical computing for biologist&lt;/a&gt; by  Steven H.D Haddock and Casey W. Dunn This was the first book that I used to learn unix, regex and python.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://shop.oreilly.com/product/0636920030157.do&#34; target=&#34;_blank&#34;&gt;Bioinformatics data skills&lt;/a&gt; by Vince Buffalo. This is a must have! once you have some experience on bioinformatics.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;r-programming&#34;&gt;R programming&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://r4ds.had.co.nz/&#34; target=&#34;_blank&#34;&gt;R for data science&lt;/a&gt; by Garrett Grolemund and Hadley Wickham.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://adv-r.had.co.nz/&#34; target=&#34;_blank&#34;&gt;Advanced R&lt;/a&gt; by Hadley Wickham.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://r-pkgs.had.co.nz/&#34; target=&#34;_blank&#34;&gt;R packages&lt;/a&gt; by Hadley Wickham. If you want to transit from an R user to developer, writing an R package will get you started.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;stats-r-focused&#34;&gt;Stats  (R focused)&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://rafalab.github.io/pages/harvardx.html&#34; target=&#34;_blank&#34;&gt;Data analysis for the life science with R&lt;/a&gt; by Micheal Love and Rafael A. Irizarry. I took the course on edx for 3 times! learned a ton! You can buy a paper book at &lt;a href=&#34;https://www.crcpress.com/Data-Analysis-for-the-Life-Sciences-with-R/Irizarry-Love/p/book/9781498775670&#34; target=&#34;_blank&#34;&gt;https://www.crcpress.com/Data-Analysis-for-the-Life-Sciences-with-R/Irizarry-Love/p/book/9781498775670&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;[http://compgenomr.github.io/book/&#34; target=&#34;_blank&#34;&gt;Computational Genomics with R&lt;/a&gt; by Altuna Akalin.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://web.stanford.edu/class/bios221/book/&#34; target=&#34;_blank&#34;&gt;Mordern statistics for mordern biology&lt;/a&gt; by Susan Holmes and Wolfgang Huber.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;python-programming&#34;&gt;Python programming&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://pythonforbiologists.com/advanced-python-for-biologists&#34; target=&#34;_blank&#34;&gt;(Advanced) python for biologist&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://wesmckinney.com/pages/book.html&#34; target=&#34;_blank&#34;&gt;Python for data analysis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.oreilly.com/library/view/data-science-from/9781492041122/&#34; target=&#34;_blank&#34;&gt;Data science from scratch&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;machine-learning&#34;&gt;Machine learning&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://faculty.marshall.usc.edu/gareth-james/ISL/&#34; target=&#34;_blank&#34;&gt;An intro to statistical learning&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.manning.com/books/practical-data-science-with-r&#34; target=&#34;_blank&#34;&gt;Practical Data science with R&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.manning.com/books/deep-learning-with-r&#34; target=&#34;_blank&#34;&gt;Deeping learning with R&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;visualization&#34;&gt;Visualization&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://serialmentor.com/dataviz/&#34; target=&#34;_blank&#34;&gt;Fundamentals of Data Visualization&lt;/a&gt; by Claus O.Wilke&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.data-to-viz.com/&#34; target=&#34;_blank&#34;&gt;From data to viz&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.amazon.com/Visual-Display-Quantitative-Information/dp/1930824130&#34; target=&#34;_blank&#34;&gt;The Visual Display of Quantitative Information&lt;/a&gt; by Edward R. Tufte as well.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Those two books are not teaching you how to make figures programmatically (although the book by Claus was generated by Rmarkdown and the codes for all the figures can be found at &lt;a href=&#34;https://github.com/clauswilke/dataviz&#34; target=&#34;_blank&#34;&gt;https://github.com/clauswilke/dataviz&lt;/a&gt;). They teach you what kind of figures are informative and pleasant to eyes.&lt;/p&gt;
+
+&lt;p&gt;I am still using R/ggplot2 for visualization.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://socviz.co/&#34; target=&#34;_blank&#34;&gt;Data Visualization&lt;/a&gt; by Kieran Healy.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cookbook-r.com/Graphs/&#34; target=&#34;_blank&#34;&gt;R Graphics Cookbook&lt;/a&gt; by Winston Chang.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/dp/0387981403&#34; target=&#34;_blank&#34;&gt;ggplot2: Elegant Graphics for Data Analysis&lt;/a&gt; by Hadely Wickham.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Finally, I have compiled many useful links at &lt;a href=&#34;https://github.com/crazyhottommy/getting-started-with-genomics-tools-and-resources&#34; target=&#34;_blank&#34;&gt;https://github.com/crazyhottommy/getting-started-with-genomics-tools-and-resources&lt;/a&gt; .&lt;/p&gt;
+
+&lt;p&gt;What&amp;rsquo;s your favorite book that I have missed? Comment below!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/books.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Harvard FAS informatics nanocourse</title>
       <link>/talk/2019-harvard-fas-workshop/</link>
       <pubDate>Mon, 19 Aug 2019 00:00:00 -0400</pubDate>
@@ -1970,217 +2061,6 @@ with open(&amp;quot;tx2gene_NCBI.tsv&amp;quot;, &amp;quot;w&amp;quot;) as f:
                         tx_and_gene.append([transcript, gene])
                         f.write(transcript + &amp;quot;\t&amp;quot; + gene + &amp;quot;\n&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;These lines of codes are not hard to write. It takes more time to read the package documentation and understand how to use the package. One problem with bioinFORMATics is that there are so many different file formats. To make things worse, even for gff file format, many files do not follow the exact specification. You can have a taste of that at &lt;a href=&#34;http://daler.github.io/gffutils/examples.html&#34; class=&#34;uri&#34;&gt;http://daler.github.io/gffutils/examples.html&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Understanding p value, multiple comparisons, FDR and q value</title>
-      <link>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</link>
-      <pubDate>Sun, 13 Jan 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</guid>
-      <description>&lt;p&gt;UPDATE 01/29/2019.
-Read this awesome paper &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4877414/&#34;&gt;Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;This was an &lt;a href=&#34;http://crazyhottommy.blogspot.com/2015/03/understanding-p-value-multiple.html&#34;&gt;old post&lt;/a&gt; I wrote 3 years ago after I took HarvardX: &lt;a href=&#34;https://courses.edx.org/courses/course-v1:HarvardX+PH525.3x+1T2018/0b42cffa7c6e4c559bf74f93fb864a59/&#34;&gt;PH525.3x Advanced Statistics for the Life Sciences on edx&lt;/a&gt; taught by &lt;a href=&#34;http://rafalab.github.io/&#34;&gt;Rafael Irizarry&lt;/a&gt;. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn. I am reposting it here using blogdown to give myself a refresh.&lt;/p&gt;
-&lt;p&gt;I am writing this post for my own later references. Deep understanding of p-value, FDR and q-value is not trivial, and many biologists are misusing and/or misinterpreting them. Please also read this Nature Biotech primer &lt;a href=&#34;https://www.nature.com/articles/nbt1209-1135&#34;&gt;How does multiple testing correction work?&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;For biologists’ sake, I will use an example of gene expression. Suppose we have two groups of cells: control and treatment (can be anything like chemical treatment, radiation treatment etc..). We are looking if Gene A is deferentially expressed or not under treatment. Each group we have 12 replicates.&lt;/p&gt;
-&lt;p&gt;What we usually do is take the average of 12 replicates of each group and do a t-test to compare if the difference is significant or not (assume normal distribution). We then get a p-value, say p = 0.035. We know it is smaller than 0.05 (a threshold we set), and we conclude that after treatment, expression of Gene A is significantly changed. However, what does it mean by saying a p value of 0.035?&lt;/p&gt;
-&lt;p&gt;Everything starts with a null hypothesis:&lt;br /&gt;
-&lt;strong&gt;H0 : There are no difference of gene expression for Gene A after treatment.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;and an alternative hypothesis:&lt;br /&gt;
-&lt;strong&gt;H1: After treatment, expression of Gene A changes.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The definition of every P value begins by assuming a null hypothesis is True. &lt;span class=&#34;citation&#34;&gt;Motulsky (&lt;a href=&#34;#ref-motulsky2014intuitive&#34;&gt;2014&lt;/a&gt;)&lt;/span&gt; Third edition page 127. With a p-value of 0.035, it means that under the Null, the probability that we see the difference of gene expression after treatment is 0.035, which is very low. If we choose a significant level of alpha=0.05, we then reject the Null hypothesis and accept the alternative hypothesis. So, if you can not state what the null hypothesis is, you can not understand the P value. &lt;span class=&#34;citation&#34;&gt;Motulsky (&lt;a href=&#34;#ref-motulsky2014intuitive&#34;&gt;2014&lt;/a&gt;)&lt;/span&gt; Third edition page 127.&lt;/p&gt;
-&lt;p&gt;For a typical genomic study, there are thousands of genes we want to compare. How do we report the gene list containing the genes that are differentially expressed? We can perform a-test for each single gene and if the p-value is smaller than 0.05, we report it. However, it will give us a lot of false positives because we did not consider multiple tests.&lt;/p&gt;
-&lt;p&gt;Let’s start using a microarray data set in which thousands of genes are assayed at the same time.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;### This part is from the Edx online Harvard course 
-## HarvardX: PH525.3x Advanced Statistics for the Life Sciences, week1
-
-library(devtools)
-library(qvalue)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: package &amp;#39;qvalue&amp;#39; was built under R version 3.5.2&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install_github(&amp;quot;genomicsclass/GSE5859Subset&amp;quot;)
-
-library(GSE5859Subset)
-data(GSE5859Subset)
-dim(geneExpression)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 8793   24&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Have a look at the data and objects available&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;geneExpression[1:6, 1:6]&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##           GSM136508.CEL.gz GSM136530.CEL.gz GSM136517.CEL.gz
-## 1007_s_at         6.543954         6.401470         6.298943
-## 1053_at           7.546708         7.263547         7.201699
-## 117_at            5.402622         5.050546         5.024917
-## 121_at            7.892544         7.707754         7.461886
-## 1255_g_at         3.242779         3.222804         3.185605
-## 1294_at           7.531754         7.090270         7.466018
-##           GSM136576.CEL.gz GSM136566.CEL.gz GSM136574.CEL.gz
-## 1007_s_at         6.837899         6.470689         6.450220
-## 1053_at           7.052761         6.980207         7.096195
-## 117_at            5.304313         5.214149         5.173731
-## 121_at            7.558130         7.819013         7.641136
-## 1255_g_at         3.195363         3.251915         3.324934
-## 1294_at           7.122145         7.058973         6.992396&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dim(sampleInfo)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 24  4&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(sampleInfo)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##     ethnicity       date         filename group
-## 107       ASN 2005-06-23 GSM136508.CEL.gz     1
-## 122       ASN 2005-06-27 GSM136530.CEL.gz     1
-## 113       ASN 2005-06-27 GSM136517.CEL.gz     1
-## 163       ASN 2005-10-28 GSM136576.CEL.gz     1
-## 153       ASN 2005-10-07 GSM136566.CEL.gz     1
-## 161       ASN 2005-10-07 GSM136574.CEL.gz     1&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sampleInfo$filename&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;GSM136508.CEL.gz&amp;quot; &amp;quot;GSM136530.CEL.gz&amp;quot; &amp;quot;GSM136517.CEL.gz&amp;quot;
-##  [4] &amp;quot;GSM136576.CEL.gz&amp;quot; &amp;quot;GSM136566.CEL.gz&amp;quot; &amp;quot;GSM136574.CEL.gz&amp;quot;
-##  [7] &amp;quot;GSM136575.CEL.gz&amp;quot; &amp;quot;GSM136569.CEL.gz&amp;quot; &amp;quot;GSM136568.CEL.gz&amp;quot;
-## [10] &amp;quot;GSM136559.CEL.gz&amp;quot; &amp;quot;GSM136565.CEL.gz&amp;quot; &amp;quot;GSM136573.CEL.gz&amp;quot;
-## [13] &amp;quot;GSM136523.CEL.gz&amp;quot; &amp;quot;GSM136509.CEL.gz&amp;quot; &amp;quot;GSM136727.CEL.gz&amp;quot;
-## [16] &amp;quot;GSM136510.CEL.gz&amp;quot; &amp;quot;GSM136515.CEL.gz&amp;quot; &amp;quot;GSM136522.CEL.gz&amp;quot;
-## [19] &amp;quot;GSM136507.CEL.gz&amp;quot; &amp;quot;GSM136524.CEL.gz&amp;quot; &amp;quot;GSM136514.CEL.gz&amp;quot;
-## [22] &amp;quot;GSM136563.CEL.gz&amp;quot; &amp;quot;GSM136564.CEL.gz&amp;quot; &amp;quot;GSM136572.CEL.gz&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(geneAnnotation)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##      PROBEID  CHR     CHRLOC SYMBOL
-## 1  1007_s_at chr6   30852327   DDR1
-## 30   1053_at chr7  -73645832   RFC2
-## 31    117_at chr1  161494036  HSPA6
-## 32    121_at chr2 -113973574   PAX8
-## 33 1255_g_at chr6   42123144 GUCA1A
-## 34   1294_at chr3  -49842638   UBA7&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;let’s look at one single gene&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g&amp;lt;- sampleInfo$group
-
-e&amp;lt;- geneExpression[25,]
-
-# t-test, expression should be normal distribution
-qqnorm(e[g==1])
-qqline(e[g==1])&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;qqnorm(e[g==0])
-qqline(e[g==1])&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# perform t-test
-t.test(e[g==1], e[g==0])&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-##  Welch Two Sample t-test
-## 
-## data:  e[g == 1] and e[g == 0]
-## t = 0.28382, df = 21.217, p-value = 0.7793
-## alternative hypothesis: true difference in means is not equal to 0
-## 95 percent confidence interval:
-##  -0.1431452  0.1884244
-## sample estimates:
-## mean of x mean of y 
-##  10.52505  10.50241&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;do t-test for all the genes&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mytest&amp;lt;- function(x) t.test(x[g==1], x[g==0], var.equal=T)$p.value
-
-## or we can use the genefilter package from bioconductor
-## library(genefilter)
-## results&amp;lt;- rowttests(geneExpression, factor(g))
-
-pvals&amp;lt;- apply(geneExpression, 1, mytest)
-
-sum(pvals&amp;lt; 0.05)  # how many pvalues are smaller than 0.05&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 1383&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;have a look at the p-value distribution&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# there are 1383 genes with p value smaller than 0.05
-# are all of them statistically different?
-hist(pvals)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;div id=&#34;simulate-multiple-comparisons-with-random-data&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;simulate multiple comparisons with random data&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;m&amp;lt;- nrow(geneExpression)
-n&amp;lt;- ncol(geneExpression)
-
-# generate random numbers
-randomData&amp;lt;- matrix(rnorm(n*m), m, n)
-nullpvalues&amp;lt;- apply(randomData, 1, mytest)
-hist(nullpvalues)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;compare this histogram with the histogram above. what do you see?
-Even if we randomly generated the data, you still see some pvalues are smaller than 0.05!! We randomly generated data, there should be no genes that deferentially expressed. However, we see a flat line across different p values.&lt;/p&gt;
-&lt;p&gt;p values are random variables. Mathematically, one can &lt;a href=&#34;https://joyeuserrance.wordpress.com/2011/04/22/proof-that-p-values-under-the-null-are-uniformly-distributed/&#34;&gt;demonstrate&lt;/a&gt; that under the null hypothesis (and some assumptions are met, in this case, the test statistic T follows standard normal distribution), p-values follow a uniform (0,1) distribution, which means that P(p &amp;lt; p1) = p1. This means that the probability see a p value smaller than p1 is equal to p1. That being said, with a 100 t-tests, under the null (no difference between control and treatment), we will see 1 test with a p value smaller than 0.01. And we will see 2 tests with a p value smaller than 0.02 etc…
-This explains why we see some p-values are smaller than 0.05 in our randomly generated numbers.&lt;/p&gt;
-&lt;p&gt;In fact, checking the p-value distribution by histogram is a very important step during data analysis.
-You may want to read a blog post by David Robinson &lt;a href=&#34;http://varianceexplained.org/statistics/interpreting-pvalue-histogram/&#34;&gt;How to interpret a p-value histogram&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;how-do-we-control-the-false-positives-for-multiple-comparisons&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;How do we control the false positives for multiple comparisons?&lt;/h3&gt;
-&lt;p&gt;One way is to use the Bonferroni correction to correct the familywise error rate (FWER):
-define a particular comparison as statistically significant only when the P value is less than alpha(often 0.05) divided by the number of comparisons (p &amp;lt; alpha/m) &lt;span class=&#34;citation&#34;&gt;Motulsky (&lt;a href=&#34;#ref-motulsky2014intuitive&#34;&gt;2014&lt;/a&gt;)&lt;/span&gt; Third edition page 187. Say we computed 100 t-tests, and got 100 p values, we only consider the genes with a p value smaller than 0.05/100 as significant. This approach is very conservative and is used in Genome-wide association studies (GWAS). Since we often compare millions of genetic variations between (tens of thousands) cases and controls, this threshold will be very small! &lt;span class=&#34;citation&#34;&gt;Motulsky (&lt;a href=&#34;#ref-motulsky2014intuitive&#34;&gt;2014&lt;/a&gt;)&lt;/span&gt; Third edition page 188.&lt;/p&gt;
-&lt;p&gt;Alternatively, we can use False Discovery Rate (FDR) to report the gene list.
-&lt;strong&gt;FDR = #false positives/# called significant.&lt;/strong&gt;&lt;br /&gt;
-This approach does not use the term statistically significant but instead use the term discovery.
-Let’s control FDR for a gene list with &lt;code&gt;FDR = 0.05&lt;/code&gt;.
-&lt;strong&gt;It means that of all the discoveries, 5% of them is expected to be false positives.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Benjamini &amp;amp; Hochberg (BH method) in 1995 proposed a way to control FDR:
-Let k be the largest i such that &lt;code&gt;p(i) &amp;lt;= (i/m) * alpha&lt;/code&gt;, (m is the number of comparisons)
-then reject H(i) for i =1, 2, …k&lt;/p&gt;
-&lt;p&gt;This process controls the FDR at level alpha. The method sets a different threshold p value for each comparison. Say we computed 100 t-tests, and got 100 p values, and we want to control the FDR =0.05. We then rank the p values from small to big.
-if p(1) &amp;lt;= 1/100 * 0.05, we then reject null hypothesis and accept the alternative.
-if p(2) &amp;lt; = 2/100 * 0.05, we then reject the null and accept the alternative..
-…..&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## order the pvals computed above and plot it.
-alpha = 0.05
-m = length(pvals)
-#m is the number of 8793 comparisons 
-
-plot(x=seq(1,100), y=pvals[order(pvals)][1:100])
-abline(a=0, b=alpha/m)
-title(&amp;quot;slop is alpha/m&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# let&amp;#39;s zoom in to look at the first 15 p values from small to big
-
-plot(x=seq(1,100), y=pvals[order(pvals)][1:100], xlim=c(1,15))
-abline(a=0, b=alpha/m)
-title(&amp;quot;slop is alpha/m&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-01-13-understanding-p-value-multiple-comparisons-fdr-and-q-value_files/figure-html/unnamed-chunk-7-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# we can see that the 14th p value is bigger than its own threshold 
-# which is computed by (0.05/m) * 14 = 7.960878e-05
-
-# we will use p.adjust function and the method &amp;quot;fdr&amp;quot; or &amp;quot;BH&amp;quot; to
-# correct the p value, what the p.adjust function does to to
-# recalculate the p-value. ?p.adjust to see more
-# p(i)&amp;lt;= (i/m) * alpha 
-# p(i) * m/i &amp;lt;= alpha
-# we can then only accept the returned if p.adjust(pvals) &amp;lt;= alpha
-# number of p values smaller than their own thresholds after controlling FDR=0.05&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;we can see that the 14th p value is bigger than its own threshold ,which is computed by (0.05/m) * 14 = 7.960878e-05
-we will use p.adjust function and the method “fdr” or “BH” to correct the p value, what the p.adjust function does is to recalculate the p-values.
-p(i)&amp;lt;= (i/m) * alpha
-p(i) * m/i &amp;lt;= alpha
-we can then only accept the returned the p values if p.adjust(pvals) &amp;lt;= alpha&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum( p.adjust(pvals, method=&amp;quot;fdr&amp;quot;) &amp;lt; 0.05 )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 13&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;it is 13, the same as we saw from the figure.&lt;/p&gt;
-&lt;p&gt;Another method by Storey in 2002 is the direct approach to FDR:
-Let K be the largest i such that pi_0 * p(i) &amp;lt; (i/m) * alpha
-then reject H(i) for i =1,2,…k
-pi_0 is the estimate of the proportion of null hypothesis in the gene list is true, range from 0 to 1.
-so when pi_0 is 1, then we have the Benjamini &amp;amp; Hochberg correction.
-This method is less conservative than the BH method.
-Use the qvalue function in the bioconductor package “qvalue”&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum( qvalue(pvals)$qvalues &amp;lt; 0.05)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 22&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;it is 22, less conservative than the BH method.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Note that FDR is a property of a list of genes. q value is defined for a specific gene:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;HarvardX: PH525.3x Advanced Statistics for the Life Sciences, week1, video lecture for FDR.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;“But if you do want to assign a number to each gene, a simple thing you can do, is you can go gene by gene, and decide what would be the smallest FDR I would consider, that would include this gene in the list. And once you do that, then you have defined a q-value. And this is something that is very often reported in the list of genes”[4]&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;HarvardX: PH525.3x Advanced Statistics for the Life Sciences, week1, quiz for FDR:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;“To define the q-value we order features we tested by p-value then compute the FDRs for a list with the most significant, the two most significant, the three most significant, etc… The FDR of the list with the, say, m most significant tests is defined as the q-value of the m-th most significant feature. In other words, the q-value of a feature, is the FDR of the biggest list that includes that gene” [5]&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;I hope this post helps you better understand p values, FDR and q values. Sadly, many biologists do not understand them well and try to do p-hacking.&lt;/p&gt;
-&lt;p&gt;Further read &lt;a href=&#34;https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002106&#34;&gt;The Extent and Consequences of P-Hacking in Science&lt;/a&gt; and &lt;a href=&#34;https://www.thermofisher.com/blog/proteomics/whats-true-whats-false-proteostats-and-the-fdr/&#34;&gt;What’s True? What’s False? ProteoStats and the FDR&lt;/a&gt;&lt;/p&gt;
-&lt;div id=&#34;refs&#34; class=&#34;references&#34;&gt;
-&lt;div id=&#34;ref-motulsky2014intuitive&#34;&gt;
-&lt;p&gt;Motulsky, Harvey. 2014. &lt;em&gt;Intuitive Biostatistics: A Nonmathematical Guide to Statistical Thinking&lt;/em&gt;. Oxford University Press, USA.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>

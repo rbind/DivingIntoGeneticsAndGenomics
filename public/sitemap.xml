@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</loc>
+      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/talk/2019-harvard-fas-workshop/</loc>
       <lastmod>2019-08-19T00:00:00-04:00</lastmod>
     </url>
@@ -558,7 +567,7 @@
     <url>
     
       <loc>/categories/bioinformatics/</loc>
-      <lastmod>2019-08-06T00:00:00+00:00</lastmod>
+      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -578,7 +587,7 @@
     <url>
     
       <loc>/categories/</loc>
-      <lastmod>2019-08-06T00:00:00+00:00</lastmod>
+      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -637,7 +646,7 @@
     
     <url>
     
-      <loc>/tags/docker/</loc>
+      <loc>/categories/docker/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -647,7 +656,7 @@
     
     <url>
     
-      <loc>/categories/docker/</loc>
+      <loc>/tags/docker/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -697,8 +706,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -707,8 +716,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -727,7 +736,7 @@
     
     <url>
     
-      <loc>/tags/hpc/</loc>
+      <loc>/categories/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -737,7 +746,7 @@
     
     <url>
     
-      <loc>/categories/hpc/</loc>
+      <loc>/tags/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -827,6 +836,16 @@
     
     <url>
     
+      <loc>/categories/python/</loc>
+      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/python/</loc>
       <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
@@ -837,8 +856,8 @@
     
     <url>
     
-      <loc>/categories/python/</loc>
-      <lastmod>2019-02-14T00:00:00+00:00</lastmod>
+      <loc>/categories/r/</loc>
+      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -857,28 +876,8 @@
     
     <url>
     
-      <loc>/categories/r/</loc>
-      <lastmod>2019-08-06T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/categories/review/</loc>
       <lastmod>2018-12-28T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/scatacseq/</loc>
-      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -897,8 +896,8 @@
     
     <url>
     
-      <loc>/tags/scrnaseq/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <loc>/tags/scatacseq/</loc>
+      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -907,8 +906,8 @@
     
     <url>
     
-      <loc>/tags/single-cell/</loc>
-      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <loc>/tags/scrnaseq/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -927,8 +926,8 @@
     
     <url>
     
-      <loc>/tags/singularity/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <loc>/tags/single-cell/</loc>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -938,6 +937,16 @@
     <url>
     
       <loc>/categories/singularity/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/singularity/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -988,7 +997,7 @@
     <url>
     
       <loc>/categories/visualization/</loc>
-      <lastmod>2019-04-29T00:00:00+00:00</lastmod>
+      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>My opinionated selection of books/urls for bioinformatics/data science curriculum</title>
+      <link>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</link>
+      <pubDate>Thu, 12 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</guid>
+      <description>There was a paper on this topic: A New Online Computational Biology Curriculum.
+I am going to provide a biased list below (I have read most of the books if not all). I say it is biased because you will see many books of R are from Hadely Wickham. I now use tidyverse most of the time.
+Unix I suggest people who want to learn bioinformatics starting to learn unix commands first.</description>
+    </item>
+    
+    <item>
       <title>Develop Bioconductor packages with docker container</title>
       <link>/post/develop-bioconductor-packages-with-docker-container/</link>
       <pubDate>Tue, 06 Aug 2019 00:00:00 +0000</pubDate>
