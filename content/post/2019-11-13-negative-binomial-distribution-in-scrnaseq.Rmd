@@ -29,7 +29,7 @@ The probability mass function of the negative binomial distribution is:
 
 $${\displaystyle f(k;r,p)\equiv \Pr(X=k)={\binom {k+r-1}{k}}(1-p)^{r}p^{k}}$$
 
-Sometimes the distribution is parameterized in terms of its mean $$\mu$$ and variance $$\sigma$$ :
+Sometimes the distribution is parameterized in terms of its mean $\mu$ and variance $\sigma$ :
 
 
 $${\displaystyle {\begin{aligned}&p={\frac {\sigma ^{2}-\mu }{\sigma ^{2}}},\\[6pt]&r={\frac {\mu ^{2}}{\sigma ^{2}-\mu }},\\[3pt]&\Pr(X=k)={k+{\frac {\mu ^{2}}{\sigma ^{2}-\mu }}-1 \choose k}\left({\frac {\sigma ^{2}-\mu }{\sigma ^{2}}}\right)^{k}\left({\frac {\mu }{\sigma ^{2}}}\right)^{\mu ^{2}/(\sigma ^{2}-\mu )}.\end{aligned}}}$$

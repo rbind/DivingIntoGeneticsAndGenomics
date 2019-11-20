@@ -29,7 +29,7 @@ expert in statistics and writing this post is for myself to better understand it
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[X\sim \mathrm {NB} (r,\,p)\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;The probability mass function of the negative binomial distribution is:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[{\displaystyle f(k;r,p)\equiv \Pr(X=k)={\binom {k+r-1}{k}}(1-p)^{r}p^{k}}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Sometimes the distribution is parameterized in terms of its mean &lt;span class=&#34;math display&#34;&gt;\[\mu\]&lt;/span&gt; and variance &lt;span class=&#34;math display&#34;&gt;\[\sigma\]&lt;/span&gt; :&lt;/p&gt;
+&lt;p&gt;Sometimes the distribution is parameterized in terms of its mean &lt;span class=&#34;math inline&#34;&gt;\(\mu\)&lt;/span&gt; and variance &lt;span class=&#34;math inline&#34;&gt;\(\sigma\)&lt;/span&gt; :&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[{\displaystyle {\begin{aligned}&amp;amp;p={\frac {\sigma ^{2}-\mu }{\sigma ^{2}}},\\[6pt]&amp;amp;r={\frac {\mu ^{2}}{\sigma ^{2}-\mu }},\\[3pt]&amp;amp;\Pr(X=k)={k+{\frac {\mu ^{2}}{\sigma ^{2}-\mu }}-1 \choose k}\left({\frac {\sigma ^{2}-\mu }{\sigma ^{2}}}\right)^{k}\left({\frac {\mu }{\sigma ^{2}}}\right)^{\mu ^{2}/(\sigma ^{2}-\mu )}.\end{aligned}}}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Let’s see how it is implemented in &lt;code&gt;R&lt;/code&gt;:&lt;/p&gt;
 &lt;p&gt;Open the help page &lt;code&gt;?rnbinom&lt;/code&gt;&lt;/p&gt;
@@ -86,7 +86,7 @@ rnbinom(10000, size = size, prob =p) %&amp;gt;%
         geom_vline(xintercept = x, linetype = 2, col= &amp;quot;red&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2019-11-13-negative-binomial-distribution-in-scrnaseq_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(rnbinom(10000, size = size, prob =p) == x)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.0664&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.0673&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We see it is close to the exact p value.&lt;/p&gt;
 &lt;p&gt;An alternative parametrization (often used in ecology) is by the mean mu (see above), and size, the dispersion parameter, where prob = size/(size+mu). The variance is mu + mu^2/size in this parametrization.&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[X\sim \mathrm {NB} (\mu,\,\sigma)\]&lt;/span&gt;&lt;/p&gt;
