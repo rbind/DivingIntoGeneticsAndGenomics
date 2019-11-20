@@ -19,35 +19,6 @@ Note that you do not knit the Rmarkdown by yourself, rather you let blogdown do 
 
 ```r
 library(tidyverse)
-```
-
-```
-## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr
-```
-
-```
-## Warning: package 'tibble' was built under R version 3.4.3
-```
-
-```
-## Warning: package 'purrr' was built under R version 3.4.4
-```
-
-```
-## Conflicts with tidy packages ----------------------------------------------
-```
-
-```
-## filter(): dplyr, stats
-## lag():    dplyr, stats
-```
-
-```r
 library(ggplot2)
 head(mtcars)
 ```

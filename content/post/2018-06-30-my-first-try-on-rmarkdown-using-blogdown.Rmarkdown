@@ -16,7 +16,7 @@ I have used blogdown writing regular markdown posts, but the real power is from 
 
 Note that you do not knit the Rmarkdown by yourself, rather you let blogdown do the heavy lift.
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(ggplot2)
 head(mtcars)
