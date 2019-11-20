@@ -86,8 +86,8 @@ rnbinom(10000, size = size, prob =p) %&amp;gt;%
         geom_vline(xintercept = x, linetype = 2, col= &amp;quot;red&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2019-11-13-negative-binomial-distribution-in-scrnaseq_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(rnbinom(10000, size = size, prob =p) == x)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.0673&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We see it is close to the exact p value.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.0664&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We see it is close to the exact probability.&lt;/p&gt;
 &lt;p&gt;An alternative parametrization (often used in ecology) is by the mean mu (see above), and size, the dispersion parameter, where prob = size/(size+mu). The variance is mu + mu^2/size in this parametrization.&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[X\sim \mathrm {NB} (\mu,\,\sigma)\]&lt;/span&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mu&amp;lt;- size/p - size 

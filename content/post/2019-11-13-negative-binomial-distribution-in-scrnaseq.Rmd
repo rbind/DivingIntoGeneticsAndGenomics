@@ -114,7 +114,7 @@ rnbinom(10000, size = size, prob =p) %>%
 mean(rnbinom(10000, size = size, prob =p) == x)
 ```
 
-We see it is close to the exact p value.
+We see it is close to the exact probability.
 
 
 An alternative parametrization (often used in ecology) is by the mean mu (see above), and size, the dispersion parameter, where prob = size/(size+mu). The variance is mu + mu^2/size in this parametrization.

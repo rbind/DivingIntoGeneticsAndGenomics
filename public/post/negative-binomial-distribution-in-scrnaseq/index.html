@@ -440,8 +440,8 @@ rnbinom(10000, size = size, prob =p) %&gt;%
         geom_vline(xintercept = x, linetype = 2, col= &quot;red&quot;)</code></pre>
 <p><img src="/post/2019-11-13-negative-binomial-distribution-in-scrnaseq_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>mean(rnbinom(10000, size = size, prob =p) == x)</code></pre>
-<pre><code>## [1] 0.0673</code></pre>
-<p>We see it is close to the exact p value.</p>
+<pre><code>## [1] 0.0664</code></pre>
+<p>We see it is close to the exact probability.</p>
 <p>An alternative parametrization (often used in ecology) is by the mean mu (see above), and size, the dispersion parameter, where prob = size/(size+mu). The variance is mu + mu^2/size in this parametrization.</p>
 <p><span class="math display">\[X\sim \mathrm {NB} (\mu,\,\sigma)\]</span></p>
 <pre class="r"><code>mu&lt;- size/p - size 
