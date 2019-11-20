@@ -13,6 +13,18 @@
     
     
     <item>
+      <title>negative binomial distribution</title>
+      <link>/post/negative-binomial-distribution-in-scrnaseq/</link>
+      <pubDate>Wed, 13 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/negative-binomial-distribution-in-scrnaseq/</guid>
+      <description>“Every model is wrong, but some are useful”— George Box
+In an effort to better understand the distribution of single-cell RNAseq counts, I dived a bit deeper into the negative binomial distribution in the context of R. I am by no means an expert in statistics and writing this post is for myself to better understand it.
+what is a negative binomial distribution I will quote from wiki:
+ Suppose there is a sequence of independent Bernoulli trials.</description>
+    </item>
+    
+    <item>
       <title>My opinionated selection of books/urls for bioinformatics/data science curriculum</title>
       <link>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</link>
       <pubDate>Thu, 12 Sep 2019 00:00:00 +0000</pubDate>
@@ -274,7 +286,7 @@ install on-my-zsh sh -c &amp;quot;$(curl -fsSL https://raw.github.com/robbyrusse
       <guid>/post/my-first-try-on-rmarkdown-using-blogdown/</guid>
       <description>I have used blogdown writing regular markdown posts, but the real power is from the Rmarkdown! let me try it for this post.
 Note that you do not knit the Rmarkdown by yourself, rather you let blogdown do the heavy lift.
-library(tidyverse)  ## Loading tidyverse: ggplot2 ## Loading tidyverse: tibble ## Loading tidyverse: tidyr ## Loading tidyverse: readr ## Loading tidyverse: purrr ## Loading tidyverse: dplyr  ## Warning: package &#39;tibble&#39; was built under R version 3.</description>
+library(tidyverse) library(ggplot2) head(mtcars)  ## mpg cyl disp hp drat wt qsec vs am gear carb ## Mazda RX4 21.0 6 160 110 3.90 2.620 16.46 0 1 4 4 ## Mazda RX4 Wag 21.</description>
     </item>
     
     <item>

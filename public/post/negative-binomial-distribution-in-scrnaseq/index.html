@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="“Every model is wrong, but some are useful”— George Box
+In an effort to better understand the distribution of single-cell RNAseq counts, I dived a bit deeper into the negative binomial distribution in the context of R. I am by no means an expert in statistics and writing this post is for myself to better understand it.
+what is a negative binomial distribution I will quote from wiki:
+ Suppose there is a sequence of independent Bernoulli trials.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/negative-binomial-distribution-in-scrnaseq/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/negative-binomial-distribution-in-scrnaseq/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/negative-binomial-distribution-in-scrnaseq/">
+  <meta property="og:title" content="negative binomial distribution | DNA confesses Data speak">
+  <meta property="og:description" content="“Every model is wrong, but some are useful”— George Box
+In an effort to better understand the distribution of single-cell RNAseq counts, I dived a bit deeper into the negative binomial distribution in the context of R. I am by no means an expert in statistics and writing this post is for myself to better understand it.
+what is a negative binomial distribution I will quote from wiki:
+ Suppose there is a sequence of independent Bernoulli trials.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-11-13T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-11-13T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>negative binomial distribution | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">negative binomial distribution</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2019-11-13 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Nov 13, 2019
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/negative-binomial-distribution-in-scrnaseq/#disqus_thread"></a>
+  
+
+  
+  
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=negative%20binomial%20distribution&amp;url=%2fpost%2fnegative-binomial-distribution-in-scrnaseq%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fnegative-binomial-distribution-in-scrnaseq%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fnegative-binomial-distribution-in-scrnaseq%2f&amp;title=negative%20binomial%20distribution"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fnegative-binomial-distribution-in-scrnaseq%2f&amp;title=negative%20binomial%20distribution"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=negative%20binomial%20distribution&amp;body=%2fpost%2fnegative-binomial-distribution-in-scrnaseq%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>“Every model is wrong, but some are useful”— George Box</p>
+<p>In an effort to better understand the distribution of single-cell RNAseq counts,
+I dived a bit deeper into the negative binomial distribution in the context of <code>R</code>. I am by no means an
+expert in statistics and writing this post is for myself to better understand it.</p>
+<div id="what-is-a-negative-binomial-distribution" class="section level3">
+<h3>what is a negative binomial distribution</h3>
+<p>I will quote from <a href="https://en.wikipedia.org/wiki/Negative_binomial_distribution">wiki</a>:</p>
+<blockquote>
+<p>Suppose there is a sequence of independent Bernoulli trials. Thus, each trial has two potential outcomes called “success” and “failure”. In each trial the probability of success is p and of failure is (1 − p). We are observing this sequence until a predefined number r of failures have occurred. Then the random number of successes we have seen, X, will have the negative binomial (or Pascal) distribution:</p>
+</blockquote>
+<p><span class="math display">\[X\sim \mathrm {NB} (r,\,p)\]</span></p>
+<p>The probability mass function of the negative binomial distribution is:</p>
+<p><span class="math display">\[{\displaystyle f(k;r,p)\equiv \Pr(X=k)={\binom {k+r-1}{k}}(1-p)^{r}p^{k}}\]</span></p>
+<p>Sometimes the distribution is parameterized in terms of its mean <span class="math display">\[\mu\]</span> and variance <span class="math display">\[\sigma\]</span> :</p>
+<p><span class="math display">\[{\displaystyle {\begin{aligned}&amp;p={\frac {\sigma ^{2}-\mu }{\sigma ^{2}}},\\[6pt]&amp;r={\frac {\mu ^{2}}{\sigma ^{2}-\mu }},\\[3pt]&amp;\Pr(X=k)={k+{\frac {\mu ^{2}}{\sigma ^{2}-\mu }}-1 \choose k}\left({\frac {\sigma ^{2}-\mu }{\sigma ^{2}}}\right)^{k}\left({\frac {\mu }{\sigma ^{2}}}\right)^{\mu ^{2}/(\sigma ^{2}-\mu )}.\end{aligned}}}\]</span></p>
+<p>Let’s see how it is implemented in <code>R</code>:</p>
+<p>Open the help page <code>?rnbinom</code></p>
+<p><code>rnbinom(n, size, prob, mu)</code></p>
+<p><span class="math display">\[{\displaystyle f(x;n,p)\equiv \Pr(X=x)={\binom {n+x-1}{n-1}}(1-p)^{x}p^{n}}\]</span></p>
+<p><strong>This represents the number of failures which occur in a sequence of Bernoulli trials before a target number of successes (n) is reached.</strong> The mean is μ = n(1-p)/p and variance n(1-p)/p^2.</p>
+<p>Notice the difference from the definition from wiki above.</p>
+<blockquote>
+<p>size<br />
+target for number of successful trials, or dispersion parameter (the shape parameter of the gamma mixing distribution). Must be strictly positive, need not be integer.</p>
+</blockquote>
+<p>This is the n in the formula.</p>
+<blockquote>
+<p>prob<br />
+probability of success in each trial. 0 &lt; prob &lt;= 1.</p>
+</blockquote>
+<p>This is the p in the formula.</p>
+<blockquote>
+<p>mu
+alternative parametrization via mean: see ‘Details’.</p>
+</blockquote>
+<p>Details:</p>
+<blockquote>
+<p>An alternative parametrization (often used in ecology) is by the mean mu (see above), and size, the dispersion parameter, where prob = size/(size+mu). The variance is mu + mu^2/size in this parametrization.</p>
+</blockquote>
+<p>It is a bit confusing since we can define it in different ways. We can verify it by ourselves.</p>
+<p>Suppose we do independent Bernoulli trails 10 times, with a success probability of 0.4, what’s the probability we see 4 failures before the 6th success?</p>
+<pre class="r"><code>## this is the total number of failures, the random variable X 
+x&lt;- 4
+
+p&lt;- 0.4
+
+## size, the number of successful trials we are targeting
+size &lt;- 10 - x
+
+dnbinom(x= x, size = size, prob = p)</code></pre>
+<pre><code>## [1] 0.06688604</code></pre>
+<p>one possible outcome is:</p>
+<p>SSSSSFFFFS</p>
+<p>The last trail has to be a success.</p>
+<pre class="r"><code>## this is the same as 
+choose(size + x -1, size-1) * p^(size) * (1-p)^x</code></pre>
+<pre><code>## [1] 0.06688604</code></pre>
+<pre class="r"><code>## and 
+choose(size + x -1, x) * p^(size) * (1-p)^x</code></pre>
+<pre><code>## [1] 0.06688604</code></pre>
+<p>we can simulate the negative binomial distribution counts by</p>
+<pre class="r"><code>library(tidyverse)
+
+rnbinom(10000, size = size, prob =p) %&gt;%
+        enframe(name = &quot;seq&quot;, value = &quot;num&quot;) %&gt;%
+        ggplot(aes(x = num)) +
+        geom_histogram(col=&quot;white&quot;, bins = 30) +
+        geom_vline(xintercept = x, linetype = 2, col= &quot;red&quot;)</code></pre>
+<p><img src="/post/2019-11-13-negative-binomial-distribution-in-scrnaseq_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>mean(rnbinom(10000, size = size, prob =p) == x)</code></pre>
+<pre><code>## [1] 0.0664</code></pre>
+<p>We see it is close to the exact p value.</p>
+<p>An alternative parametrization (often used in ecology) is by the mean mu (see above), and size, the dispersion parameter, where prob = size/(size+mu). The variance is mu + mu^2/size in this parametrization.</p>
+<p><span class="math display">\[X\sim \mathrm {NB} (\mu,\,\sigma)\]</span></p>
+<pre class="r"><code>mu&lt;- size/p - size 
+mu</code></pre>
+<pre><code>## [1] 9</code></pre>
+<pre class="r"><code>variance&lt;- mu + mu^2/size 
+variance</code></pre>
+<pre><code>## [1] 22.5</code></pre>
+<pre class="r"><code>dnbinom(x= x, size = size, mu = mu)</code></pre>
+<pre><code>## [1] 0.06688604</code></pre>
+<p>We see it is the same result.</p>
+<p>with</p>
+<p><span class="math display">\[{\displaystyle f(x;n,p)\equiv \Pr(X=x)={\binom {n+x-1}{n-1}}(1-p)^{x}p^{n}}\]</span>
+we can calculate the probablity when x = 0
+i.e. the probability that we see a 0 count in RNAseq data.</p>
+<p><span class="math display">\[{\displaystyle\Pr(X=0)=p^{n}}\]</span></p>
+<p>and we know prob = size/(size+mu)</p>
+<p>The size or <span class="math inline">\(\phi\)</span> is dispersion parameter in gamma distribution (the shape parameter of the gamma mixing distribution). let’s replace the p using <span class="math inline">\(\phi\)</span>:</p>
+<p><span class="math display">\[\Pr(X=0) = \left(\frac{\phi} {\mu + \phi}\right)^{\phi}\]</span></p>
+<p>The variance is:</p>
+<p><span class="math display">\[Var = \mu + \frac {\mu^2}{\phi}\]</span></p>
+</div>
+
+    </div>
+
+    
+
+
+
+
+
+    
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/" rel="prev">My opinionated selection of books/urls for bioinformatics/data science curriculum</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+
