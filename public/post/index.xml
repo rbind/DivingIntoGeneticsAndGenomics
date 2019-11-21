@@ -13,6 +13,19 @@
     
     
     <item>
+      <title>negative bionomial distribution in (single-cell) RNAseq </title>
+      <link>/post/negative-bionomial-distribution-in-single-cell-rnaseq/</link>
+      <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/negative-bionomial-distribution-in-single-cell-rnaseq/</guid>
+      <description>This post is inspired by two posts written by Valentine Svensson:
+http://www.nxn.se/valent/2017/11/16/droplet-scrna-seq-is-not-zero-inflated
+http://www.nxn.se/valent/2018/1/30/count-depth-variation-makes-Poisson-scrna-seq-data-negative-binomial
+The original ipython notebook can be found at https://github.com/vals/Blog/blob/master/171116-zero-inflation/Negative%20control%20analysis.ipynb
+Thanks for writing those and put both the data and code in public. After I read Droplet scRNA-seq is not zero-inflated by Valentine Svensson, I want to gain some understanding of it. This post is an effort to replicate some of the analysis in the preprint using R. The original analysis was carried out in python.</description>
+    </item>
+    
+    <item>
       <title>negative binomial distribution</title>
       <link>/post/negative-binomial-distribution-in-scrnaseq/</link>
       <pubDate>Wed, 13 Nov 2019 00:00:00 +0000</pubDate>

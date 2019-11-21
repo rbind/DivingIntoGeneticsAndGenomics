@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/negative-bionomial-distribution-in-single-cell-rnaseq/</loc>
+      <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/negative-binomial-distribution-in-scrnaseq/</loc>
       <lastmod>2019-11-13T00:00:00+00:00</lastmod>
     </url>
@@ -866,7 +875,7 @@
     <url>
     
       <loc>/tags/r/</loc>
-      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <lastmod>2019-11-21T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -916,7 +925,7 @@
     <url>
     
       <loc>/tags/scrnaseq/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <lastmod>2019-11-21T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -977,6 +986,16 @@
     
       <loc>/tags/ssh/</loc>
       <lastmod>2018-10-10T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/statistics/</loc>
+      <lastmod>2019-11-21T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
