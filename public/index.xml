@@ -92,6 +92,13 @@ data.frame(zeros_bn = zeros_bn, zeros_nb = zeros_nb, zeros_observed = zeros_obse
 &lt;p&gt;&lt;img src=&#34;/post/2019-11-26-modeling-single-cell-rnaseq-data-with-multinomial-distribution_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;At least for this dataset, negative bionomial (red line) seems to fit the observed 0 count better. multinomial with marginal binomial (blue line) seems to support 0 inflated in single-cell RNAseq.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;UPDATE&lt;/strong&gt; 12/10/2019, as Will pointed out in the comment, we need to downsample the single cell data making each cell has roughly the same number of reads. He replicated my analysis at &lt;a href=&#34;https://github.com/willtownes/scrna2019/blob/master/real/svensson_2019/01_exploratory.Rmd&#34; class=&#34;uri&#34;&gt;https://github.com/willtownes/scrna2019/blob/master/real/svensson_2019/01_exploratory.Rmd&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;
+&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;
+Hi thanks for your interest, in order to make those plots, you have to be able to treat all the cells/droplets as being drawn from same multinomial distribution meaning all the “n_i” terms have to be the same (or at least close). We used downsampling to achieve that…
+&lt;/p&gt;
+— Will (&lt;span class=&#34;citation&#34;&gt;@sandakano&lt;/span&gt;) &lt;a href=&#34;https://twitter.com/sandakano/status/1199709577144623106?ref_src=twsrc%5Etfw&#34;&gt;November 27, 2019&lt;/a&gt;
+&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
 &lt;p&gt;I will put them in the same blog post for completeness.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## from https://github.com/willtownes/scrna2019/blob/master/util/functions.R#L67
 
