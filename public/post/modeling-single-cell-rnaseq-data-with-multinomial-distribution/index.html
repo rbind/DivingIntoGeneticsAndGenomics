@@ -305,7 +305,7 @@ for modeling RNAseq counts, what&#39;s the difference/advantages using negative 
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    3 min read
+    4 min read
   </span>
   
 
@@ -424,6 +424,7 @@ library(sparseMatrixStats)
 library(tidyverse)
 gene_means&lt;- sparseMatrixStats::rowMeans2(raw_counts2)
 
+
 ## total counts for each cell
 lib_size&lt;- sparseMatrixStats::colSums2(raw_counts2)
 
@@ -451,6 +452,79 @@ data.frame(zeros_bn = zeros_bn, zeros_nb = zeros_nb, zeros_observed = zeros_obse
   ggtitle(&quot;Svensson et al 2&quot;)</code></pre>
 <p><img src="/post/2019-11-26-modeling-single-cell-rnaseq-data-with-multinomial-distribution_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>At least for this dataset, negative bionomial (red line) seems to fit the observed 0 count better. multinomial with marginal binomial (blue line) seems to support 0 inflated in single-cell RNAseq.</p>
+<p><strong>UPDATE</strong> 12/10/2019, as Will pointed out in the comment, we need to downsample the single cell data making each cell has roughly the same number of reads. He replicated my analysis at <a href="https://github.com/willtownes/scrna2019/blob/master/real/svensson_2019/01_exploratory.Rmd" class="uri">https://github.com/willtownes/scrna2019/blob/master/real/svensson_2019/01_exploratory.Rmd</a></p>
+<p>I will put them in the same blog post for completeness.</p>
+<pre class="r"><code>## from https://github.com/willtownes/scrna2019/blob/master/util/functions.R#L67
+
+Down_Sample_Matrix&lt;-function(expr_mat,min_lib_size=NULL){
+  #adapted from https://hemberg-lab.github.io/scRNA.seq.course/cleaning-the-expression-matrix.html#normalisations
+  min_sz&lt;-min(colSums(expr_mat))
+  if(is.null(min_lib_size)){
+    min_lib_size&lt;-min_sz
+  } else {
+    stopifnot(min_lib_size&lt;=min_sz)
+  }
+  down_sample&lt;-function(x){
+    prob &lt;- min_lib_size/sum(x)
+    unlist(lapply(x,function(y){rbinom(1, y, prob)}))
+  }
+  apply(expr_mat, 2, down_sample)
+}
+
+
+gg&lt;-sparseMatrixStats::rowSums2(raw_counts2)&gt;0 #exclude genes that are zero across all cells
+Y&lt;-raw_counts2[gg,]</code></pre>
+<p>To make the droplets comparable, we will exclude droplets with total count below 2,000 and downsample all other droplets to have approximately the same total counts.</p>
+<pre class="r"><code>total_counts&lt;- sparseMatrixStats::colSums2(Y)
+
+hist(total_counts,breaks=100)</code></pre>
+<p><img src="/post/2019-11-26-modeling-single-cell-rnaseq-data-with-multinomial-distribution_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>Yss&lt;-Y[,total_counts&gt;2000]
+#downsample to normalize droplet size (total UMI)
+Yds&lt;-Down_Sample_Matrix(as.matrix(Yss))</code></pre>
+<div id="using-the-downsampled-matrix-yss-for-plotting" class="section level3">
+<h3>using the downsampled matrix Yss for plotting</h3>
+<pre class="r"><code>Yds&lt;-Yds[rowSums(Yds)&gt;0,]
+
+gene_means&lt;- rowMeans(Yds)
+gene_vars&lt;- apply(Yds, 1, var)</code></pre>
+<p>after downsampling, the mean and variance now are the same suggesting possion distribution</p>
+<pre class="r"><code>df&lt;- bind_cols(gene_means = gene_means, gene_vars = gene_vars)
+ 
+df %&gt;% ggplot(aes(x = log10(gene_means), y = log10(gene_vars))) +
+        geom_point() +
+        geom_abline(intercept = 0, slope = 1, color = &quot;red&quot;) + 
+        theme_classic(base_size = 14) +
+        ggtitle(&quot;svensson et al 2 downsample&quot;)</code></pre>
+<p><img src="/post/2019-11-26-modeling-single-cell-rnaseq-data-with-multinomial-distribution_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>This is consistent with <a href="https://www.nxn.se/valent/2018/1/30/count-depth-variation-makes-poisson-scrna-seq-data-negative-binomial">Count depth variation makes Poisson scRNA-seq data Negative Binomial</a></p>
+<p>Let’s see how the observed 0 counts fit each model:</p>
+<pre class="r"><code>## total counts for each cell
+lib_size&lt;- colSums(Yds)
+
+## https://github.com/willtownes/scrna2019/blob/master/real/zheng_2017_monocytes/02_exploratory.Rmd#L290
+
+N&lt;-median(colSums(Yds))
+predict_zeros_binom&lt;-function(x){(1-exp(x)/N)^N} #binomial
+predict_zeros_poi&lt;-function(x){exp(-exp(x))}
+predict_zeros_nb&lt;-function(x,phi=100){
+  exp(-phi*log1p(exp(x-log(phi))))
+}
+
+## note it is natural log here.
+data.frame(zeros_observed = rowMeans(Yds==0), 
+           x = log(gene_means)) %&gt;%
+  ggplot(aes(x , y = zeros_observed), alpha = 0.5) +
+  geom_point() +
+  stat_function(aes(x,color=&quot;bin&quot;),fun=predict_zeros_binom) +
+  stat_function(aes(x,color=&quot;poi&quot;),fun=predict_zeros_poi) +
+  stat_function(aes(x,color=&quot;nb&quot;),fun=predict_zeros_nb) +
+  scale_color_manual(&quot;model&quot;,breaks=c(&quot;bin&quot;,&quot;poi&quot;,&quot;nb&quot;),values=c(&quot;blue&quot;,&quot;green&quot;,&quot;red&quot;)) +
+  theme_classic(base_size = 14) +
+  ggtitle(&quot;Svensson et al 2&quot;)</code></pre>
+<p><img src="/post/2019-11-26-modeling-single-cell-rnaseq-data-with-multinomial-distribution_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><strong>After downsampling</strong>, “Poisson, binomial and negative binomial models all fit the data about the same.”</p>
+</div>
 
     </div>
 
