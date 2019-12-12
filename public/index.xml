@@ -336,7 +336,11 @@ DimPlot(seu, reduction = &amp;quot;pca&amp;quot;, pt.size = 0.5, group.by = &amp
 &lt;/div&gt;
 &lt;div id=&#34;conclusion&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;conclusion&lt;/h3&gt;
-&lt;p&gt;Using ratio of mapped reads for each cell to identify the cell of origin works pretty well for mouse and human mixtures. what if we use a more close species to human say chimpanzee or monkeys? Also, in a real experiment, one may have doublets from different species.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Using ratio of mapped reads for each cell to identify the cell of origin works pretty well for mouse and human mixtures. what if we use a more close species to human say chimpanzee or monkeys? Also, in a real experiment, one may have doublets from different species.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The mapping ratio is so drasticially different so a much smaller cutoff can still seperate the sepecies very well. This could be due to the cell type difference. It will be interesting to do the same experiment but with human pbmc and mouse pbmc cells.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;I used the hybrid reference for mapping. How it will look like if I map the human cells with the mouse reference or map the mouse cells with the human reference?&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/div&gt;
 </description>
     </item>
