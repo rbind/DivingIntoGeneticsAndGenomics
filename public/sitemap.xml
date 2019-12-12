@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/</loc>
+      <lastmod>2019-12-11T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/</loc>
       <lastmod>2019-11-26T00:00:00+00:00</lastmod>
     </url>
@@ -594,7 +603,7 @@
     <url>
     
       <loc>/categories/bioinformatics/</loc>
-      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
+      <lastmod>2019-12-11T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -614,7 +623,7 @@
     <url>
     
       <loc>/categories/</loc>
-      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
+      <lastmod>2019-12-11T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -673,7 +682,7 @@
     
     <url>
     
-      <loc>/categories/docker/</loc>
+      <loc>/tags/docker/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -683,7 +692,7 @@
     
     <url>
     
-      <loc>/tags/docker/</loc>
+      <loc>/categories/docker/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -733,8 +742,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -743,8 +752,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -763,7 +772,7 @@
     
     <url>
     
-      <loc>/categories/hpc/</loc>
+      <loc>/tags/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -773,7 +782,7 @@
     
     <url>
     
-      <loc>/tags/hpc/</loc>
+      <loc>/categories/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -863,16 +872,6 @@
     
     <url>
     
-      <loc>/categories/python/</loc>
-      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/tags/python/</loc>
       <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
@@ -883,7 +882,7 @@
     
     <url>
     
-      <loc>/categories/r/</loc>
+      <loc>/categories/python/</loc>
       <lastmod>2019-09-12T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -903,8 +902,8 @@
     
     <url>
     
-      <loc>/categories/review/</loc>
-      <lastmod>2018-12-28T00:00:00+00:00</lastmod>
+      <loc>/categories/r/</loc>
+      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -913,8 +912,8 @@
     
     <url>
     
-      <loc>/categories/scatacseq/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <loc>/categories/review/</loc>
+      <lastmod>2018-12-28T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -933,8 +932,8 @@
     
     <url>
     
-      <loc>/categories/scrnaseq/</loc>
-      <lastmod>2019-11-26T00:00:00+00:00</lastmod>
+      <loc>/categories/scatacseq/</loc>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -944,7 +943,7 @@
     <url>
     
       <loc>/tags/scrnaseq/</loc>
-      <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+      <lastmod>2019-12-11T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -953,8 +952,8 @@
     
     <url>
     
-      <loc>/categories/single-cell/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <loc>/categories/scrnaseq/</loc>
+      <lastmod>2019-12-11T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -973,8 +972,8 @@
     
     <url>
     
-      <loc>/categories/singularity/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <loc>/categories/single-cell/</loc>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -984,6 +983,16 @@
     <url>
     
       <loc>/tags/singularity/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/singularity/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -1013,8 +1022,8 @@
     
     <url>
     
-      <loc>/categories/statistics/</loc>
-      <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+      <loc>/tags/statistics/</loc>
+      <lastmod>2019-11-26T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1023,8 +1032,8 @@
     
     <url>
     
-      <loc>/tags/statistics/</loc>
-      <lastmod>2019-11-26T00:00:00+00:00</lastmod>
+      <loc>/categories/statistics/</loc>
+      <lastmod>2019-11-21T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

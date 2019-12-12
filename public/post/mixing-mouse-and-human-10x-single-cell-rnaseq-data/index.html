@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.
+In this paper https://www.biorxiv.org/content/10.1101/630087v1.full
+ To deconvolute species, detect doublets and low quality cells, the mixed-species mapped data was used.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/">
+  <meta property="og:title" content="Mixing mouse and human 10x single cell RNAseq data | DNA confesses Data speak">
+  <meta property="og:description" content="In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.
+In this paper https://www.biorxiv.org/content/10.1101/630087v1.full
+ To deconvolute species, detect doublets and low quality cells, the mixed-species mapped data was used.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-12-11T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-12-11T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Mixing mouse and human 10x single cell RNAseq data | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Mixing mouse and human 10x single cell RNAseq data</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2019-12-11 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Dec 11, 2019
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    8 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/scrnaseq/">scRNAseq</a
+    >, 
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Mixing%20mouse%20and%20human%2010x%20single%20cell%20RNAseq%20data&amp;url=%2fpost%2fmixing-mouse-and-human-10x-single-cell-rnaseq-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fmixing-mouse-and-human-10x-single-cell-rnaseq-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fmixing-mouse-and-human-10x-single-cell-rnaseq-data%2f&amp;title=Mixing%20mouse%20and%20human%2010x%20single%20cell%20RNAseq%20data"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fmixing-mouse-and-human-10x-single-cell-rnaseq-data%2f&amp;title=Mixing%20mouse%20and%20human%2010x%20single%20cell%20RNAseq%20data"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Mixing%20mouse%20and%20human%2010x%20single%20cell%20RNAseq%20data&amp;body=%2fpost%2fmixing-mouse-and-human-10x-single-cell-rnaseq-data%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.</p>
+<p>In this paper <a href="https://www.biorxiv.org/content/10.1101/630087v1.full" class="uri">https://www.biorxiv.org/content/10.1101/630087v1.full</a></p>
+<blockquote>
+<p>To deconvolute species, detect doublets and low quality cells, the mixed-species mapped data was used. Cells for which &gt;70% of the reads mapped to only one species were assigned to the corresponding species. The remaining cells (those for which &lt;70% of the reads mapped to only one species) were removed from the downstream analysis.</p>
+</blockquote>
+<p>kallisto bustool <a href="https://bustools.github.io/BUS_notebooks_R/10xv2.html">https://bustools.github.io/BUS_notebooks_R/10xv2.html</a> uses 90% as a cutoff.</p>
+<p>However, how to choose this cutoff is subjective. In this blog post, I will mix a mouse and a human 10x single cell RNAseq dataset in silicon and then map to the hybrid transriptome. We have the ground truth of which cell comes from which species so we can investigate the mapping rate.</p>
+<div id="download-data" class="section level3">
+<h3>Download data</h3>
+<p>Download 1k pbmc data and 1k mouse brain data from 10x website.</p>
+<pre class="bash"><code>cd /n/holylfs/LABS/informatics/mtang/projects/dj/10x_mouse_human_mixing
+wget http://cf.10xgenomics.com/samples/cell-exp/3.0.0/neuron_1k_v3/neuron_1k_v3_fastqs.tar
+
+wget http://cf.10xgenomics.com/samples/cell-exp/3.0.0/pbmc_1k_v3/pbmc_1k_v3_fastqs.tar
+
+## after tar xvf
+ls neuron_1k_v3_fastqs/
+neuron_1k_v3_S1_L001_I1_001.fastq.gz  neuron_1k_v3_S1_L001_R2_001.fastq.gz  neuron_1k_v3_S1_L002_R1_001.fastq.gz
+neuron_1k_v3_S1_L001_R1_001.fastq.gz  neuron_1k_v3_S1_L002_I1_001.fastq.gz  neuron_1k_v3_S1_L002_R2_001.fastq.gz
+
+ls pbmc_1k_v3_fastqs/
+pbmc_1k_v3_S1_L001_I1_001.fastq.gz  pbmc_1k_v3_S1_L001_R2_001.fastq.gz  pbmc_1k_v3_S1_L002_R1_001.fastq.gz
+pbmc_1k_v3_S1_L001_R1_001.fastq.gz  pbmc_1k_v3_S1_L002_I1_001.fastq.gz  pbmc_1k_v3_S1_L002_R2_001.fastq.gz</code></pre>
+</div>
+<div id="add-species-barcode-to-the-r1-fastq" class="section level3">
+<h3>add species barcode to the R1 fastq</h3>
+<p>Different experiment could have barcode collisions, let’s add additional barcode in front of the original cell barcode.</p>
+<p>save the below as a <code>add_species_barcode.sh</code>:</p>
+<p>This script adds a 8 base pair barcode in front of the R1 reads (16bp cell barcode + 12 bp umi for 10x version3) and some dummy high quality score (I) to the quality line.</p>
+<pre class="bash"><code>#! /bin/bash
+set -euo pipefail
+
+zcat $1 |  awk -v barcode=&quot;$2&quot; &#39;NR%4 == 2 {$0=barcode$0} NR%4==0 {$0=&quot;IIIIIIII&quot;$0} {print}&#39; | gzip  &gt; $3</code></pre>
+<p>I am adding <code>AAAAAAAA</code> and <code>TTTTTTTT</code> to mouse and human data, respectively.</p>
+<pre class="bash"><code>chmod u+x add_species_barcode.sh
+
+./add_species_barcode.sh neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R1_001.fastq.gz AAAAAAAA neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R1_001_modified.fastq.gz
+
+
+./add_species_barcode.sh neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R1_001.fastq.gz AAAAAAAA neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R1_001_modified.fastq.gz
+
+
+./add_species_barcode.sh pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R1_001.fastq.gz TTTTTTTT pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R1_001_modified.fastq.gz
+
+
+./add_species_barcode.sh pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R1_001.fastq.gz TTTTTTTT pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R1_001_modified.fastq.gz
+</code></pre>
+</div>
+<div id="build-a-hybrid-index-for-kallisto." class="section level3">
+<h3>build a hybrid index for kallisto.</h3>
+<p>kallisto uses cDNA for indexing.</p>
+<p>Note <a href="https://www.kallistobus.tools/kb_transcriptome_index.html"><code>kb-python</code></a> uses genomics DNA and gtf file for making reference (it will extract the cDNA from genomic DNA based on gtf file). I tested <code>kb-python</code> for a single species experiment and it worked well and saves you doing all the steps. However, <code>kb ref</code> requires the fasta and gtf files to be merged for creating the hybrid reference. I may try it next time.</p>
+<pre class="bash"><code>## download the cDNA for mouse and human
+wget ftp://ftp.ensembl.org/pub/release-96/fasta/mus_musculus/cdna/Mus_musculus.GRCm38.cdna.all.fa.gz
+wget ftp://ftp.ensembl.org/pub/release-96/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz
+
+## download the gtf files
+wget ftp://ftp.ensembl.org/pub/release-96/gtf/mus_musculus/Mus_musculus.GRCm38.96.gtf.gz
+wget ftp://ftp.ensembl.org/pub/release-96/gtf/homo_sapiens/Homo_sapiens.GRCh38.96.gtf.gz
+
+kallisto index -i GRCh38_GRCm38/GRCh38_GRCm38_96.idx Homo_sapiens.GRCh38.cdna.all.fa.gz Mus_musculus.GRCm38.cdna.all.fa.gz</code></pre>
+<div id="kallisto-count-at-transcript-level" class="section level4">
+<h4>kallisto count at transcript level</h4>
+<p>Note 10x V2 R1 is 16bp cell barcode + 10 bp umi, V3 R1 is 16 bp cell barcode + 12 bp umi.</p>
+<p>See my previous post <a href="https://divingintogeneticsandgenomics.rbind.io/post/understand-10x-scrnaseq-and-scatac-fastqs/" class="uri">https://divingintogeneticsandgenomics.rbind.io/post/understand-10x-scrnaseq-and-scatac-fastqs/</a></p>
+<pre class="bash"><code>
+kallisto bus -i /n/holylfs/INTERNAL_REPOS/INFORMATICS/reference_genome_by_tommy/kallisto_bus_ref/GRCh38_GRCm38_96.idx -o mouse_human_kallisto_out -x 0,0,24:0,24,36:1,0,0 -t8 \
+neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R1_001_modified.fastq.gz \
+neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R2_001.fastq.gz \
+neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R1_001_modified.fastq.gz \
+neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R2_001.fastq.gz \
+pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R1_001_modified.fastq.gz \
+pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R2_001.fastq.gz \
+pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R1_001_modified.fastq.gz \
+pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R2_001.fastq.gz
+
+[index] k-mer length: 31
+[index] number of targets: 307,242
+[index] number of k-mers: 208,670,671
+[index] number of equivalence classes: 1,276,238
+[quant] will process sample 1: neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R1_001_modified.fastq.gz
+                               neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R2_001.fastq.gz
+[quant] will process sample 2: neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R1_001_modified.fastq.gz
+                               neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R2_001.fastq.gz
+[quant] will process sample 3: pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R1_001_modified.fastq.gz
+                               pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R2_001.fastq.gz
+[quant] will process sample 4: pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R1_001_modified.fastq.gz
+                               pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R2_001.fastq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 159,504,118 reads, 97,750,679 reads pseudoaligned</code></pre>
+</div>
+</div>
+<div id="bustools-count-at-gene-level" class="section level3">
+<h3>bustools count at gene level</h3>
+<p>we need a transcript to gene mapping tsv file making from gtf file. I could not find the <code>t2g.py</code> script mentioned in the <a href="https://www.kallistobus.tools/documentation">tutorial</a>.</p>
+<p>make a transcript to gene mapping file using unix command line. also read my previous blog post:</p>
+<pre class="bash"><code>zcat Homo_sapiens.GRCh38.96.gtf.gz | grep -v &quot;#&quot; | awk &#39;$3==&quot;transcript&quot;&#39; | cut -f9 | tr -s &quot;;&quot; &quot; &quot; | awk -v OFS=&quot;\t&quot; &#39;{print$6&quot;\t&quot;$2&quot;\t&quot;$10}&#39; | sort | uniq |  sed &#39;s/\&quot;//g&#39; &gt; Homo_sapiens.GRCh38.96.tsv
+
+
+zcat Mus_musculus.GRCm38.96.gtf.gz | grep -v &quot;#&quot; | awk &#39;$3==&quot;transcript&quot;&#39; | cut -f9 | tr -s &quot;;&quot; &quot; &quot; | awk -v OFS=&quot;\t&quot; &#39;{print$6&quot;\t&quot;$2&quot;\t&quot;$10}&#39; | sort | uniq |  sed &#39;s/\&quot;//g&#39; &gt; Mus_musculus.GRCm38.96.tsv
+
+## merge the tsv 
+cat Homo_sapiens.GRCh38.96.tsv Mus_musculus.GRCm38.96.tsv &gt; GRCh38_GRCm38.96.tsv</code></pre>
+</div>
+<div id="correct-to-the-whitelist-and-bustools-count-at-gene-level" class="section level3">
+<h3>correct to the whitelist and bustools count at gene level</h3>
+<pre class="bash"><code>wget https://github.com/BUStools/getting_started/releases/download/species_mixing/10xv3_whitelist.txt
+
+wc -l 10xv3_whitelist.txt
+6794880 10xv3_whitelist.txt</code></pre>
+<p>There are valid 68k cell barcodes from 10x. we added the species barcode in front of them and use bustool to correct for sequencing errors.</p>
+<pre class="bash"><code># add the same species barcode to it.
+cat 10xv3_whitelist.txt | awk &#39;{print &quot;AAAAAAAA&quot;$0}&#39; &gt; whitelist1.txt
+cat 10xv3_whitelist.txt | awk &#39;{print &quot;TTTTTTTT&quot;$0}&#39; &gt; whitelist2.txt
+cat whitelist1.txt whitelist2.txt &gt; whitelist.txt
+
+mkdir tmp genecount
+
+bustools correct -w whitelist.txt -p mouse_human_kallisto_out/output.bus | \
+bustools sort -T tmp/ -t 4 -p - | \
+bustools count -o genecount/genes \
+-g /n/holylfs/INTERNAL_REPOS/INFORMATICS/reference_genome_by_tommy/kallisto_bus_ref/GRCh38_GRCm38.96.tsv \
+-e mouse_human_kallisto_out/matrix.ec -t mouse_human_kallisto_out/transcripts.txt --genecounts -
+
+Found 13589760 barcodes in the whitelist
+
+Number of hamming dist 1 barcodes = 461228268
+Processed 97750679 bus records
+In whitelist = 94311259
+Corrected = 329059
+Uncorrected = 3110361
+Read in 94640318 BUS records</code></pre>
+<p><strong>Warning</strong> it is not working!! 0 genes were mapped when I checked the <code>genes.genes.txt</code>.</p>
+<p>The devil is that <code>kallisto</code> infers the transcript id from the <code>cDNA</code> fasta file which contains the <code>.2</code> version number, but in the gtf file the version number is in the <code>transcript_version 2</code> entry.</p>
+<p>The easiest way is to remove the version number in the <code>transcript.txt</code> file from output.</p>
+<pre class="bash"><code># make a backup
+cp transcripts.txt transcripts.bc.txt
+
+# check how the version number look like for all genes
+cat transcripts.txt | cut -d. -f2 | sort | uniq
+1
+10
+11
+12
+13
+14
+15
+16
+17
+2
+3
+4
+5
+6
+7
+8
+9
+
+cat transcripts.txt | sed -r &#39;s/\.[0-9]?//&#39; &gt; transcript2.txt
+
+## rerun bustool but feeding the transcript2.txt
+rm -rf genecount/*
+
+bustools correct -w whitelist.txt -p mouse_human_kallisto_out/output.bus | \
+bustools sort -T tmp/ -t 4 -p - | \
+bustools count -o genecount/genes \
+-g /n/holylfs/INTERNAL_REPOS/INFORMATICS/reference_genome_by_tommy/kallisto_bus_ref/GRCh38_GRCm38.96.tsv \
+-e mouse_human_kallisto_out/matrix.ec -t mouse_human_kallisto_out/transcript2.txt --genecounts -</code></pre>
+</div>
+<div id="alternative-ways" class="section level3">
+<h3>Alternative ways</h3>
+<ol style="list-style-type: decimal">
+<li>The R package <a href="https://github.com/BUStools/BUSpaRse/blob/master/R/tr2g.R">BUSpaRse</a> has a function to take care of that to make a transcript to gene mapping file from cDNA fasta. <a href="https://bustools.github.io/BUS_notebooks_R/10xv2.html" class="uri">https://bustools.github.io/BUS_notebooks_R/10xv2.html</a></li>
+</ol>
+<pre class="r"><code>library(BUSpaRse)
+tr2g &lt;- transcript2gene(fasta_file = c(&quot;./data/hs_cdna.fa.gz&quot;, &quot;./data/mm_cdna.fa.gz&quot;),
+                        kallisto_out_path = &quot;./output/out_hgmm1k&quot;)</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><code>kb-python</code> command <code>kb ref</code> takes <strong>genomic DNA fasta</strong> and gtf files and makes the index and a transcript to gene mapping file on the fly.</li>
+</ol>
+</div>
+<div id="load-in-to-r" class="section level3">
+<h3>load in to R</h3>
+<p>following <a href="https://bustools.github.io/BUS_notebooks_R/10xv2.html" class="uri">https://bustools.github.io/BUS_notebooks_R/10xv2.html</a></p>
+<pre class="r"><code>library(BUSpaRse)
+library(tidyverse)
+library(DropletUtils)
+library(Matrix)
+library(Seurat)
+
+res_mat &lt;- read_count_output(&quot;~/Downloads/genecount&quot;,name = &quot;genes&quot;, tcc = FALSE)
+
+dim(res_mat)</code></pre>
+<pre><code>## [1]  71600 731356</code></pre>
+<p>remove some of the empty droplets</p>
+<pre class="r"><code>tot_counts &lt;- Matrix::colSums(res_mat)
+summary(tot_counts)</code></pre>
+<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+##      0.00      1.00      1.00     34.89      5.00 142612.00</code></pre>
+<pre class="r"><code># Compute barcode rank from Dropletutils
+bc_rank &lt;- barcodeRanks(res_mat)
+
+qplot(bc_rank$total, bc_rank$rank, geom = &quot;line&quot;) +
+  geom_vline(xintercept = bc_rank$knee, color = &quot;blue&quot;, linetype = 2) +
+  geom_vline(xintercept = bc_rank$inflection, color = &quot;green&quot;, linetype = 2) +
+  annotate(&quot;text&quot;, y = 1000, x = 1.5 * c(bc_rank$knee, bc_rank$inflection),
+           label = c(&quot;knee&quot;, &quot;inflection&quot;), color = c(&quot;blue&quot;, &quot;green&quot;)) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(y = &quot;Barcode rank&quot;, x = &quot;Total UMI count&quot;)</code></pre>
+<p><img src="/post/2019-12-11-mixing-mouse-and-human-10x-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="filter-the-cells" class="section level3">
+<h3>filter the cells</h3>
+<pre class="r"><code># Filter the matrix
+res_mat &lt;- res_mat[, tot_counts &gt; bc_rank$inflection]
+dim(res_mat)</code></pre>
+<pre><code>## [1] 71600  2375</code></pre>
+<p>Now, we get around 2000 cells.</p>
+<pre class="r"><code>gene_species &lt;- ifelse(str_detect(rownames(res_mat), &quot;^ENSMUSG&quot;), &quot;mouse&quot;, &quot;human&quot;)
+mouse_inds &lt;- gene_species == &quot;mouse&quot;
+human_inds &lt;- gene_species == &quot;human&quot;
+# mark cells as mouse or human
+cell_species &lt;- tibble(n_mouse_umi = Matrix::colSums(res_mat[mouse_inds,]),
+                       n_human_umi = Matrix::colSums(res_mat[human_inds,]),
+                       tot_umi = Matrix::colSums(res_mat),
+                       prop_mouse = n_mouse_umi / tot_umi,
+                       prop_human = n_human_umi / tot_umi)</code></pre>
+</div>
+<div id="ground-truth" class="section level3">
+<h3>ground truth</h3>
+<pre class="r"><code>str_detect(colnames(res_mat), &quot;^AAAAAAAA&quot;) %&gt;% table()</code></pre>
+<pre><code>## .
+## FALSE  TRUE 
+##  1169  1206</code></pre>
+<pre class="r"><code>str_detect(colnames(res_mat), &quot;^TTTTTTTT&quot;) %&gt;% table()</code></pre>
+<pre><code>## .
+## FALSE  TRUE 
+##  1206  1169</code></pre>
+<p>We have 1206 mouse cells and 1169 human cells</p>
+<pre class="r"><code>cell_species&lt;- cell_species %&gt;% 
+  mutate(ground_truth = case_when(
+    str_detect(colnames(res_mat), &quot;^AAAAAAAA&quot;) ~ &quot;mouse&quot;,
+    str_detect(colnames(res_mat), &quot;^TTTTTTTT&quot;) ~ &quot;human&quot;
+  )) 
+
+p1&lt;- ggplot(cell_species, aes(x = ground_truth, y = prop_mouse)) +
+  geom_boxplot(aes(color = ground_truth))
+
+p2&lt;- ggplot(cell_species, aes(x = ground_truth, y = prop_human)) +
+  geom_boxplot(aes(color = ground_truth))
+
+p&lt;- cowplot::plot_grid(
+  p1 + theme(legend.position=&quot;none&quot;),
+  p2 + theme(legend.position=&quot;none&quot;),
+  align = &#39;vh&#39;)
+
+## add back the legend
+legend &lt;- cowplot::get_legend(
+  # create some space to the left of the legend
+  p1 + theme(legend.box.margin = margin(0, 0, 0, 12))
+)
+
+# add the legend to the row we made earlier. Give it one-third of 
+# the width of one plot (via rel_widths).
+cowplot::plot_grid(p, legend, rel_widths = c(2, .4))</code></pre>
+<p><img src="/post/2019-12-11-mixing-mouse-and-human-10x-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>minimal and maximal proportion for mapping rate.</p>
+<pre class="r"><code># min 95%
+cell_species$prop_human[cell_species$ground_truth == &quot;human&quot;] %&gt;%
+  range()</code></pre>
+<pre><code>## [1] 0.9505135 0.9994325</code></pre>
+<pre class="r"><code># max 5%
+cell_species$prop_mouse[cell_species$ground_truth == &quot;human&quot;] %&gt;%
+  range()</code></pre>
+<pre><code>## [1] 0.0005675369 0.0494864613</code></pre>
+<pre class="r"><code># min 97%
+cell_species$prop_mouse[cell_species$ground_truth == &quot;mouse&quot;] %&gt;%
+  range()</code></pre>
+<pre><code>## [1] 0.9743096 1.0000000</code></pre>
+<pre class="r"><code># max 2%
+cell_species$prop_human[cell_species$ground_truth == &quot;mouse&quot;] %&gt;%
+  range()</code></pre>
+<pre><code>## [1] 0.00000000 0.02569043</code></pre>
+<p>assign species of origin by the proportion</p>
+<pre class="r"><code>cell_species&lt;- cell_species %&gt;% 
+  mutate(ground_truth = case_when(
+    str_detect(colnames(res_mat), &quot;^AAAAAAAA&quot;) ~ &quot;mouse&quot;,
+    str_detect(colnames(res_mat), &quot;^TTTTTTTT&quot;) ~ &quot;human&quot;
+  )) %&gt;%
+  mutate(species = case_when(
+    prop_mouse &gt; 0.9 ~ &quot;mouse&quot;,
+    prop_human &gt; 0.9 ~ &quot;human&quot;,
+    TRUE ~ &quot;mixed&quot;
+  ))
+
+table(cell_species$ground_truth, cell_species$species)</code></pre>
+<pre><code>##        
+##         human mouse
+##   human  1169     0
+##   mouse     0  1206</code></pre>
+<p>This makes a 100% match as expected.</p>
+</div>
+<div id="seurat-for-dimension-reduction-and-visualization" class="section level3">
+<h3>Seurat for dimension reduction and visualization</h3>
+<pre class="r"><code>seu &lt;- CreateSeuratObject(res_mat, min.cells = 3) %&gt;% 
+  NormalizeData(verbose = FALSE) %&gt;% 
+  ScaleData(verbose = FALSE) %&gt;% 
+  FindVariableFeatures(verbose = FALSE)
+
+seu &lt;- AddMetaData(seu, metadata = cell_species$ground_truth, col.name = &quot;species&quot;)
+seu &lt;- RunPCA(seu, verbose = FALSE, npcs = 30)
+seu &lt;- RunTSNE(seu, dims = 1:20, check_duplicates = FALSE)
+DimPlot(seu, reduction = &quot;pca&quot;, pt.size = 0.5, group.by = &quot;species&quot;)</code></pre>
+<p><img src="/post/2019-12-11-mixing-mouse-and-human-10x-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<pre class="r"><code>DimPlot(seu, reduction = &quot;tsne&quot;, pt.size = 0.5, group.by = &quot;species&quot;)</code></pre>
+<p><img src="/post/2019-12-11-mixing-mouse-and-human-10x-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-19-2.png" width="672" /></p>
+</div>
+<div id="conclusion" class="section level3">
+<h3>conclusion</h3>
+<p>Using ratio of mapped reads for each cell to identify the cell of origin works pretty well for mouse and human mixtures. what if we use a more close species to human say chimpanzee or monkeys? Also, in a real experiment, one may have doublets from different species.</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/scrnaseq/">scRNAseq</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/negative-bionomial-distribution-in-single-cell-rnaseq/">negative bionomial distribution in (single-cell) RNAseq </a></li>
+        
+        <li><a href="/post/run-rstudio-server-with-singularity-on-hpc/">Run Rstudio server with singularity on HPC</a></li>
+        
+        <li><a href="/post/understand-10x-scrnaseq-and-scatac-fastqs/">understand 10x scRNAseq and scATAC fastqs</a></li>
+        
+        <li><a href="/project/evaluating-scrnaseq-cluster/">Evaluating single cell RNAseq cluster stability</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/" rel="prev">Modeling single cell RNAseq data with multinomial distribution </a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

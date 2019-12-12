@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>Mixing mouse and human 10x single cell RNAseq data</title>
+      <link>/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/</link>
+      <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/</guid>
+      <description>In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.
+In this paper https://www.biorxiv.org/content/10.1101/630087v1.full
+ To deconvolute species, detect doublets and low quality cells, the mixed-species mapped data was used.</description>
+    </item>
+    
+    <item>
       <title>Modeling single cell RNAseq data with multinomial distribution </title>
       <link>/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/</link>
       <pubDate>Tue, 26 Nov 2019 00:00:00 +0000</pubDate>

@@ -11,6 +11,337 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Mixing mouse and human 10x single cell RNAseq data</title>
+      <link>/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/</link>
+      <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/</guid>
+      <description>&lt;p&gt;In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.&lt;/p&gt;
+&lt;p&gt;In this paper &lt;a href=&#34;https://www.biorxiv.org/content/10.1101/630087v1.full&#34; class=&#34;uri&#34;&gt;https://www.biorxiv.org/content/10.1101/630087v1.full&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;To deconvolute species, detect doublets and low quality cells, the mixed-species mapped data was used. Cells for which &amp;gt;70% of the reads mapped to only one species were assigned to the corresponding species. The remaining cells (those for which &amp;lt;70% of the reads mapped to only one species) were removed from the downstream analysis.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;kallisto bustool &lt;a href=&#34;https://bustools.github.io/BUS_notebooks_R/10xv2.html&#34;&gt;https://bustools.github.io/BUS_notebooks_R/10xv2.html&lt;/a&gt; uses 90% as a cutoff.&lt;/p&gt;
+&lt;p&gt;However, how to choose this cutoff is subjective. In this blog post, I will mix a mouse and a human 10x single cell RNAseq dataset in silicon and then map to the hybrid transriptome. We have the ground truth of which cell comes from which species so we can investigate the mapping rate.&lt;/p&gt;
+&lt;div id=&#34;download-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Download data&lt;/h3&gt;
+&lt;p&gt;Download 1k pbmc data and 1k mouse brain data from 10x website.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;cd /n/holylfs/LABS/informatics/mtang/projects/dj/10x_mouse_human_mixing
+wget http://cf.10xgenomics.com/samples/cell-exp/3.0.0/neuron_1k_v3/neuron_1k_v3_fastqs.tar
+
+wget http://cf.10xgenomics.com/samples/cell-exp/3.0.0/pbmc_1k_v3/pbmc_1k_v3_fastqs.tar
+
+## after tar xvf
+ls neuron_1k_v3_fastqs/
+neuron_1k_v3_S1_L001_I1_001.fastq.gz  neuron_1k_v3_S1_L001_R2_001.fastq.gz  neuron_1k_v3_S1_L002_R1_001.fastq.gz
+neuron_1k_v3_S1_L001_R1_001.fastq.gz  neuron_1k_v3_S1_L002_I1_001.fastq.gz  neuron_1k_v3_S1_L002_R2_001.fastq.gz
+
+ls pbmc_1k_v3_fastqs/
+pbmc_1k_v3_S1_L001_I1_001.fastq.gz  pbmc_1k_v3_S1_L001_R2_001.fastq.gz  pbmc_1k_v3_S1_L002_R1_001.fastq.gz
+pbmc_1k_v3_S1_L001_R1_001.fastq.gz  pbmc_1k_v3_S1_L002_I1_001.fastq.gz  pbmc_1k_v3_S1_L002_R2_001.fastq.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;add-species-barcode-to-the-r1-fastq&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;add species barcode to the R1 fastq&lt;/h3&gt;
+&lt;p&gt;Different experiment could have barcode collisions, let’s add additional barcode in front of the original cell barcode.&lt;/p&gt;
+&lt;p&gt;save the below as a &lt;code&gt;add_species_barcode.sh&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;This script adds a 8 base pair barcode in front of the R1 reads (16bp cell barcode + 12 bp umi for 10x version3) and some dummy high quality score (I) to the quality line.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;#! /bin/bash
+set -euo pipefail
+
+zcat $1 |  awk -v barcode=&amp;quot;$2&amp;quot; &amp;#39;NR%4 == 2 {$0=barcode$0} NR%4==0 {$0=&amp;quot;IIIIIIII&amp;quot;$0} {print}&amp;#39; | gzip  &amp;gt; $3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I am adding &lt;code&gt;AAAAAAAA&lt;/code&gt; and &lt;code&gt;TTTTTTTT&lt;/code&gt; to mouse and human data, respectively.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;chmod u+x add_species_barcode.sh
+
+./add_species_barcode.sh neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R1_001.fastq.gz AAAAAAAA neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R1_001_modified.fastq.gz
+
+
+./add_species_barcode.sh neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R1_001.fastq.gz AAAAAAAA neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R1_001_modified.fastq.gz
+
+
+./add_species_barcode.sh pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R1_001.fastq.gz TTTTTTTT pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R1_001_modified.fastq.gz
+
+
+./add_species_barcode.sh pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R1_001.fastq.gz TTTTTTTT pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R1_001_modified.fastq.gz
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;build-a-hybrid-index-for-kallisto.&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;build a hybrid index for kallisto.&lt;/h3&gt;
+&lt;p&gt;kallisto uses cDNA for indexing.&lt;/p&gt;
+&lt;p&gt;Note &lt;a href=&#34;https://www.kallistobus.tools/kb_transcriptome_index.html&#34;&gt;&lt;code&gt;kb-python&lt;/code&gt;&lt;/a&gt; uses genomics DNA and gtf file for making reference (it will extract the cDNA from genomic DNA based on gtf file). I tested &lt;code&gt;kb-python&lt;/code&gt; for a single species experiment and it worked well and saves you doing all the steps. However, &lt;code&gt;kb ref&lt;/code&gt; requires the fasta and gtf files to be merged for creating the hybrid reference. I may try it next time.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;## download the cDNA for mouse and human
+wget ftp://ftp.ensembl.org/pub/release-96/fasta/mus_musculus/cdna/Mus_musculus.GRCm38.cdna.all.fa.gz
+wget ftp://ftp.ensembl.org/pub/release-96/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz
+
+## download the gtf files
+wget ftp://ftp.ensembl.org/pub/release-96/gtf/mus_musculus/Mus_musculus.GRCm38.96.gtf.gz
+wget ftp://ftp.ensembl.org/pub/release-96/gtf/homo_sapiens/Homo_sapiens.GRCh38.96.gtf.gz
+
+kallisto index -i GRCh38_GRCm38/GRCh38_GRCm38_96.idx Homo_sapiens.GRCh38.cdna.all.fa.gz Mus_musculus.GRCm38.cdna.all.fa.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;kallisto-count-at-transcript-level&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;kallisto count at transcript level&lt;/h4&gt;
+&lt;p&gt;Note 10x V2 R1 is 16bp cell barcode + 10 bp umi, V3 R1 is 16 bp cell barcode + 12 bp umi.&lt;/p&gt;
+&lt;p&gt;See my previous post &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/understand-10x-scrnaseq-and-scatac-fastqs/&#34; class=&#34;uri&#34;&gt;https://divingintogeneticsandgenomics.rbind.io/post/understand-10x-scrnaseq-and-scatac-fastqs/&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;
+kallisto bus -i /n/holylfs/INTERNAL_REPOS/INFORMATICS/reference_genome_by_tommy/kallisto_bus_ref/GRCh38_GRCm38_96.idx -o mouse_human_kallisto_out -x 0,0,24:0,24,36:1,0,0 -t8 \
+neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R1_001_modified.fastq.gz \
+neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R2_001.fastq.gz \
+neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R1_001_modified.fastq.gz \
+neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R2_001.fastq.gz \
+pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R1_001_modified.fastq.gz \
+pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R2_001.fastq.gz \
+pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R1_001_modified.fastq.gz \
+pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R2_001.fastq.gz
+
+[index] k-mer length: 31
+[index] number of targets: 307,242
+[index] number of k-mers: 208,670,671
+[index] number of equivalence classes: 1,276,238
+[quant] will process sample 1: neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R1_001_modified.fastq.gz
+                               neuron_1k_v3_fastqs/neuron_1k_v3_S1_L001_R2_001.fastq.gz
+[quant] will process sample 2: neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R1_001_modified.fastq.gz
+                               neuron_1k_v3_fastqs/neuron_1k_v3_S1_L002_R2_001.fastq.gz
+[quant] will process sample 3: pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R1_001_modified.fastq.gz
+                               pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L001_R2_001.fastq.gz
+[quant] will process sample 4: pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R1_001_modified.fastq.gz
+                               pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R2_001.fastq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 159,504,118 reads, 97,750,679 reads pseudoaligned&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bustools-count-at-gene-level&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;bustools count at gene level&lt;/h3&gt;
+&lt;p&gt;we need a transcript to gene mapping tsv file making from gtf file. I could not find the &lt;code&gt;t2g.py&lt;/code&gt; script mentioned in the &lt;a href=&#34;https://www.kallistobus.tools/documentation&#34;&gt;tutorial&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;make a transcript to gene mapping file using unix command line. also read my previous blog post:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;zcat Homo_sapiens.GRCh38.96.gtf.gz | grep -v &amp;quot;#&amp;quot; | awk &amp;#39;$3==&amp;quot;transcript&amp;quot;&amp;#39; | cut -f9 | tr -s &amp;quot;;&amp;quot; &amp;quot; &amp;quot; | awk -v OFS=&amp;quot;\t&amp;quot; &amp;#39;{print$6&amp;quot;\t&amp;quot;$2&amp;quot;\t&amp;quot;$10}&amp;#39; | sort | uniq |  sed &amp;#39;s/\&amp;quot;//g&amp;#39; &amp;gt; Homo_sapiens.GRCh38.96.tsv
+
+
+zcat Mus_musculus.GRCm38.96.gtf.gz | grep -v &amp;quot;#&amp;quot; | awk &amp;#39;$3==&amp;quot;transcript&amp;quot;&amp;#39; | cut -f9 | tr -s &amp;quot;;&amp;quot; &amp;quot; &amp;quot; | awk -v OFS=&amp;quot;\t&amp;quot; &amp;#39;{print$6&amp;quot;\t&amp;quot;$2&amp;quot;\t&amp;quot;$10}&amp;#39; | sort | uniq |  sed &amp;#39;s/\&amp;quot;//g&amp;#39; &amp;gt; Mus_musculus.GRCm38.96.tsv
+
+## merge the tsv 
+cat Homo_sapiens.GRCh38.96.tsv Mus_musculus.GRCm38.96.tsv &amp;gt; GRCh38_GRCm38.96.tsv&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;correct-to-the-whitelist-and-bustools-count-at-gene-level&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;correct to the whitelist and bustools count at gene level&lt;/h3&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;wget https://github.com/BUStools/getting_started/releases/download/species_mixing/10xv3_whitelist.txt
+
+wc -l 10xv3_whitelist.txt
+6794880 10xv3_whitelist.txt&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There are valid 68k cell barcodes from 10x. we added the species barcode in front of them and use bustool to correct for sequencing errors.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# add the same species barcode to it.
+cat 10xv3_whitelist.txt | awk &amp;#39;{print &amp;quot;AAAAAAAA&amp;quot;$0}&amp;#39; &amp;gt; whitelist1.txt
+cat 10xv3_whitelist.txt | awk &amp;#39;{print &amp;quot;TTTTTTTT&amp;quot;$0}&amp;#39; &amp;gt; whitelist2.txt
+cat whitelist1.txt whitelist2.txt &amp;gt; whitelist.txt
+
+mkdir tmp genecount
+
+bustools correct -w whitelist.txt -p mouse_human_kallisto_out/output.bus | \
+bustools sort -T tmp/ -t 4 -p - | \
+bustools count -o genecount/genes \
+-g /n/holylfs/INTERNAL_REPOS/INFORMATICS/reference_genome_by_tommy/kallisto_bus_ref/GRCh38_GRCm38.96.tsv \
+-e mouse_human_kallisto_out/matrix.ec -t mouse_human_kallisto_out/transcripts.txt --genecounts -
+
+Found 13589760 barcodes in the whitelist
+
+Number of hamming dist 1 barcodes = 461228268
+Processed 97750679 bus records
+In whitelist = 94311259
+Corrected = 329059
+Uncorrected = 3110361
+Read in 94640318 BUS records&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Warning&lt;/strong&gt; it is not working!! 0 genes were mapped when I checked the &lt;code&gt;genes.genes.txt&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The devil is that &lt;code&gt;kallisto&lt;/code&gt; infers the transcript id from the &lt;code&gt;cDNA&lt;/code&gt; fasta file which contains the &lt;code&gt;.2&lt;/code&gt; version number, but in the gtf file the version number is in the &lt;code&gt;transcript_version 2&lt;/code&gt; entry.&lt;/p&gt;
+&lt;p&gt;The easiest way is to remove the version number in the &lt;code&gt;transcript.txt&lt;/code&gt; file from output.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# make a backup
+cp transcripts.txt transcripts.bc.txt
+
+# check how the version number look like for all genes
+cat transcripts.txt | cut -d. -f2 | sort | uniq
+1
+10
+11
+12
+13
+14
+15
+16
+17
+2
+3
+4
+5
+6
+7
+8
+9
+
+cat transcripts.txt | sed -r &amp;#39;s/\.[0-9]?//&amp;#39; &amp;gt; transcript2.txt
+
+## rerun bustool but feeding the transcript2.txt
+rm -rf genecount/*
+
+bustools correct -w whitelist.txt -p mouse_human_kallisto_out/output.bus | \
+bustools sort -T tmp/ -t 4 -p - | \
+bustools count -o genecount/genes \
+-g /n/holylfs/INTERNAL_REPOS/INFORMATICS/reference_genome_by_tommy/kallisto_bus_ref/GRCh38_GRCm38.96.tsv \
+-e mouse_human_kallisto_out/matrix.ec -t mouse_human_kallisto_out/transcript2.txt --genecounts -&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;alternative-ways&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Alternative ways&lt;/h3&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;The R package &lt;a href=&#34;https://github.com/BUStools/BUSpaRse/blob/master/R/tr2g.R&#34;&gt;BUSpaRse&lt;/a&gt; has a function to take care of that to make a transcript to gene mapping file from cDNA fasta. &lt;a href=&#34;https://bustools.github.io/BUS_notebooks_R/10xv2.html&#34; class=&#34;uri&#34;&gt;https://bustools.github.io/BUS_notebooks_R/10xv2.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(BUSpaRse)
+tr2g &amp;lt;- transcript2gene(fasta_file = c(&amp;quot;./data/hs_cdna.fa.gz&amp;quot;, &amp;quot;./data/mm_cdna.fa.gz&amp;quot;),
+                        kallisto_out_path = &amp;quot;./output/out_hgmm1k&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;code&gt;kb-python&lt;/code&gt; command &lt;code&gt;kb ref&lt;/code&gt; takes &lt;strong&gt;genomic DNA fasta&lt;/strong&gt; and gtf files and makes the index and a transcript to gene mapping file on the fly.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;load-in-to-r&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;load in to R&lt;/h3&gt;
+&lt;p&gt;following &lt;a href=&#34;https://bustools.github.io/BUS_notebooks_R/10xv2.html&#34; class=&#34;uri&#34;&gt;https://bustools.github.io/BUS_notebooks_R/10xv2.html&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(BUSpaRse)
+library(tidyverse)
+library(DropletUtils)
+library(Matrix)
+library(Seurat)
+
+res_mat &amp;lt;- read_count_output(&amp;quot;~/Downloads/genecount&amp;quot;,name = &amp;quot;genes&amp;quot;, tcc = FALSE)
+
+dim(res_mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]  71600 731356&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;remove some of the empty droplets&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tot_counts &amp;lt;- Matrix::colSums(res_mat)
+summary(tot_counts)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+##      0.00      1.00      1.00     34.89      5.00 142612.00&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Compute barcode rank from Dropletutils
+bc_rank &amp;lt;- barcodeRanks(res_mat)
+
+qplot(bc_rank$total, bc_rank$rank, geom = &amp;quot;line&amp;quot;) +
+  geom_vline(xintercept = bc_rank$knee, color = &amp;quot;blue&amp;quot;, linetype = 2) +
+  geom_vline(xintercept = bc_rank$inflection, color = &amp;quot;green&amp;quot;, linetype = 2) +
+  annotate(&amp;quot;text&amp;quot;, y = 1000, x = 1.5 * c(bc_rank$knee, bc_rank$inflection),
+           label = c(&amp;quot;knee&amp;quot;, &amp;quot;inflection&amp;quot;), color = c(&amp;quot;blue&amp;quot;, &amp;quot;green&amp;quot;)) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(y = &amp;quot;Barcode rank&amp;quot;, x = &amp;quot;Total UMI count&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-12-11-mixing-mouse-and-human-10x-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;filter-the-cells&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;filter the cells&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Filter the matrix
+res_mat &amp;lt;- res_mat[, tot_counts &amp;gt; bc_rank$inflection]
+dim(res_mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 71600  2375&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we get around 2000 cells.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gene_species &amp;lt;- ifelse(str_detect(rownames(res_mat), &amp;quot;^ENSMUSG&amp;quot;), &amp;quot;mouse&amp;quot;, &amp;quot;human&amp;quot;)
+mouse_inds &amp;lt;- gene_species == &amp;quot;mouse&amp;quot;
+human_inds &amp;lt;- gene_species == &amp;quot;human&amp;quot;
+# mark cells as mouse or human
+cell_species &amp;lt;- tibble(n_mouse_umi = Matrix::colSums(res_mat[mouse_inds,]),
+                       n_human_umi = Matrix::colSums(res_mat[human_inds,]),
+                       tot_umi = Matrix::colSums(res_mat),
+                       prop_mouse = n_mouse_umi / tot_umi,
+                       prop_human = n_human_umi / tot_umi)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ground-truth&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;ground truth&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str_detect(colnames(res_mat), &amp;quot;^AAAAAAAA&amp;quot;) %&amp;gt;% table()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## .
+## FALSE  TRUE 
+##  1169  1206&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str_detect(colnames(res_mat), &amp;quot;^TTTTTTTT&amp;quot;) %&amp;gt;% table()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## .
+## FALSE  TRUE 
+##  1206  1169&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We have 1206 mouse cells and 1169 human cells&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cell_species&amp;lt;- cell_species %&amp;gt;% 
+  mutate(ground_truth = case_when(
+    str_detect(colnames(res_mat), &amp;quot;^AAAAAAAA&amp;quot;) ~ &amp;quot;mouse&amp;quot;,
+    str_detect(colnames(res_mat), &amp;quot;^TTTTTTTT&amp;quot;) ~ &amp;quot;human&amp;quot;
+  )) 
+
+p1&amp;lt;- ggplot(cell_species, aes(x = ground_truth, y = prop_mouse)) +
+  geom_boxplot(aes(color = ground_truth))
+
+p2&amp;lt;- ggplot(cell_species, aes(x = ground_truth, y = prop_human)) +
+  geom_boxplot(aes(color = ground_truth))
+
+p&amp;lt;- cowplot::plot_grid(
+  p1 + theme(legend.position=&amp;quot;none&amp;quot;),
+  p2 + theme(legend.position=&amp;quot;none&amp;quot;),
+  align = &amp;#39;vh&amp;#39;)
+
+## add back the legend
+legend &amp;lt;- cowplot::get_legend(
+  # create some space to the left of the legend
+  p1 + theme(legend.box.margin = margin(0, 0, 0, 12))
+)
+
+# add the legend to the row we made earlier. Give it one-third of 
+# the width of one plot (via rel_widths).
+cowplot::plot_grid(p, legend, rel_widths = c(2, .4))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-12-11-mixing-mouse-and-human-10x-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;minimal and maximal proportion for mapping rate.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# min 95%
+cell_species$prop_human[cell_species$ground_truth == &amp;quot;human&amp;quot;] %&amp;gt;%
+  range()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9505135 0.9994325&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# max 5%
+cell_species$prop_mouse[cell_species$ground_truth == &amp;quot;human&amp;quot;] %&amp;gt;%
+  range()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.0005675369 0.0494864613&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# min 97%
+cell_species$prop_mouse[cell_species$ground_truth == &amp;quot;mouse&amp;quot;] %&amp;gt;%
+  range()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.9743096 1.0000000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# max 2%
+cell_species$prop_human[cell_species$ground_truth == &amp;quot;mouse&amp;quot;] %&amp;gt;%
+  range()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.00000000 0.02569043&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;assign species of origin by the proportion&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cell_species&amp;lt;- cell_species %&amp;gt;% 
+  mutate(ground_truth = case_when(
+    str_detect(colnames(res_mat), &amp;quot;^AAAAAAAA&amp;quot;) ~ &amp;quot;mouse&amp;quot;,
+    str_detect(colnames(res_mat), &amp;quot;^TTTTTTTT&amp;quot;) ~ &amp;quot;human&amp;quot;
+  )) %&amp;gt;%
+  mutate(species = case_when(
+    prop_mouse &amp;gt; 0.9 ~ &amp;quot;mouse&amp;quot;,
+    prop_human &amp;gt; 0.9 ~ &amp;quot;human&amp;quot;,
+    TRUE ~ &amp;quot;mixed&amp;quot;
+  ))
+
+table(cell_species$ground_truth, cell_species$species)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        
+##         human mouse
+##   human  1169     0
+##   mouse     0  1206&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This makes a 100% match as expected.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;seurat-for-dimension-reduction-and-visualization&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Seurat for dimension reduction and visualization&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;seu &amp;lt;- CreateSeuratObject(res_mat, min.cells = 3) %&amp;gt;% 
+  NormalizeData(verbose = FALSE) %&amp;gt;% 
+  ScaleData(verbose = FALSE) %&amp;gt;% 
+  FindVariableFeatures(verbose = FALSE)
+
+seu &amp;lt;- AddMetaData(seu, metadata = cell_species$ground_truth, col.name = &amp;quot;species&amp;quot;)
+seu &amp;lt;- RunPCA(seu, verbose = FALSE, npcs = 30)
+seu &amp;lt;- RunTSNE(seu, dims = 1:20, check_duplicates = FALSE)
+DimPlot(seu, reduction = &amp;quot;pca&amp;quot;, pt.size = 0.5, group.by = &amp;quot;species&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-12-11-mixing-mouse-and-human-10x-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;DimPlot(seu, reduction = &amp;quot;tsne&amp;quot;, pt.size = 0.5, group.by = &amp;quot;species&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-12-11-mixing-mouse-and-human-10x-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-19-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conclusion&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;conclusion&lt;/h3&gt;
+&lt;p&gt;Using ratio of mapped reads for each cell to identify the cell of origin works pretty well for mouse and human mixtures. what if we use a more close species to human say chimpanzee or monkeys? Also, in a real experiment, one may have doublets from different species.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Modeling single cell RNAseq data with multinomial distribution </title>
       <link>/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/</link>
       <pubDate>Tue, 26 Nov 2019 00:00:00 +0000</pubDate>
@@ -1844,380 +2175,6 @@ are not specified, but running on command line is fine.&lt;/li&gt;
 &lt;blockquote&gt;
 &lt;p&gt;littler provides the r program, a simplified command-line interface for GNU R. This allows direct execution of commands, use in piping where the output of one program supplies the input of the next, as well as adding the ability for writing hash-bang scripts, i.e. creating executable files starting with, say, #!/usr/bin/r.&lt;/p&gt;
 &lt;/blockquote&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Split a 10xscATAC bam file by cluster</title>
-      <link>/post/split-a-10xscatac-bam-file-by-cluster/</link>
-      <pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/post/split-a-10xscatac-bam-file-by-cluster/</guid>
-      <description>
-
-&lt;p&gt;I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in &lt;code&gt;IGV&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.&lt;/p&gt;
-
-&lt;p&gt;I decided to write one myself. The following is my journey for this small task.&lt;/p&gt;
-
-&lt;p&gt;download the 5k pbmc scATAC data from &lt;a href=&#34;https://support.10xgenomics.com/single-cell-atac/datasets/1.0.1/atac_v1_pbmc_5k&#34; target=&#34;_blank&#34;&gt;https://support.10xgenomics.com/single-cell-atac/datasets/1.0.1/atac_v1_pbmc_5k&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;split-the-cell-barcodes-by-cluster-id&#34;&gt;split the cell barcodes by cluster id&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cd analysis/clustering/graphclust
-head clusters.csv
-Barcode,Cluster
-AAACGAAAGCGCAATG-1,1
-AAACGAAAGGGTATCG-1,4
-AAACGAAAGTAACATG-1,8
-AAACGAAAGTTACACC-1,1
-AAACGAACAGAGATGC-1,4
-AAACGAACATGCTATG-1,5
-AAACGAAGTGCATCAT-1,3
-AAACGAAGTGGACGAT-1,3
-AAACGAAGTGGCCTCA-1,7
-
-# there are ^M characters at the end of the line if you do cat -A you will see it.
-# change it to unix
-dos2unix clusters.csv
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;awk -F&amp;quot;,&amp;quot; &#39;NR&amp;gt;1{print $1 &amp;gt;&amp;gt; &amp;quot;cluster_&amp;quot;$2&amp;quot;.csv&amp;quot;}&#39; clusters.csv
-wc -l *csv
-   330 cluster_10.csv
-   322 cluster_11.csv
-   258 cluster_12.csv
-   191 cluster_13.csv
-   608 cluster_1.csv
-   563 cluster_2.csv
-   559 cluster_3.csv
-   532 cluster_4.csv
-   483 cluster_5.csv
-   425 cluster_6.csv
-   366 cluster_7.csv
-   360 cluster_8.csv
-   338 cluster_9.csv
-  5336 clusters.csv
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;use-bamtools&#34;&gt;use bamtools&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;time bamtools filter -tag CB:Z:AAACTGCAGAGCAGCT-1 -in atac_v1_pbmc_5k_possorted_bam.bam -out AAACTGCAGAGCAGCT-1.bam
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This takes a little over 1 hour for one barcode! And there is no easy way
-to specify a group of barcodes.&lt;/p&gt;
-
-&lt;h3 id=&#34;use-the-linux-tricks&#34;&gt;use the linux tricks&lt;/h3&gt;
-
-&lt;p&gt;inspired partly by this post &lt;a href=&#34;https://www.biostars.org/p/263346/&#34; target=&#34;_blank&#34;&gt;https://www.biostars.org/p/263346/&lt;/a&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;wc -l clusters.csv
-5336 clusters.csv
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;and let&amp;rsquo;s see how fast each regular expression takes for &lt;code&gt;awk&lt;/code&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;time samtools view atac_v1_pbmc_5k_possorted_bam.bam | awk -v tag=&amp;quot;CB:Z:AAACTGCAGAGCAGCT-1&amp;quot; &#39;index($0,tag)&amp;gt;0&#39; &amp;gt;&amp;gt; AAACTGCAGAGCAGCT-1.sam
-
-real    27m14.332s
-user    48m36.883s
-sys     4m37.908s
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;It is not too bad, but if we loops over the &lt;code&gt;clusters.csv&lt;/code&gt; files for 5335 times,&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;samtools view -H atac_v1_pbmc_5k_possorted_bam.bam &amp;gt; header.txt
-
-cat clusters.csv \
-| sed &#39;1d&#39; \
-| while IFS=&#39;,&#39; read -r barcode cluster
-    do samtools view atac_v1_pbmc_5k_possorted_bam.bam |  awk -v tag=&amp;quot;CB:Z:$barcode&amp;quot; &#39;index($0,tag)&amp;gt;0&#39; &amp;gt;&amp;gt; &amp;quot;$cluster.sam&amp;quot;
-    done
-
-## then cat the header with the sam.
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;it will take ~30min * 5335 = ~100 days to finish.&lt;/p&gt;
-
-&lt;p&gt;we can do better to parallize by GNU parallel&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;## not tested...
-cat clusters.csv \
-| sed &#39;1d&#39; \
-| parallel --colsep &#39;,&#39; -j 40 &#39;samtools view atac_v1_pbmc_5k_possorted_bam.bam |awk -v tag=&amp;quot;CB:Z:{1}&amp;quot; &#39;index(\$0,tag)&amp;gt;0&#39; &amp;gt;&amp;gt; {2}.sam&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Again, using 40 cores may reduce our time to &lt;sup&gt;100&lt;/sup&gt;&amp;frasl;&lt;sub&gt;40&lt;/sub&gt; = 5 days.&lt;/p&gt;
-
-&lt;h3 id=&#34;use-pysam&#34;&gt;use pysam&lt;/h3&gt;
-
-&lt;p&gt;Let&amp;rsquo;s only loop over the sam file once&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import pysam
-import csv
-
-cluster_dict = {}
-with open(&#39;clusters.csv&#39;) as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter=&#39;,&#39;)
-    #skip header
-    header = next(csv_reader)
-    for row in csv_reader:
-        cluster_dict[row[0]] = row[1]
-
-clusters = set(x for x in cluster_dict.values())
-
-
-fin = pysam.AlignmentFile(&amp;quot;atac_v1_pbmc_5k_possorted_bam.bam&amp;quot;, &amp;quot;rb&amp;quot;)
-
-# open the number of bam files as the same number of clusters, and map the out file handler to the cluster id, write to a bam with wb
-fouts_dict = {}
-for cluster in clusters:
-    fout = pysam.AlignmentFile(&amp;quot;cluster&amp;quot; + cluster + &amp;quot;.bam&amp;quot;, &amp;quot;wb&amp;quot;, template = fin)
-    fouts_dict[cluster] = fout
-
-for read in fin:
-    tags = read.tags
-    CB_list = [ x for x in tags if x[0] == &amp;quot;CB&amp;quot;]
-    if CB_list:
-        cell_barcode = CB_list[0][1]
-    # the bam files may contain reads not in the final clustered barcodes
-    # will be None if the barcode is not in the clusters.csv file
-    else: 
-        continue
-    cluster_id = cluster_dict.get(cell_barcode)
-    if cluster_id:
-        fouts_dict[cluster_id].write(read)
-
-## do not forget to close the files
-fin.close()
-for fout in fouts_dict.values():
-    fout.close()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;real    172m58.758s
-user    172m10.678s
-sys     0m46.071s&lt;/p&gt;
-
-&lt;p&gt;Note, some read record in the bam file do not have &lt;code&gt;CB&lt;/code&gt; but only &lt;code&gt;CR&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;from &lt;a href=&#34;https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/output/bam&#34; target=&#34;_blank&#34;&gt;https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/output/bam&lt;/a&gt;&lt;/p&gt;
-
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Tag&lt;/th&gt;
-&lt;th&gt;Description&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;CB&lt;/td&gt;
-&lt;td&gt;Chromium cellular barcode sequence that is error-corrected and confirmed against a list of known-good barcode sequences.&lt;/td&gt;
-&lt;/tr&gt;
-
-&lt;tr&gt;
-&lt;td&gt;CR&lt;/td&gt;
-&lt;td&gt;Chromium cellular barcode sequence as reported by the sequencer.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;How many of those reads with &lt;code&gt;CR&lt;/code&gt;?&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# every read has a CR tag
-samtools view atac_v1_pbmc_5k_possorted_bam.bam| grep -v &amp;quot;CR&amp;quot; | wc -l
-0 
-
-# not every read has a CB tag.
-samtools view atac_v1_pbmc_5k_possorted_bam.bam| grep -v &amp;quot;CB&amp;quot; | wc -l
-10647804
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;use-pybam&#34;&gt;use pybam&lt;/h3&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://www.biostars.org/p/186732/&#34; target=&#34;_blank&#34;&gt;https://www.biostars.org/p/186732/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/JohnLonginotto/pybam&#34; target=&#34;_blank&#34;&gt;https://github.com/JohnLonginotto/pybam&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Note that pybam is python2.x&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;source activate py27
-cd ~/apps
-git clone https://github.com/JohnLonginotto/pybam
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;inside python:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import pybam
-import csv
-
-cluster_dict = {}
-with open(&#39;clusters.csv&#39;) as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter=&#39;,&#39;)
-    #skip header
-    header = next(csv_reader)
-    for row in csv_reader:
-        cluster_dict[row[0]] = row[1]
-
-clusters = set(x for x in cluster_dict.values())
-
-
-# open the number of bam files as the same number of clusters, and map the out file handler to the cluster id
-
-header = pybam.read(&#39;atac_v1_pbmc_5k_possorted_bam.bam&#39;).file_header
-fouts_dict = {}
-for cluster in clusters:
-    fout = open(&amp;quot;cluster&amp;quot; + cluster + &amp;quot;.sam&amp;quot;, &amp;quot;w&amp;quot;)
-    fout.write(header)
-    fouts_dict[cluster] = fout
-
-for read in pybam.read(&#39;possorted_bam.bam&#39;):
-        ## not always the same position in the list for the CB tag
-        ## there could be no CB tag for a certian read as well
-        ## it will return empty list
-        CB_list = [ x for x in read.sam_tags_list if x[0] == &amp;quot;CB&amp;quot;]
-        if CB_list:
-            cell_barcode = CB_list[0][2]
-            cluster_id = cluster_dict.get(cell_barcode)
-            if cluster_id:
-                fouts_dict[cluster_id].write(read.sam + &#39;\n&#39;)
-        
-## do not forget to close the files
-for fout in fouts_dict.values():
-    fout.close()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;real    1262m30.849s
-user    1240m11.906s
-sys     22m9.325s&lt;/p&gt;
-
-&lt;p&gt;Did not find how to write to a bam file, so I have to write to a sam file. I asked on github issues but no responses. The author is not actively maintaining the library anymore.&lt;/p&gt;
-
-&lt;h3 id=&#34;use-hts-nim&#34;&gt;use hts-nim&lt;/h3&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/brentp/hts-nim-tools/issues/5&#34; target=&#34;_blank&#34;&gt;https://github.com/brentp/hts-nim-tools/issues/5&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Thanks Brent for providing the code.&lt;/p&gt;
-
-&lt;h4 id=&#34;htslib-need-to-be-in-ld-library-path&#34;&gt;htslib need to be in &lt;code&gt;$LD_LIBRARY_PATH&lt;/code&gt;:&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;wget https://github.com/samtools/htslib/releases/download/1.6/htslib-1.6.tar.bz2
-tar xjf htslib-1.6.tar.bz2
-cd htslib-1.6
-./configure ~/bin/
-
-make
-
-# add this to .bashrc and source ~/.bashrc
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/n/home02/mtang/apps/htslib-1.6
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;install-nim-and-hts-nim&#34;&gt;install &lt;code&gt;nim&lt;/code&gt; and &lt;code&gt;hts-nim&lt;/code&gt;&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;wget https://raw.githubusercontent.com/brentp/hts-nim/master/scripts/simple-install.sh
-
-chmod u+x simple-install.sh
-./simple-install.sh
-
-# add nim to PATH
-
-git clone https://github.com/brentp/hts-nim
-cd hts-nim
-nimble install -y
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import hts
-import os
-import strutils
-import tables
-var ibam:Bam
-
-# lookup from cb -&amp;gt; cluster
-var clusterTbl = initTable[string,string]()
-# lookup from cluster -&amp;gt; bam
-var tbl = initTable[string, Bam]()
-
-for x in paramStr(1).lines:
-  var toks = x.strip().split(&amp;quot;,&amp;quot;)
-  clusterTbl[toks[0]] = toks[1]
-
-if not open(ibam, paramStr(2)):
-   quit &amp;quot;couldn&#39;t open bam&amp;quot;
-
-for aln in ibam:
-  var cb = tag[string](aln, &amp;quot;CB&amp;quot;).get
-  if cb.isNullOrEmpty: continue
-  if cb notin clusterTbl: continue
-  var cluster = clusterTbl[cb]
-  if cluster notin tbl:
-    var obam: Bam
-    if not open(obam, &amp;quot;out-cluster-&amp;quot; &amp;amp; cluster &amp;amp; &amp;quot;.bam&amp;quot;, mode=&amp;quot;w&amp;quot;):
-      quit &amp;quot;couldn&#39;t open bam for writing&amp;quot;
-    obam.write_header(ibam.hdr)
-    tbl[cluster] = obam
-  tbl[cluster].write(aln)
-
-for k, bam in tbl:
-  bam.close()
-ibam.close()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;compile&#34;&gt;compile&lt;/h4&gt;
-
-&lt;p&gt;save it to &lt;code&gt;split_scATAC_bam.nim&lt;/code&gt; and compile:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;nim compile -d:release scATAC_split_scATAC_bam.nim
-split_scATAC_bam clusters.csv atac_v1_pbmc_5k_possorted_bam.bam
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;real    105m17.140s
-user    102m17.214s
-sys     2m58.312s&lt;/p&gt;
-
-&lt;p&gt;it is &lt;sup&gt;172&lt;/sup&gt;&amp;frasl;&lt;sub&gt;105&lt;/sub&gt; &lt;strong&gt;~1.6 times faster&lt;/strong&gt; in &lt;code&gt;hts-nim&lt;/code&gt; than in &lt;code&gt;pysam&lt;/code&gt;.&lt;/p&gt;
-
-&lt;h3 id=&#34;speed-up&#34;&gt;speed up&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;parallize by chromosome&lt;/li&gt;
-&lt;li&gt;pysam parallization&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;hts-nim&lt;/code&gt; from Brent:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;you can add &lt;code&gt;threads=2&lt;/code&gt; (or 3) to the &lt;code&gt;open&lt;/code&gt; calls to get a bit more speed on de/compressing the bam which will be the most CPU time&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;I tested using &lt;code&gt;threads = 3&lt;/code&gt; for the same bam file, it took&lt;/p&gt;
-
-&lt;p&gt;real    92m11.205s
-user    100m11.622s
-sys     6m3.067s&lt;/p&gt;
-
-&lt;p&gt;one saved another 105-92 = 13 mins using multi-thread &lt;code&gt;hts-nim&lt;/code&gt;.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;C htslib, I expect the speed will be similar to &lt;code&gt;hts-nim&lt;/code&gt; since &lt;code&gt;hts-nim&lt;/code&gt; is a wrapper around it.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;lessons-learned&#34;&gt;Lessons learned&lt;/h3&gt;
-
-&lt;p&gt;I had &lt;a href=&#34;https://github.com/brentp/hts-nim-tools/issues/5#issuecomment-464114496&#34; target=&#34;_blank&#34;&gt;a bug&lt;/a&gt; in my &lt;code&gt;pysam&lt;/code&gt; code and it pulls out some reads without the &lt;code&gt;CB&lt;/code&gt; tag. Thanks Brent for catching it. I spent some time to debug and could not find it.&lt;/p&gt;
-
-&lt;p&gt;Lessons that I have learned:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;How to make sure the output of the software is correct is very difficult. unit testing is important.&lt;/li&gt;
-&lt;li&gt;It is good to have someone else with more programming experience to look at the code for you. You are so used to the code that you write and can not find the &amp;ldquo;obvious&amp;rdquo; problem.&lt;/li&gt;
-&lt;li&gt;Do not use libraries that are not well maintained. The &lt;code&gt;pybam&lt;/code&gt; author is not maintaining the library now and it is written in python2.x. I am writing all my python code in python3.x&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I have put the python and nim code at &lt;a href=&#34;https://github.com/crazyhottommy/scATACutils&#34; target=&#34;_blank&#34;&gt;scATACutils&lt;/a&gt;. The &lt;code&gt;pysam&lt;/code&gt; code and &lt;code&gt;hts-nim&lt;/code&gt; code generate exactly the same results.&lt;/p&gt;
 </description>
     </item>
     
