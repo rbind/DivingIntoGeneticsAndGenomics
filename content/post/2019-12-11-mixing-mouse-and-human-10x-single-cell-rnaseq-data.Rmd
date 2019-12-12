@@ -135,7 +135,7 @@ pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R2_001.fastq.gz
 
 we need a transcript to gene mapping tsv file making from gtf file. I could not find the `t2g.py` script mentioned in the [tutorial](https://www.kallistobus.tools/documentation).
 
-make a transcript to gene mapping file using unix command line. also read my previous blog post: 
+make a transcript to gene mapping file using unix command line. also read my previous blog post: https://divingintogeneticsandgenomics.rbind.io/post/how-to-make-a-transcript-to-gene-mapping-file/
 
 ```{bash eval=FALSE, engine="sh"}
 zcat Homo_sapiens.GRCh38.96.gtf.gz | grep -v "#" | awk '$3=="transcript"' | cut -f9 | tr -s ";" " " | awk -v OFS="\t" '{print$6"\t"$2"\t"$10}' | sort | uniq |  sed 's/\"//g' > Homo_sapiens.GRCh38.96.tsv

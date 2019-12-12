@@ -111,7 +111,7 @@ pbmc_1k_v3_fastqs/pbmc_1k_v3_S1_L002_R2_001.fastq.gz
 &lt;div id=&#34;bustools-count-at-gene-level&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;bustools count at gene level&lt;/h3&gt;
 &lt;p&gt;we need a transcript to gene mapping tsv file making from gtf file. I could not find the &lt;code&gt;t2g.py&lt;/code&gt; script mentioned in the &lt;a href=&#34;https://www.kallistobus.tools/documentation&#34;&gt;tutorial&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;make a transcript to gene mapping file using unix command line. also read my previous blog post:&lt;/p&gt;
+&lt;p&gt;make a transcript to gene mapping file using unix command line. also read my previous blog post: &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/how-to-make-a-transcript-to-gene-mapping-file/&#34; class=&#34;uri&#34;&gt;https://divingintogeneticsandgenomics.rbind.io/post/how-to-make-a-transcript-to-gene-mapping-file/&lt;/a&gt;&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;zcat Homo_sapiens.GRCh38.96.gtf.gz | grep -v &amp;quot;#&amp;quot; | awk &amp;#39;$3==&amp;quot;transcript&amp;quot;&amp;#39; | cut -f9 | tr -s &amp;quot;;&amp;quot; &amp;quot; &amp;quot; | awk -v OFS=&amp;quot;\t&amp;quot; &amp;#39;{print$6&amp;quot;\t&amp;quot;$2&amp;quot;\t&amp;quot;$10}&amp;#39; | sort | uniq |  sed &amp;#39;s/\&amp;quot;//g&amp;#39; &amp;gt; Homo_sapiens.GRCh38.96.tsv
 
 
