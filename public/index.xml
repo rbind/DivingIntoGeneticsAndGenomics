@@ -11,6 +11,50 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>The end of 2019</title>
+      <link>/post/the-end-of-2019/</link>
+      <pubDate>Sun, 29 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/the-end-of-2019/</guid>
+      <description>&lt;p&gt;It is the end of 2019. How time flies! It is a good time to reflect what I have
+achieved during the past year and what to look forward in 2020. I wrote a post for
+2018 &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/the-end-of-2018/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.
+I am not the only one who has impostor syndrome :) It is important to celebrate your
+small successes/achievements by writing them down.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;I taught a snakemake and scRNAseq workshop during the FAS informatics 2-week &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/talk/2019-harvard-fas-workshop/&#34; target=&#34;_blank&#34;&gt;nanocourse&lt;/a&gt;. I love teaching biologists computing skills that I have learned from scratch. Nowadays, almost &lt;a href=&#34;https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.2002050&#34; target=&#34;_blank&#34;&gt;every biology is computational biology&lt;/a&gt;. I also helped/taught lab members in Dulac lab with programming.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I had my first R package &lt;a href=&#34;https://github.com/crazyhottommy/scclusteval&#34; target=&#34;_blank&#34;&gt;scclusteval&lt;/a&gt; for estimating cluster stability in single-cell RNAseq data in github and am writing it up for a small paper. I had some changes that have not been committed to github yet. I presented it in the &lt;a href=&#34;http://bioc2019.bioconductor.org/&#34; target=&#34;_blank&#34;&gt;2019 bioconductor annual meeting&lt;/a&gt; which was held in NYC. I met many wonderful tweeps during the conference including &lt;a href=&#34;https://twitter.com/mikelove&#34; target=&#34;_blank&#34;&gt;Mike Love&lt;/a&gt;, &lt;a href=&#34;https://twitter.com/anshulkundaje&#34; target=&#34;_blank&#34;&gt;Ansul kundaje&lt;/a&gt;, &lt;a href=&#34;https://twitter.com/QianLiu28878838&#34; target=&#34;_blank&#34;&gt;Qian liu&lt;/a&gt; (congrats for the new professorship!), &lt;a href=&#34;https://profiles.umassmed.edu/display/129880&#34; target=&#34;_blank&#34;&gt;Lihua Zhu&lt;/a&gt;, &lt;a href=&#34;https://twitter.com/davetang31&#34; target=&#34;_blank&#34;&gt;Dave Tang&lt;/a&gt;, &lt;a href=&#34;https://twitter.com/k3yavi&#34; target=&#34;_blank&#34;&gt;Avi Srivastava&lt;/a&gt; and many others. Thanks bioconductor for the travel award! bioconductor 2020 will be in local Boston, so I will see everyone here!&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;My first co-first author computational paper is still under review after revision. I have my fingers crossed for the reviewers&amp;rsquo; comments back. It has tons of experimental data and computational analysis of both in-house and public data. You can have a look in biorxiv &lt;a href=&#34;https://www.biorxiv.org/content/10.1101/507202v1&#34; target=&#34;_blank&#34;&gt;https://www.biorxiv.org/content/10.1101/507202v1&lt;/a&gt;. I promise to update the README and pipeline once it is accepted :) &lt;a href=&#34;https://github.com/crazyhottommy/pyflow-ChIPseq&#34; target=&#34;_blank&#34;&gt;https://github.com/crazyhottommy/pyflow-ChIPseq&lt;/a&gt;.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I started working on scATACseq in March 2019. It is a brand new field and I have learned quite a bit during the journey. I learned the sparsity of the matrix (more sparse than scRNAseq given the nature of the experiment: we only 2 copies of diploid DNA). I wrote some &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/#posts&#34; target=&#34;_blank&#34;&gt;blog posts&lt;/a&gt; on it. I am developing an R/bioconductor package to deal with scATACseq data &lt;a href=&#34;https://github.com/crazyhottommy/scATACutils&#34; target=&#34;_blank&#34;&gt;https://github.com/crazyhottommy/scATACutils&lt;/a&gt;. I plan to add more functions and improve the documentations. I presented it in the cold spring harbor &lt;a href=&#34;https://meetings.cshl.edu/meetings.aspx?meet=SINGLE&amp;amp;year=19&#34; target=&#34;_blank&#34;&gt;Single Cell Analyses&lt;/a&gt; meeting.It is amazing to see the development of the single-cell field in the past 10 years! I met some awesome people there including &lt;a href=&#34;https://twitter.com/LGMartelotto&#34; target=&#34;_blank&#34;&gt;Luciano Martelotto&lt;/a&gt; and got to see some of my old MD Anderson Colleagues.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I said I would start learning some deep learning in 2019. That did not happen much. Instead, I started watching some linear algebra courses by MIT Gilbert Strang &lt;a href=&#34;https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/index.htm&#34; target=&#34;_blank&#34;&gt;18.06&lt;/a&gt; and &lt;a href=&#34;https://ocw.mit.edu/courses/mathematics/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/index.htm&#34; target=&#34;_blank&#34;&gt;18.065&lt;/a&gt;. I have finished watching 70% of the videos and really enjoyed them. I got a much better idea of matrix dimentionality (along with space and subspace) and matrix factorization(e.g. SVD). I highly recommend youtube videos from 3blue1brown: &lt;a href=&#34;https://www.3blue1brown.com/essence-of-linear-algebra-page&#34; target=&#34;_blank&#34;&gt;Essense of linear algebra&lt;/a&gt; as well. Thanks &lt;a href=&#34;https://twitter.com/zhiiiyang&#34; target=&#34;_blank&#34;&gt;Yi Zhang&lt;/a&gt; for recommending. At the same time, I slowly picked up &lt;a href=&#34;https://www.manning.com/books/deep-learning-with-r&#34; target=&#34;_blank&#34;&gt;Deep learning with R&lt;/a&gt;.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I started &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/run-rstudio-server-with-singularity-on-hpc/&#34; target=&#34;_blank&#34;&gt;using docker and singularity&lt;/a&gt; for reproducible computing. It is a life-saver for me. Thanks Nathan for helping me along the way.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I finally met &lt;a href=&#34;https://twitter.com/JasonWilliamsNY&#34; target=&#34;_blank&#34;&gt;Jason Willimas&lt;/a&gt; in person together with &lt;a href=&#34;https://twitter.com/dccc_phd&#34; target=&#34;_blank&#34;&gt;Damien&lt;/a&gt;. Jason is a very nice person. Next time we will treat you when you are in Boston again. I am sure this is in the right category of my success list :)&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I am grateful that I am in a such supporting position and I have been learning new things. Thanks everyone who has helped me along the way.&lt;/p&gt;
+
+&lt;p&gt;In the coming 2020, I should&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;learn more stats. I registered one class from Harvard Extension school and will see how it goes. Lacking statistics background hurts me.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;do better in data and project management. I will start using &lt;a href=&#34;https://pypi.org/project/dtool/&#34; target=&#34;_blank&#34;&gt;dtool&lt;/a&gt;.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;write some papers up. A good paper is a finished paper. I hear you.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;try to be a better human, a better husband and father and then a better researcher.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Mixing mouse and human 10x single cell RNAseq data</title>
       <link>/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/</link>
       <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
@@ -1999,186 +2043,6 @@ When one has a lot of clusters (e.g. over 50), one probably does not want to pl
       
       <guid>/publication/2019-03-20-irf2/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Use docopt to write command line R utilities </title>
-      <link>/post/use-docopt-to-write-command-line-r-utilities/</link>
-      <pubDate>Fri, 22 Feb 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/post/use-docopt-to-write-command-line-r-utilities/</guid>
-      <description>&lt;p&gt;I was writing an R script to plot the ATACseq fragment length distribution and wanted
-to turn the R script to a command line utility.&lt;/p&gt;
-
-&lt;p&gt;I then (re)discovered this awesome &lt;a href=&#34;https://github.com/docopt/docopt.R&#34; target=&#34;_blank&#34;&gt;docopt.R&lt;/a&gt;.
-One just needs to write the help message the you want to display and &lt;code&gt;docopt()&lt;/code&gt; will
-parse the options, arguments and return a named list which can be accessed inside the
-R script. check &lt;a href=&#34;http://docopt.org/&#34; target=&#34;_blank&#34;&gt;http://docopt.org/&lt;/a&gt; for more information as well.&lt;/p&gt;
-
-&lt;p&gt;See below for an example. You can download it at &lt;a href=&#34;https://github.com/crazyhottommy/scATACutils/blob/master/R/plot_atac_frag_distribution.R&#34; target=&#34;_blank&#34;&gt;https://github.com/crazyhottommy/scATACutils/blob/master/R/plot_atac_frag_distribution.R&lt;/a&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;
-#! /usr/bin/env Rscript
-&#39;Plot fragment length distribution from ATACseq data
-Usage:
-    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width=&amp;lt;width&amp;gt; --height=&amp;lt;height&amp;gt; --bin=&amp;lt;bp&amp;gt;] &amp;lt;input&amp;gt; &amp;lt;output&amp;gt;
-    
-Options:
-    -h --help  Show this screen.
-    -v --version  Show version.
-    --bin=&amp;lt;bp&amp;gt;  Bin size [default: 5]
-    --poly  Plot frequency polygon.
-    --hist  Plot histogram.
-    --pdf  Save to pdf.
-    --png  Save to png.
-    --width=&amp;lt;width&amp;gt;  Width of the output [default: 4]
-    --height=&amp;lt;height&amp;gt; Height of the output [default: 4]
-
-Arguments:
-    input  fragment length in a one column dataframe without header or stdin
-    output  output filename
-&#39; -&amp;gt; doc
-
-suppressMessages(library(ggplot2))
-# check this awesome docoptR https://github.com/docopt/docopt.R
-## make sure use the development version, the CRAN version not working for me
-# library(devtools) 
-# devtools::install_github(&amp;quot;docopt/docopt.R&amp;quot;)
-suppressMessages(library(docopt))
-suppressMessages(library(dplyr))
-
-# this will give error if try interactively, because no input and output argument are given
-# https://github.com/docopt/docopt.R/issues/27
-arguments &amp;lt;- docopt(doc, version = &#39;plot_atac_frag_distribution v1.0\n\n&#39;)
-
-# for testing interactively
-#arguments &amp;lt;- docopt(doc, version = &#39;FragmentSizeDistribution v1.0&#39;, args = c(&amp;quot;scripts/fragment3.txt&amp;quot;,&amp;quot;my.pdf&amp;quot;))
-#print(arguments)
-
-## File Read ##
-# taken from https://stackoverflow.com/questions/26152998/how-to-make-r-script-takes-input-from-pipe-and-user-given-parameter
-# if the input is stdin one can do 
-# cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf stdin  out.pdf
-# cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf - out.pdf
-# ./plot_atac_frag_distribution.R --poly --pdf &amp;lt;(cat fragment.txt)  out.pdf
-
-
-OpenRead &amp;lt;- function(arg) {
-    if (arg %in% c(&amp;quot;-&amp;quot;, &amp;quot;/dev/stdin&amp;quot;)) {
-        file(&amp;quot;stdin&amp;quot;, open = &amp;quot;r&amp;quot;)
-    } else if (grepl(&amp;quot;^/dev/fd/&amp;quot;, arg)) {
-        fifo(arg, open = &amp;quot;r&amp;quot;)
-    } else {
-        file(arg, open = &amp;quot;r&amp;quot;)
-    }
-}
-
-dat.con &amp;lt;- OpenRead(arguments$input)
-fragment &amp;lt;- read.table(dat.con, header = FALSE)
-
-#fragment&amp;lt;- read.table(arguments$input, header = F)
-
-names(fragment)&amp;lt;- c(&amp;quot;length&amp;quot;)
-
-plot_hist&amp;lt;- function(fragment, bin) {
-        g&amp;lt;- ggplot(fragment %&amp;gt;% filter(length &amp;lt;=2000), aes(x = length)) + 
-                geom_histogram(binwidth = bin, aes(y=..density..), fill = &amp;quot;red&amp;quot;) +
-                geom_density(alpha=.2, fill=&amp;quot;#FF6666&amp;quot;, col = &amp;quot;black&amp;quot;) +
-                coord_cartesian(xlim = c(0,1000)) +
-                scale_x_continuous(breaks = c(0, 100, 200, 300, 400, 800)) +
-                theme_minimal(base_size = 14)
-        return(g)
-        
-}
-
-plot_polygon&amp;lt;- function(fragment, bin){
-        g&amp;lt;- ggplot(fragment %&amp;gt;% filter(length &amp;lt;=2000), aes(x = length, stat(density))) + 
-                geom_freqpoly(binwidth = bin, col = &amp;quot;blue&amp;quot;) +
-                coord_cartesian(xlim = c(0,1000)) +
-                scale_x_continuous(breaks = c(0, 100, 200, 300, 400, 800)) +
-                theme_minimal(base_size = 14)
-        return(g)
-}
-
-
-main&amp;lt;- function(fragment, arguments){
-    if (arguments$poly){
-        g&amp;lt;- plot_polygon(fragment, as.numeric(arguments$bin))
-    } else if (arguments$hist){
-        g&amp;lt;- plot_hist(fragment, as.numeric(arguments$bin))
-    }
-    device&amp;lt;- ifelse(arguments$pdf, &amp;quot;pdf&amp;quot;, &amp;quot;png&amp;quot;)
-    
-    ggsave(arguments$output, plot = g,  device = device, width =as.numeric(arguments$width), 
-           height = as.numeric(arguments$height) )
-    
-}
-
-main(fragment, arguments)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;save it to &lt;code&gt;plot_atac_frag_distribution.R&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;on command line, one can do:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
-./plot_atac_frag_distribution.R -h
-Plot fragment length distribution from ATACseq data
-Usage:
-    plot_atac_fragment_len_distribution.R (--poly | --hist) (--pdf | --png) [--width=&amp;lt;width&amp;gt; --height=&amp;lt;height&amp;gt; --bin=&amp;lt;bp&amp;gt;] &amp;lt;input&amp;gt; &amp;lt;output&amp;gt;
-
-Options:
-    -h --help  Show this screen.
-    -v --version  Show version.
-    --bin=&amp;lt;bp&amp;gt;  Bin size [default: 5]
-    --poly  Plot frequency polygon.
-    --hist  Plot histogram.
-    --pdf  Save to pdf.
-    --png  Save to png.
-    --width=&amp;lt;width&amp;gt;  Width of the output [default: 4]
-    --height=&amp;lt;height&amp;gt; Height of the output [default: 4]
-
-Arguments:
-    input  fragment length in a one column dataframe without header or stdin
-    output  output filename
-
-./plot_atac_frag_distribution.R --poly --png  --bin 10 fragment.txt out.png
-cat fragment.txt | ./plot_atac_frag_distribution.R --poly --pdf stdin  out.pdf
-cat fragment.txt | ./plot_atac_frag_distribution.R --hist --pdf - out.pdf
-./plot_atac_frag_distribution.R --hist --pdf &amp;lt;(cat fragment.txt)  out.pdf
-
-samtools view my.bam | awk &#39;$9&amp;gt;0&#39; | cut -f 9 |./plot_atac_frag_distribution.R --poly --pdf - out.pdf
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;histogram:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/posts_img/out2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;polygon:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/posts_img/out3.png&#34; alt=&#34;&#34; /&gt;
-Pretty cool!!&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Important notes:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;[default: 4]  The space after &lt;code&gt;:&lt;/code&gt; is needed.&lt;/li&gt;
-&lt;li&gt;use two spaces to separate the option and the explanation&lt;/li&gt;
-&lt;li&gt;use four spaces to indent&lt;/li&gt;
-&lt;li&gt;use the development version of optdoc.R&lt;/li&gt;
-&lt;li&gt;when testing interactively. docopt() may give error when the mandatory arguments
-are not specified, but running on command line is fine.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;see &lt;a href=&#34;https://github.com/docopt/docopt.R/issues/24&#34; target=&#34;_blank&#34;&gt;https://github.com/docopt/docopt.R/issues/24&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Also check &lt;a href=&#34;http://dirk.eddelbuettel.com/code/littler.examples.html&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;littler&lt;/code&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;littler provides the r program, a simplified command-line interface for GNU R. This allows direct execution of commands, use in piping where the output of one program supplies the input of the next, as well as adding the ability for writing hash-bang scripts, i.e. creating executable files starting with, say, #!/usr/bin/r.&lt;/p&gt;
-&lt;/blockquote&gt;
 </description>
     </item>
     
