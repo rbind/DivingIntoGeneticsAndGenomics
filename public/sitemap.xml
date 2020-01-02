@@ -691,7 +691,7 @@
     
     <url>
     
-      <loc>/tags/docker/</loc>
+      <loc>/categories/docker/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -701,7 +701,7 @@
     
     <url>
     
-      <loc>/categories/docker/</loc>
+      <loc>/tags/docker/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -751,8 +751,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -761,8 +761,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -781,7 +781,7 @@
     
     <url>
     
-      <loc>/tags/hpc/</loc>
+      <loc>/categories/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -791,7 +791,7 @@
     
     <url>
     
-      <loc>/categories/hpc/</loc>
+      <loc>/tags/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -881,6 +881,16 @@
     
     <url>
     
+      <loc>/categories/python/</loc>
+      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/python/</loc>
       <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
@@ -891,7 +901,7 @@
     
     <url>
     
-      <loc>/categories/python/</loc>
+      <loc>/categories/r/</loc>
       <lastmod>2019-09-12T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -911,28 +921,8 @@
     
     <url>
     
-      <loc>/categories/r/</loc>
-      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/categories/review/</loc>
       <lastmod>2018-12-28T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/scatacseq/</loc>
-      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -951,8 +941,8 @@
     
     <url>
     
-      <loc>/tags/scrnaseq/</loc>
-      <lastmod>2019-12-11T00:00:00+00:00</lastmod>
+      <loc>/tags/scatacseq/</loc>
+      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -971,8 +961,8 @@
     
     <url>
     
-      <loc>/tags/single-cell/</loc>
-      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <loc>/tags/scrnaseq/</loc>
+      <lastmod>2019-12-11T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -991,8 +981,8 @@
     
     <url>
     
-      <loc>/tags/singularity/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <loc>/tags/single-cell/</loc>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1002,6 +992,16 @@
     <url>
     
       <loc>/categories/singularity/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/singularity/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -1031,8 +1031,8 @@
     
     <url>
     
-      <loc>/tags/statistics/</loc>
-      <lastmod>2019-11-26T00:00:00+00:00</lastmod>
+      <loc>/categories/statistics/</loc>
+      <lastmod>2019-11-21T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1041,8 +1041,8 @@
     
     <url>
     
-      <loc>/categories/statistics/</loc>
-      <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+      <loc>/tags/statistics/</loc>
+      <lastmod>2019-11-26T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
