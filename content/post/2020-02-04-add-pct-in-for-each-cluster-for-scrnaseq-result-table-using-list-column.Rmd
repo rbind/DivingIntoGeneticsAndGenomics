@@ -1,0 +1,154 @@
+---
+title: add pct_in for each cluster for scRNAseq result table using list column
+author: Ming Tang
+date: '2020-02-04'
+slug: add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column
+categories:
+  - bioinformatics
+  - scRNAseq
+tags:
+  - scRNAseq
+header:
+  caption: ''
+  image: ''
+---
+Using nested dataframe and list column has transformed my way of data wrangling in R. For more on this topic, I highly recommend [purrr tutorial](https://jennybc.github.io/purrr-tutorial/index.html) from Jenney Bryan.
+
+In this post, I am going to show you how I use this to solve a problem for adding `pct_in` column from the  differential scRNAseq result table.
+
+I am going to use [`presto`](https://github.com/immunogenomics/presto) for differential gene expression test. `presto` performs a fast Wilcoxon rank sum test and auROC analysis. It can be used for differential accessible region test for scATACseq data as well. Because scATACseq data can have over 800k regions in my hand, I found it is much faster than `Seurat` and also gives sensible results. Using presto also gives you all the genes/regions without filtering. This is particularly useful if you want to run GSEA which requires all genes as input. see [this part](https://crazyhottommy.github.io/scRNA-seq-workshop-Fall-2019/scRNAseq_workshop_3.html) for our scRNAseq workshop.
+
+Let's download some scRNAseq example data from https://satijalab.org/seurat/v3.1/atacseq_integration_vignette.html.
+
+`curl -L https://www.dropbox.com/s/3f3p5nxrn5b3y4y/pbmc_10k_v3.rds\?dl\=1 -o pbmc_10k_v3.rds`
+
+### read into R
+
+```{r warning=FALSE, message=FALSE}
+# install_github('immunogenomics/presto')
+library(presto)
+library(Seurat)
+library(dplyr)
+library(tibble)
+library(furrr)
+library(tictoc)
+pbmc<- readRDS("~/pbmc_10k_v3.rds")
+
+head(wilcoxauc(pbmc, "RNA_snn_res.0.4" ))
+```
+
+by default, `presto` and `Seurat` compare a gene in cells of one group versus all other groups of cells and calculate the 
+statistics. In the output, you see `pct_in` and `pct_out` columns which show the percentage of cells express this gene in the `in` group and perecentage of cells express this gene in the `out` groups. What if you want to know `pct_out` in each of the group? How do you add that information to the dataframe? In addtion, you may also want to add the number of cells in each cluster into the dataframe.
+
+```{r}
+res<- wilcoxauc(pbmc, "RNA_snn_res.0.4" )
+
+## how many genes in the result?
+length(unique(res$feature))
+
+## for each group we have the same number of genes
+count(res, group) %>% arrange(as.numeric(group))
+```
+
+get a dataframe for number of cells in each group
+
+```{r}
+(cell_number<- pbmc@meta.data %>%
+  count(RNA_snn_res.0.4) %>%
+  dplyr::rename(group = RNA_snn_res.0.4, cell_number = n))
+```
+
+
+Let's nest the dataframe by gene
+
+```{r}
+res_nest<- res %>%
+  group_by(feature) %>% 
+  tidyr::nest()
+
+res_nest
+```
+
+`res_nest` is a nested dataframe with a list column named `data`. Let's check the first entry of this list.
+
+```{r}
+df<- res_nest$data[[1]] %>% arrange(as.numeric(group))
+head(df)  
+```
+
+Now, we can collect the `pct_in` for this gene from `df`.
+
+```{r}
+(df<- df %>% 
+  left_join(cell_number, by = c("group" = "group")) %>%
+  mutate(pct_in_group = paste(group, pct_in, sep= "_")))
+
+# interleave the pct_in and number_in 
+pct_in_groups<- df$pct_in
+num_in_groups<- df$cell_number
+names_pct_in_groups<-  paste(df$group,"pct_in", sep = "_")
+names_num_in_groups<- paste(df$group, "cell_num", sep= "_")
+# https://stackoverflow.com/questions/16443260/interleave-lists-in-r
+out<- c(rbind(num_in_groups, pct_in_groups))
+names(out)<- c(rbind(names_num_in_groups, names_pct_in_groups))
+out<- bind_rows(out)
+out
+```
+
+We have 13 groups of cells, so we get a tibble of 1 x 26 with number of cells and percentage of cells for each group in each column. We now only need to `cbind` this info back to each gene.
+
+Let's write a function
+```{r}
+
+add_pct_in<- function(df, cell_number){
+  df<- df %>% 
+  left_join(cell_number, by = c("group" = "group")) %>%
+  mutate(pct_in_group = paste(group, pct_in, sep= "_"))
+  
+  pct_in_groups<- df$pct_in
+  num_in_groups<- df$cell_number
+  names_pct_in_groups<-  paste(df$group,"pct_in", sep = "_")
+  names_num_in_groups<- paste(df$group, "cell_num", sep= "_")
+  # https://stackoverflow.com/questions/16443260/interleave-lists-in-r
+  out<- c(rbind(num_in_groups, pct_in_groups))
+  names(out)<- c(rbind(names_num_in_groups, names_pct_in_groups))
+  out<- bind_rows(out)
+  return(out)
+}
+
+## test this function for one gene
+add_pct_in(df = res_nest$data[[1]], cell_number = cell_number )
+
+```
+
+Because we are going to apply this function to over 10,000 genes, I am going to use the parallized `purrr`: `furrr`.
+https://github.com/DavisVaughan/furrr
+
+```{r warning=FALSE, message=FALSE}
+plan(multiprocess, workers = 8)
+
+# this will start 8 workers, but each worker will consume 20Mb memory 
+print(object.size(res), units= "Mb")
+
+tic()
+info<- furrr::future_map_dfr(res_nest$data, ~ add_pct_in(df= .x, cell_number = cell_number)) 
+toc()
+
+head(info)
+
+## cbind back to the nested dataframe
+bind_cols(res_nest, info) %>%
+  head()
+
+```
+
+Finally, we can unnest the dataframe
+
+```{r}
+bind_cols(res_nest, info) %>% 
+  tidyr::unnest() %>%
+  head()
+```
+
+There are possiblely other easier ways to achieve the same result. Please share your thoughts in the comments!
+

@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>add pct_in for each cluster for scRNAseq result table using list column</title>
+      <link>/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/</link>
+      <pubDate>Tue, 04 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/</guid>
+      <description>Using nested dataframe and list column has transformed my way of data wrangling in R. For more on this topic, I highly recommend purrr tutorial from Jenney Bryan.
+In this post, I am going to show you how I use this to solve a problem for adding pct_in column from the differential scRNAseq result table.
+I am going to use presto for differential gene expression test. presto performs a fast Wilcoxon rank sum test and auROC analysis.</description>
+    </item>
+    
+    <item>
       <title>The end of 2019</title>
       <link>/post/the-end-of-2019/</link>
       <pubDate>Sun, 29 Dec 2019 00:00:00 +0000</pubDate>

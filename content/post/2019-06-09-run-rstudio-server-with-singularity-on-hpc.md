@@ -128,8 +128,11 @@ cat ~/resession.conf
 # R Session Configuration File
 session-timeout-minutes=0
 
+## make a tmp folder and need to mount to /tmp inside the container for rstudio to write 
+mkdir /scratch/mtang/tmp
+
 # now open rstudio server
-PASSWORD='xyz' singularity exec --bind=~/rsession.conf:/etc/rstudio/rsession.conf  rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
+PASSWORD='xyz' singularity exec --bind=~/rsession.conf:/etc/rstudio/rsession.conf --bind /scratch/mtang/tmp:/tmp  rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
 
 ```
 
