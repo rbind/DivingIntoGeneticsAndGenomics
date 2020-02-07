@@ -1,0 +1,127 @@
+---
+title: Align multiple ggplot2 plots by axis
+author: Ming Tang
+date: '2020-02-07'
+slug: align-multiple-ggplot2-plots-by-axis
+categories:
+  - rstats
+  - visualization
+tags:
+  - rstats
+header:
+  caption: ''
+  image: ''
+---
+
+
+
+<p>I used to use <code>cowplot</code> to align multiple ggplot2 plots but when the x-axis are of different ranges, some extra work is needed to align the axis as well.</p>
+<p>The other day I was reading a <a href="https://mp.weixin.qq.com/s/V1UiR98K6vy00PwkgkTmvA">blog post</a> by <code>GuangChuang Yu</code> and he exactly tackled this problem. His packages such as <code>ChIPseeker</code>, <code>ClusterProfiler</code>, <code>ggtree</code> are quite popular among the users.</p>
+<p>Some dummy example from his post:</p>
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+library(ggstance)
+library(cowplot)
+# devtools::install_github(&quot;YuLab-SMU/treeio&quot;)
+# devtools::install_github(&quot;YuLab-SMU/ggtree&quot;)
+library(tidytree)
+library(ggtree)
+
+no_legend=theme(legend.position=&#39;none&#39;)
+
+d &lt;- group_by(mtcars, cyl) %&gt;% summarize(mean=mean(disp), sd=sd(disp))
+d2 &lt;- dplyr::filter(mtcars, cyl != 8) %&gt;% rename(var = cyl)
+
+p1 &lt;- ggplot(d, aes(x=cyl, y=mean)) +
+    geom_col(aes(fill=factor(cyl)), width=1) +
+    no_legend
+p2 &lt;- ggplot(d2, aes(var, disp)) +
+    geom_jitter(aes(color=factor(var)), width=.5) +
+    no_legend
+
+p3 &lt;- ggplot(filter(d, cyl != 4), aes(mean, cyl)) +
+    geom_colh(aes(fill=factor(cyl)), width=.6) +
+    coord_flip() + no_legend
+
+pp &lt;- list(p1, p2, p3)
+plot_grid(plotlist=pp, ncol=1, align=&#39;v&#39;)</code></pre>
+<p><img src="/post/2020-02-07-align-multiple-ggplot2-plots-by-axis_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>specifying <code>aling='v'</code> aligns the plots vertically, but because the axis limits are different the x-axis is not aligned.</p>
+<p>Let’s use <code>coord_cartesian</code> to expand the xlim without filtering out the data.</p>
+<pre class="r"><code>p11&lt;- p1 + coord_cartesian(xlim = c(3,11))
+p22&lt;- p2 + coord_cartesian(xlim = c(3,11))
+p33&lt;- p3 &lt;- ggplot(filter(d, cyl != 4), aes(cyl, mean)) +
+    geom_col(aes(fill=factor(cyl)), width=.6) +
+  coord_cartesian(xlim = c(3,11)) +no_legend
+
+pp1 &lt;- list(p11, p22, p33)
+plot_grid(plotlist=pp1, ncol=1, align=&#39;v&#39;)</code></pre>
+<p><img src="/post/2020-02-07-align-multiple-ggplot2-plots-by-axis_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>This works.</p>
+<p>However, as mentioned in the blog post by <code>GuangChuang Yu</code>. There are several other cases that this may not be easy to work out:</p>
+<ul>
+<li>what if the x-axis is character string rather than continuous digits?</li>
+<li>what if the first plot is not from a dataframe (e.g. a tree object from ggtree)</li>
+</ul>
+<p>Let’s use the other example from the blog post.</p>
+<pre class="r"><code>set.seed(2019-10-31)
+tr &lt;- rtree(10)
+
+d1 &lt;- data.frame(
+    # only some labels match
+    label = c(tr$tip.label[sample(5, 5)], &quot;A&quot;),
+    value = sample(1:6, 6))
+
+d2 &lt;- data.frame(
+    label = rep(tr$tip.label, 5),
+    category = rep(LETTERS[1:5], each=10),
+    value = rnorm(50, 0, 3))
+
+g &lt;- ggtree(tr) + geom_tiplab(align=TRUE)
+g</code></pre>
+<p><img src="/post/2020-02-07-align-multiple-ggplot2-plots-by-axis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>This is a tree.</p>
+<p>Make some other dummy dataframe for making a bar plot and a heatmap:</p>
+<pre class="r"><code>d &lt;- filter(g, isTip) %&gt;% select(c(label, y))
+
+dd1 &lt;- left_join(d1, d, by=&#39;label&#39;)
+dd1</code></pre>
+<pre><code>##   label value  y
+## 1    t4     5 10
+## 2    t6     6  9
+## 3    t9     2  2
+## 4    t2     3  8
+## 5    t1     4  1
+## 6     A     1 NA</code></pre>
+<pre class="r"><code>dd2 &lt;- left_join(d2, d, by=&#39;label&#39;)
+head(dd2)</code></pre>
+<pre><code>##   label category      value  y
+## 1    t1        A -3.3159014  1
+## 2    t9        A  1.1526652  2
+## 3    t2        A  0.9969863  8
+## 4    t6        A  3.7986173  9
+## 5    t4        A  4.9893312 10
+## 6   t10        A -2.1545959  6</code></pre>
+<pre class="r"><code># a bar graph
+p1 &lt;- ggplot(dd1, aes(y, value)) + geom_col(aes(fill=label)) +
+    coord_flip() + theme_tree2() + theme(legend.position=&#39;none&#39;)
+ 
+# a heatmap
+p2 &lt;- ggplot(dd2, aes(x=category, y=y)) +
+    geom_tile(aes(fill=value)) + scale_fill_viridis_c() +
+    theme_tree2() + theme(legend.position=&#39;none&#39;)
+
+cowplot::plot_grid(g, p1, p2, ncol=3, align=&#39;h&#39;,
+    labels=LETTERS[1:3], rel_widths = c(1, .5, .8))</code></pre>
+<p><img src="/post/2020-02-07-align-multiple-ggplot2-plots-by-axis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>The y-axis is not aligned with the tip of the <code>ggtree</code> output if you read carefully.</p>
+<p>Let’s use the <code>ylim2</code> function from <code>ggtree</code>:</p>
+<pre class="r"><code>p1 &lt;- p1 + ylim2(g)</code></pre>
+<pre><code>## the plot was flipped and the y limits will be applied to x-axis</code></pre>
+<pre class="r"><code>p2 &lt;- p2 + ylim2(g)
+
+cowplot::plot_grid(g, p1, p2, ncol=3, align=&#39;h&#39;,
+    labels=LETTERS[1:3], rel_widths = c(1, .5, .8))</code></pre>
+<p><img src="/post/2020-02-07-align-multiple-ggplot2-plots-by-axis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Now they are aligned perfectly!</p>
+<p><code>ggtree::ylim2()</code> and <code>ggtree::xlim2()</code> can be very useful for other cases. Thanks <code>GuangChuang Yu</code> for making it!</p>

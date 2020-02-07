@@ -11,6 +11,125 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Align multiple ggplot2 plots by axis</title>
+      <link>/post/align-multiple-ggplot2-plots-by-axis/</link>
+      <pubDate>Fri, 07 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/align-multiple-ggplot2-plots-by-axis/</guid>
+      <description>&lt;p&gt;I used to use &lt;code&gt;cowplot&lt;/code&gt; to align multiple ggplot2 plots but when the x-axis are of different ranges, some extra work is needed to align the axis as well.&lt;/p&gt;
+&lt;p&gt;The other day I was reading a &lt;a href=&#34;https://mp.weixin.qq.com/s/V1UiR98K6vy00PwkgkTmvA&#34;&gt;blog post&lt;/a&gt; by &lt;code&gt;GuangChuang Yu&lt;/code&gt; and he exactly tackled this problem. His packages such as &lt;code&gt;ChIPseeker&lt;/code&gt;, &lt;code&gt;ClusterProfiler&lt;/code&gt;, &lt;code&gt;ggtree&lt;/code&gt; are quite popular among the users.&lt;/p&gt;
+&lt;p&gt;Some dummy example from his post:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)
+library(ggstance)
+library(cowplot)
+# devtools::install_github(&amp;quot;YuLab-SMU/treeio&amp;quot;)
+# devtools::install_github(&amp;quot;YuLab-SMU/ggtree&amp;quot;)
+library(tidytree)
+library(ggtree)
+
+no_legend=theme(legend.position=&amp;#39;none&amp;#39;)
+
+d &amp;lt;- group_by(mtcars, cyl) %&amp;gt;% summarize(mean=mean(disp), sd=sd(disp))
+d2 &amp;lt;- dplyr::filter(mtcars, cyl != 8) %&amp;gt;% rename(var = cyl)
+
+p1 &amp;lt;- ggplot(d, aes(x=cyl, y=mean)) +
+    geom_col(aes(fill=factor(cyl)), width=1) +
+    no_legend
+p2 &amp;lt;- ggplot(d2, aes(var, disp)) +
+    geom_jitter(aes(color=factor(var)), width=.5) +
+    no_legend
+
+p3 &amp;lt;- ggplot(filter(d, cyl != 4), aes(mean, cyl)) +
+    geom_colh(aes(fill=factor(cyl)), width=.6) +
+    coord_flip() + no_legend
+
+pp &amp;lt;- list(p1, p2, p3)
+plot_grid(plotlist=pp, ncol=1, align=&amp;#39;v&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-02-07-align-multiple-ggplot2-plots-by-axis_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;specifying &lt;code&gt;aling=&#39;v&#39;&lt;/code&gt; aligns the plots vertically, but because the axis limits are different the x-axis is not aligned.&lt;/p&gt;
+&lt;p&gt;Let’s use &lt;code&gt;coord_cartesian&lt;/code&gt; to expand the xlim without filtering out the data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p11&amp;lt;- p1 + coord_cartesian(xlim = c(3,11))
+p22&amp;lt;- p2 + coord_cartesian(xlim = c(3,11))
+p33&amp;lt;- p3 &amp;lt;- ggplot(filter(d, cyl != 4), aes(cyl, mean)) +
+    geom_col(aes(fill=factor(cyl)), width=.6) +
+  coord_cartesian(xlim = c(3,11)) +no_legend
+
+pp1 &amp;lt;- list(p11, p22, p33)
+plot_grid(plotlist=pp1, ncol=1, align=&amp;#39;v&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-02-07-align-multiple-ggplot2-plots-by-axis_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This works.&lt;/p&gt;
+&lt;p&gt;However, as mentioned in the blog post by &lt;code&gt;GuangChuang Yu&lt;/code&gt;. There are several other cases that this may not be easy to work out:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;what if the x-axis is character string rather than continuous digits?&lt;/li&gt;
+&lt;li&gt;what if the first plot is not from a dataframe (e.g. a tree object from ggtree)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Let’s use the other example from the blog post.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(2019-10-31)
+tr &amp;lt;- rtree(10)
+
+d1 &amp;lt;- data.frame(
+    # only some labels match
+    label = c(tr$tip.label[sample(5, 5)], &amp;quot;A&amp;quot;),
+    value = sample(1:6, 6))
+
+d2 &amp;lt;- data.frame(
+    label = rep(tr$tip.label, 5),
+    category = rep(LETTERS[1:5], each=10),
+    value = rnorm(50, 0, 3))
+
+g &amp;lt;- ggtree(tr) + geom_tiplab(align=TRUE)
+g&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-02-07-align-multiple-ggplot2-plots-by-axis_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This is a tree.&lt;/p&gt;
+&lt;p&gt;Make some other dummy dataframe for making a bar plot and a heatmap:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;d &amp;lt;- filter(g, isTip) %&amp;gt;% select(c(label, y))
+
+dd1 &amp;lt;- left_join(d1, d, by=&amp;#39;label&amp;#39;)
+dd1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   label value  y
+## 1    t4     5 10
+## 2    t6     6  9
+## 3    t9     2  2
+## 4    t2     3  8
+## 5    t1     4  1
+## 6     A     1 NA&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dd2 &amp;lt;- left_join(d2, d, by=&amp;#39;label&amp;#39;)
+head(dd2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   label category      value  y
+## 1    t1        A -3.3159014  1
+## 2    t9        A  1.1526652  2
+## 3    t2        A  0.9969863  8
+## 4    t6        A  3.7986173  9
+## 5    t4        A  4.9893312 10
+## 6   t10        A -2.1545959  6&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# a bar graph
+p1 &amp;lt;- ggplot(dd1, aes(y, value)) + geom_col(aes(fill=label)) +
+    coord_flip() + theme_tree2() + theme(legend.position=&amp;#39;none&amp;#39;)
+ 
+# a heatmap
+p2 &amp;lt;- ggplot(dd2, aes(x=category, y=y)) +
+    geom_tile(aes(fill=value)) + scale_fill_viridis_c() +
+    theme_tree2() + theme(legend.position=&amp;#39;none&amp;#39;)
+
+cowplot::plot_grid(g, p1, p2, ncol=3, align=&amp;#39;h&amp;#39;,
+    labels=LETTERS[1:3], rel_widths = c(1, .5, .8))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-02-07-align-multiple-ggplot2-plots-by-axis_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The y-axis is not aligned with the tip of the &lt;code&gt;ggtree&lt;/code&gt; output if you read carefully.&lt;/p&gt;
+&lt;p&gt;Let’s use the &lt;code&gt;ylim2&lt;/code&gt; function from &lt;code&gt;ggtree&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p1 &amp;lt;- p1 + ylim2(g)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## the plot was flipped and the y limits will be applied to x-axis&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- p2 + ylim2(g)
+
+cowplot::plot_grid(g, p1, p2, ncol=3, align=&amp;#39;h&amp;#39;,
+    labels=LETTERS[1:3], rel_widths = c(1, .5, .8))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-02-07-align-multiple-ggplot2-plots-by-axis_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now they are aligned perfectly!&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ggtree::ylim2()&lt;/code&gt; and &lt;code&gt;ggtree::xlim2()&lt;/code&gt; can be very useful for other cases. Thanks &lt;code&gt;GuangChuang Yu&lt;/code&gt; for making it!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>add pct_in for each cluster for scRNAseq result table using list column</title>
       <link>/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/</link>
       <pubDate>Tue, 04 Feb 2020 00:00:00 +0000</pubDate>
@@ -2292,22 +2411,6 @@ When one has a lot of clusters (e.g. over 50), one probably does not want to pl
 &lt;/ol&gt;
 &lt;p&gt;Any suggestions/discussions are welcomed!&lt;/p&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Reproducible research in bioinformatics</title>
-      <link>/talk/2019-bunkerhill-talk/</link>
-      <pubDate>Thu, 28 Mar 2019 14:30:00 -0400</pubDate>
-      
-      <guid>/talk/2019-bunkerhill-talk/</guid>
-      <description>&lt;p&gt;I was invited to give a talk on reproducible bioinformatics research to the students in the &lt;a href=&#34;https://www.bhcc.edu/&#34; target=&#34;_blank&#34;&gt;Bunker Hill Community College&lt;/a&gt; in Boston, MA. I was so glad to introduce bioinformatics to the students and share my own perspectives on reproducible research.&lt;/p&gt;
-
-&lt;p&gt;The movie &lt;a href=&#34;https://en.wikipedia.org/wiki/Good_Will_Hunting&#34; target=&#34;_blank&#34;&gt;Good Will Hunting&lt;/a&gt; was shot there :)&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/bunkerhill-talk.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     

@@ -13,6 +13,18 @@
     
     
     <item>
+      <title>Align multiple ggplot2 plots by axis</title>
+      <link>/post/align-multiple-ggplot2-plots-by-axis/</link>
+      <pubDate>Fri, 07 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/align-multiple-ggplot2-plots-by-axis/</guid>
+      <description>I used to use cowplot to align multiple ggplot2 plots but when the x-axis are of different ranges, some extra work is needed to align the axis as well.
+The other day I was reading a blog post by GuangChuang Yu and he exactly tackled this problem. His packages such as ChIPseeker, ClusterProfiler, ggtree are quite popular among the users.
+Some dummy example from his post:
+library(dplyr) library(ggplot2) library(ggstance) library(cowplot) # devtools::install_github(&amp;quot;YuLab-SMU/treeio&amp;quot;) # devtools::install_github(&amp;quot;YuLab-SMU/ggtree&amp;quot;) library(tidytree) library(ggtree) no_legend=theme(legend.</description>
+    </item>
+    
+    <item>
       <title>add pct_in for each cluster for scRNAseq result table using list column</title>
       <link>/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/</link>
       <pubDate>Tue, 04 Feb 2020 00:00:00 +0000</pubDate>

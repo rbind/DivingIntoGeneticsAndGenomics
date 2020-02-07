@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/post/align-multiple-ggplot2-plots-by-axis/</loc>
+      <lastmod>2020-02-07T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/</loc>
       <lastmod>2020-02-04T00:00:00+00:00</lastmod>
     </url>
@@ -940,6 +949,26 @@
     
     <url>
     
+      <loc>/tags/rstats/</loc>
+      <lastmod>2020-02-07T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/rstats/</loc>
+      <lastmod>2020-02-07T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/scatacseq/</loc>
       <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
@@ -1081,7 +1110,7 @@
     <url>
     
       <loc>/categories/visualization/</loc>
-      <lastmod>2019-09-12T00:00:00+00:00</lastmod>
+      <lastmod>2020-02-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
