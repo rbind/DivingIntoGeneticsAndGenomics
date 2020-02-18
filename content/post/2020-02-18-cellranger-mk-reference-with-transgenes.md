@@ -142,7 +142,7 @@ It aligned to a `AAV vector`.
 
 I was excited at this step. With Tdtomato extending that much, I should get a lot more counts.
 
-Unfortunately, after I remake the reference with the extended fasta and do a cellranger count. I still get very few number of cells express `tdtomato`
+Unfortunately, after I remake the reference with the extended fasta and do a cellranger count. I still get very few number of cells express `tdtomato`.
 
 ```r
 ## after reading in the sparse matrix
@@ -159,4 +159,4 @@ FALSE  TRUE
   195 10742 
 ```
 
-This bioinformatics: trails and errors. What else can possibly go wrong? Can you please share your experience?
+This is bioinformatics: trails and errors. What else can possibly go wrong? Can you please share your experience?

@@ -136,7 +136,7 @@ I did a &lt;code&gt;blastn&lt;/code&gt; and want to see what is the sequence tha
 
 &lt;p&gt;I was excited at this step. With Tdtomato extending that much, I should get a lot more counts.&lt;/p&gt;
 
-&lt;p&gt;Unfortunately, after I remake the reference with the extended fasta and do a cellranger count. I still get very few number of cells express &lt;code&gt;tdtomato&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Unfortunately, after I remake the reference with the extended fasta and do a cellranger count. I still get very few number of cells express &lt;code&gt;tdtomato&lt;/code&gt;.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## after reading in the sparse matrix
 library(Seurat)
@@ -152,7 +152,7 @@ FALSE  TRUE
   195 10742 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;This bioinformatics: trails and errors. What else can possibly go wrong? Can you please share your experience?&lt;/p&gt;
+&lt;p&gt;This is bioinformatics: trails and errors. What else can possibly go wrong? Can you please share your experience?&lt;/p&gt;
 </description>
     </item>
     
