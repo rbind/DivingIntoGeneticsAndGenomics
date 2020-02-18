@@ -11,6 +11,152 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>cellranger mk reference with transgenes</title>
+      <link>/post/cellranger-mk-reference-with-transgenes/</link>
+      <pubDate>Tue, 18 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/cellranger-mk-reference-with-transgenes/</guid>
+      <description>
+
+&lt;h3 id=&#34;the-problem&#34;&gt;The problem&lt;/h3&gt;
+
+&lt;p&gt;I am working on some 10x scRNAseq data from transgenic mouse. The cells express &lt;a href=&#34;https://www.fpbase.org/protein/tdtomato/&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;Tdtomato&lt;/code&gt;&lt;/a&gt; and &lt;a href=&#34;https://en.wikipedia.org/wiki/Cre-Lox_recombination&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;Cre&lt;/code&gt;&lt;/a&gt; genes. I need to add those to the &lt;code&gt;cellranger&lt;/code&gt; reference to get the counts for those two genes.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-journey-to-the-solution&#34;&gt;The journey to the solution&lt;/h3&gt;
+
+&lt;p&gt;Following &lt;a href=&#34;https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#addgene&#34; target=&#34;_blank&#34;&gt;https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#addgene&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I created a &lt;code&gt;fasta&lt;/code&gt; file for the two transgenes: &lt;code&gt;tdTomato&lt;/code&gt; and &lt;code&gt;Cre&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;tdtomato_cre.fa&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt;tdtomato dna:chromosome chromosome:GRCm38:tdtomato:1:1431:1 REF
+ATGGTGAGCAAGGGCGAGGAGGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGGGGCATGGCACCGGCAGCACCGGCAGCGGCAGCTCCGGCACCGCCTCCTCCGAGGACAACAACATGGCCGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGTACGGCATGGACGAGCTGTACAAGTAA
+&amp;gt;cre dna:chromosome chromosome:GRCm38:cre:1:1032:1 REF
+ATGGCCAATTTACTGACCGTACACCAAAATTTGCCTGCATTACCGGTCGATGCAACGAGTGATGAGGTTCGCAAGAACCTGATGGACATGTTCAGGGATCGCCAGGCGTTTTCTGAGCATACCTGGAAAATGCTTCTGTCCGTTTGCCGGTCGTGGGCGGCATGGTGCAAGTTGAATAACCGGAAATGGTTTCCCGCAGAACCTGAAGATGTTCGCGATTATCTTCTATATCTTCAGGCGCGCGGTCTGGCAGTAAAAACTATCCAGCAACATTTGGGCCAGCTAAACATGCTTCATCGTCGGTCCGGGCTGCCACGACCAAGTGACAGCAATGCTGTTTCACTGGTTATGCGGCGGATCCGAAAAGAAAACGTTGATGCCGGTGAACGTGCAAAACAGGCTCTAGCGTTCGAACGCACTGATTTCGACCAGGTTCGTTCACTCATGGAAAATAGCGATCGCTGCCAGGATATACGTAATCTGGCATTTCTGGGGATTGCTTATAACACCCTGTTACGTATAGCCGAAATTGCCAGGATCAGGGTTAAAGATATCTCACGTACTGACGGTGGGAGAATGTTAATCCATATTGGCAGAACGAAAACGCTGGTTAGCACCGCAGGTGTAGAGAAGGCACTTAGCCTGGGGGTAACTAAACTGGTCGAGCGATGGATTTCCGTCTCTGGTGTAGCTGATGATCCGAATAACTACCTGTTTTGCCGGGTCAGAAAAAATGGTGTTGCCGCGCCATCTGCCACCAGCCAGCTATCAACTCGCGCCCTGGAAGGGATTTTTGAAGCAACTCATCGATTGATTTACGGCGCTAAGGATGACTCTGGTCAGAGATACCTGGCCTGGTCTGGACACAGTGCCCGTGTCGGAGCCGCGCGAGATATGGCCCGCGCTGGAGTTTCAATACCGGAGATCATGCAAGCTGGTGGCTGGACCAATGTAAATATTGTCATGAACTATATCCGTAACCTGGATAGTGAAACAGGGGCAATGGTGCGCCTGCTGGAAGATGGCGATTAG
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;edit-the-genome-fa-file&#34;&gt;edit the genome.fa file&lt;/h4&gt;
+
+&lt;p&gt;The original mouse &lt;code&gt;genome.fa&lt;/code&gt; file is wrapped with 60 based per line, need to convert the transgene fasta to the same format.&lt;/p&gt;
+
+&lt;p&gt;use &lt;a href=&#34;https://github.com/lh3/seqtk&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;seqtk&lt;/code&gt;&lt;/a&gt; from Heng Li.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;seqtk seq -l 60 tdtomato_cre.fa  &amp;gt; tdtomato_cre_multi.fa
+
+mkdir ../../mm10-2.1.0_premrna_tdtomato_cre
+
+cat genome.fa tdtomato_cre_multi.fa &amp;gt; ../../mm10-2.1.0_premrna_tdtomato_cre/genome.fa
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;edit-the-gtf-file&#34;&gt;edit the gtf file&lt;/h4&gt;
+
+&lt;p&gt;create a tdtomato_cre.gtf:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;tdtomato        custom  exon    1       1431    .       +       .       gene_id &amp;quot;ENSMUSGtdtomato&amp;quot;; gene_version &amp;quot;1&amp;quot;; transcript_id &amp;quot;tdtomato1&amp;quot;; gene_name &amp;quot;Tdtomato&amp;quot;
+cre     custom  exon    1       1032    .       +       .       gene_id &amp;quot;ENSMUSGcre&amp;quot;; gene_version &amp;quot;1&amp;quot;; transcript_id &amp;quot;cre1&amp;quot;; gene_name &amp;quot;Cre&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Be careful with the tabs and spaces. The &lt;code&gt;attributes&lt;/code&gt; column is at column 9 and separate the entries with space.
+concatenate the original &lt;code&gt;genes.gtf&lt;/code&gt; with the transgene gtf:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat genes.gtf tdtomato_cre.gtf &amp;gt; ../../mm10-2.1.0_premrna_tdtomato_cre/genes.gtf
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;cellranger-mk-reference&#34;&gt;cellranger  mk reference&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cellranger mkref --genome=mm10-2.1.0_premrna_tdtomato_cre --fasta genome.fa --genes genes.gtf --nthreads 12 --memgb 30
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;the-problem-1&#34;&gt;The problem&lt;/h3&gt;
+
+&lt;p&gt;After &lt;code&gt;cellranger-count&lt;/code&gt; and I used &lt;code&gt;Seurat&lt;/code&gt; to visualize the expression levels of &lt;code&gt;Cre&lt;/code&gt; and &lt;code&gt;Tdtomato&lt;/code&gt;. I see no cells express Tdtomato and very few cells express &lt;code&gt;Cre&lt;/code&gt;, which is very strange given that all cells are &lt;code&gt;red&lt;/code&gt; under microscope and we sorted out the cells using &lt;code&gt;Tdtomato&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I googled and found some other people have the same problem.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://bioinformatics.stackexchange.com/questions/6694/scrna-seq-10x-cellranger-pipelines-low-custom-tdtomato-gene-content-looking-for&#34; target=&#34;_blank&#34;&gt;https://bioinformatics.stackexchange.com/questions/6694/scrna-seq-10x-cellranger-pipelines-low-custom-tdtomato-gene-content-looking-for&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://bioinformatics.stackexchange.com/questions/4596/no-counts-for-added-gene-in-cellranger-scrna-seq&#34; target=&#34;_blank&#34;&gt;https://bioinformatics.stackexchange.com/questions/4596/no-counts-for-added-gene-in-cellranger-scrna-seq&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I then went to the &lt;code&gt;bam&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;p&gt;only 34 reads mapped to &lt;code&gt;Tdtomato&lt;/code&gt; gene&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;samtools view possorted_genome_bam.bam tdtomato | wc -l
+34
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There are more for &lt;code&gt;Cre&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;samtools view possorted_genome_bam.bam cre  | wc -l
+6166
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is in agreement of the &lt;code&gt;FeaturePlot&lt;/code&gt; results.&lt;/p&gt;
+
+&lt;p&gt;From the two links above, I realized 10x scRNAseq we are using is a 3&amp;rsquo; technology, only the 3 prime sequences are captured and sequenced. For the &lt;code&gt;Cre&lt;/code&gt; and &lt;code&gt;Tdtomato&lt;/code&gt; genes, I will need to add the 3&amp;rsquo;UTR sequences as well. Otherwise a lot of the reads will not be mapped.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;This is particular true for poorly annotated genome if you are working with non-model organisms. If the &lt;code&gt;gtf&lt;/code&gt; annotation of the 3&amp;rsquo;UTR is not complete or too short, you will get very low mapping rate for the genes.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;let-s-fix-the-problem&#34;&gt;Let&amp;rsquo;s fix the problem&lt;/h3&gt;
+
+&lt;p&gt;The problem is that no one knows what is the 3&amp;rsquo; UTR of the transgenes. I have to somehow derive it from the reads.
+I asked on twitter and &lt;a href=&#34;https://twitter.com/RiyueSunnyBao&#34; target=&#34;_blank&#34;&gt;Sunney Bao&lt;/a&gt; suggested &lt;a href=&#34;https://colibread.inria.fr/software/mapsembler2/&#34; target=&#34;_blank&#34;&gt;mapsember2&lt;/a&gt; for this purpose. What &lt;code&gt;mapsember2&lt;/code&gt; does is extending the &lt;code&gt;Tdtomato&lt;/code&gt; fasta based on the fastq reads. I see it something like a local reassembly based on some baits.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
+conda create -n mapsembler -c bioconda mapsembler2
+conda activate mapsembler
+
+run_mapsembler2_pipeline.sh -s tdtomato_cre.fa -r &amp;quot;Sample1_S1_L001_R2_001.fastq.gz Sample1_S1_L002_R2_001.fastq.gz&amp;quot; -t 1 -p cre_tdtomato
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Depending on how many reads you have, it can take long. This is a novaseq run, it took me 2 days to finish running.
+After that, in the &lt;code&gt;cre_tdtomato&lt;/code&gt; folder, there is a file named &lt;code&gt;cre_tdtomato_original_k_31_c_5_t_1.fasta&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat cre_tdtomato_original_k_31_c_5_t_1.fasta
+&amp;gt;cre
+ATGGCCAATTTACTGACCGTACACCAAAATTTGCCTGCATTACCGGTCGATGCAACGAGTGATGAGGTTCGCAAGAACCTGATGGACATGTTCAGGGATCGCCAGGCGTTTTCTGAGCATACCTGGAAAATGCTTCTGTCCGTTTGCCGGTCGTGGGCGGCATGGTGCAAGTTGAATAACCGGAAATGGTTTCCCGCAGAACCTGAAGATGTTCGCGATTATCTTCTATATCTTCAGGCGCGCGGTCTGGCAGTAAAAACTATCCAGCAACATTTGGGCCAGCTAAACATGCTTCATCGTCGGTCCGGGCTGCCACGACCAAGTGACAGCAATGCTGTTTCACTGGTTATGCGGCGGATCCGAAAAGAAAACGTTGATGCCGGTGAACGTGCAAAACAGGCTCTAGCGTTCGAACGCACTGATTTCGACCAGGTTCGTTCACTCATGGAAAATAGCGATCGCTGCCAGGATATACGTAATCTGGCATTTCTGGGGATTGCTTATAACACCCTGTTACGTATAGCCGAAATTGCCAGGATCAGGGTTAAAGATATCTCACGTACTGACGGTGGGAGAATGTTAATCCATATTGGCAGAACGAAAACGCTGGTTAGCACCGCAGGTGTAGAGAAGGCACTTAGCCTGGGGGTAACTAAACTGGTCGAGCGATGGATTTCCGTCTCTGGTGTAGCTGATGATCCGAATAACTACCTGTTTTGCCGGGTCAGAAAAAATGGTGTTGCCGCGCCATCTGCCACCAGCCAGCTATCAACTCGCGCCCTGGAAGGGATTTTTGAAGCAACTCATCGATTGATTTACGGCGCTAAGGATGACTCTGGTCAGAGATACCTGGCCTGGTCTGGACACAGTGCCCGTGTCGGAGCCGCGCGAGATATGGCCCGCGCTGGAGTTTCAATACCGGAGATCATGCAAGCTGGTGGCTGGACCAATGTAAATATTGTCATGAACTATATCCGTAACCTGGATAGTGAAACAGGGGCAATGGTGCGCCTGCTGGAAGATGGCGATTAG
+&amp;gt;right_extension_0
+ATGGTGCGCCTGCTGGAAGATGGCGATTAGCCATT
+&amp;gt;tdtomato
+ATGGTGAGCAAGGGCGAGGAGGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGGGGCATGGCACCGGCAGCACCGGCAGCGGCAGCTCCGGCACCGCCTCCTCCGAGGACAACAACATGGCCGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGTACGGCATGGACGAGCTGTACAAGTAA
+&amp;gt;left_extension_0
+CTTCGTATAGCATACATTATACGAAGTTATCACGCGCCGGCCGGCCTCTAGATTACCGGTCTCGCGAAGCCACCATGCCACCCAAAAAGAAAAGAAAGGTGGGCATGGTGAGCAAGGGCGAGGAGGTCATCAAA
+&amp;gt;right_extension_0
+CTGTACGGCATGGACGAGCTGTACAAGTAATTCGCGAGTGGCGCGTTAAGTGCAACACGTGAAGGCCGGCCCTGCAGGAATTCGATATCAAGCTTATCGATAATCAACCTCTGGATTACAAAATTTGTGAAAGATTGACTGGTATTCTTAACTATGTTGCTCCTTTTACGCTATGTGGATACGCTGCTTTAATGCCTTTGTATCATGCTATTGCTTCCCGTATGGCTTTCATTTTCTCCTCCTTGTATAAATCCTGGTTGCTGTCTCTTTATGAGGAGTTGTGGCCCGTTGTCAGGCAACGTGGCGTGGTGTGCACTGTGTTTGCTGACGCAACCCCCACTGGTTGGGGCATTGCCACCACCTGTCAGCTCCTTTCCGGGACTTTCGCTTTCCCCCTCCCTATTGCCACGGCGGAACTCATCGCCGCCTGCCTTGCCCGCTGCTGGACA
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;tdtomato&lt;/code&gt; get extended a lot and &lt;code&gt;Cre&lt;/code&gt; gets only a bit (right_extension_0).
+I did a &lt;code&gt;blastn&lt;/code&gt; and want to see what is the sequence that was extended.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/posts_img/blastn.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It aligned to a &lt;code&gt;AAV vector&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I was excited at this step. With Tdtomato extending that much, I should get a lot more counts.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, after I remake the reference with the extended fasta and do a cellranger count. I still get very few number of cells express &lt;code&gt;tdtomato&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## after reading in the sparse matrix
+library(Seurat)
+Sample1&amp;lt;- Read10X_h5(filename = &amp;quot;data/cre_tdtomato/Sample1/filtered_feature_bc_matrix.h5&amp;quot;)
+
+&amp;gt; table(Sample1[&amp;quot;Tdtomato&amp;quot;, ] ==0)
+
+FALSE  TRUE 
+  154 10783 
+&amp;gt; table(Sample1[&amp;quot;Cre&amp;quot;, ] ==0)
+
+FALSE  TRUE 
+  195 10742 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This bioinformatics: trails and errors. What else can possibly go wrong? Can you please share your experience?&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Align multiple ggplot2 plots by axis</title>
       <link>/post/align-multiple-ggplot2-plots-by-axis/</link>
       <pubDate>Fri, 07 Feb 2020 00:00:00 +0000</pubDate>
@@ -2212,204 +2358,6 @@ ggplot(df_tsne, aes(x = tSNE1, y = tSNE2)) +
         theme_bw(base_size = 14)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2019-05-03-clustering-scatacseq-data-the-tf-idf-way_files/figure-html/unnamed-chunk-8-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Well, it still looks different from the &lt;code&gt;Seurat&lt;/code&gt; output. Any comments?&lt;/p&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>plot 10x scATAC coverage by cluster/group</title>
-      <link>/post/plot-10x-scatac-coverage-by-cluster-group/</link>
-      <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
-      <description>&lt;p&gt;This post was inspired by &lt;a href=&#34;https://twitter.com/ahill_tweets&#34;&gt;Andrew Hill&lt;/a&gt;’s &lt;a href=&#34;http://andrewjohnhill.com/blog/2019/04/12/streamlining-scatac-seq-visualization-and-analysis/&#34;&gt;recent blog post&lt;/a&gt;.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Inspired by some nice posts by &lt;a href=&#34;https://twitter.com/timoast?ref_src=twsrc%5Etfw&#34;&gt;@timoast&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/tangming2005?ref_src=twsrc%5Etfw&#34;&gt;@tangming2005&lt;/a&gt; and work from &lt;a href=&#34;https://twitter.com/10xGenomics?ref_src=twsrc%5Etfw&#34;&gt;@10xGenomics&lt;/a&gt;. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!&lt;/p&gt;&amp;mdash; Andrew J Hill (@ahill_tweets) &lt;a href=&#34;https://twitter.com/ahill_tweets/status/1116875339303493634?ref_src=twsrc%5Etfw&#34;&gt;April 13, 2019&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
-&lt;p&gt;Andrew wrote that blog post in light of my other &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/split-a-10xscatac-bam-file-by-cluster/&#34;&gt;recent blog post&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/timoast&#34;&gt;Tim&lt;/a&gt;’s (developer of the almighty &lt;a href=&#34;https://satijalab.org/seurat/&#34;&gt;Seurat&lt;/a&gt; package) &lt;a href=&#34;https://timoast.github.io/blog/sinto/&#34;&gt;blog post&lt;/a&gt;. Writing blog post is fun and I am happy to see so many new ideas can be generated through online communications.&lt;/p&gt;
-&lt;p&gt;I took Andrew’s idea of reading in the reads in a certain window by taking advantages of tabix indexed file fragment.tsv.gz which is an output from 10x &lt;code&gt;cellranger-atac&lt;/code&gt;. I then split the reads by a grouping file which specifies which group each cell belongs to and a total number of reads in each cell. For visualization, instead of using ggplot2, I used the awesome &lt;a href=&#34;https://bernatgel.github.io/karyoploter_tutorial/&#34;&gt;karyoploteR&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;I experimented a bit and came up with a function below. Note the script is fast as only the reads fall in the specified region are read into R.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(readr)
-library(tidyr)
-library(dplyr)
-library(tibble)
-library(Rsamtools)
-library(karyoploteR)
-library(org.Hs.eg.db)
-library(org.Mm.eg.db)
-library(TxDb.Hsapiens.UCSC.hg19.knownGene)
-library(TxDb.Mmusculus.UCSC.mm10.knownGene)
-
-
-extend &amp;lt;- function(x, upstream=0, downstream=0)     
-{
-        if (any(strand(x) == &amp;quot;*&amp;quot;))
-                warning(&amp;quot;&amp;#39;*&amp;#39; ranges were treated as &amp;#39;+&amp;#39;&amp;quot;)
-        on_plus &amp;lt;- strand(x) == &amp;quot;+&amp;quot; | strand(x) == &amp;quot;*&amp;quot;
-        new_start &amp;lt;- start(x) - ifelse(on_plus, upstream, downstream)
-        new_end &amp;lt;- end(x) + ifelse(on_plus, downstream, upstream)
-        ranges(x) &amp;lt;- IRanges(new_start, new_end)
-        trim(x)
-}
-
-
-addGeneNameToTxdb&amp;lt;- function(txdb = TxDb.Hsapiens.UCSC.hg19.knownGene, 
-                             eg.db = org.Hs.eg.db){
-        gene&amp;lt;- genes(txdb)
-        ## 1: 1 mapping
-        ss&amp;lt;- AnnotationDbi::select(eg.db, keys = gene$gene_id,  
-                              keytype=&amp;quot;ENTREZID&amp;quot;, columns = &amp;quot;SYMBOL&amp;quot; )
-        gene$symbol&amp;lt;- ss[, 2]
-        return(gene)
-}
-
-
-plotCoverageByGroup&amp;lt;- function(chrom = NULL, start = NULL, end = NULL, gene_name = NULL, upstream = 2000,
-                               downstream = 2000, fragment, grouping,
-                               genome =&amp;#39;hg19&amp;#39;, txdb = TxDb.Hsapiens.UCSC.hg19.knownGene,
-                               eg.db = org.Hs.eg.db,
-                               ymax = NULL, label_cex = 1, 
-                               yaxis_cex = 1, track_col = &amp;quot;cadetblue2&amp;quot;,
-                               tick.dist = 10000, minor.tick.dist = 2000,
-                               tick_label_cex = 1){
-        grouping&amp;lt;- readr::read_tsv(grouping)
-        if(! all(c(&amp;quot;cell&amp;quot;, &amp;quot;cluster&amp;quot;, &amp;quot;depth&amp;quot;) %in% colnames(grouping))) {
-                stop(&amp;#39;Grouping dataframe must have cell, cluster, and depth columns.&amp;#39;)
-        }
-        ## get number of reads per group for normalization. 
-        ## not furthur normalize by the cell number in each group.
-        grouping&amp;lt;-  grouping %&amp;gt;%
-                group_by(cluster) %&amp;gt;%
-                dplyr::mutate(cells_in_group = n(), total_depth_in_group = sum(depth)) %&amp;gt;%
-                # reads per million (RPM)
-                dplyr::mutate(scaling_factor = 1e6/(total_depth_in_group)) %&amp;gt;%
-                ungroup() %&amp;gt;%
-                dplyr::select(cell, cluster, scaling_factor)
-        
-        
-        if (is.null(chrom) &amp;amp; is.null(start) &amp;amp; is.null(end) &amp;amp; !is.null(gene_name)){
-                gene &amp;lt;- genes(txdb)
-                gene &amp;lt;- addGeneNameToTxdb(txdb = txdb, eg.db = eg.db)
-                gr&amp;lt;- gene[which(gene$symbol == gene_name)]
-                if (length(gr) == 0){
-                        stop(&amp;quot;gene name is not found in the database&amp;quot;)
-                } else if (length(gr) &amp;gt; 1) {
-                        gr&amp;lt;- gr[1]
-                        warning(&amp;quot;multiple GRanges found for the gene, using the first one&amp;quot;)
-                } else {
-                        gr&amp;lt;- extend(gr, upstream = upstream, downstream = downstream)
-                } 
-                
-        } else if (!is.null(chrom) &amp;amp; !is.null(start) &amp;amp; !is.null(end)){
-                gr&amp;lt;- GRanges(seq = chrom, IRanges(start = start, end = end ))
-        }
-        
-        
-        ## read in the fragment.tsv.gz file
-        ## with &amp;quot;chr&amp;quot;, &amp;quot;start&amp;quot;, &amp;quot;end&amp;quot;, &amp;quot;cell&amp;quot;, &amp;quot;duplicate&amp;quot; columns. output from cellranger-atac
-        # this returns a list
-        reads&amp;lt;- scanTabix(fragment, param = gr)
-        
-        reads&amp;lt;- reads[[1]] %&amp;gt;% 
-                tibble::enframe() %&amp;gt;% 
-                dplyr::select(-name) %&amp;gt;%
-                tidyr::separate(value, into = c(&amp;quot;chr&amp;quot;, &amp;quot;start&amp;quot;, &amp;quot;end&amp;quot;, &amp;quot;cell&amp;quot;, &amp;quot;duplicate&amp;quot;), sep = &amp;quot;\t&amp;quot;) %&amp;gt;%
-                dplyr::mutate_at(.vars = c(&amp;quot;start&amp;quot;, &amp;quot;end&amp;quot;), as.numeric) %&amp;gt;% 
-                # make it 1 based for R, the fragment.tsv is 0 based
-                dplyr::mutate(start = start + 1) %&amp;gt;% 
-                inner_join(grouping) %&amp;gt;%
-                makeGRangesFromDataFrame(keep.extra.columns = TRUE)
-        # GRangesList object by group/cluster
-        reads_by_group&amp;lt;- split(reads, reads$cluster)
-        
-        ## plotting
-        pp &amp;lt;- getDefaultPlotParams(plot.type=1)
-        pp$leftmargin &amp;lt;- 0.15
-        pp$topmargin &amp;lt;- 15
-        pp$bottommargin &amp;lt;- 15
-        pp$ideogramheight &amp;lt;- 5
-        pp$data1inmargin &amp;lt;- 10
-        kp &amp;lt;- plotKaryotype(genome = genome, zoom = gr, plot.params = pp)
-        kp&amp;lt;- kpAddBaseNumbers(kp, tick.dist = tick.dist, minor.tick.dist = minor.tick.dist,
-                              add.units = TRUE, cex= tick_label_cex, digits = 6)
-        ## calculate the normalized coverage
-        normalized_coverage&amp;lt;- function(x){
-                if (!is(x, &amp;quot;GRangesList&amp;quot;))
-                        stop(&amp;quot;&amp;#39;x&amp;#39; must be a GRangesList object&amp;quot;)
-                # specify the width to the whole chromosome to incldue the 0s
-                cvgs&amp;lt;- lapply(x, function(x) coverage(x, width = kp$chromosome.lengths) * x$scaling_factor[1])
-                return(cvgs)
-        }
-        
-        coverage_norm&amp;lt;- normalized_coverage(reads_by_group)
-        
-        ## calculate the max coverage if not specified 
-        if (is.null(ymax)) {
-                yaxis_common&amp;lt;- ceiling(max(lapply(coverage_norm, max) %&amp;gt;% unlist()))
-        } else {
-                yaxis_common&amp;lt;- ymax
-        }
-        ## add gene information
-        genes.data &amp;lt;- makeGenesDataFromTxDb(txdb,
-                                            karyoplot=kp,
-                                            plot.transcripts = TRUE, 
-                                            plot.transcripts.structure = TRUE)
-        genes.data &amp;lt;- addGeneNames(genes.data)
-        genes.data &amp;lt;- mergeTranscripts(genes.data)
-        
-        kp&amp;lt;- kpPlotGenes(kp, data=genes.data, r0=0, r1=0.05, gene.name.cex = 1)
-        
-        for(i in seq_len(length(coverage_norm))) {
-                read &amp;lt;- coverage_norm[[i]]
-                at &amp;lt;- autotrack(i, length(coverage_norm), r0=0.1, r1=1, margin = 0.1)
-                kp &amp;lt;- kpPlotCoverage(kp, data=read,
-                                     r0=at$r0, r1=at$r1, col = track_col, ymax = yaxis_common)
-                kpAxis(kp, ymin=0, ymax=yaxis_common, numticks = 2, r0=at$r0, r1=at$r1, cex = yaxis_cex, labels = c(&amp;quot;&amp;quot;, yaxis_common))
-                kpAddLabels(kp, labels = names(coverage_norm)[i], r0=at$r0, r1=at$r1, 
-                            cex=label_cex, label.margin = 0.005)
-        }
-        
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;div id=&#34;usage&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Usage&lt;/h3&gt;
-&lt;p&gt;The example files can be downloaded from &lt;a href=&#34;https://osf.io/q5dwj/&#34; class=&#34;uri&#34;&gt;https://osf.io/q5dwj/&lt;/a&gt;.
-&lt;code&gt;atac_v1_pbmc_10k_fragments.tsv.gz&lt;/code&gt; is the 10k pbmc atac data downloaded from 10x website. Thanks for making the
-data public available. Make sure put the tabix index &lt;code&gt;atac_v1_pbmc_10k_fragments.tsv.gz.tbi&lt;/code&gt; in the same folder.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;grouping.txt&lt;/code&gt; is a 3 column tsv file containing header: cell, cluster, and depth. The cluster label was transferred from the 10x pbmc scRNAseq data set using &lt;code&gt;Seurat&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;LYZ gene is a marker for CD16+ cells.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## LYZ gene 
-chrom&amp;lt;-  &amp;quot;chr12&amp;quot;
-start&amp;lt;-  69730394
-end&amp;lt;- 69760971
-
-plotCoverageByGroup(chrom = chrom, start = start, end = end, fragment = &amp;quot;atac_v1_pbmc_10k_fragments.tsv.gz&amp;quot;,
-                    grouping = &amp;quot;grouping.txt&amp;quot;, track_col = &amp;quot;red&amp;quot;, label_cex = 0.75)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-04-29-plot-10x-scatac-coverage-by-cluster-group_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;NKG7 is a marker for NK cells.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plotCoverageByGroup(gene_name = &amp;quot;NKG7&amp;quot;, fragment = &amp;quot;atac_v1_pbmc_10k_fragments.tsv.gz&amp;quot;,
-                    grouping = &amp;quot;grouping.txt&amp;quot;, tick_label_cex = 1, tick.dist = 5000,
-                    minor.tick.dist = 1000, label_cex = 0.75)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-04-29-plot-10x-scatac-coverage-by-cluster-group_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;what I did for some extra work:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;I normalized each track by total number of reads in that group in reads per million. I did not do
-any further normalization on the cell number of each group as Andrew did. I am open to discussion on how to
-best normalize the tracks.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;I calculated the max value of all the tracks and set a common y-axis for all the tracks. Users can set a customized &lt;code&gt;ymax&lt;/code&gt; as well.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;I added some functionality of specifying only a gene name, and one can extend that gene ranges by padding upstream (from transcription start site) and downstream (from transcription end site) bps.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;One can either plot Human or Mouse data. Other organisms can be easily supported by modifying the script.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div id=&#34;what-to-do-next&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;what to do next&lt;/h3&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;customer specified cluster (a subset of clusters in a certain order) to plot.
-When one has a lot of clusters (e.g. over 50), one probably does not want to plot all of them.&lt;/li&gt;
-&lt;li&gt;specify color for each cluster track.&lt;/li&gt;
-&lt;li&gt;bam support by using&lt;code&gt;Rsamtools::ScanBam&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;smooth window? The plots showed above were not smoothed and they look good to me. Not sure needed.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Any suggestions/discussions are welcomed!&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
