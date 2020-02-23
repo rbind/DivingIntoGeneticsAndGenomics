@@ -96,7 +96,7 @@
   <meta property="og:description" content="Bioinformatics Scientist">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2020-02-18T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2020-02-21T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,16 @@
   
   
   <div>
+    <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei seqencing data</a></h2>
+    <div class="article-style">
+      
+      In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
+My next thought is: maybe the STAR aligner is doing something weired that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/cellranger-mk-reference-with-transgenes/">cellranger mk reference with transgenes</a></h2>
     <div class="article-style">
       
@@ -386,18 +396,17 @@ The first thing I did was googling to see if anyone has written such a tool (Do 
     </div>
   </div>
   
-  <div>
-    <h2><a href="/post/how-to-make-a-transcript-to-gene-mapping-file/">How to make a transcript to gene mapping file</a></h2>
-    <div class="article-style">
-      
-      I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
-Please read the specifications of those two file formats.
-      
-    </div>
-  </div>
-  
 
   
+<nav>
+  <ul class="pager">
+    
+    
+    <li><a href="/categories/bioinformatics/page/2/">&gt;</a></li>
+    
+  </ul>
+</nav>
+
 
 
 </div>

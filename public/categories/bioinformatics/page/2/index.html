@@ -18,7 +18,7 @@
   <meta name="description" content="Bioinformatics Scientist">
 
   
-  <link rel="alternate" hreflang="en-us" href="/categories/r/">
+  <link rel="alternate" hreflang="en-us" href="/categories/bioinformatics/">
 
   
 
@@ -83,7 +83,7 @@
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/categories/r/">
+  <link rel="canonical" href="/categories/bioinformatics/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -91,18 +91,18 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="DNA confesses Data speak">
-  <meta property="og:url" content="/categories/r/">
-  <meta property="og:title" content="R | DNA confesses Data speak">
+  <meta property="og:url" content="/categories/bioinformatics/">
+  <meta property="og:title" content="Bioinformatics | DNA confesses Data speak">
   <meta property="og:description" content="Bioinformatics Scientist">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2018-09-07T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2019-01-28T00:00:00&#43;00:00">
   
 
   
   
 
-  <title>R | DNA confesses Data speak</title>
+  <title>Bioinformatics | DNA confesses Data speak</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -277,40 +277,18 @@
 
 <div class="universal-wrapper">
 
-  <h1>R</h1>
+  <h1>Bioinformatics</h1>
 
   
 
   
   
   <div>
-    <h2><a href="/post/compute-averages-sums-on-granges-or-equal-length-bins/">Compute averages/sums on GRanges or equal length bins</a></h2>
+    <h2><a href="/post/how-to-make-a-transcript-to-gene-mapping-file/">How to make a transcript to gene mapping file</a></h2>
     <div class="article-style">
       
-      Googling is a required technique for programmers. Once I have a programming problem in mind, the first thing I do is to google to see if other people have encountered the same problem and maybe they already have a solution. Do not re-invent the wheels. Actually, reading other people’s code and mimicing their code is a great way of learning. Today, I am going to show you how to compute binned averages/sums along a genome or any genomic regions of interest.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/my-first-try-on-rmarkdown-using-blogdown/">my first try on Rmarkdown using blogdown</a></h2>
-    <div class="article-style">
-      
-      I have used blogdown writing regular markdown posts, but the real power is from the Rmarkdown! let me try it for this post.
-Note that you do not knit the Rmarkdown by yourself, rather you let blogdown do the heavy lift.
-library(tidyverse) library(ggplot2) head(mtcars)  ## mpg cyl disp hp drat wt qsec vs am gear carb ## Mazda RX4 21.0 6 160 110 3.90 2.620 16.46 0 1 4 4 ## Mazda RX4 Wag 21.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/hugo-academic-theme-blog-down-deployment-some-details/">hugo academic theme blog down deployment (some details)</a></h2>
-    <div class="article-style">
-      
-      I have been following this tutorial from Alison and tips from Leslie Myint for some customization for deploying my blogdown website
-It is quite straightforward to have a working site following Alison&rsquo;s guide. However, you always want some customization of your own site.
-I took the tips from Leslie.
-changed the menue bar to black. I like it better than the default white. in the config.toml file, change the theme:
+      I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
+Please read the specifications of those two file formats.
       
     </div>
   </div>
@@ -320,7 +298,7 @@ changed the menue bar to black. I like it better than the default white. in the 
 <nav>
   <ul class="pager">
     
-    <li><a href="/categories/r/">&lt;</a></li>
+    <li><a href="/categories/bioinformatics/">&lt;</a></li>
     
     
   </ul>
