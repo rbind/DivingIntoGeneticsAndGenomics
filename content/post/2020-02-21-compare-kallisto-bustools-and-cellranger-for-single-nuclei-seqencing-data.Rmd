@@ -18,14 +18,14 @@ In my last [post](https://divingintogeneticsandgenomics.rbind.io/post/cellranger
 get the counts for the transgenes. However, even after I extended the `Tdtomato` and `Cre` with 
 the potential 3'UTR, I still get very few cells express them. This is confusing to me.
 
-My next thought is: maybe the STAR aligner is doing something weired that excluded those reads?
+My next thought is: maybe the STAR aligner is doing something weird that excluded those reads?
 At this point, I want to give [`kb-python`](https://github.com/pachterlab/kb_python), a python wrapper on `kallisto` and `bustools` a try.
 
-Before `kb-python`, the workflow for processing single-nuceli data using `kallisto` and `bustools` is curbersome. see this [tutorial](https://github.com/BUStools/getting_started/blob/master/kallisto_bus_mouse_nuclei_tutorial.ipynb) and [Building a cDNA and intron index](https://www.kallistobus.tools/velocity_index_tutorial.html). I was unwilling to try it out unitl `kb-python` supports single-nuclei data as well. `kb-python` automates all the steps and greately simplify the processing.
+Before `kb-python`, the workflow for processing single-nuclei data using `kallisto` and `bustools` is cumbersome. see this [tutorial](https://github.com/BUStools/getting_started/blob/master/kallisto_bus_mouse_nuclei_tutorial.ipynb) and [Building a cDNA and intron index](https://www.kallistobus.tools/velocity_index_tutorial.html). I was unwilling to try it out until `kb-python` supports single-nuclei data as well. `kb-python` automates all the steps and greatly simplify the processing.
 
 kb-python uses the gtf file and genome fasta file for indexing, and it will create the cDNA and intron fasta and the transcript to gene mapping file on the fly.
 
-It requires the entries with exons should also have a corresponding entry with transcript in the thrid column of the gtf file. 
+It requires the entries with exons should also have a corresponding entry with transcript in the third column of the gtf file. 
 
 Just duplicated the rows below and concatenate with the `genes.gtf` from the cellranger website.
 
@@ -155,8 +155,8 @@ colnames(Sample1_kb)<- colnames(spliced)
 
 ```
 
-The matrices are unfilered, we can filter out some cells using the knee-plot. There are serveral nice posts on how to 
-by the [`UMI-tools`](https://github.com/CGATOxford/UMI-tools) develpers:
+The matrices are unfiltered, we can filter out some cells using the knee-plot. There are several nice posts on how to 
+by the [`UMI-tools`](https://github.com/CGATOxford/UMI-tools) developers:
 
 * https://cgatoxford.wordpress.com/2017/05/18/estimating-the-number-of-true-cell-barcodes-in-single-cell-rna-seq/
 
@@ -283,7 +283,7 @@ table(Sample1_cr["Cre", ] !=0)
 table(Sample1_cr["Tdtomato", ]!=0)
 ```
 
-`kb-python` detected more cells express the transgeens, but still the number is very low. I will 
+`kb-python` detected more cells express the transgens, but still the number is very low. I will 
 need to keep investigating the reason.
 
 ### Calculate the correlation between the two pipelines
@@ -364,8 +364,8 @@ ggplot(df, aes(x= KB_totalUMI, y = cors)) +
 table(df$cors < 0.8)
 ```
 
-In addtion, too many zeros can inflate the correlation. 
-Let's remove the genes if the counts from two pipleines are both 0s.
+In addition, too many zeros can inflate the correlation. 
+Let's remove the genes if the counts from two pipelines are both 0s.
 
 ```{r warning=FALSE, message=FALSE}
 
@@ -419,10 +419,10 @@ library(patchwork)
 p1 + p2 + plot_layout(guides = "collect")
 ```
 
-I have not seen many posts comparing cellranger with `kallisto + bustools` for single nuceli data. I hope this post opens the discussion for the single-cell RNAseq community. 
+I have not seen many posts comparing cellranger with `kallisto + bustools` for single nuclei data. I hope this post opens the discussion for the single-cell RNAseq community. 
 
-* `kallisto + bustools` always gives more counts for single-nuceli data, why is that?
-* Why the correlation between cellranger and `kallisto + bustools` is not as good for single-nuceli data?
+* `kallisto + bustools` always gives more counts for single-nuclei data, why is that?
+* Why the correlation between cellranger and `kallisto + bustools` is not as good for single-nuclei data?
 * For those cells with bad correlation, what's going on?
 
 Comment below! 

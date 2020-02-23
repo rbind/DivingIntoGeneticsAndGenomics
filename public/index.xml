@@ -19,11 +19,11 @@
       <description>&lt;p&gt;In my last &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/cellranger-mk-reference-with-transgenes/&#34;&gt;post&lt;/a&gt;, I tried to include transgenes to the cellranger reference and want to
 get the counts for the transgenes. However, even after I extended the &lt;code&gt;Tdtomato&lt;/code&gt; and &lt;code&gt;Cre&lt;/code&gt; with
 the potential 3’UTR, I still get very few cells express them. This is confusing to me.&lt;/p&gt;
-&lt;p&gt;My next thought is: maybe the STAR aligner is doing something weired that excluded those reads?
+&lt;p&gt;My next thought is: maybe the STAR aligner is doing something weird that excluded those reads?
 At this point, I want to give &lt;a href=&#34;https://github.com/pachterlab/kb_python&#34;&gt;&lt;code&gt;kb-python&lt;/code&gt;&lt;/a&gt;, a python wrapper on &lt;code&gt;kallisto&lt;/code&gt; and &lt;code&gt;bustools&lt;/code&gt; a try.&lt;/p&gt;
-&lt;p&gt;Before &lt;code&gt;kb-python&lt;/code&gt;, the workflow for processing single-nuceli data using &lt;code&gt;kallisto&lt;/code&gt; and &lt;code&gt;bustools&lt;/code&gt; is curbersome. see this &lt;a href=&#34;https://github.com/BUStools/getting_started/blob/master/kallisto_bus_mouse_nuclei_tutorial.ipynb&#34;&gt;tutorial&lt;/a&gt; and &lt;a href=&#34;https://www.kallistobus.tools/velocity_index_tutorial.html&#34;&gt;Building a cDNA and intron index&lt;/a&gt;. I was unwilling to try it out unitl &lt;code&gt;kb-python&lt;/code&gt; supports single-nuclei data as well. &lt;code&gt;kb-python&lt;/code&gt; automates all the steps and greately simplify the processing.&lt;/p&gt;
+&lt;p&gt;Before &lt;code&gt;kb-python&lt;/code&gt;, the workflow for processing single-nuclei data using &lt;code&gt;kallisto&lt;/code&gt; and &lt;code&gt;bustools&lt;/code&gt; is cumbersome. see this &lt;a href=&#34;https://github.com/BUStools/getting_started/blob/master/kallisto_bus_mouse_nuclei_tutorial.ipynb&#34;&gt;tutorial&lt;/a&gt; and &lt;a href=&#34;https://www.kallistobus.tools/velocity_index_tutorial.html&#34;&gt;Building a cDNA and intron index&lt;/a&gt;. I was unwilling to try it out until &lt;code&gt;kb-python&lt;/code&gt; supports single-nuclei data as well. &lt;code&gt;kb-python&lt;/code&gt; automates all the steps and greatly simplify the processing.&lt;/p&gt;
 &lt;p&gt;kb-python uses the gtf file and genome fasta file for indexing, and it will create the cDNA and intron fasta and the transcript to gene mapping file on the fly.&lt;/p&gt;
-&lt;p&gt;It requires the entries with exons should also have a corresponding entry with transcript in the thrid column of the gtf file.&lt;/p&gt;
+&lt;p&gt;It requires the entries with exons should also have a corresponding entry with transcript in the third column of the gtf file.&lt;/p&gt;
 &lt;p&gt;Just duplicated the rows below and concatenate with the &lt;code&gt;genes.gtf&lt;/code&gt; from the cellranger website.&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;tdtomato        custom  transcript      1       1880    .       +       .       gene_id &amp;quot;ENSMUSGtdtomato&amp;quot;; gene_version &amp;quot;1&amp;quot;; transcript_id &amp;quot;tdtomato1&amp;quot;; gene_name &amp;quot;Tdtomato&amp;quot;
 tdtomato        custom  exon    1       1880    .       +       .       gene_id &amp;quot;ENSMUSGtdtomato&amp;quot;; gene_version &amp;quot;1&amp;quot;; transcript_id &amp;quot;tdtomato1&amp;quot;; gene_name &amp;quot;Tdtomato&amp;quot;
@@ -124,8 +124,8 @@ Sample1_kb&amp;lt;- spliced + unspliced
 # the rowname and colnames are lost, put them back
 rownames(Sample1_kb)&amp;lt;- rownames(spliced)
 colnames(Sample1_kb)&amp;lt;- colnames(spliced)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The matrices are unfilered, we can filter out some cells using the knee-plot. There are serveral nice posts on how to
-by the &lt;a href=&#34;https://github.com/CGATOxford/UMI-tools&#34;&gt;&lt;code&gt;UMI-tools&lt;/code&gt;&lt;/a&gt; develpers:&lt;/p&gt;
+&lt;p&gt;The matrices are unfiltered, we can filter out some cells using the knee-plot. There are several nice posts on how to
+by the &lt;a href=&#34;https://github.com/CGATOxford/UMI-tools&#34;&gt;&lt;code&gt;UMI-tools&lt;/code&gt;&lt;/a&gt; developers:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://cgatoxford.wordpress.com/2017/05/18/estimating-the-number-of-true-cell-barcodes-in-single-cell-rna-seq/&#34; class=&#34;uri&#34;&gt;https://cgatoxford.wordpress.com/2017/05/18/estimating-the-number-of-true-cell-barcodes-in-single-cell-rna-seq/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://cgatoxford.wordpress.com/2017/05/23/estimating-the-number-of-true-cell-barcodes-in-single-cell-rna-seq-part-2/&#34; class=&#34;uri&#34;&gt;https://cgatoxford.wordpress.com/2017/05/23/estimating-the-number-of-true-cell-barcodes-in-single-cell-rna-seq-part-2/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
@@ -296,7 +296,7 @@ table(Sample1_cr[&amp;quot;Cre&amp;quot;, ] !=0)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
 ## FALSE  TRUE 
 ## 10783   154&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;kb-python&lt;/code&gt; detected more cells express the transgeens, but still the number is very low. I will
+&lt;p&gt;&lt;code&gt;kb-python&lt;/code&gt; detected more cells express the transgens, but still the number is very low. I will
 need to keep investigating the reason.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;calculate-the-correlation-between-the-two-pipelines&#34; class=&#34;section level3&#34;&gt;
@@ -365,8 +365,8 @@ ggplot(df, aes(x= KB_totalUMI, y = cors)) +
 &lt;pre&gt;&lt;code&gt;## 
 ## FALSE  TRUE 
 ##  9016  1921&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In addtion, too many zeros can inflate the correlation.
-Let’s remove the genes if the counts from two pipleines are both 0s.&lt;/p&gt;
+&lt;p&gt;In addition, too many zeros can inflate the correlation.
+Let’s remove the genes if the counts from two pipelines are both 0s.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapply(cor, as.data.frame(x), as.data.frame(y))
 
 # map2 takes columns of df1 and df2 as argument and apply cor function to each pair of columns
@@ -411,10 +411,10 @@ p2&amp;lt;- ggplot(df2, aes(x= KB_totalUMI, y = cors)) +
 library(patchwork)
 p1 + p2 + plot_layout(guides = &amp;quot;collect&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2020-02-21-compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;I have not seen many posts comparing cellranger with &lt;code&gt;kallisto + bustools&lt;/code&gt; for single nuceli data. I hope this post opens the discussion for the single-cell RNAseq community.&lt;/p&gt;
+&lt;p&gt;I have not seen many posts comparing cellranger with &lt;code&gt;kallisto + bustools&lt;/code&gt; for single nuclei data. I hope this post opens the discussion for the single-cell RNAseq community.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;kallisto + bustools&lt;/code&gt; always gives more counts for single-nuceli data, why is that?&lt;/li&gt;
-&lt;li&gt;Why the correlation between cellranger and &lt;code&gt;kallisto + bustools&lt;/code&gt; is not as good for single-nuceli data?&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;kallisto + bustools&lt;/code&gt; always gives more counts for single-nuclei data, why is that?&lt;/li&gt;
+&lt;li&gt;Why the correlation between cellranger and &lt;code&gt;kallisto + bustools&lt;/code&gt; is not as good for single-nuclei data?&lt;/li&gt;
 &lt;li&gt;For those cells with bad correlation, what’s going on?&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Comment below!&lt;/p&gt;

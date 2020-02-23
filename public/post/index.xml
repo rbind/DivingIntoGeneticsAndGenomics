@@ -19,7 +19,7 @@
       
       <guid>/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/</guid>
       <description>In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
-My next thought is: maybe the STAR aligner is doing something weired that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.</description>
+My next thought is: maybe the STAR aligner is doing something weird that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.</description>
     </item>
     
     <item>
