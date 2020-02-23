@@ -1,5 +1,5 @@
 ---
-title: compare kallisto-bustools and cellranger for single nuclei seqencing data
+title: compare kallisto-bustools and cellranger for single nuclei sequencing data
 author: Ming Tang
 date: '2020-02-21'
 slug: compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data
@@ -416,7 +416,7 @@ p2<- ggplot(df2, aes(x= KB_totalUMI, y = cors)) +
 #install.packages("patchwork")
 # use patchwork to combine the legends from multiple plots
 library(patchwork)
-p1 + p2 + plot_layout(guides = "collect")
+p1 / p2 + plot_layout(guides = "collect")
 ```
 
 I have not seen many posts comparing cellranger with `kallisto + bustools` for single nuclei data. I hope this post opens the discussion for the single-cell RNAseq community. 

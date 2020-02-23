@@ -11,7 +11,7 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>compare kallisto-bustools and cellranger for single nuclei seqencing data</title>
+      <title>compare kallisto-bustools and cellranger for single nuclei sequencing data</title>
       <link>/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/</link>
       <pubDate>Fri, 21 Feb 2020 00:00:00 +0000</pubDate>
       
@@ -409,7 +409,7 @@ p2&amp;lt;- ggplot(df2, aes(x= KB_totalUMI, y = cors)) +
 #install.packages(&amp;quot;patchwork&amp;quot;)
 # use patchwork to combine the legends from multiple plots
 library(patchwork)
-p1 + p2 + plot_layout(guides = &amp;quot;collect&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+p1 / p2 + plot_layout(guides = &amp;quot;collect&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2020-02-21-compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;I have not seen many posts comparing cellranger with &lt;code&gt;kallisto + bustools&lt;/code&gt; for single nuclei data. I hope this post opens the discussion for the single-cell RNAseq community.&lt;/p&gt;
 &lt;ul&gt;

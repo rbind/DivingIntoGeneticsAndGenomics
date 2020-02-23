@@ -95,7 +95,7 @@ My next thought is: maybe the STAR aligner is doing something weird that exclude
   
   <meta property="og:site_name" content="DNA confesses Data speak">
   <meta property="og:url" content="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">
-  <meta property="og:title" content="compare kallisto-bustools and cellranger for single nuclei seqencing data | DNA confesses Data speak">
+  <meta property="og:title" content="compare kallisto-bustools and cellranger for single nuclei sequencing data | DNA confesses Data speak">
   <meta property="og:description" content="In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
 My next thought is: maybe the STAR aligner is doing something weird that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.">
   <meta property="og:locale" content="en-us">
@@ -108,7 +108,7 @@ My next thought is: maybe the STAR aligner is doing something weird that exclude
   
   
 
-  <title>compare kallisto-bustools and cellranger for single nuclei seqencing data | DNA confesses Data speak</title>
+  <title>compare kallisto-bustools and cellranger for single nuclei sequencing data | DNA confesses Data speak</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -284,7 +284,7 @@ My next thought is: maybe the STAR aligner is doing something weird that exclude
 
 
   <div class="article-container">
-    <h1 itemprop="name">compare kallisto-bustools and cellranger for single nuclei seqencing data</h1>
+    <h1 itemprop="name">compare kallisto-bustools and cellranger for single nuclei sequencing data</h1>
 
     
 
@@ -339,7 +339,7 @@ My next thought is: maybe the STAR aligner is doing something weird that exclude
   <ul class="share">
     <li>
       <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=compare%20kallisto-bustools%20and%20cellranger%20for%20single%20nuclei%20seqencing%20data&amp;url=%2fpost%2fcompare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data%2f"
+         href="https://twitter.com/intent/tweet?text=compare%20kallisto-bustools%20and%20cellranger%20for%20single%20nuclei%20sequencing%20data&amp;url=%2fpost%2fcompare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-twitter"></i>
       </a>
@@ -353,21 +353,21 @@ My next thought is: maybe the STAR aligner is doing something weird that exclude
     </li>
     <li>
       <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fcompare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data%2f&amp;title=compare%20kallisto-bustools%20and%20cellranger%20for%20single%20nuclei%20seqencing%20data"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fcompare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data%2f&amp;title=compare%20kallisto-bustools%20and%20cellranger%20for%20single%20nuclei%20sequencing%20data"
          target="_blank" rel="noopener">
         <i class="fa fa-linkedin"></i>
       </a>
     </li>
     <li>
       <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=%2fpost%2fcompare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data%2f&amp;title=compare%20kallisto-bustools%20and%20cellranger%20for%20single%20nuclei%20seqencing%20data"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fcompare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data%2f&amp;title=compare%20kallisto-bustools%20and%20cellranger%20for%20single%20nuclei%20sequencing%20data"
          target="_blank" rel="noopener">
         <i class="fa fa-weibo"></i>
       </a>
     </li>
     <li>
       <a class="email"
-         href="mailto:?subject=compare%20kallisto-bustools%20and%20cellranger%20for%20single%20nuclei%20seqencing%20data&amp;body=%2fpost%2fcompare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data%2f">
+         href="mailto:?subject=compare%20kallisto-bustools%20and%20cellranger%20for%20single%20nuclei%20sequencing%20data&amp;body=%2fpost%2fcompare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data%2f">
         <i class="fa fa-envelope"></i>
       </a>
     </li>
@@ -774,7 +774,7 @@ p2&lt;- ggplot(df2, aes(x= KB_totalUMI, y = cors)) +
 #install.packages(&quot;patchwork&quot;)
 # use patchwork to combine the legends from multiple plots
 library(patchwork)
-p1 + p2 + plot_layout(guides = &quot;collect&quot;)</code></pre>
+p1 / p2 + plot_layout(guides = &quot;collect&quot;)</code></pre>
 <p><img src="/post/2020-02-21-compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>I have not seen many posts comparing cellranger with <code>kallisto + bustools</code> for single nuclei data. I hope this post opens the discussion for the single-cell RNAseq community.</p>
 <ul>
