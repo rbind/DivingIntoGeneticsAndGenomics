@@ -11,6 +11,174 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Monty Hall problem- a peek through simulation</title>
+      <link>/post/monty-hall-problem-a-peek-through-simulation/</link>
+      <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/monty-hall-problem-a-peek-through-simulation/</guid>
+      <description>&lt;p&gt;I am taking this STATE-80 course from Harvard Extension School. This course teaches
+commonly used distributions and probability theory. The instructor Hatch is a
+really good teacher and he uses simulation for all the demonstrations along with
+the formulas.&lt;/p&gt;
+&lt;p&gt;In week 6, we revisited the &lt;a href=&#34;https://en.wikipedia.org/wiki/Monty_Hall_problem&#34;&gt;Monty Hall problem&lt;/a&gt; which we played on the first day of
+class.&lt;/p&gt;
+&lt;p&gt;If you have not heard about it, I quoted from the wiki:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Suppose you’re on a game show, and you’re given the choice of three doors: Behind one door is a car; behind the others, goats. You pick a door, say No. 1, and the host, who knows what’s behind the doors, opens another door, say No. 3, which has a goat. He then says to you, “Do you want to pick door No. 2?” Is it to your advantage to switch your choice?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;/img/Monty_open_door.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The answer is that it &lt;strong&gt;is&lt;/strong&gt; to your advantage to switch the door. The probability of switching the door and get the car is &lt;span class=&#34;math inline&#34;&gt;\(2/3\)&lt;/span&gt; and the probability of not switching is &lt;span class=&#34;math inline&#34;&gt;\(1/3\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Why if I switch I have a better chance to win the car? If the host opened a door with a goat, the car is behind the door of what I have chosen and the one I have not. Is not it 50% of chance to win the car whether I switch or not? It is so counter-intuitive that even &lt;a href=&#34;https://en.wikipedia.org/wiki/Paul_Erd%C5%91s&#34;&gt;Paul Erdős&lt;/a&gt; did not get it at first.&lt;/p&gt;
+&lt;p&gt;Let’s tackle it by simulation first and then I will give the formulas to deduce the result.&lt;/p&gt;
+&lt;p&gt;The code was copied from Hatch’s lecture notes. The variable names are clearly given and the comments also help you understand the code.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(123)
+
+number.of.goats &amp;lt;- 2
+
+number.of.cars &amp;lt;- 1
+
+cars.goats.vector &amp;lt;-
+    c(
+        rep( &amp;quot;Goat&amp;quot;, number.of.goats ),
+        rep( &amp;quot;Car&amp;quot;, number.of.cars )
+    )
+
+total.doors &amp;lt;-
+    number.of.goats + number.of.cars
+
+door.vector &amp;lt;- 1:total.doors
+
+number.of.replications &amp;lt;- 10000
+
+outcome.vector &amp;lt;- logical( number.of.replications )
+
+for( replication.index in 1:number.of.replications ) {
+    
+    # First, we&amp;#39;ll mix up the cars and goats
+    # behind the doors
+    
+    random.cars.goats.vector &amp;lt;-
+        sample( cars.goats.vector )
+    
+    
+    # Next, let&amp;#39;s figure out which doors have
+    # a goat behind them
+    
+    goat.doors.vector &amp;lt;-
+        which( random.cars.goats.vector == &amp;quot;Goat&amp;quot; )
+    
+    
+    # Now the contestant makes the initial pick
+    
+    initial.door.pick &amp;lt;-
+        sample(
+            door.vector,
+            size = 1
+        )
+    
+    # The game show host determines which doors
+    # can be opened:
+    
+    possible.to.open.doors.vector &amp;lt;-
+        setdiff(
+            goat.doors.vector,
+            initial.door.pick
+        )
+    
+    if( length( possible.to.open.doors.vector ) == 1 ) {
+        
+        open.door &amp;lt;- possible.to.open.doors.vector
+        
+    } else {
+        
+        open.door &amp;lt;-
+            sample(
+                possible.to.open.doors.vector,
+                size = 1
+            )
+        
+    }
+    
+    possible.final.door.vector &amp;lt;-
+        setdiff(
+            door.vector,
+            c( initial.door.pick, open.door )
+        )
+    
+    if( length( possible.final.door.vector ) == 1 ) {
+        
+        final.door.pick &amp;lt;- possible.final.door.vector
+        
+    } else {
+        
+        final.door.pick &amp;lt;-
+            sample(
+                possible.final.door.vector,
+                size = 1
+            )
+        
+    }
+    
+    outcome.vector[ replication.index ] &amp;lt;-
+        random.cars.goats.vector[ final.door.pick ] == &amp;quot;Car&amp;quot;
+
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, let’s check how many times one wins car:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cat( &amp;quot;Sample mean of outcome vector:&amp;quot;,
+     round( mean( outcome.vector ), 5 ) )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Sample mean of outcome vector: 0.6705&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Is it surprising?! Let me explain in plain words:&lt;/p&gt;
+&lt;p&gt;Let’s focus on the strategy of always switching the door after the host opens a door.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;If initially you picked a door behind which there is a car, the host opened a door (from either one) with goat, and you switch. The probability of getting the car is &lt;span class=&#34;math inline&#34;&gt;\(0\)&lt;/span&gt;. You had the car behind your initial pick! If you switch, you get the goat.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;If initially you picked a door behind which there is a goat, the host &lt;strong&gt;had&lt;/strong&gt; to open the other door with goat, and you switch. The probability of getting the car is &lt;span class=&#34;math inline&#34;&gt;\(1\)&lt;/span&gt;, because the host has leaked the information that the car is in the other door that you are going to switch to.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The probability of picking a door that a car behind the door for your initial pick is &lt;span class=&#34;math inline&#34;&gt;\(1/3\)&lt;/span&gt; (from 1, your chance is 0 to win the car). The probability of picking a door that a goat is behind the door for your initial pick is &lt;span class=&#34;math inline&#34;&gt;\(2/3\)&lt;/span&gt; (from 2, your chance is 1 to win the car). So in the long run, you have &lt;span class=&#34;math inline&#34;&gt;\(2/3\)&lt;/span&gt; chance to win the car.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div id=&#34;calculate-by-formulas&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Calculate by formulas&lt;/h3&gt;
+&lt;p&gt;The trick to using conditional probabilities is to pick the right event to condition on. For the Monty Hall problem, we will condition on the event that Marie selects the door with the car behind it as her initial choice, and we’ll denote this event &lt;span class=&#34;math inline&#34;&gt;\(A\)&lt;/span&gt;. Then the event &lt;span class=&#34;math inline&#34;&gt;\(A^c\)&lt;/span&gt; is that Marie does &lt;em&gt;not&lt;/em&gt; select the car door as her initial choice, but instead selects a door with a goat behind it. Also, let &lt;span class=&#34;math inline&#34;&gt;\(B\)&lt;/span&gt; denote the event the event that Marie wins the car in the end. Now suppose Marie adopts the strategy of accepting the offer to change her initial selection after seeing another door opened with a goat behind it.&lt;/p&gt;
+&lt;p&gt;As I mentioned above:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\Pr(B\ |\ A)\ =\ 0
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\Pr(B\ |\ A^c)\ =\ 1
+\]&lt;/span&gt;
+What’s the probability that Marie will initially select the door with the car behind it? It’s just 1/3. So we have:
+&lt;span class=&#34;math display&#34;&gt;\[
+\Pr(A)\ =\ 1/3
+\]&lt;/span&gt;
+Then by the complement trick, we have:
+&lt;span class=&#34;math display&#34;&gt;\[
+\Pr(A^c)\ =\ 1 - \Pr(A)\ =\ 2/3
+\]&lt;/span&gt;
+Now we can use the Law of Total Probability:
+&lt;span class=&#34;math display&#34;&gt;\[
+\Pr(B)\ =\ \Pr(B\ |\ A) \cdot \Pr(A) + \Pr(B\ |\ A^c) \cdot \Pr(A^c)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Substituting, we obtain:
+&lt;span class=&#34;math display&#34;&gt;\[
+\Pr(B)\ =\ \left ( 0 \cdot \frac{1}{3} \right ) + \left ( 1 \cdot \frac{2}{3} \right )\ =\ \frac{2}{3}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;monty-hall-with-more-doors&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Monty Hall with more doors&lt;/h3&gt;
+&lt;p&gt;Let’s try a Monty hall game with 4 doors behind which are 1 car and 3 goats. Just change&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;number.of.goats &amp;lt;- 3
+
+number.of.cars &amp;lt;- 1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You will get around &lt;span class=&#34;math inline&#34;&gt;\(3/8\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;With 4 doors, if you initially select a door with a goat, the host opens a door with goat, you will be leaving two doors: one with goat and the other one with car. So you will have &lt;span class=&#34;math inline&#34;&gt;\(1/2\)&lt;/span&gt; chance to win the car.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\Pr(B)\ =\ \left ( 0 \cdot \frac{1}{4} \right ) + \left ( 1/2 \cdot \frac{3}{4} \right )\ =\ \frac{3}{8}
+\]&lt;/span&gt;
+It is always to your advantage to switch the door because the host has leaked information about the car :)&lt;/p&gt;
+&lt;p&gt;Simulation is a very good tool to teach statistic concept and especially for the non-intuitive ones.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>compare kallisto-bustools and cellranger for single nuclei sequencing data</title>
       <link>/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/</link>
       <pubDate>Fri, 21 Feb 2020 00:00:00 +0000</pubDate>
@@ -2121,250 +2289,6 @@ and documentation &lt;a href=&#34;https://docs.rstudio.com/ide/server-pro/r-sess
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;to have the same effect of setting up the &lt;code&gt;rsession.conf&lt;/code&gt; file.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Calculate scATACseq TSS enrichment score</title>
-      <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
-      <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/post/calculate-scatacseq-tss-enrichment-score/</guid>
-      <description>
-
-&lt;p&gt;&lt;a href=&#34;https://www.encodeproject.org/data-standards/terms/#enrichment&#34; target=&#34;_blank&#34;&gt;TSS enrichment score&lt;/a&gt; serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.&lt;/p&gt;
-
-&lt;p&gt;From the Encode page:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp). This distribution is then normalized by taking the average read depth in the 100 bps at each of the end flanks of the distribution (for a total of 200bp of averaged data) and calculating a fold change at each position over that average read depth. This means that the flanks should start at 1, and if there is high read signal at transcription start sites (highly open regions of the genome) there should be an increase in signal up to a peak in the middle. We take the signal value at the center of the distribution after this normalization as our TSS enrichment metric. Used to evaluate ATAC-seq.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;It was not so clear to me from the definition on how &lt;strong&gt;EXACTLY&lt;/strong&gt; this score is calculated.&lt;/p&gt;
-
-&lt;p&gt;I inspected the &lt;a href=&#34;https://github.com/jianhong/ATACseqQC/blob/master/R/TSSEscore.R#L80&#34; target=&#34;_blank&#34;&gt;source code&lt;/a&gt; of  &lt;code&gt;ATACseqQC&lt;/code&gt; which calculates the TSS enrichment score for bulk ATACseq data, but I think it is not calculating it the right way as described by the ENCODE page.&lt;/p&gt;
-
-&lt;p&gt;I reached out to &lt;a href=&#34;https://twitter.com/Satpathology&#34; target=&#34;_blank&#34;&gt;Ansu Satpathy&lt;/a&gt; (thanks!), and got a script written by Jeffrey Granja, who are the authors of this recent scATACseq paper:
-&lt;a href=&#34;https://www.biorxiv.org/content/10.1101/610550v1&#34; target=&#34;_blank&#34;&gt;Massively parallel single-cell chromatin landscapes of human immune cell development and intratumoral T cell exhaustion (2019)&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;I studied the script and also got the confirmation from ENCODE how they calculate the TSS enrichment score
-&lt;a href=&#34;https://github.com/ENCODE-DCC/atac-seq-pipeline/issues/50&#34; target=&#34;_blank&#34;&gt;https://github.com/ENCODE-DCC/atac-seq-pipeline/issues/50&lt;/a&gt; by a python script.&lt;/p&gt;
-
-&lt;p&gt;To work with this coverage type of data in R, I want to take advantage of the data structure &lt;code&gt;View&lt;/code&gt; in bioconductor, so I borrowed some codes from &lt;a href=&#34;https://bioconductor.org/packages/release/bioc/vignettes/genomation/inst/doc/GenomationManual.html&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;genomation::ScoreMatrix&lt;/code&gt;&lt;/a&gt; instead of using the script sent by Ansu. It is a very nice package by &lt;a href=&#34;https://twitter.com/AltunaAkalin&#34; target=&#34;_blank&#34;&gt;Altuna Akalin&lt;/a&gt;. A side note, he has a very nice book you might be interested in: &lt;a href=&#34;http://compgenomr.github.io/book/how-to-contribute.html&#34; target=&#34;_blank&#34;&gt;Computational Genomics with R&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Below, I ended up with a hybrid script from multiple sources.
-Now it works with the 10x cellranger-atac output &lt;code&gt;fragment.tsv.gz&lt;/code&gt;. One can tweak it to work with the bam file. However, the bam file is 25G, R takes a long time to parse it.&lt;/p&gt;
-
-&lt;p&gt;I explain what the script does:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;for each TSS, get per base coverage for the 1000 bp flanking region(flank = 1000).&lt;/li&gt;
-&lt;li&gt;do this for all TSSs, We get a matrix of #TSS x 2000 bp dimension.&lt;/li&gt;
-&lt;li&gt;do a column sum of the matrix.&lt;/li&gt;
-&lt;li&gt;sum of the coverage of the endFlank (100bp) at both ends and divide by 200 bp to get a
-normalization factor.&lt;/li&gt;
-&lt;li&gt;divide the the normalization factor for -1900 to + 1900 bp to get per base normalized coverage.&lt;/li&gt;
-&lt;li&gt;do a smoothing with a defined window (50bp by default) using &lt;code&gt;zoo::rollmean&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;select the highest value within a window (highest_tss_flank, 50 bp by default) around the TSS because the highest peak is not necessary at exactly the TSS site (position 0)&lt;/li&gt;
-&lt;li&gt;repeat 1-7 for all cells.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&#34;extra-technical-notes&#34;&gt;Extra technical notes:&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;One thing to note is that one needs to filter out the TSSs which are not within the coverage. e.g. A TSS with 1000 bp flanking regions fall out of the coverage.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;use only the common chromosomes between coverage and the txs.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;convert GRanges to IntergerRangesList does not maintain the order of the GRanges.
-so a unique id was given for each Ranges, and the matrix can be reordered according to this unique id. That&amp;rsquo;s what &lt;code&gt;constrainRanges()&lt;/code&gt; does. read this thread for more &lt;a href=&#34;https://stat.ethz.ch/pipermail/bioc-devel/2016-June/009433.html&#34; target=&#34;_blank&#34;&gt;https://stat.ethz.ch/pipermail/bioc-devel/2016-June/009433.html&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;how-long-it-takes&#34;&gt;How long it takes.&lt;/h3&gt;
-
-&lt;p&gt;It took me around ~15 seconds to calculate the TSS enrichment score for a single cell.
-1.213291 hours for 5000 PBMC cells using 15 workers (not too bad :).&lt;/p&gt;
-
-&lt;h3 id=&#34;r-code&#34;&gt;R code&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(GenomicRanges)
-library(dplyr)
-
-#&#39; checkClass function
-#&#39; 
-#&#39; check whether the x object corresponds to the given class
-#&#39;
-#&#39; @param x object
-#&#39; @param class.name class name
-#&#39; @param var.name uses x object
-#&#39; @keywords internal
-checkClass = function(x, class.name, var.name = deparse(substitute(x))){
-  
-  fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
-  if(!class(x) %in% class.name)
-    stop(paste(fun.name,&#39;: &#39;, 
-               var.name, 
-               &#39; is not of class: &#39;, 
-               paste(class.name, collapse=&#39; &#39;), 
-               &#39;\n&#39;, sep=&#39;&#39;))
-}
-
-### remove the tss that do not have coverage
-### I took some code from the ScoreMatrix.R function in the genomation package.
-### give the credit due :)
-### see https://github.com/BIMSBbioinfo/genomation/blob/master/R/scoreMatrix.R#L113
-constrainRanges = function(target, windows){
-  
-  checkClass(target, c(&#39;SimpleRleList&#39;,&#39;RleList&#39;,&#39;CompressedRleList&#39;))
-  checkClass(windows, &#39;GRanges&#39;)
-  
-  mcols(windows)$X_rank = 1:length(windows)
-  r.chr.len = elementNROWS(target)
-  constraint = GRanges(seqnames=names(r.chr.len),
-                       IRanges(start=rep(1,length(r.chr.len)),
-                               end=as.numeric(r.chr.len)))
-  # suppressWarnings is done becuause GenomicRanges function give warnings 
-  #if you don&#39;t have the same seqnames in both objects
-  win.list.chr = suppressWarnings(subsetByOverlaps(windows, 
-                                                   constraint,
-                                                   type = &amp;quot;within&amp;quot;,
-                                                   ignore.strand = TRUE))
-  
-  if(length(win.list.chr) == 0)
-    stop(&#39;All windows fell have coordinates outside windows boundaries&#39;)
-  return(win.list.chr)
-}
-
-
-
-#&#39; Calculate tss enrichment score from 10xscATAC fragment file
-#&#39;
-#&#39; @param frag_gz_file  fragment.tsv.gz file from 10x cellranger-atac output or 
-#&#39; anyother tool but in the same format.
-#&#39; @param txs  a txdb object
-#&#39; @param flank flanking bp of tss (upstream and downstream)
-#&#39; @param endFlank  bp end flanks of flank for local noise control
-#&#39;     flank               flank
-#&#39;  ---------------|-----------------
-#&#39;                tss
-#&#39;  ---                           ---
-#&#39;  endFlank                     endFlank
-#&#39;  
-#&#39; @param highest_tss_flank bp flanking tss windown for choosing the highest tss score.
-#&#39; The highest tss enrichment score is not always exactly at tss.
-#&#39; @param barcodeList valid barcode list, a file with one column 
-#&#39; @param smooth window size to smooth 
-#&#39; @param strand.aware consider tss strandness when calculating 
-#&#39;
-#&#39; @return
-#&#39; @export
-#&#39;
-#&#39; @examples
-#&#39; library(TxDb.Hsapiens.UCSC.hg19.knownGene)
-#&#39; library(dplyr); library(readr); library(BiocParallel)
-#&#39; txs &amp;lt;- transcripts(TxDb.Hsapiens.UCSC.hg19.knownGene)
-#&#39; scores&amp;lt;- TssEnrichmentFromFrags(&amp;quot;fragment.tsv.gz&amp;quot;, txs = txs)
-
-TssEnrichmentFromFrags &amp;lt;- function(frag_gz_file,
-                               txs,
-                               flank = 1000,
-                               endFlank = 100,
-                               highest_tss_flank= 50,
-                               smooth = 50,
-                               strand.aware = TRUE,
-                               workers = 1,
-                               barcodeList = NULL){
-        
-        # Make GRanges of fragments that are solid for the cells that we care about
-        frags_valid &amp;lt;- data.table::fread(paste0(&amp;quot;zcat &amp;lt; &amp;quot;, frag_gz_file)) %&amp;gt;% 
-                data.frame() %&amp;gt;% 
-                mutate(V2 = V2 + 1) %&amp;gt;% # make it 1 based for R
-                GenomicRanges::makeGRangesFromDataFrame(seqnames.field = &amp;quot;V1&amp;quot;, start.field = &amp;quot;V2&amp;quot;, end.field = &amp;quot;V3&amp;quot;, keep.extra.columns = TRUE)
-        if (!is.null(barcodeList)){
-                validBarcodes&amp;lt;- read_tsv(barcodeList, col_names = F)
-                frags_valid&amp;lt;- frags_valid[frags_valid$V4 %in% validBarcodes$X1]
-        }
-        
-        # common chromosome names, do it per cell instead, see TssEnrichmentSingleCell
-        seqlev&amp;lt;- intersect(seqlevels(frags_valid), seqlevels(txs))
-        frags_valid&amp;lt;- keepSeqlevels(frags_valid, seqlev, pruning.mode=&amp;quot;coarse&amp;quot;)
-        
-        # calculate coverage per cell
-        frags_valid_per_cell&amp;lt;- split(frags_valid, frags_valid$V4)
-        
-       
-        # this step can take minutes 
-        multicoreParam &amp;lt;- BiocParallel::MulticoreParam(workers = workers)
-        # can add the chromosome length as additional argument for `coverage`
-        # to get 0 coverages if there are no reads there. 
-        cvgs&amp;lt;- bplapply(frags_valid_per_cell, function(x) coverage(x), BPPARAM = multicoreParam)
-        
-        txs &amp;lt;- unique(txs)
-        
-        txs.flanks&amp;lt;- promoters(txs, upstream = flank, 
-                            downstream = flank)
-        txs.length&amp;lt;- length(txs.flanks)
-        
-        TssEnrichmentScores&amp;lt;- BiocParallel::bplapply(cvgs, TssEnrichmentSingleCell, txs.flanks, strand.aware = strand.aware, endFlank = endFlank, flank = flank, highest_tss_flank, smooth = smooth, BPPARAM = multicoreParam)
-
-        enrichment&amp;lt;- do.call(&amp;quot;rbind&amp;quot;, TssEnrichmentScores)
-        return(enrichment)
-}    
-
-TssEnrichmentSingleCell&amp;lt;- function(cvg, txs.flanks, strand.aware = TRUE, flank = 1000,
-                               endFlank = 100,
-                               highest_tss_flank= 50,
-                               smooth = 50 ){
-        ## remove tss not in the coverage and assign a unique id for each tss: X_rank
-        txs.flanks&amp;lt;- constrainRanges(cvg, txs.flanks)
-        txs.length&amp;lt;- length(txs.flanks)
-        if(length(txs.flanks)!=txs.length){
-              warning(paste0(txs.length-length(txs.flanks),
-                             &amp;quot; Tss removed because they fall out of the coverage&amp;quot;))
-            }
-        # common chromosomes
-        chrs&amp;lt;- sort(intersect(names(cvg), as.character(unique(seqnames(txs.flanks)))))
-        
-        # convert GRanges to IntergerRangesList does not maintain the order
-        # a unique id was given for each Ranges
-        myViews&amp;lt;- Views(cvg[chrs],as(txs.flanks,&amp;quot;IntegerRangesList&amp;quot;)[chrs]) # get subsets of RleList
-        mat = lapply(myViews,function(x) t(viewApply(x,as.vector)) )
-        mat = do.call(&amp;quot;rbind&amp;quot;,mat)
-        
-        r.list=split(mcols(txs.flanks)[,&amp;quot;X_rank&amp;quot;], as.vector(seqnames(txs.flanks))  )
-        r.list=r.list[order(names(r.list))]
-        ranks=do.call(&amp;quot;c&amp;quot;,r.list)
-        rownames(mat) = ranks
-        
-        if(strand.aware == TRUE){
-              orig.rows=txs.flanks[strand(txs.flanks) == &#39;-&#39;,]$X_rank
-              mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% 
-                                                         orig.rows, ncol(mat):1]
-        }
-        
-        # reorder according to the original Granges (txs)
-        mat = mat[order(ranks),]
-        
-  
-        ### normlization by the endFlank local noise
-        profile &amp;lt;- colSums(mat)
-        profile_norm &amp;lt;- profile/mean(profile[c(1:endFlank,(flank*2-endFlank+1):(flank*2))])
-
-        #smooth
-        profile_norm_smooth &amp;lt;- zoo::rollmean(profile_norm, smooth, fill = 1)
-        
-
-        #enrichment
-        max_finite &amp;lt;- function(x){
-        suppressWarnings(max(x[is.finite(x)], na.rm=TRUE))
-        }
-        
-        e &amp;lt;- max_finite(profile_norm_smooth[(flank-highest_tss_flank):(flank+highest_tss_flank)])
-        return(e)
-}
-
-
-&lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
     

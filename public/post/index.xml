@@ -13,6 +13,18 @@
     
     
     <item>
+      <title>Monty Hall problem- a peek through simulation</title>
+      <link>/post/monty-hall-problem-a-peek-through-simulation/</link>
+      <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/monty-hall-problem-a-peek-through-simulation/</guid>
+      <description>I am taking this STATE-80 course from Harvard Extension School. This course teaches commonly used distributions and probability theory. The instructor Hatch is a really good teacher and he uses simulation for all the demonstrations along with the formulas.
+In week 6, we revisited the Monty Hall problem which we played on the first day of class.
+If you have not heard about it, I quoted from the wiki:
+ Suppose you’re on a game show, and you’re given the choice of three doors: Behind one door is a car; behind the others, goats.</description>
+    </item>
+    
+    <item>
       <title>compare kallisto-bustools and cellranger for single nuclei sequencing data</title>
       <link>/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/</link>
       <pubDate>Fri, 21 Feb 2020 00:00:00 +0000</pubDate>
