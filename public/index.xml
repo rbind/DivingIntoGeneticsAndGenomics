@@ -11,6 +11,19 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Tools and tricks for a data scientist</title>
+      <link>/talk/2020-tools-tricks-data-science/</link>
+      <pubDate>Mon, 09 Mar 2020 14:30:00 -0400</pubDate>
+      
+      <guid>/talk/2020-tools-tricks-data-science/</guid>
+      <description>&lt;p&gt;In the lab meeting today, I introduced some of the linux tricks and apps I have been using
+for my daily work. I consider myself as a genomic data scientist. It is a bioinformatician&amp;rsquo;s rebranding according to &lt;a href=&#34;https://twitter.com/JasonWilliamsNY/status/1236671856788242436&#34; target=&#34;_blank&#34;&gt;Jason Williams&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I am sharing the PDF here, hope you find some of the tricks are useful too!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Monty Hall problem- a peek through simulation</title>
       <link>/post/monty-hall-problem-a-peek-through-simulation/</link>
       <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
@@ -2145,150 +2158,6 @@ usethis::use_pipe()
 &lt;p&gt;You can find the workflow at my &lt;a href=&#34;https://github.com/crazyhottommy/pyflow-scATACseq&#34; target=&#34;_blank&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;/img/rulegraph_scATAC.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Run Rstudio server with singularity on HPC</title>
-      <link>/post/run-rstudio-server-with-singularity-on-hpc/</link>
-      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/post/run-rstudio-server-with-singularity-on-hpc/</guid>
-      <description>
-
-&lt;h3 id=&#34;background&#34;&gt;Background&lt;/h3&gt;
-
-&lt;p&gt;Please read the following before go ahead:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;what is &lt;a href=&#34;https://www.docker.com/&#34; target=&#34;_blank&#34;&gt;docker&lt;/a&gt;?&lt;br /&gt;&lt;/li&gt;
-&lt;li&gt;what is &lt;a href=&#34;https://www.rocker-project.org/&#34; target=&#34;_blank&#34;&gt;Rocker&lt;/a&gt;?&lt;br /&gt;&lt;/li&gt;
-&lt;li&gt;what is &lt;a href=&#34;https://www.sylabs.io/docs/&#34; target=&#34;_blank&#34;&gt;singularity&lt;/a&gt;?&lt;br /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;from Harvard Research computing website: &lt;a href=&#34;https://www.rc.fas.harvard.edu/resources/documentation/software/singularity-on-odyssey/&#34; target=&#34;_blank&#34;&gt;Odyssey has singularity installed&lt;/a&gt;.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Why Singularity?
-There are some important differences between Docker and Singularity:&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Docker and Singularity have their own container formats.&lt;/li&gt;
-&lt;li&gt;Docker containers may be imported to run via Singularity.&lt;/li&gt;
-&lt;li&gt;Docker containers need root privileges for full functionality which is not suitable for a shared HPC environment.&lt;/li&gt;
-&lt;li&gt;Singularity allows working with containers as a regular user. No sudo is required,&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Our &lt;a href=&#34;https://informatics.fas.harvard.edu/&#34; target=&#34;_blank&#34;&gt;informatics group&lt;/a&gt; has several big memory (1TB) computing nodes that allow us to run interactive jobs. I want to have big memory to run Rstudio for my scRNAseq data.&lt;/p&gt;
-
-&lt;h3 id=&#34;run-rstudio-server-with-singularity&#34;&gt;Run Rstudio server with singularity&lt;/h3&gt;
-
-&lt;p&gt;I basically followed this tutorial &lt;a href=&#34;https://www.rocker-project.org/use/singularity/&#34; target=&#34;_blank&#34;&gt;https://www.rocker-project.org/use/singularity/&lt;/a&gt; written by my colleague Nathan Weeks sitting in the same office with me. Thanks!&lt;/p&gt;
-
-&lt;p&gt;First, go to &lt;a href=&#34;https://www.rocker-project.org/images/&#34; target=&#34;_blank&#34;&gt;https://www.rocker-project.org/images/&lt;/a&gt; choose the image you want. I use &lt;code&gt;tidyverse&lt;/code&gt; heavily, so I downloaded the &lt;code&gt;tidyverse&lt;/code&gt; image buit upon &lt;code&gt;Rstudio&lt;/code&gt; image&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;## ssh to remote HPC and pull the docker image by singularity
-ssh bio1
-mkdir singularity-images; cd !$
-singularity pull --name rstudio.simg docker://rocker/tidyverse:latest
-
-
-# This example bind mounts the /project directory on the host into the Singularity container.
-# By default the only host file systems mounted within the container are $HOME, /tmp, /proc, /sys, and /dev.
-# type in the password you want to set, make it more complicated than this dummy one
-PASSWORD=&#39;xyz&#39; singularity exec --bind=/project  rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;back to my mac and connect to it via &lt;a href=&#34;https://www.ssh.com/ssh/tunneling/&#34; target=&#34;_blank&#34;&gt;SSH tunnel&lt;/a&gt;:&lt;/p&gt;
-
-&lt;p&gt;Nathan explained by drawing the following.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/ssh_tunnel.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh -Nf -L 8787:localhost:8787 bio1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;on my local mac, open &lt;code&gt;localhost:8787&lt;/code&gt; in web browser, type in the Odyssey (HPC) user name and password (xyz in this dummy example). Rstudio server now is ready for me! Magic!!!&lt;/p&gt;
-
-&lt;p&gt;Note: if mulitple people using the same node for Rstudio sever, you will need to pick a different
-port than &lt;code&gt;8787&lt;/code&gt;.&lt;/p&gt;
-
-&lt;h3 id=&#34;one-more-note-on-r-packages&#34;&gt;One more note on R packages&lt;/h3&gt;
-
-&lt;p&gt;create an &lt;code&gt;.Renviron&lt;/code&gt; file in your home diretory&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# User-installed R packages go into their home directory
-echo &#39;R_LIBS_USER=~/R/%p-library/%v&#39; &amp;gt;&amp;gt; ${HOME}/.Renviron
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The platform and version will be replaced by the corresponding R versions&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ls ~/R/x86_64-pc-linux-gnu-library/
-3.6
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;install packages inside Rstudio and the packages will be installed to &lt;code&gt;~/R/x86_64-pc-linux-gnu-library/3.6&lt;/code&gt;. R version in this singularity image is R3.6. Note that if you use R on command line at the remote machine and use the same version of R. the library may not be compatible. e.g. singularity container is based on debian （Ubuntu) and HPC is based on RPM (CentOS). One may need to have mulitiple &lt;code&gt;.Renviron&lt;/code&gt; file and switch back and forth depending on which R one is using. If you have better options, please let me know!&lt;/p&gt;
-
-&lt;h3 id=&#34;jump-to-other-folders&#34;&gt;Jump to other folders&lt;/h3&gt;
-
-&lt;p&gt;by default, Rstudio opens the home directory. if you want to go to other folders, you can click &lt;code&gt;...&lt;/code&gt; in the file pane.
-You can then type in the path you want to jump to.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/change_path.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;submit-a-slurm-job&#34;&gt;Submit a slurm job&lt;/h3&gt;
-
-&lt;p&gt;If you do not have a big computing node that you can run interactive job, you can follow Nathan&amp;rsquo;s &lt;a href=&#34;https://www.rocker-project.org/use/singularity/&#34; target=&#34;_blank&#34;&gt;tutorial&lt;/a&gt; on how to submit slurm job to run Rstudio server with singularity.&lt;/p&gt;
-
-&lt;h3 id=&#34;fix-home-directory-filled-up-issue&#34;&gt;Fix home directory filled up issue&lt;/h3&gt;
-
-&lt;p&gt;I am enjoying Rstudio with my HPC large computing nodes and suddenly I got emails from the HPC staff saying I am using up my home directory space. It turns out Rstudio writes the suspended session files to &lt;code&gt;~/.rstudio/&lt;/code&gt; folder. I &lt;code&gt;ncdu&lt;/code&gt; the folder and it is 34G! I googled around and found exactly this &lt;a href=&#34;https://support.rstudio.com/hc/en-us/articles/218417097-Filling-up-the-home-directory-with-RStudio-Server&#34; target=&#34;_blank&#34;&gt;Filling up the home directory with RStudio Server&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;One of the solution is to turn off session time out.&lt;/p&gt;
-
-&lt;p&gt;put  &lt;code&gt;session-timeout-minutes=0&lt;/code&gt; in the &lt;code&gt;/etc/rstudio/rsession.conf&lt;/code&gt; file.&lt;/p&gt;
-
-&lt;p&gt;Let me take a look at the file inside the container:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;singularity shell rstudio.simg
-
-cat /etc/rstudio/rsession.conf
-# R Session Configuration File
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;It is an empty file. I will make a
-rsession.conf file in the home directory of the host machine
-adding that one line.&lt;/p&gt;
-
-&lt;p&gt;Now, bind the modified rsession.conf file in host to the ression.conf file
-inside the container:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat ~/resession.conf
-# R Session Configuration File
-session-timeout-minutes=0
-
-## make a tmp folder and need to mount to /tmp inside the container for rstudio to write 
-mkdir /scratch/mtang/tmp
-
-# now open rstudio server
-PASSWORD=&#39;xyz&#39; singularity exec --bind=~/rsession.conf:/etc/rstudio/rsession.conf --bind /scratch/mtang/tmp:/tmp  rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This should fix the problem :)&lt;/p&gt;
-
-&lt;p&gt;Nathan dived into the source code of Rsutido server &lt;a href=&#34;https://github.com/rstudio/rstudio/blob/master/src/cpp/server/ServerSessionManager.cpp#L111&#34; target=&#34;_blank&#34;&gt;https://github.com/rstudio/rstudio/blob/master/src/cpp/server/ServerSessionManager.cpp#L111&lt;/a&gt;
-and documentation &lt;a href=&#34;https://docs.rstudio.com/ide/server-pro/r-sessions.html#user-and-group-profiles&#34; target=&#34;_blank&#34;&gt;https://docs.rstudio.com/ide/server-pro/r-sessions.html#user-and-group-profiles&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;The enironment name of time out is &lt;code&gt;RSTUDIO_SESSION_TIMEOUT&lt;/code&gt;, so one can do&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;PASSWORD=&#39;xyz&#39; RSTUDIO_SESSION_TIMEOUT=&#39;0&#39; singularity exec rstudio.simg rserver --auth-none=0  --auth-pam-helper-path=pam-helper --www-address=127.0.0.1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;to have the same effect of setting up the &lt;code&gt;rsession.conf&lt;/code&gt; file.&lt;/p&gt;
 </description>
     </item>
     
