@@ -11,6 +11,87 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>stacked violin plot for visualizing single-cell data in Seurat</title>
+      <link>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</link>
+      <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</guid>
+      <description>&lt;p&gt;In &lt;code&gt;scanpy&lt;/code&gt;, there is a &lt;a href=&#34;https://icb-scanpy-tutorials.readthedocs-hosted.com/en/latest/visualizing-marker-genes.html&#34;&gt;function&lt;/a&gt; to create a stacked violin plot.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/posts_img/scanpy.png&#34; /&gt;
+There is no such function in &lt;code&gt;Seurat&lt;/code&gt;, and many people were asking for this feature.
+e.g. &lt;a href=&#34;https://github.com/satijalab/seurat/issues/300&#34; class=&#34;uri&#34;&gt;https://github.com/satijalab/seurat/issues/300&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;https://github.com/satijalab/seurat/issues/463&#34; class=&#34;uri&#34;&gt;https://github.com/satijalab/seurat/issues/463&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The developers have not implemented this feature yet. In this post, I am trying to make a stacked violin plot in &lt;code&gt;Seurat&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The idea is to create a violin plot per gene using the &lt;code&gt;VlnPlot&lt;/code&gt; in Seurat, then
+custom the axis text/tick and reduce the margin for each plot and finally concatenate by
+&lt;code&gt;cowplot::plot_grid&lt;/code&gt; or &lt;code&gt;patchwork::wrap_plots&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Seurat)
+library(patchwork)
+library(ggplot2)
+
+## remove the x-axis text and tick
+## plot.margin to adjust the white space between each plot.
+## ... pass any arguments to VlnPlot in Seurat
+modify_vlnplot&amp;lt;- function(obj, 
+                          feature, 
+                          pt.size = 0, 
+                          plot.margin = unit(c(-0.75, 0, -0.75, 0), &amp;quot;cm&amp;quot;),
+                          ...) {
+  VlnPlot(obj, features = feature, pt.size = pt.size, ... )  + 
+    xlab(&amp;quot;&amp;quot;) + ylab(feature) + ggtitle(&amp;quot;&amp;quot;) + 
+    theme(legend.position = &amp;quot;none&amp;quot;, 
+          axis.text.x = element_blank(), 
+          axis.ticks.x = element_blank(), 
+          axis.title.y = element_text(size = rel(1), angle = 0), 
+          axis.text.y = element_text(size = rel(1)), 
+          plot.margin = plot.margin ) 
+}
+
+## extract the max value of the y axis
+extract_max&amp;lt;- function(p){
+  ymax&amp;lt;- max(ggplot_build(p)$layout$panel_scales_y[[1]]$range$range)
+  return(ceiling(ymax))
+}
+
+
+## main function
+StackedVlnPlot&amp;lt;- function(obj, features,
+                          pt.size = 0, 
+                          plot.margin = unit(c(-0.75, 0, -0.75, 0), &amp;quot;cm&amp;quot;),
+                          ...) {
+  
+  plot_list&amp;lt;- purrr::map(features, function(x) modify_vlnplot(obj = obj,feature = x, ...))
+  
+  # Add back x-axis title to bottom plot. patchwork is going to support this?
+  plot_list[[length(plot_list)]]&amp;lt;- plot_list[[length(plot_list)]] +
+    theme(axis.text.x=element_text(), axis.ticks.x = element_line())
+  
+  # change the y-axis tick to only max value 
+  ymaxs&amp;lt;- purrr::map_dbl(plot_list, extract_max)
+  plot_list&amp;lt;- purrr::map2(plot_list, ymaxs, function(x,y) x + 
+                            scale_y_continuous(breaks = c(y)) + 
+                            expand_limits(y = y))
+
+  patchwork::wrap_plots(plotlist = plot_list, ncol = 1)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;testing-the-function&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Testing the function&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pbmc&amp;lt;- readRDS(&amp;quot;~/projects/EvaluateSingleCellClustering/data/pbmc_5k_v3.rds&amp;quot;)
+features&amp;lt;- c(&amp;quot;CD79A&amp;quot;, &amp;quot;MS4A1&amp;quot;, &amp;quot;CD8A&amp;quot;, &amp;quot;CD8B&amp;quot;, &amp;quot;LYZ&amp;quot;, &amp;quot;LGALS3&amp;quot;, &amp;quot;S100A8&amp;quot;, &amp;quot;GNLY&amp;quot;,
+             &amp;quot;NKG7&amp;quot;, &amp;quot;KLRB1&amp;quot;, &amp;quot;FCGR3A&amp;quot;, &amp;quot;FCER1A&amp;quot;, &amp;quot;CST3&amp;quot;)
+
+StackedVlnPlot(obj = pbmc, features = features)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-03-17-stacked-violin-plot-for-visualizing-single-cell-data-in-seurat_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## any arguments for Vlnplot can be passed to the StackedVlnPlot. e.g. idents.
+## only cluster 1-5
+StackedVlnPlot(obj = pbmc, features = features, idents = c(1,2,3,4,5) )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-03-17-stacked-violin-plot-for-visualizing-single-cell-data-in-seurat_files/figure-html/unnamed-chunk-2-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The code can be better designed, and also add checks &lt;code&gt;...&lt;/code&gt; using &lt;a href=&#34;https://ellipsis.r-lib.org/&#34;&gt;&lt;code&gt;ellipsis&lt;/code&gt;&lt;/a&gt; package. Nevertherless, it is working and gives me desired layout :)&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Tools and tricks for a data scientist</title>
       <link>/talk/2020-tools-tricks-data-science/</link>
       <pubDate>Mon, 09 Mar 2020 14:30:00 -0400</pubDate>
@@ -2138,26 +2219,6 @@ usethis::use_pipe()
 &lt;h3 id=&#34;next&#34;&gt;Next&lt;/h3&gt;
 
 &lt;p&gt;Next is to add test and setup some continuous integration. Read this &lt;a href=&#34;https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/&#34; target=&#34;_blank&#34;&gt;Automate testing of your R package using Travis CI, Codecov, and testthat&lt;/a&gt; by Jean Fan.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Snakemake pipeline post-processing scATAC-seq</title>
-      <link>/project/single-cell-atacseq/</link>
-      <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
-      
-      <guid>/project/single-cell-atacseq/</guid>
-      <description>
-
-&lt;h3 id=&#34;what-does-it-do&#34;&gt;What does it do?&lt;/h3&gt;
-
-&lt;p&gt;For single cell ATACseq experiment, one gets a merged bam file for all cells. After going through clustering, one groups similar cells into cell types (cell states). This workflow will split the bam by clusters to create a pseudo bulk bam for each cluster, create bigwig tracks for visulization, call peaks for each cluster and merge the peaks across the clusters. Finally it will count reads per peak per cell from the original bam file on the merged peaks.&lt;/p&gt;
-
-&lt;p&gt;In the future, the peak calling software should be barcode aware, so one does not need to split the bam file by cluster. But for now, I have this work for me.&lt;/p&gt;
-
-&lt;p&gt;You can find the workflow at my &lt;a href=&#34;https://github.com/crazyhottommy/pyflow-scATACseq&#34; target=&#34;_blank&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/rulegraph_scATAC.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 </description>
     </item>
     
