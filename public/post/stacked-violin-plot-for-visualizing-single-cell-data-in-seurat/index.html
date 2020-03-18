@@ -414,7 +414,7 @@ modify_vlnplot&lt;- function(obj,
                           pt.size = 0, 
                           plot.margin = unit(c(-0.75, 0, -0.75, 0), &quot;cm&quot;),
                           ...) {
-  VlnPlot(obj, features = feature, pt.size = pt.size, ... )  + 
+  p&lt;- VlnPlot(obj, features = feature, pt.size = pt.size, ... )  + 
     xlab(&quot;&quot;) + ylab(feature) + ggtitle(&quot;&quot;) + 
     theme(legend.position = &quot;none&quot;, 
           axis.text.x = element_blank(), 
@@ -422,6 +422,7 @@ modify_vlnplot&lt;- function(obj,
           axis.title.y = element_text(size = rel(1), angle = 0), 
           axis.text.y = element_text(size = rel(1)), 
           plot.margin = plot.margin ) 
+  return(p)
 }
 
 ## extract the max value of the y axis
@@ -449,7 +450,8 @@ StackedVlnPlot&lt;- function(obj, features,
                             scale_y_continuous(breaks = c(y)) + 
                             expand_limits(y = y))
 
-  patchwork::wrap_plots(plotlist = plot_list, ncol = 1)
+  p&lt;- patchwork::wrap_plots(plotlist = plot_list, ncol = 1)
+  return(p)
 }</code></pre>
 <div id="testing-the-function" class="section level3">
 <h3>Testing the function</h3>
