@@ -27,7 +27,7 @@ https://github.com/satijalab/seurat/issues/463
 The developers have not implemented this feature yet. In this post, I am trying to make a stacked violin plot in `Seurat`.
 
 The idea is to create a violin plot per gene using the `VlnPlot` in Seurat, then 
-custom the axis text/tick and reduce the margin for each plot and finally concatenate by 
+customize the axis text/tick and reduce the margin for each plot and finally concatenate by 
 `cowplot::plot_grid` or `patchwork::wrap_plots`.
 
 ```{r message=FALSE, warning=FALSE}
@@ -97,6 +97,6 @@ StackedVlnPlot(obj = pbmc, features = features)
 StackedVlnPlot(obj = pbmc, features = features, idents = c(1,2,3,4,5) )
 ```
 
-The code can be better designed, and also add checks `...` using [`ellipsis`](https://ellipsis.r-lib.org/) package. Nevertherless, it is working and gives me desired layout :)
+The code can be better designed, and also I should add checks `...` using [`ellipsis`](https://ellipsis.r-lib.org/) package. Nevertheless, it is working and gives me desired layout :)
 
 

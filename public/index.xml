@@ -23,7 +23,7 @@ e.g. &lt;a href=&#34;https://github.com/satijalab/seurat/issues/300&#34; class=
 &lt;a href=&#34;https://github.com/satijalab/seurat/issues/463&#34; class=&#34;uri&#34;&gt;https://github.com/satijalab/seurat/issues/463&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;The developers have not implemented this feature yet. In this post, I am trying to make a stacked violin plot in &lt;code&gt;Seurat&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;The idea is to create a violin plot per gene using the &lt;code&gt;VlnPlot&lt;/code&gt; in Seurat, then
-custom the axis text/tick and reduce the margin for each plot and finally concatenate by
+customize the axis text/tick and reduce the margin for each plot and finally concatenate by
 &lt;code&gt;cowplot::plot_grid&lt;/code&gt; or &lt;code&gt;patchwork::wrap_plots&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Seurat)
 library(patchwork)
@@ -86,7 +86,7 @@ StackedVlnPlot(obj = pbmc, features = features)&lt;/code&gt;&lt;/pre&gt;
 ## only cluster 1-5
 StackedVlnPlot(obj = pbmc, features = features, idents = c(1,2,3,4,5) )&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2020-03-17-stacked-violin-plot-for-visualizing-single-cell-data-in-seurat_files/figure-html/unnamed-chunk-2-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;The code can be better designed, and also add checks &lt;code&gt;...&lt;/code&gt; using &lt;a href=&#34;https://ellipsis.r-lib.org/&#34;&gt;&lt;code&gt;ellipsis&lt;/code&gt;&lt;/a&gt; package. Nevertherless, it is working and gives me desired layout :)&lt;/p&gt;
+&lt;p&gt;The code can be better designed, and also I should add checks &lt;code&gt;...&lt;/code&gt; using &lt;a href=&#34;https://ellipsis.r-lib.org/&#34;&gt;&lt;code&gt;ellipsis&lt;/code&gt;&lt;/a&gt; package. Nevertheless, it is working and gives me desired layout :)&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
