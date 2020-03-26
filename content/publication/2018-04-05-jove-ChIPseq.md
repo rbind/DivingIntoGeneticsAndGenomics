@@ -27,7 +27,7 @@ abstract = "Histone modifications constitute a major component of the epigenome 
 image_preview = ""
 
 # Is this a selected publication? (true/false)
-selected = false
+selected = true
 
 # Projects (optional).
 #   Associate this publication with one or more of your projects.

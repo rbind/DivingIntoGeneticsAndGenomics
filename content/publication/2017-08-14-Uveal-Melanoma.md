@@ -27,7 +27,7 @@ abstract = "Comprehensive multiplatform analysis of 80 uveal melanomas (UM) iden
 image_preview = ""
 
 # Is this a selected publication? (true/false)
-selected = false
+selected = true
 
 # Projects (optional).
 #   Associate this publication with one or more of your projects.
