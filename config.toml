@@ -55,16 +55,16 @@ enableGitInfo = false
 
   # Your details.
   name = "Ming Tang"
-  role = "Bioinformatics Scientist"
+  role = "Senior Scientist"
 
   # Organizations/Affiliations.
   #   Separate multiple entries with a comma, using the form: `[ {name="Org1", url=""}, {name="Org2", url=""} ]`.
-  organizations = [ { name = "Harvard Faculty of Arts and Sciences informatics", url = "https://informatics.fas.harvard.edu" } ]
+  organizations = [ { name = "Dana Farber Cancer Institute Department of Data Sciencies", url = "https://www.dana-farber.org/research/departments-centers-and-labs/departments-and-centers/department-of-data-sciences/" } ]
 
   gravatar = false  # Get your avatar from Gravatar.com? (true/false)
   avatar = "profile.jpg"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
   email = "tangming2005@gmail.com"
-  address = "38 Oxford St, Cambridge, MA 02138"
+  address = "Susan F. Smith Research Laboratories Building, Boston, MA 02215"
   twitter = "tangming2005"
 #  office_hours = "Monday 10:00 to 13:00 or email for appointment"
 #  phone = "888 888 88 88"
