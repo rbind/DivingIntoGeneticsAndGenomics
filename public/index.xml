@@ -11,6 +11,16 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>KMT2D Deficiency Impairs Super-Enhancers to Confer a Glycolytic Vulnerability in Lung Cancer</title>
+      <link>/publication/2020-04-03-kmt2d-lung-cancer/</link>
+      <pubDate>Thu, 02 Apr 2020 00:00:00 -0400</pubDate>
+      
+      <guid>/publication/2020-04-03-kmt2d-lung-cancer/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Fast analysis of scATAC-seq data using a predefined set of genomic regions</title>
       <link>/publication/2020-03-20-kallisto-scatac/</link>
       <pubDate>Fri, 20 Mar 2020 00:00:00 -0400</pubDate>
@@ -2092,38 +2102,6 @@ It was a fun reading for me and learned many tricks from this book.&lt;/li&gt;
 &lt;p&gt;What&amp;rsquo;s your favorite book that I have missed? Comment below!&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;/img/books.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Harvard FAS informatics nanocourse</title>
-      <link>/talk/2019-harvard-fas-workshop/</link>
-      <pubDate>Mon, 19 Aug 2019 00:00:00 -0400</pubDate>
-      
-      <guid>/talk/2019-harvard-fas-workshop/</guid>
-      <description>&lt;p&gt;In this 2-week long Harvard FAS informatics nanocourse, I co-taught snakemake
-for one afternoon and lead-instructed scRNAseq analysis for a full day.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;The snakemake workshop material was adapted from Titus Brown and can be found at
-&lt;a href=&#34;https://github.com/crazyhottommy/2019-snakemake-Harvard-Informatics-nanocourse&#34; target=&#34;_blank&#34;&gt;https://github.com/crazyhottommy/2019-snakemake-Harvard-Informatics-nanocourse&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;The scRNAseq workshop material was developed using &lt;a href=&#34;https://github.com/jdblischak/workflowr&#34; target=&#34;_blank&#34;&gt;workflowr&lt;/a&gt; and can be found at
-&lt;a href=&#34;https://crazyhottommy.github.io/scRNA-seq-workshop-Fall-2019/&#34; target=&#34;_blank&#34;&gt;https://crazyhottommy.github.io/scRNA-seq-workshop-Fall-2019/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;The rest of the nanocourse material can be found at &lt;a href=&#34;https://github.com/harvardinformatics/micro-course&#34; target=&#34;_blank&#34;&gt;https://github.com/harvardinformatics/micro-course&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I used the &lt;a href=&#34;https://carpentries.org/&#34; target=&#34;_blank&#34;&gt;carpentries&lt;/a&gt; teaching style. A blue sticky note means OK and a red sticky note means having problems.&lt;/p&gt;
-
-&lt;p&gt;Snakemake in action!&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/snakemake_wp.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;scRNAseq workshop in a lamont library.
-&lt;img src=&#34;/img/scRNAseq_wp.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     
