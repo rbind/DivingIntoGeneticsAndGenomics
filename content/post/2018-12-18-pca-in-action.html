@@ -16,7 +16,7 @@ header:
 
 <div id="pca-in-practice." class="section level3">
 <h3>PCA in practice.</h3>
-<p>Principle Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).</p>
+<p>Principal Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).</p>
 <p>Let’s use a microarray data for demonstration. One thing to note is that in linear algebra, a matrix is coded as <code>n (rows are observations) X p (columns are features)</code>.However, in the microarray/RNA-seq case, the matrix is represented as <code>p (rows are features/genes) X n (columns are observations/samples)</code>. That’s why we need to transpose the matrix before feeding the matrix to <code>prcomp</code> or <code>SVD</code>.</p>
 <pre class="r"><code>library(ISLR)
 
@@ -135,8 +135,9 @@ head(pca_prcomp$x[,1:2])</code></pre>
 <pre class="r"><code>PC1_and_PC2&lt;- data.frame(PC1=pca_prcomp$x[,1], PC2= pca_prcomp$x[,2], type = rownames(pca_prcomp$x))
 
 ## plot PCA plot
-library(ggplot2)
-ggplot(PC1_and_PC2, aes(x=PC1, y=PC2, col=type)) + geom_point() + geom_text(aes(label = type), hjust=0, vjust=0)</code></pre>
+library(ggplot2)</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.5.2</code></pre>
+<pre class="r"><code>ggplot(PC1_and_PC2, aes(x=PC1, y=PC2, col=type)) + geom_point() + geom_text(aes(label = type), hjust=0, vjust=0)</code></pre>
 <p><img src="/post/2018-12-18-pca-in-action_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <pre class="r"><code>#This returns each principal components loadings
 pca_prcomp$rotation[1:6, 1:6]</code></pre>

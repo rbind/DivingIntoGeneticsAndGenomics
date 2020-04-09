@@ -13,7 +13,7 @@ header:
 ---
 
 ### PCA in practice.
-Principle Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).
+Principal Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).
 
 Let’s use a microarray data for demonstration. One thing to note is that in linear algebra, a matrix is coded as `n (rows are observations) X p (columns are features)`.However, in the microarray/RNA-seq case, the matrix is represented as `p (rows are features/genes) X n (columns are observations/samples)`. That’s why we need to transpose the matrix before feeding the matrix to `prcomp` or `SVD`.
 
