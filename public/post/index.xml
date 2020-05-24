@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</title>
+      <link>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</link>
+      <pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</guid>
+      <description>Seurat is great for scRNAseq analysis and it provides many easy-to-use ggplot2 wrappers for visualization. However, this brings the cost of flexibility. For example, In FeaturePlot, one can specify multiple genes and also split.by to further split to multiple the conditions in the meta.data. If split.by is not NULL, the ncol is ignored so you can not arrange the grid.
+This is best to understand with an example.
+library(dplyr) library(Seurat) library(patchwork) library(ggplot2) # Load the PBMC dataset pbmc.</description>
+    </item>
+    
+    <item>
       <title>stacked violin plot for visualizing single-cell data in Seurat</title>
       <link>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</link>
       <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>

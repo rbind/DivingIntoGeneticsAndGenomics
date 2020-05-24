@@ -96,7 +96,7 @@
   <meta property="og:description" content="Senior Scientist">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2020-02-21T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2020-05-23T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,17 @@
   
   
   <div>
+    <h2><a href="/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/">customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</a></h2>
+    <div class="article-style">
+      
+      Seurat is great for scRNAseq analysis and it provides many easy-to-use ggplot2 wrappers for visualization. However, this brings the cost of flexibility. For example, In FeaturePlot, one can specify multiple genes and also split.by to further split to multiple the conditions in the meta.data. If split.by is not NULL, the ncol is ignored so you can not arrange the grid.
+This is best to understand with an example.
+library(dplyr) library(Seurat) library(patchwork) library(ggplot2) # Load the PBMC dataset pbmc.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
     <div class="article-style">
       
@@ -382,16 +393,6 @@ From the Encode page:
       scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
 I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
 A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/split-a-10xscatac-bam-file-by-cluster/">Split a 10xscATAC bam file by cluster</a></h2>
-    <div class="article-style">
-      
-      I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in IGV.
-The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.
       
     </div>
   </div>

@@ -1,0 +1,117 @@
+---
+title: customize FeaturePlot in Seurat for multi-condition comparisons using patchwork
+author: Ming Tang
+date: '2020-05-23'
+slug: customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork
+categories:
+  - bioinformatics
+  - scRNAseq
+tags:
+  - R
+  - Seurat
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<p><a href="https://satijalab.org/seurat/"><code>Seurat</code></a> is great for scRNAseq analysis and it provides many easy-to-use <code>ggplot2</code> wrappers for visualization. However, this brings the cost of flexibility. For example, In <a href="https://github.com/satijalab/seurat/blob/master/R/visualization.R#L888"><code>FeaturePlot</code></a>, one can specify multiple genes and also <code>split.by</code> to further split to multiple the conditions in the <code>meta.data</code>. If <code>split.by</code> is not <code>NULL</code>, the <code>ncol</code> is ignored so you can not arrange the grid.</p>
+<p>This is best to understand with an example.</p>
+<pre class="r"><code>library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)</code></pre>
+<pre class="r"><code># Load the PBMC dataset
+pbmc.data &lt;- Read10X(data.dir = &quot;~/blog_data/filtered_gene_bc_matrices/hg19/&quot;)
+# Initialize the Seurat object with the raw (non-normalized data).
+pbmc &lt;- CreateSeuratObject(counts = pbmc.data, project = &quot;pbmc3k&quot;, min.cells = 3, min.features = 200)</code></pre>
+<pre><code>## Warning: Feature names cannot have underscores (&#39;_&#39;), replacing with dashes
+## (&#39;-&#39;)</code></pre>
+<pre class="r"><code>pbmc &lt;- pbmc %&gt;% 
+  NormalizeData() %&gt;%
+  FindVariableFeatures() %&gt;%
+  ScaleData() %&gt;%
+  RunPCA() %&gt;%
+  RunUMAP(dims = 1:10)</code></pre>
+<pre><code>## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+## To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
+## This message will be shown once per session</code></pre>
+<div id="add-some-dummy-metadata" class="section level3">
+<h3>add some dummy metadata</h3>
+<p>let’s pretend that the cells are from 5 different samples.</p>
+<pre class="r"><code>sample_names&lt;- sample(paste0(&quot;sample&quot;, 1:5), size = ncol(pbmc), replace =TRUE)
+pbmc$samples&lt;- factor(sample_names)
+pbmc@meta.data %&gt;% head()</code></pre>
+<pre><code>##                orig.ident nCount_RNA nFeature_RNA samples
+## AAACATACAACCAC     pbmc3k       2419          779 sample5
+## AAACATTGAGCTAC     pbmc3k       4903         1352 sample4
+## AAACATTGATCAGC     pbmc3k       3147         1129 sample4
+## AAACCGTGCTTCCG     pbmc3k       2639          960 sample5
+## AAACCGTGTATGCG     pbmc3k        980          521 sample2
+## AAACGCACTGGTAC     pbmc3k       2163          781 sample1</code></pre>
+<pre class="r"><code>table(pbmc@meta.data$samples)</code></pre>
+<pre><code>## 
+## sample1 sample2 sample3 sample4 sample5 
+##     545     553     506     544     552</code></pre>
+<pre class="r"><code>FeaturePlot(pbmc, features = &quot;MS4A1&quot;, split.by = &quot;samples&quot;)</code></pre>
+<p><img src="/post/2020-05-23-customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>You will have 5 UMAP showing in the same row and can not arrange to multiple rows.</p>
+<p>I do not want to re-implement the <code>FeaturePlot</code> function but rather rearrange the ggplot2 output by <code>patchwork</code>.
+I wrote the following function for this purpose.</p>
+<p>Note, only a single gene can be specified. The idea is to generate a single UMAP plot for each sample and save them into a list and then arrange them by <code>patchwork</code>. Also make sure the <code>metadata_column</code> is a factor.</p>
+<pre class="r"><code>FeaturePlotSingle&lt;- function(obj, feature, metadata_column, ...){
+  all_cells&lt;- colnames(obj)
+  groups&lt;- levels(obj@meta.data[, metadata_column])
+  
+  # the minimal and maximal of the value to make the legend scale the same. 
+  minimal&lt;- min(obj[[&#39;RNA&#39;]]@data[feature, ])
+  maximal&lt;- max(obj[[&#39;RNA&#39;]]@data[feature, ])
+  ps&lt;- list()
+  for (group in groups) {
+    subset_indx&lt;- obj@meta.data[, metadata_column] == group
+    subset_cells&lt;- all_cells[subset_indx]
+    p&lt;- FeaturePlot(obj, features = feature, cells= subset_cells, ...) +
+      scale_color_viridis_c(limits=c(minimal, maximal), direction = 1) +
+      ggtitle(group) +
+      theme(plot.title = element_text(size = 10, face = &quot;bold&quot;))
+    ps[[group]]&lt;- p
+  }
+  
+  
+  return(ps)
+}</code></pre>
+<p>Let’s test the function</p>
+<pre class="r"><code>p_list&lt;- FeaturePlotSingle(pbmc, feature= &quot;MS4A1&quot;, metadata_column = &quot;samples&quot;, pt.size = 0.05, order =TRUE)</code></pre>
+<pre><code>## Scale for &#39;colour&#39; is already present. Adding another scale for &#39;colour&#39;,
+## which will replace the existing scale.
+## Scale for &#39;colour&#39; is already present. Adding another scale for &#39;colour&#39;,
+## which will replace the existing scale.
+## Scale for &#39;colour&#39; is already present. Adding another scale for &#39;colour&#39;,
+## which will replace the existing scale.
+## Scale for &#39;colour&#39; is already present. Adding another scale for &#39;colour&#39;,
+## which will replace the existing scale.
+## Scale for &#39;colour&#39; is already present. Adding another scale for &#39;colour&#39;,
+## which will replace the existing scale.</code></pre>
+<pre class="r"><code>layout1&lt;-&quot;
+ABC
+#DE
+&quot;
+
+wrap_plots(p_list ,guides = &#39;collect&#39;, design = layout1)</code></pre>
+<p><img src="/post/2020-05-23-customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>You can do even better by moving the legend to the empty space!</p>
+<pre class="r"><code>## insert the legend space holder to the fourth 
+p_list2&lt;- append(p_list, list(legend = guide_area()), 3)
+
+
+layout2&lt;-&quot;
+ABC
+DEF
+&quot;
+wrap_plots(p_list2, guides = &#39;collect&#39;, design = layout2)</code></pre>
+<p><img src="/post/2020-05-23-customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><code>patchwork</code> is amazing and really flexible!</p>
+</div>

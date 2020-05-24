@@ -1,0 +1,121 @@
+---
+title: customize FeaturePlot in Seurat for multi-condition comparisons using patchwork
+author: Ming Tang
+date: '2020-05-23'
+slug: customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork
+categories:
+  - bioinformatics
+  - scRNAseq
+tags:
+  - R
+  - Seurat
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+[`Seurat`](https://satijalab.org/seurat/) is great for scRNAseq analysis and it provides many easy-to-use `ggplot2` wrappers for visualization. However, this brings the cost of flexibility. For example, In [`FeaturePlot`](https://github.com/satijalab/seurat/blob/master/R/visualization.R#L888), one can specify multiple genes and also `split.by` to further split to multiple the conditions in the `meta.data`. If `split.by` is not `NULL`, the `ncol` is ignored so you can not arrange the grid.
+
+This is best to understand with an example.
+
+```{r message=FALSE, warning=FALSE}
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+```
+
+
+```{r message=FALSE}
+# Load the PBMC dataset
+pbmc.data <- Read10X(data.dir = "~/blog_data/filtered_gene_bc_matrices/hg19/")
+# Initialize the Seurat object with the raw (non-normalized data).
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+
+pbmc <- pbmc %>% 
+  NormalizeData() %>%
+  FindVariableFeatures() %>%
+  ScaleData() %>%
+  RunPCA() %>%
+  RunUMAP(dims = 1:10)
+```
+
+
+### add some dummy metadata
+
+let's pretend that the cells are from 5 different samples.
+
+```{r}
+sample_names<- sample(paste0("sample", 1:5), size = ncol(pbmc), replace =TRUE)
+pbmc$samples<- factor(sample_names)
+pbmc@meta.data %>% head()
+
+table(pbmc@meta.data$samples)
+```
+
+```{r}
+FeaturePlot(pbmc, features = "MS4A1", split.by = "samples")
+```
+
+You will have 5 UMAP  showing in the same row and can not arrange to multiple rows.
+
+I do not want to re-implement the `FeaturePlot` function  but rather rearrange the ggplot2 output by `patchwork`.
+I wrote the following function for this purpose.
+
+Note, only a single gene can be specified. The idea is to generate a single UMAP plot for each sample and save them into a list and then arrange them by `patchwork`. Also make sure the `metadata_column` is a factor.
+
+```{r}
+FeaturePlotSingle<- function(obj, feature, metadata_column, ...){
+  all_cells<- colnames(obj)
+  groups<- levels(obj@meta.data[, metadata_column])
+  
+  # the minimal and maximal of the value to make the legend scale the same. 
+  minimal<- min(obj[['RNA']]@data[feature, ])
+  maximal<- max(obj[['RNA']]@data[feature, ])
+  ps<- list()
+  for (group in groups) {
+    subset_indx<- obj@meta.data[, metadata_column] == group
+    subset_cells<- all_cells[subset_indx]
+    p<- FeaturePlot(obj, features = feature, cells= subset_cells, ...) +
+      scale_color_viridis_c(limits=c(minimal, maximal), direction = 1) +
+      ggtitle(group) +
+      theme(plot.title = element_text(size = 10, face = "bold"))
+    ps[[group]]<- p
+  }
+  
+  
+  return(ps)
+}
+
+```
+
+Let's test the function
+
+```{r}
+p_list<- FeaturePlotSingle(pbmc, feature= "MS4A1", metadata_column = "samples", pt.size = 0.05, order =TRUE)
+
+layout1<-"
+ABC
+#DE
+"
+
+wrap_plots(p_list ,guides = 'collect', design = layout1)
+```
+
+You can do even better by moving the legend to the empty space!
+
+```{r}
+## insert the legend space holder to the fourth 
+p_list2<- append(p_list, list(legend = guide_area()), 3)
+
+
+layout2<-"
+ABC
+DEF
+"
+wrap_plots(p_list2, guides = 'collect', design = layout2)
+```
+
+`patchwork` is amazing and really flexible!

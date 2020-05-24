@@ -11,6 +11,112 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</title>
+      <link>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</link>
+      <pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://satijalab.org/seurat/&#34;&gt;&lt;code&gt;Seurat&lt;/code&gt;&lt;/a&gt; is great for scRNAseq analysis and it provides many easy-to-use &lt;code&gt;ggplot2&lt;/code&gt; wrappers for visualization. However, this brings the cost of flexibility. For example, In &lt;a href=&#34;https://github.com/satijalab/seurat/blob/master/R/visualization.R#L888&#34;&gt;&lt;code&gt;FeaturePlot&lt;/code&gt;&lt;/a&gt;, one can specify multiple genes and also &lt;code&gt;split.by&lt;/code&gt; to further split to multiple the conditions in the &lt;code&gt;meta.data&lt;/code&gt;. If &lt;code&gt;split.by&lt;/code&gt; is not &lt;code&gt;NULL&lt;/code&gt;, the &lt;code&gt;ncol&lt;/code&gt; is ignored so you can not arrange the grid.&lt;/p&gt;
+&lt;p&gt;This is best to understand with an example.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Load the PBMC dataset
+pbmc.data &amp;lt;- Read10X(data.dir = &amp;quot;~/blog_data/filtered_gene_bc_matrices/hg19/&amp;quot;)
+# Initialize the Seurat object with the raw (non-normalized data).
+pbmc &amp;lt;- CreateSeuratObject(counts = pbmc.data, project = &amp;quot;pbmc3k&amp;quot;, min.cells = 3, min.features = 200)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Feature names cannot have underscores (&amp;#39;_&amp;#39;), replacing with dashes
+## (&amp;#39;-&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pbmc &amp;lt;- pbmc %&amp;gt;% 
+  NormalizeData() %&amp;gt;%
+  FindVariableFeatures() %&amp;gt;%
+  ScaleData() %&amp;gt;%
+  RunPCA() %&amp;gt;%
+  RunUMAP(dims = 1:10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+## To use Python UMAP via reticulate, set umap.method to &amp;#39;umap-learn&amp;#39; and metric to &amp;#39;correlation&amp;#39;
+## This message will be shown once per session&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;add-some-dummy-metadata&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;add some dummy metadata&lt;/h3&gt;
+&lt;p&gt;let’s pretend that the cells are from 5 different samples.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_names&amp;lt;- sample(paste0(&amp;quot;sample&amp;quot;, 1:5), size = ncol(pbmc), replace =TRUE)
+pbmc$samples&amp;lt;- factor(sample_names)
+pbmc@meta.data %&amp;gt;% head()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                orig.ident nCount_RNA nFeature_RNA samples
+## AAACATACAACCAC     pbmc3k       2419          779 sample5
+## AAACATTGAGCTAC     pbmc3k       4903         1352 sample4
+## AAACATTGATCAGC     pbmc3k       3147         1129 sample4
+## AAACCGTGCTTCCG     pbmc3k       2639          960 sample5
+## AAACCGTGTATGCG     pbmc3k        980          521 sample2
+## AAACGCACTGGTAC     pbmc3k       2163          781 sample1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;table(pbmc@meta.data$samples)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## sample1 sample2 sample3 sample4 sample5 
+##     545     553     506     544     552&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;FeaturePlot(pbmc, features = &amp;quot;MS4A1&amp;quot;, split.by = &amp;quot;samples&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-05-23-customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You will have 5 UMAP showing in the same row and can not arrange to multiple rows.&lt;/p&gt;
+&lt;p&gt;I do not want to re-implement the &lt;code&gt;FeaturePlot&lt;/code&gt; function but rather rearrange the ggplot2 output by &lt;code&gt;patchwork&lt;/code&gt;.
+I wrote the following function for this purpose.&lt;/p&gt;
+&lt;p&gt;Note, only a single gene can be specified. The idea is to generate a single UMAP plot for each sample and save them into a list and then arrange them by &lt;code&gt;patchwork&lt;/code&gt;. Also make sure the &lt;code&gt;metadata_column&lt;/code&gt; is a factor.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;FeaturePlotSingle&amp;lt;- function(obj, feature, metadata_column, ...){
+  all_cells&amp;lt;- colnames(obj)
+  groups&amp;lt;- levels(obj@meta.data[, metadata_column])
+  
+  # the minimal and maximal of the value to make the legend scale the same. 
+  minimal&amp;lt;- min(obj[[&amp;#39;RNA&amp;#39;]]@data[feature, ])
+  maximal&amp;lt;- max(obj[[&amp;#39;RNA&amp;#39;]]@data[feature, ])
+  ps&amp;lt;- list()
+  for (group in groups) {
+    subset_indx&amp;lt;- obj@meta.data[, metadata_column] == group
+    subset_cells&amp;lt;- all_cells[subset_indx]
+    p&amp;lt;- FeaturePlot(obj, features = feature, cells= subset_cells, ...) +
+      scale_color_viridis_c(limits=c(minimal, maximal), direction = 1) +
+      ggtitle(group) +
+      theme(plot.title = element_text(size = 10, face = &amp;quot;bold&amp;quot;))
+    ps[[group]]&amp;lt;- p
+  }
+  
+  
+  return(ps)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s test the function&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p_list&amp;lt;- FeaturePlotSingle(pbmc, feature= &amp;quot;MS4A1&amp;quot;, metadata_column = &amp;quot;samples&amp;quot;, pt.size = 0.05, order =TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Scale for &amp;#39;colour&amp;#39; is already present. Adding another scale for &amp;#39;colour&amp;#39;,
+## which will replace the existing scale.
+## Scale for &amp;#39;colour&amp;#39; is already present. Adding another scale for &amp;#39;colour&amp;#39;,
+## which will replace the existing scale.
+## Scale for &amp;#39;colour&amp;#39; is already present. Adding another scale for &amp;#39;colour&amp;#39;,
+## which will replace the existing scale.
+## Scale for &amp;#39;colour&amp;#39; is already present. Adding another scale for &amp;#39;colour&amp;#39;,
+## which will replace the existing scale.
+## Scale for &amp;#39;colour&amp;#39; is already present. Adding another scale for &amp;#39;colour&amp;#39;,
+## which will replace the existing scale.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;layout1&amp;lt;-&amp;quot;
+ABC
+#DE
+&amp;quot;
+
+wrap_plots(p_list ,guides = &amp;#39;collect&amp;#39;, design = layout1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-05-23-customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You can do even better by moving the legend to the empty space!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## insert the legend space holder to the fourth 
+p_list2&amp;lt;- append(p_list, list(legend = guide_area()), 3)
+
+
+layout2&amp;lt;-&amp;quot;
+ABC
+DEF
+&amp;quot;
+wrap_plots(p_list2, guides = &amp;#39;collect&amp;#39;, design = layout2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-05-23-customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;patchwork&lt;/code&gt; is amazing and really flexible!&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>KMT2D Deficiency Impairs Super-Enhancers to Confer a Glycolytic Vulnerability in Lung Cancer</title>
       <link>/publication/2020-04-03-kmt2d-lung-cancer/</link>
       <pubDate>Thu, 02 Apr 2020 00:00:00 -0400</pubDate>
@@ -2013,95 +2119,6 @@ i.e. the probability that we see a 0 count in RNAseq data.&lt;/p&gt;
 &lt;p&gt;The variance is:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[Var = \mu + \frac {\mu^2}{\phi}\]&lt;/span&gt;&lt;/p&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>My opinionated selection of books/urls for bioinformatics/data science curriculum</title>
-      <link>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</link>
-      <pubDate>Thu, 12 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</guid>
-      <description>
-
-&lt;p&gt;There was a paper on this topic: &lt;a href=&#34;https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003662&#34; target=&#34;_blank&#34;&gt;A New Online Computational Biology Curriculum&lt;/a&gt;.&lt;br /&gt;
-I am going to provide a biased list below (I have read most of the books if not all). I say it is biased because you will see many books of R are from Hadely Wickham. I now use &lt;a href=&#34;https://www.tidyverse.org/&#34; target=&#34;_blank&#34;&gt;tidyverse&lt;/a&gt; most of the time.&lt;/p&gt;
-
-&lt;h2 id=&#34;unix&#34;&gt;Unix&lt;/h2&gt;
-
-&lt;p&gt;I suggest people who want to learn bioinformatics starting to learn unix commands first. It is so powerful and also omnipresent in high-performance computing settings (clouding computing etc). You can not survive without knowing it.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://linuxcommand.org/tlcl.php&#34; target=&#34;_blank&#34;&gt;The linux command line&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://nostarch.com/howlinuxworks2&#34; target=&#34;_blank&#34;&gt;How Linux works&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.datascienceatthecommandline.com/&#34; target=&#34;_blank&#34;&gt;Data science at the command line&lt;/a&gt;
-It was a fun reading for me and learned many tricks from this book.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://rik.smith-unna.com/command_line_bootcamp&#34; target=&#34;_blank&#34;&gt;command line bootcamp&lt;/a&gt; interactive online session to learn unix. it is not working anymore unfortunately.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;computational-biology&#34;&gt;Computational biology&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://library.open.oregonstate.edu/computationalbiology/&#34; target=&#34;_blank&#34;&gt;A Primer for Computational Biology&lt;/a&gt; by Shawn T. O&amp;rsquo;Neil&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://practicalcomputing.org/&#34; target=&#34;_blank&#34;&gt;Practical computing for biologist&lt;/a&gt; by  Steven H.D Haddock and Casey W. Dunn This was the first book that I used to learn unix, regex and python.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://shop.oreilly.com/product/0636920030157.do&#34; target=&#34;_blank&#34;&gt;Bioinformatics data skills&lt;/a&gt; by Vince Buffalo. This is a must have! once you have some experience on bioinformatics.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;r-programming&#34;&gt;R programming&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://r4ds.had.co.nz/&#34; target=&#34;_blank&#34;&gt;R for data science&lt;/a&gt; by Garrett Grolemund and Hadley Wickham.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://adv-r.had.co.nz/&#34; target=&#34;_blank&#34;&gt;Advanced R&lt;/a&gt; by Hadley Wickham.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://r-pkgs.had.co.nz/&#34; target=&#34;_blank&#34;&gt;R packages&lt;/a&gt; by Hadley Wickham. If you want to transit from an R user to developer, writing an R package will get you started.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;stats-r-focused&#34;&gt;Stats  (R focused)&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://rafalab.github.io/pages/harvardx.html&#34; target=&#34;_blank&#34;&gt;Data analysis for the life science with R&lt;/a&gt; by Micheal Love and Rafael A. Irizarry. I took the course on edx for 3 times! learned a ton! You can buy a paper book at &lt;a href=&#34;https://www.crcpress.com/Data-Analysis-for-the-Life-Sciences-with-R/Irizarry-Love/p/book/9781498775670&#34; target=&#34;_blank&#34;&gt;https://www.crcpress.com/Data-Analysis-for-the-Life-Sciences-with-R/Irizarry-Love/p/book/9781498775670&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://compgenomr.github.io/book/&#34; target=&#34;_blank&#34;&gt;Computational Genomics with R&lt;/a&gt; by Altuna Akalin.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://web.stanford.edu/class/bios221/book/&#34; target=&#34;_blank&#34;&gt;Mordern statistics for mordern biology&lt;/a&gt; by Susan Holmes and Wolfgang Huber.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;python-programming&#34;&gt;Python programming&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://pythonforbiologists.com/advanced-python-for-biologists&#34; target=&#34;_blank&#34;&gt;(Advanced) python for biologist&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://wesmckinney.com/pages/book.html&#34; target=&#34;_blank&#34;&gt;Python for data analysis&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.oreilly.com/library/view/data-science-from/9781492041122/&#34; target=&#34;_blank&#34;&gt;Data science from scratch&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;machine-learning&#34;&gt;Machine learning&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://faculty.marshall.usc.edu/gareth-james/ISL/&#34; target=&#34;_blank&#34;&gt;An intro to statistical learning&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.manning.com/books/practical-data-science-with-r&#34; target=&#34;_blank&#34;&gt;Practical Data science with R&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.manning.com/books/deep-learning-with-r&#34; target=&#34;_blank&#34;&gt;Deeping learning with R&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;visualization&#34;&gt;Visualization&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://serialmentor.com/dataviz/&#34; target=&#34;_blank&#34;&gt;Fundamentals of Data Visualization&lt;/a&gt; by Claus O.Wilke&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.amazon.com/Visual-Display-Quantitative-Information/dp/1930824130&#34; target=&#34;_blank&#34;&gt;The Visual Display of Quantitative Information&lt;/a&gt; by Edward R. Tufte as well.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Those two books are not teaching you how to make figures programmatically (although the book by Claus was generated by Rmarkdown and the codes for all the figures can be found at &lt;a href=&#34;https://github.com/clauswilke/dataviz&#34; target=&#34;_blank&#34;&gt;https://github.com/clauswilke/dataviz&lt;/a&gt;). They teach you what kind of figures are informative and pleasant to eyes. &lt;a href=&#34;https://www.data-to-viz.com/&#34; target=&#34;_blank&#34;&gt;From data to viz&lt;/a&gt; is a website guiding you to choose the right graph for your data.&lt;/p&gt;
-
-&lt;p&gt;I am still using R/ggplot2 for visualization.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://socviz.co/&#34; target=&#34;_blank&#34;&gt;Data Visualization&lt;/a&gt; by Kieran Healy.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.cookbook-r.com/Graphs/&#34; target=&#34;_blank&#34;&gt;R Graphics Cookbook&lt;/a&gt; by Winston Chang.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/dp/0387981403&#34; target=&#34;_blank&#34;&gt;ggplot2: Elegant Graphics for Data Analysis&lt;/a&gt; by Hadely Wickham.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Finally, I have compiled many useful links at &lt;a href=&#34;https://github.com/crazyhottommy/getting-started-with-genomics-tools-and-resources&#34; target=&#34;_blank&#34;&gt;https://github.com/crazyhottommy/getting-started-with-genomics-tools-and-resources&lt;/a&gt; .&lt;/p&gt;
-
-&lt;p&gt;What&amp;rsquo;s your favorite book that I have missed? Comment below!&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/books.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 </description>
     </item>
     
