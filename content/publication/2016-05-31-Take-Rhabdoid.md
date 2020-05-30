@@ -27,7 +27,7 @@ abstract = "The molecular basis for the clinical heterogeneity observed in patie
 image_preview = ""
 
 # Is this a selected publication? (true/false)
-selected = false
+selected = true
 
 # Projects (optional).
 #   Associate this publication with one or more of your projects.

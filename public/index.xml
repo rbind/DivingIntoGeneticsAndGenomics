@@ -813,6 +813,16 @@ p1 / p2 + plot_layout(guides = &amp;quot;collect&amp;quot;)&lt;/code&gt;&lt;/pre
     </item>
     
     <item>
+      <title>LATS kinase–mediated CTCF phosphorylation and selective loss of genomic binding</title>
+      <link>/publication/2020-02-19-lats-ctcf/</link>
+      <pubDate>Wed, 19 Feb 2020 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2020-02-19-lats-ctcf/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>cellranger mk reference with transgenes</title>
       <link>/post/cellranger-mk-reference-with-transgenes/</link>
       <pubDate>Tue, 18 Feb 2020 00:00:00 +0000</pubDate>
@@ -2015,109 +2025,6 @@ data.frame(zeros_nb = zeros_nb, zeros_observed = zeros_observed,
   ggtitle(&amp;quot;Svensson et al 2&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2019-11-21-negative-bionomial-distribution-in-single-cell-rnaseq_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We see it fits very well. That’s why Valentine says this scRNAseq data is &lt;strong&gt;NOT&lt;/strong&gt; 0 inflated.&lt;/p&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>negative binomial distribution</title>
-      <link>/post/negative-binomial-distribution-in-scrnaseq/</link>
-      <pubDate>Wed, 13 Nov 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/post/negative-binomial-distribution-in-scrnaseq/</guid>
-      <description>&lt;p&gt;“Every model is wrong, but some are useful”— George Box&lt;/p&gt;
-&lt;p&gt;In an effort to better understand the distribution of single-cell RNAseq counts,
-I dived a bit deeper into the negative binomial distribution in the context of &lt;code&gt;R&lt;/code&gt;. I am by no means an
-expert in statistics and writing this post is for myself to better understand it.&lt;/p&gt;
-&lt;div id=&#34;what-is-a-negative-binomial-distribution&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;what is a negative binomial distribution&lt;/h3&gt;
-&lt;p&gt;I will quote from &lt;a href=&#34;https://en.wikipedia.org/wiki/Negative_binomial_distribution&#34;&gt;wiki&lt;/a&gt;:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Suppose there is a sequence of independent Bernoulli trials. Thus, each trial has two potential outcomes called “success” and “failure”. In each trial the probability of success is p and of failure is (1 − p). We are observing this sequence until a predefined number r of failures have occurred. Then the random number of successes we have seen, X, will have the negative binomial (or Pascal) distribution:&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[X\sim \mathrm {NB} (r,\,p)\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;The probability mass function of the negative binomial distribution is:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[{\displaystyle f(k;r,p)\equiv \Pr(X=k)={\binom {k+r-1}{k}}(1-p)^{r}p^{k}}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Sometimes the distribution is parameterized in terms of its mean &lt;span class=&#34;math inline&#34;&gt;\(\mu\)&lt;/span&gt; and variance &lt;span class=&#34;math inline&#34;&gt;\(\sigma\)&lt;/span&gt; :&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[{\displaystyle {\begin{aligned}&amp;amp;p={\frac {\sigma ^{2}-\mu }{\sigma ^{2}}},\\[6pt]&amp;amp;r={\frac {\mu ^{2}}{\sigma ^{2}-\mu }},\\[3pt]&amp;amp;\Pr(X=k)={k+{\frac {\mu ^{2}}{\sigma ^{2}-\mu }}-1 \choose k}\left({\frac {\sigma ^{2}-\mu }{\sigma ^{2}}}\right)^{k}\left({\frac {\mu }{\sigma ^{2}}}\right)^{\mu ^{2}/(\sigma ^{2}-\mu )}.\end{aligned}}}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Let’s see how it is implemented in &lt;code&gt;R&lt;/code&gt;:&lt;/p&gt;
-&lt;p&gt;Open the help page &lt;code&gt;?rnbinom&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;rnbinom(n, size, prob, mu)&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[{\displaystyle f(x;n,p)\equiv \Pr(X=x)={\binom {n+x-1}{n-1}}(1-p)^{x}p^{n}}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;This represents the number of failures which occur in a sequence of Bernoulli trials before a target number of successes (n) is reached.&lt;/strong&gt; The mean is μ = n(1-p)/p and variance n(1-p)/p^2.&lt;/p&gt;
-&lt;p&gt;Notice the difference from the definition from wiki above.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;size&lt;br /&gt;
-target for number of successful trials, or dispersion parameter (the shape parameter of the gamma mixing distribution). Must be strictly positive, need not be integer.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;This is the n in the formula.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;prob&lt;br /&gt;
-probability of success in each trial. 0 &amp;lt; prob &amp;lt;= 1.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;This is the p in the formula.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;mu
-alternative parametrization via mean: see ‘Details’.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Details:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;An alternative parametrization (often used in ecology) is by the mean mu (see above), and size, the dispersion parameter, where prob = size/(size+mu). The variance is mu + mu^2/size in this parametrization.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;It is a bit confusing since we can define it in different ways. We can verify it by ourselves.&lt;/p&gt;
-&lt;p&gt;Suppose we do independent Bernoulli trails 10 times, with a success probability of 0.4, what’s the probability we see 4 failures before the 6th success?&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## this is the total number of failures, the random variable X 
-x&amp;lt;- 4
-
-p&amp;lt;- 0.4
-
-## size, the number of successful trials we are targeting
-size &amp;lt;- 10 - x
-
-dnbinom(x= x, size = size, prob = p)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.06688604&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;one possible outcome is:&lt;/p&gt;
-&lt;p&gt;SSSSSFFFFS&lt;/p&gt;
-&lt;p&gt;The last trail has to be a success.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## this is the same as 
-choose(size + x -1, size-1) * p^(size) * (1-p)^x&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.06688604&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## and 
-choose(size + x -1, x) * p^(size) * (1-p)^x&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.06688604&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;we can simulate the negative binomial distribution counts by&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
-
-rnbinom(10000, size = size, prob =p) %&amp;gt;%
-        enframe(name = &amp;quot;seq&amp;quot;, value = &amp;quot;num&amp;quot;) %&amp;gt;%
-        ggplot(aes(x = num)) +
-        geom_histogram(col=&amp;quot;white&amp;quot;, bins = 30) +
-        geom_vline(xintercept = x, linetype = 2, col= &amp;quot;red&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-11-13-negative-binomial-distribution-in-scrnaseq_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(rnbinom(10000, size = size, prob =p) == x)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.0664&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We see it is close to the exact probability.&lt;/p&gt;
-&lt;p&gt;An alternative parametrization (often used in ecology) is by the mean mu (see above), and size, the dispersion parameter, where prob = size/(size+mu). The variance is mu + mu^2/size in this parametrization.&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[X\sim \mathrm {NB} (\mu,\,\sigma)\]&lt;/span&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mu&amp;lt;- size/p - size 
-mu&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 9&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;variance&amp;lt;- mu + mu^2/size 
-variance&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 22.5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dnbinom(x= x, size = size, mu = mu)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 0.06688604&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We see it is the same result.&lt;/p&gt;
-&lt;p&gt;with&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[{\displaystyle f(x;n,p)\equiv \Pr(X=x)={\binom {n+x-1}{n-1}}(1-p)^{x}p^{n}}\]&lt;/span&gt;
-we can calculate the probablity when x = 0
-i.e. the probability that we see a 0 count in RNAseq data.&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[{\displaystyle\Pr(X=0)=p^{n}}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;and we know prob = size/(size+mu)&lt;/p&gt;
-&lt;p&gt;The size or &lt;span class=&#34;math inline&#34;&gt;\(\phi\)&lt;/span&gt; is dispersion parameter in gamma distribution (the shape parameter of the gamma mixing distribution). let’s replace the p using &lt;span class=&#34;math inline&#34;&gt;\(\phi\)&lt;/span&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\Pr(X=0) = \left(\frac{\phi} {\mu + \phi}\right)^{\phi}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;The variance is:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[Var = \mu + \frac {\mu^2}{\phi}\]&lt;/span&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

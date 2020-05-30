@@ -3,7 +3,7 @@ title = "KMT2D Deficiency Impairs Super-Enhancers to Confer a Glycolytic Vulnera
 date = 2020-04-02T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Hunain Alam*", "**Ming Tang***", "Mayinuer Maitituoheti et.al"]
+authors = ["Hunain Alam*", "**Ming Tang***", "Mayinuer Maitituoheti et.al", "* Co-first author"]
 
 # Publication type.
 # Legend:
