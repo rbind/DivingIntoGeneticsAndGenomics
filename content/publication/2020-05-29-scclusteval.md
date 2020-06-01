@@ -38,8 +38,8 @@ selected = true
 # Links (optional).
 #url_pdf = "#"
 url_preprint = "https://www.biorxiv.org/content/10.1101/2020.05.26.116640v1"
-# url_code = "#"
-# url_dataset = "#"
+url_code = "https://github.com/crazyhottommy/scclusteval"
+url_dataset = "https://osf.io/rfbcg/"
 # url_project = "#"
 # url_slides = "#"
 # url_video = "#"

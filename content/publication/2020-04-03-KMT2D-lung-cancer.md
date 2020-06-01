@@ -38,7 +38,7 @@ selected = true
 # Links (optional).
 url_pdf = "files/papers/KMT2D_lung_cancer.pdf"
 # url_preprint = "#"
-# url_code = "#"
+url_code = "https://github.com/crazyhottommy/pyflow-ChIPseq"
 # url_dataset = "#"
 # url_project = "#"
 # url_slides = "#"
