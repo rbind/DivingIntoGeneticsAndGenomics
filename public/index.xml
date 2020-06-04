@@ -11,6 +11,19 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>reproducible computing for your own benifit</title>
+      <link>/talk/2020-reproducible-computing/</link>
+      <pubDate>Tue, 02 Jun 2020 14:30:00 -0400</pubDate>
+      
+      <guid>/talk/2020-reproducible-computing/</guid>
+      <description>&lt;p&gt;We are hiring several new computational biologists in Shirley Liu Lab. All the new hires together with wet lab people
+are going through a 5-week long intensive bioinformatics training: &lt;a href=&#34;https://liulab-dfci.github.io/teaching&#34; target=&#34;_blank&#34;&gt;STAT115&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I am TAing for 2 weeks and I gave a talk on reproducible computing. Please find the PDF here and share!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Evaluating single-cell cluster stability using the Jaccard similarity index</title>
       <link>/publication/2020-05-29-scclusteval/</link>
       <pubDate>Fri, 29 May 2020 00:00:00 -0400</pubDate>
@@ -1758,170 +1771,6 @@ DimPlot(seu, reduction = &amp;quot;pca&amp;quot;, pt.size = 0.5, group.by = &amp
 &lt;li&gt;&lt;p&gt;The mapping ratio is so drasticially different so a much smaller cutoff can still seperate the sepecies very well. This could be due to the cell type difference. It will be interesting to do the same experiment but with human pbmc and mouse pbmc cells.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;I used the hybrid reference for mapping. How it will look like if I map the human cells with the mouse reference or map the mouse cells with the human reference?&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Modeling single cell RNAseq data with multinomial distribution </title>
-      <link>/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/</link>
-      <pubDate>Tue, 26 Nov 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/</guid>
-      <description>&lt;p&gt;I was reading &lt;a href=&#34;https://www.biorxiv.org/content/10.1101/574574v1&#34;&gt;Feature Selection and Dimension Reduction for Single Cell RNA-Seq based on a Multinomial Model&lt;/a&gt;. In the paper, the authors model the scRNAseq counts using a multinomial distribution.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/multinomial.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;I was using negative binomial distribution for modeling in my last &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/negative-bionomial-distribution-in-single-cell-rnaseq/&#34;&gt;post&lt;/a&gt;, so I asked the question on twitter:&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;
-&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;
-for modeling RNAseq counts, what&#39;s the difference/advantages using negative binomial and multinomial distribution?
-&lt;/p&gt;
-— Ming Tang (&lt;span class=&#34;citation&#34;&gt;@tangming2005&lt;/span&gt;) &lt;a href=&#34;https://twitter.com/tangming2005/status/1199340525188349952?ref_src=twsrc%5Etfw&#34;&gt;November 26, 2019&lt;/a&gt;
-&lt;/blockquote&gt;
-&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-&lt;p&gt;some quotes from the answers I get from Matthew&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;the true distribution is multinomial. The conditional distr has of each gene is Poisson. Since there are so many genes each gene is approximately independent so independent Poissons can be used.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;the marginal distribution of the true multinomial is binomial, which can be approximated by Poisson.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Real data is over dispersed since the Poisson only models technical variance not biological. To model the biological variance we use a mixture of poisons with a gamma prior — the gamma prior accounting for biological variability. The marginal distr of counts is negative binomial&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;I am going to use multinomial distribution for the same data I used in my last post.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Seurat)
-library(tidyverse)
-# There is an error when using this function, need to use the dev branch.
-# https://github.com/satijalab/seurat/issues/2060
-svensson_data&amp;lt;- ReadH5AD(&amp;quot;~/Downloads/svensson_chromium_control.h5ad&amp;quot;)
-
-raw_counts&amp;lt;- svensson_data@assays$RNA@counts
-
-# there are two datasets, each with 2000 cells
-colnames(raw_counts) %&amp;gt;% stringr::str_extract(&amp;quot;[0-9]+_&amp;quot;) %&amp;gt;% table()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## .
-## 20311_ 20312_ 
-##   2000   2000&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# I am going to use only the second dataset sevensson et al 2
-raw_counts2&amp;lt;- raw_counts[, grepl(pattern = &amp;quot;20312_&amp;quot;, x = colnames(raw_counts))]&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;counts from a gene fit a binomial distribution in a cell.&lt;/p&gt;
-&lt;p&gt;Given
-&lt;span class=&#34;math inline&#34;&gt;\(\displaystyle \Pr(X=k)={\binom {n}{k}}p^{k}(1-p)^{n-k}\)&lt;/span&gt; for binomial distribution,&lt;/p&gt;
-&lt;p&gt;the marginal mean for each gene is &lt;span class=&#34;math inline&#34;&gt;\(E[y_{ij}]=n_ip_{ij} = \mu_{ij}\)&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;the marginal variance is &lt;span class=&#34;math inline&#34;&gt;\(Var[y_{ij}] = n_ip_{ij}(1-p_{ij}) = \mu_{ij}- \frac1{n_i}\mu_{ij}^2\)&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;the probability of seeing a 0 count for a gene is: &lt;span class=&#34;math inline&#34;&gt;\((1-p_{ij})^{n_i} = (1-\frac{\mu_{ij}}{n_i})^{n_i}\)&lt;/span&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# https://github.com/const-ae/sparseMatrixStats
-library(sparseMatrixStats)
-library(tidyverse)
-gene_means&amp;lt;- sparseMatrixStats::rowMeans2(raw_counts2)
-
-
-## total counts for each cell
-lib_size&amp;lt;- sparseMatrixStats::colSums2(raw_counts2)
-
-## https://github.com/willtownes/scrna2019/blob/master/real/zheng_2017_monocytes/02_exploratory.Rmd#L290
-## why median though?
-n_i&amp;lt;- median(lib_size)
-
-# probability of 0 for each gene given binomial distribution 
-zeros_bn&amp;lt;- (1- gene_means/n_i)^n_i 
-
-
-## this is copied from last post, probability of 0 given negative binomiral distribution
-phi &amp;lt;- 1/0.3725
-zeros_nb&amp;lt;- (phi/(gene_means + phi))^phi
-
-zeros_observed&amp;lt;- apply(raw_counts2, 1, function(x) mean(x ==0))
-
-data.frame(zeros_bn = zeros_bn, zeros_nb = zeros_nb, zeros_observed = zeros_observed, 
-           gene_means = gene_means) %&amp;gt;%
-  ggplot(aes(x =log10(gene_means), y = zeros_observed)) +
-  geom_point() +
-  geom_line(aes(x = log10(gene_means), y = zeros_nb), color = &amp;quot;red&amp;quot;) +
-  geom_line(aes(x = log10(gene_means), y = zeros_bn), color = &amp;quot;blue&amp;quot;) +
-  theme_classic(base_size = 14) +
-  ggtitle(&amp;quot;Svensson et al 2&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-11-26-modeling-single-cell-rnaseq-data-with-multinomial-distribution_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;At least for this dataset, negative bionomial (red line) seems to fit the observed 0 count better. multinomial with marginal binomial (blue line) seems to support 0 inflated in single-cell RNAseq.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;UPDATE&lt;/strong&gt; 12/10/2019, as Will pointed out in the comment, we need to downsample the single cell data making each cell has roughly the same number of reads. He replicated my analysis at &lt;a href=&#34;https://github.com/willtownes/scrna2019/blob/master/real/svensson_2019/01_exploratory.Rmd&#34; class=&#34;uri&#34;&gt;https://github.com/willtownes/scrna2019/blob/master/real/svensson_2019/01_exploratory.Rmd&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;
-&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;
-Hi thanks for your interest, in order to make those plots, you have to be able to treat all the cells/droplets as being drawn from same multinomial distribution meaning all the “n_i” terms have to be the same (or at least close). We used downsampling to achieve that…
-&lt;/p&gt;
-— Will (&lt;span class=&#34;citation&#34;&gt;@sandakano&lt;/span&gt;) &lt;a href=&#34;https://twitter.com/sandakano/status/1199709577144623106?ref_src=twsrc%5Etfw&#34;&gt;November 27, 2019&lt;/a&gt;
-&lt;/blockquote&gt;
-&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-&lt;p&gt;I will put them in the same blog post for completeness.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## from https://github.com/willtownes/scrna2019/blob/master/util/functions.R#L67
-
-Down_Sample_Matrix&amp;lt;-function(expr_mat,min_lib_size=NULL){
-  #adapted from https://hemberg-lab.github.io/scRNA.seq.course/cleaning-the-expression-matrix.html#normalisations
-  min_sz&amp;lt;-min(colSums(expr_mat))
-  if(is.null(min_lib_size)){
-    min_lib_size&amp;lt;-min_sz
-  } else {
-    stopifnot(min_lib_size&amp;lt;=min_sz)
-  }
-  down_sample&amp;lt;-function(x){
-    prob &amp;lt;- min_lib_size/sum(x)
-    unlist(lapply(x,function(y){rbinom(1, y, prob)}))
-  }
-  apply(expr_mat, 2, down_sample)
-}
-
-
-gg&amp;lt;-sparseMatrixStats::rowSums2(raw_counts2)&amp;gt;0 #exclude genes that are zero across all cells
-Y&amp;lt;-raw_counts2[gg,]&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;To make the droplets comparable, we will exclude droplets with total count below 2,000 and downsample all other droplets to have approximately the same total counts.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;total_counts&amp;lt;- sparseMatrixStats::colSums2(Y)
-
-hist(total_counts,breaks=100)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-11-26-modeling-single-cell-rnaseq-data-with-multinomial-distribution_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Yss&amp;lt;-Y[,total_counts&amp;gt;2000]
-#downsample to normalize droplet size (total UMI)
-Yds&amp;lt;-Down_Sample_Matrix(as.matrix(Yss))&lt;/code&gt;&lt;/pre&gt;
-&lt;div id=&#34;using-the-downsampled-matrix-yss-for-plotting&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;using the downsampled matrix Yss for plotting&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Yds&amp;lt;-Yds[rowSums(Yds)&amp;gt;0,]
-
-gene_means&amp;lt;- rowMeans(Yds)
-gene_vars&amp;lt;- apply(Yds, 1, var)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;after downsampling, the mean and variance now are the same suggesting possion distribution&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df&amp;lt;- bind_cols(gene_means = gene_means, gene_vars = gene_vars)
- 
-df %&amp;gt;% ggplot(aes(x = log10(gene_means), y = log10(gene_vars))) +
-        geom_point() +
-        geom_abline(intercept = 0, slope = 1, color = &amp;quot;red&amp;quot;) + 
-        theme_classic(base_size = 14) +
-        ggtitle(&amp;quot;svensson et al 2 downsample&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-11-26-modeling-single-cell-rnaseq-data-with-multinomial-distribution_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;This is consistent with &lt;a href=&#34;https://www.nxn.se/valent/2018/1/30/count-depth-variation-makes-poisson-scrna-seq-data-negative-binomial&#34;&gt;Count depth variation makes Poisson scRNA-seq data Negative Binomial&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Let’s see how the observed 0 counts fit each model:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## total counts for each cell
-lib_size&amp;lt;- colSums(Yds)
-
-## https://github.com/willtownes/scrna2019/blob/master/real/zheng_2017_monocytes/02_exploratory.Rmd#L290
-
-N&amp;lt;-median(colSums(Yds))
-predict_zeros_binom&amp;lt;-function(x){(1-exp(x)/N)^N} #binomial
-predict_zeros_poi&amp;lt;-function(x){exp(-exp(x))}
-predict_zeros_nb&amp;lt;-function(x,phi=100){
-  exp(-phi*log1p(exp(x-log(phi))))
-}
-
-## note it is natural log here.
-data.frame(zeros_observed = rowMeans(Yds==0), 
-           x = log(gene_means)) %&amp;gt;%
-  ggplot(aes(x , y = zeros_observed), alpha = 0.5) +
-  geom_point() +
-  stat_function(aes(x,color=&amp;quot;bin&amp;quot;),fun=predict_zeros_binom) +
-  stat_function(aes(x,color=&amp;quot;poi&amp;quot;),fun=predict_zeros_poi) +
-  stat_function(aes(x,color=&amp;quot;nb&amp;quot;),fun=predict_zeros_nb) +
-  scale_color_manual(&amp;quot;model&amp;quot;,breaks=c(&amp;quot;bin&amp;quot;,&amp;quot;poi&amp;quot;,&amp;quot;nb&amp;quot;),values=c(&amp;quot;blue&amp;quot;,&amp;quot;green&amp;quot;,&amp;quot;red&amp;quot;)) +
-  theme_classic(base_size = 14) +
-  ggtitle(&amp;quot;Svensson et al 2&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2019-11-26-modeling-single-cell-rnaseq-data-with-multinomial-distribution_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;After downsampling&lt;/strong&gt;, “Poisson, binomial and negative binomial models all fit the data about the same.”&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
