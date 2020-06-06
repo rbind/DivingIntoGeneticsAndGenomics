@@ -18,7 +18,7 @@ publication_types = ["2"]
 
 # Publication name and optional abbreviated version.
 publication = "In *Cancer Cell*, Cancer Cell."
-publication_short = "In *Cancer Cell*"
+publication_short = "In *Cancer Cell*, **Highlight** in *ScienceSignaling*: [Tumor's loss is clinician's gain](https://stke.sciencemag.org/content/13/630/eabc5604)"
 
 # Abstract and optional shortened version.
 abstract = "Epigenetic modifiers frequently harbor loss-of-function mutations in lung cancer, but their tumor-suppressive roles are poorly characterized. Histone methyltransferase KMT2D (a COMPASS-like enzyme, also called MLL4) is among the most highly inactivated epigenetic modifiers in lung cancer. Here, we show that lung-specific loss of Kmt2d promotes lung tumorigenesis in mice and upregulates pro-tumorigenic programs, including glycolysis. Pharmacological inhibition of glycolysis preferentially impedes tumorigenicity of human lung cancer cells bearing KMT2D-inactivating mutations. Mechanistically,Kmt2d loss widely impairs epigenomic signals for super-enhancers/enhancers, including the super-enhancer for the circadian rhythm repressor Per2. Loss of Kmt2d decreases expression of PER2, which regulates multiple glycolytic genes. These findings indicate that KMT2D is a lung tumor suppressor and that KMT2D deficiency confers a therapeutic vulnerability to glycolytic inhibitors."
