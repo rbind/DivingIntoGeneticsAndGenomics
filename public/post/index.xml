@@ -13,6 +13,18 @@
     
     
     <item>
+      <title>build your own singularity image</title>
+      <link>/post/build-your-own-singularity-image/</link>
+      <pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/build-your-own-singularity-image/</guid>
+      <description>I was using the tidyverse rocker image on HPC by singularity pull. see my previous post.
+Everything was OK until I encountered problems installing jpeg and Cairo R packages. Later, I also had an error installing scRepertoire dependency gsl.
+It turns out I have to install debian packages inside the container:
+$ apt update &amp;amp;&amp;amp; apt install -y --no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev \ &amp;amp;&amp;amp; apt install -y --no-install-recommends libx11-dev libcairo2-dev libxt-dev \ &amp;amp;&amp;amp; apt install -y libgsl-dev  However, singularity file system is read-only.</description>
+    </item>
+    
+    <item>
       <title>customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</title>
       <link>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</link>
       <pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate>

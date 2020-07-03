@@ -96,7 +96,7 @@
   <meta property="og:description" content="Senior Scientist">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2019-06-09T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2020-07-02T00:00:00&#43;00:00">
   
 
   
@@ -282,6 +282,18 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/build-your-own-singularity-image/">build your own singularity image</a></h2>
+    <div class="article-style">
+      
+      I was using the tidyverse rocker image on HPC by singularity pull. see my previous post.
+Everything was OK until I encountered problems installing jpeg and Cairo R packages. Later, I also had an error installing scRepertoire dependency gsl.
+It turns out I have to install debian packages inside the container:
+$ apt update &amp;&amp; apt install -y &ndash;no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev \ &amp;&amp; apt install -y &ndash;no-install-recommends libx11-dev libcairo2-dev libxt-dev \ &amp;&amp; apt install -y libgsl-dev  However, singularity file system is read-only.
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/post/run-rstudio-server-with-singularity-on-hpc/">Run Rstudio server with singularity on HPC</a></h2>
