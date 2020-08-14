@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>setting up Travis CI for github repos</title>
+      <link>/post/setting-up-travis-ci-for-github-repos/</link>
+      <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/setting-up-travis-ci-for-github-repos/</guid>
+      <description>I wanted to set up Travis CI long time ago. Finally, I have a chance to do so. There are already many posts on how to do it. I write it down here for my own future reference. Thanks Tao Liu for the instructions. I have been learning a lot from him in collabrating with the MAESTRO project.
+ read the official documentation https://docs.travis-ci.com/user/tutorial/ Jean Fan&amp;rsquo;s blog post https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/ R specific https://docs.</description>
+    </item>
+    
+    <item>
       <title>build your own singularity image</title>
       <link>/post/build-your-own-singularity-image/</link>
       <pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate>
