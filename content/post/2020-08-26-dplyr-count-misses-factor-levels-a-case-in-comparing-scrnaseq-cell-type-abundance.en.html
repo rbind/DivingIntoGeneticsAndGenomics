@@ -112,7 +112,7 @@ total_cells</code></pre>
 Because if a cluster is completely missing for a sample, there will not be any cells in the original <code>cell_df</code>. However, the percentage should be 0% for that data point and you should show it in the boxplot as the jitter point. Otherwise, the result can be misleading. You can spot on such mistakes when you plot out the points on top of the boxplot.</p>
 <div id="how-to-fix-it" class="section level3">
 <h3>How to fix it</h3>
-<p>The trick is to make the factor contains all the levels of all the combinations. and when use <code>group_by</code> or <code>count</code>, add <code>.drop =FALSE</code>.</p>
+<p>The trick is to make the factor contains all the levels of all the combinations. When use <code>group_by</code> or <code>count</code>, add <code>.drop =FALSE</code>.</p>
 <pre class="r"><code>sample_id&lt;- paste0(&quot;sample&quot;, 1:12)
 cluster_id&lt;- c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;)
 
@@ -154,8 +154,8 @@ cell_percentage %&gt;%
 <p><img src="/post/2020-08-26-dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Now the 0 percentage point for sample7 in cluster C showed up.</p>
 </div>
-<div id="conclusion" class="section level3">
-<h3>Conclusion</h3>
+<div id="conclusions" class="section level3">
+<h3>Conclusions</h3>
 <ul>
 <li><p>Be careful with the 0 count cell in some clusters in some samples. If you work with <code>Seurat</code>, people tend to use <code>seurat_obj@meta.data %&gt;% group_by(cluster_id, sample_id, group)</code>, but this will miss the samples in which some clusters are missing.</p></li>
 <li><p>For differential abundance comparison between treatment vs control, directly comparing percentages are not optimal. Follow tutorial on using raw cell counts <a href="https://osca.bioconductor.org/multi-sample-comparisons.html#" class="uri">https://osca.bioconductor.org/multi-sample-comparisons.html#</a></p></li>

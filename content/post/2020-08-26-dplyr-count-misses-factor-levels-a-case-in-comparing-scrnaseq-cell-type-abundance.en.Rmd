@@ -81,7 +81,7 @@ Because if a cluster is completely missing for a sample, there will not be any c
 
 ### How to fix it
 
-The trick is to make the factor contains all the levels of all the combinations. and when use `group_by` or `count`, add `.drop =FALSE`.
+The trick is to make the factor contains all the levels of all the combinations. When use `group_by` or `count`, add `.drop =FALSE`.
 
 ```{r}
 sample_id<- paste0("sample", 1:12)
@@ -126,7 +126,7 @@ cell_percentage %>%
 
 Now the 0 percentage point for sample7 in cluster C showed up.
 
-### Conclusion
+### Conclusions
 
 * Be careful with the 0 count cell in some clusters in some samples. If you work with `Seurat`, people tend to use `seurat_obj@meta.data %>% group_by(cluster_id, sample_id, group)`, but this will miss the samples in which some clusters are missing.
 

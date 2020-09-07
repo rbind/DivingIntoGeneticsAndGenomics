@@ -107,7 +107,7 @@ total_cells&lt;/code&gt;&lt;/pre&gt;
 Because if a cluster is completely missing for a sample, there will not be any cells in the original &lt;code&gt;cell_df&lt;/code&gt;. However, the percentage should be 0% for that data point and you should show it in the boxplot as the jitter point. Otherwise, the result can be misleading. You can spot on such mistakes when you plot out the points on top of the boxplot.&lt;/p&gt;
 &lt;div id=&#34;how-to-fix-it&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;How to fix it&lt;/h3&gt;
-&lt;p&gt;The trick is to make the factor contains all the levels of all the combinations. and when use &lt;code&gt;group_by&lt;/code&gt; or &lt;code&gt;count&lt;/code&gt;, add &lt;code&gt;.drop =FALSE&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The trick is to make the factor contains all the levels of all the combinations. When use &lt;code&gt;group_by&lt;/code&gt; or &lt;code&gt;count&lt;/code&gt;, add &lt;code&gt;.drop =FALSE&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_id&amp;lt;- paste0(&amp;quot;sample&amp;quot;, 1:12)
 cluster_id&amp;lt;- c(&amp;quot;A&amp;quot;,&amp;quot;B&amp;quot;,&amp;quot;C&amp;quot;)
 
@@ -149,8 +149,8 @@ cell_percentage %&amp;gt;%
 &lt;p&gt;&lt;img src=&#34;/post/2020-08-26-dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now the 0 percentage point for sample7 in cluster C showed up.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;conclusion&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Conclusion&lt;/h3&gt;
+&lt;div id=&#34;conclusions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Conclusions&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;Be careful with the 0 count cell in some clusters in some samples. If you work with &lt;code&gt;Seurat&lt;/code&gt;, people tend to use &lt;code&gt;seurat_obj@meta.data %&amp;gt;% group_by(cluster_id, sample_id, group)&lt;/code&gt;, but this will miss the samples in which some clusters are missing.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;For differential abundance comparison between treatment vs control, directly comparing percentages are not optimal. Follow tutorial on using raw cell counts &lt;a href=&#34;https://osca.bioconductor.org/multi-sample-comparisons.html#&#34; class=&#34;uri&#34;&gt;https://osca.bioconductor.org/multi-sample-comparisons.html#&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
