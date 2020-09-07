@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).
+Let’s create some dummy data.
+library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samples, 3 clusters A,B,C # but in the treatment samples, cluster C is absent (0 cells) in sample7 sample_id&lt;- c(paste0(&quot;sample&quot;, 1:6, &quot;_control&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;,&quot;_C&quot;),each = 6)), paste0(&quot;sample&quot;, 8:12, &quot;_treatment&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;, &quot;_C&quot;), each = 5))) sample_id&lt;- c(sample_id, &quot;sample7_treatment_A&quot;, &quot;sample7_treatment_B&quot;) cell_id&lt;- paste0(&quot;cell&quot;, 1:20000) cell_df&lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), cell_id = cell_id) %&gt;% tidyr::separate(sample_id, into = c(&quot;sample_id&quot;, &quot;group&quot;, &quot;cluster_id&quot;), sep= &quot;_&quot;) cell_num&lt;- cell_df %&gt;% group_by(group, cluster_id, sample_id)%&gt;% summarize(n=n()) cell_num ## # A tibble: 35 x 4 ## # Groups: group, cluster_id [6] ## group cluster_id sample_id n ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; ## 1 control A sample1 551 ## 2 control A sample2 546 ## 3 control A sample3 544 ## 4 control A sample4 585 ## 5 control A sample5 588 ## 6 control A sample6 542 ## 7 control B sample1 550 ## 8 control B sample2 562 ## 9 control B sample3 574 ## 10 control B sample4 563 ## # … with 25 more rows total_cells&lt;- cell_df %&gt;% group_by(sample_id) %&gt;% summarise(total = n()) total_cells ## # A tibble: 12 x 2 ## sample_id total ## &lt;chr&gt; &lt;int&gt; ## 1 sample1 1673 ## 2 sample10 1713 ## 3 sample11 1691 ## 4 sample12 1696 ## 5 sample2 1633 ## 6 sample3 1700 ## 7 sample4 1711 ## 8 sample5 1768 ## 9 sample6 1727 ## 10 sample7 1225 ## 11 sample8 1720 ## 12 sample9 1743 join the two dataframe to get percentage of cells per cluster per sample">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">
+  <meta property="og:title" content="dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance  | DNA confesses Data speak">
+  <meta property="og:description" content="It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).
+Let’s create some dummy data.
+library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samples, 3 clusters A,B,C # but in the treatment samples, cluster C is absent (0 cells) in sample7 sample_id&lt;- c(paste0(&quot;sample&quot;, 1:6, &quot;_control&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;,&quot;_C&quot;),each = 6)), paste0(&quot;sample&quot;, 8:12, &quot;_treatment&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;, &quot;_C&quot;), each = 5))) sample_id&lt;- c(sample_id, &quot;sample7_treatment_A&quot;, &quot;sample7_treatment_B&quot;) cell_id&lt;- paste0(&quot;cell&quot;, 1:20000) cell_df&lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), cell_id = cell_id) %&gt;% tidyr::separate(sample_id, into = c(&quot;sample_id&quot;, &quot;group&quot;, &quot;cluster_id&quot;), sep= &quot;_&quot;) cell_num&lt;- cell_df %&gt;% group_by(group, cluster_id, sample_id)%&gt;% summarize(n=n()) cell_num ## # A tibble: 35 x 4 ## # Groups: group, cluster_id [6] ## group cluster_id sample_id n ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; ## 1 control A sample1 551 ## 2 control A sample2 546 ## 3 control A sample3 544 ## 4 control A sample4 585 ## 5 control A sample5 588 ## 6 control A sample6 542 ## 7 control B sample1 550 ## 8 control B sample2 562 ## 9 control B sample3 574 ## 10 control B sample4 563 ## # … with 25 more rows total_cells&lt;- cell_df %&gt;% group_by(sample_id) %&gt;% summarise(total = n()) total_cells ## # A tibble: 12 x 2 ## sample_id total ## &lt;chr&gt; &lt;int&gt; ## 1 sample1 1673 ## 2 sample10 1713 ## 3 sample11 1691 ## 4 sample12 1696 ## 5 sample2 1633 ## 6 sample3 1700 ## 7 sample4 1711 ## 8 sample5 1768 ## 9 sample6 1727 ## 10 sample7 1225 ## 11 sample8 1720 ## 12 sample9 1743 join the two dataframe to get percentage of cells per cluster per sample">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2020-08-26T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2020-08-26T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance  | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2020-08-26 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Aug 26, 2020
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/scrnaseq/">scRNAseq</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=dplyr%3a%3acount%20misses%20factor%20levels%3a%20a%20case%20in%20comparing%20scRNAseq%20cell%20type%20abundance%20&amp;url=%2fpost%2fdplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fdplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fdplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance%2f&amp;title=dplyr%3a%3acount%20misses%20factor%20levels%3a%20a%20case%20in%20comparing%20scRNAseq%20cell%20type%20abundance%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fdplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance%2f&amp;title=dplyr%3a%3acount%20misses%20factor%20levels%3a%20a%20case%20in%20comparing%20scRNAseq%20cell%20type%20abundance%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=dplyr%3a%3acount%20misses%20factor%20levels%3a%20a%20case%20in%20comparing%20scRNAseq%20cell%20type%20abundance%20&amp;body=%2fpost%2fdplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).</p>
+<p>Let’s create some dummy data.</p>
+<pre class="r"><code>library(tidyverse)
+set.seed(23)
+
+# we have 6 treatment samples and 6 control samples, 3 clusters A,B,C
+# but in the treatment samples, cluster C is absent (0 cells) in sample7
+sample_id&lt;- c(paste0(&quot;sample&quot;, 1:6, &quot;_control&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;,&quot;_C&quot;),each = 6)), paste0(&quot;sample&quot;, 8:12, &quot;_treatment&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;, &quot;_C&quot;), each = 5)))
+
+sample_id&lt;- c(sample_id, &quot;sample7_treatment_A&quot;, &quot;sample7_treatment_B&quot;)
+cell_id&lt;- paste0(&quot;cell&quot;, 1:20000)
+
+cell_df&lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), 
+         cell_id = cell_id) %&gt;%
+  tidyr::separate(sample_id, into = c(&quot;sample_id&quot;, &quot;group&quot;, &quot;cluster_id&quot;), sep= &quot;_&quot;)
+
+
+cell_num&lt;- cell_df %&gt;% 
+  group_by(group, cluster_id, sample_id)%&gt;%
+  summarize(n=n()) 
+
+cell_num</code></pre>
+<pre><code>## # A tibble: 35 x 4
+## # Groups:   group, cluster_id [6]
+##    group   cluster_id sample_id     n
+##    &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;     &lt;int&gt;
+##  1 control A          sample1     551
+##  2 control A          sample2     546
+##  3 control A          sample3     544
+##  4 control A          sample4     585
+##  5 control A          sample5     588
+##  6 control A          sample6     542
+##  7 control B          sample1     550
+##  8 control B          sample2     562
+##  9 control B          sample3     574
+## 10 control B          sample4     563
+## # … with 25 more rows</code></pre>
+<pre class="r"><code>total_cells&lt;- cell_df %&gt;%
+  group_by(sample_id) %&gt;%
+  summarise(total = n())
+
+total_cells</code></pre>
+<pre><code>## # A tibble: 12 x 2
+##    sample_id total
+##    &lt;chr&gt;     &lt;int&gt;
+##  1 sample1    1673
+##  2 sample10   1713
+##  3 sample11   1691
+##  4 sample12   1696
+##  5 sample2    1633
+##  6 sample3    1700
+##  7 sample4    1711
+##  8 sample5    1768
+##  9 sample6    1727
+## 10 sample7    1225
+## 11 sample8    1720
+## 12 sample9    1743</code></pre>
+<p>join the two dataframe to get percentage of cells per cluster per sample</p>
+<pre class="r"><code>cell_percentage&lt;- left_join(cell_num, total_cells) %&gt;%
+  mutate(percentage = n/total)</code></pre>
+<pre><code>## Joining, by = &quot;sample_id&quot;</code></pre>
+<pre class="r"><code>cell_percentage</code></pre>
+<pre><code>## # A tibble: 35 x 6
+## # Groups:   group, cluster_id [6]
+##    group   cluster_id sample_id     n total percentage
+##    &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;     &lt;int&gt; &lt;int&gt;      &lt;dbl&gt;
+##  1 control A          sample1     551  1673      0.329
+##  2 control A          sample2     546  1633      0.334
+##  3 control A          sample3     544  1700      0.32 
+##  4 control A          sample4     585  1711      0.342
+##  5 control A          sample5     588  1768      0.333
+##  6 control A          sample6     542  1727      0.314
+##  7 control B          sample1     550  1673      0.329
+##  8 control B          sample2     562  1633      0.344
+##  9 control B          sample3     574  1700      0.338
+## 10 control B          sample4     563  1711      0.329
+## # … with 25 more rows</code></pre>
+<p>Let’s plot a boxplot</p>
+<pre class="r"><code>cell_percentage %&gt;%
+  ggplot(aes(x = group, y = percentage)) +
+  geom_boxplot(outlier.shape = NA, aes(fill = group)) +
+  geom_jitter() +
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~cluster_id) +
+  theme_bw()+
+  xlab(&quot;&quot;)</code></pre>
+<p><img src="/post/2020-08-26-dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><strong>YES, if you are careful enough</strong>, you will find the treatment group in cluster C only contains 5 points.
+Because if a cluster is completely missing for a sample, there will not be any cells in the original <code>cell_df</code>. However, the percentage should be 0% for that data point and you should show it in the boxplot as the jitter point. Otherwise, the result can be misleading. You can spot on such mistakes when you plot out the points on top of the boxplot.</p>
+<div id="how-to-fix-it" class="section level3">
+<h3>How to fix it</h3>
+<p>The trick is to make the factor contains all the levels of all the combinations. and when use <code>group_by</code> or <code>count</code>, add <code>.drop =FALSE</code>.</p>
+<pre class="r"><code>sample_id&lt;- paste0(&quot;sample&quot;, 1:12)
+cluster_id&lt;- c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;)
+
+
+factor_levels&lt;- tidyr::expand_grid(sample_id, cluster_id) %&gt;%
+  mutate(group = c(rep(&quot;control&quot;, 18), rep(&quot;treatment&quot;, 18))) %&gt;%
+  mutate(sample_id = paste(sample_id, cluster_id, group, sep=&quot;_&quot;))
+
+cell_num2&lt;- cell_df %&gt;%
+  mutate(sample_id = paste(sample_id, cluster_id, group, sep=&quot;_&quot;)) %&gt;%
+  mutate(sample_id = factor(sample_id, levels = factor_levels$sample_id)) %&gt;%
+  group_by(sample_id, .drop=FALSE) %&gt;%
+  summarise(n=n()) %&gt;%
+  tidyr::separate(sample_id, c(&quot;sample_id&quot;, &quot;cluster_id&quot;, &quot;group&quot;)) 
+
+
+## the 0 correctly showed up
+cell_num2 %&gt;%
+  filter(sample_id == &quot;sample7&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 4
+##   sample_id cluster_id group         n
+##   &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;     &lt;int&gt;
+## 1 sample7   A          treatment   604
+## 2 sample7   B          treatment   621
+## 3 sample7   C          treatment     0</code></pre>
+<p>Let’s replot the boxplot and see the difference:</p>
+<pre class="r"><code>cell_percentage&lt;- left_join(cell_num2, total_cells) %&gt;%
+  mutate(percentage = n/total)</code></pre>
+<pre><code>## Joining, by = &quot;sample_id&quot;</code></pre>
+<pre class="r"><code># replot the same boxplot
+cell_percentage %&gt;%
+  ggplot(aes(x = group, y = percentage)) +
+  geom_boxplot(outlier.shape = NA, aes(fill = group)) +
+  geom_jitter() +
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~cluster_id) +
+  theme_bw()+
+  xlab(&quot;&quot;)</code></pre>
+<p><img src="/post/2020-08-26-dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Now the 0 percentage point for sample7 in cluster C showed up.</p>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<ul>
+<li><p>Be careful with the 0 count cell in some clusters in some samples. If you work with <code>Seurat</code>, people tend to use <code>seurat_obj@meta.data %&gt;% group_by(cluster_id, sample_id, group)</code>, but this will miss the samples in which some clusters are missing.</p></li>
+<li><p>For differential abundance comparison between treatment vs control, directly comparing percentages are not optimal. Follow tutorial on using raw cell counts <a href="https://osca.bioconductor.org/multi-sample-comparisons.html#" class="uri">https://osca.bioconductor.org/multi-sample-comparisons.html#</a></p></li>
+<li><p>More tools can be found at <a href="https://github.com/crazyhottommy/scRNAseq-analysis-notes#cell-type-prioritizationdifferential-abundance-test" class="uri">https://github.com/crazyhottommy/scRNAseq-analysis-notes#cell-type-prioritizationdifferential-abundance-test</a></p></li>
+</ul>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/scrnaseq/">scRNAseq</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/tidyverse/">tidyverse</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/r/">R</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/negative-bionomial-distribution-in-single-cell-rnaseq/">negative bionomial distribution in (single-cell) RNAseq </a></li>
+        
+        <li><a href="/project/evaluating-scrnaseq-cluster/">Evaluating single cell RNAseq cluster stability</a></li>
+        
+        <li><a href="/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/">customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</a></li>
+        
+        <li><a href="/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/">stacked violin plot for visualizing single-cell data in Seurat</a></li>
+        
+        <li><a href="/post/monty-hall-problem-a-peek-through-simulation/">Monty Hall problem- a peek through simulation</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/setting-up-travis-ci-for-github-repos/" rel="prev">setting up Travis CI for github repos</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

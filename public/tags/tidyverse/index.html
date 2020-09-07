@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
@@ -16,7 +18,7 @@
   <meta name="description" content="Senior Scientist">
 
   
-  <link rel="alternate" hreflang="en-us" href="">
+  <link rel="alternate" hreflang="en-us" href="/tags/tidyverse/">
 
   
 
@@ -81,7 +83,7 @@
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="">
+  <link rel="canonical" href="/tags/tidyverse/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -89,18 +91,18 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="DNA confesses Data speak">
-  <meta property="og:url" content="">
-  <meta property="og:title" content="404 Page not found | DNA confesses Data speak">
+  <meta property="og:url" content="/tags/tidyverse/">
+  <meta property="og:title" content="Tidyverse | DNA confesses Data speak">
   <meta property="og:description" content="Senior Scientist">
   <meta property="og:locale" content="en-us">
   
+  <meta property="og:updated_time" content="2020-08-26T00:00:00&#43;00:00">
+  
+
   
   
 
-  
-  
-
-  <title>404 Page not found | DNA confesses Data speak</title>
+  <title>Tidyverse | DNA confesses Data speak</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -269,106 +271,32 @@
   </div>
 </nav>
 
-<div class="container">
 
-  <h1>Page not found</h1>
-  <p>Perhaps you were looking for one of these?</p>
 
-  
-  
-  <h2>Posts</h2>
-  
-  <ul>
-    <li><a href="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/post/setting-up-travis-ci-for-github-repos/">setting up Travis CI for github repos</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/post/build-your-own-singularity-image/">build your own singularity image</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/">customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/">stacked violin plot for visualizing single-cell data in Seurat</a></li>
-  </ul>
-  
+
+
+<div class="universal-wrapper">
+
+  <h1>Tidyverse</h1>
+
   
 
   
   
-  <h2>Publications</h2>
-  
-  <ul>
-    <li><a href="/publication/2020-08-07-maestro/">Integrative analyses of single-cell transcriptome and regulome using MAESTRO</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/publication/2020-05-29-scclusteval/">Evaluating single-cell cluster stability using the Jaccard similarity index</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/publication/2020-04-03-kmt2d-lung-cancer/">KMT2D Deficiency Impairs Super-Enhancers to Confer a Glycolytic Vulnerability in Lung Cancer</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/publication/2020-03-20-kallisto-scatac/">Fast analysis of scATAC-seq data using a predefined set of genomic regions</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/publication/2020-02-19-lats-ctcf/">LATS kinase–mediated CTCF phosphorylation and selective loss of genomic binding</a></li>
-  </ul>
-  
+  <div>
+    <h2><a href="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </a></h2>
+    <div class="article-style">
+      
+      It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).
+Let’s create some dummy data.
+library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samples, 3 clusters A,B,C # but in the treatment samples, cluster C is absent (0 cells) in sample7 sample_id&lt;- c(paste0(&quot;sample&quot;, 1:6, &quot;_control&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;,&quot;_C&quot;),each = 6)), paste0(&quot;sample&quot;, 8:12, &quot;_treatment&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;, &quot;_C&quot;), each = 5))) sample_id&lt;- c(sample_id, &quot;sample7_treatment_A&quot;, &quot;sample7_treatment_B&quot;) cell_id&lt;- paste0(&quot;cell&quot;, 1:20000) cell_df&lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), cell_id = cell_id) %&gt;% tidyr::separate(sample_id, into = c(&quot;sample_id&quot;, &quot;group&quot;, &quot;cluster<em>id&quot;), sep= &quot;</em>&quot;) cell_num&lt;- cell_df %&gt;% group_by(group, cluster_id, sample_id)%&gt;% summarize(n=n()) cell_num ## # A tibble: 35 x 4 ## # Groups: group, cluster_id [6] ## group cluster_id sample_id n ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; ## 1 control A sample1 551 ## 2 control A sample2 546 ## 3 control A sample3 544 ## 4 control A sample4 585 ## 5 control A sample5 588 ## 6 control A sample6 542 ## 7 control B sample1 550 ## 8 control B sample2 562 ## 9 control B sample3 574 ## 10 control B sample4 563 ## # … with 25 more rows total_cells&lt;- cell_df %&gt;% group_by(sample_id) %&gt;% summarise(total = n()) total_cells ## # A tibble: 12 x 2 ## sample_id total ## &lt;chr&gt; &lt;int&gt; ## 1 sample1 1673 ## 2 sample10 1713 ## 3 sample11 1691 ## 4 sample12 1696 ## 5 sample2 1633 ## 6 sample3 1700 ## 7 sample4 1711 ## 8 sample5 1768 ## 9 sample6 1727 ## 10 sample7 1225 ## 11 sample8 1720 ## 12 sample9 1743 join the two dataframe to get percentage of cells per cluster per sample
+      
+    </div>
+  </div>
   
 
   
-  
-  <h2>Talks</h2>
-  
-  <ul>
-    <li><a href="/talk/2020-reproducible-computing/">reproducible computing for your own benifit</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/talk/2020-tools-tricks-data-science/">Tools and tricks for a data scientist</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/talk/2019-harvard-fas-workshop/">Harvard FAS informatics nanocourse</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/talk/2019-bunkerhill-talk/">Reproducible research in bioinformatics</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/talk/2018-uf-talk/">From cell line to command line: my journey to bioinformatics</a></li>
-  </ul>
-  
-  
 
-  
-  
-  <h2>Projects</h2>
-  
-  <ul>
-    <li><a href="/project/single-cell-atacseq/">Snakemake pipeline post-processing scATAC-seq</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/project/evaluating-scrnaseq-cluster/">Evaluating single cell RNAseq cluster stability</a></li>
-  </ul>
-  
-  <ul>
-    <li><a href="/project/snakemake-pipelines/">Snakemake Pipelines</a></li>
-  </ul>
-  
-  
 
 </div>
 <footer class="site-footer">
@@ -473,4 +401,6 @@
 
   </body>
 </html>
+
+
 

@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </title>
+      <link>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</link>
+      <pubDate>Wed, 26 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</guid>
+      <description>It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).
+Let’s create some dummy data.
+library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samples, 3 clusters A,B,C # but in the treatment samples, cluster C is absent (0 cells) in sample7 sample_id&amp;lt;- c(paste0(&amp;quot;sample&amp;quot;, 1:6, &amp;quot;_control&amp;quot;, rep(c(&amp;quot;_A&amp;quot;,&amp;quot;_B&amp;quot;,&amp;quot;_C&amp;quot;),each = 6)), paste0(&amp;quot;sample&amp;quot;, 8:12, &amp;quot;_treatment&amp;quot;, rep(c(&amp;quot;_A&amp;quot;,&amp;quot;_B&amp;quot;, &amp;quot;_C&amp;quot;), each = 5))) sample_id&amp;lt;- c(sample_id, &amp;quot;sample7_treatment_A&amp;quot;, &amp;quot;sample7_treatment_B&amp;quot;) cell_id&amp;lt;- paste0(&amp;quot;cell&amp;quot;, 1:20000) cell_df&amp;lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), cell_id = cell_id) %&amp;gt;% tidyr::separate(sample_id, into = c(&amp;quot;sample_id&amp;quot;, &amp;quot;group&amp;quot;, &amp;quot;cluster_id&amp;quot;), sep= &amp;quot;_&amp;quot;) cell_num&amp;lt;- cell_df %&amp;gt;% group_by(group, cluster_id, sample_id)%&amp;gt;% summarize(n=n()) cell_num ## # A tibble: 35 x 4 ## # Groups: group, cluster_id [6] ## group cluster_id sample_id n ## &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; ## 1 control A sample1 551 ## 2 control A sample2 546 ## 3 control A sample3 544 ## 4 control A sample4 585 ## 5 control A sample5 588 ## 6 control A sample6 542 ## 7 control B sample1 550 ## 8 control B sample2 562 ## 9 control B sample3 574 ## 10 control B sample4 563 ## # … with 25 more rows total_cells&amp;lt;- cell_df %&amp;gt;% group_by(sample_id) %&amp;gt;% summarise(total = n()) total_cells ## # A tibble: 12 x 2 ## sample_id total ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; ## 1 sample1 1673 ## 2 sample10 1713 ## 3 sample11 1691 ## 4 sample12 1696 ## 5 sample2 1633 ## 6 sample3 1700 ## 7 sample4 1711 ## 8 sample5 1768 ## 9 sample6 1727 ## 10 sample7 1225 ## 11 sample8 1720 ## 12 sample9 1743 join the two dataframe to get percentage of cells per cluster per sample</description>
+    </item>
+    
+    <item>
       <title>setting up Travis CI for github repos</title>
       <link>/post/setting-up-travis-ci-for-github-repos/</link>
       <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
