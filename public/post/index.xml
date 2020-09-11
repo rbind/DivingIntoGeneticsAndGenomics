@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>Enhancement of scRNAseq heatmap using complexheatmap</title>
+      <link>/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/</link>
+      <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/</guid>
+      <description>When it comes to make a heatmap, ComplexHeatmap by Zuguang Gu is my favorite. Check it out! You will be amazed on how flexible it is and the documentation is in top niche.
+For Single-cell RNAseq, Seurat provides a DoHeatmap function using ggplot2. There are two limitations:
+ when your genes are not in the top variable gene list, the scale.data will not have that gene and DoHeatmap will drop those genes.</description>
+    </item>
+    
+    <item>
       <title>dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </title>
       <link>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</link>
       <pubDate>Wed, 26 Aug 2020 00:00:00 +0000</pubDate>

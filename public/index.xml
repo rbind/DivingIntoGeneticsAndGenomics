@@ -11,6 +11,232 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Enhancement of scRNAseq heatmap using complexheatmap</title>
+      <link>/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/</link>
+      <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/</guid>
+      <description>
+
+&lt;p&gt;When it comes to make a heatmap, &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;ComplexHeatmap&lt;/code&gt;&lt;/a&gt; by Zuguang Gu is my favorite. Check it out! You will be amazed on how flexible it is and the documentation is in top niche.&lt;/p&gt;
+
+&lt;p&gt;For Single-cell RNAseq, &lt;code&gt;Seurat&lt;/code&gt; provides a &lt;code&gt;DoHeatmap&lt;/code&gt; function using &lt;code&gt;ggplot2&lt;/code&gt;. There are two limitations:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;when your genes are not in the top variable gene list, the &lt;code&gt;scale.data&lt;/code&gt; will not have that gene and &lt;code&gt;DoHeatmap&lt;/code&gt; will drop those genes.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;ggplot2&lt;/code&gt; does not support clustering of the rows or columns.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I highly recommend you to read two posts I wrote as well on heatmap:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://rpubs.com/crazyhottommy/a-tale-of-two-heatmap-functions&#34; target=&#34;_blank&#34;&gt;A tale of two heatmap functions&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://rpubs.com/crazyhottommy/heatmap_demystified&#34; target=&#34;_blank&#34;&gt;Heatmap demystified&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Let me walk you through how I replicate and enhance the Seurat version of heatmap using &lt;code&gt;ComplexHeatmap&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;follow the tutorial &lt;a href=&#34;https://satijalab.org/seurat/v3.2/pbmc3k_tutorial.html&#34; target=&#34;_blank&#34;&gt;https://satijalab.org/seurat/v3.2/pbmc3k_tutorial.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(dplyr)
+library(Seurat)
+library(ComplexHeatmap)
+# https://github.com/immunogenomics/presto
+library(presto)
+library(tictoc)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Load the PBMC dataset
+pbmc.data &amp;lt;- Read10X(data.dir = &amp;quot;~/Downloads/filtered_gene_bc_matrices/hg19/&amp;quot;)
+pbmc &amp;lt;- CreateSeuratObject(counts = pbmc.data, project = &amp;quot;pbmc3k&amp;quot;, min.cells = 3, min.features = 200)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Warning: Feature names cannot have underscores (&#39;_&#39;), replacing with dashes
+## (&#39;-&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;pbmc
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## An object of class Seurat 
+## 13714 features across 2700 samples within 1 assay 
+## Active assay: RNA (13714 features)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;pbmc[[&amp;quot;percent.mt&amp;quot;]] &amp;lt;- PercentageFeatureSet(pbmc, pattern = &amp;quot;^MT-&amp;quot;)
+
+## ScaleData uses top variable genes only
+pbmc&amp;lt;- pbmc %&amp;gt;% 
+  NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;%
+  FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;%
+  ScaleData() %&amp;gt;%
+  RunPCA() %&amp;gt;%
+  FindNeighbors(dims = 1:10) %&amp;gt;%
+  FindClusters(resolution = 0.5) %&amp;gt;%
+  RunUMAP(dims = 1:10)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+## 
+## Number of nodes: 2700
+## Number of edges: 97958
+## 
+## Running Louvain algorithm...
+## Maximum modularity in 10 random starts: 0.8717
+## Number of communities: 9
+## Elapsed time: 0 seconds
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+## To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
+## This message will be shown once per session
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;DimPlot(pbmc, reduction = &amp;quot;umap&amp;quot;)  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/2020-09-10-enhancement-of-scrnaseq-heatmap-using-complexheatmap.en_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The UMAP plot looks a bit different from the tutorial, but the structure is similar enough (You see how difficult it is to reproduce the exactly the same figure even with the same code:)).&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s find marker genes for each cluster. I like &lt;code&gt;presto&lt;/code&gt; for this purpose. It is much faster than Seurat.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;tic()
+markers&amp;lt;- presto::wilcoxauc(pbmc, &#39;seurat_clusters&#39;, assay = &#39;data&#39;)
+toc()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## 0.364 sec elapsed
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;markers&amp;lt;- top_markers(markers, n = 10, auc_min = 0.5, pct_in_min = 20, pct_out_max = 20)
+
+markers
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## # A tibble: 10 x 10
+##     rank `0`      `1`    `2`    `3`      `4`   `5`         `6`   `7`     `8`    
+##    &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;  
+##  1     1 CCR7     S100A8 AQP3   CD79A    GZMA  FCGR3A      GZMB  FCER1A  PPBP   
+##  2     2 PIK3IP1  FCN1   TRAT1  CD79B    CST7  IFITM3      PRF1  CLEC10A NRGN   
+##  3     3 PRKCQ-A… LGALS2 SPOCK2 MS4A1    GZMK  RP11-290F2… GNLY  HLA-DQ… PF4    
+##  4     4 LEF1     CFD    CD27   HLA-DQA1 LYAR  CFD         FGFB… CPVL    SDPR   
+##  5     5 TCF7     GRN    TRADD  HLA-DQB1 GZMM  MS4A7       CST7  HLA-DMB GNG11  
+##  6     6 CD27     MS4A6A CD3G   TCL1A    CD8A  CD68        GZMA  CD33    SPARC  
+##  7     7 MAL      AP1S2  RGCC   LINC009… KLRG1 SPI1        FCGR… CTSH    RGS18  
+##  8     8 RGCC     CD14   CD40LG HLA-DMA  PRF1  RHOC        SPON2 RNASE6  HIST1H…
+##  9     9 CD3G     CD68   LAT    VPREB3   GZMH  HCK         CCL4  KLF4    TPM4   
+## 10    10 LDLRAP1  LGALS3 FLT3LG HLA-DQA2 HOPX  IFI30       APMAP RNF130  GP9
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;doheatmap&#34;&gt;DoHeatmap&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;all_markers&amp;lt;- markers %&amp;gt;%
+  select(-rank) %&amp;gt;% 
+  unclass() %&amp;gt;% 
+  stack() %&amp;gt;%
+  pull(values) %&amp;gt;%
+  unique() %&amp;gt;%
+   .[!is.na(.)]
+DoHeatmap(pbmc, features = all_markers) + NoLegend()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Warning in DoHeatmap(pbmc, features = all_markers): The following features were
+## omitted as they were not found in the scale.data slot for the RNA assay: TPM4,
+## RNF130, KLF4, RNASE6, CTSH, CD33, CPVL, APMAP, HCK, RHOC, RP11-290F20.3, CD8A,
+## GZMM, VPREB3, FLT3LG, LAT, CD40LG, SPOCK2, TRAT1, CD68, CD14, AP1S2, GRN, CD3G,
+## RGCC, CD27, TCF7, LEF1, PRKCQ-AS1, PIK3IP1, CCR7
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/2020-09-10-enhancement-of-scrnaseq-heatmap-using-complexheatmap.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;you see warnings:&amp;ldquo;the following features were omitted as they were not found in the scale.data slot for the RNA assay&amp;rdquo;.&lt;/p&gt;
+
+&lt;h3 id=&#34;replicate-the-heatmap-using-complexheatmap&#34;&gt;replicate the heatmap using Complexheatmap&lt;/h3&gt;
+
+&lt;p&gt;We can go back to the &lt;code&gt;data&lt;/code&gt; slot to get all the genes&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mat&amp;lt;- pbmc[[&amp;quot;RNA&amp;quot;]]@data[all_markers, ] %&amp;gt;% as.matrix()
+
+## scale the rows
+mat&amp;lt;- t(scale(t(mat)))
+
+cluster_anno&amp;lt;- pbmc@meta.data$seurat_clusters
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;map the color to the scaled expression values&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# what&#39;s the value range in the matrix
+quantile(mat, c(0.1, 0.95))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##        10%        95% 
+## -0.5277426  2.3470090
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;Seurat::PurpleAndYellow()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;#FF00FF&amp;quot; &amp;quot;#F400F4&amp;quot; &amp;quot;#EA00EA&amp;quot; &amp;quot;#DF00DF&amp;quot; &amp;quot;#D500D5&amp;quot; &amp;quot;#CA00CA&amp;quot; &amp;quot;#BF00BF&amp;quot;
+##  [8] &amp;quot;#B500B5&amp;quot; &amp;quot;#AA00AA&amp;quot; &amp;quot;#9F009F&amp;quot; &amp;quot;#950095&amp;quot; &amp;quot;#8A008A&amp;quot; &amp;quot;#800080&amp;quot; &amp;quot;#750075&amp;quot;
+## [15] &amp;quot;#6A006A&amp;quot; &amp;quot;#600060&amp;quot; &amp;quot;#550055&amp;quot; &amp;quot;#4A004A&amp;quot; &amp;quot;#400040&amp;quot; &amp;quot;#350035&amp;quot; &amp;quot;#2B002B&amp;quot;
+## [22] &amp;quot;#200020&amp;quot; &amp;quot;#150015&amp;quot; &amp;quot;#0B000B&amp;quot; &amp;quot;#000000&amp;quot; &amp;quot;#000000&amp;quot; &amp;quot;#0B0B00&amp;quot; &amp;quot;#151500&amp;quot;
+## [29] &amp;quot;#202000&amp;quot; &amp;quot;#2B2B00&amp;quot; &amp;quot;#353500&amp;quot; &amp;quot;#404000&amp;quot; &amp;quot;#4A4A00&amp;quot; &amp;quot;#555500&amp;quot; &amp;quot;#606000&amp;quot;
+## [36] &amp;quot;#6A6A00&amp;quot; &amp;quot;#757500&amp;quot; &amp;quot;#808000&amp;quot; &amp;quot;#8A8A00&amp;quot; &amp;quot;#959500&amp;quot; &amp;quot;#9F9F00&amp;quot; &amp;quot;#AAAA00&amp;quot;
+## [43] &amp;quot;#B5B500&amp;quot; &amp;quot;#BFBF00&amp;quot; &amp;quot;#CACA00&amp;quot; &amp;quot;#D4D400&amp;quot; &amp;quot;#DFDF00&amp;quot; &amp;quot;#EAEA00&amp;quot; &amp;quot;#F4F400&amp;quot;
+## [50] &amp;quot;#FFFF00&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## make the black color map to 0. the yellow map to highest and the purle map to the lowest
+col_fun = circlize::colorRamp2(c(-1, 0, 3), c(&amp;quot;#FF00FF&amp;quot;, &amp;quot;black&amp;quot;, &amp;quot;#FFFF00&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;plot the heatmap&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;Heatmap(mat, name = &amp;quot;Expression&amp;quot;,  
+        column_split = factor(cluster_anno),
+        cluster_columns = TRUE,
+        show_column_dend = FALSE,
+        cluster_column_slices = TRUE,
+        column_title_gp = gpar(fontsize = 8),
+        column_gap = unit(0.5, &amp;quot;mm&amp;quot;),
+        cluster_rows = TRUE,
+        show_row_dend = FALSE,
+        col = col_fun,
+        row_names_gp = gpar(fontsize = 4),
+        column_title_rot = 90,
+        top_annotation = HeatmapAnnotation(foo = anno_block(gp = gpar(fill = scales::hue_pal()(9)))),
+        show_column_names = FALSE,
+        use_raster = TRUE,
+        raster_quality = 4)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/post/2020-09-10-enhancement-of-scrnaseq-heatmap-using-complexheatmap.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In addition to the capability to plot all the genes, one can cluster the rows (genes) and the columns (cells) within each slice (cell type), and slices can be further clustered as well.&lt;/p&gt;
+
+&lt;p&gt;Several other notes:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;When you have too many cells (&amp;gt; 10,000), the &lt;code&gt;use_raster&lt;/code&gt; option really helps. Also consider downsample the Seurat object to a smaller number of cells for plotting the heatmap. Your screen resolution is not as high as 300,000 pixels if you have 300,000 cells (columns).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Please read &lt;a href=&#34;https://jokergoo.github.io/2020/06/30/rasterization-in-complexheatmap/&#34; target=&#34;_blank&#34;&gt;https://jokergoo.github.io/2020/06/30/rasterization-in-complexheatmap/&lt;/a&gt;
+and &lt;a href=&#34;https://gdevailly.netlify.app/post/plotting-big-matrices-in-r/&#34; target=&#34;_blank&#34;&gt;Plotting heatmaps from big matrices in R&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;check &lt;a href=&#34;https://github.com/stemangiola/tidyHeatmap&#34; target=&#34;_blank&#34;&gt;tidyHeatmap&lt;/a&gt; built upon &lt;code&gt;Complexheatmap&lt;/code&gt; for tidy dataframe.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/YuLab-SMU/aplot&#34; target=&#34;_blank&#34;&gt;aplot&lt;/a&gt; from Guangchuang Yu.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rlbarter/superheat&#34; target=&#34;_blank&#34;&gt;superheat&lt;/a&gt; from Rebecca Barter.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
       <title>dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </title>
       <link>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</link>
       <pubDate>Wed, 26 Aug 2020 00:00:00 +0000</pubDate>
@@ -1125,166 +1351,6 @@ p1 / p2 + plot_layout(guides = &amp;quot;collect&amp;quot;)&lt;/code&gt;&lt;/pre
       
       <guid>/publication/2020-02-19-lats-ctcf/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>cellranger mk reference with transgenes</title>
-      <link>/post/cellranger-mk-reference-with-transgenes/</link>
-      <pubDate>Tue, 18 Feb 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/post/cellranger-mk-reference-with-transgenes/</guid>
-      <description>
-
-&lt;h3 id=&#34;the-problem&#34;&gt;The problem&lt;/h3&gt;
-
-&lt;p&gt;I am working on some 10x scRNAseq data from transgenic mouse. The cells express &lt;a href=&#34;https://www.fpbase.org/protein/tdtomato/&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;Tdtomato&lt;/code&gt;&lt;/a&gt; and &lt;a href=&#34;https://en.wikipedia.org/wiki/Cre-Lox_recombination&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;Cre&lt;/code&gt;&lt;/a&gt; genes. I need to add those to the &lt;code&gt;cellranger&lt;/code&gt; reference to get the counts for those two genes.&lt;/p&gt;
-
-&lt;h3 id=&#34;the-journey-to-the-solution&#34;&gt;The journey to the solution&lt;/h3&gt;
-
-&lt;p&gt;Following &lt;a href=&#34;https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#addgene&#34; target=&#34;_blank&#34;&gt;https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#addgene&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;I created a &lt;code&gt;fasta&lt;/code&gt; file for the two transgenes: &lt;code&gt;tdTomato&lt;/code&gt; and &lt;code&gt;Cre&lt;/code&gt;:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;tdtomato_cre.fa&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt;tdtomato dna:chromosome chromosome:GRCm38:tdtomato:1:1431:1 REF
-ATGGTGAGCAAGGGCGAGGAGGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGGGGCATGGCACCGGCAGCACCGGCAGCGGCAGCTCCGGCACCGCCTCCTCCGAGGACAACAACATGGCCGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGTACGGCATGGACGAGCTGTACAAGTAA
-&amp;gt;cre dna:chromosome chromosome:GRCm38:cre:1:1032:1 REF
-ATGGCCAATTTACTGACCGTACACCAAAATTTGCCTGCATTACCGGTCGATGCAACGAGTGATGAGGTTCGCAAGAACCTGATGGACATGTTCAGGGATCGCCAGGCGTTTTCTGAGCATACCTGGAAAATGCTTCTGTCCGTTTGCCGGTCGTGGGCGGCATGGTGCAAGTTGAATAACCGGAAATGGTTTCCCGCAGAACCTGAAGATGTTCGCGATTATCTTCTATATCTTCAGGCGCGCGGTCTGGCAGTAAAAACTATCCAGCAACATTTGGGCCAGCTAAACATGCTTCATCGTCGGTCCGGGCTGCCACGACCAAGTGACAGCAATGCTGTTTCACTGGTTATGCGGCGGATCCGAAAAGAAAACGTTGATGCCGGTGAACGTGCAAAACAGGCTCTAGCGTTCGAACGCACTGATTTCGACCAGGTTCGTTCACTCATGGAAAATAGCGATCGCTGCCAGGATATACGTAATCTGGCATTTCTGGGGATTGCTTATAACACCCTGTTACGTATAGCCGAAATTGCCAGGATCAGGGTTAAAGATATCTCACGTACTGACGGTGGGAGAATGTTAATCCATATTGGCAGAACGAAAACGCTGGTTAGCACCGCAGGTGTAGAGAAGGCACTTAGCCTGGGGGTAACTAAACTGGTCGAGCGATGGATTTCCGTCTCTGGTGTAGCTGATGATCCGAATAACTACCTGTTTTGCCGGGTCAGAAAAAATGGTGTTGCCGCGCCATCTGCCACCAGCCAGCTATCAACTCGCGCCCTGGAAGGGATTTTTGAAGCAACTCATCGATTGATTTACGGCGCTAAGGATGACTCTGGTCAGAGATACCTGGCCTGGTCTGGACACAGTGCCCGTGTCGGAGCCGCGCGAGATATGGCCCGCGCTGGAGTTTCAATACCGGAGATCATGCAAGCTGGTGGCTGGACCAATGTAAATATTGTCATGAACTATATCCGTAACCTGGATAGTGAAACAGGGGCAATGGTGCGCCTGCTGGAAGATGGCGATTAG
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;edit-the-genome-fa-file&#34;&gt;edit the genome.fa file&lt;/h4&gt;
-
-&lt;p&gt;The original mouse &lt;code&gt;genome.fa&lt;/code&gt; file is wrapped with 60 based per line, need to convert the transgene fasta to the same format.&lt;/p&gt;
-
-&lt;p&gt;use &lt;a href=&#34;https://github.com/lh3/seqtk&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;seqtk&lt;/code&gt;&lt;/a&gt; from Heng Li.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;seqtk seq -l 60 tdtomato_cre.fa  &amp;gt; tdtomato_cre_multi.fa
-
-mkdir ../../mm10-2.1.0_premrna_tdtomato_cre
-
-cat genome.fa tdtomato_cre_multi.fa &amp;gt; ../../mm10-2.1.0_premrna_tdtomato_cre/genome.fa
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;edit-the-gtf-file&#34;&gt;edit the gtf file&lt;/h4&gt;
-
-&lt;p&gt;create a tdtomato_cre.gtf:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;tdtomato        custom  exon    1       1431    .       +       .       gene_id &amp;quot;ENSMUSGtdtomato&amp;quot;; gene_version &amp;quot;1&amp;quot;; transcript_id &amp;quot;tdtomato1&amp;quot;; gene_name &amp;quot;Tdtomato&amp;quot;
-cre     custom  exon    1       1032    .       +       .       gene_id &amp;quot;ENSMUSGcre&amp;quot;; gene_version &amp;quot;1&amp;quot;; transcript_id &amp;quot;cre1&amp;quot;; gene_name &amp;quot;Cre&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Be careful with the tabs and spaces. The &lt;code&gt;attributes&lt;/code&gt; column is at column 9 and separate the entries with space.
-concatenate the original &lt;code&gt;genes.gtf&lt;/code&gt; with the transgene gtf:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat genes.gtf tdtomato_cre.gtf &amp;gt; ../../mm10-2.1.0_premrna_tdtomato_cre/genes.gtf
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;cellranger-mk-reference&#34;&gt;cellranger  mk reference&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cellranger mkref --genome=mm10-2.1.0_premrna_tdtomato_cre --fasta genome.fa --genes genes.gtf --nthreads 12 --memgb 30
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;the-problem-1&#34;&gt;The problem&lt;/h3&gt;
-
-&lt;p&gt;After &lt;code&gt;cellranger-count&lt;/code&gt; and I used &lt;code&gt;Seurat&lt;/code&gt; to visualize the expression levels of &lt;code&gt;Cre&lt;/code&gt; and &lt;code&gt;Tdtomato&lt;/code&gt;. I see no cells express Tdtomato and very few cells express &lt;code&gt;Cre&lt;/code&gt;, which is very strange given that all cells are &lt;code&gt;red&lt;/code&gt; under microscope and we sorted out the cells using &lt;code&gt;Tdtomato&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;I googled and found some other people have the same problem.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://bioinformatics.stackexchange.com/questions/6694/scrna-seq-10x-cellranger-pipelines-low-custom-tdtomato-gene-content-looking-for&#34; target=&#34;_blank&#34;&gt;https://bioinformatics.stackexchange.com/questions/6694/scrna-seq-10x-cellranger-pipelines-low-custom-tdtomato-gene-content-looking-for&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://bioinformatics.stackexchange.com/questions/4596/no-counts-for-added-gene-in-cellranger-scrna-seq&#34; target=&#34;_blank&#34;&gt;https://bioinformatics.stackexchange.com/questions/4596/no-counts-for-added-gene-in-cellranger-scrna-seq&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;I then went to the &lt;code&gt;bam&lt;/code&gt; file:&lt;/p&gt;
-
-&lt;p&gt;only 34 reads mapped to &lt;code&gt;Tdtomato&lt;/code&gt; gene&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;samtools view possorted_genome_bam.bam tdtomato | wc -l
-34
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;There are more for &lt;code&gt;Cre&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;samtools view possorted_genome_bam.bam cre  | wc -l
-6166
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This is in agreement of the &lt;code&gt;FeaturePlot&lt;/code&gt; results.&lt;/p&gt;
-
-&lt;p&gt;From the two links above, I realized 10x scRNAseq we are using is a 3&amp;rsquo; technology, only the 3 prime sequences are captured and sequenced. For the &lt;code&gt;Cre&lt;/code&gt; and &lt;code&gt;Tdtomato&lt;/code&gt; genes, I will need to add the 3&amp;rsquo;UTR sequences as well. Otherwise a lot of the reads will not be mapped.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;This is particular true for poorly annotated genome if you are working with non-model organisms. If the &lt;code&gt;gtf&lt;/code&gt; annotation of the 3&amp;rsquo;UTR is not complete or too short, you will get very low mapping rate for the genes.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;let-s-fix-the-problem&#34;&gt;Let&amp;rsquo;s fix the problem&lt;/h3&gt;
-
-&lt;p&gt;The problem is that no one knows what is the 3&amp;rsquo; UTR of the transgenes. I have to somehow derive it from the reads.
-I asked on twitter and &lt;a href=&#34;https://twitter.com/RiyueSunnyBao&#34; target=&#34;_blank&#34;&gt;Sunney Bao&lt;/a&gt; suggested &lt;a href=&#34;https://colibread.inria.fr/software/mapsembler2/&#34; target=&#34;_blank&#34;&gt;mapsember2&lt;/a&gt; for this purpose. What &lt;code&gt;mapsember2&lt;/code&gt; does is extending the &lt;code&gt;Tdtomato&lt;/code&gt; fasta based on the fastq reads. I see it something like a local reassembly based on some baits.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;
-conda create -n mapsembler -c bioconda mapsembler2
-conda activate mapsembler
-
-run_mapsembler2_pipeline.sh -s tdtomato_cre.fa -r &amp;quot;Sample1_S1_L001_R2_001.fastq.gz Sample1_S1_L002_R2_001.fastq.gz&amp;quot; -t 1 -p cre_tdtomato
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Depending on how many reads you have, it can take long. This is a novaseq run, it took me 2 days to finish running.
-After that, in the &lt;code&gt;cre_tdtomato&lt;/code&gt; folder, there is a file named &lt;code&gt;cre_tdtomato_original_k_31_c_5_t_1.fasta&lt;/code&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat cre_tdtomato_original_k_31_c_5_t_1.fasta
-&amp;gt;cre
-ATGGCCAATTTACTGACCGTACACCAAAATTTGCCTGCATTACCGGTCGATGCAACGAGTGATGAGGTTCGCAAGAACCTGATGGACATGTTCAGGGATCGCCAGGCGTTTTCTGAGCATACCTGGAAAATGCTTCTGTCCGTTTGCCGGTCGTGGGCGGCATGGTGCAAGTTGAATAACCGGAAATGGTTTCCCGCAGAACCTGAAGATGTTCGCGATTATCTTCTATATCTTCAGGCGCGCGGTCTGGCAGTAAAAACTATCCAGCAACATTTGGGCCAGCTAAACATGCTTCATCGTCGGTCCGGGCTGCCACGACCAAGTGACAGCAATGCTGTTTCACTGGTTATGCGGCGGATCCGAAAAGAAAACGTTGATGCCGGTGAACGTGCAAAACAGGCTCTAGCGTTCGAACGCACTGATTTCGACCAGGTTCGTTCACTCATGGAAAATAGCGATCGCTGCCAGGATATACGTAATCTGGCATTTCTGGGGATTGCTTATAACACCCTGTTACGTATAGCCGAAATTGCCAGGATCAGGGTTAAAGATATCTCACGTACTGACGGTGGGAGAATGTTAATCCATATTGGCAGAACGAAAACGCTGGTTAGCACCGCAGGTGTAGAGAAGGCACTTAGCCTGGGGGTAACTAAACTGGTCGAGCGATGGATTTCCGTCTCTGGTGTAGCTGATGATCCGAATAACTACCTGTTTTGCCGGGTCAGAAAAAATGGTGTTGCCGCGCCATCTGCCACCAGCCAGCTATCAACTCGCGCCCTGGAAGGGATTTTTGAAGCAACTCATCGATTGATTTACGGCGCTAAGGATGACTCTGGTCAGAGATACCTGGCCTGGTCTGGACACAGTGCCCGTGTCGGAGCCGCGCGAGATATGGCCCGCGCTGGAGTTTCAATACCGGAGATCATGCAAGCTGGTGGCTGGACCAATGTAAATATTGTCATGAACTATATCCGTAACCTGGATAGTGAAACAGGGGCAATGGTGCGCCTGCTGGAAGATGGCGATTAG
-&amp;gt;right_extension_0
-ATGGTGCGCCTGCTGGAAGATGGCGATTAGCCATT
-&amp;gt;tdtomato
-ATGGTGAGCAAGGGCGAGGAGGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGGGGCATGGCACCGGCAGCACCGGCAGCGGCAGCTCCGGCACCGCCTCCTCCGAGGACAACAACATGGCCGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGTACGGCATGGACGAGCTGTACAAGTAA
-&amp;gt;left_extension_0
-CTTCGTATAGCATACATTATACGAAGTTATCACGCGCCGGCCGGCCTCTAGATTACCGGTCTCGCGAAGCCACCATGCCACCCAAAAAGAAAAGAAAGGTGGGCATGGTGAGCAAGGGCGAGGAGGTCATCAAA
-&amp;gt;right_extension_0
-CTGTACGGCATGGACGAGCTGTACAAGTAATTCGCGAGTGGCGCGTTAAGTGCAACACGTGAAGGCCGGCCCTGCAGGAATTCGATATCAAGCTTATCGATAATCAACCTCTGGATTACAAAATTTGTGAAAGATTGACTGGTATTCTTAACTATGTTGCTCCTTTTACGCTATGTGGATACGCTGCTTTAATGCCTTTGTATCATGCTATTGCTTCCCGTATGGCTTTCATTTTCTCCTCCTTGTATAAATCCTGGTTGCTGTCTCTTTATGAGGAGTTGTGGCCCGTTGTCAGGCAACGTGGCGTGGTGTGCACTGTGTTTGCTGACGCAACCCCCACTGGTTGGGGCATTGCCACCACCTGTCAGCTCCTTTCCGGGACTTTCGCTTTCCCCCTCCCTATTGCCACGGCGGAACTCATCGCCGCCTGCCTTGCCCGCTGCTGGACA
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;code&gt;tdtomato&lt;/code&gt; get extended a lot and &lt;code&gt;Cre&lt;/code&gt; gets only a bit (right_extension_0).
-I did a &lt;code&gt;blastn&lt;/code&gt; and want to see what is the sequence that was extended.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/posts_img/blastn.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;It aligned to a &lt;code&gt;AAV vector&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;I was excited at this step. With Tdtomato extending that much, I should get a lot more counts.&lt;/p&gt;
-
-&lt;h3 id=&#34;remake-the-fasta-and-gtf&#34;&gt;remake the fasta and gtf&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;gt;tdtomato dna:chromosome chromosome:GRCm38:tdtomato:1:1880:1 REF
-ATGGTGAGCAAGGGCGAGGAGGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGGGGCATGGCACCGGCAGCACCGGCAGCGGCAGCTCCGGCACCGCCTCCTCCGAGGACAACAACATGGCCGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGTACGGCATGGACGAGCTGTACAAGTAACTGTACGGCATGGACGAGCTGTACAAGTAATTCGCGAGTGGCGCGTTAAGTGCAACACGTGAAGGCCGGCCCTGCAGGAATTCGATATCAAGCTTATCGATAATCAACCTCTGGATTACAAAATTTGTGAAAGATTGACTGGTATTCTTAACTATGTTGCTCCTTTTACGCTATGTGGATACGCTGCTTTAATGCCTTTGTATCATGCTATTGCTTCCCGTATGGCTTTCATTTTCTCCTCCTTGTATAAATCCTGGTTGCTGTCTCTTTATGAGGAGTTGTGGCCCGTTGTCAGGCAACGTGGCGTGGTGTGCACTGTGTTTGCTGACGCAACCCCCACTGGTTGGGGCATTGCCACCACCTGTCAGCTCCTTTCCGGGACTTTCGCTTTCCCCCTCCCTATTGCCACGGCGGAACTCATCGCCGCCTGCCTTGCCCGCTGCTGGACA
-&amp;gt;cre dna:chromosome chromosome:GRCm38:cre:1:1067:1 REF
-ATGGCCAATTTACTGACCGTACACCAAAATTTGCCTGCATTACCGGTCGATGCAACGAGTGATGAGGTTCGCAAGAACCTGATGGACATGTTCAGGGATCGCCAGGCGTTTTCTGAGCATACCTGGAAAATGCTTCTGTCCGTTTGCCGGTCGTGGGCGGCATGGTGCAAGTTGAATAACCGGAAATGGTTTCCCGCAGAACCTGAAGATGTTCGCGATTATCTTCTATATCTTCAGGCGCGCGGTCTGGCAGTAAAAACTATCCAGCAACATTTGGGCCAGCTAAACATGCTTCATCGTCGGTCCGGGCTGCCACGACCAAGTGACAGCAATGCTGTTTCACTGGTTATGCGGCGGATCCGAAAAGAAAACGTTGATGCCGGTGAACGTGCAAAACAGGCTCTAGCGTTCGAACGCACTGATTTCGACCAGGTTCGTTCACTCATGGAAAATAGCGATCGCTGCCAGGATATACGTAATCTGGCATTTCTGGGGATTGCTTATAACACCCTGTTACGTATAGCCGAAATTGCCAGGATCAGGGTTAAAGATATCTCACGTACTGACGGTGGGAGAATGTTAATCCATATTGGCAGAACGAAAACGCTGGTTAGCACCGCAGGTGTAGAGAAGGCACTTAGCCTGGGGGTAACTAAACTGGTCGAGCGATGGATTTCCGTCTCTGGTGTAGCTGATGATCCGAATAACTACCTGTTTTGCCGGGTCAGAAAAAATGGTGTTGCCGCGCCATCTGCCACCAGCCAGCTATCAACTCGCGCCCTGGAAGGGATTTTTGAAGCAACTCATCGATTGATTTACGGCGCTAAGGATGACTCTGGTCAGAGATACCTGGCCTGGTCTGGACACAGTGCCCGTGTCGGAGCCGCGCGAGATATGGCCCGCGCTGGAGTTTCAATACCGGAGATCATGCAAGCTGGTGGCTGGACCAATGTAAATATTGTCATGAACTATATCCGTAACCTGGATAGTGAAACAGGGGCAATGGTGCGCCTGCTGGAAGATGGCGATTAGATGGTGCGCCTGCTGGAAGATGGCGATTAGCCATT
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;gtf&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;tdtomato        custom  exon    1       1880    .       +       .       gene_id &amp;quot;ENSMUSGtdtomato&amp;quot;; gene_version &amp;quot;1&amp;quot;; transcript_id &amp;quot;tdtomato1&amp;quot;; gene_name &amp;quot;Tdtomato&amp;quot;
-cre     custom  exon    1       1067    .       +       .       gene_id &amp;quot;ENSMUSGcre&amp;quot;; gene_version &amp;quot;1&amp;quot;; transcript_id &amp;quot;cre1&amp;quot;; gene_name &amp;quot;Cre&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Unfortunately, after I remake the reference with the extended fasta and do a cellranger count. I still get very few number of cells express &lt;code&gt;tdtomato&lt;/code&gt;.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## after reading in the sparse matrix
-library(Seurat)
-Sample1&amp;lt;- Read10X_h5(filename = &amp;quot;data/cre_tdtomato/Sample1/filtered_feature_bc_matrix.h5&amp;quot;)
-
-&amp;gt; table(Sample1[&amp;quot;Tdtomato&amp;quot;, ] ==0)
-
-FALSE  TRUE 
-  154 10783 
-&amp;gt; table(Sample1[&amp;quot;Cre&amp;quot;, ] ==0)
-
-FALSE  TRUE 
-  195 10742 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This is bioinformatics: trails and errors. What else can possibly go wrong? Can you please share your experience?&lt;/p&gt;
 </description>
     </item>
     

@@ -1,0 +1,155 @@
+---
+title: Enhancement of scRNAseq heatmap using complexheatmap
+author: Ming Tang
+date: '2020-09-10'
+slug: enhancement-of-scrnaseq-heatmap-using-complexheatmap
+categories:
+  - bioinformatics
+  - R
+tags:
+  - scRNAseq
+header:
+  caption: ''
+  image: ''
+  preview: yes
+---
+
+When it comes to make a heatmap, [`ComplexHeatmap`](https://jokergoo.github.io/ComplexHeatmap-reference/book/) by Zuguang Gu is my favorite. Check it out! You will be amazed on how flexible it is and the documentation is in top niche.
+
+For Single-cell RNAseq, `Seurat` provides a `DoHeatmap` function using `ggplot2`. There are two limitations:
+
+* when your genes are not in the top variable gene list, the `scale.data` will not have that gene and `DoHeatmap` will drop those genes.
+
+* `ggplot2` does not support clustering of the rows or columns.
+
+
+I highly recommend you to read two posts I wrote as well on heatmap:
+
+* [A tale of two heatmap functions](https://rpubs.com/crazyhottommy/a-tale-of-two-heatmap-functions)
+
+* [Heatmap demystified](https://rpubs.com/crazyhottommy/heatmap_demystified)
+
+Let me walk you through how I replicate and enhance the Seurat version of heatmap using `ComplexHeatmap`.
+
+follow the tutorial https://satijalab.org/seurat/v3.2/pbmc3k_tutorial.html
+
+```{r message=FALSE, warning=FALSE}
+library(dplyr)
+library(Seurat)
+library(ComplexHeatmap)
+# https://github.com/immunogenomics/presto
+library(presto)
+library(tictoc)
+```
+
+
+```{r message=FALSE}
+# Load the PBMC dataset
+pbmc.data <- Read10X(data.dir = "~/Downloads/filtered_gene_bc_matrices/hg19/")
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+pbmc
+
+pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT-")
+
+## ScaleData uses top variable genes only
+pbmc<- pbmc %>% 
+  NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+  FindVariableFeatures(selection.method = "vst", nfeatures = 2000) %>%
+  ScaleData() %>%
+  RunPCA() %>%
+  FindNeighbors(dims = 1:10) %>%
+  FindClusters(resolution = 0.5) %>%
+  RunUMAP(dims = 1:10)
+
+DimPlot(pbmc, reduction = "umap")  
+```
+
+The UMAP plot looks a bit different from the tutorial, but the structure is similar enough (You see how difficult it is to reproduce the exactly the same figure even with the same code:)).
+
+Let's find marker genes for each cluster. I like `presto` for this purpose. It is much faster than Seurat.
+
+```{r}
+tic()
+markers<- presto::wilcoxauc(pbmc, 'seurat_clusters', assay = 'data')
+toc()
+
+markers<- top_markers(markers, n = 10, auc_min = 0.5, pct_in_min = 20, pct_out_max = 20)
+
+markers
+```
+
+### DoHeatmap 
+
+```{r}
+all_markers<- markers %>%
+  select(-rank) %>% 
+  unclass() %>% 
+  stack() %>%
+  pull(values) %>%
+  unique() %>%
+   .[!is.na(.)]
+DoHeatmap(pbmc, features = all_markers) + NoLegend()
+```
+
+you see warnings:"the following features were omitted as they were not found in the scale.data slot for the RNA assay".
+
+### replicate the heatmap using Complexheatmap
+
+We can go back to the `data` slot to get all the genes
+```{r}
+mat<- pbmc[["RNA"]]@data[all_markers, ] %>% as.matrix()
+
+## scale the rows
+mat<- t(scale(t(mat)))
+
+cluster_anno<- pbmc@meta.data$seurat_clusters
+
+```
+
+map the color to the scaled expression values 
+
+```{r}
+# what's the value range in the matrix
+quantile(mat, c(0.1, 0.95))
+
+Seurat::PurpleAndYellow()
+## make the black color map to 0. the yellow map to highest and the purle map to the lowest
+col_fun = circlize::colorRamp2(c(-1, 0, 3), c("#FF00FF", "black", "#FFFF00"))
+```
+
+plot the heatmap
+
+```{r}
+Heatmap(mat, name = "Expression",  
+        column_split = factor(cluster_anno),
+        cluster_columns = TRUE,
+        show_column_dend = FALSE,
+        cluster_column_slices = TRUE,
+        column_title_gp = gpar(fontsize = 8),
+        column_gap = unit(0.5, "mm"),
+        cluster_rows = TRUE,
+        show_row_dend = FALSE,
+        col = col_fun,
+        row_names_gp = gpar(fontsize = 4),
+        column_title_rot = 90,
+        top_annotation = HeatmapAnnotation(foo = anno_block(gp = gpar(fill = scales::hue_pal()(9)))),
+        show_column_names = FALSE,
+        use_raster = TRUE,
+        raster_quality = 4)
+```
+
+In addition to the capability to plot all the genes, one can cluster the rows (genes) and the columns (cells) within each slice (cell type), and slices can be further clustered as well.
+
+Several other notes:
+
+* When you have too many cells (> 10,000), the `use_raster` option really helps. Also consider downsample the Seurat object to a smaller number of cells for plotting the heatmap. Your screen resolution is not as high as 300,000 pixels if you have 300,000 cells (columns).
+
+Please read https://jokergoo.github.io/2020/06/30/rasterization-in-complexheatmap/
+and [Plotting heatmaps from big matrices in R](https://gdevailly.netlify.app/post/plotting-big-matrices-in-r/)
+
+* check [tidyHeatmap](https://github.com/stemangiola/tidyHeatmap) built upon `Complexheatmap` for tidy dataframe.
+
+* [aplot](https://github.com/YuLab-SMU/aplot) from Guangchuang Yu.
+
+* [superheat](https://github.com/rlbarter/superheat) from Rebecca Barter.
+
