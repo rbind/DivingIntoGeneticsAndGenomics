@@ -116,7 +116,7 @@ toc()
 ```
 
 ```
-## 0.364 sec elapsed
+## 0.419 sec elapsed
 ```
 
 ```r
@@ -165,7 +165,7 @@ DoHeatmap(pbmc, features = all_markers) + NoLegend()
 
 <img src="/post/2020-09-10-enhancement-of-scrnaseq-heatmap-using-complexheatmap.en_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 
-you see warnings:"the following features were omitted as they were not found in the scale.data slot for the RNA assay".
+you see warnings:"the following features were omitted as they were not found in the scale.data slot for the RNA assay". The color mapping looks different from the tutorial. It could be different Seurat version uses different parameters. I have not check the code base change.
 
 ### replicate the heatmap using Complexheatmap
 
@@ -180,7 +180,7 @@ mat<- t(scale(t(mat)))
 cluster_anno<- pbmc@meta.data$seurat_clusters
 ```
 
-map the color to the scaled expression values 
+We can explicitly map the colors to the scaled expression values 
 
 
 ```r

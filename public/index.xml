@@ -108,7 +108,7 @@ markers&amp;lt;- presto::wilcoxauc(pbmc, &#39;seurat_clusters&#39;, assay = &#39
 toc()
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;pre&gt;&lt;code&gt;## 0.364 sec elapsed
+&lt;pre&gt;&lt;code&gt;## 0.419 sec elapsed
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;markers&amp;lt;- top_markers(markers, n = 10, auc_min = 0.5, pct_in_min = 20, pct_out_max = 20)
@@ -152,7 +152,7 @@ DoHeatmap(pbmc, features = all_markers) + NoLegend()
 
 &lt;p&gt;&lt;img src=&#34;/post/2020-09-10-enhancement-of-scrnaseq-heatmap-using-complexheatmap.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;you see warnings:&amp;ldquo;the following features were omitted as they were not found in the scale.data slot for the RNA assay&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;you see warnings:&amp;ldquo;the following features were omitted as they were not found in the scale.data slot for the RNA assay&amp;rdquo;. The color mapping looks different from the tutorial. It could be different Seurat version uses different parameters. I have not check the code base change.&lt;/p&gt;
 
 &lt;h3 id=&#34;replicate-the-heatmap-using-complexheatmap&#34;&gt;replicate the heatmap using Complexheatmap&lt;/h3&gt;
 
@@ -166,7 +166,7 @@ mat&amp;lt;- t(scale(t(mat)))
 cluster_anno&amp;lt;- pbmc@meta.data$seurat_clusters
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;map the color to the scaled expression values&lt;/p&gt;
+&lt;p&gt;We can explicitly map the colors to the scaled expression values&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# what&#39;s the value range in the matrix
 quantile(mat, c(0.1, 0.95))
