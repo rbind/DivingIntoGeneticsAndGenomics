@@ -44,4 +44,4 @@ Roel moved to Jackson lab for Genomics Medicine in October 2016. To apply my ski
 
 I joined [Harvard Faculty of Arts and Sciences informatics](https://informatics.fas.harvard.edu) team on October 1, 2018 as a bioinformatics scientist working closely with [Dr.Dulac lab](https://www.dulaclab.com) to catalog and understand the diversity and function of cell types in the mouse brain using single-cell RNA-seq and other cutting edge techniques.
 
-I am now a senior scientist in [Dr.X. Shirley Liu](https://liulab-dfci.github.io/) group. My current focus is using (sc-)genomics, (sc-)transcriptomics and (sc-)epigenomics to study Cancer Immunology and working on the [Cancer Immunologic Data Commons (CIDC)](https://cimac-network.org/cidc/) project.
+I am now a senior scientist in [Dana-Farber Cancer Institute](https://ds.dfci.harvard.edu/). My current focus is using genomics, (single-cell) transcriptomics and (single-cell) epigenomics to study Cancer Immunology and leading the bioinformatics effort for the [Cancer Immunologic Data Commons (CIDC)](https://cimac-network.org/cidc/) project.
