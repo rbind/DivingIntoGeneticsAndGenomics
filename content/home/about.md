@@ -34,6 +34,8 @@ weight = 5
 
 # About me
 
+I am now a senior scientist in [Dana-Farber Cancer Institute](https://ds.dfci.harvard.edu/). My current focus is using genomics, (single-cell) transcriptomics and (single-cell) epigenomics to study Cancer Immunology and leading the bioinformatics effort for the [Cancer Immunologic Data Commons (CIDC)](https://cimac-network.org/cidc/) project.
+
 I am a computational biologist working on genomics, epigenomics and transcriptomics. I use R primary for data wrangling and visualization in the [tidyverse](https://www.tidyverse.org/) ecosystem; I use python for writing [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflows and reformatting data; I am a unix geek learning shell tricks almost every month; I care about reproducible research and open science.
 
 I also have a great interest in promoting open science and reforming bioinformatics education. I frequently share my thoughts on [twitter](https://twitter.com/tangming2005) and tips in my [blog post](http://crazyhottommy.blogspot.com/). I am a certified instructor for the [carpentries](https://carpentries.org/).
@@ -44,4 +46,4 @@ Roel moved to Jackson lab for Genomics Medicine in October 2016. To apply my ski
 
 I joined [Harvard Faculty of Arts and Sciences informatics](https://informatics.fas.harvard.edu) team on October 1, 2018 as a bioinformatics scientist working closely with [Dr.Dulac lab](https://www.dulaclab.com) to catalog and understand the diversity and function of cell types in the mouse brain using single-cell RNA-seq and other cutting edge techniques.
 
-I am now a senior scientist in [Dana-Farber Cancer Institute](https://ds.dfci.harvard.edu/). My current focus is using genomics, (single-cell) transcriptomics and (single-cell) epigenomics to study Cancer Immunology and leading the bioinformatics effort for the [Cancer Immunologic Data Commons (CIDC)](https://cimac-network.org/cidc/) project.
+
