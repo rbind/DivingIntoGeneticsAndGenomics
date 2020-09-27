@@ -11,6 +11,22 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>CANCER IMMUNOLOGIC DATA COMMONS(CIDC)</title>
+      <link>/project/cimac-cidc/</link>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      
+      <guid>/project/cimac-cidc/</guid>
+      <description>&lt;p&gt;The &lt;a href=&#34;https://cimac-network.org/&#34; target=&#34;_blank&#34;&gt;CIMAC-CIDC Network&lt;/a&gt; is an NCI Cancer Moonshot initiative that provides cutting-edge technology and expertise in genomic, proteomic, and functional molecular analysis to enhance clinical trials in cancer immune therapies.&lt;/p&gt;
+
+&lt;p&gt;The four Cancer Immune Monitoring and Analysis Centers (CIMACs) are at Dana-Farber Cancer Institute, Stanford University, MD Anderson, and Mount Sinai.&lt;/p&gt;
+
+&lt;p&gt;I am now leading the bioinformatics effort in the &lt;a href=&#34;https://cimac-network.org/cidc/&#34; target=&#34;_blank&#34;&gt;Cancer Immunologic Data Commons(CIDC)&lt;/a&gt; as part of the NCI Cancer Moonshot project on cancer immunotherapy.&lt;/p&gt;
+
+&lt;p&gt;The CIDC bioinformatics team is responsible for pre-processing the high-throughput sequencing &lt;a href=&#34;https://cimac-network.org/assays/&#34; target=&#34;_blank&#34;&gt;clincal trail data&lt;/a&gt; from the CIMAC centers using Snakemake pipelines. We will coordinate and facilitate data analysis, especially to lead cross-trial analysis at the end of this project, with the goal of identifying better immunotherapy response biomarkers to optimize cancer immunotherapy treatment. We work closely with the CIDC software team led by Ethan Cerami and James Linsay at Dana-Farber Cancer Institute.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Enhancement of scRNAseq heatmap using complexheatmap</title>
       <link>/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/</link>
       <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
@@ -1341,16 +1357,6 @@ p1 / p2 + plot_layout(guides = &amp;quot;collect&amp;quot;)&lt;/code&gt;&lt;/pre
 &lt;/ul&gt;
 &lt;p&gt;Comment below!&lt;/p&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LATS kinase–mediated CTCF phosphorylation and selective loss of genomic binding</title>
-      <link>/publication/2020-02-19-lats-ctcf/</link>
-      <pubDate>Wed, 19 Feb 2020 00:00:00 -0500</pubDate>
-      
-      <guid>/publication/2020-02-19-lats-ctcf/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     
