@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="I asked this question on twitter.
+load the package library(tidyverse)  make some dummy data The dummy example: We have two groups of samples: disease and health. We treat those cells in vitro with different dosages (0, 1, 5) of a chemical X and count the cell number after 3 hours.
+x &lt;- tibble( &#39;0&#39; = c(8.66, 11.50, 7.01, 13.40, 11.30, 8.13, 5.92, 7.54), &#39;1&#39; = c(22.10, 23.00, 22.00, 35.70, 32.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/compare-slopes-in-linear-regression/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/compare-slopes-in-linear-regression/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/compare-slopes-in-linear-regression/">
+  <meta property="og:title" content="compare slopes in linear regression | DNA confesses Data speak">
+  <meta property="og:description" content="I asked this question on twitter.
+load the package library(tidyverse)  make some dummy data The dummy example: We have two groups of samples: disease and health. We treat those cells in vitro with different dosages (0, 1, 5) of a chemical X and count the cell number after 3 hours.
+x &lt;- tibble( &#39;0&#39; = c(8.66, 11.50, 7.01, 13.40, 11.30, 8.13, 5.92, 7.54), &#39;1&#39; = c(22.10, 23.00, 22.00, 35.70, 32.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2020-10-02T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2020-10-02T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>compare slopes in linear regression | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">compare slopes in linear regression</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2020-10-02 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Oct 2, 2020
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    3 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/compare-slopes-in-linear-regression/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/statistics/">statistics</a
+    >, 
+    
+    <a href="/categories/rstats/">rstats</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=compare%20slopes%20in%20linear%20regression&amp;url=%2fpost%2fcompare-slopes-in-linear-regression%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fcompare-slopes-in-linear-regression%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fcompare-slopes-in-linear-regression%2f&amp;title=compare%20slopes%20in%20linear%20regression"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fcompare-slopes-in-linear-regression%2f&amp;title=compare%20slopes%20in%20linear%20regression"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=compare%20slopes%20in%20linear%20regression&amp;body=%2fpost%2fcompare-slopes-in-linear-regression%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>I asked this question on <a href="https://twitter.com/tangming2005/status/1308225162324647937">twitter</a>.</p>
+<div id="load-the-package" class="section level3">
+<h3>load the package</h3>
+<pre class="r"><code>library(tidyverse)</code></pre>
+</div>
+<div id="make-some-dummy-data" class="section level3">
+<h3>make some dummy data</h3>
+<p>The dummy example: We have two groups of samples: disease and health.
+We treat those cells in vitro with different dosages (0, 1, 5) of a chemical X and count the cell number after 3 hours.</p>
+<pre class="r"><code>x &lt;- tibble(
+  &#39;0&#39; = c(8.66,
+               11.50,
+               7.01,
+               13.40,
+               11.30,
+               8.13,
+               5.92,
+               7.54),
+  &#39;1&#39; = c(22.10,
+               23.00,
+               22.00,
+               35.70,
+               32.60,
+               26.90,
+               23.30,
+               21.60),
+  &#39;5&#39; = c(31.20,
+               30.60,
+               28.40,
+               37.30,
+               41.40,
+               40.20,
+               29.20,
+               35.40))
+
+y &lt;- tibble(
+  &#39;0&#39; = c(13.90,
+               5.67,
+               2.59,
+               9.77,
+               5.63,
+               4.59,
+               7.35,
+               5.92),
+  &#39;1&#39; = c(12.60,
+               8.48,
+               5.59,
+               5.43,
+               13.10,
+               18.00,
+               23.90,
+               14.50),
+  &#39;5&#39; = c(20.00,
+               10.70,
+               9.73,
+               16.20,
+               15.10,
+               21.30,
+               25.60,
+               18.40))
+
+x&lt;- x %&gt;% tidyr::gather(1:3, key= &quot;dose&quot;, value = &quot;cells&quot;) %&gt;%
+  mutate(group = &quot;Health&quot;)
+
+y&lt;- y %&gt;% tidyr::gather(1:3, key= &quot;dose&quot;, value = &quot;cells&quot;) %&gt;%
+  mutate(group = &quot;Disease&quot;)
+
+z&lt;- rbind(x,y)
+
+ggplot(z, aes(x= dose, y = cells)) +
+  geom_boxplot(aes(color = dose)) +
+  geom_point() +
+  facet_wrap(~group) +
+  theme_bw(base_size = 14)</code></pre>
+<p><img src="/post/2020-10-02-compare-slopes-in-linear-regression.en_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>We see that as the dosage increases, the cell number increases in both disease and healthy groups.
+However, the question is that if the cell number increases faster in the healthy group than the disease group or not? How can I get a p-value for that?</p>
+<p>As <a href="https://twitter.com/ChenxinLi2/status/1308232791709024257">Chenxin Li</a> pointed out. The dose has to be <code>numeric</code>:</p>
+<pre class="r"><code>z&lt;- z %&gt;%
+  mutate(dose = as.numeric(dose)) 
+
+lm_res&lt;- lm(cells ~  dose *group, data = z)
+summary(lm_res)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cells ~ dose * group, data = z)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -8.839 -4.918 -1.357  3.801 16.771 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        8.7048     1.7367   5.012 9.26e-06 ***
+## dose               1.7737     0.5899   3.007  0.00435 ** 
+## groupHealth        6.0546     2.4560   2.465  0.01766 *  
+## dose:groupHealth   2.3958     0.8343   2.872  0.00626 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 6.243 on 44 degrees of freedom
+## Multiple R-squared:  0.6839, Adjusted R-squared:  0.6624 
+## F-statistic: 31.74 on 3 and 44 DF,  p-value: 4.443e-11</code></pre>
+</div>
+<div id="interpret-the-result" class="section level3">
+<h3>Interpret the result</h3>
+<p><span class="math inline">\(beta 0 = 8.7\)</span> is the intercept.<br />
+<span class="math inline">\(beta 1 = 1.77\)</span> is the coefficient of the <code>dose</code>.<br />
+<span class="math inline">\(beta 2 = 6.05\)</span> is the coefficient of the <code>group</code>.<br />
+<span class="math inline">\(beta 3 = 2.39\)</span> is the coefficient of the interaction term <code>dose:group</code>. <span class="math inline">\(beta3\)</span> is the <strong>difference</strong> in the slopes of non-reference minus reference (reference is the Disease group chosen by R alphabetically).</p>
+<p>In other words, the slope of Healthy group - Disease group = 2.39, which means the cell number in the healthy group increases faster. The p-value is 0.00626</p>
+<p>I want to thank Collin in Shirley’s lab and other tweeps for helping out for my question.</p>
+<p>I highly recommend reading through this as well: <a href="https://lindeloev.github.io/tests-as-linear/#62_two-way_anova_(plot_in_progress)" class="uri">https://lindeloev.github.io/tests-as-linear/#62_two-way_anova_(plot_in_progress)</a></p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/statistics/">statistics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/rstats/">rstats</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/linear-regresssion/">linear-regresssion</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/monty-hall-problem-a-peek-through-simulation/">Monty Hall problem- a peek through simulation</a></li>
+        
+        <li><a href="/post/align-multiple-ggplot2-plots-by-axis/">Align multiple ggplot2 plots by axis</a></li>
+        
+        <li><a href="/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/">Modeling single cell RNAseq data with multinomial distribution </a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/" rel="prev">Enhancement of scRNAseq heatmap using complexheatmap</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

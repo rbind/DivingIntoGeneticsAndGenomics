@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>compare slopes in linear regression</title>
+      <link>/post/compare-slopes-in-linear-regression/</link>
+      <pubDate>Fri, 02 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/compare-slopes-in-linear-regression/</guid>
+      <description>I asked this question on twitter.
+load the package library(tidyverse)  make some dummy data The dummy example: We have two groups of samples: disease and health. We treat those cells in vitro with different dosages (0, 1, 5) of a chemical X and count the cell number after 3 hours.
+x &amp;lt;- tibble( &amp;#39;0&amp;#39; = c(8.66, 11.50, 7.01, 13.40, 11.30, 8.13, 5.92, 7.54), &amp;#39;1&amp;#39; = c(22.10, 23.00, 22.00, 35.70, 32.</description>
+    </item>
+    
+    <item>
       <title>Enhancement of scRNAseq heatmap using complexheatmap</title>
       <link>/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/</link>
       <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
