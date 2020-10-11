@@ -118,7 +118,7 @@ summary(lm_res)
 
 $beta 0 = 8.7$ is the intercept.  
 $beta 1 = 1.77$ is the coefficient of the `dose`. It is interpreted as the unique effect of dose when group is disease (reference group).  
-$beta 2 = 6.05$ is the coefficient of the `group`. It is interpreted as the effect of group when the dose is 0. 
+$beta 2 = 6.05$ is the coefficient of the `group`. It is interpreted as the effect of group when the dose is 0.  
 $beta 3 = 2.39$ is the coefficient of the interaction term `dose:group`. $beta3$ is the **difference** in the slopes of non-reference minus reference (reference is the Disease group chosen by R alphabetically).
 
 In other words, the slope of Healthy group - Disease group = 2.39, which means the cell number in the healthy group increases faster. The p-value is 0.00626
