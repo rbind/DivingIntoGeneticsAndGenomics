@@ -123,7 +123,7 @@ summary(lm_res)&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;interpret-the-result&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Interpret the result&lt;/h3&gt;
 &lt;p&gt;&lt;span class=&#34;math inline&#34;&gt;\(beta 0 = 8.7\)&lt;/span&gt; is the intercept.&lt;br /&gt;
-&lt;span class=&#34;math inline&#34;&gt;\(beta 1 = 1.77\)&lt;/span&gt; is the coefficient of the &lt;code&gt;dose&lt;/code&gt;. It is interpreted as the unique effect of dose when group is disease (reference group).
+&lt;span class=&#34;math inline&#34;&gt;\(beta 1 = 1.77\)&lt;/span&gt; is the coefficient of the &lt;code&gt;dose&lt;/code&gt;. It is interpreted as the unique effect of dose when group is disease (reference group).&lt;br /&gt;
 &lt;span class=&#34;math inline&#34;&gt;\(beta 2 = 6.05\)&lt;/span&gt; is the coefficient of the &lt;code&gt;group&lt;/code&gt;. It is interpreted as the effect of group when the dose is 0.
 &lt;span class=&#34;math inline&#34;&gt;\(beta 3 = 2.39\)&lt;/span&gt; is the coefficient of the interaction term &lt;code&gt;dose:group&lt;/code&gt;. &lt;span class=&#34;math inline&#34;&gt;\(beta3\)&lt;/span&gt; is the &lt;strong&gt;difference&lt;/strong&gt; in the slopes of non-reference minus reference (reference is the Disease group chosen by R alphabetically).&lt;/p&gt;
 &lt;p&gt;In other words, the slope of Healthy group - Disease group = 2.39, which means the cell number in the healthy group increases faster. The p-value is 0.00626&lt;/p&gt;
