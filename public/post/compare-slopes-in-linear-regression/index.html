@@ -487,8 +487,8 @@ summary(lm_res)</code></pre>
 <div id="interpret-the-result" class="section level3">
 <h3>Interpret the result</h3>
 <p><span class="math inline">\(beta 0 = 8.7\)</span> is the intercept.<br />
-<span class="math inline">\(beta 1 = 1.77\)</span> is the coefficient of the <code>dose</code>.<br />
-<span class="math inline">\(beta 2 = 6.05\)</span> is the coefficient of the <code>group</code>.<br />
+<span class="math inline">\(beta 1 = 1.77\)</span> is the coefficient of the <code>dose</code>. It is interpreted as the unique effect of dose when group is disease (reference group).
+<span class="math inline">\(beta 2 = 6.05\)</span> is the coefficient of the <code>group</code>. It is interpreted as the effect of group when the dose is 0.
 <span class="math inline">\(beta 3 = 2.39\)</span> is the coefficient of the interaction term <code>dose:group</code>. <span class="math inline">\(beta3\)</span> is the <strong>difference</strong> in the slopes of non-reference minus reference (reference is the Disease group chosen by R alphabetically).</p>
 <p>In other words, the slope of Healthy group - Disease group = 2.39, which means the cell number in the healthy group increases faster. The p-value is 0.00626</p>
 <p>I want to thank Collin in Shirley’s lab and other tweeps for helping out for my question.</p>
