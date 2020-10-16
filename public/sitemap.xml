@@ -608,6 +608,15 @@
     
     <url>
     
+      <loc>/publication/2017-08-01-biostarhandbook/</loc>
+      <lastmod>2017-08-01T00:00:00-04:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/publication/2017-06-28-tfii-i-e2f/</loc>
       <lastmod>2017-06-28T00:00:00-04:00</lastmod>
     </url>
@@ -763,6 +772,16 @@
     
       <loc>/publication_types/2/</loc>
       <lastmod>2020-08-07T00:00:00-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication_types/6/</loc>
+      <lastmod>2017-08-01T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
