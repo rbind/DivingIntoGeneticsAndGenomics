@@ -13,6 +13,24 @@
     
     
     <item>
+      <title>PACT meeting update: single-cell and bulk ATAC-seq analysis pipelines</title>
+      <link>/talk/2020-maestro-pact-talk/</link>
+      <pubDate>Tue, 10 Nov 2020 11:15:00 -0500</pubDate>
+      
+      <guid>/talk/2020-maestro-pact-talk/</guid>
+      <description>In the joint Partnership for Access to Clinical Trials (PACT) and CIMAC-CIDC Network Fall meeting. I presented the update for our bulk ATAC-seq pipeline and the MAESTRO single-cell workflow. I led the discussion of the adoption of single-cell ATAC-seq in the CIMAC trails afterwards.</description>
+    </item>
+    
+    <item>
+      <title>MAESTRO: Model-based Analyses of Single-cell Transcriptome and Regulome</title>
+      <link>/talk/2020-maestro-broad-talk/</link>
+      <pubDate>Mon, 02 Nov 2020 14:30:00 -0500</pubDate>
+      
+      <guid>/talk/2020-maestro-broad-talk/</guid>
+      <description>I gave a talk on our single-cell RNA-seq and single-cell ATAC-seq analysis tool MAESTRO in the Broad Institute CC&amp;amp;E Seminar Series.</description>
+    </item>
+    
+    <item>
       <title>reproducible computing for your own benifit</title>
       <link>/talk/2020-reproducible-computing/</link>
       <pubDate>Tue, 02 Jun 2020 14:30:00 -0400</pubDate>

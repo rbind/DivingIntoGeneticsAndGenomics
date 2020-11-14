@@ -11,6 +11,29 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>PACT meeting update: single-cell and bulk ATAC-seq analysis pipelines</title>
+      <link>/talk/2020-maestro-pact-talk/</link>
+      <pubDate>Tue, 10 Nov 2020 11:15:00 -0500</pubDate>
+      
+      <guid>/talk/2020-maestro-pact-talk/</guid>
+      <description>&lt;p&gt;In the joint &lt;a href=&#34;https://www.niaid.nih.gov/clinical-trials/pact&#34; target=&#34;_blank&#34;&gt;Partnership for Access to Clinical Trials (PACT)&lt;/a&gt; and &lt;a href=&#34;https://cimac-network.org/&#34; target=&#34;_blank&#34;&gt;CIMAC-CIDC&lt;/a&gt; Network Fall meeting. I presented the update for our bulk ATAC-seq pipeline and the MAESTRO single-cell workflow. I led the discussion of the adoption of single-cell ATAC-seq in the CIMAC trails afterwards.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/PACT_1.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;/img/PACT_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MAESTRO: Model-based Analyses of Single-cell Transcriptome and Regulome</title>
+      <link>/talk/2020-maestro-broad-talk/</link>
+      <pubDate>Mon, 02 Nov 2020 14:30:00 -0500</pubDate>
+      
+      <guid>/talk/2020-maestro-broad-talk/</guid>
+      <description>&lt;p&gt;I gave a talk on our single-cell RNA-seq and single-cell ATAC-seq analysis tool &lt;a href=&#34;https://github.com/liulab-dfci/MAESTRO&#34; target=&#34;_blank&#34;&gt;MAESTRO&lt;/a&gt; in the &lt;a href=&#34;https://www.broadinstitute.org/epigenomics&#34; target=&#34;_blank&#34;&gt;Broad Institute CC&amp;amp;E Seminar Series&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>compare slopes in linear regression</title>
       <link>/post/compare-slopes-in-linear-regression/</link>
       <pubDate>Fri, 02 Oct 2020 00:00:00 +0000</pubDate>
@@ -886,187 +909,6 @@ StackedVlnPlot(obj = pbmc, features = features)&lt;/code&gt;&lt;/pre&gt;
 StackedVlnPlot(obj = pbmc, features = features, idents = c(1,2,3,4,5) )&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2020-03-17-stacked-violin-plot-for-visualizing-single-cell-data-in-seurat_files/figure-html/unnamed-chunk-2-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The code can be better designed, and also I should add checks &lt;code&gt;...&lt;/code&gt; using &lt;a href=&#34;https://ellipsis.r-lib.org/&#34;&gt;&lt;code&gt;ellipsis&lt;/code&gt;&lt;/a&gt; package. Nevertheless, it is working and gives me desired layout :)&lt;/p&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Tools and tricks for a data scientist</title>
-      <link>/talk/2020-tools-tricks-data-science/</link>
-      <pubDate>Mon, 09 Mar 2020 14:30:00 -0400</pubDate>
-      
-      <guid>/talk/2020-tools-tricks-data-science/</guid>
-      <description>&lt;p&gt;In the lab meeting today, I introduced some of the linux tricks and apps I have been using
-for my daily work. I consider myself as a genomic data scientist. It is a bioinformatician&amp;rsquo;s rebranding according to &lt;a href=&#34;https://twitter.com/JasonWilliamsNY/status/1236671856788242436&#34; target=&#34;_blank&#34;&gt;Jason Williams&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;I am sharing the PDF here, hope you find some of the tricks are useful too!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Monty Hall problem- a peek through simulation</title>
-      <link>/post/monty-hall-problem-a-peek-through-simulation/</link>
-      <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/post/monty-hall-problem-a-peek-through-simulation/</guid>
-      <description>&lt;p&gt;I am taking this STATE-80 course from Harvard Extension School. This course teaches
-commonly used distributions and probability theory. The instructor Hatch is a
-really good teacher and he uses simulation for all the demonstrations along with
-the formulas.&lt;/p&gt;
-&lt;p&gt;In week 6, we revisited the &lt;a href=&#34;https://en.wikipedia.org/wiki/Monty_Hall_problem&#34;&gt;Monty Hall problem&lt;/a&gt; which we played on the first day of
-class.&lt;/p&gt;
-&lt;p&gt;If you have not heard about it, I quoted from the wiki:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Suppose you’re on a game show, and you’re given the choice of three doors: Behind one door is a car; behind the others, goats. You pick a door, say No. 1, and the host, who knows what’s behind the doors, opens another door, say No. 3, which has a goat. He then says to you, “Do you want to pick door No. 2?” Is it to your advantage to switch your choice?&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&#34;/img/Monty_open_door.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;The answer is that it &lt;strong&gt;is&lt;/strong&gt; to your advantage to switch the door. The probability of switching the door and get the car is &lt;span class=&#34;math inline&#34;&gt;\(2/3\)&lt;/span&gt; and the probability of not switching is &lt;span class=&#34;math inline&#34;&gt;\(1/3\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;Why if I switch I have a better chance to win the car? If the host opened a door with a goat, the car is behind the door of what I have chosen and the one I have not. Is not it 50% of chance to win the car whether I switch or not? It is so counter-intuitive that even &lt;a href=&#34;https://en.wikipedia.org/wiki/Paul_Erd%C5%91s&#34;&gt;Paul Erdős&lt;/a&gt; did not get it at first.&lt;/p&gt;
-&lt;p&gt;Let’s tackle it by simulation first and then I will give the formulas to deduce the result.&lt;/p&gt;
-&lt;p&gt;The code was copied from Hatch’s lecture notes. The variable names are clearly given and the comments also help you understand the code.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(123)
-
-number.of.goats &amp;lt;- 2
-
-number.of.cars &amp;lt;- 1
-
-cars.goats.vector &amp;lt;-
-    c(
-        rep( &amp;quot;Goat&amp;quot;, number.of.goats ),
-        rep( &amp;quot;Car&amp;quot;, number.of.cars )
-    )
-
-total.doors &amp;lt;-
-    number.of.goats + number.of.cars
-
-door.vector &amp;lt;- 1:total.doors
-
-number.of.replications &amp;lt;- 10000
-
-outcome.vector &amp;lt;- logical( number.of.replications )
-
-for( replication.index in 1:number.of.replications ) {
-    
-    # First, we&amp;#39;ll mix up the cars and goats
-    # behind the doors
-    
-    random.cars.goats.vector &amp;lt;-
-        sample( cars.goats.vector )
-    
-    
-    # Next, let&amp;#39;s figure out which doors have
-    # a goat behind them
-    
-    goat.doors.vector &amp;lt;-
-        which( random.cars.goats.vector == &amp;quot;Goat&amp;quot; )
-    
-    
-    # Now the contestant makes the initial pick
-    
-    initial.door.pick &amp;lt;-
-        sample(
-            door.vector,
-            size = 1
-        )
-    
-    # The game show host determines which doors
-    # can be opened:
-    
-    possible.to.open.doors.vector &amp;lt;-
-        setdiff(
-            goat.doors.vector,
-            initial.door.pick
-        )
-    
-    if( length( possible.to.open.doors.vector ) == 1 ) {
-        
-        open.door &amp;lt;- possible.to.open.doors.vector
-        
-    } else {
-        
-        open.door &amp;lt;-
-            sample(
-                possible.to.open.doors.vector,
-                size = 1
-            )
-        
-    }
-    
-    possible.final.door.vector &amp;lt;-
-        setdiff(
-            door.vector,
-            c( initial.door.pick, open.door )
-        )
-    
-    if( length( possible.final.door.vector ) == 1 ) {
-        
-        final.door.pick &amp;lt;- possible.final.door.vector
-        
-    } else {
-        
-        final.door.pick &amp;lt;-
-            sample(
-                possible.final.door.vector,
-                size = 1
-            )
-        
-    }
-    
-    outcome.vector[ replication.index ] &amp;lt;-
-        random.cars.goats.vector[ final.door.pick ] == &amp;quot;Car&amp;quot;
-
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Now, let’s check how many times one wins car:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cat( &amp;quot;Sample mean of outcome vector:&amp;quot;,
-     round( mean( outcome.vector ), 5 ) )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Sample mean of outcome vector: 0.6705&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Is it surprising?! Let me explain in plain words:&lt;/p&gt;
-&lt;p&gt;Let’s focus on the strategy of always switching the door after the host opens a door.&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;&lt;p&gt;If initially you picked a door behind which there is a car, the host opened a door (from either one) with goat, and you switch. The probability of getting the car is &lt;span class=&#34;math inline&#34;&gt;\(0\)&lt;/span&gt;. You had the car behind your initial pick! If you switch, you get the goat.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;If initially you picked a door behind which there is a goat, the host &lt;strong&gt;had&lt;/strong&gt; to open the other door with goat, and you switch. The probability of getting the car is &lt;span class=&#34;math inline&#34;&gt;\(1\)&lt;/span&gt;, because the host has leaked the information that the car is in the other door that you are going to switch to.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;The probability of picking a door that a car behind the door for your initial pick is &lt;span class=&#34;math inline&#34;&gt;\(1/3\)&lt;/span&gt; (from 1, your chance is 0 to win the car). The probability of picking a door that a goat is behind the door for your initial pick is &lt;span class=&#34;math inline&#34;&gt;\(2/3\)&lt;/span&gt; (from 2, your chance is 1 to win the car). So in the long run, you have &lt;span class=&#34;math inline&#34;&gt;\(2/3\)&lt;/span&gt; chance to win the car.&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div id=&#34;calculate-by-formulas&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Calculate by formulas&lt;/h3&gt;
-&lt;p&gt;The trick to using conditional probabilities is to pick the right event to condition on. For the Monty Hall problem, we will condition on the event that Marie selects the door with the car behind it as her initial choice, and we’ll denote this event &lt;span class=&#34;math inline&#34;&gt;\(A\)&lt;/span&gt;. Then the event &lt;span class=&#34;math inline&#34;&gt;\(A^c\)&lt;/span&gt; is that Marie does &lt;em&gt;not&lt;/em&gt; select the car door as her initial choice, but instead selects a door with a goat behind it. Also, let &lt;span class=&#34;math inline&#34;&gt;\(B\)&lt;/span&gt; denote the event the event that Marie wins the car in the end. Now suppose Marie adopts the strategy of accepting the offer to change her initial selection after seeing another door opened with a goat behind it.&lt;/p&gt;
-&lt;p&gt;As I mentioned above:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\Pr(B\ |\ A)\ =\ 0
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\Pr(B\ |\ A^c)\ =\ 1
-\]&lt;/span&gt;
-What’s the probability that Marie will initially select the door with the car behind it? It’s just 1/3. So we have:
-&lt;span class=&#34;math display&#34;&gt;\[
-\Pr(A)\ =\ 1/3
-\]&lt;/span&gt;
-Then by the complement trick, we have:
-&lt;span class=&#34;math display&#34;&gt;\[
-\Pr(A^c)\ =\ 1 - \Pr(A)\ =\ 2/3
-\]&lt;/span&gt;
-Now we can use the Law of Total Probability:
-&lt;span class=&#34;math display&#34;&gt;\[
-\Pr(B)\ =\ \Pr(B\ |\ A) \cdot \Pr(A) + \Pr(B\ |\ A^c) \cdot \Pr(A^c)
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Substituting, we obtain:
-&lt;span class=&#34;math display&#34;&gt;\[
-\Pr(B)\ =\ \left ( 0 \cdot \frac{1}{3} \right ) + \left ( 1 \cdot \frac{2}{3} \right )\ =\ \frac{2}{3}
-\]&lt;/span&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;monty-hall-with-more-doors&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Monty Hall with more doors&lt;/h3&gt;
-&lt;p&gt;Let’s try a Monty hall game with 4 doors behind which are 1 car and 3 goats. Just change&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;number.of.goats &amp;lt;- 3
-
-number.of.cars &amp;lt;- 1&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You will get around &lt;span class=&#34;math inline&#34;&gt;\(3/8\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;With 4 doors, if you initially select a door with a goat, the host opens a door with goat, you will be leaving two doors: one with goat and the other one with car. So you will have &lt;span class=&#34;math inline&#34;&gt;\(1/2\)&lt;/span&gt; chance to win the car.&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
-\Pr(B)\ =\ \left ( 0 \cdot \frac{1}{4} \right ) + \left ( 1/2 \cdot \frac{3}{4} \right )\ =\ \frac{3}{8}
-\]&lt;/span&gt;
-It is always to your advantage to switch the door because the host has leaked information about the car :)&lt;/p&gt;
-&lt;p&gt;Simulation is a very good tool to teach statistic concept and especially for the non-intuitive ones.&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
