@@ -11,6 +11,36 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Review 2020</title>
+      <link>/post/review-2020/</link>
+      <pubDate>Thu, 31 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/review-2020/</guid>
+      <description>&lt;p&gt;It is the end of the year again and it is a good time to review my 2020. I wrote &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/the-end-of-2019/&#34; target=&#34;_blank&#34;&gt;one&lt;/a&gt; for 2019. It has been a tough year for many of us. It is the same for me. I switched my job from &lt;a href=&#34;https://informatics.fas.harvard.edu/pages/about.html&#34; target=&#34;_blank&#34;&gt;Harvard FAS informatics&lt;/a&gt; to &lt;a href=&#34;https://ds.dfci.harvard.edu/&#34; target=&#34;_blank&#34;&gt;Department of Data Science at Dana-Farber Cancer Institute&lt;/a&gt; during the shutdown because of COVID19 at the end of March and has been working from home since then. I am grateful for my stay in the Harvard FAS informatics group. Tim has been super supportive and the collaboration with Catherine Dulac&amp;rsquo;s lab was exciting. I learned a lot about single-cell analysis.&lt;/p&gt;
+
+&lt;p&gt;It is a weird feeling that I have not been to the office since I joined &lt;a href=&#34;https://liulab-dfci.github.io/&#34; target=&#34;_blank&#34;&gt;Shirley&amp;rsquo;s group&lt;/a&gt;, but I have to say it turned out to play well. I am thankful that Shirley thought of me to join her team to lead the bioinformatics effort of the &lt;a href=&#34;https://cimac-network.org/cidc/&#34; target=&#34;_blank&#34;&gt;Cancer Immunologic Data Commons (CIDC)&lt;/a&gt; project. It is a complicated project and involves many parties. I decided to take the challenge and made the mind to improve myself. It is also my great honor to interact with the &lt;a href=&#34;https://ds.dfci.harvard.edu/knowledge-systems/team/&#34; target=&#34;_blank&#34;&gt;software team&lt;/a&gt; led by Ethan Cerami and James Linsay for this project. I learned tremendously from them on the software side. To be honest, the job is not easy, but the good thing is that I have been learning a lot in many aspects. I learned a lot about hiring, writing, managing, and communicating.&lt;/p&gt;
+
+&lt;p&gt;Still, I want to list some highlights for 2020.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;My first co-first author computational &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/publication/2020-04-03-kmt2d-lung-cancer/&#34; target=&#34;_blank&#34;&gt;paper&lt;/a&gt; is finally published in &lt;em&gt;Cancer Cell&lt;/em&gt;. It means a lot to me. I was studying cancer molecular biology in my Ph.D. and made the jump to computational biology for my postdoc with &lt;a href=&#34;https://www.jax.org/research-and-faculty/research-labs/the-verhaak-lab&#34; target=&#34;_blank&#34;&gt;Roel Verhaak&lt;/a&gt; when he was in MD Anderson Cancer Center. Computational training in Roel&amp;rsquo;s lab has paved a solid foundation for my work. I then published two other papers on &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/publication/2020-05-29-scclusteval/&#34; target=&#34;_blank&#34;&gt;evaluating single-cell cluster stability&lt;/a&gt; and &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/publication/2020-03-20-kallisto-scatac/&#34; target=&#34;_blank&#34;&gt;fast analysis of single-cell ATAC-seq data&lt;/a&gt;.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I finished one statistics course and one big data course with Grade A from Harvard Extension School.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;We did a five-week intensive bioinformatics training for the new hires in Shirley&amp;rsquo;s group. We hired 5 people in 3 months! I am a big fan of reproducible research. I gave a &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/talk/2020-reproducible-computing/&#34; target=&#34;_blank&#34;&gt;talk on reproducible computing&lt;/a&gt; during the training.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I did a presentation on &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/talk/2020-maestro-broad-talk/&#34; target=&#34;_blank&#34;&gt;our single-cell analysis pipeline MAESTRO in the Broad seminar&lt;/a&gt; and gave a talk in the &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/talk/2020-maestro-pact-talk/&#34; target=&#34;_blank&#34;&gt;PACT meeting for the CIMAC-CIDC project&lt;/a&gt;.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I started to invest myself in career development. I had someone coach my communication skills and took a leadership course.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In the coming 2021, I should be writing more papers. I can see two co-first author papers, one first-author paper, and one senior author paper coming out. I always want to enhance my statistics background and I plan to go through &lt;a href=&#34;https://www.middleprofessor.com/files/applied-biostatistics_bookdown/_book/&#34; target=&#34;_blank&#34;&gt;Elements of Statistical Modeling for Experimental Biology&lt;/a&gt;. Most importantly, I will continue to try to be a better human, a better husband, a father, and then a better researcher.&lt;/p&gt;
+
+&lt;p&gt;I wish everyone to have a safe and prosperous new year!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>PACT meeting update: single-cell and bulk ATAC-seq analysis pipelines</title>
       <link>/talk/2020-maestro-pact-talk/</link>
       <pubDate>Tue, 10 Nov 2020 11:15:00 -0500</pubDate>
@@ -827,89 +857,6 @@ wrap_plots(p_list2, guides = &amp;#39;collect&amp;#39;, design = layout2)&lt;/co
       
       <guid>/publication/2020-03-20-kallisto-scatac/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>stacked violin plot for visualizing single-cell data in Seurat</title>
-      <link>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</link>
-      <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</guid>
-      <description>&lt;p&gt;In &lt;code&gt;scanpy&lt;/code&gt;, there is a &lt;a href=&#34;https://icb-scanpy-tutorials.readthedocs-hosted.com/en/latest/visualizing-marker-genes.html&#34;&gt;function&lt;/a&gt; to create a stacked violin plot.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/posts_img/scanpy.png&#34; /&gt;
-There is no such function in &lt;code&gt;Seurat&lt;/code&gt;, and many people were asking for this feature.
-e.g. &lt;a href=&#34;https://github.com/satijalab/seurat/issues/300&#34; class=&#34;uri&#34;&gt;https://github.com/satijalab/seurat/issues/300&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&#34;https://github.com/satijalab/seurat/issues/463&#34; class=&#34;uri&#34;&gt;https://github.com/satijalab/seurat/issues/463&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The developers have not implemented this feature yet. In this post, I am trying to make a stacked violin plot in &lt;code&gt;Seurat&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;The idea is to create a violin plot per gene using the &lt;code&gt;VlnPlot&lt;/code&gt; in Seurat, then
-customize the axis text/tick and reduce the margin for each plot and finally concatenate by
-&lt;code&gt;cowplot::plot_grid&lt;/code&gt; or &lt;code&gt;patchwork::wrap_plots&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Seurat)
-library(patchwork)
-library(ggplot2)
-
-## remove the x-axis text and tick
-## plot.margin to adjust the white space between each plot.
-## ... pass any arguments to VlnPlot in Seurat
-modify_vlnplot&amp;lt;- function(obj, 
-                          feature, 
-                          pt.size = 0, 
-                          plot.margin = unit(c(-0.75, 0, -0.75, 0), &amp;quot;cm&amp;quot;),
-                          ...) {
-  p&amp;lt;- VlnPlot(obj, features = feature, pt.size = pt.size, ... )  + 
-    xlab(&amp;quot;&amp;quot;) + ylab(feature) + ggtitle(&amp;quot;&amp;quot;) + 
-    theme(legend.position = &amp;quot;none&amp;quot;, 
-          axis.text.x = element_blank(), 
-          axis.ticks.x = element_blank(), 
-          axis.title.y = element_text(size = rel(1), angle = 0), 
-          axis.text.y = element_text(size = rel(1)), 
-          plot.margin = plot.margin ) 
-  return(p)
-}
-
-## extract the max value of the y axis
-extract_max&amp;lt;- function(p){
-  ymax&amp;lt;- max(ggplot_build(p)$layout$panel_scales_y[[1]]$range$range)
-  return(ceiling(ymax))
-}
-
-
-## main function
-StackedVlnPlot&amp;lt;- function(obj, features,
-                          pt.size = 0, 
-                          plot.margin = unit(c(-0.75, 0, -0.75, 0), &amp;quot;cm&amp;quot;),
-                          ...) {
-  
-  plot_list&amp;lt;- purrr::map(features, function(x) modify_vlnplot(obj = obj,feature = x, ...))
-  
-  # Add back x-axis title to bottom plot. patchwork is going to support this?
-  plot_list[[length(plot_list)]]&amp;lt;- plot_list[[length(plot_list)]] +
-    theme(axis.text.x=element_text(), axis.ticks.x = element_line())
-  
-  # change the y-axis tick to only max value 
-  ymaxs&amp;lt;- purrr::map_dbl(plot_list, extract_max)
-  plot_list&amp;lt;- purrr::map2(plot_list, ymaxs, function(x,y) x + 
-                            scale_y_continuous(breaks = c(y)) + 
-                            expand_limits(y = y))
-
-  p&amp;lt;- patchwork::wrap_plots(plotlist = plot_list, ncol = 1)
-  return(p)
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;div id=&#34;testing-the-function&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Testing the function&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pbmc&amp;lt;- readRDS(&amp;quot;~/projects/EvaluateSingleCellClustering/data/pbmc_5k_v3.rds&amp;quot;)
-features&amp;lt;- c(&amp;quot;CD79A&amp;quot;, &amp;quot;MS4A1&amp;quot;, &amp;quot;CD8A&amp;quot;, &amp;quot;CD8B&amp;quot;, &amp;quot;LYZ&amp;quot;, &amp;quot;LGALS3&amp;quot;, &amp;quot;S100A8&amp;quot;, &amp;quot;GNLY&amp;quot;,
-             &amp;quot;NKG7&amp;quot;, &amp;quot;KLRB1&amp;quot;, &amp;quot;FCGR3A&amp;quot;, &amp;quot;FCER1A&amp;quot;, &amp;quot;CST3&amp;quot;)
-
-StackedVlnPlot(obj = pbmc, features = features)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2020-03-17-stacked-violin-plot-for-visualizing-single-cell-data-in-seurat_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## any arguments for Vlnplot can be passed to the StackedVlnPlot. e.g. idents.
-## only cluster 1-5
-StackedVlnPlot(obj = pbmc, features = features, idents = c(1,2,3,4,5) )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2020-03-17-stacked-violin-plot-for-visualizing-single-cell-data-in-seurat_files/figure-html/unnamed-chunk-2-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;The code can be better designed, and also I should add checks &lt;code&gt;...&lt;/code&gt; using &lt;a href=&#34;https://ellipsis.r-lib.org/&#34;&gt;&lt;code&gt;ellipsis&lt;/code&gt;&lt;/a&gt; package. Nevertheless, it is working and gives me desired layout :)&lt;/p&gt;
-&lt;/div&gt;
 </description>
     </item>
     
