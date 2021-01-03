@@ -56,6 +56,16 @@
     </item>
     
     <item>
+      <title>Evaluating single-cell cluster stability using the Jaccard similarity index</title>
+      <link>/publication/2020-05-29-scclusteval/</link>
+      <pubDate>Mon, 09 Nov 2020 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2020-05-29-scclusteval/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>MAESTRO: Model-based Analyses of Single-cell Transcriptome and Regulome</title>
       <link>/talk/2020-maestro-broad-talk/</link>
       <pubDate>Mon, 02 Nov 2020 14:30:00 -0500</pubDate>
@@ -723,16 +733,6 @@ to get the singularity image or convert the docker image to singularity image at
 are going through a 5-week long intensive bioinformatics training: &lt;a href=&#34;https://liulab-dfci.github.io/teaching&#34; target=&#34;_blank&#34;&gt;STAT115&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;I am TAing for 2 weeks and I gave a talk on reproducible computing. Please find the PDF here and share!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Evaluating single-cell cluster stability using the Jaccard similarity index</title>
-      <link>/publication/2020-05-29-scclusteval/</link>
-      <pubDate>Fri, 29 May 2020 00:00:00 -0400</pubDate>
-      
-      <guid>/publication/2020-05-29-scclusteval/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     

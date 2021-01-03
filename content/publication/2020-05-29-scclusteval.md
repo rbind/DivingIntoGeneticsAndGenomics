@@ -1,6 +1,6 @@
 +++
 title = "Evaluating single-cell cluster stability using the Jaccard similarity index"
-date = 2020-05-29T00:00:00
+date = 2020-11-09T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
 authors = ["**Ming Tang** et.al"]
@@ -17,7 +17,7 @@ authors = ["**Ming Tang** et.al"]
 publication_types = ["2"]
 
 # Publication name and optional abbreviated version.
-publication = "In *Bioinformatics In Press*, Bioinformatics."
+publication = "In *Bioinformatics*, Bioinformatics."
 publication_short = "In *Bioinformatics*"
 
 # Abstract and optional shortened version.
@@ -36,6 +36,7 @@ selected = true
 # projects = ["example-external-project.md"]
 
 # Links (optional).
+url_custom = [{name = "Paper Link", url = "https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/btaa956/5962080"}]
 #url_pdf = "#"
 url_preprint = "https://www.biorxiv.org/content/10.1101/2020.05.26.116640v1"
 url_code = "https://github.com/crazyhottommy/scclusteval"
@@ -48,7 +49,7 @@ url_dataset = "https://osf.io/rfbcg/"
 
 # Custom links (optional).
 #   Uncomment line below to enable. For multiple links, use the form `[{...}, {...}, {...}]`.
-#url_custom = [{name = "Custom Link", url = "http://example.org"}]
+
 
 # Does the content use math formatting?
 math = true
