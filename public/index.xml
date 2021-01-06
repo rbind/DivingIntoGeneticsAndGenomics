@@ -11,6 +11,16 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>The histologic phenotype of lung cancers may be driven by transcriptomic features rather than genomic characteristics</title>
+      <link>/publication/2021-01-05-mixed-histology/</link>
+      <pubDate>Tue, 05 Jan 2021 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2021-01-05-mixed-histology/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Review 2020</title>
       <link>/post/review-2020/</link>
       <pubDate>Thu, 31 Dec 2020 00:00:00 +0000</pubDate>
@@ -848,16 +858,6 @@ wrap_plots(p_list2, guides = &amp;#39;collect&amp;#39;, design = layout2)&lt;/co
       <pubDate>Thu, 02 Apr 2020 00:00:00 -0400</pubDate>
       
       <guid>/publication/2020-04-03-kmt2d-lung-cancer/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Fast analysis of scATAC-seq data using a predefined set of genomic regions</title>
-      <link>/publication/2020-03-20-kallisto-scatac/</link>
-      <pubDate>Fri, 20 Mar 2020 00:00:00 -0400</pubDate>
-      
-      <guid>/publication/2020-03-20-kallisto-scatac/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
