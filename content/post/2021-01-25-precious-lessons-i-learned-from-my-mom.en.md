@@ -13,7 +13,7 @@ header:
   preview: yes
 ---
 
-I never have thought that my first blog post in 2021 would be non-techinical. I shared this personal story on Linkedin and want to make it a blog post.
+I never have thought that my first blog post in 2021 would be non-technical. I shared this personal story on LinkedIn and want to make it a blog post.
 
 I want to share how our beings are shaped by our life experiences. Let me take myself as an example. I grew up in a low-income family in China, but I inherited tremendous riches from my Mom in terms of precious characters. She taught me several things that money can't buy.
  
