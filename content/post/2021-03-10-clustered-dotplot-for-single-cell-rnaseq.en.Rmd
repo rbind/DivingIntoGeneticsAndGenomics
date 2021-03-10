@@ -1,0 +1,201 @@
+---
+title: clustered dotplot for single-cell RNAseq
+author: Ming Tang
+date: '2021-03-10'
+slug: clustered-dotplot-for-single-cell-rnaseq
+categories:
+  - bioinformatics
+  - visualization
+tags:
+  - scRNAseq
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(fig.width=12, fig.height=8) 
+```
+
+Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.
+
+`Seurat` has a nice function for that. However, it can not do the clustering for the rows and columns. [David ] has written a [blog post](http://davemcg.github.io/post/lets-plot-scrna-dotplots/) using ggplot2 and ggtree from Guangchuang Yu. It looks great! 
+
+![](/img/clustered_dotplot.png)
+
+In this post, I am trying to reproduce the same effect using [ComplexHeatmap](https://jokergoo.github.io/ComplexHeatmap-reference/book/)
+
+
+```{r}
+library(Seurat)
+library(tidyverse)
+library(presto)
+library(ComplexHeatmap)
+library(circlize)
+# Load the PBMC dataset
+pbmc.data <- Read10X(data.dir = "~/Downloads/filtered_gene_bc_matrices/hg19/")
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+
+```
+
+### standard processing
+
+following https://satijalab.org/seurat/articles/pbmc3k_tutorial.html
+
+```{r}
+pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT-")
+
+## ScaleData uses top variable genes only
+pbmc<- pbmc %>% 
+  NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+  FindVariableFeatures(selection.method = "vst", nfeatures = 2000) %>%
+  ScaleData() %>%
+  RunPCA() %>%
+  FindNeighbors(dims = 1:10) %>%
+  FindClusters(resolution = 0.5) %>%
+  RunUMAP(dims = 1:10)
+
+DimPlot(pbmc, reduction = "umap")
+```
+
+
+```{r}
+new.cluster.ids <- c("Naive CD4 T", "CD14+ Mono", "Memory CD4 T", "B", "CD8 T", "FCGR3A+ Mono", 
+    "NK", "DC", "Platelet")
+names(new.cluster.ids) <- levels(pbmc)
+pbmc <- RenameIdents(pbmc, new.cluster.ids)
+DimPlot(pbmc, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
+```
+
+### find marker genes 
+
+```{r}
+
+markers<- presto::wilcoxauc(pbmc, 'seurat_clusters', assay = 'data')
+markers<- top_markers(markers, n = 10, auc_min = 0.5, pct_in_min = 20, pct_out_max = 20)
+
+markers
+
+all_markers<- markers %>%
+  select(-rank) %>% 
+  unclass() %>% 
+  stack() %>%
+  pull(values) %>%
+  unique() %>%
+   .[!is.na(.)]
+
+```
+
+Seurat's dot plot
+
+```{r}
+p<- DotPlot(object = pbmc, features = all_markers)
+p
+```
+
+### Let's reproduce it using Complexheatmap
+
+```{r}
+df<- p$data
+head(df)
+
+### the matrix for the scaled expression 
+exp_mat<-df %>% 
+  select(-pct.exp, -avg.exp) %>%  
+  pivot_wider(names_from = id, values_from = avg.exp.scaled) %>% 
+  as.data.frame() 
+    
+row.names(exp_mat) <- exp_mat$features.plot  
+exp_mat <- exp_mat[,-1] %>% as.matrix()
+
+head(exp_mat)
+
+## the matrix for the percentage of cells express a gene
+
+percent_mat<-df %>% 
+  select(-avg.exp, -avg.exp.scaled) %>%  
+  pivot_wider(names_from = id, values_from = pct.exp) %>% 
+  as.data.frame() 
+    
+row.names(percent_mat) <- percent_mat$features.plot  
+percent_mat <- percent_mat[,-1] %>% as.matrix()
+
+head(percent_mat)
+
+## the range is from 0 - 100
+range(percent_mat)
+
+
+## these two matrix have the same dimension
+dim(exp_mat)
+dim(percent_mat)
+```
+
+```{r}
+library(viridis)
+library(Polychrome)
+viridis(5)
+
+Polychrome::swatch(viridis(5))
+## get an idea of the ranges of the matrix
+quantile(exp_mat, c(0.1, 0.5, 0.9, 0.99))
+
+## any value that is greater than 2 will be mapped to yellow
+col_fun = colorRamp2(c(-0.5, 2), c("#440154FF", "#FDE725FF"))
+
+
+cell_fun = function(j, i, x, y, w, h, fill){
+          grid.rect(x = x, y = y, width = w, height = h, 
+                    gp = gpar(col = NA, fill = NA))
+          grid.circle(x=x,y=y,r= percent_mat[i, j]/100 * min(unit.c(w, h)),
+                      gp = gpar(fill = col_fun(exp_mat[i, j]), col = NA))}
+
+
+## also do a kmeans clustering for the genes with k = 4
+Heatmap(exp_mat,
+        heatmap_legend_param=list(title="expression"),
+        column_title = "clustered dotplot", 
+        col=col_fun,
+        rect_gp = gpar(type = "none"),
+        cell_fun = cell_fun,
+        row_names_gp = gpar(fontsize = 5),
+        row_km = 4,
+        border = "black")
+
+```
+
+It looks pretty decent. One can now take advantage of all the awesome annotation function to add annotation bars in complexheatmap.
+
+
+```{r}
+
+colnames(exp_mat)
+
+library(RColorBrewer)
+cluster_anno<-  c("CD4T", "B", "CD4T", "Mono", "NK", "CD8T", "CD14_Mono", "DC", "Platelet")
+
+column_ha<- HeatmapAnnotation(
+    cluster_anno = cluster_anno,
+    col = list(cluster_anno = setNames(brewer.pal(8, "Paired"), unique(cluster_anno))
+    ),
+    na_col = "grey"
+)
+
+Heatmap(exp_mat,
+        heatmap_legend_param=list(title="expression"),
+        column_title = "clustered dotplot", 
+        col=col_fun,
+        rect_gp = gpar(type = "none"),
+        cell_fun = cell_fun,
+        row_names_gp = gpar(fontsize = 5),
+        row_km = 4,
+        border = "black",
+        top_annotation = column_ha)
+```
+
+Again, thanks [Zuguang Gu](https://twitter.com/jokergoo_gu) for this awesome package!!
+
+

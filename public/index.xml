@@ -11,6 +11,217 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>clustered dotplot for single-cell RNAseq</title>
+      <link>/post/clustered-dotplot-for-single-cell-rnaseq/</link>
+      <pubDate>Wed, 10 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/clustered-dotplot-for-single-cell-rnaseq/</guid>
+      <description>&lt;p&gt;Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Seurat&lt;/code&gt; has a nice function for that. However, it can not do the clustering for the rows and columns. [David ] has written a &lt;a href=&#34;http://davemcg.github.io/post/lets-plot-scrna-dotplots/&#34;&gt;blog post&lt;/a&gt; using ggplot2 and ggtree from Guangchuang Yu. It looks great!&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/clustered_dotplot.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In this post, I am trying to reproduce the same effect using &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/&#34;&gt;ComplexHeatmap&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Seurat)
+library(tidyverse)
+library(presto)
+library(ComplexHeatmap)
+library(circlize)
+# Load the PBMC dataset
+pbmc.data &amp;lt;- Read10X(data.dir = &amp;quot;~/Downloads/filtered_gene_bc_matrices/hg19/&amp;quot;)
+pbmc &amp;lt;- CreateSeuratObject(counts = pbmc.data, project = &amp;quot;pbmc3k&amp;quot;, min.cells = 3, min.features = 200)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;standard-processing&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;standard processing&lt;/h3&gt;
+&lt;p&gt;following &lt;a href=&#34;https://satijalab.org/seurat/articles/pbmc3k_tutorial.html&#34; class=&#34;uri&#34;&gt;https://satijalab.org/seurat/articles/pbmc3k_tutorial.html&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pbmc[[&amp;quot;percent.mt&amp;quot;]] &amp;lt;- PercentageFeatureSet(pbmc, pattern = &amp;quot;^MT-&amp;quot;)
+
+## ScaleData uses top variable genes only
+pbmc&amp;lt;- pbmc %&amp;gt;% 
+  NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;%
+  FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;%
+  ScaleData() %&amp;gt;%
+  RunPCA() %&amp;gt;%
+  FindNeighbors(dims = 1:10) %&amp;gt;%
+  FindClusters(resolution = 0.5) %&amp;gt;%
+  RunUMAP(dims = 1:10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+## 
+## Number of nodes: 2700
+## Number of edges: 97958
+## 
+## Running Louvain algorithm...
+## Maximum modularity in 10 random starts: 0.8717
+## Number of communities: 9
+## Elapsed time: 0 seconds&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;DimPlot(pbmc, reduction = &amp;quot;umap&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;new.cluster.ids &amp;lt;- c(&amp;quot;Naive CD4 T&amp;quot;, &amp;quot;CD14+ Mono&amp;quot;, &amp;quot;Memory CD4 T&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;CD8 T&amp;quot;, &amp;quot;FCGR3A+ Mono&amp;quot;, 
+    &amp;quot;NK&amp;quot;, &amp;quot;DC&amp;quot;, &amp;quot;Platelet&amp;quot;)
+names(new.cluster.ids) &amp;lt;- levels(pbmc)
+pbmc &amp;lt;- RenameIdents(pbmc, new.cluster.ids)
+DimPlot(pbmc, reduction = &amp;quot;umap&amp;quot;, label = TRUE, pt.size = 0.5) + NoLegend()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;find-marker-genes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;find marker genes&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;markers&amp;lt;- presto::wilcoxauc(pbmc, &amp;#39;seurat_clusters&amp;#39;, assay = &amp;#39;data&amp;#39;)
+markers&amp;lt;- top_markers(markers, n = 10, auc_min = 0.5, pct_in_min = 20, pct_out_max = 20)
+
+markers&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 10 x 10
+##     rank `0`      `1`    `2`    `3`      `4`   `5`         `6`   `7`     `8`    
+##    &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;  
+##  1     1 CCR7     S100A8 AQP3   CD79A    GZMA  FCGR3A      GZMB  FCER1A  PPBP   
+##  2     2 PIK3IP1  FCN1   TRAT1  CD79B    CST7  IFITM3      PRF1  CLEC10A NRGN   
+##  3     3 PRKCQ-A… LGALS2 SPOCK2 MS4A1    GZMK  RP11-290F2… GNLY  HLA-DQ… PF4    
+##  4     4 LEF1     CFD    CD27   HLA-DQA1 LYAR  CFD         FGFB… CPVL    SDPR   
+##  5     5 TCF7     GRN    TRADD  HLA-DQB1 GZMM  MS4A7       CST7  HLA-DMB GNG11  
+##  6     6 CD27     MS4A6A CD3G   TCL1A    CD8A  CD68        GZMA  CD33    SPARC  
+##  7     7 MAL      AP1S2  RGCC   LINC009… KLRG1 SPI1        FCGR… CTSH    RGS18  
+##  8     8 RGCC     CD14   CD40LG HLA-DMA  PRF1  RHOC        SPON2 RNASE6  HIST1H…
+##  9     9 CD3G     CD68   LAT    VPREB3   GZMH  HCK         CCL4  KLF4    TPM4   
+## 10    10 LDLRAP1  LGALS3 FLT3LG HLA-DQA2 HOPX  IFI30       APMAP RNF130  GP9&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;all_markers&amp;lt;- markers %&amp;gt;%
+  select(-rank) %&amp;gt;% 
+  unclass() %&amp;gt;% 
+  stack() %&amp;gt;%
+  pull(values) %&amp;gt;%
+  unique() %&amp;gt;%
+   .[!is.na(.)]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Seurat’s dot plot&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p&amp;lt;- DotPlot(object = pbmc, features = all_markers)
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lets-reproduce-it-using-complexheatmap&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Let’s reproduce it using Complexheatmap&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df&amp;lt;- p$data
+head(df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##            avg.exp  pct.exp features.plot          id avg.exp.scaled
+## CCR7      2.993317 43.41534          CCR7 Naive CD4 T       2.337223
+## PIK3IP1   2.674179 42.11288       PIK3IP1 Naive CD4 T       1.844182
+## PRKCQ-AS1 2.167078 33.28509     PRKCQ-AS1 Naive CD4 T       2.123716
+## LEF1      2.003597 31.83792          LEF1 Naive CD4 T       2.027023
+## TCF7      2.253631 37.48191          TCF7 Naive CD4 T       1.773285
+## CD27      2.326533 39.07381          CD27 Naive CD4 T       1.210923&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;### the matrix for the scaled expression 
+exp_mat&amp;lt;-df %&amp;gt;% 
+  select(-pct.exp, -avg.exp) %&amp;gt;%  
+  pivot_wider(names_from = id, values_from = avg.exp.scaled) %&amp;gt;% 
+  as.data.frame() 
+    
+row.names(exp_mat) &amp;lt;- exp_mat$features.plot  
+exp_mat &amp;lt;- exp_mat[,-1] %&amp;gt;% as.matrix()
+
+head(exp_mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##           Naive CD4 T          B Memory CD4 T FCGR3A+ Mono         NK
+## CCR7         2.337223  0.4065916    0.6473101   -0.5357480 -0.6116367
+## PIK3IP1      1.844182 -0.2277953    1.4179422   -0.6531667 -0.1884663
+## PRKCQ-AS1    2.123716 -0.6830185    1.0323842   -0.5907663  0.0349381
+## LEF1         2.027023 -0.5746819    1.4350437   -0.5707971 -0.4876044
+## TCF7         1.773285 -0.4479782    1.5832831   -0.5337908 -0.6645233
+## CD27         1.210923 -0.2029260    1.3852365   -0.7374133 -0.6415774
+##                CD8 T CD14+ Mono         DC   Platelet
+## CCR7      -0.4272161 -0.5827381 -0.5508353 -0.6829502
+## PIK3IP1    0.2223521 -0.8180393 -0.9991901 -0.5978184
+## PRKCQ-AS1  0.2375921 -0.6732668 -0.7407892 -0.7407892
+## LEF1      -0.3271094 -0.4091405 -0.7288104 -0.3639229
+## TCF7       0.2798941 -0.5843243 -0.6207981 -0.7850477
+## CD27       1.3328521 -0.7261509 -0.7919650 -0.8289795&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## the matrix for the percentage of cells express a gene
+
+percent_mat&amp;lt;-df %&amp;gt;% 
+  select(-avg.exp, -avg.exp.scaled) %&amp;gt;%  
+  pivot_wider(names_from = id, values_from = pct.exp) %&amp;gt;% 
+  as.data.frame() 
+    
+row.names(percent_mat) &amp;lt;- percent_mat$features.plot  
+percent_mat &amp;lt;- percent_mat[,-1] %&amp;gt;% as.matrix()
+
+head(percent_mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##           Naive CD4 T         B Memory CD4 T FCGR3A+ Mono        NK     CD8 T
+## CCR7         43.41534 15.759312     26.37131     5.095541  2.702703  4.747774
+## PIK3IP1      42.11288 13.180516     40.92827    12.738854 13.513514 18.694362
+## PRKCQ-AS1    33.28509  1.146132     29.53586     4.458599 11.486486 13.353116
+## LEF1         31.83792  2.578797     32.27848     3.821656  4.054054  5.341246
+## TCF7         37.48191  9.169054     36.91983    17.197452  8.108108 18.991098
+## CD27         39.07381 12.034384     45.14768     4.458599  4.729730 25.816024
+##           CD14+ Mono        DC Platelet
+## CCR7        2.434077  8.333333 0.000000
+## PIK3IP1     6.693712  2.777778 6.666667
+## PRKCQ-AS1   1.419878  0.000000 0.000000
+## LEF1        5.070994  0.000000 6.666667
+## TCF7        9.736308 16.666667 6.666667
+## CD27        3.042596  2.777778 0.000000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## the range is from 0 - 100
+range(percent_mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]   0 100&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## these two matrix have the same dimension
+dim(exp_mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 80  9&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dim(percent_mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 80  9&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(viridis)
+library(Polychrome)
+viridis(5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;#440154FF&amp;quot; &amp;quot;#3B528BFF&amp;quot; &amp;quot;#21908CFF&amp;quot; &amp;quot;#5DC863FF&amp;quot; &amp;quot;#FDE725FF&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Polychrome::swatch(viridis(5))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## get an idea of the ranges of the matrix
+quantile(exp_mat, c(0.1, 0.5, 0.9, 0.99))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##        10%        50%        90%        99% 
+## -0.6695752 -0.3567907  1.7156356  2.5000000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## any value that is greater than 2 will be mapped to yellow
+col_fun = colorRamp2(c(-0.5, 2), c(&amp;quot;#440154FF&amp;quot;, &amp;quot;#FDE725FF&amp;quot;))
+
+
+cell_fun = function(j, i, x, y, w, h, fill){
+          grid.rect(x = x, y = y, width = w, height = h, 
+                    gp = gpar(col = NA, fill = NA))
+          grid.circle(x=x,y=y,r= percent_mat[i, j]/100 * min(unit.c(w, h)),
+                      gp = gpar(fill = col_fun(exp_mat[i, j]), col = NA))}
+
+
+## also do a kmeans clustering for the genes with k = 4
+Heatmap(exp_mat,
+        heatmap_legend_param=list(title=&amp;quot;expression&amp;quot;),
+        column_title = &amp;quot;clustered dotplot&amp;quot;, 
+        col=col_fun,
+        rect_gp = gpar(type = &amp;quot;none&amp;quot;),
+        cell_fun = cell_fun,
+        row_names_gp = gpar(fontsize = 5),
+        row_km = 4,
+        border = &amp;quot;black&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-8-2.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It looks pretty decent. One can now take advantage of all the awesome annotation function to add annotation bars in complexheatmap.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;colnames(exp_mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Naive CD4 T&amp;quot;  &amp;quot;B&amp;quot;            &amp;quot;Memory CD4 T&amp;quot; &amp;quot;FCGR3A+ Mono&amp;quot; &amp;quot;NK&amp;quot;          
+## [6] &amp;quot;CD8 T&amp;quot;        &amp;quot;CD14+ Mono&amp;quot;   &amp;quot;DC&amp;quot;           &amp;quot;Platelet&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(RColorBrewer)
+cluster_anno&amp;lt;-  c(&amp;quot;CD4T&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;CD4T&amp;quot;, &amp;quot;Mono&amp;quot;, &amp;quot;NK&amp;quot;, &amp;quot;CD8T&amp;quot;, &amp;quot;CD14_Mono&amp;quot;, &amp;quot;DC&amp;quot;, &amp;quot;Platelet&amp;quot;)
+
+column_ha&amp;lt;- HeatmapAnnotation(
+    cluster_anno = cluster_anno,
+    col = list(cluster_anno = setNames(brewer.pal(8, &amp;quot;Paired&amp;quot;), unique(cluster_anno))
+    ),
+    na_col = &amp;quot;grey&amp;quot;
+)
+
+Heatmap(exp_mat,
+        heatmap_legend_param=list(title=&amp;quot;expression&amp;quot;),
+        column_title = &amp;quot;clustered dotplot&amp;quot;, 
+        col=col_fun,
+        rect_gp = gpar(type = &amp;quot;none&amp;quot;),
+        cell_fun = cell_fun,
+        row_names_gp = gpar(fontsize = 5),
+        row_km = 4,
+        border = &amp;quot;black&amp;quot;,
+        top_annotation = column_ha)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Again, thanks &lt;a href=&#34;https://twitter.com/jokergoo_gu&#34;&gt;Zuguang Gu&lt;/a&gt; for this awesome package!!&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Precious lessons I learned from my Mom</title>
       <link>/post/precious-lessons-i-learned-from-my-mom/</link>
       <pubDate>Mon, 25 Jan 2021 00:00:00 +0000</pubDate>
@@ -767,112 +978,6 @@ to get the singularity image or convert the docker image to singularity image at
 are going through a 5-week long intensive bioinformatics training: &lt;a href=&#34;https://liulab-dfci.github.io/teaching&#34; target=&#34;_blank&#34;&gt;STAT115&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;I am TAing for 2 weeks and I gave a talk on reproducible computing. Please find the PDF here and share!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</title>
-      <link>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</link>
-      <pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://satijalab.org/seurat/&#34;&gt;&lt;code&gt;Seurat&lt;/code&gt;&lt;/a&gt; is great for scRNAseq analysis and it provides many easy-to-use &lt;code&gt;ggplot2&lt;/code&gt; wrappers for visualization. However, this brings the cost of flexibility. For example, In &lt;a href=&#34;https://github.com/satijalab/seurat/blob/master/R/visualization.R#L888&#34;&gt;&lt;code&gt;FeaturePlot&lt;/code&gt;&lt;/a&gt;, one can specify multiple genes and also &lt;code&gt;split.by&lt;/code&gt; to further split to multiple the conditions in the &lt;code&gt;meta.data&lt;/code&gt;. If &lt;code&gt;split.by&lt;/code&gt; is not &lt;code&gt;NULL&lt;/code&gt;, the &lt;code&gt;ncol&lt;/code&gt; is ignored so you can not arrange the grid.&lt;/p&gt;
-&lt;p&gt;This is best to understand with an example.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
-library(Seurat)
-library(patchwork)
-library(ggplot2)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Load the PBMC dataset
-pbmc.data &amp;lt;- Read10X(data.dir = &amp;quot;~/blog_data/filtered_gene_bc_matrices/hg19/&amp;quot;)
-# Initialize the Seurat object with the raw (non-normalized data).
-pbmc &amp;lt;- CreateSeuratObject(counts = pbmc.data, project = &amp;quot;pbmc3k&amp;quot;, min.cells = 3, min.features = 200)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: Feature names cannot have underscores (&amp;#39;_&amp;#39;), replacing with dashes
-## (&amp;#39;-&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pbmc &amp;lt;- pbmc %&amp;gt;% 
-  NormalizeData() %&amp;gt;%
-  FindVariableFeatures() %&amp;gt;%
-  ScaleData() %&amp;gt;%
-  RunPCA() %&amp;gt;%
-  RunUMAP(dims = 1:10)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
-## To use Python UMAP via reticulate, set umap.method to &amp;#39;umap-learn&amp;#39; and metric to &amp;#39;correlation&amp;#39;
-## This message will be shown once per session&lt;/code&gt;&lt;/pre&gt;
-&lt;div id=&#34;add-some-dummy-metadata&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;add some dummy metadata&lt;/h3&gt;
-&lt;p&gt;let’s pretend that the cells are from 5 different samples.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_names&amp;lt;- sample(paste0(&amp;quot;sample&amp;quot;, 1:5), size = ncol(pbmc), replace =TRUE)
-pbmc$samples&amp;lt;- factor(sample_names)
-pbmc@meta.data %&amp;gt;% head()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##                orig.ident nCount_RNA nFeature_RNA samples
-## AAACATACAACCAC     pbmc3k       2419          779 sample5
-## AAACATTGAGCTAC     pbmc3k       4903         1352 sample4
-## AAACATTGATCAGC     pbmc3k       3147         1129 sample4
-## AAACCGTGCTTCCG     pbmc3k       2639          960 sample5
-## AAACCGTGTATGCG     pbmc3k        980          521 sample2
-## AAACGCACTGGTAC     pbmc3k       2163          781 sample1&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;table(pbmc@meta.data$samples)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-## sample1 sample2 sample3 sample4 sample5 
-##     545     553     506     544     552&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;FeaturePlot(pbmc, features = &amp;quot;MS4A1&amp;quot;, split.by = &amp;quot;samples&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2020-05-23-customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;You will have 5 UMAP showing in the same row and can not arrange to multiple rows.&lt;/p&gt;
-&lt;p&gt;I do not want to re-implement the &lt;code&gt;FeaturePlot&lt;/code&gt; function but rather rearrange the ggplot2 output by &lt;code&gt;patchwork&lt;/code&gt;.
-I wrote the following function for this purpose.&lt;/p&gt;
-&lt;p&gt;Note, only a single gene can be specified. The idea is to generate a single UMAP plot for each sample and save them into a list and then arrange them by &lt;code&gt;patchwork&lt;/code&gt;. Also make sure the &lt;code&gt;metadata_column&lt;/code&gt; is a factor.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;FeaturePlotSingle&amp;lt;- function(obj, feature, metadata_column, ...){
-  all_cells&amp;lt;- colnames(obj)
-  groups&amp;lt;- levels(obj@meta.data[, metadata_column])
-  
-  # the minimal and maximal of the value to make the legend scale the same. 
-  minimal&amp;lt;- min(obj[[&amp;#39;RNA&amp;#39;]]@data[feature, ])
-  maximal&amp;lt;- max(obj[[&amp;#39;RNA&amp;#39;]]@data[feature, ])
-  ps&amp;lt;- list()
-  for (group in groups) {
-    subset_indx&amp;lt;- obj@meta.data[, metadata_column] == group
-    subset_cells&amp;lt;- all_cells[subset_indx]
-    p&amp;lt;- FeaturePlot(obj, features = feature, cells= subset_cells, ...) +
-      scale_color_viridis_c(limits=c(minimal, maximal), direction = 1) +
-      ggtitle(group) +
-      theme(plot.title = element_text(size = 10, face = &amp;quot;bold&amp;quot;))
-    ps[[group]]&amp;lt;- p
-  }
-  
-  
-  return(ps)
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Let’s test the function&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p_list&amp;lt;- FeaturePlotSingle(pbmc, feature= &amp;quot;MS4A1&amp;quot;, metadata_column = &amp;quot;samples&amp;quot;, pt.size = 0.05, order =TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Scale for &amp;#39;colour&amp;#39; is already present. Adding another scale for &amp;#39;colour&amp;#39;,
-## which will replace the existing scale.
-## Scale for &amp;#39;colour&amp;#39; is already present. Adding another scale for &amp;#39;colour&amp;#39;,
-## which will replace the existing scale.
-## Scale for &amp;#39;colour&amp;#39; is already present. Adding another scale for &amp;#39;colour&amp;#39;,
-## which will replace the existing scale.
-## Scale for &amp;#39;colour&amp;#39; is already present. Adding another scale for &amp;#39;colour&amp;#39;,
-## which will replace the existing scale.
-## Scale for &amp;#39;colour&amp;#39; is already present. Adding another scale for &amp;#39;colour&amp;#39;,
-## which will replace the existing scale.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;layout1&amp;lt;-&amp;quot;
-ABC
-#DE
-&amp;quot;
-
-wrap_plots(p_list ,guides = &amp;#39;collect&amp;#39;, design = layout1)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2020-05-23-customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;You can do even better by moving the legend to the empty space!&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## insert the legend space holder to the fourth 
-p_list2&amp;lt;- append(p_list, list(legend = guide_area()), 3)
-
-
-layout2&amp;lt;-&amp;quot;
-ABC
-DEF
-&amp;quot;
-wrap_plots(p_list2, guides = &amp;#39;collect&amp;#39;, design = layout2)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2020-05-23-customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;patchwork&lt;/code&gt; is amazing and really flexible!&lt;/p&gt;
-&lt;/div&gt;
 </description>
     </item>
     

@@ -1,0 +1,221 @@
+---
+title: clustered dotplot for single-cell RNAseq
+author: Ming Tang
+date: '2021-03-10'
+slug: clustered-dotplot-for-single-cell-rnaseq
+categories:
+  - bioinformatics
+  - visualization
+tags:
+  - scRNAseq
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<p>Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.</p>
+<p><code>Seurat</code> has a nice function for that. However, it can not do the clustering for the rows and columns. [David ] has written a <a href="http://davemcg.github.io/post/lets-plot-scrna-dotplots/">blog post</a> using ggplot2 and ggtree from Guangchuang Yu. It looks great!</p>
+<p><img src="/img/clustered_dotplot.png" /></p>
+<p>In this post, I am trying to reproduce the same effect using <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/">ComplexHeatmap</a></p>
+<pre class="r"><code>library(Seurat)
+library(tidyverse)
+library(presto)
+library(ComplexHeatmap)
+library(circlize)
+# Load the PBMC dataset
+pbmc.data &lt;- Read10X(data.dir = &quot;~/Downloads/filtered_gene_bc_matrices/hg19/&quot;)
+pbmc &lt;- CreateSeuratObject(counts = pbmc.data, project = &quot;pbmc3k&quot;, min.cells = 3, min.features = 200)</code></pre>
+<div id="standard-processing" class="section level3">
+<h3>standard processing</h3>
+<p>following <a href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html" class="uri">https://satijalab.org/seurat/articles/pbmc3k_tutorial.html</a></p>
+<pre class="r"><code>pbmc[[&quot;percent.mt&quot;]] &lt;- PercentageFeatureSet(pbmc, pattern = &quot;^MT-&quot;)
+
+## ScaleData uses top variable genes only
+pbmc&lt;- pbmc %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA() %&gt;%
+  FindNeighbors(dims = 1:10) %&gt;%
+  FindClusters(resolution = 0.5) %&gt;%
+  RunUMAP(dims = 1:10)</code></pre>
+<pre><code>## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+## 
+## Number of nodes: 2700
+## Number of edges: 97958
+## 
+## Running Louvain algorithm...
+## Maximum modularity in 10 random starts: 0.8717
+## Number of communities: 9
+## Elapsed time: 0 seconds</code></pre>
+<pre class="r"><code>DimPlot(pbmc, reduction = &quot;umap&quot;)</code></pre>
+<p><img src="/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-3-1.png" width="1152" /></p>
+<pre class="r"><code>new.cluster.ids &lt;- c(&quot;Naive CD4 T&quot;, &quot;CD14+ Mono&quot;, &quot;Memory CD4 T&quot;, &quot;B&quot;, &quot;CD8 T&quot;, &quot;FCGR3A+ Mono&quot;, 
+    &quot;NK&quot;, &quot;DC&quot;, &quot;Platelet&quot;)
+names(new.cluster.ids) &lt;- levels(pbmc)
+pbmc &lt;- RenameIdents(pbmc, new.cluster.ids)
+DimPlot(pbmc, reduction = &quot;umap&quot;, label = TRUE, pt.size = 0.5) + NoLegend()</code></pre>
+<p><img src="/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-4-1.png" width="1152" /></p>
+</div>
+<div id="find-marker-genes" class="section level3">
+<h3>find marker genes</h3>
+<pre class="r"><code>markers&lt;- presto::wilcoxauc(pbmc, &#39;seurat_clusters&#39;, assay = &#39;data&#39;)
+markers&lt;- top_markers(markers, n = 10, auc_min = 0.5, pct_in_min = 20, pct_out_max = 20)
+
+markers</code></pre>
+<pre><code>## # A tibble: 10 x 10
+##     rank `0`      `1`    `2`    `3`      `4`   `5`         `6`   `7`     `8`    
+##    &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  
+##  1     1 CCR7     S100A8 AQP3   CD79A    GZMA  FCGR3A      GZMB  FCER1A  PPBP   
+##  2     2 PIK3IP1  FCN1   TRAT1  CD79B    CST7  IFITM3      PRF1  CLEC10A NRGN   
+##  3     3 PRKCQ-A… LGALS2 SPOCK2 MS4A1    GZMK  RP11-290F2… GNLY  HLA-DQ… PF4    
+##  4     4 LEF1     CFD    CD27   HLA-DQA1 LYAR  CFD         FGFB… CPVL    SDPR   
+##  5     5 TCF7     GRN    TRADD  HLA-DQB1 GZMM  MS4A7       CST7  HLA-DMB GNG11  
+##  6     6 CD27     MS4A6A CD3G   TCL1A    CD8A  CD68        GZMA  CD33    SPARC  
+##  7     7 MAL      AP1S2  RGCC   LINC009… KLRG1 SPI1        FCGR… CTSH    RGS18  
+##  8     8 RGCC     CD14   CD40LG HLA-DMA  PRF1  RHOC        SPON2 RNASE6  HIST1H…
+##  9     9 CD3G     CD68   LAT    VPREB3   GZMH  HCK         CCL4  KLF4    TPM4   
+## 10    10 LDLRAP1  LGALS3 FLT3LG HLA-DQA2 HOPX  IFI30       APMAP RNF130  GP9</code></pre>
+<pre class="r"><code>all_markers&lt;- markers %&gt;%
+  select(-rank) %&gt;% 
+  unclass() %&gt;% 
+  stack() %&gt;%
+  pull(values) %&gt;%
+  unique() %&gt;%
+   .[!is.na(.)]</code></pre>
+<p>Seurat’s dot plot</p>
+<pre class="r"><code>p&lt;- DotPlot(object = pbmc, features = all_markers)
+p</code></pre>
+<p><img src="/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-6-1.png" width="1152" /></p>
+</div>
+<div id="lets-reproduce-it-using-complexheatmap" class="section level3">
+<h3>Let’s reproduce it using Complexheatmap</h3>
+<pre class="r"><code>df&lt;- p$data
+head(df)</code></pre>
+<pre><code>##            avg.exp  pct.exp features.plot          id avg.exp.scaled
+## CCR7      2.993317 43.41534          CCR7 Naive CD4 T       2.337223
+## PIK3IP1   2.674179 42.11288       PIK3IP1 Naive CD4 T       1.844182
+## PRKCQ-AS1 2.167078 33.28509     PRKCQ-AS1 Naive CD4 T       2.123716
+## LEF1      2.003597 31.83792          LEF1 Naive CD4 T       2.027023
+## TCF7      2.253631 37.48191          TCF7 Naive CD4 T       1.773285
+## CD27      2.326533 39.07381          CD27 Naive CD4 T       1.210923</code></pre>
+<pre class="r"><code>### the matrix for the scaled expression 
+exp_mat&lt;-df %&gt;% 
+  select(-pct.exp, -avg.exp) %&gt;%  
+  pivot_wider(names_from = id, values_from = avg.exp.scaled) %&gt;% 
+  as.data.frame() 
+    
+row.names(exp_mat) &lt;- exp_mat$features.plot  
+exp_mat &lt;- exp_mat[,-1] %&gt;% as.matrix()
+
+head(exp_mat)</code></pre>
+<pre><code>##           Naive CD4 T          B Memory CD4 T FCGR3A+ Mono         NK
+## CCR7         2.337223  0.4065916    0.6473101   -0.5357480 -0.6116367
+## PIK3IP1      1.844182 -0.2277953    1.4179422   -0.6531667 -0.1884663
+## PRKCQ-AS1    2.123716 -0.6830185    1.0323842   -0.5907663  0.0349381
+## LEF1         2.027023 -0.5746819    1.4350437   -0.5707971 -0.4876044
+## TCF7         1.773285 -0.4479782    1.5832831   -0.5337908 -0.6645233
+## CD27         1.210923 -0.2029260    1.3852365   -0.7374133 -0.6415774
+##                CD8 T CD14+ Mono         DC   Platelet
+## CCR7      -0.4272161 -0.5827381 -0.5508353 -0.6829502
+## PIK3IP1    0.2223521 -0.8180393 -0.9991901 -0.5978184
+## PRKCQ-AS1  0.2375921 -0.6732668 -0.7407892 -0.7407892
+## LEF1      -0.3271094 -0.4091405 -0.7288104 -0.3639229
+## TCF7       0.2798941 -0.5843243 -0.6207981 -0.7850477
+## CD27       1.3328521 -0.7261509 -0.7919650 -0.8289795</code></pre>
+<pre class="r"><code>## the matrix for the percentage of cells express a gene
+
+percent_mat&lt;-df %&gt;% 
+  select(-avg.exp, -avg.exp.scaled) %&gt;%  
+  pivot_wider(names_from = id, values_from = pct.exp) %&gt;% 
+  as.data.frame() 
+    
+row.names(percent_mat) &lt;- percent_mat$features.plot  
+percent_mat &lt;- percent_mat[,-1] %&gt;% as.matrix()
+
+head(percent_mat)</code></pre>
+<pre><code>##           Naive CD4 T         B Memory CD4 T FCGR3A+ Mono        NK     CD8 T
+## CCR7         43.41534 15.759312     26.37131     5.095541  2.702703  4.747774
+## PIK3IP1      42.11288 13.180516     40.92827    12.738854 13.513514 18.694362
+## PRKCQ-AS1    33.28509  1.146132     29.53586     4.458599 11.486486 13.353116
+## LEF1         31.83792  2.578797     32.27848     3.821656  4.054054  5.341246
+## TCF7         37.48191  9.169054     36.91983    17.197452  8.108108 18.991098
+## CD27         39.07381 12.034384     45.14768     4.458599  4.729730 25.816024
+##           CD14+ Mono        DC Platelet
+## CCR7        2.434077  8.333333 0.000000
+## PIK3IP1     6.693712  2.777778 6.666667
+## PRKCQ-AS1   1.419878  0.000000 0.000000
+## LEF1        5.070994  0.000000 6.666667
+## TCF7        9.736308 16.666667 6.666667
+## CD27        3.042596  2.777778 0.000000</code></pre>
+<pre class="r"><code>## the range is from 0 - 100
+range(percent_mat)</code></pre>
+<pre><code>## [1]   0 100</code></pre>
+<pre class="r"><code>## these two matrix have the same dimension
+dim(exp_mat)</code></pre>
+<pre><code>## [1] 80  9</code></pre>
+<pre class="r"><code>dim(percent_mat)</code></pre>
+<pre><code>## [1] 80  9</code></pre>
+<pre class="r"><code>library(viridis)
+library(Polychrome)
+viridis(5)</code></pre>
+<pre><code>## [1] &quot;#440154FF&quot; &quot;#3B528BFF&quot; &quot;#21908CFF&quot; &quot;#5DC863FF&quot; &quot;#FDE725FF&quot;</code></pre>
+<pre class="r"><code>Polychrome::swatch(viridis(5))</code></pre>
+<p><img src="/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
+<pre class="r"><code>## get an idea of the ranges of the matrix
+quantile(exp_mat, c(0.1, 0.5, 0.9, 0.99))</code></pre>
+<pre><code>##        10%        50%        90%        99% 
+## -0.6695752 -0.3567907  1.7156356  2.5000000</code></pre>
+<pre class="r"><code>## any value that is greater than 2 will be mapped to yellow
+col_fun = colorRamp2(c(-0.5, 2), c(&quot;#440154FF&quot;, &quot;#FDE725FF&quot;))
+
+
+cell_fun = function(j, i, x, y, w, h, fill){
+          grid.rect(x = x, y = y, width = w, height = h, 
+                    gp = gpar(col = NA, fill = NA))
+          grid.circle(x=x,y=y,r= percent_mat[i, j]/100 * min(unit.c(w, h)),
+                      gp = gpar(fill = col_fun(exp_mat[i, j]), col = NA))}
+
+
+## also do a kmeans clustering for the genes with k = 4
+Heatmap(exp_mat,
+        heatmap_legend_param=list(title=&quot;expression&quot;),
+        column_title = &quot;clustered dotplot&quot;, 
+        col=col_fun,
+        rect_gp = gpar(type = &quot;none&quot;),
+        cell_fun = cell_fun,
+        row_names_gp = gpar(fontsize = 5),
+        row_km = 4,
+        border = &quot;black&quot;)</code></pre>
+<p><img src="/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-8-2.png" width="1152" /></p>
+<p>It looks pretty decent. One can now take advantage of all the awesome annotation function to add annotation bars in complexheatmap.</p>
+<pre class="r"><code>colnames(exp_mat)</code></pre>
+<pre><code>## [1] &quot;Naive CD4 T&quot;  &quot;B&quot;            &quot;Memory CD4 T&quot; &quot;FCGR3A+ Mono&quot; &quot;NK&quot;          
+## [6] &quot;CD8 T&quot;        &quot;CD14+ Mono&quot;   &quot;DC&quot;           &quot;Platelet&quot;</code></pre>
+<pre class="r"><code>library(RColorBrewer)
+cluster_anno&lt;-  c(&quot;CD4T&quot;, &quot;B&quot;, &quot;CD4T&quot;, &quot;Mono&quot;, &quot;NK&quot;, &quot;CD8T&quot;, &quot;CD14_Mono&quot;, &quot;DC&quot;, &quot;Platelet&quot;)
+
+column_ha&lt;- HeatmapAnnotation(
+    cluster_anno = cluster_anno,
+    col = list(cluster_anno = setNames(brewer.pal(8, &quot;Paired&quot;), unique(cluster_anno))
+    ),
+    na_col = &quot;grey&quot;
+)
+
+Heatmap(exp_mat,
+        heatmap_legend_param=list(title=&quot;expression&quot;),
+        column_title = &quot;clustered dotplot&quot;, 
+        col=col_fun,
+        rect_gp = gpar(type = &quot;none&quot;),
+        cell_fun = cell_fun,
+        row_names_gp = gpar(fontsize = 5),
+        row_km = 4,
+        border = &quot;black&quot;,
+        top_annotation = column_ha)</code></pre>
+<p><img src="/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-9-1.png" width="1152" /></p>
+<p>Again, thanks <a href="https://twitter.com/jokergoo_gu">Zuguang Gu</a> for this awesome package!!</p>
+</div>
