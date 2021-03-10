@@ -22,7 +22,7 @@ knitr::opts_chunk$set(fig.width=12, fig.height=8)
 
 Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.
 
-`Seurat` has a nice function for that. However, it can not do the clustering for the rows and columns. [David ] has written a [blog post](http://davemcg.github.io/post/lets-plot-scrna-dotplots/) using ggplot2 and ggtree from Guangchuang Yu. It looks great! 
+`Seurat` has a nice function for that. However, it can not do the clustering for the rows and columns. David McGaughey has written a [blog post](http://davemcg.github.io/post/lets-plot-scrna-dotplots/) using ggplot2 and ggtree from Guangchuang Yu. It looks great! 
 
 ![](/img/clustered_dotplot.png)
 

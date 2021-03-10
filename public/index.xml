@@ -17,7 +17,7 @@
       
       <guid>/post/clustered-dotplot-for-single-cell-rnaseq/</guid>
       <description>&lt;p&gt;Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;Seurat&lt;/code&gt; has a nice function for that. However, it can not do the clustering for the rows and columns. [David ] has written a &lt;a href=&#34;http://davemcg.github.io/post/lets-plot-scrna-dotplots/&#34;&gt;blog post&lt;/a&gt; using ggplot2 and ggtree from Guangchuang Yu. It looks great!&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Seurat&lt;/code&gt; has a nice function for that. However, it can not do the clustering for the rows and columns. David McGaughey has written a &lt;a href=&#34;http://davemcg.github.io/post/lets-plot-scrna-dotplots/&#34;&gt;blog post&lt;/a&gt; using ggplot2 and ggtree from Guangchuang Yu. It looks great!&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;/img/clustered_dotplot.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In this post, I am trying to reproduce the same effect using &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/&#34;&gt;ComplexHeatmap&lt;/a&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Seurat)
