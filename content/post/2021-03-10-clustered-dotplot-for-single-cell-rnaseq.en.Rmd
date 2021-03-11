@@ -196,6 +196,44 @@ Heatmap(exp_mat,
         top_annotation = column_ha)
 ```
 
+### UPDATE
+
+Zuguang mentioned:
+
+>Alternatively you can use `layer_fun` which is a vectorized version of `cell_fun`. It will speed up plotting in interactive graphics devices. Just change `percent_mat[i, j]` to `pindex(percent_mat, i, j)` and keep other code unchanged, and assign to `layer_fun` argument.
+
+>One can also create a legend for the dot size for the percentages. https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#add-customized-legends
+
+```{r}
+
+## the 
+layer_fun = function(j, i, x, y, w, h, fill){
+          grid.rect(x = x, y = y, width = w, height = h, 
+                    gp = gpar(col = NA, fill = NA))
+          grid.circle(x=x,y=y,r= pindex(percent_mat, i, j)/100 * min(unit.c(w, h)),
+                      gp = gpar(fill = col_fun(pindex(exp_mat, i, j)), col = NA))}
+
+
+lgd_list = list(
+    Legend( labels = c(0,0.25,0.5,0.75,1), title = "pt", type = "points", pch = 16, size = c(0,0.25,0.5,0.75,1) * unit(4,"mm"),
+        legend_gp = gpar(col = "black")))
+    
+    
+hp<- Heatmap(exp_mat,
+        heatmap_legend_param=list(title="expression"),
+        column_title = "clustered dotplot", 
+        col=col_fun,
+        rect_gp = gpar(type = "none"),
+        layer_fun = layer_fun,
+        row_names_gp = gpar(fontsize = 5),
+        row_km = 4,
+        border = "black",
+        top_annotation = column_ha)
+
+draw( hp, annotation_legend_list = lgd_list)
+```
+
+
 Again, thanks [Zuguang Gu](https://twitter.com/jokergoo_gu) for this awesome package!!
 
 

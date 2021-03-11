@@ -15,6 +15,7 @@ editor_options:
   chunk_output_type: console
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.</p>
@@ -217,5 +218,41 @@ Heatmap(exp_mat,
         border = &quot;black&quot;,
         top_annotation = column_ha)</code></pre>
 <p><img src="/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-9-1.png" width="1152" /></p>
+</div>
+<div id="update" class="section level3">
+<h3>UPDATE</h3>
+<p>Zuguang mentioned:</p>
+<blockquote>
+<p>Alternatively you can use <code>layer_fun</code> which is a vectorized version of <code>cell_fun</code>. It will speed up plotting in interactive graphics devices. Just change <code>percent_mat[i, j]</code> to <code>pindex(percent_mat, i, j)</code> and keep other code unchanged, and assign to <code>layer_fun</code> argument.</p>
+</blockquote>
+<blockquote>
+<p>One can also create a legend for the dot size for the percentages. <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#add-customized-legends" class="uri">https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#add-customized-legends</a></p>
+</blockquote>
+<pre class="r"><code>## the 
+layer_fun = function(j, i, x, y, w, h, fill){
+          grid.rect(x = x, y = y, width = w, height = h, 
+                    gp = gpar(col = NA, fill = NA))
+          grid.circle(x=x,y=y,r= pindex(percent_mat, i, j)/100 * min(unit.c(w, h)),
+                      gp = gpar(fill = col_fun(pindex(exp_mat, i, j)), col = NA))}
+
+
+lgd_list = list(
+    Legend( labels = c(0,0.25,0.5,0.75,1), title = &quot;pt&quot;, type = &quot;points&quot;, pch = 16, size = c(0,0.25,0.5,0.75,1) * unit(4,&quot;mm&quot;),
+        legend_gp = gpar(col = &quot;black&quot;)))
+    
+    
+hp&lt;- Heatmap(exp_mat,
+        heatmap_legend_param=list(title=&quot;expression&quot;),
+        column_title = &quot;clustered dotplot&quot;, 
+        col=col_fun,
+        rect_gp = gpar(type = &quot;none&quot;),
+        layer_fun = layer_fun,
+        row_names_gp = gpar(fontsize = 5),
+        row_km = 4,
+        border = &quot;black&quot;,
+        top_annotation = column_ha)
+
+draw( hp, annotation_legend_list = lgd_list)</code></pre>
+<p><img src="/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-10-1.png" width="1152" /></p>
 <p>Again, thanks <a href="https://twitter.com/jokergoo_gu">Zuguang Gu</a> for this awesome package!!</p>
 </div>

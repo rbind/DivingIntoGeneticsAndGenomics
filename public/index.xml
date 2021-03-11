@@ -16,7 +16,10 @@
       <pubDate>Wed, 10 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>/post/clustered-dotplot-for-single-cell-rnaseq/</guid>
-      <description>&lt;p&gt;Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.&lt;/p&gt;
+      <description>&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Seurat&lt;/code&gt; has a nice function for that. However, it can not do the clustering for the rows and columns. David McGaughey has written a &lt;a href=&#34;http://davemcg.github.io/post/lets-plot-scrna-dotplots/&#34;&gt;blog post&lt;/a&gt; using ggplot2 and ggtree from Guangchuang Yu. It looks great!&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;/img/clustered_dotplot.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In this post, I am trying to reproduce the same effect using &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/&#34;&gt;ComplexHeatmap&lt;/a&gt;&lt;/p&gt;
@@ -216,6 +219,42 @@ Heatmap(exp_mat,
         border = &amp;quot;black&amp;quot;,
         top_annotation = column_ha)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;update&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;UPDATE&lt;/h3&gt;
+&lt;p&gt;Zuguang mentioned:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Alternatively you can use &lt;code&gt;layer_fun&lt;/code&gt; which is a vectorized version of &lt;code&gt;cell_fun&lt;/code&gt;. It will speed up plotting in interactive graphics devices. Just change &lt;code&gt;percent_mat[i, j]&lt;/code&gt; to &lt;code&gt;pindex(percent_mat, i, j)&lt;/code&gt; and keep other code unchanged, and assign to &lt;code&gt;layer_fun&lt;/code&gt; argument.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;One can also create a legend for the dot size for the percentages. &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#add-customized-legends&#34; class=&#34;uri&#34;&gt;https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#add-customized-legends&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## the 
+layer_fun = function(j, i, x, y, w, h, fill){
+          grid.rect(x = x, y = y, width = w, height = h, 
+                    gp = gpar(col = NA, fill = NA))
+          grid.circle(x=x,y=y,r= pindex(percent_mat, i, j)/100 * min(unit.c(w, h)),
+                      gp = gpar(fill = col_fun(pindex(exp_mat, i, j)), col = NA))}
+
+
+lgd_list = list(
+    Legend( labels = c(0,0.25,0.5,0.75,1), title = &amp;quot;pt&amp;quot;, type = &amp;quot;points&amp;quot;, pch = 16, size = c(0,0.25,0.5,0.75,1) * unit(4,&amp;quot;mm&amp;quot;),
+        legend_gp = gpar(col = &amp;quot;black&amp;quot;)))
+    
+    
+hp&amp;lt;- Heatmap(exp_mat,
+        heatmap_legend_param=list(title=&amp;quot;expression&amp;quot;),
+        column_title = &amp;quot;clustered dotplot&amp;quot;, 
+        col=col_fun,
+        rect_gp = gpar(type = &amp;quot;none&amp;quot;),
+        layer_fun = layer_fun,
+        row_names_gp = gpar(fontsize = 5),
+        row_km = 4,
+        border = &amp;quot;black&amp;quot;,
+        top_annotation = column_ha)
+
+draw( hp, annotation_legend_list = lgd_list)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Again, thanks &lt;a href=&#34;https://twitter.com/jokergoo_gu&#34;&gt;Zuguang Gu&lt;/a&gt; for this awesome package!!&lt;/p&gt;
 &lt;/div&gt;
 </description>
