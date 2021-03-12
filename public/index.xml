@@ -11,6 +11,16 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>CHIPS: A Snakemake pipeline for quality control and reproducible processing of chromatin profiling data</title>
+      <link>/publication/2021-03-11-chips-snakemake/</link>
+      <pubDate>Wed, 10 Mar 2021 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2021-03-11-chips-snakemake/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>clustered dotplot for single-cell RNAseq</title>
       <link>/post/clustered-dotplot-for-single-cell-rnaseq/</link>
       <pubDate>Wed, 10 Mar 2021 00:00:00 +0000</pubDate>
@@ -1004,19 +1014,6 @@ to get the singularity image or convert the docker image to singularity image at
 &lt;p&gt;The resulting singularity image will be in &lt;code&gt;/tmp/singularity&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;: My previous colleague Seth Sahil mentioned that I may want to use the &lt;a href=&#34;https://hub.docker.com/r/rocker/geospatial&#34; target=&#34;_blank&#34;&gt;geospacial rocker image&lt;/a&gt; since it includes most of the libraries.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>reproducible computing for your own benifit</title>
-      <link>/talk/2020-reproducible-computing/</link>
-      <pubDate>Tue, 02 Jun 2020 14:30:00 -0400</pubDate>
-      
-      <guid>/talk/2020-reproducible-computing/</guid>
-      <description>&lt;p&gt;We are hiring several new computational biologists in Shirley Liu Lab. All the new hires together with wet lab people
-are going through a 5-week long intensive bioinformatics training: &lt;a href=&#34;https://liulab-dfci.github.io/teaching&#34; target=&#34;_blank&#34;&gt;STAT115&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;I am TAing for 2 weeks and I gave a talk on reproducible computing. Please find the PDF here and share!&lt;/p&gt;
 </description>
     </item>
     

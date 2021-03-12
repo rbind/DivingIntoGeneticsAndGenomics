@@ -17,10 +17,10 @@
       
     
   
-  <meta name="description" content="Motivation: One major goal of single-cell RNA sequencing (scRNAseq) experiments is to identify novel cell types. With increasingly large scRNAseq datasets, unsupervised clustering methods can now produce detailed catalogues of transcriptionally distinct groups of cells in a sample. However, the interpretation of these clusters is challenging for both technical and biological reasons. Popular clustering algorithms are sensitive to parameter choices, and can produce different clustering solutions with even small changes in the number of principal components used, the k nearest neighbor, and the resolution parameters, among others. Results: Here, we present a set of tools to evaluate cluster stability by subsampling, which can guide parameter choice and aid in biological interpretation. The R package scclusteval and the accompanying Snakemake workflow implement all steps of the pipeline: subsampling the cells, repeating the clustering with Seurat, and estimation of cluster stability using the Jaccard similarity index. The Snakemake workflow takes advantage of high-performance computing clusters and dispatches jobs in parallel to available CPUs to speed up the analysis. The scclusteval package provides functions to facilitate the analysis of the output, including a series of rich visualizations. Availability: R package scclusteval: https://github.com/crazyhottommy/scclusteval Snakemake workflow: https://github.com/crazyhottommy/pyflow_seuratv3_parameter.">
+  <meta name="description" content="Motivation: The chromatin profile measured by ATAC-seq, ChIP-seq, or DNase-seq experiments can identify genomic regions critical in regulating gene expression and provide insights on biological processes such as diseases and development. However, quality control and processing chromatin profiling data involve many steps, and different bioinformatics tools are used at each step. It can be challenging to manage the analysis. Results: We developed a Snakemake pipeline called CHIPS (CHromatin enrichment Processor) to streamline the processing of ChIP-seq, ATAC-seq, and DNase-seq data. The pipeline supports single- and paired-end data and is flexible to start with FASTQ or BAM files. It includes basic steps such as read trimming, mapping, and peak calling. In addition, it calculates quality control metrics such as contamination profiles, PCR bottleneck coefficient, the fraction of reads in peaks, percentage of peaks overlapping with the union of public DNaseI hypersensitivity sites, and conservation profile of the peaks. For downstream analysis, it carries out peak annotations, motif finding, and regulatory potential calculation for all genes. The pipeline ensures that the processing is robust and reproducible. Availability: CHIPS is available at https://bitbucket.org/plumbers/cidc_chips/src/master/ Contact: mtang@ds.dfci.harvard.edu; henry_long@dfci.harvard.edu">
 
   
-  <link rel="alternate" hreflang="en-us" href="/publication/2020-05-29-scclusteval/">
+  <link rel="alternate" hreflang="en-us" href="/publication/2021-03-11-chips-snakemake/">
 
   
 
@@ -85,7 +85,7 @@
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/publication/2020-05-29-scclusteval/">
+  <link rel="canonical" href="/publication/2021-03-11-chips-snakemake/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -93,20 +93,20 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="DNA confesses Data speak">
-  <meta property="og:url" content="/publication/2020-05-29-scclusteval/">
-  <meta property="og:title" content="Evaluating single-cell cluster stability using the Jaccard similarity index | DNA confesses Data speak">
-  <meta property="og:description" content="Motivation: One major goal of single-cell RNA sequencing (scRNAseq) experiments is to identify novel cell types. With increasingly large scRNAseq datasets, unsupervised clustering methods can now produce detailed catalogues of transcriptionally distinct groups of cells in a sample. However, the interpretation of these clusters is challenging for both technical and biological reasons. Popular clustering algorithms are sensitive to parameter choices, and can produce different clustering solutions with even small changes in the number of principal components used, the k nearest neighbor, and the resolution parameters, among others. Results: Here, we present a set of tools to evaluate cluster stability by subsampling, which can guide parameter choice and aid in biological interpretation. The R package scclusteval and the accompanying Snakemake workflow implement all steps of the pipeline: subsampling the cells, repeating the clustering with Seurat, and estimation of cluster stability using the Jaccard similarity index. The Snakemake workflow takes advantage of high-performance computing clusters and dispatches jobs in parallel to available CPUs to speed up the analysis. The scclusteval package provides functions to facilitate the analysis of the output, including a series of rich visualizations. Availability: R package scclusteval: https://github.com/crazyhottommy/scclusteval Snakemake workflow: https://github.com/crazyhottommy/pyflow_seuratv3_parameter."><meta property="og:image" content="/img/headers/scclusteval_flow.png">
+  <meta property="og:url" content="/publication/2021-03-11-chips-snakemake/">
+  <meta property="og:title" content="CHIPS: A Snakemake pipeline for quality control and reproducible processing of chromatin profiling data | DNA confesses Data speak">
+  <meta property="og:description" content="Motivation: The chromatin profile measured by ATAC-seq, ChIP-seq, or DNase-seq experiments can identify genomic regions critical in regulating gene expression and provide insights on biological processes such as diseases and development. However, quality control and processing chromatin profiling data involve many steps, and different bioinformatics tools are used at each step. It can be challenging to manage the analysis. Results: We developed a Snakemake pipeline called CHIPS (CHromatin enrichment Processor) to streamline the processing of ChIP-seq, ATAC-seq, and DNase-seq data. The pipeline supports single- and paired-end data and is flexible to start with FASTQ or BAM files. It includes basic steps such as read trimming, mapping, and peak calling. In addition, it calculates quality control metrics such as contamination profiles, PCR bottleneck coefficient, the fraction of reads in peaks, percentage of peaks overlapping with the union of public DNaseI hypersensitivity sites, and conservation profile of the peaks. For downstream analysis, it carries out peak annotations, motif finding, and regulatory potential calculation for all genes. The pipeline ensures that the processing is robust and reproducible. Availability: CHIPS is available at https://bitbucket.org/plumbers/cidc_chips/src/master/ Contact: mtang@ds.dfci.harvard.edu; henry_long@dfci.harvard.edu"><meta property="og:image" content="/img/headers/CHIPS.png">
   <meta property="og:locale" content="en-us">
   
-  <meta property="article:published_time" content="2020-11-09T00:00:00-05:00">
+  <meta property="article:published_time" content="2021-03-10T00:00:00-05:00">
   
-  <meta property="article:modified_time" content="2020-11-09T00:00:00-05:00">
-  
-
-  
+  <meta property="article:modified_time" content="2021-03-10T00:00:00-05:00">
   
 
-  <title>Evaluating single-cell cluster stability using the Jaccard similarity index | DNA confesses Data speak</title>
+  
+  
+
+  <title>CHIPS: A Snakemake pipeline for quality control and reproducible processing of chromatin profiling data | DNA confesses Data speak</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -281,7 +281,7 @@
 <div class="article-header">
   
   
-    <img src="/img/headers/scclusteval_flow.png" class="article-banner" itemprop="image">
+    <img src="/img/headers/CHIPS.png" class="article-banner" itemprop="image">
   
 
   <span class="article-header-caption">My caption 😄</span>
@@ -290,10 +290,10 @@
 
 
   <div class="article-container">
-    <h1 itemprop="name">Evaluating single-cell cluster stability using the Jaccard similarity index</h1>
+    <h1 itemprop="name">CHIPS: A Snakemake pipeline for quality control and reproducible processing of chromatin profiling data</h1>
     <span class="pub-authors" itemprop="author">
       
-      <strong>Ming Tang#</strong>, Yasin Kaymaz, Brandon L Logeman, Stephen Eichhorn, Zhengzheng S Liang, Catherine Dulac, Timothy B Sacton#
+      Len Taing * , Clara Cousins *, Gali Bai, Cejas Paloma, Xintao Qiu, Myles Brown, Clifford A. Meyer, X Shirley Liu, Henry W Long#, <strong>Ming Tang#</strong>
       
     </span>
     <span class="pull-right">
@@ -302,35 +302,35 @@
   <ul class="share">
     <li>
       <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=Evaluating%20single-cell%20cluster%20stability%20using%20the%20Jaccard%20similarity%20index&amp;url=%2fpublication%2f2020-05-29-scclusteval%2f"
+         href="https://twitter.com/intent/tweet?text=CHIPS%3a%20A%20Snakemake%20pipeline%20for%20quality%20control%20and%20reproducible%20processing%20of%20chromatin%20profiling%20data&amp;url=%2fpublication%2f2021-03-11-chips-snakemake%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-twitter"></i>
       </a>
     </li>
     <li>
       <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=%2fpublication%2f2020-05-29-scclusteval%2f"
+         href="https://www.facebook.com/sharer.php?u=%2fpublication%2f2021-03-11-chips-snakemake%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-facebook"></i>
       </a>
     </li>
     <li>
       <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpublication%2f2020-05-29-scclusteval%2f&amp;title=Evaluating%20single-cell%20cluster%20stability%20using%20the%20Jaccard%20similarity%20index"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpublication%2f2021-03-11-chips-snakemake%2f&amp;title=CHIPS%3a%20A%20Snakemake%20pipeline%20for%20quality%20control%20and%20reproducible%20processing%20of%20chromatin%20profiling%20data"
          target="_blank" rel="noopener">
         <i class="fa fa-linkedin"></i>
       </a>
     </li>
     <li>
       <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=%2fpublication%2f2020-05-29-scclusteval%2f&amp;title=Evaluating%20single-cell%20cluster%20stability%20using%20the%20Jaccard%20similarity%20index"
+         href="http://service.weibo.com/share/share.php?url=%2fpublication%2f2021-03-11-chips-snakemake%2f&amp;title=CHIPS%3a%20A%20Snakemake%20pipeline%20for%20quality%20control%20and%20reproducible%20processing%20of%20chromatin%20profiling%20data"
          target="_blank" rel="noopener">
         <i class="fa fa-weibo"></i>
       </a>
     </li>
     <li>
       <a class="email"
-         href="mailto:?subject=Evaluating%20single-cell%20cluster%20stability%20using%20the%20Jaccard%20similarity%20index&amp;body=%2fpublication%2f2020-05-29-scclusteval%2f">
+         href="mailto:?subject=CHIPS%3a%20A%20Snakemake%20pipeline%20for%20quality%20control%20and%20reproducible%20processing%20of%20chromatin%20profiling%20data&amp;body=%2fpublication%2f2021-03-11-chips-snakemake%2f">
         <i class="fa fa-envelope"></i>
       </a>
     </li>
@@ -344,7 +344,7 @@
 
     
     <h3>Abstract</h3>
-    <p class="pub-abstract" itemprop="text">Motivation: One major goal of single-cell RNA sequencing (scRNAseq) experiments is to identify novel cell types. With increasingly large scRNAseq datasets, unsupervised clustering methods can now produce detailed catalogues of transcriptionally distinct groups of cells in a sample. However, the interpretation of these clusters is challenging for both technical and biological reasons. Popular clustering algorithms are sensitive to parameter choices, and can produce different clustering solutions with even small changes in the number of principal components used, the k nearest neighbor, and the resolution parameters, among others. Results: Here, we present a set of tools to evaluate cluster stability by subsampling, which can guide parameter choice and aid in biological interpretation. The R package scclusteval and the accompanying Snakemake workflow implement all steps of the pipeline: subsampling the cells, repeating the clustering with Seurat, and estimation of cluster stability using the Jaccard similarity index. The Snakemake workflow takes advantage of high-performance computing clusters and dispatches jobs in parallel to available CPUs to speed up the analysis. The scclusteval package provides functions to facilitate the analysis of the output, including a series of rich visualizations. Availability: R package scclusteval: <a href="https://github.com/crazyhottommy/scclusteval" target="_blank">https://github.com/crazyhottommy/scclusteval</a> Snakemake workflow: <a href="https://github.com/crazyhottommy/pyflow_seuratv3_parameter" target="_blank">https://github.com/crazyhottommy/pyflow_seuratv3_parameter</a>.</p>
+    <p class="pub-abstract" itemprop="text">Motivation: The chromatin profile measured by ATAC-seq, ChIP-seq, or DNase-seq experiments can identify genomic regions critical in regulating gene expression and provide insights on biological processes such as diseases and development. However, quality control and processing chromatin profiling data involve many steps, and different bioinformatics tools are used at each step. It can be challenging to manage the analysis. Results: We developed a Snakemake pipeline called CHIPS (CHromatin enrichment Processor) to streamline the processing of ChIP-seq, ATAC-seq, and DNase-seq data. The pipeline supports single- and paired-end data and is flexible to start with FASTQ or BAM files. It includes basic steps such as read trimming, mapping, and peak calling. In addition, it calculates quality control metrics such as contamination profiles, PCR bottleneck coefficient, the fraction of reads in peaks, percentage of peaks overlapping with the union of public DNaseI hypersensitivity sites, and conservation profile of the peaks. For downstream analysis, it carries out peak annotations, motif finding, and regulatory potential calculation for all genes. The pipeline ensures that the processing is robust and reproducible. Availability: CHIPS is available at <a href="https://bitbucket.org/plumbers/cidc_chips/src/master/" target="_blank">https://bitbucket.org/plumbers/cidc_chips/src/master/</a> Contact: mtang@ds.dfci.harvard.edu; henry_long@dfci.harvard.edu</p>
     
 
     
@@ -373,7 +373,7 @@
       <div class="col-sm-10">
         <div class="row">
           <div class="col-xs-12 col-sm-3 pub-row-heading">Publication</div>
-          <div class="col-xs-12 col-sm-9">In <em>Bioinformatics</em>, Bioinformatics.</div>
+          <div class="col-xs-12 col-sm-9">In <em>bioRxiv</em>, BioRxiv.</div>
         </div>
       </div>
       <div class="col-sm-1"></div>
@@ -387,7 +387,7 @@
         <div class="row">
           <div class="col-xs-12 col-sm-3 pub-row-heading">Date</div>
           <div class="col-xs-12 col-sm-9" itemprop="datePublished">
-            November, 2020
+            March, 2021
           </div>
         </div>
       </div>
@@ -406,7 +406,7 @@
 
 
 
-<a class="btn btn-primary btn-outline" href="https://www.biorxiv.org/content/10.1101/2020.05.26.116640v1" target="_blank" rel="noopener">
+<a class="btn btn-primary btn-outline" href="https://www.biorxiv.org/content/10.1101/2021.03.09.434676v1" target="_blank" rel="noopener">
   Preprint
 </a>
 
@@ -415,14 +415,11 @@
 
 
 
-<a class="btn btn-primary btn-outline" href="https://github.com/crazyhottommy/scclusteval" target="_blank" rel="noopener">
+<a class="btn btn-primary btn-outline" href="https://bitbucket.org/plumbers/cidc_chips/src/master/" target="_blank" rel="noopener">
   Code
 </a>
 
 
-<a class="btn btn-primary btn-outline" href="https://osf.io/rfbcg/" target="_blank" rel="noopener">
-  Dataset
-</a>
 
 
 
@@ -430,11 +427,6 @@
 
 
 
-
-
-<a class="btn btn-primary btn-outline" href="https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/btaa956/5962080" target="_blank" rel="noopener">
-  Paper Link
-</a>
 
 
 
@@ -460,15 +452,10 @@
 <div class="article-container article-widget">
   <div class="post-nav">
   
-  <div class="post-nav-item">
-    <div class="meta-nav">Next</div>
-    <a href="/publication/2021-01-05-mixed-histology/" rel="next">The histologic phenotype of lung cancers may be driven by transcriptomic features rather than genomic characteristics</a>
-  </div>
-  
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="/publication/2020-08-07-maestro/" rel="prev">Integrative analyses of single-cell transcriptome and regulome using MAESTRO</a>
+    <a href="/publication/2021-01-05-mixed-histology/" rel="prev">The histologic phenotype of lung cancers may be driven by transcriptomic features rather than genomic characteristics</a>
   </div>
   
 </div>

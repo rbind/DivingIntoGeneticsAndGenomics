@@ -3,7 +3,7 @@ title = "Evaluating single-cell cluster stability using the Jaccard similarity i
 date = 2020-11-09T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["**Ming Tang** et.al"]
+authors = ["**Ming Tang#**", "Yasin Kaymaz", "Brandon L Logeman", "Stephen Eichhorn", "Zhengzheng S Liang", "Catherine Dulac", "Timothy B Sacton#"]
 
 # Publication type.
 # Legend:

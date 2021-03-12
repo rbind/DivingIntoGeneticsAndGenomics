@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/publication/2021-03-11-chips-snakemake/</loc>
+      <lastmod>2021-03-10T00:00:00-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/clustered-dotplot-for-single-cell-rnaseq/</loc>
       <lastmod>2021-03-10T00:00:00+00:00</lastmod>
     </url>
@@ -825,7 +834,7 @@
     <url>
     
       <loc>/publication_types/2/</loc>
-      <lastmod>2021-01-05T00:00:00-05:00</lastmod>
+      <lastmod>2021-03-10T00:00:00-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -864,8 +873,8 @@
     
     <url>
     
-      <loc>/tags/bioinformatics/</loc>
-      <lastmod>2020-09-26T00:00:00-04:00</lastmod>
+      <loc>/categories/bioinformatics/</loc>
+      <lastmod>2021-03-10T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -874,8 +883,8 @@
     
     <url>
     
-      <loc>/categories/bioinformatics/</loc>
-      <lastmod>2021-03-10T00:00:00+00:00</lastmod>
+      <loc>/tags/bioinformatics/</loc>
+      <lastmod>2020-09-26T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -984,7 +993,7 @@
     
     <url>
     
-      <loc>/tags/docker/</loc>
+      <loc>/categories/docker/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -994,7 +1003,7 @@
     
     <url>
     
-      <loc>/categories/docker/</loc>
+      <loc>/tags/docker/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -1044,8 +1053,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1054,8 +1063,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1074,7 +1083,7 @@
     
     <url>
     
-      <loc>/tags/hpc/</loc>
+      <loc>/categories/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -1084,7 +1093,7 @@
     
     <url>
     
-      <loc>/categories/hpc/</loc>
+      <loc>/tags/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -1195,7 +1204,7 @@
     <url>
     
       <loc>/publication_types/</loc>
-      <lastmod>2021-01-05T00:00:00-05:00</lastmod>
+      <lastmod>2021-03-10T00:00:00-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1214,16 +1223,6 @@
     
     <url>
     
-      <loc>/tags/python/</loc>
-      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/categories/python/</loc>
       <lastmod>2019-09-12T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -1234,8 +1233,8 @@
     
     <url>
     
-      <loc>/tags/r/</loc>
-      <lastmod>2020-08-26T00:00:00+00:00</lastmod>
+      <loc>/tags/python/</loc>
+      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1246,6 +1245,16 @@
     
       <loc>/categories/r/</loc>
       <lastmod>2020-09-10T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/r/</loc>
+      <lastmod>2020-08-26T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1274,16 +1283,6 @@
     
     <url>
     
-      <loc>/tags/rstats/</loc>
-      <lastmod>2020-10-02T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/categories/rstats/</loc>
       <lastmod>2020-10-02T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -1294,8 +1293,8 @@
     
     <url>
     
-      <loc>/tags/scatacseq/</loc>
-      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
+      <loc>/tags/rstats/</loc>
+      <lastmod>2020-10-02T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1314,8 +1313,8 @@
     
     <url>
     
-      <loc>/tags/scrnaseq/</loc>
-      <lastmod>2021-03-10T00:00:00+00:00</lastmod>
+      <loc>/tags/scatacseq/</loc>
+      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1334,8 +1333,8 @@
     
     <url>
     
-      <loc>/tags/seurat/</loc>
-      <lastmod>2020-05-23T00:00:00+00:00</lastmod>
+      <loc>/tags/scrnaseq/</loc>
+      <lastmod>2021-03-10T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1344,8 +1343,8 @@
     
     <url>
     
-      <loc>/tags/single-cell/</loc>
-      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
+      <loc>/tags/seurat/</loc>
+      <lastmod>2020-05-23T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1364,8 +1363,8 @@
     
     <url>
     
-      <loc>/tags/singularity/</loc>
-      <lastmod>2020-07-02T00:00:00+00:00</lastmod>
+      <loc>/tags/single-cell/</loc>
+      <lastmod>2019-05-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1375,6 +1374,16 @@
     <url>
     
       <loc>/categories/singularity/</loc>
+      <lastmod>2020-07-02T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/singularity/</loc>
       <lastmod>2020-07-02T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -1404,7 +1413,7 @@
     
     <url>
     
-      <loc>/tags/statistics/</loc>
+      <loc>/categories/statistics/</loc>
       <lastmod>2020-10-02T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -1414,7 +1423,7 @@
     
     <url>
     
-      <loc>/categories/statistics/</loc>
+      <loc>/tags/statistics/</loc>
       <lastmod>2020-10-02T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
