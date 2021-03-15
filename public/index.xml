@@ -370,6 +370,16 @@ draw( hp, annotation_legend_list = lgd_list)&lt;/code&gt;&lt;/pre&gt;
     </item>
     
     <item>
+      <title>Enhancer Reprogramming Confers Dependence on Glycolysis and IGF Signaling in KMT2D Mutant Melanoma</title>
+      <link>/publication/2020-10-20-kmt2d-melanoma/</link>
+      <pubDate>Tue, 20 Oct 2020 00:00:00 -0400</pubDate>
+      
+      <guid>/publication/2020-10-20-kmt2d-melanoma/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>compare slopes in linear regression</title>
       <link>/post/compare-slopes-in-linear-regression/</link>
       <pubDate>Fri, 02 Oct 2020 00:00:00 +0000</pubDate>
@@ -930,90 +940,6 @@ Search for &lt;code&gt;Travis CI&lt;/code&gt;. It is free for open source projec
 
 &lt;p&gt;You can embed a buid status badge in the README.md of your github repo following:
 &lt;a href=&#34;https://docs.travis-ci.com/user/status-images/&#34; target=&#34;_blank&#34;&gt;https://docs.travis-ci.com/user/status-images/&lt;/a&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>build your own singularity image</title>
-      <link>/post/build-your-own-singularity-image/</link>
-      <pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/post/build-your-own-singularity-image/</guid>
-      <description>
-
-&lt;p&gt;I was using the &lt;a href=&#34;https://hub.docker.com/r/rocker/tidyverse/&#34; target=&#34;_blank&#34;&gt;tidyverse rocker image&lt;/a&gt; on HPC by &lt;code&gt;singularity pull&lt;/code&gt;. see my previous &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/run-rstudio-server-with-singularity-on-hpc/&#34; target=&#34;_blank&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Everything was OK until I encountered problems installing &lt;code&gt;jpeg&lt;/code&gt; and &lt;code&gt;Cairo&lt;/code&gt; R packages. Later, I also had an error installing &lt;a href=&#34;https://github.com/ncborcherding/scRepertoire&#34; target=&#34;_blank&#34;&gt;scRepertoire&lt;/a&gt; dependency &lt;code&gt;gsl&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;It turns out I have to install debian packages inside the container:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ apt update &amp;amp;&amp;amp; apt install -y --no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev \
-	&amp;amp;&amp;amp; apt install -y --no-install-recommends libx11-dev libcairo2-dev libxt-dev \
-	&amp;amp;&amp;amp; apt install -y libgsl-dev 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;However, singularity file system is read-only.&lt;/p&gt;
-
-&lt;p&gt;You &lt;strong&gt;CAN NOT&lt;/strong&gt; do:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;singularity shell rstudio.simg
-## and then inside the container
-apt install -y --no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Nathan Weeks, our previous docker expert at Harvard FAS informatics told me:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Easiest would be to extend the Docker image, then create a new Singularity image from that.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;The followings are the steps I took.&lt;/p&gt;
-
-&lt;h3 id=&#34;prepare-a-dockerfile&#34;&gt;prepare a dockerfile&lt;/h3&gt;
-
-&lt;p&gt;On my local mac which has docker running prepare a &lt;a href=&#34;https://github.com/crazyhottommy/rocker_tidyvese_jpeg_cairo&#34; target=&#34;_blank&#34;&gt;Dockerfile&lt;/a&gt; and put it into a folder &lt;code&gt;rocker-jpeg&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;FROM rocker/tidyverse:3.6.3
-RUN apt update &amp;amp;&amp;amp; apt install -y --no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev \
-	&amp;amp;&amp;amp; apt install -y --no-install-recommends libx11-dev libcairo2-dev libxt-dev \
-	&amp;amp;&amp;amp; apt install -y libgsl-dev \
- 	&amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;build-the-docker-image&#34;&gt;build the docker image&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd rocker-jpeg
-## build the extended docker image
-$ docker build -t rocker-with-jpeg:3.6.3 .
-
-## push to docker hub
-$ docker tag rocker-with-jpeg:3.6.3 crazyhottommy/rocker-with-jpeg:3.6.3
-
-$ docker push crazyhottommy/rocker-with-jpeg:3.6.3
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now, I can install those packages successfully:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run -it rocker-with-jpeg:3.6.3 bash
-$ R
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;inside R console:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;&amp;gt; install.package(c(&amp;quot;jpeg&amp;quot;, &amp;quot;Cario&amp;quot;))
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;use-the-image&#34;&gt;use the image&lt;/h3&gt;
-
-&lt;p&gt;I can now either directly &lt;code&gt;singularity pull docker://crazyhottommy/rocker-with-jpeg:3.6.3&lt;/code&gt;
-to get the singularity image or convert the docker image to singularity image at my local mac:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ docker run -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/singularity:/output --privileged -t --rm quay.io/singularity/docker2singularity:v3.6.3 my-rocker-with-jpeg:3.6.3
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The resulting singularity image will be in &lt;code&gt;/tmp/singularity&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;: My previous colleague Seth Sahil mentioned that I may want to use the &lt;a href=&#34;https://hub.docker.com/r/rocker/geospatial&#34; target=&#34;_blank&#34;&gt;geospacial rocker image&lt;/a&gt; since it includes most of the libraries.&lt;/p&gt;
 </description>
     </item>
     
