@@ -235,16 +235,24 @@ Heatmap(exp_mat,
 &lt;blockquote&gt;
 &lt;p&gt;One can also create a legend for the dot size for the percentages. &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#add-customized-legends&#34; class=&#34;uri&#34;&gt;https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#add-customized-legends&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## the 
+&lt;blockquote&gt;
+&lt;p&gt;I think for points, it might be the diameter. &lt;code&gt;size&lt;/code&gt; is directly passed to &lt;code&gt;grid.points()&lt;/code&gt; so it should mean the size of an arbitrary symbol.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Notice that in the &lt;code&gt;grid.cicle&lt;/code&gt; call, we passed the percentage (0-1) as the radius for the circle.
+When we make the dot size legend, we should make it consistent too.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## To make the size of the dot in the heatmap body comparable to the legend, I used fixed
+## size unit.(2, &amp;quot;mm) rather than min(unit.c(w, h).
+
 layer_fun = function(j, i, x, y, w, h, fill){
           grid.rect(x = x, y = y, width = w, height = h, 
                     gp = gpar(col = NA, fill = NA))
-          grid.circle(x=x,y=y,r= pindex(percent_mat, i, j)/100 * min(unit.c(w, h)),
+          grid.circle(x=x,y=y,r= pindex(percent_mat, i, j)/100 * unit(2, &amp;quot;mm&amp;quot;),
                       gp = gpar(fill = col_fun(pindex(exp_mat, i, j)), col = NA))}
 
 
+## the size is the diameter of the points, need to * 2 
 lgd_list = list(
-    Legend( labels = c(0,0.25,0.5,0.75,1), title = &amp;quot;pt&amp;quot;, type = &amp;quot;points&amp;quot;, pch = 16, size = c(0,0.25,0.5,0.75,1) * unit(4,&amp;quot;mm&amp;quot;),
+    Legend( labels = c(0,0.25,0.5,0.75,1), title = &amp;quot;pt&amp;quot;, type = &amp;quot;points&amp;quot;, pch = 16, size = c(0,0.25,0.5,0.75,1)*2 * unit(2,&amp;quot;mm&amp;quot;),
         legend_gp = gpar(col = &amp;quot;black&amp;quot;)))
     
     
