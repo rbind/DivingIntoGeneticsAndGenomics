@@ -15,7 +15,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.</p>
@@ -163,16 +162,15 @@ dim(exp_mat)</code></pre>
 <pre><code>## [1] 80  9</code></pre>
 <pre class="r"><code>library(viridis)
 library(Polychrome)
-viridis(5)</code></pre>
-<pre><code>## [1] &quot;#440154FF&quot; &quot;#3B528BFF&quot; &quot;#21908CFF&quot; &quot;#5DC863FF&quot; &quot;#FDE725FF&quot;</code></pre>
-<pre class="r"><code>Polychrome::swatch(viridis(5))</code></pre>
+
+Polychrome::swatch(viridis(20))</code></pre>
 <p><img src="/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
 <pre class="r"><code>## get an idea of the ranges of the matrix
 quantile(exp_mat, c(0.1, 0.5, 0.9, 0.99))</code></pre>
 <pre><code>##        10%        50%        90%        99% 
 ## -0.6695752 -0.3567907  1.7156356  2.5000000</code></pre>
 <pre class="r"><code>## any value that is greater than 2 will be mapped to yellow
-col_fun = colorRamp2(c(-0.5, 2), c(&quot;#440154FF&quot;, &quot;#FDE725FF&quot;))
+col_fun = circlize::colorRamp2(c(-1, 0, 2), viridis(20)[c(1,10, 20)])
 
 
 cell_fun = function(j, i, x, y, w, h, fill){

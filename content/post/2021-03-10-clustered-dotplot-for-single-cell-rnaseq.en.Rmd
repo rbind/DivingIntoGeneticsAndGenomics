@@ -137,14 +137,14 @@ dim(percent_mat)
 ```{r}
 library(viridis)
 library(Polychrome)
-viridis(5)
 
-Polychrome::swatch(viridis(5))
+Polychrome::swatch(viridis(20))
 ## get an idea of the ranges of the matrix
 quantile(exp_mat, c(0.1, 0.5, 0.9, 0.99))
 
+
 ## any value that is greater than 2 will be mapped to yellow
-col_fun = colorRamp2(c(-0.5, 2), c("#440154FF", "#FDE725FF"))
+col_fun = circlize::colorRamp2(c(-1, 0, 2), viridis(20)[c(1,10, 20)])
 
 
 cell_fun = function(j, i, x, y, w, h, fill){

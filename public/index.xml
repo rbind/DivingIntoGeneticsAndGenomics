@@ -26,10 +26,7 @@
       <pubDate>Wed, 10 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>/post/clustered-dotplot-for-single-cell-rnaseq/</guid>
-      <description>&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-
-&lt;p&gt;Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.&lt;/p&gt;
+      <description>&lt;p&gt;Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Seurat&lt;/code&gt; has a nice function for that. However, it can not do the clustering for the rows and columns. David McGaughey has written a &lt;a href=&#34;http://davemcg.github.io/post/lets-plot-scrna-dotplots/&#34;&gt;blog post&lt;/a&gt; using ggplot2 and ggtree from Guangchuang Yu. It looks great!&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;/img/clustered_dotplot.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In this post, I am trying to reproduce the same effect using &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/&#34;&gt;ComplexHeatmap&lt;/a&gt;&lt;/p&gt;
@@ -174,16 +171,15 @@ dim(exp_mat)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 80  9&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(viridis)
 library(Polychrome)
-viridis(5)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;#440154FF&amp;quot; &amp;quot;#3B528BFF&amp;quot; &amp;quot;#21908CFF&amp;quot; &amp;quot;#5DC863FF&amp;quot; &amp;quot;#FDE725FF&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Polychrome::swatch(viridis(5))&lt;/code&gt;&lt;/pre&gt;
+
+Polychrome::swatch(viridis(20))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## get an idea of the ranges of the matrix
 quantile(exp_mat, c(0.1, 0.5, 0.9, 0.99))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##        10%        50%        90%        99% 
 ## -0.6695752 -0.3567907  1.7156356  2.5000000&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## any value that is greater than 2 will be mapped to yellow
-col_fun = colorRamp2(c(-0.5, 2), c(&amp;quot;#440154FF&amp;quot;, &amp;quot;#FDE725FF&amp;quot;))
+col_fun = circlize::colorRamp2(c(-1, 0, 2), viridis(20)[c(1,10, 20)])
 
 
 cell_fun = function(j, i, x, y, w, h, fill){
