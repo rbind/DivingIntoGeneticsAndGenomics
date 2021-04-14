@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>STAT115 single cell ATACseq lecture</title>
+      <link>/talk/2021-stat115-scrnaseq-lecture/</link>
+      <pubDate>Tue, 30 Mar 2021 12:00:00 -0400</pubDate>
+      
+      <guid>/talk/2021-stat115-scrnaseq-lecture/</guid>
+      <description>I gave a guest lecture on single cell ATACseq for STAT115 to the Harvard students. The videos can be found at https://liulab-dfci.github.io/bioinfo-combio/scatac.html. slides can be found in the PDF as well. Shirley has put all her course videos in the above bookdown. Great resource for Bioinformatics!</description>
+    </item>
+    
+    <item>
       <title>PACT meeting update: single-cell and bulk ATAC-seq analysis pipelines</title>
       <link>/talk/2020-maestro-pact-talk/</link>
       <pubDate>Tue, 10 Nov 2020 11:15:00 -0500</pubDate>

@@ -11,6 +11,16 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>STAT115 single cell ATACseq lecture</title>
+      <link>/talk/2021-stat115-scrnaseq-lecture/</link>
+      <pubDate>Tue, 30 Mar 2021 12:00:00 -0400</pubDate>
+      
+      <guid>/talk/2021-stat115-scrnaseq-lecture/</guid>
+      <description>&lt;p&gt;I gave a guest lecture on single cell ATACseq for &lt;a href=&#34;https://canvas.harvard.edu/courses/49497/assignments/syllabus&#34; target=&#34;_blank&#34;&gt;STAT115&lt;/a&gt; to the Harvard students. The videos can be found at &lt;a href=&#34;https://liulab-dfci.github.io/bioinfo-combio/scatac.html&#34; target=&#34;_blank&#34;&gt;https://liulab-dfci.github.io/bioinfo-combio/scatac.html&lt;/a&gt;. slides can be found in the PDF as well. Shirley has put all her course videos in the above bookdown. Great resource for Bioinformatics!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>CHIPS: A Snakemake pipeline for quality control and reproducible processing of chromatin profiling data</title>
       <link>/publication/2021-03-11-chips-snakemake/</link>
       <pubDate>Wed, 10 Mar 2021 00:00:00 -0500</pubDate>
@@ -999,45 +1009,6 @@ cell_percentage %&amp;gt;%
       
       <guid>/publication/2020-08-07-maestro/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>setting up Travis CI for github repos</title>
-      <link>/post/setting-up-travis-ci-for-github-repos/</link>
-      <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/post/setting-up-travis-ci-for-github-repos/</guid>
-      <description>
-
-&lt;p&gt;I wanted to set up Travis CI long time ago. Finally, I have a chance to do so.
-There are already many posts on how to do it. I write it down here for my own future reference.
-Thanks &lt;a href=&#34;https://twitter.com/fooliu&#34; target=&#34;_blank&#34;&gt;Tao Liu&lt;/a&gt; for the instructions. I have been learning a lot from him in collabrating with the &lt;a href=&#34;https://github.com/liulab-dfci/MAESTRO&#34; target=&#34;_blank&#34;&gt;MAESTRO&lt;/a&gt; project.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;read the official documentation &lt;a href=&#34;https://docs.travis-ci.com/user/tutorial/&#34; target=&#34;_blank&#34;&gt;https://docs.travis-ci.com/user/tutorial/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Jean Fan&amp;rsquo;s blog post &lt;a href=&#34;https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/&#34; target=&#34;_blank&#34;&gt;https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;R specific &lt;a href=&#34;https://docs.travis-ci.com/user/languages/r/&#34; target=&#34;_blank&#34;&gt;https://docs.travis-ci.com/user/languages/r/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Blog post from Julia &lt;a href=&#34;https://juliasilge.com/blog/beginners-guide-to-travis/&#34; target=&#34;_blank&#34;&gt;https://juliasilge.com/blog/beginners-guide-to-travis/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;step-1&#34;&gt;Step 1&lt;/h3&gt;
-
-&lt;p&gt;go to github marketplace: &lt;a href=&#34;https://github.com/marketplace&#34; target=&#34;_blank&#34;&gt;https://github.com/marketplace&lt;/a&gt;.
-Search for &lt;code&gt;Travis CI&lt;/code&gt;. It is free for open source project. choose the free plan. Click &lt;code&gt;install for free&lt;/code&gt;.&lt;/p&gt;
-
-&lt;h3 id=&#34;step-2&#34;&gt;step 2&lt;/h3&gt;
-
-&lt;p&gt;Inside the github repo, create a &lt;code&gt;.travis.yml&lt;/code&gt; file. See an example for the MAESTRO:&lt;a href=&#34;https://github.com/liulab-dfci/MAESTRO/blob/master/.travis.yml&#34; target=&#34;_blank&#34;&gt;https://github.com/liulab-dfci/MAESTRO/blob/master/.travis.yml&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;I also have one for my &lt;a href=&#34;https://github.com/crazyhottommy/scclusteval/blob/master/.travis.yml&#34; target=&#34;_blank&#34;&gt;scclusteval&lt;/a&gt; R package.&lt;/p&gt;
-
-&lt;p&gt;After setting it up, after each commit or pull request, a test is automatically run in travis and you will get notification to see if the build passed or not. This is really nice!&lt;/p&gt;
-
-&lt;h3 id=&#34;step-3-embedding-status-images-to-the-github-readme&#34;&gt;step 3 Embedding Status Images to the github README&lt;/h3&gt;
-
-&lt;p&gt;You can embed a buid status badge in the README.md of your github repo following:
-&lt;a href=&#34;https://docs.travis-ci.com/user/status-images/&#34; target=&#34;_blank&#34;&gt;https://docs.travis-ci.com/user/status-images/&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
