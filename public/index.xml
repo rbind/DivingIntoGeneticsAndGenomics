@@ -11,6 +11,16 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Fast analysis of scATAC-seq data using a predefined set of genomic regions</title>
+      <link>/talk/2021-fast-scatacseq/</link>
+      <pubDate>Fri, 23 Apr 2021 10:00:00 -0400</pubDate>
+      
+      <guid>/talk/2021-fast-scatacseq/</guid>
+      <description>&lt;p&gt;I am invited by Henry Rong in &lt;a href=&#34;http://cfce.dfci.harvard.edu/&#34; target=&#34;_blank&#34;&gt;Center for Functional Cancer Epigenomics&lt;/a&gt; (CFCE)  at Dana-Farber to give a presentation on &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/publication/2020-03-20-kallisto-scatac/&#34; target=&#34;_blank&#34;&gt;Fast analysis of scATAC-seq data using a predefined set of genomic regions&lt;/a&gt;. This project was a enjoyable collabration with &lt;a href=&#34;https://research.hsr.it/en/centers/omics-sciences/innovation-lab/davide-cittaro.html&#34; target=&#34;_blank&#34;&gt;Davide Cittaro&lt;/a&gt; at San Raffaele Scientific Institute in Italy.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>STAT115 single cell ATACseq lecture</title>
       <link>/talk/2021-stat115-scrnaseq-lecture/</link>
       <pubDate>Tue, 30 Mar 2021 12:00:00 -0400</pubDate>
@@ -999,16 +1009,6 @@ cell_percentage %&amp;gt;%
 &lt;li&gt;&lt;p&gt;More tools can be found at &lt;a href=&#34;https://github.com/crazyhottommy/scRNAseq-analysis-notes#cell-type-prioritizationdifferential-abundance-test&#34; class=&#34;uri&#34;&gt;https://github.com/crazyhottommy/scRNAseq-analysis-notes#cell-type-prioritizationdifferential-abundance-test&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Integrative analyses of single-cell transcriptome and regulome using MAESTRO</title>
-      <link>/publication/2020-08-07-maestro/</link>
-      <pubDate>Fri, 07 Aug 2020 00:00:00 -0400</pubDate>
-      
-      <guid>/publication/2020-08-07-maestro/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     
