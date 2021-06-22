@@ -11,6 +11,16 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Chromatin state dynamics confers specific therapeutic strategies in enhancer subtypes of colorectal cancer</title>
+      <link>/publication/2021-05-30-chromatin-state-colorectal-cancer/</link>
+      <pubDate>Sun, 30 May 2021 00:00:00 -0400</pubDate>
+      
+      <guid>/publication/2021-05-30-chromatin-state-colorectal-cancer/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Fast analysis of scATAC-seq data using a predefined set of genomic regions</title>
       <link>/talk/2021-fast-scatacseq/</link>
       <pubDate>Fri, 23 Apr 2021 10:00:00 -0400</pubDate>
@@ -859,156 +869,6 @@ and &lt;a href=&#34;https://gdevailly.netlify.app/post/plotting-big-matrices-in-
 
 &lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/rlbarter/superheat&#34; target=&#34;_blank&#34;&gt;superheat&lt;/a&gt; from Rebecca Barter.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </title>
-      <link>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</link>
-      <pubDate>Wed, 26 Aug 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</guid>
-      <description>&lt;p&gt;It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).&lt;/p&gt;
-&lt;p&gt;Let’s create some dummy data.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
-set.seed(23)
-
-# we have 6 treatment samples and 6 control samples, 3 clusters A,B,C
-# but in the treatment samples, cluster C is absent (0 cells) in sample7
-sample_id&amp;lt;- c(paste0(&amp;quot;sample&amp;quot;, 1:6, &amp;quot;_control&amp;quot;, rep(c(&amp;quot;_A&amp;quot;,&amp;quot;_B&amp;quot;,&amp;quot;_C&amp;quot;),each = 6)), paste0(&amp;quot;sample&amp;quot;, 8:12, &amp;quot;_treatment&amp;quot;, rep(c(&amp;quot;_A&amp;quot;,&amp;quot;_B&amp;quot;, &amp;quot;_C&amp;quot;), each = 5)))
-
-sample_id&amp;lt;- c(sample_id, &amp;quot;sample7_treatment_A&amp;quot;, &amp;quot;sample7_treatment_B&amp;quot;)
-cell_id&amp;lt;- paste0(&amp;quot;cell&amp;quot;, 1:20000)
-
-cell_df&amp;lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), 
-         cell_id = cell_id) %&amp;gt;%
-  tidyr::separate(sample_id, into = c(&amp;quot;sample_id&amp;quot;, &amp;quot;group&amp;quot;, &amp;quot;cluster_id&amp;quot;), sep= &amp;quot;_&amp;quot;)
-
-
-cell_num&amp;lt;- cell_df %&amp;gt;% 
-  group_by(group, cluster_id, sample_id)%&amp;gt;%
-  summarize(n=n()) 
-
-cell_num&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 35 x 4
-## # Groups:   group, cluster_id [6]
-##    group   cluster_id sample_id     n
-##    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;     &amp;lt;int&amp;gt;
-##  1 control A          sample1     551
-##  2 control A          sample2     546
-##  3 control A          sample3     544
-##  4 control A          sample4     585
-##  5 control A          sample5     588
-##  6 control A          sample6     542
-##  7 control B          sample1     550
-##  8 control B          sample2     562
-##  9 control B          sample3     574
-## 10 control B          sample4     563
-## # … with 25 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;total_cells&amp;lt;- cell_df %&amp;gt;%
-  group_by(sample_id) %&amp;gt;%
-  summarise(total = n())
-
-total_cells&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 12 x 2
-##    sample_id total
-##    &amp;lt;chr&amp;gt;     &amp;lt;int&amp;gt;
-##  1 sample1    1673
-##  2 sample10   1713
-##  3 sample11   1691
-##  4 sample12   1696
-##  5 sample2    1633
-##  6 sample3    1700
-##  7 sample4    1711
-##  8 sample5    1768
-##  9 sample6    1727
-## 10 sample7    1225
-## 11 sample8    1720
-## 12 sample9    1743&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;join the two dataframe to get percentage of cells per cluster per sample&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cell_percentage&amp;lt;- left_join(cell_num, total_cells) %&amp;gt;%
-  mutate(percentage = n/total)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Joining, by = &amp;quot;sample_id&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cell_percentage&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 35 x 6
-## # Groups:   group, cluster_id [6]
-##    group   cluster_id sample_id     n total percentage
-##    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;     &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;      &amp;lt;dbl&amp;gt;
-##  1 control A          sample1     551  1673      0.329
-##  2 control A          sample2     546  1633      0.334
-##  3 control A          sample3     544  1700      0.32 
-##  4 control A          sample4     585  1711      0.342
-##  5 control A          sample5     588  1768      0.333
-##  6 control A          sample6     542  1727      0.314
-##  7 control B          sample1     550  1673      0.329
-##  8 control B          sample2     562  1633      0.344
-##  9 control B          sample3     574  1700      0.338
-## 10 control B          sample4     563  1711      0.329
-## # … with 25 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Let’s plot a boxplot&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cell_percentage %&amp;gt;%
-  ggplot(aes(x = group, y = percentage)) +
-  geom_boxplot(outlier.shape = NA, aes(fill = group)) +
-  geom_jitter() +
-  scale_y_continuous(labels = scales::percent) +
-  facet_wrap(~cluster_id) +
-  theme_bw()+
-  xlab(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2020-08-26-dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;YES, if you are careful enough&lt;/strong&gt;, you will find the treatment group in cluster C only contains 5 points.
-Because if a cluster is completely missing for a sample, there will not be any cells in the original &lt;code&gt;cell_df&lt;/code&gt;. However, the percentage should be 0% for that data point and you should show it in the boxplot as the jitter point. Otherwise, the result can be misleading. You can spot on such mistakes when you plot out the points on top of the boxplot.&lt;/p&gt;
-&lt;div id=&#34;how-to-fix-it&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;How to fix it&lt;/h3&gt;
-&lt;p&gt;The trick is to make the factor contains all the levels of all the combinations. When use &lt;code&gt;group_by&lt;/code&gt; or &lt;code&gt;count&lt;/code&gt;, add &lt;code&gt;.drop =FALSE&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_id&amp;lt;- paste0(&amp;quot;sample&amp;quot;, 1:12)
-cluster_id&amp;lt;- c(&amp;quot;A&amp;quot;,&amp;quot;B&amp;quot;,&amp;quot;C&amp;quot;)
-
-
-factor_levels&amp;lt;- tidyr::expand_grid(sample_id, cluster_id) %&amp;gt;%
-  mutate(group = c(rep(&amp;quot;control&amp;quot;, 18), rep(&amp;quot;treatment&amp;quot;, 18))) %&amp;gt;%
-  mutate(sample_id = paste(sample_id, cluster_id, group, sep=&amp;quot;_&amp;quot;))
-
-cell_num2&amp;lt;- cell_df %&amp;gt;%
-  mutate(sample_id = paste(sample_id, cluster_id, group, sep=&amp;quot;_&amp;quot;)) %&amp;gt;%
-  mutate(sample_id = factor(sample_id, levels = factor_levels$sample_id)) %&amp;gt;%
-  group_by(sample_id, .drop=FALSE) %&amp;gt;%
-  summarise(n=n()) %&amp;gt;%
-  tidyr::separate(sample_id, c(&amp;quot;sample_id&amp;quot;, &amp;quot;cluster_id&amp;quot;, &amp;quot;group&amp;quot;)) 
-
-
-## the 0 correctly showed up
-cell_num2 %&amp;gt;%
-  filter(sample_id == &amp;quot;sample7&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 4
-##   sample_id cluster_id group         n
-##   &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;     &amp;lt;int&amp;gt;
-## 1 sample7   A          treatment   604
-## 2 sample7   B          treatment   621
-## 3 sample7   C          treatment     0&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Let’s replot the boxplot and see the difference:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cell_percentage&amp;lt;- left_join(cell_num2, total_cells) %&amp;gt;%
-  mutate(percentage = n/total)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Joining, by = &amp;quot;sample_id&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# replot the same boxplot
-cell_percentage %&amp;gt;%
-  ggplot(aes(x = group, y = percentage)) +
-  geom_boxplot(outlier.shape = NA, aes(fill = group)) +
-  geom_jitter() +
-  scale_y_continuous(labels = scales::percent) +
-  facet_wrap(~cluster_id) +
-  theme_bw()+
-  xlab(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2020-08-26-dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Now the 0 percentage point for sample7 in cluster C showed up.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;conclusions&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Conclusions&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Be careful with the 0 count cell in some clusters in some samples. If you work with &lt;code&gt;Seurat&lt;/code&gt;, people tend to use &lt;code&gt;seurat_obj@meta.data %&amp;gt;% group_by(cluster_id, sample_id, group)&lt;/code&gt;, but this will miss the samples in which some clusters are missing.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;For differential abundance comparison between treatment vs control, directly comparing percentages are not optimal. Follow tutorial on using raw cell counts &lt;a href=&#34;https://osca.bioconductor.org/multi-sample-comparisons.html#&#34; class=&#34;uri&#34;&gt;https://osca.bioconductor.org/multi-sample-comparisons.html#&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;More tools can be found at &lt;a href=&#34;https://github.com/crazyhottommy/scRNAseq-analysis-notes#cell-type-prioritizationdifferential-abundance-test&#34; class=&#34;uri&#34;&gt;https://github.com/crazyhottommy/scRNAseq-analysis-notes#cell-type-prioritizationdifferential-abundance-test&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
 </description>
     </item>
     
