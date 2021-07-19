@@ -18,8 +18,8 @@
     
   
   <meta name="description" content="This post was inspired by Andrew Hill’s recent blog post.
-Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post. Writing blog post is fun and I am happy to see so many new ideas can be generated through online communications.
-I took Andrew’s idea of reading in the reads in a certain window by taking advantages of tabix indexed file fragment.">
+Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
+&mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.">
 
   
   <link rel="alternate" hreflang="en-us" href="/post/plot-10x-scatac-coverage-by-cluster-group/">
@@ -98,8 +98,8 @@ I took Andrew’s idea of reading in the reads in a certain window by taking adv
   <meta property="og:url" content="/post/plot-10x-scatac-coverage-by-cluster-group/">
   <meta property="og:title" content="plot 10x scATAC coverage by cluster/group | DNA confesses Data speak">
   <meta property="og:description" content="This post was inspired by Andrew Hill’s recent blog post.
-Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post. Writing blog post is fun and I am happy to see so many new ideas can be generated through online communications.
-I took Andrew’s idea of reading in the reads in a certain window by taking advantages of tabix indexed file fragment.">
+Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
+&mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2019-04-29T00:00:00&#43;00:00">
@@ -305,7 +305,7 @@ I took Andrew’s idea of reading in the reads in a certain window by taking adv
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    5 min read
+    6 min read
   </span>
   
 
@@ -384,6 +384,8 @@ I took Andrew’s idea of reading in the reads in a certain window by taking adv
 
     <div class="article-style" itemprop="articleBody">
       <p>This post was inspired by <a href="https://twitter.com/ahill_tweets">Andrew Hill</a>’s <a href="http://andrewjohnhill.com/blog/2019/04/12/streamlining-scatac-seq-visualization-and-analysis/">recent blog post</a>.</p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Inspired by some nice posts by <a href="https://twitter.com/timoast?ref_src=twsrc%5Etfw">@timoast</a> and <a href="https://twitter.com/tangming2005?ref_src=twsrc%5Etfw">@tangming2005</a> and work from <a href="https://twitter.com/10xGenomics?ref_src=twsrc%5Etfw">@10xGenomics</a>. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!</p>&mdash; Andrew J Hill (@ahill_tweets) <a href="https://twitter.com/ahill_tweets/status/1116875339303493634?ref_src=twsrc%5Etfw">April 13, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <p>Andrew wrote that blog post in light of my other <a href="https://divingintogeneticsandgenomics.rbind.io/post/split-a-10xscatac-bam-file-by-cluster/">recent blog post</a> and <a href="https://twitter.com/timoast">Tim</a>’s (developer of the almighty <a href="https://satijalab.org/seurat/">Seurat</a> package) <a href="https://timoast.github.io/blog/sinto/">blog post</a>. Writing blog post is fun and I am happy to see so many new ideas can be generated through online communications.</p>
 <p>I took Andrew’s idea of reading in the reads in a certain window by taking advantages of tabix indexed file fragment.tsv.gz which is an output from 10x <code>cellranger-atac</code>. I then split the reads by a grouping file which specifies which group each cell belongs to and a total number of reads in each cell. For visualization, instead of using ggplot2, I used the awesome <a href="https://bernatgel.github.io/karyoploter_tutorial/">karyoploteR</a>.</p>
