@@ -11,6 +11,16 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Reprogramming of bivalent chromatin states in NRAS mutant melanoma suggests PRC2 inhibition as a therapeutic strategy</title>
+      <link>/publication/2021-07-20-melanoma-chromatin-state/</link>
+      <pubDate>Tue, 20 Jul 2021 00:00:00 -0400</pubDate>
+      
+      <guid>/publication/2021-07-20-melanoma-chromatin-state/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>HieRFIT: A hierarchical cell type classification tool for projections from complex single-cell atlas datasets </title>
       <link>/publication/2021-07-13-hierfit/</link>
       <pubDate>Tue, 13 Jul 2021 00:00:00 -0400</pubDate>
@@ -637,22 +647,6 @@ summary(lm_res)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I want to thank Collin in Shirley’s lab and other tweeps for helping out for my question.&lt;/p&gt;
 &lt;p&gt;I found &lt;a href=&#34;https://www.theanalysisfactor.com/interpreting-interactions-in-regression/&#34;&gt;this explanation&lt;/a&gt; of how to inteprete the interaction term is very good. I highly recommend reading through this as well: &lt;a href=&#34;https://lindeloev.github.io/tests-as-linear/#62_two-way_anova_(plot_in_progress)&#34; class=&#34;uri&#34;&gt;https://lindeloev.github.io/tests-as-linear/#62_two-way_anova_(plot_in_progress)&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>CANCER IMMUNOLOGIC DATA COMMONS(CIDC)</title>
-      <link>/project/cimac-cidc/</link>
-      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
-      
-      <guid>/project/cimac-cidc/</guid>
-      <description>&lt;p&gt;The &lt;a href=&#34;https://cimac-network.org/&#34; target=&#34;_blank&#34;&gt;CIMAC-CIDC Network&lt;/a&gt; is an NCI Cancer Moonshot initiative that provides cutting-edge technology and expertise in genomic, proteomic, and functional molecular analysis to enhance clinical trials in cancer immune therapies.&lt;/p&gt;
-
-&lt;p&gt;The four Cancer Immune Monitoring and Analysis Centers (CIMACs) are at Dana-Farber Cancer Institute, Stanford University, MD Anderson, and Mount Sinai.&lt;/p&gt;
-
-&lt;p&gt;I am now leading the bioinformatics effort in the &lt;a href=&#34;https://cimac-network.org/cidc/&#34; target=&#34;_blank&#34;&gt;Cancer Immunologic Data Commons(CIDC)&lt;/a&gt; as part of the NCI Cancer Moonshot project on cancer immunotherapy.&lt;/p&gt;
-
-&lt;p&gt;The CIDC bioinformatics team is responsible for pre-processing the high-throughput sequencing &lt;a href=&#34;https://cimac-network.org/assays/&#34; target=&#34;_blank&#34;&gt;clincal trail data&lt;/a&gt; from the CIMAC centers using Snakemake pipelines. We will coordinate and facilitate data analysis, especially to lead cross-trial analysis at the end of this project, with the goal of identifying better immunotherapy response biomarkers to optimize cancer immunotherapy treatment. We work closely with the CIDC software team led by Ethan Cerami and James Linsay at Dana-Farber Cancer Institute.&lt;/p&gt;
 </description>
     </item>
     
