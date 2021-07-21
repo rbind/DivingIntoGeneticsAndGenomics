@@ -3,7 +3,7 @@ title = "Reprogramming of bivalent chromatin states in NRAS mutant melanoma sugg
 date = 2021-07-20T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Christopher J. Terranova *", "**Ming Tang***", "Mayinuer Maitituoheti *...", "Kunal Rai", "* Co-first author"]
+authors = ["Christopher J. Terranova *", "**Ming Tang***", "Mayinuer Maitituoheti * ...", "Kunal Rai", "* Co-first author"]
 
 # Publication type.
 # Legend:
