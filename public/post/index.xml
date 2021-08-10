@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>How to test if two distributions are different </title>
+      <link>/post/how-to-test-if-two-distributions-are-different/</link>
+      <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-test-if-two-distributions-are-different/</guid>
+      <description>I asked this question on Twitter:
+ what test to test if two distributions are different? I am aware of KS test. When n is large (which is common in genomic studies), the p-value is always significant. better to test against an effect size? how to do it in this context?
+ In genomics studies, it is very common to have large N (e.g., the number of introns, promoters in the genome, number of cells in the single-cell studies).</description>
+    </item>
+    
+    <item>
       <title>clustered dotplot for single-cell RNAseq</title>
       <link>/post/clustered-dotplot-for-single-cell-rnaseq/</link>
       <pubDate>Wed, 10 Mar 2021 00:00:00 +0000</pubDate>

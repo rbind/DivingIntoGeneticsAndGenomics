@@ -1,0 +1,247 @@
+---
+title: 'How to test if two distributions are different '
+author: Ming Tang
+date: '2021-08-07'
+slug: how-to-test-if-two-distributions-are-different
+categories:
+  - bioinformatics
+  - statistics
+  - rstats
+tags:
+  - statistics
+  - R
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+I asked this question on [Twitter](https://twitter.com/tangming2005/status/1414431622141779971):
+
+>what test to test if two distributions are different? I am aware of KS test. When n is large (which is common in genomic studies), the p-value is always significant. better to test against an effect size?  how to do it in this context?
+
+In genomics studies, it is very common to have large N (e.g., the number of introns, promoters in the genome, number of cells in the single-cell studies). A more concrete example is that one have two samples: control and treatment. one can calculate the intron retention level for each intron across the genome and ask if globally the distribution of the intron retention scores is different between the control sample and treatment sample.
+
+### Kolmogorov–Smirnov test
+
+I am aware of the [Kolmogorov–Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test) (K–S test or KS test). 
+
+>The Kolmogorov–Smirnov statistic quantifies a **distance** between the empirical distribution function of the sample and the cumulative distribution function of the reference distribution, or between the empirical distribution functions of two samples.
+
+Kolmogorov–Smirnov statistic is used in the popular [GSEA](https://www.pnas.org/content/102/43/15545) too.
+It is good to see some examples.
+
+We will use random sampling from normal distribution as examples.
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(patchwork)
+
+test_distribution<- function(N, mean1, mean2, sd1, sd2){
+  set.seed(123)
+  ## random sample from normal distribution
+  x<- rnorm(N, mean=mean1, sd = sd1)
+  set.seed(234)
+  y<- rnorm(N, mean=mean2, sd = sd2) 
+  
+  df<- data.frame(x=x, y =y)
+
+  ## make it long format
+  df<- df %>%
+    pivot_longer(cols = 1:2, names_to = "group", values_to = "value")
+  ## check the ECDF for the two distributions
+  p1<- ggplot(df, aes(value)) + 
+    stat_ecdf(geom = "step", aes(color = group)) +
+    theme_classic(base_size = 14) +
+    ylab("Cumulative probability") +
+    ggtitle("ECDF for x and y", subtitle = glue::glue( "x ~ N({mean1}, {sd1})\n y ~ N({mean2}, {sd2})")) 
+    
+  
+  p2<- ggplot(df, aes(x= group, y = value)) +
+    geom_boxplot(aes(fill = group)) +
+    theme_classic(base_size = 14) +
+    ggtitle(paste0("N = ", N))
+    
+  p<- p1 + p2
+  
+  ks<- ks.test(x,y)
+  t<- t.test(x,y)
+  return(list(ks = ks, ttest =t, p = p, df = df))
+
+}
+
+
+res<- test_distribution(1000, 0, 0, 1, 1)
+res$p
+
+res$ks
+
+```
+KS test showing the distribution is not significantly different which makes sense as we draw samples from the same normal distribution.
+
+```{r}
+res$ttest
+
+```
+
+Two sample t test shows that the mean is not significantly different.
+
+
+Let's increase the standard deviation for the second sample to 1.2
+
+```{r}
+res<- test_distribution(1000, 0, 0, 1, 1.2)
+res$p
+res$ks
+res$ttest
+```
+
+
+Let's increase the sample size 
+```{r}
+res<- test_distribution(10000, 0, 0, 1, 1.2)
+res$p
+res$ks
+res$ttest
+```
+
+After we increase the sample size, t-test which tests against mean is still not significant. However, the KS test becomes highly significant even the samples are drew from the same two distributions as the last comparison!! 
+
+Let's try another example with very small difference (small here is subjective, one has to decide it under the experiment context) of means.
+
+```{r}
+res<- test_distribution(1000, 0, 0.1, 1, 1)
+res$p
+res$ks
+res$ttest
+```
+
+Let's increase the sample size to `10000`:
+
+```{r}
+res<- test_distribution(10000, 0, 0.1, 1, 1)
+res$p
+res$ks
+res$ttest
+```
+
+Suddenly, both the KS test and t-test becomes highly significant after increasing the sample size.
+That's why we should not put too much emphasis on the p-values, but also check the effect size. Many genomic papers show highly significant p values < 2.22e−16 (smallest you can get from `R`) simply because the sample size is really big (I have to confess that I have it too in my papers because my PI/reviewers asked).
+
+### earth mover distance (EMD)
+
+Others in the tweet thread mentioned [earth mover distance](https://en.wikipedia.org/wiki/Earth_mover%27s_distance) that can be used to measure the distance between two distributions. There is a biconductor package for calculating it. The [EMDomics](https://www.bioconductor.org/packages/release/bioc/html/EMDomics.html) algorithm is used to perform a supervised multi-class analysis to measure the magnitude and statistical significance of observed continuous genomics data between groups.
+
+```{r}
+library(EMDomics)
+
+
+calculate_EMD<- function(df){
+  num<- 1:nrow(df)
+  exp_data<- df$value
+  names(exp_data)<- glue::glue("sample_{num}")
+  labels<- df$group
+  names(labels)<- names(exp_data)
+  calculate_emd_gene(exp_data, labels, names(exp_data))
+}
+
+res<- test_distribution(1000, 0, 0, 1, 1.2)
+calculate_EMD(res$df)
+
+## increase the sample size 
+res<- test_distribution(10000, 0, 0, 1, 1.2)
+calculate_EMD(res$df)
+
+
+res<- test_distribution(1000, 0, 0.1, 1, 1)
+calculate_EMD(res$df)
+
+res$df %>% head()
+
+res<- test_distribution(10000, 0, 0.1, 1, 1)
+calculate_EMD(res$df)
+```
+
+Two observations:
+
+* EMD between $N(0,1)$ and $N(0.1,1)$ is smaller than EMD between $N(0,1)$ and $N(0,1.2)$
+* increasing the sample size will increase the EMD too!
+
+
+>The EMD score increases as the distributions become increasingly dissimilar, but we have no framework for estimating the significance of a particular EMD score. EMDomics uses a permutation-based method to calculate a q-value that is interpreted analogously to a p-value. 
+
+The `EMDomics` packages implemented the permutation test for multiple genes. Let me do it for a single gene.
+
+```{r}
+res<- test_distribution(1000, 0, 0, 1, 1.2)
+res$df
+
+calculate_EMD(res$df)
+
+## random shuffle the x, y group designation and calculate the EMD score
+permutation_EMD<- function(d){
+  set.seed(NULL)
+  d$group<- sample(d$group)
+  calculate_EMD(d)
+}
+
+permutation_EMD(res$df)
+## a different shuffle gives a different EMD
+permutation_EMD(res$df)
+
+
+## permutate N times and calculate how many times the permutated EMD is bigger than the EMD
+## for the original data and that's the p-value
+
+permutation_EMD_pvalue<- function(d, N_permutation = 1000){
+  permutation_EMDs<- replicate(N_permutation, permutation_EMD(d))
+  ### p-value
+  mean(calculate_EMD(d) < permutation_EMDs)
+}
+
+permutation_EMD_pvalue(res$df)
+```
+The p-value is < 0.05 which suggests that the two distributions are significantly different.
+
+
+If we sample from the same $N(0,1)$ distribution:
+
+```{r}
+
+res<- test_distribution(1000, 0, 0, 1, 1)
+permutation_EMD_pvalue(res$df)
+
+```
+p-value is not significant.
+
+
+In fact, many people suggested using a permutation based method to evaluate the significance of the distribution differences using the KS test. The below code snippet is from [James](https://twitter.com/jma1991):
+
+![](/img/permutation_ks.jpeg)
+
+
+### Comparing groups of distributions
+
+For scRNAseq or CyTOF data, if one has treatment vs control groups, 3 samples each, each sample contains 1000 cells. How to test if the treatment changes the expression of a certain gene? This is an example of multi-sample, multi-group single-cell differential analysis. Pseudo-bulk method can be used as in the [muscat](https://www.nature.com/articles/s41467-020-19894-4). Note that it is different from marker gene identification where differential gene expression is carried out between clusters of cells.
+
+Papers to read:
+
+* [quantro: a data-driven approach to guide the choice of an appropriate normalization method](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0679-0)
+
+* [Fast identification of differential distributions in single-cell RNA-sequencing data with waddR](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btab226/6207964)
+
+* [distinct: a novel approach to differential distribution analyses](https://www.biorxiv.org/content/10.1101/2020.11.24.394213v3.full)
+
+
+Rafa, our department chair asked a good question:
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">First I would ask why is testing for a difference in mean and a difference in SD not enough? Can you construct examples of two distributions with the same mean and same SD but different in a meaningful way in your context? Seeing these examples will help motivate a solution.</p>&mdash; Rafael Irizarry (@rafalab) <a href="https://twitter.com/rafalab/status/1415110253549690882?ref_src=twsrc%5Etfw">July 14, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+Figure 7 b from the `distinct` paper shows some genes have different distributions but have the same mean across groups.
+
+![](/img/distinct_example.png)
+
+
+
+

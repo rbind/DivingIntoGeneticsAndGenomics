@@ -11,6 +11,303 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>How to test if two distributions are different </title>
+      <link>/post/how-to-test-if-two-distributions-are-different/</link>
+      <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-test-if-two-distributions-are-different/</guid>
+      <description>&lt;p&gt;I asked this question on &lt;a href=&#34;https://twitter.com/tangming2005/status/1414431622141779971&#34;&gt;Twitter&lt;/a&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;what test to test if two distributions are different? I am aware of KS test. When n is large (which is common in genomic studies), the p-value is always significant. better to test against an effect size? how to do it in this context?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In genomics studies, it is very common to have large N (e.g., the number of introns, promoters in the genome, number of cells in the single-cell studies). A more concrete example is that one have two samples: control and treatment. one can calculate the intron retention level for each intron across the genome and ask if globally the distribution of the intron retention scores is different between the control sample and treatment sample.&lt;/p&gt;
+&lt;div id=&#34;kolmogorovsmirnov-test&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Kolmogorov–Smirnov test&lt;/h3&gt;
+&lt;p&gt;I am aware of the &lt;a href=&#34;https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test&#34;&gt;Kolmogorov–Smirnov test&lt;/a&gt; (K–S test or KS test).&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The Kolmogorov–Smirnov statistic quantifies a &lt;strong&gt;distance&lt;/strong&gt; between the empirical distribution function of the sample and the cumulative distribution function of the reference distribution, or between the empirical distribution functions of two samples.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Kolmogorov–Smirnov statistic is used in the popular &lt;a href=&#34;https://www.pnas.org/content/102/43/15545&#34;&gt;GSEA&lt;/a&gt; too.
+It is good to see some examples.&lt;/p&gt;
+&lt;p&gt;We will use random sampling from normal distribution as examples.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+library(patchwork)
+
+test_distribution&amp;lt;- function(N, mean1, mean2, sd1, sd2){
+  set.seed(123)
+  ## random sample from normal distribution
+  x&amp;lt;- rnorm(N, mean=mean1, sd = sd1)
+  set.seed(234)
+  y&amp;lt;- rnorm(N, mean=mean2, sd = sd2) 
+  
+  df&amp;lt;- data.frame(x=x, y =y)
+
+  ## make it long format
+  df&amp;lt;- df %&amp;gt;%
+    pivot_longer(cols = 1:2, names_to = &amp;quot;group&amp;quot;, values_to = &amp;quot;value&amp;quot;)
+  ## check the ECDF for the two distributions
+  p1&amp;lt;- ggplot(df, aes(value)) + 
+    stat_ecdf(geom = &amp;quot;step&amp;quot;, aes(color = group)) +
+    theme_classic(base_size = 14) +
+    ylab(&amp;quot;Cumulative probability&amp;quot;) +
+    ggtitle(&amp;quot;ECDF for x and y&amp;quot;, subtitle = glue::glue( &amp;quot;x ~ N({mean1}, {sd1})\n y ~ N({mean2}, {sd2})&amp;quot;)) 
+    
+  
+  p2&amp;lt;- ggplot(df, aes(x= group, y = value)) +
+    geom_boxplot(aes(fill = group)) +
+    theme_classic(base_size = 14) +
+    ggtitle(paste0(&amp;quot;N = &amp;quot;, N))
+    
+  p&amp;lt;- p1 + p2
+  
+  ks&amp;lt;- ks.test(x,y)
+  t&amp;lt;- t.test(x,y)
+  return(list(ks = ks, ttest =t, p = p, df = df))
+
+}
+
+
+res&amp;lt;- test_distribution(1000, 0, 0, 1, 1)
+res$p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-07-how-to-test-if-two-distributions-are-different.en_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res$ks&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Two-sample Kolmogorov-Smirnov test
+## 
+## data:  x and y
+## D = 0.025, p-value = 0.9135
+## alternative hypothesis: two-sided&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;KS test showing the distribution is not significantly different which makes sense as we draw samples from the same normal distribution.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res$ttest&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Welch Two Sample t-test
+## 
+## data:  x and y
+## t = 0.85389, df = 1997.9, p-value = 0.3933
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.04893966  0.12442136
+## sample estimates:
+##   mean of x   mean of y 
+##  0.01612787 -0.02161298&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Two sample t test shows that the mean is not significantly different.&lt;/p&gt;
+&lt;p&gt;Let’s increase the standard deviation for the second sample to 1.2&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res&amp;lt;- test_distribution(1000, 0, 0, 1, 1.2)
+res$p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-07-how-to-test-if-two-distributions-are-different.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res$ks&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Two-sample Kolmogorov-Smirnov test
+## 
+## data:  x and y
+## D = 0.053, p-value = 0.1205
+## alternative hypothesis: two-sided&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res$ttest&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Welch Two Sample t-test
+## 
+## data:  x and y
+## t = 0.86215, df = 1939.5, p-value = 0.3887
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.05362088  0.13774778
+## sample estimates:
+##   mean of x   mean of y 
+##  0.01612787 -0.02593558&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s increase the sample size&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res&amp;lt;- test_distribution(10000, 0, 0, 1, 1.2)
+res$p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-07-how-to-test-if-two-distributions-are-different.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res$ks&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Two-sample Kolmogorov-Smirnov test
+## 
+## data:  x and y
+## D = 0.0497, p-value = 3.746e-11
+## alternative hypothesis: two-sided&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res$ttest&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Welch Two Sample t-test
+## 
+## data:  x and y
+## t = 0.19585, df = 19342, p-value = 0.8447
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.02758649  0.03371124
+## sample estimates:
+##    mean of x    mean of y 
+## -0.002371702 -0.005434073&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After we increase the sample size, t-test which tests against mean is still not significant. However, the KS test becomes highly significant even the samples are drew from the same two distributions as the last comparison!!&lt;/p&gt;
+&lt;p&gt;Let’s try another example with very small difference (small here is subjective, one has to decide it under the experiment context) of means.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res&amp;lt;- test_distribution(1000, 0, 0.1, 1, 1)
+res$p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-07-how-to-test-if-two-distributions-are-different.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res$ks&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Two-sample Kolmogorov-Smirnov test
+## 
+## data:  x and y
+## D = 0.054, p-value = 0.1083
+## alternative hypothesis: two-sided&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res$ttest&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Welch Two Sample t-test
+## 
+## data:  x and y
+## t = -1.4086, df = 1997.9, p-value = 0.1591
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.14893966  0.02442136
+## sample estimates:
+##  mean of x  mean of y 
+## 0.01612787 0.07838702&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s increase the sample size to &lt;code&gt;10000&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res&amp;lt;- test_distribution(10000, 0, 0.1, 1, 1)
+res$p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-07-how-to-test-if-two-distributions-are-different.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res$ks&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Two-sample Kolmogorov-Smirnov test
+## 
+## data:  x and y
+## D = 0.0502, p-value = 2.273e-11
+## alternative hypothesis: two-sided&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res$ttest&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Welch Two Sample t-test
+## 
+## data:  x and y
+## t = -6.914, df = 19998, p-value = 4.853e-12
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.12558133 -0.07010528
+## sample estimates:
+##    mean of x    mean of y 
+## -0.002371702  0.095471606&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Suddenly, both the KS test and t-test becomes highly significant after increasing the sample size.
+That’s why we should not put too much emphasis on the p-values, but also check the effect size. Many genomic papers show highly significant p values &amp;lt; 2.22e−16 (smallest you can get from &lt;code&gt;R&lt;/code&gt;) simply because the sample size is really big (I have to confess that I have it too in my papers because my PI/reviewers asked).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;earth-mover-distance-emd&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;earth mover distance (EMD)&lt;/h3&gt;
+&lt;p&gt;Others in the tweet thread mentioned &lt;a href=&#34;https://en.wikipedia.org/wiki/Earth_mover%27s_distance&#34;&gt;earth mover distance&lt;/a&gt; that can be used to measure the distance between two distributions. There is a biconductor package for calculating it. The &lt;a href=&#34;https://www.bioconductor.org/packages/release/bioc/html/EMDomics.html&#34;&gt;EMDomics&lt;/a&gt; algorithm is used to perform a supervised multi-class analysis to measure the magnitude and statistical significance of observed continuous genomics data between groups.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(EMDomics)
+
+
+calculate_EMD&amp;lt;- function(df){
+  num&amp;lt;- 1:nrow(df)
+  exp_data&amp;lt;- df$value
+  names(exp_data)&amp;lt;- glue::glue(&amp;quot;sample_{num}&amp;quot;)
+  labels&amp;lt;- df$group
+  names(labels)&amp;lt;- names(exp_data)
+  calculate_emd_gene(exp_data, labels, names(exp_data))
+}
+
+res&amp;lt;- test_distribution(1000, 0, 0, 1, 1.2)
+calculate_EMD(res$df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.7629998&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## increase the sample size 
+res&amp;lt;- test_distribution(10000, 0, 0, 1, 1.2)
+calculate_EMD(res$df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.8505&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res&amp;lt;- test_distribution(1000, 0, 0.1, 1, 1)
+calculate_EMD(res$df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.3919999&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res$df %&amp;gt;% head()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 2
+##   group  value
+##   &amp;lt;chr&amp;gt;  &amp;lt;dbl&amp;gt;
+## 1 x     -0.560
+## 2 y      0.761
+## 3 x     -0.230
+## 4 y     -1.95 
+## 5 x      1.56 
+## 6 y     -1.40&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res&amp;lt;- test_distribution(10000, 0, 0.1, 1, 1)
+calculate_EMD(res$df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.4892001&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Two observations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;EMD between &lt;span class=&#34;math inline&#34;&gt;\(N(0,1)\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(N(0.1,1)\)&lt;/span&gt; is smaller than EMD between &lt;span class=&#34;math inline&#34;&gt;\(N(0,1)\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(N(0,1.2)\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;increasing the sample size will increase the EMD too!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The EMD score increases as the distributions become increasingly dissimilar, but we have no framework for estimating the significance of a particular EMD score. EMDomics uses a permutation-based method to calculate a q-value that is interpreted analogously to a p-value.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The &lt;code&gt;EMDomics&lt;/code&gt; packages implemented the permutation test for multiple genes. Let me do it for a single gene.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res&amp;lt;- test_distribution(1000, 0, 0, 1, 1.2)
+res$df&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2,000 x 2
+##    group   value
+##    &amp;lt;chr&amp;gt;   &amp;lt;dbl&amp;gt;
+##  1 x     -0.560 
+##  2 y      0.793 
+##  3 x     -0.230 
+##  4 y     -2.46  
+##  5 x      1.56  
+##  6 y     -1.80  
+##  7 x      0.0705
+##  8 y      1.77  
+##  9 x      0.129 
+## 10 y      1.75  
+## # … with 1,990 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;calculate_EMD(res$df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.7629998&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## random shuffle the x, y group designation and calculate the EMD score
+permutation_EMD&amp;lt;- function(d){
+  set.seed(NULL)
+  d$group&amp;lt;- sample(d$group)
+  calculate_EMD(d)
+}
+
+permutation_EMD(res$df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.165&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## a different shuffle gives a different EMD
+permutation_EMD(res$df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.511&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## permutate N times and calculate how many times the permutated EMD is bigger than the EMD
+## for the original data and that&amp;#39;s the p-value
+
+permutation_EMD_pvalue&amp;lt;- function(d, N_permutation = 1000){
+  permutation_EMDs&amp;lt;- replicate(N_permutation, permutation_EMD(d))
+  ### p-value
+  mean(calculate_EMD(d) &amp;lt; permutation_EMDs)
+}
+
+permutation_EMD_pvalue(res$df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.003&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The p-value is &amp;lt; 0.05 which suggests that the two distributions are significantly different.&lt;/p&gt;
+&lt;p&gt;If we sample from the same &lt;span class=&#34;math inline&#34;&gt;\(N(0,1)\)&lt;/span&gt; distribution:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;res&amp;lt;- test_distribution(1000, 0, 0, 1, 1)
+permutation_EMD_pvalue(res$df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.602&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;p-value is not significant.&lt;/p&gt;
+&lt;p&gt;In fact, many people suggested using a permutation based method to evaluate the significance of the distribution differences using the KS test. The below code snippet is from &lt;a href=&#34;https://twitter.com/jma1991&#34;&gt;James&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/permutation_ks.jpeg&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;comparing-groups-of-distributions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Comparing groups of distributions&lt;/h3&gt;
+&lt;p&gt;For scRNAseq or CyTOF data, if one has treatment vs control groups, 3 samples each, each sample contains 1000 cells. How to test if the treatment changes the expression of a certain gene? This is an example of multi-sample, multi-group single-cell differential analysis. Pseudo-bulk method can be used as in the &lt;a href=&#34;https://www.nature.com/articles/s41467-020-19894-4&#34;&gt;muscat&lt;/a&gt;. Note that it is different from marker gene identification where differential gene expression is carried out between clusters of cells.&lt;/p&gt;
+&lt;p&gt;Papers to read:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0679-0&#34;&gt;quantro: a data-driven approach to guide the choice of an appropriate normalization method&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btab226/6207964&#34;&gt;Fast identification of differential distributions in single-cell RNA-sequencing data with waddR&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.biorxiv.org/content/10.1101/2020.11.24.394213v3.full&#34;&gt;distinct: a novel approach to differential distribution analyses&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Rafa, our department chair asked a good question:&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;
+&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;
+First I would ask why is testing for a difference in mean and a difference in SD not enough? Can you construct examples of two distributions with the same mean and same SD but different in a meaningful way in your context? Seeing these examples will help motivate a solution.
+&lt;/p&gt;
+— Rafael Irizarry (&lt;span class=&#34;citation&#34;&gt;@rafalab&lt;/span&gt;) &lt;a href=&#34;https://twitter.com/rafalab/status/1415110253549690882?ref_src=twsrc%5Etfw&#34;&gt;July 14, 2021&lt;/a&gt;
+&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+&lt;p&gt;Figure 7 b from the &lt;code&gt;distinct&lt;/code&gt; paper shows some genes have different distributions but have the same mean across groups.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/distinct_example.png&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Reprogramming of bivalent chromatin states in NRAS mutant melanoma suggests PRC2 inhibition as a therapeutic strategy</title>
       <link>/publication/2021-07-20-melanoma-chromatin-state/</link>
       <pubDate>Tue, 20 Jul 2021 00:00:00 -0400</pubDate>
@@ -524,129 +821,6 @@ draw( hp2, annotation_legend_list = lgd_list2)&lt;/code&gt;&lt;/pre&gt;
       
       <guid>/publication/2020-10-20-kmt2d-melanoma/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>compare slopes in linear regression</title>
-      <link>/post/compare-slopes-in-linear-regression/</link>
-      <pubDate>Fri, 02 Oct 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/post/compare-slopes-in-linear-regression/</guid>
-      <description>&lt;p&gt;I asked this question on &lt;a href=&#34;https://twitter.com/tangming2005/status/1308225162324647937&#34;&gt;twitter&lt;/a&gt;.&lt;/p&gt;
-&lt;div id=&#34;load-the-package&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;load the package&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;make-some-dummy-data&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;make some dummy data&lt;/h3&gt;
-&lt;p&gt;The dummy example: We have two groups of samples: disease and health.
-We treat those cells in vitro with different dosages (0, 1, 5) of a chemical X and count the cell number after 3 hours.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- tibble(
-  &amp;#39;0&amp;#39; = c(8.66,
-               11.50,
-               7.01,
-               13.40,
-               11.30,
-               8.13,
-               5.92,
-               7.54),
-  &amp;#39;1&amp;#39; = c(22.10,
-               23.00,
-               22.00,
-               35.70,
-               32.60,
-               26.90,
-               23.30,
-               21.60),
-  &amp;#39;5&amp;#39; = c(31.20,
-               30.60,
-               28.40,
-               37.30,
-               41.40,
-               40.20,
-               29.20,
-               35.40))
-
-y &amp;lt;- tibble(
-  &amp;#39;0&amp;#39; = c(13.90,
-               5.67,
-               2.59,
-               9.77,
-               5.63,
-               4.59,
-               7.35,
-               5.92),
-  &amp;#39;1&amp;#39; = c(12.60,
-               8.48,
-               5.59,
-               5.43,
-               13.10,
-               18.00,
-               23.90,
-               14.50),
-  &amp;#39;5&amp;#39; = c(20.00,
-               10.70,
-               9.73,
-               16.20,
-               15.10,
-               21.30,
-               25.60,
-               18.40))
-
-x&amp;lt;- x %&amp;gt;% tidyr::gather(1:3, key= &amp;quot;dose&amp;quot;, value = &amp;quot;cells&amp;quot;) %&amp;gt;%
-  mutate(group = &amp;quot;Health&amp;quot;)
-
-y&amp;lt;- y %&amp;gt;% tidyr::gather(1:3, key= &amp;quot;dose&amp;quot;, value = &amp;quot;cells&amp;quot;) %&amp;gt;%
-  mutate(group = &amp;quot;Disease&amp;quot;)
-
-z&amp;lt;- rbind(x,y)
-
-ggplot(z, aes(x= dose, y = cells)) +
-  geom_boxplot(aes(color = dose)) +
-  geom_point() +
-  facet_wrap(~group) +
-  theme_bw(base_size = 14)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2020-10-02-compare-slopes-in-linear-regression.en_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;We see that as the dosage increases, the cell number increases in both disease and healthy groups.
-However, the question is that if the cell number increases faster in the healthy group than the disease group or not? How can I get a p-value for that?&lt;/p&gt;
-&lt;p&gt;As &lt;a href=&#34;https://twitter.com/ChenxinLi2/status/1308232791709024257&#34;&gt;Chenxin Li&lt;/a&gt; pointed out. The dose has to be &lt;code&gt;numeric&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;z&amp;lt;- z %&amp;gt;%
-  mutate(dose = as.numeric(dose)) 
-
-lm_res&amp;lt;- lm(cells ~  dose *group, data = z)
-summary(lm_res)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-## Call:
-## lm(formula = cells ~ dose * group, data = z)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -8.839 -4.918 -1.357  3.801 16.771 
-## 
-## Coefficients:
-##                  Estimate Std. Error t value Pr(&amp;gt;|t|)    
-## (Intercept)        8.7048     1.7367   5.012 9.26e-06 ***
-## dose               1.7737     0.5899   3.007  0.00435 ** 
-## groupHealth        6.0546     2.4560   2.465  0.01766 *  
-## dose:groupHealth   2.3958     0.8343   2.872  0.00626 ** 
-## ---
-## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
-## 
-## Residual standard error: 6.243 on 44 degrees of freedom
-## Multiple R-squared:  0.6839, Adjusted R-squared:  0.6624 
-## F-statistic: 31.74 on 3 and 44 DF,  p-value: 4.443e-11&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;interpret-the-result&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Interpret the result&lt;/h3&gt;
-&lt;p&gt;&lt;span class=&#34;math inline&#34;&gt;\(beta 0 = 8.7\)&lt;/span&gt; is the intercept.&lt;br /&gt;
-&lt;span class=&#34;math inline&#34;&gt;\(beta 1 = 1.77\)&lt;/span&gt; is the coefficient of the &lt;code&gt;dose&lt;/code&gt;. It is interpreted as the unique effect of dose when group is disease (reference group).&lt;br /&gt;
-&lt;span class=&#34;math inline&#34;&gt;\(beta 2 = 6.05\)&lt;/span&gt; is the coefficient of the &lt;code&gt;group&lt;/code&gt;. It is interpreted as the effect of group when the dose is 0.&lt;br /&gt;
-&lt;span class=&#34;math inline&#34;&gt;\(beta 3 = 2.39\)&lt;/span&gt; is the coefficient of the interaction term &lt;code&gt;dose:group&lt;/code&gt;. &lt;span class=&#34;math inline&#34;&gt;\(beta3\)&lt;/span&gt; is the &lt;strong&gt;difference&lt;/strong&gt; in the slopes of non-reference minus reference (reference is the Disease group chosen by R alphabetically).&lt;/p&gt;
-&lt;p&gt;In other words, the slope of Healthy group - Disease group = 2.39, which means the cell number in the healthy group increases faster. The p-value is 0.00626&lt;/p&gt;
-&lt;p&gt;I want to thank Collin in Shirley’s lab and other tweeps for helping out for my question.&lt;/p&gt;
-&lt;p&gt;I found &lt;a href=&#34;https://www.theanalysisfactor.com/interpreting-interactions-in-regression/&#34;&gt;this explanation&lt;/a&gt; of how to inteprete the interaction term is very good. I highly recommend reading through this as well: &lt;a href=&#34;https://lindeloev.github.io/tests-as-linear/#62_two-way_anova_(plot_in_progress)&#34; class=&#34;uri&#34;&gt;https://lindeloev.github.io/tests-as-linear/#62_two-way_anova_(plot_in_progress)&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
 </description>
     </item>
     
