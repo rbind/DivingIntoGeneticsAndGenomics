@@ -11,6 +11,500 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Matrix Factorization for single-cell RNAseq data</title>
+      <link>/post/matrix-factorization-for-single-cell-rnaseq-data/</link>
+      <pubDate>Thu, 26 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/matrix-factorization-for-single-cell-rnaseq-data/</guid>
+      <description>&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;I am interested in learning more on matrix factorization and its application in scRNAseq data.
+I want to shout out to this paper: &lt;a href=&#34;https://www.sciencedirect.com/science/article/pii/S0168952518301240&#34;&gt;Enter the Matrix: Factorization Uncovers Knowledge from Omics&lt;/a&gt; by &lt;a href=&#34;https://fertiglab.com/&#34;&gt;Elana J. Fertig group&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/posts_img/matrix_factorization.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;A matrix is decomposed to two matrices: the amplitude matrix and the pattern matrix. You can then do all sorts of things with the decomposed matrices. Single cell matrix is no special, one can use the matrix factorization techniques to derive interesting biological insights.&lt;/p&gt;
+&lt;p&gt;Load the libraries.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+set.seed(1234)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s use some small data for demonstration. The 3k pbmc 10x genomics data are downloaded from &lt;a href=&#34;https://satijalab.org/seurat/articles/pbmc3k_tutorial.html&#34;&gt;Seurat tutorial&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Load the PBMC dataset
+pbmc.data &amp;lt;- Read10X(data.dir = &amp;quot;~/blog_data/filtered_gene_bc_matrices/hg19/&amp;quot;)
+# Initialize the Seurat object with the raw (non-normalized data).
+pbmc &amp;lt;- CreateSeuratObject(counts = pbmc.data, project = &amp;quot;pbmc3k&amp;quot;, min.cells = 3, min.features = 200)
+
+## routine processing
+pbmc&amp;lt;- pbmc %&amp;gt;% 
+  NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;%
+  FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;%
+  ScaleData() %&amp;gt;%
+  RunPCA(verbose = FALSE) %&amp;gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&amp;gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&amp;gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+## the annotation borrowed from Seurat tutorial
+new.cluster.ids &amp;lt;- c(&amp;quot;Naive CD4 T&amp;quot;, &amp;quot;CD14+ Mono&amp;quot;, &amp;quot;Memory CD4 T&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;CD8 T&amp;quot;, &amp;quot;FCGR3A+ Mono&amp;quot;, 
+    &amp;quot;NK&amp;quot;, &amp;quot;DC&amp;quot;, &amp;quot;Platelet&amp;quot;)
+names(new.cluster.ids) &amp;lt;- levels(pbmc)
+pbmc &amp;lt;- RenameIdents(pbmc, new.cluster.ids)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;pca&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;PCA&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p1&amp;lt;- DimPlot(pbmc, reduction = &amp;quot;pca&amp;quot;, label = TRUE)
+p1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;PCA&lt;/code&gt; performs pretty well in terms of seprating different cell types.&lt;/p&gt;
+&lt;p&gt;Let’s reproduce this plot by SVD.
+in a svd analysis, a mxn matrix X is decomposed by &lt;code&gt;X = U*D*V&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;U is an m×p orthogonal matrix&lt;/li&gt;
+&lt;li&gt;D is an n×p diagonal matrix&lt;/li&gt;
+&lt;li&gt;V is an p×p orthogonal matrix&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;with p=min(m,n)&lt;/p&gt;
+&lt;p&gt;PCs: &lt;strong&gt;Z = XV or Z = UD (U are un-scaled PCs)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Some facts of PCA:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;k th column of Z, Z(k), is the k th PC.(the k th pattern)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;PC loadings: k th column of V, V(k) is the k th PC loading (feature weights). aka. &lt;strong&gt;the k th column of V encodes the associated k th pattern in feature space.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;PC loadings: k th column of U, U(k) is the k th PC loading (observation weights). aka. &lt;strong&gt;the k th column of U encodes the associated k th pattern in observation space.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Diagnal matrix: D diagnals in D: &lt;strong&gt;d(k) gives the strength of the k th pattern.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Variance explained by k th PC: d(k)^2 Total variance of the data: &lt;code&gt;sum(d(k1)^2 + d(k2)^2 + …..d(k)^2+….)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;proportion of variance explained by k th PC: &lt;code&gt;d(k)^2 / sum(d(k1)^2 + d(k2)^2 + …..d(k)^2+….)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Take a look my old post &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/pca-in-action/&#34; class=&#34;uri&#34;&gt;https://divingintogeneticsandgenomics.rbind.io/post/pca-in-action/&lt;/a&gt;
+and &lt;a href=&#34;http://genomicsclass.github.io/book/pages/svd.html&#34; class=&#34;uri&#34;&gt;http://genomicsclass.github.io/book/pages/svd.html&lt;/a&gt; from Rafa.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## use the scaled data (centered and scaled)
+mat&amp;lt;- pbmc[[&amp;quot;RNA&amp;quot;]]@scale.data
+
+## 2000 most variable genes x 2700 cells
+dim(mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 2000 2700&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## for large matrix,use irlba::irlba for approximated calculation.
+## this matrix is scaled and centered.
+sv&amp;lt;- svd(t(mat))
+U&amp;lt;- sv$u
+V&amp;lt;- sv$v
+D&amp;lt;- sv$d
+
+## U are un-scaled PC, Z is scaled PC
+Z&amp;lt;- t(mat)%*%V
+
+## PCs
+Z[1:6, 1:6]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;                      [,1]        [,2]       [,3]       [,4]       [,5]
+#&amp;gt; AAACATACAACCAC -4.6060466 -0.60371951 -0.6052429 -1.7231935  0.7443433
+#&amp;gt; AAACATTGAGCTAC -0.1670809  4.54421712  6.4518867  6.8597974  0.8011412
+#&amp;gt; AAACATTGATCAGC -2.6455614 -4.00971883 -0.3723479 -0.9960236  4.9837032
+#&amp;gt; AAACCGTGCTTCCG 11.8569587  0.06340912  0.6226992 -0.2431955 -0.2919980
+#&amp;gt; AAACCGTGTATGCG -3.0531940 -6.00216498  0.8234015  2.0463393 -8.2465179
+#&amp;gt; AAACGCACTGGTAC -2.6832368  1.37196098 -0.5872163 -2.2090349  2.5291571
+#&amp;gt;                      [,6]
+#&amp;gt; AAACATACAACCAC  1.2945554
+#&amp;gt; AAACATTGAGCTAC  0.5033887
+#&amp;gt; AAACATTGATCAGC -0.2512450
+#&amp;gt; AAACCGTGCTTCCG -1.5098393
+#&amp;gt; AAACCGTGTATGCG  1.1540471
+#&amp;gt; AAACGCACTGGTAC  0.2604137&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## this is the almost the same as PCs in the seurat reduction slot. Note some signs are opposite
+pbmc@reductions$pca@cell.embeddings[1:6, 1:6]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;                       PC_1        PC_2       PC_3       PC_4       PC_5
+#&amp;gt; AAACATACAACCAC   4.6060466 -0.60371951 -0.6052429 -1.7231935 -0.7443433
+#&amp;gt; AAACATTGAGCTAC   0.1670809  4.54421712  6.4518867  6.8597974 -0.8011412
+#&amp;gt; AAACATTGATCAGC   2.6455614 -4.00971883 -0.3723479 -0.9960236 -4.9837032
+#&amp;gt; AAACCGTGCTTCCG -11.8569587  0.06340912  0.6226992 -0.2431955  0.2919980
+#&amp;gt; AAACCGTGTATGCG   3.0531940 -6.00216498  0.8234015  2.0463393  8.2465179
+#&amp;gt; AAACGCACTGGTAC   2.6832368  1.37196098 -0.5872163 -2.2090349 -2.5291571
+#&amp;gt;                      PC_6
+#&amp;gt; AAACATACAACCAC  1.2945554
+#&amp;gt; AAACATTGAGCTAC  0.5033887
+#&amp;gt; AAACATTGATCAGC -0.2512450
+#&amp;gt; AAACCGTGCTTCCG -1.5098393
+#&amp;gt; AAACCGTGTATGCG  1.1540471
+#&amp;gt; AAACGCACTGGTAC  0.2604137&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## make the PCA plot using PC1 and PC2
+cell_annotation&amp;lt;- Idents(pbmc) %&amp;gt;%
+  tibble::enframe(name = &amp;quot;cell&amp;quot;, value= &amp;quot;celltype&amp;quot;)
+
+p2&amp;lt;- Z[, 1:2] %&amp;gt;%
+  as.data.frame() %&amp;gt;%
+  dplyr::rename(PC_1 = V1, PC_2 = V2) %&amp;gt;%
+  tibble::rownames_to_column(var = &amp;quot;cell&amp;quot;) %&amp;gt;%
+  left_join(cell_annotation) %&amp;gt;%
+  ggplot(aes(x= PC_1, y = PC_2)) +
+  geom_point(aes(color = celltype), size = 0.5) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3)))
+  
+
+p1/p2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;
+If we flip the PC_1 coordinates, those two plots are the same.&lt;/p&gt;
+&lt;p&gt;Note that &lt;code&gt;X = U*D*V&lt;/code&gt;, a matrix X is decomposed into 3 matrices.
+U*D is the pattern matrix (Z matrix), and V is the amplitude matrix.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dim(Z)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 2700 2000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dim(V)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 2000 2000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In single-cell RNAseq analysis, the &lt;code&gt;Z&lt;/code&gt; matrix is used to construct the k-nearest neighbor graph and clusters are detected using Louvain method in the graph. One can use any other clustering algorithms to cluster the cells (e.g., k-means, hierarchical clustering) in this PC space.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# devtools::install_github(&amp;quot;crazyhottommy/scclusteval&amp;quot;)
+library(scclusteval)
+kmeans_res&amp;lt;- kmeans(Z, centers = 9)
+kmeans_clusters&amp;lt;- kmeans_res$cluster 
+
+## check how the k-means clusters corresponds to the graph-based clusters
+PairWiseJaccardSetsHeatmap(Idents(pbmc), kmeans_clusters)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We see pretty nice 1 to 1 cluster matches. K-means is fast, but it does require a pre-defined K. I used 9 here because the graph-based method generates 9 clusters.&lt;/p&gt;
+&lt;p&gt;Let’s see what are the genes contributing to the first PC.
+From the PCA plot, we see PC1 is seprating the monocytes/DC with the T cells/B cells.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;feature_loadings&amp;lt;- V[,1]
+names(feature_loadings)&amp;lt;- rownames(mat)
+
+feature_loadings&amp;lt;- tibble::enframe(feature_loadings, name = &amp;quot;gene&amp;quot;, value = &amp;quot;feature_loading&amp;quot;)
+feature_loadings %&amp;gt;%
+  arrange(desc(abs(feature_loading))) %&amp;gt;%
+  head()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 6 x 2
+#&amp;gt;   gene   feature_loading
+#&amp;gt;   &amp;lt;chr&amp;gt;            &amp;lt;dbl&amp;gt;
+#&amp;gt; 1 CST3             0.131
+#&amp;gt; 2 TYROBP           0.125
+#&amp;gt; 3 LST1             0.124
+#&amp;gt; 4 AIF1             0.123
+#&amp;gt; 5 FTL              0.121
+#&amp;gt; 6 FCN1             0.120&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.proteinatlas.org/ENSG00000101439-CST3&#34;&gt;CST3&lt;/a&gt; is on the top, and it is a marker for monocytes and pDCs. which makes perfect sense!
+others such as &lt;a href=&#34;https://www.proteinatlas.org/ENSG00000011600-TYROBP&#34;&gt;TYROBP&lt;/a&gt;, &lt;a href=&#34;https://www.proteinatlas.org/ENSG00000204482-LST1&#34;&gt;LST1&lt;/a&gt; etc are all myeloid lineage markers.
+Those genes are highly expressed in the myeloid cells.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;DimPlot(pbmc, reduction = &amp;quot;pca&amp;quot;, label = TRUE) + NoLegend()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;FeaturePlot(pbmc, features = c(&amp;quot;CST3&amp;quot;, &amp;quot;TYROBP&amp;quot;, &amp;quot;LST1&amp;quot;, &amp;quot;AIF1&amp;quot;), reduction = &amp;quot;pca&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-9-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;DimPlot(pbmc, reduction = &amp;quot;umap&amp;quot;, label = TRUE) + NoLegend()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-9-3.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;FeaturePlot(pbmc, features = c(&amp;quot;CST3&amp;quot;, &amp;quot;TYROBP&amp;quot;, &amp;quot;LST1&amp;quot;, &amp;quot;AIF1&amp;quot;), reduction = &amp;quot;umap&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-9-4.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;find-gene-modules&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;find gene modules&lt;/h3&gt;
+&lt;p&gt;For PC1, let’s check the gene loading distribution:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;feature_loadings %&amp;gt;%
+  ggplot(aes(x=feature_loading)) +
+  geom_histogram(col=&amp;quot;white&amp;quot;, bins = 100) +
+  theme_classic(base_size = 14) +
+  ggtitle(&amp;quot;gene loadings for PC1&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## take the genes greater than 3 sd away from mean
+cutoff&amp;lt;- mean(feature_loadings$feature_loading) + 3* sd(feature_loadings$feature_loading)
+
+## 55 genes
+genes_module_PC1&amp;lt;- feature_loadings %&amp;gt;%
+  filter(feature_loading &amp;gt; cutoff) %&amp;gt;%
+  arrange(desc(feature_loading)) %&amp;gt;%
+  pull(gene)
+
+genes_module_PC1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;  [1] &amp;quot;CST3&amp;quot;     &amp;quot;TYROBP&amp;quot;   &amp;quot;LST1&amp;quot;     &amp;quot;AIF1&amp;quot;     &amp;quot;FTL&amp;quot;      &amp;quot;FCN1&amp;quot;    
+#&amp;gt;  [7] &amp;quot;LYZ&amp;quot;      &amp;quot;FTH1&amp;quot;     &amp;quot;S100A9&amp;quot;   &amp;quot;FCER1G&amp;quot;   &amp;quot;TYMP&amp;quot;     &amp;quot;CFD&amp;quot;     
+#&amp;gt; [13] &amp;quot;LGALS1&amp;quot;   &amp;quot;CTSS&amp;quot;     &amp;quot;S100A8&amp;quot;   &amp;quot;SERPINA1&amp;quot; &amp;quot;LGALS2&amp;quot;   &amp;quot;SPI1&amp;quot;    
+#&amp;gt; [19] &amp;quot;IFITM3&amp;quot;   &amp;quot;PSAP&amp;quot;     &amp;quot;CFP&amp;quot;      &amp;quot;SAT1&amp;quot;     &amp;quot;IFI30&amp;quot;    &amp;quot;COTL1&amp;quot;   
+#&amp;gt; [25] &amp;quot;S100A11&amp;quot;  &amp;quot;NPC2&amp;quot;     &amp;quot;LGALS3&amp;quot;   &amp;quot;GSTP1&amp;quot;    &amp;quot;PYCARD&amp;quot;   &amp;quot;NCF2&amp;quot;    
+#&amp;gt; [31] &amp;quot;CDA&amp;quot;      &amp;quot;S100A6&amp;quot;   &amp;quot;GPX1&amp;quot;     &amp;quot;MS4A6A&amp;quot;   &amp;quot;OAZ1&amp;quot;     &amp;quot;FCGRT&amp;quot;   
+#&amp;gt; [37] &amp;quot;APOBEC3A&amp;quot; &amp;quot;TNFSF13B&amp;quot; &amp;quot;S100A4&amp;quot;   &amp;quot;CEBPB&amp;quot;    &amp;quot;HLA-DRB1&amp;quot; &amp;quot;TIMP1&amp;quot;   
+#&amp;gt; [43] &amp;quot;HLA-DRA&amp;quot;  &amp;quot;AP2S1&amp;quot;    &amp;quot;FGR&amp;quot;      &amp;quot;FPR1&amp;quot;     &amp;quot;MS4A7&amp;quot;    &amp;quot;MAFB&amp;quot;    
+#&amp;gt; [49] &amp;quot;SRGN&amp;quot;     &amp;quot;ALDH2&amp;quot;    &amp;quot;TALDO1&amp;quot;   &amp;quot;FGL2&amp;quot;     &amp;quot;HLA-DRB5&amp;quot; &amp;quot;C1orf162&amp;quot;
+#&amp;gt; [55] &amp;quot;IFI6&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To make sense of the gene list, one can do gene set over-representation test or run GSEA (e.g., &lt;code&gt;fgsea&lt;/code&gt;) which uses all genes ranked by some metric. This is just a very simple way to find the gene modules.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;correspondence-analysis-coa&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Correspondence analysis (COA)&lt;/h3&gt;
+&lt;p&gt;Follow &lt;a href=&#34;https://aedin.github.io/PCAworkshop/articles/c_COA.html&#34; class=&#34;uri&#34;&gt;https://aedin.github.io/PCAworkshop/articles/c_COA.html&lt;/a&gt; by Aedin!&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Correspondence analysis (COA) is considered a dual-scaling method, because both the rows and columns are scaled prior to singular value decomposition (SVD).&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Correspondence analysis (CA) is a matrix factorization method, and is similar to principal components analysis (PCA). Whereas PCA is designed for application to continuous, approximately normally distributed data, CA is appropriate for non-negative, count-based data that are in the same additive scale.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;There are many implementations in R for COA. &lt;a href=&#34;https://www.bioconductor.org/packages/devel/bioc/html/corral.html&#34;&gt;&lt;code&gt;coral&lt;/code&gt;&lt;/a&gt; which uses sparse matrix and &lt;code&gt;irlba::irlba()&lt;/code&gt; for faster processing is better for scRNAseq data. I will use &lt;code&gt;ade4&lt;/code&gt; package to demonstrate.&lt;/p&gt;
+&lt;p&gt;papers to read:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://academic.oup.com/bib/article/17/4/628/2240645?login=true&#34;&gt;Dimension reduction techniques for the integrative analysis of multi-omics data&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.frontiersin.org/articles/10.3389/fonc.2020.00973/full&#34;&gt;Impact of Data Preprocessing on Integrative Matrix Factorization of Single Cell Data&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006907&#34;&gt;Ten quick tips for effective dimensionality reduction&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://link.springer.com/article/10.1186%2Fs13059-019-1861-6&#34;&gt;Feature selection and dimension reduction for single-cell RNA-Seq based on a multinomial model&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.biorxiv.org/content/10.1101/2021.06.24.449781v2&#34;&gt;Transformation and Preprocessing of Single-Cell RNA-Seq Data&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## I also tried the raw count matrix, but it did work well. so I changed to log normalized count
+logNorm_mat&amp;lt;- pbmc@assays$RNA@data[VariableFeatures(pbmc), ]
+coa_ade4&amp;lt;-ade4::dudi.coa(as.matrix(logNorm_mat),scannf = FALSE, n=10)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The resulting row and column scores and coordinates are in the objects &lt;code&gt;li&lt;/code&gt;, &lt;code&gt;co&lt;/code&gt;, &lt;code&gt;l1&lt;/code&gt;, &lt;code&gt;c1&lt;/code&gt;, where &lt;code&gt;l&lt;/code&gt; here refers to “lines” or rows, and &lt;code&gt;c&lt;/code&gt; is columns.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(coa_ade4$li)  #Row coordinates dims =c(2000,10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;              Axis1      Axis2       Axis3       Axis4        Axis5        Axis6
+#&amp;gt; PPBP   -5.75332076  1.4086401 -0.02455373  0.10531845  1.274407843 -1.078108505
+#&amp;gt; S100A9 -0.30571958 -1.1248205  0.19158402 -0.05478944  0.050216226 -0.047159284
+#&amp;gt; IGLL5   0.12630917  0.2539361 -2.33635148  0.93389553  0.082541193 -0.099580517
+#&amp;gt; LYZ    -0.18351075 -0.6772280  0.08475204 -0.07088775  0.041890836 -0.027217635
+#&amp;gt; GNLY    0.24866136  0.5352580  0.84548909  1.33722681 -0.001407911  0.026953970
+#&amp;gt; FTL    -0.04993657 -0.1430851 -0.03623064 -0.04339615  0.028197300 -0.002100519
+#&amp;gt;             Axis7       Axis8        Axis9      Axis10
+#&amp;gt; PPBP   0.12711171  0.19002380 -0.289682810 -0.01022194
+#&amp;gt; S100A9 0.13024095 -0.42532765  0.029976165 -0.02297505
+#&amp;gt; IGLL5  0.02929640 -0.17589290  0.114116748 -0.17542508
+#&amp;gt; LYZ    0.07102446 -0.22002186 -0.013246003 -0.03274752
+#&amp;gt; GNLY   0.08571882 -0.08868238 -0.057177230 -0.35642891
+#&amp;gt; FTL    0.07062523 -0.06456654  0.006058369  0.02374175&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(coa_ade4$co) #Col coordinates dims=c(2700,10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;                      Comp1       Comp2       Comp3       Comp4       Comp5
+#&amp;gt; AAACATACAACCAC  0.15514596  0.29557202  0.09342970 -0.14623715  0.01891340
+#&amp;gt; AAACATTGAGCTAC  0.05666115  0.04572627 -0.54523299  0.20399405 -0.07800370
+#&amp;gt; AAACATTGATCAGC  0.11930802  0.24226962  0.10890364 -0.19520281  0.02452506
+#&amp;gt; AAACCGTGCTTCCG -0.14910542 -0.52464123  0.04523697  0.06184439 -0.00553116
+#&amp;gt; AAACCGTGTATGCG  0.13363624  0.27591478  0.43934781  0.74839410  0.02411396
+#&amp;gt; AAACGCACTGGTAC  0.09223307  0.14078183 -0.10464046 -0.27672346 -0.02813241
+#&amp;gt;                      Comp6        Comp7       Comp8        Comp9       Comp10
+#&amp;gt; AAACATACAACCAC -0.03226091 -0.027990323 -0.08706780 -0.005239057  0.085160061
+#&amp;gt; AAACATTGAGCTAC -0.05874295  0.005084571  0.03213915  0.057400168 -0.002495395
+#&amp;gt; AAACATTGATCAGC -0.01989865 -0.033110863  0.07453705 -0.011871229 -0.051224956
+#&amp;gt; AAACCGTGCTTCCG -0.04012875 -0.133776910  0.15420002 -0.032286422  0.019314137
+#&amp;gt; AAACCGTGTATGCG -0.02362779  0.098752385 -0.07288541  0.007020799 -0.295566494
+#&amp;gt; AAACGCACTGGTAC -0.08895839 -0.131280568 -0.09899092  0.037054361  0.003949727&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(coa_ade4$l1)  #Row scores dims =c(2000 10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;                RS1        RS2         RS3        RS4          RS5        RS6
+#&amp;gt; PPBP   -13.7542550  3.5432621 -0.07971282  0.4123288  6.668566976 -6.0620900
+#&amp;gt; S100A9  -0.7308727 -2.8293485  0.62197063 -0.2145043  0.262765385 -0.2651717
+#&amp;gt; IGLL5    0.3019627  0.6387451 -7.58488119  3.6562636  0.431911558 -0.5599307
+#&amp;gt; LYZ     -0.4387125 -1.7034842  0.27514445 -0.2775303  0.219201290 -0.1530419
+#&amp;gt; GNLY     0.5944657  1.3463761  2.74484998  5.2353326 -0.007367147  0.1515593
+#&amp;gt; FTL     -0.1193815 -0.3599131 -0.11762146 -0.1698988  0.147547414 -0.0118110
+#&amp;gt;              RS7        RS8         RS9        RS10
+#&amp;gt; PPBP   0.7271594  1.1611856 -1.87348843 -0.06832901
+#&amp;gt; S100A9 0.7450606 -2.5990658  0.19386721 -0.15357770
+#&amp;gt; IGLL5  0.1675939 -1.0748354  0.73803623 -1.17263623
+#&amp;gt; LYZ    0.4063048 -1.3444959 -0.08566691 -0.21890216
+#&amp;gt; GNLY   0.4903658 -0.5419148 -0.36978680 -2.38256380
+#&amp;gt; FTL    0.4040210 -0.3945492  0.03918177  0.15870273&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(coa_ade4$c1)  #Col scores dims=c(2700,10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;                       CS1        CS2        CS3        CS4         CS5
+#&amp;gt; AAACATACAACCAC  0.3709018  0.7434753  0.3033162 -0.5725282  0.09896777
+#&amp;gt; AAACATTGAGCTAC  0.1354578  0.1150188 -1.7700793  0.7986504 -0.40816829
+#&amp;gt; AAACATTGATCAGC  0.2852254  0.6093996  0.3535518 -0.7642321  0.12833176
+#&amp;gt; AAACCGTGCTTCCG -0.3564609 -1.3196709  0.1468602  0.2421249 -0.02894278
+#&amp;gt; AAACCGTGTATGCG  0.3194793  0.6940299  1.4263269  2.9300130  0.12618059
+#&amp;gt; AAACGCACTGGTAC  0.2204983  0.3541195 -0.3397115 -1.0833909 -0.14720788
+#&amp;gt;                       CS6         CS7        CS8         CS9        CS10
+#&amp;gt; AAACATACAACCAC -0.1813997 -0.16012235 -0.5320485 -0.03388297  0.56925595
+#&amp;gt; AAACATTGAGCTAC -0.3303054  0.02908696  0.1963939  0.37122863 -0.01668057
+#&amp;gt; AAACATTGATCAGC -0.1118880 -0.18941507  0.4554764 -0.07677574 -0.34241534
+#&amp;gt; AAACCGTGCTTCCG -0.2256397 -0.76528852  0.9422759 -0.20880852  0.12910615
+#&amp;gt; AAACCGTGTATGCG -0.1328566  0.56492608 -0.4453836  0.04540617 -1.97572644
+#&amp;gt; AAACGCACTGGTAC -0.5002036 -0.75100786 -0.6049076  0.23964458  0.02640211&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sapply(list(li=coa_ade4$li,  l1=coa_ade4$l1, co=coa_ade4$co, c1=coa_ade4$c1), dim)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;        li   l1   co   c1
+#&amp;gt; [1,] 2000 2000 2700 2700
+#&amp;gt; [2,]   10   10   10   10&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Visualization&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coa_ade4$co[,c(1,2)] %&amp;gt;%
+  as.data.frame() %&amp;gt;%
+  tibble::rownames_to_column(var = &amp;quot;cell&amp;quot;) %&amp;gt;%
+  left_join(cell_annotation) %&amp;gt;%
+  ggplot(aes(x= Comp1, y = Comp2)) +
+  geom_point(aes(color = celltype), size = 0.5) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Component 1 seems to separate Platelet with others.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coa_ade4$co[,c(2,3)] %&amp;gt;%
+  as.data.frame() %&amp;gt;%
+  tibble::rownames_to_column(var = &amp;quot;cell&amp;quot;) %&amp;gt;%
+  left_join(cell_annotation) %&amp;gt;%
+  ggplot(aes(x= Comp2, y = Comp3)) +
+  geom_point(aes(color = celltype), size = 0.5) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;
+Component 2 seems to separate the CD14+ and FCGR3A/CD16+ monocytes with others, and component 3 seems to separate the B cells with others.&lt;/p&gt;
+&lt;p&gt;Why use COA rather than PCA?&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;scRNAseq data are counts (Poisson), so correspondence analysis is more appropriate than PCA. it’s exactly the same as SVD on Pearson residuals from a rank-1 Poisson model.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Read more at:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.biorxiv.org/content/10.1101/2020.12.01.405886v3&#34;&gt;Analytic Pearson residuals for normalization of single-cell RNA-seq UMI data&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;non-negative-matrix-factorization-nmf&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Non-negative matrix factorization (NMF)&lt;/h3&gt;
+&lt;p&gt;RNAseq counts are non-negative. NMF can be used too! I will use this &lt;a href=&#34;https://cran.r-project.org/web/packages/RcppML/vignettes/RcppML.html&#34;&gt;&lt;code&gt;RcppML&lt;/code&gt;&lt;/a&gt; package
+which supports sparse matrix.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## rank 30, RcppML::nmf can take sparse matrix as input
+## the {NMF} R package needs a dense matrix
+## remember to set the seed to make it reproducible 
+model &amp;lt;- RcppML::nmf(logNorm_mat, 30, verbose = F, seed = 1234)
+
+w &amp;lt;- model$w
+d &amp;lt;- model$d
+h &amp;lt;- model$h
+
+## amplitude matrix
+dim(w)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 2000   30&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rownames(w)&amp;lt;- rownames(logNorm_mat)
+colnames(w)&amp;lt;- paste0(&amp;quot;component&amp;quot;, 1:30)
+
+## pattern matrix
+dim(h)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1]   30 2700&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rownames(h)&amp;lt;- paste0(&amp;quot;component&amp;quot;, 1:30)
+colnames(h)&amp;lt;- colnames(logNorm_mat)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Extra papers to read:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.biorxiv.org/content/10.1101/2021.02.09.430550v2&#34;&gt;scPNMF: sparse gene encoding of single cells to facilitate gene selection for targeted gene profiling&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;a href=&#34;https://htmlpreview.github.io/?https://github.com/JSB-UCLA/scPNMF/blob/main/inst/docs/scPNMF.html&#34;&gt;documentation&lt;/a&gt; looks pretty decent and there are many extra functions in addition to the matrix factorization.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.biorxiv.org/content/10.1101/2021.04.09.439160v1.full&#34;&gt;Nonnegative matrix factorization integrates single-cell multi-omic datasets with partially overlapping features&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://pubmed.ncbi.nlm.nih.gov/20810601/&#34;&gt;CoGAPS: an R/C++ package to identify patterns and biological process activity in transcriptomic data&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.biorxiv.org/content/10.1101/2020.12.01.406363v3&#34;&gt;Single cell profiling reveals novel tumor and myeloid subpopulations in small cell lung cancer&lt;/a&gt; The authors have beautifully used (regular) NMF to characterize T cells, including some creative application of factor loadings in downstream analyses.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Similarly, one can do a k-means clustering using the pattern matrix derived from &lt;code&gt;NMF&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;kmeans_NMF_res&amp;lt;- kmeans(t(h), centers = 9)
+kmeans_NMF_clusters&amp;lt;- kmeans_NMF_res$cluster 
+
+## check how the k-means clusters corresponds to the graph-based clusters
+PairWiseJaccardSetsHeatmap(Idents(pbmc), kmeans_NMF_clusters)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Naive CD4 and Memory CD4 T cells are mixing (this is assuming the original annotation from Seurat is correct which is not necessary true); CD8T cells split into two clusters. Overall, the agreement is good with the graph-based clustering method.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;nmf_df&amp;lt;- t(h) %&amp;gt;% 
+  as.data.frame() %&amp;gt;%
+  tibble::rownames_to_column(var= &amp;quot;cell&amp;quot;) %&amp;gt;%
+  left_join(cell_annotation) 
+
+ggplot(nmf_df, aes(x= celltype, y = component1)) +
+  geom_point(aes(color = celltype)) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3))) +
+  xlab(&amp;quot;&amp;quot;) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Component 1 is associated with CD14, CD16/FCRG3A monocytes and DCs.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(nmf_df, aes(x= celltype, y = component2)) +
+  geom_point(aes(color = celltype)) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3))) +
+  xlab(&amp;quot;&amp;quot;) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Component 2 is associated with CD4, CD8 T cells&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(nmf_df, aes(x= celltype, y = component9)) +
+  geom_point(aes(color = celltype)) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3))) +
+  xlab(&amp;quot;&amp;quot;) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Component 9 is associated with FCRG3A+ monocytes.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;w %&amp;gt;%
+  as.data.frame() %&amp;gt;%
+  tibble::rownames_to_column(var=&amp;quot;gene&amp;quot;) %&amp;gt;%
+  arrange(desc(component9)) %&amp;gt;%
+  pull(gene) %&amp;gt;%
+  head()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] &amp;quot;COTL1&amp;quot;  &amp;quot;IFITM2&amp;quot; &amp;quot;FCGR3A&amp;quot; &amp;quot;PSAP&amp;quot;   &amp;quot;CTSS&amp;quot;   &amp;quot;ARPC1B&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;FCGR3A gene (it is known to express in NK cells too) is on the top which makes sense.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;DimPlot(pbmc, reduction = &amp;quot;umap&amp;quot;, label = TRUE) + NoLegend()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;FeaturePlot(pbmc, features = c(&amp;quot;COTL1&amp;quot;, &amp;quot;IFITM2&amp;quot;, &amp;quot;FCGR3A&amp;quot;, &amp;quot;PSAP&amp;quot;), reduction = &amp;quot;umap&amp;quot;, pt.size = 0.1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;independent-component-analysis-ica&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Independent component analysis (ICA)&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The data matrix X is considered to be a linear combination of non-Gaussian (independent) components i.e. X = SA where columns of S contain the independent components and A is a linear mixing matrix. In short ICA attempts to ‘un-mix’ the data by estimating an un-mixing matrix W where XW = S.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(123)
+library(fastICA)
+## use the log normalized counts as input
+logNorm_mat&amp;lt;- pbmc@assays$RNA@data[VariableFeatures(pbmc), ]
+ica_res&amp;lt;- fastICA(t(as.matrix(logNorm_mat)), n.comp = 30, alg.typ = &amp;quot;deflation&amp;quot;)
+
+
+## the pattern matrix
+dim(ica_res$S)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 2700   30&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ica_df&amp;lt;- ica_res$S %&amp;gt;% 
+  as.data.frame() %&amp;gt;%
+  tibble::rownames_to_column(var= &amp;quot;cell&amp;quot;) %&amp;gt;%
+  left_join(cell_annotation) 
+  
+## I tricked and plot many of them, and found component 10 is associated with B cells
+ggplot(ica_df, aes(x= celltype, y = V10)) +
+  geom_point(aes(color = celltype)) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3))) +
+  xlab(&amp;quot;&amp;quot;) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## the amplitude matrix or weigths matrix
+dim(ica_res$A)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1]   30 2000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ica_res$A[1:6, 1:6]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;              [,1]        [,2]         [,3]        [,4]         [,5]        [,6]
+#&amp;gt; [1,] -0.413376000  0.05376641  0.008726011  0.05786623  0.024026180 -0.03044887
+#&amp;gt; [2,] -0.010226956 -0.19660527  0.026852085 -0.28306851  0.087733334 -0.53884708
+#&amp;gt; [3,]  0.004566480  0.16617227 -0.031147751 -0.04875053 -0.018871534  0.12570441
+#&amp;gt; [4,]  0.004287560  0.22019629  0.016369463  0.25592895 -1.013525472  0.13194196
+#&amp;gt; [5,]  0.023103960  1.04656926 -0.019891674  0.99164725  0.008837725  0.58089991
+#&amp;gt; [6,] -0.002186554 -0.18356631 -0.034622554 -0.21143961  0.001357102 -0.11419977&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## let&amp;#39;s extract the gene weights for component 12
+tibble(gene = rownames(logNorm_mat), weights = ica_res$A[10,]) %&amp;gt;%
+  arrange(desc(weights))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 2,000 x 2
+#&amp;gt;    gene     weights
+#&amp;gt;    &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;
+#&amp;gt;  1 HLA-DRA    1.12 
+#&amp;gt;  2 CD74       0.982
+#&amp;gt;  3 HLA-DPB1   0.897
+#&amp;gt;  4 CD79A      0.866
+#&amp;gt;  5 HLA-DRB1   0.834
+#&amp;gt;  6 CD79B      0.821
+#&amp;gt;  7 HLA-DPA1   0.807
+#&amp;gt;  8 HLA-DQA1   0.765
+#&amp;gt;  9 HLA-DQB1   0.704
+#&amp;gt; 10 MS4A1      0.659
+#&amp;gt; # … with 1,990 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ah! what do you see the genes with large values on the top? B-cell markers: CD79A/B, MS4A1, and Class II genes. Makes sense!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# rows are the components, columns are the 2000 genes
+Heatmap(ica_res$A, name = &amp;quot;clustering for the amplitude matrix&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-23-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;hierarchical clustering(default in Complexheatmap) can find some gene modules too.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Briefly, we observe in this example that PCA finds sources of separation in the data, whereas both ICA and NMF find independent sources of variation. ICA can find both over- and underexpression of genes in a single CBP, whereas NMF can find only overexpressed genes in a single CBP. As a result, ICA may better model both repression and activation than NMF, but as a side effect may have greater mixture of CBPs than NMF.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;div id=&#34;co-expression&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;co-expression&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Heatmap(cor(t(as.matrix(logNorm_mat)), method = &amp;quot;spearman&amp;quot;), 
+        show_column_names = FALSE, 
+        show_row_names = FALSE,
+        name = &amp;quot;spearman correlation&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-08-26-matrix-factorization-for-single-cell-rnaseq-data.en_files/figure-html/unnamed-chunk-24-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;One can clearly see some genes (red blocks) are co-expressed. Note that single cell matrix is sparse, highly expressed genes are more likely to be highly correlated (Thanks &lt;a href=&#34;https://twitter.com/stephaniehicks&#34;&gt;Stephanie Hicks&lt;/a&gt; for pointing it to me!). use &lt;a href=&#34;http://bioconductor.org/packages/release/bioc/html/spqn.html&#34; class=&#34;uri&#34;&gt;http://bioconductor.org/packages/release/bioc/html/spqn.html&lt;/a&gt; to fix this problem.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;take-home-messages&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Take home messages&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;One can use different matrix factorization techniques for a single cell count matrix and get the pattern matrix(to cluster the cells) and the amplitude matrix(to find gene modules). Different techniques can give you different results and need to be interpreted biologically.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Use &lt;code&gt;scPNMF&lt;/code&gt; to get the gene modules if you go with &lt;code&gt;NMF&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There is another twitter thread you may want to read:
+&lt;a href=&#34;https://twitter.com/David_McGaughey/status/1431612645048832004&#34; class=&#34;uri&#34;&gt;https://twitter.com/David_McGaughey/status/1431612645048832004&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>How to test if two distributions are different </title>
       <link>/post/how-to-test-if-two-distributions-are-different/</link>
       <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
@@ -811,16 +1305,6 @@ draw( hp2, annotation_legend_list = lgd_list2)&lt;/code&gt;&lt;/pre&gt;
       
       <guid>/talk/2020-maestro-broad-talk/</guid>
       <description>&lt;p&gt;I gave a talk on our single-cell RNA-seq and single-cell ATAC-seq analysis tool &lt;a href=&#34;https://github.com/liulab-dfci/MAESTRO&#34; target=&#34;_blank&#34;&gt;MAESTRO&lt;/a&gt; in the &lt;a href=&#34;https://www.broadinstitute.org/epigenomics&#34; target=&#34;_blank&#34;&gt;Broad Institute CC&amp;amp;E Seminar Series&lt;/a&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Enhancer Reprogramming Confers Dependence on Glycolysis and IGF Signaling in KMT2D Mutant Melanoma</title>
-      <link>/publication/2020-10-20-kmt2d-melanoma/</link>
-      <pubDate>Tue, 20 Oct 2020 00:00:00 -0400</pubDate>
-      
-      <guid>/publication/2020-10-20-kmt2d-melanoma/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     

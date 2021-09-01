@@ -1,0 +1,473 @@
+---
+title: Matrix Factorization for single-cell RNAseq data
+author: Ming Tang
+date: '2021-08-26'
+slug: matrix-factorization-for-single-cell-rnaseq-data
+categories:
+  - bioinformatics
+  - scRNAseq
+tags:
+  - scRNAseq
+  - single-cell
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+```
+
+I am interested in learning more on matrix factorization and its application in scRNAseq data.
+I want to shout out to this paper: [Enter the Matrix: Factorization Uncovers Knowledge from Omics](https://www.sciencedirect.com/science/article/pii/S0168952518301240) by [Elana J. Fertig group](https://fertiglab.com/).
+
+![](/img/posts_img/matrix_factorization.png)
+
+A matrix is decomposed to two matrices: the amplitude matrix and the pattern matrix. You can then do all sorts of things with the decomposed matrices. Single cell matrix is no special, one can use the matrix factorization techniques to derive interesting biological insights.
+
+Load the libraries.
+```{r message=FALSE, warning=FALSE}
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+set.seed(1234)
+```
+
+
+Let's use some small data for demonstration. The 3k pbmc 10x genomics data are downloaded from [Seurat tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html).
+
+```{r message=FALSE, warning=FALSE}
+# Load the PBMC dataset
+pbmc.data <- Read10X(data.dir = "~/blog_data/filtered_gene_bc_matrices/hg19/")
+# Initialize the Seurat object with the raw (non-normalized data).
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+
+## routine processing
+pbmc<- pbmc %>% 
+  NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+  FindVariableFeatures(selection.method = "vst", nfeatures = 2000) %>%
+  ScaleData() %>%
+  RunPCA(verbose = FALSE) %>%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %>%
+  FindClusters(resolution = 0.5, verbose = FALSE) %>%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+## the annotation borrowed from Seurat tutorial
+new.cluster.ids <- c("Naive CD4 T", "CD14+ Mono", "Memory CD4 T", "B", "CD8 T", "FCGR3A+ Mono", 
+    "NK", "DC", "Platelet")
+names(new.cluster.ids) <- levels(pbmc)
+pbmc <- RenameIdents(pbmc, new.cluster.ids)
+```
+
+### PCA
+
+```{r warning=FALSE}
+p1<- DimPlot(pbmc, reduction = "pca", label = TRUE)
+p1
+```
+
+`PCA` performs pretty well in terms of seprating different cell types.
+
+Let's reproduce this plot by SVD.
+in a svd analysis, a mxn matrix X is decomposed by `X = U*D*V`: 
+
+* U is an m×p orthogonal matrix
+* D is an n×p diagonal matrix
+* V is an p×p orthogonal matrix
+
+
+with  p=min(m,n)
+
+PCs: **Z = XV or Z = UD (U are un-scaled PCs)**
+
+Some facts of PCA:
+
+**k th column of Z, Z(k), is the k th PC.(the k th pattern)**
+
+PC loadings: k th column of V, V(k) is the k th PC loading (feature weights). aka. **the k th column of V encodes the associated k th pattern in feature space.**  
+
+PC loadings: k th column of U, U(k) is the k th PC loading (observation weights). aka. **the k th column of U encodes the associated k th pattern in observation space.**
+
+Diagnal matrix: D diagnals in D: **d(k) gives the strength of the k th pattern.**  
+
+Variance explained by k th PC: d(k)^2 Total variance of the data: `sum(d(k1)^2 + d(k2)^2 + …..d(k)^2+….)`
+
+proportion of variance explained by k th PC: `d(k)^2 / sum(d(k1)^2 + d(k2)^2 + …..d(k)^2+….)`
+
+Take a look my old post https://divingintogeneticsandgenomics.rbind.io/post/pca-in-action/
+and http://genomicsclass.github.io/book/pages/svd.html from Rafa.
+
+```{r}
+## use the scaled data (centered and scaled)
+mat<- pbmc[["RNA"]]@scale.data
+
+## 2000 most variable genes x 2700 cells
+dim(mat)
+
+## for large matrix,use irlba::irlba for approximated calculation.
+## this matrix is scaled and centered.
+sv<- svd(t(mat))
+U<- sv$u
+V<- sv$v
+D<- sv$d
+
+## U are un-scaled PC, Z is scaled PC
+Z<- t(mat)%*%V
+
+## PCs
+Z[1:6, 1:6]
+
+## this is the almost the same as PCs in the seurat reduction slot. Note some signs are opposite
+pbmc@reductions$pca@cell.embeddings[1:6, 1:6]
+
+
+## make the PCA plot using PC1 and PC2
+cell_annotation<- Idents(pbmc) %>%
+  tibble::enframe(name = "cell", value= "celltype")
+
+p2<- Z[, 1:2] %>%
+  as.data.frame() %>%
+  dplyr::rename(PC_1 = V1, PC_2 = V2) %>%
+  tibble::rownames_to_column(var = "cell") %>%
+  left_join(cell_annotation) %>%
+  ggplot(aes(x= PC_1, y = PC_2)) +
+  geom_point(aes(color = celltype), size = 0.5) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3)))
+  
+
+p1/p2
+
+```
+If we flip the PC_1 coordinates, those two plots are the same.
+
+Note that `X = U*D*V`, a matrix X is decomposed into 3 matrices.
+U*D is the pattern matrix (Z matrix), and V is the amplitude matrix.
+
+```{r}
+dim(Z)
+dim(V)
+```
+
+In single-cell RNAseq analysis, the `Z` matrix is used to construct the k-nearest neighbor graph and  clusters are detected using Louvain method in the graph. One can use any other clustering algorithms to cluster the cells (e.g., k-means, hierarchical clustering) in this PC space.
+
+```{r}
+# devtools::install_github("crazyhottommy/scclusteval")
+library(scclusteval)
+kmeans_res<- kmeans(Z, centers = 9)
+kmeans_clusters<- kmeans_res$cluster 
+
+## check how the k-means clusters corresponds to the graph-based clusters
+PairWiseJaccardSetsHeatmap(Idents(pbmc), kmeans_clusters)
+```
+
+We see pretty nice 1 to 1 cluster matches. K-means is fast, but it does require a pre-defined K. I used 9 here because the graph-based method generates 9 clusters.
+
+
+Let's see what are the genes contributing to the first PC.
+From the PCA plot, we see PC1 is seprating the monocytes/DC with the T cells/B cells.
+
+```{r}
+feature_loadings<- V[,1]
+names(feature_loadings)<- rownames(mat)
+
+feature_loadings<- tibble::enframe(feature_loadings, name = "gene", value = "feature_loading")
+feature_loadings %>%
+  arrange(desc(abs(feature_loading))) %>%
+  head()
+
+```
+
+[CST3](https://www.proteinatlas.org/ENSG00000101439-CST3) is on the top, and it is a marker for monocytes and pDCs.  which makes perfect sense!
+others such as [TYROBP](https://www.proteinatlas.org/ENSG00000011600-TYROBP), [LST1](https://www.proteinatlas.org/ENSG00000204482-LST1) etc are all myeloid lineage markers. 
+Those genes are highly expressed in the myeloid cells.
+```{r}
+DimPlot(pbmc, reduction = "pca", label = TRUE) + NoLegend()
+FeaturePlot(pbmc, features = c("CST3", "TYROBP", "LST1", "AIF1"), reduction = "pca")
+
+DimPlot(pbmc, reduction = "umap", label = TRUE) + NoLegend()
+FeaturePlot(pbmc, features = c("CST3", "TYROBP", "LST1", "AIF1"), reduction = "umap")
+```
+
+### find gene modules 
+
+For PC1, let's check the gene loading distribution:
+```{r}
+feature_loadings %>%
+  ggplot(aes(x=feature_loading)) +
+  geom_histogram(col="white", bins = 100) +
+  theme_classic(base_size = 14) +
+  ggtitle("gene loadings for PC1")
+
+## take the genes greater than 3 sd away from mean
+cutoff<- mean(feature_loadings$feature_loading) + 3* sd(feature_loadings$feature_loading)
+
+## 55 genes
+genes_module_PC1<- feature_loadings %>%
+  filter(feature_loading > cutoff) %>%
+  arrange(desc(feature_loading)) %>%
+  pull(gene)
+
+genes_module_PC1
+```
+
+To make sense of the gene list, one can do gene set over-representation test or run GSEA (e.g., `fgsea`) which uses all genes ranked by some metric. This is just a very simple way to find the gene modules.
+
+
+### Correspondence analysis (COA)
+
+Follow https://aedin.github.io/PCAworkshop/articles/c_COA.html by Aedin! 
+
+>Correspondence analysis (COA) is considered a dual-scaling method, because both the rows and columns are scaled prior to singular value decomposition (SVD).
+
+>Correspondence analysis (CA) is a matrix factorization method, and is similar to principal components analysis (PCA). Whereas PCA is designed for application to continuous, approximately normally distributed data, CA is appropriate for non-negative, count-based data that are in the same additive scale.
+
+There are many implementations in R for COA.  [`coral`](https://www.bioconductor.org/packages/devel/bioc/html/corral.html) which uses sparse matrix and `irlba::irlba()` for faster processing is better for scRNAseq data. I will use `ade4` package to demonstrate. 
+
+papers to read:
+
+* [Dimension reduction techniques for the integrative analysis of multi-omics data](https://academic.oup.com/bib/article/17/4/628/2240645?login=true)
+
+* [Impact of Data Preprocessing on Integrative Matrix Factorization of Single Cell Data](https://www.frontiersin.org/articles/10.3389/fonc.2020.00973/full)
+
+* [Ten quick tips for effective dimensionality reduction](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006907)
+
+* [Feature selection and dimension reduction for single-cell RNA-Seq based on a multinomial model](https://link.springer.com/article/10.1186%2Fs13059-019-1861-6)
+
+* [Transformation and Preprocessing of Single-Cell RNA-Seq Data](https://www.biorxiv.org/content/10.1101/2021.06.24.449781v2)
+
+```{r}
+## I also tried the raw count matrix, but it did work well. so I changed to log normalized count
+logNorm_mat<- pbmc@assays$RNA@data[VariableFeatures(pbmc), ]
+coa_ade4<-ade4::dudi.coa(as.matrix(logNorm_mat),scannf = FALSE, n=10)
+```
+
+The resulting row and column scores and coordinates are in the objects `li`, `co`, `l1`, `c1`, where `l` here refers to “lines” or rows, and `c` is columns.
+
+```{r}
+head(coa_ade4$li)  #Row coordinates dims =c(2000,10)
+head(coa_ade4$co) #Col coordinates dims=c(2700,10)
+head(coa_ade4$l1)  #Row scores dims =c(2000 10)
+head(coa_ade4$c1)  #Col scores dims=c(2700,10)
+
+sapply(list(li=coa_ade4$li,  l1=coa_ade4$l1, co=coa_ade4$co, c1=coa_ade4$c1), dim)
+
+```
+
+Visualization
+```{r}
+
+coa_ade4$co[,c(1,2)] %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "cell") %>%
+  left_join(cell_annotation) %>%
+  ggplot(aes(x= Comp1, y = Comp2)) +
+  geom_point(aes(color = celltype), size = 0.5) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3)))
+```
+
+Component 1 seems to separate Platelet with others.
+
+
+```{r}
+coa_ade4$co[,c(2,3)] %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "cell") %>%
+  left_join(cell_annotation) %>%
+  ggplot(aes(x= Comp2, y = Comp3)) +
+  geom_point(aes(color = celltype), size = 0.5) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3)))
+  
+```
+Component 2 seems to separate the  CD14+ and FCGR3A/CD16+ monocytes with others, and component 3 seems to separate the B cells with others.
+
+Why use COA rather than PCA? 
+
+>scRNAseq data are counts (Poisson), so correspondence analysis is more appropriate than PCA. it's exactly the same as SVD on Pearson residuals from a rank-1 Poisson model.
+
+Read more at:  
+
+* [Analytic Pearson residuals for normalization of single-cell RNA-seq UMI data](https://www.biorxiv.org/content/10.1101/2020.12.01.405886v3)
+
+### Non-negative matrix factorization (NMF)
+
+RNAseq counts are non-negative. NMF can be used too! I will use this [`RcppML`](https://cran.r-project.org/web/packages/RcppML/vignettes/RcppML.html) package 
+which supports sparse matrix.
+
+
+```{r}
+## rank 30, RcppML::nmf can take sparse matrix as input
+## the {NMF} R package needs a dense matrix
+## remember to set the seed to make it reproducible 
+model <- RcppML::nmf(logNorm_mat, 30, verbose = F, seed = 1234)
+
+w <- model$w
+d <- model$d
+h <- model$h
+
+## amplitude matrix
+dim(w)
+rownames(w)<- rownames(logNorm_mat)
+colnames(w)<- paste0("component", 1:30)
+
+## pattern matrix
+dim(h)
+rownames(h)<- paste0("component", 1:30)
+colnames(h)<- colnames(logNorm_mat)
+
+```
+Extra papers to read:
+
+* [scPNMF: sparse gene encoding of single cells to facilitate gene selection for targeted gene profiling](https://www.biorxiv.org/content/10.1101/2021.02.09.430550v2) 
+
+The [documentation](https://htmlpreview.github.io/?https://github.com/JSB-UCLA/scPNMF/blob/main/inst/docs/scPNMF.html) looks pretty decent and there are many extra functions in addition to the matrix factorization.
+
+* [Nonnegative matrix factorization integrates single-cell multi-omic datasets with partially overlapping features](https://www.biorxiv.org/content/10.1101/2021.04.09.439160v1.full)
+
+* [CoGAPS: an R/C++ package to identify patterns and biological process activity in transcriptomic data](https://pubmed.ncbi.nlm.nih.gov/20810601/)
+
+* [Single cell profiling reveals novel tumor and myeloid subpopulations in small cell lung cancer](https://www.biorxiv.org/content/10.1101/2020.12.01.406363v3) The authors have beautifully used (regular) NMF to characterize T cells, including some creative application of factor loadings in downstream analyses.
+
+
+Similarly, one can do a k-means clustering using the pattern matrix derived from `NMF`.
+
+```{r}
+kmeans_NMF_res<- kmeans(t(h), centers = 9)
+kmeans_NMF_clusters<- kmeans_NMF_res$cluster 
+
+## check how the k-means clusters corresponds to the graph-based clusters
+PairWiseJaccardSetsHeatmap(Idents(pbmc), kmeans_NMF_clusters)
+```
+
+Naive CD4 and Memory CD4 T cells are mixing (this is assuming the original annotation from Seurat is correct which is not necessary true); CD8T cells split into two clusters. Overall, the agreement is good with the graph-based clustering method.
+
+```{r}
+nmf_df<- t(h) %>% 
+  as.data.frame() %>%
+  tibble::rownames_to_column(var= "cell") %>%
+  left_join(cell_annotation) 
+
+ggplot(nmf_df, aes(x= celltype, y = component1)) +
+  geom_point(aes(color = celltype)) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3))) +
+  xlab("") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+Component 1 is associated with CD14, CD16/FCRG3A monocytes and DCs.
+
+```{r}
+ggplot(nmf_df, aes(x= celltype, y = component2)) +
+  geom_point(aes(color = celltype)) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3))) +
+  xlab("") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+Component 2 is associated with CD4, CD8 T cells
+
+```{r}
+ggplot(nmf_df, aes(x= celltype, y = component9)) +
+  geom_point(aes(color = celltype)) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3))) +
+  xlab("") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+Component 9 is associated with FCRG3A+ monocytes.
+
+```{r}
+w %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column(var="gene") %>%
+  arrange(desc(component9)) %>%
+  pull(gene) %>%
+  head()
+
+```
+FCGR3A gene (it is known to express in NK cells too) is on the top which makes sense.
+
+```{r}
+DimPlot(pbmc, reduction = "umap", label = TRUE) + NoLegend()
+FeaturePlot(pbmc, features = c("COTL1", "IFITM2", "FCGR3A", "PSAP"), reduction = "umap", pt.size = 0.1)
+```
+
+
+### Independent component analysis (ICA)
+
+>The data matrix X is considered to be a linear combination of non-Gaussian (independent) components i.e. X = SA where columns of S contain the independent components and A is a linear mixing matrix. In short ICA attempts to ‘un-mix’ the data by estimating an un-mixing matrix W where XW = S.
+
+
+```{r}
+set.seed(123)
+library(fastICA)
+## use the log normalized counts as input
+logNorm_mat<- pbmc@assays$RNA@data[VariableFeatures(pbmc), ]
+ica_res<- fastICA(t(as.matrix(logNorm_mat)), n.comp = 30, alg.typ = "deflation")
+
+
+## the pattern matrix
+dim(ica_res$S)
+
+ica_df<- ica_res$S %>% 
+  as.data.frame() %>%
+  tibble::rownames_to_column(var= "cell") %>%
+  left_join(cell_annotation) 
+  
+## I tricked and plot many of them, and found component 10 is associated with B cells
+ggplot(ica_df, aes(x= celltype, y = V10)) +
+  geom_point(aes(color = celltype)) +
+  theme_classic(base_size = 14) +
+  guides(color = guide_legend(override.aes = list(size=3))) +
+  xlab("") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+## the amplitude matrix or weigths matrix
+dim(ica_res$A)
+ica_res$A[1:6, 1:6]
+## let's extract the gene weights for component 12
+tibble(gene = rownames(logNorm_mat), weights = ica_res$A[10,]) %>%
+  arrange(desc(weights))
+```
+
+Ah! what do you see the genes with large values on the top? B-cell markers: CD79A/B, MS4A1, and Class II genes. Makes sense!
+
+```{r}
+# rows are the components, columns are the 2000 genes
+Heatmap(ica_res$A, name = "clustering for the amplitude matrix")
+```
+
+hierarchical clustering(default in Complexheatmap) can find some gene modules too.
+
+>Briefly, we observe in this example that PCA finds sources of separation in the data, whereas both ICA and NMF find independent sources of variation. ICA can find both over- and underexpression of genes in a single CBP, whereas NMF can find only overexpressed genes in a single CBP. As a result, ICA may better model both repression and activation than NMF, but as a side effect may have greater mixture of CBPs than NMF.
+
+### co-expression
+
+```{r message=FALSE}
+Heatmap(cor(t(as.matrix(logNorm_mat)), method = "spearman"), 
+        show_column_names = FALSE, 
+        show_row_names = FALSE,
+        name = "spearman correlation")
+```
+
+One can clearly see some genes (red blocks) are co-expressed. Note that single cell matrix is sparse, highly expressed genes are more likely to be highly correlated (Thanks [Stephanie Hicks](https://twitter.com/stephaniehicks) for pointing it to me!). use http://bioconductor.org/packages/release/bioc/html/spqn.html to fix this problem.
+
+### Take home messages
+
+* One can use different matrix factorization techniques for a single cell count matrix and get the pattern matrix(to cluster the cells) and the amplitude matrix(to find gene modules). Different techniques can give you different results and need to be interpreted biologically.
+
+* Use `scPNMF` to get the gene modules if you go with `NMF`.
+
+There is another twitter thread you may want to read:
+https://twitter.com/David_McGaughey/status/1431612645048832004

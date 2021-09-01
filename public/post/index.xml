@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>Matrix Factorization for single-cell RNAseq data</title>
+      <link>/post/matrix-factorization-for-single-cell-rnaseq-data/</link>
+      <pubDate>Thu, 26 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/matrix-factorization-for-single-cell-rnaseq-data/</guid>
+      <description>I am interested in learning more on matrix factorization and its application in scRNAseq data. I want to shout out to this paper: Enter the Matrix: Factorization Uncovers Knowledge from Omics by Elana J. Fertig group.
+A matrix is decomposed to two matrices: the amplitude matrix and the pattern matrix. You can then do all sorts of things with the decomposed matrices. Single cell matrix is no special, one can use the matrix factorization techniques to derive interesting biological insights.</description>
+    </item>
+    
+    <item>
       <title>How to test if two distributions are different </title>
       <link>/post/how-to-test-if-two-distributions-are-different/</link>
       <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
