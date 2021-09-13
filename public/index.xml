@@ -11,6 +11,16 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Reproducible research in genomic data science</title>
+      <link>/talk/2021-reproducible-rsg/</link>
+      <pubDate>Sun, 12 Sep 2021 06:00:00 -0400</pubDate>
+      
+      <guid>/talk/2021-reproducible-rsg/</guid>
+      <description>&lt;p&gt;I gave a keynote talk on reproducible research in genomic data science at the ISCB SC RSG Turkey Student Symposium 2021 &lt;a href=&#34;https://symposium.rsgturkey.com/&#34; target=&#34;_blank&#34;&gt;https://symposium.rsgturkey.com/&lt;/a&gt;. I really enjoyed the speaking. Thank you for the inivtation! The slides in PDF can be found in the link above. Enjoy!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Matrix Factorization for single-cell RNAseq data</title>
       <link>/post/matrix-factorization-for-single-cell-rnaseq-data/</link>
       <pubDate>Thu, 26 Aug 2021 00:00:00 +0000</pubDate>
@@ -1295,16 +1305,6 @@ draw( hp2, annotation_legend_list = lgd_list2)&lt;/code&gt;&lt;/pre&gt;
       
       <guid>/publication/2020-05-29-scclusteval/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>MAESTRO: Model-based Analyses of Single-cell Transcriptome and Regulome</title>
-      <link>/talk/2020-maestro-broad-talk/</link>
-      <pubDate>Mon, 02 Nov 2020 14:30:00 -0500</pubDate>
-      
-      <guid>/talk/2020-maestro-broad-talk/</guid>
-      <description>&lt;p&gt;I gave a talk on our single-cell RNA-seq and single-cell ATAC-seq analysis tool &lt;a href=&#34;https://github.com/liulab-dfci/MAESTRO&#34; target=&#34;_blank&#34;&gt;MAESTRO&lt;/a&gt; in the &lt;a href=&#34;https://www.broadinstitute.org/epigenomics&#34; target=&#34;_blank&#34;&gt;Broad Institute CC&amp;amp;E Seminar Series&lt;/a&gt;.&lt;/p&gt;
 </description>
     </item>
     
