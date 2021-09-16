@@ -41,3 +41,4 @@ caption = "My caption :smile:"
 
 I gave a keynote talk on reproducible research in genomic data science at the ISCB SC RSG Turkey Student Symposium 2021 https://symposium.rsgturkey.com/. I really enjoyed the speaking. Thank you for the inivtation! The slides and video can be found in the links above. Enjoy!
 
+![](/img/RSG_talk.jpeg)
