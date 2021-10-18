@@ -11,6 +11,69 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Be careful when left_join tables with duplicated rows</title>
+      <link>/post/be-careful-when-left-join-tables-with-duplicated-rows/</link>
+      <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/be-careful-when-left-join-tables-with-duplicated-rows/</guid>
+      <description>&lt;p&gt;This is going to be a really short blog post. I recently found that if I join two tables with one of the tables having duplicated rows, the final joined table also contains the duplicated rows. It could be the expected behavior for others but I want to make a note here for myself.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+
+df1&amp;lt;- tibble(key = c(&amp;quot;A&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;C&amp;quot;, &amp;quot;D&amp;quot;, &amp;quot;E&amp;quot;),
+             value = 1:5)
+
+df1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 2
+##   key   value
+##   &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt;
+## 1 A         1
+## 2 B         2
+## 3 C         3
+## 4 D         4
+## 5 E         5&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;dataframe 2 has two identical rows for &lt;code&gt;B&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df2&amp;lt;- tibble(key = c(&amp;quot;B&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;D&amp;quot;, &amp;quot;C&amp;quot;, &amp;quot;A&amp;quot;, &amp;quot;E&amp;quot;),
+             value2 = c(5, 5:9))
+
+df2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 2
+##   key   value2
+##   &amp;lt;chr&amp;gt;  &amp;lt;dbl&amp;gt;
+## 1 B          5
+## 2 B          5
+## 3 D          6
+## 4 C          7
+## 5 A          8
+## 6 E          9&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s see how the &lt;code&gt;left_join&lt;/code&gt; behaviors:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;left_join(df1, df2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Joining, by = &amp;quot;key&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
+##   key   value value2
+##   &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;dbl&amp;gt;
+## 1 A         1      8
+## 2 B         2      5
+## 3 B         2      5
+## 4 C         3      7
+## 5 D         4      6
+## 6 E         5      9&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You see there are two identical rows for &lt;code&gt;B&lt;/code&gt;!&lt;/p&gt;
+&lt;p&gt;If that’s not what you want, you can either filter &lt;code&gt;df2&lt;/code&gt; first or filter the the joined table.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;left_join(df1, df2) %&amp;gt;%
+  distinct(key, value, value2, .keep_all =TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Joining, by = &amp;quot;key&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 3
+##   key   value value2
+##   &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;dbl&amp;gt;
+## 1 A         1      8
+## 2 B         2      5
+## 3 C         3      7
+## 4 D         4      6
+## 5 E         5      9&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Reproducible research in genomic data science</title>
       <link>/talk/2021-reproducible-rsg/</link>
       <pubDate>Sun, 12 Sep 2021 06:00:00 -0400</pubDate>
@@ -1297,16 +1360,6 @@ draw( hp2, annotation_legend_list = lgd_list2)&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img src=&#34;/img/PACT_1.png&#34; alt=&#34;&#34; /&gt;
 &lt;img src=&#34;/img/PACT_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Evaluating single-cell cluster stability using the Jaccard similarity index</title>
-      <link>/publication/2020-05-29-scclusteval/</link>
-      <pubDate>Mon, 09 Nov 2020 00:00:00 -0500</pubDate>
-      
-      <guid>/publication/2020-05-29-scclusteval/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     

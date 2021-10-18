@@ -96,7 +96,7 @@
   <meta property="og:description" content="Senior Scientist">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2021-08-26T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2021-10-17T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,16 @@
   
   
   <div>
+    <h2><a href="/post/be-careful-when-left-join-tables-with-duplicated-rows/">Be careful when left_join tables with duplicated rows</a></h2>
+    <div class="article-style">
+      
+      This is going to be a really short blog post. I recently found that if I join two tables with one of the tables having duplicated rows, the final joined table also contains the duplicated rows. It could be the expected behavior for others but I want to make a note here for myself.
+library(tidyverse) df1&lt;- tibble(key = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;), value = 1:5) df1 ## # A tibble: 5 x 2 ## key value ## &lt;chr&gt; &lt;int&gt; ## 1 A 1 ## 2 B 2 ## 3 C 3 ## 4 D 4 ## 5 E 5 dataframe 2 has two identical rows for B.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/matrix-factorization-for-single-cell-rnaseq-data/">Matrix Factorization for single-cell RNAseq data</a></h2>
     <div class="article-style">
       
@@ -374,16 +384,6 @@ $ apt update &amp;&amp; apt install -y &ndash;no-install-recommends libjpeg62-tu
       Seurat is great for scRNAseq analysis and it provides many easy-to-use ggplot2 wrappers for visualization. However, this brings the cost of flexibility. For example, In FeaturePlot, one can specify multiple genes and also split.by to further split to multiple the conditions in the meta.data. If split.by is not NULL, the ncol is ignored so you can not arrange the grid.
 This is best to understand with an example.
 library(dplyr) library(Seurat) library(patchwork) library(ggplot2) # Load the PBMC dataset pbmc.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
-    <div class="article-style">
-      
-      In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
-My next thought is: maybe the STAR aligner is doing something weird that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.
       
     </div>
   </div>

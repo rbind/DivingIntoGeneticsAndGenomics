@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>Be careful when left_join tables with duplicated rows</title>
+      <link>/post/be-careful-when-left-join-tables-with-duplicated-rows/</link>
+      <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/be-careful-when-left-join-tables-with-duplicated-rows/</guid>
+      <description>This is going to be a really short blog post. I recently found that if I join two tables with one of the tables having duplicated rows, the final joined table also contains the duplicated rows. It could be the expected behavior for others but I want to make a note here for myself.
+library(tidyverse) df1&amp;lt;- tibble(key = c(&amp;quot;A&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;C&amp;quot;, &amp;quot;D&amp;quot;, &amp;quot;E&amp;quot;), value = 1:5) df1 ## # A tibble: 5 x 2 ## key value ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; ## 1 A 1 ## 2 B 2 ## 3 C 3 ## 4 D 4 ## 5 E 5 dataframe 2 has two identical rows for B.</description>
+    </item>
+    
+    <item>
       <title>Matrix Factorization for single-cell RNAseq data</title>
       <link>/post/matrix-factorization-for-single-cell-rnaseq-data/</link>
       <pubDate>Thu, 26 Aug 2021 00:00:00 +0000</pubDate>

@@ -1,0 +1,56 @@
+---
+title: Be careful when left_join tables with duplicated rows
+author: Ming Tang
+date: '2021-10-17'
+slug: be-careful-when-left-join-tables-with-duplicated-rows
+categories:
+  - bioinformatics
+  - R
+tags:
+  - R
+  - data
+header:
+  caption: ''
+  image: ''
+  preview: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+This is going to be a really short blog post. I recently found that if I join two tables with one of the tables having duplicated rows, the final joined table also contains the duplicated rows. It could be the expected behavior for others but I want to make a note here for myself.
+
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+
+df1<- tibble(key = c("A", "B", "C", "D", "E"),
+             value = 1:5)
+
+df1
+```
+
+
+dataframe 2 has two identical rows for `B`.
+
+```{r}
+df2<- tibble(key = c("B", "B", "D", "C", "A", "E"),
+             value2 = c(5, 5:9))
+
+df2
+```
+
+
+Let's see how the `left_join` behaviors:
+
+```{r}
+left_join(df1, df2)
+```
+
+You see there are two identical rows for `B`!
+
+If that's not what you want, you can either filter `df2` first or filter the the joined table.
+
+```{r}
+left_join(df1, df2) %>%
+  distinct(key, value, value2, .keep_all =TRUE)
+```
+
