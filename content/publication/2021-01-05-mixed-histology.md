@@ -17,8 +17,8 @@ authors = ["**Ming Tang** *", "Hussein A Abbas *", "...", "P.Andrew Futreal", "N
 publication_types = ["2"]
 
 # Publication name and optional abbreviated version.
-publication = "In *bioRxiv*, BioRxiv."
-publication_short = "In *BioRxiv*"
+publication = "Aceepted in *Nature Communications*, In *bioRxiv*, BioRxiv."
+publication_short = "Accepted in *Nature Communications*, In *BioRxiv*"
 
 # Abstract and optional shortened version.
 abstract = "Histology plays an essential role in therapeutic decision-making for lung cancer patients. However, the molecular determinants of lung cancer histology are largely unknown. We conducted whole-exome sequencing(WES) and microarray profiling on 19 micro-dissected tumor regions of different histologic subtypes from 9 patients with lung cancers of mixed histology. A median of 68.9% of point mutations and 83% of copy number aberrations were shared between different histologic components within the same tumors. Furthermore, different histologic components within the tumors demonstrated similar subclonal architecture. On the other hand, transcriptomic profiling revealed shared pathways between the same histologic subtypes from different patients, which was supported by the analyses of the transcriptomic data from 141 cell lines and 343 lung cancers of different histologic subtypes. These data suggest that histology of lung cancers may be determined at the transcriptomic level rather than the genomic level."
