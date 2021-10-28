@@ -26,7 +26,7 @@ abstract = "Malignant peripheral nerve sheath tumors (MPNSTs) are soft tissue sa
 image_preview = ""
 
 # Is this a selected publication? (true/false)
-selected = true
+selected = false
 
 # Projects (optional).
 #   Associate this publication with one or more of your projects.
