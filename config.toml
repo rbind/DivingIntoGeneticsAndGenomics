@@ -62,7 +62,7 @@ enableGitInfo = false
   organizations = [ { name = "Immunitas Therapeutics", url = "https://www.immunitastx.com/" } ]
 
   gravatar = false  # Get your avatar from Gravatar.com? (true/false)
-  avatar = "profile.jpg"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
+  avatar = "profile.png"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
   email = "tangming2005@gmail.com"
   address = "830 Winter St., 2nd floor Waltham, MA 02451"
   twitter = "tangming2005"
