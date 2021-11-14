@@ -34,7 +34,7 @@ weight = 5
 
 # About me
 
-I am now the Director of Computational Biology at [Immunitas Therapeutics](https://www.immunitastx.com/). At Immunitas, we employ a single cell sequencing platform to dissect the biology of immune cells in human tumors. Our focus on human samples allows us to start with and stay closer to the most relevant and translatable biology for patients and accelerates the pace of our research. My new north star is "bringing drugs to patients"
+I am now the Director of Computational Biology at [Immunitas Therapeutics](https://www.immunitastx.com/). At Immunitas, we employ a single cell sequencing platform to dissect the biology of immune cells in human tumors. Our focus on human samples allows us to start with and stay closer to the most relevant and translatable biology for patients and accelerates the pace of our research. My new north star is "bringing drugs to patients".
 
 I am a computational biologist working on genomics, epigenomics and transcriptomics. I use R primary for data wrangling and visualization in the [tidyverse](https://www.tidyverse.org/) ecosystem; I use python for writing [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflows and reformatting data; I am a unix geek learning shell tricks almost every month; I care about reproducible research and open science.
 
@@ -46,6 +46,6 @@ Roel moved to Jackson lab for Genomics Medicine in October 2016. To apply my ski
 
 I joined [Harvard Faculty of Arts and Sciences informatics](https://informatics.fas.harvard.edu) team on October 1, 2018 as a bioinformatics scientist working closely with [Dr.Dulac lab](https://www.dulaclab.com) to catalog and understand the diversity and function of cell types in the mouse brain using single-cell RNA-seq and other cutting edge techniques.
 
-I joined [Dana-Farber Cancer Institute](https://ds.dfci.harvard.edu/) as a senior scientist in March 2020. My current focus was using genomics, (single-cell) transcriptomics and (single-cell) epigenomics to study Cancer Immunology and leading the bioinformatics effort for the [Cancer Immunologic Data Commons (CIDC)](https://cimac-network.org/cidc/) project.
+I joined [Dana-Farber Cancer Institute](https://ds.dfci.harvard.edu/) as a senior scientist in March 2020. My focus was using genomics, (single-cell) transcriptomics and (single-cell) epigenomics to study Cancer Immunology and leading the bioinformatics effort for the [Cancer Immunologic Data Commons (CIDC)](https://cimac-network.org/cidc/) project.
 
 
