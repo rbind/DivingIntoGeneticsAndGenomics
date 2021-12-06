@@ -1,21 +1,68 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Genomics on DNA confesses and Data speak</title>
+    <title>Genomics on DNA confesses Data speak</title>
     <link>/tags/genomics/</link>
-    <description>Recent content in Genomics on DNA confesses and Data speak</description>
+    <description>Recent content in Genomics on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Wed, 27 Apr 2016 00:00:00 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 29 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/genomics/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Calculate scATACseq TSS enrichment score</title>
+      <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
+      <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/calculate-scatacseq-tss-enrichment-score/</guid>
+      <description>TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
+From the Encode page:
+ Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).</description>
+    </item>
+    
+    <item>
+      <title>plot 10x scATAC coverage by cluster/group</title>
+      <link>/post/plot-10x-scatac-coverage-by-cluster-group/</link>
+      <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
+      <description>This post was inspired by Andrew Hill’s recent blog post.
+Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
+&amp;mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.</description>
+    </item>
+    
+    <item>
+      <title>understand 10x scRNAseq and scATAC fastqs</title>
+      <link>/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
+      <pubDate>Wed, 06 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/understand-10x-scrnaseq-and-scatac-fastqs/</guid>
+      <description>single cell RNAseq Please read the following posts by Dave Tang. When I google, I always find his posts on top of the pages. Thanks for sharing your knowledge.
+https://davetang.org/muse/2018/06/06/10x-single-cell-bam-files/ https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/
+From the 10x manual:
+ The final Single Cell 3’ Libraries contain the P5 and P7 primers used in Illumina bridge amplification PCR. The 10x Barcode and Read 1 (primer site for sequencing read 1) is added to the molecules during the GEMRT incubation.</description>
+    </item>
+    
+    <item>
+      <title>Three gotchas when using R for Genomic data analysis</title>
+      <link>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</link>
+      <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</guid>
+      <description>During my daily work with R for genomic data analysis, I encountered several instances that R gives me some (bad) surprises.
+1. The devil 1 and 0 coordinate system read detail here https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey
+some files such as bed file is 0 based. Two genomic regions:
+chr1 0 1000 chr1 1001 2000  when you import that bed file into R using rtracklayer::import(), it will become
+chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 1 based unlike python).</description>
+    </item>
+    
+    <item>
       <title>Snakemake Pipelines</title>
       <link>/project/snakemake-pipelines/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 -0500</pubDate>
+      <pubDate>Wed, 27 Apr 2016 00:00:00 -0400</pubDate>
       
       <guid>/project/snakemake-pipelines/</guid>
       <description>Snakemake is a python extension for writing workflows. Genomics data processing usually requires bundling many different tools to reach a stage that is ready for downstream analysis.

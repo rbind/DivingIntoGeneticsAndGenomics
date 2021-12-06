@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on DNA confesses Data speak</title>
+    <link>/tags/docker/</link>
+    <description>Recent content in Docker on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Sun, 09 Jun 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Run Rstudio server with singularity on HPC</title>
+      <link>/post/run-rstudio-server-with-singularity-on-hpc/</link>
+      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/run-rstudio-server-with-singularity-on-hpc/</guid>
+      <description>Background Please read the following before go ahead:
+ what is docker?
+ what is Rocker?
+ what is singularity?
+  from Harvard Research computing website: Odyssey has singularity installed.
+ Why Singularity? There are some important differences between Docker and Singularity:
+  Docker and Singularity have their own container formats. Docker containers may be imported to run via Singularity. Docker containers need root privileges for full functionality which is not suitable for a shared HPC environment.</description>
+    </item>
+    
+  </channel>
+</rss>

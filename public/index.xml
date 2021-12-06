@@ -11,6 +11,90 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>The histologic phenotype of lung cancers may be driven by transcriptomic features rather than genomic characteristics</title>
+      <link>/publication/2021-01-05-mixed-histology/</link>
+      <pubDate>Mon, 06 Dec 2021 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2021-01-05-mixed-histology/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>test</title>
+      <link>/post/test/</link>
+      <pubDate>Mon, 06 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/test/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Obtain metadata for public datasets in GEO</title>
+      <link>/post/obtain-metadata-for-public-datasets-in-geo/</link>
+      <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/obtain-metadata-for-public-datasets-in-geo/</guid>
+      <description>&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;There are so many public datasets there waiting for us to mine! It is the blessing and cursing as a computational biologist!&lt;/p&gt;
+&lt;p&gt;Metadata, or the data describing (e.g., responder or non-responder for the treatment) the data are critical in interpreting the analysis. Without metadata, your data are useless.&lt;/p&gt;
+&lt;p&gt;People usually go to &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/geo/&#34;&gt;&lt;code&gt;GEO&lt;/code&gt;&lt;/a&gt; or &lt;a href=&#34;https://www.ebi.ac.uk/ena/browser/&#34;&gt;&lt;code&gt;ENA&lt;/code&gt;&lt;/a&gt; to download public data. I asked this question on twitter, and I will show you how to get the metadata as suggested by all the awesome tweeps. Thanks!&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;
+&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;
+how to download GEO metadata again? I remember there is a way to click and download a table with GSM ids and other associated metadata.
+&lt;/p&gt;
+— Ming (Tommy) Tang (&lt;span class=&#34;citation&#34;&gt;@tangming2005&lt;/span&gt;) &lt;a href=&#34;https://twitter.com/tangming2005/status/1465420814258479104?ref_src=twsrc%5Etfw&#34;&gt;November 29, 2021&lt;/a&gt;
+&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+&lt;div id=&#34;use-sra-run-selector&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Use SRA run selector&lt;/h3&gt;
+&lt;p&gt;go to &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/Traces/study/&#34; class=&#34;uri&#34;&gt;https://www.ncbi.nlm.nih.gov/Traces/study/&lt;/a&gt; and type in the accession number&lt;/p&gt;
+&lt;p&gt;Click &lt;code&gt;Metadata&lt;/code&gt; below the &lt;code&gt;Download&lt;/code&gt; column, a &lt;code&gt;SraRuntable.txt&lt;/code&gt; file will be downloaded.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;use-geoquery-or-geometadatadb&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Use GEOquery or GEOmetadatadb&lt;/h3&gt;
+&lt;p&gt;If you want to stay within &lt;code&gt;R&lt;/code&gt;, take a look at &lt;a href=&#34;https://www.bioconductor.org/packages/release/bioc/html/GEOmetadb.html&#34;&gt;GEOmetadatadb&lt;/a&gt; and
+&lt;a href=&#34;https://www.bioconductor.org/packages/release/bioc/html/GEOquery.html&#34;&gt;GEOquery&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;nextflow&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Nextflow&lt;/h3&gt;
+&lt;p&gt;A nextflow pipeline: &lt;a href=&#34;https://nf-co.re/fetchngs#sra--ena--ddbj--geo-ids&#34;&gt;nf-core/fetchngs&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;command-line-tool&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Command line tool&lt;/h3&gt;
+&lt;p&gt;check &lt;a href=&#34;https://github.com/pachterlab/ffq#fetch-information-of-one-or-more-geo-study-and-all-of-their-runs&#34;&gt;ffq&lt;/a&gt; and &lt;a href=&#34;https://github.com/saketkc/pysradb&#34;&gt;pysradb&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;pip install ffq
+ffq -t GSE GSE176021
+
+
+pip install pysradb
+pysradb metadata SRP000002  --detailed&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;other-resources&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Other resources&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://sra-explorer.info/&#34;&gt;SraExplorer&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://rna.recount.bio/&#34;&gt;Recount3&lt;/a&gt; summaries and queries for large-scale RNA-seq expression and splicing. paper recently published &lt;a href=&#34;https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02533-6&#34; class=&#34;uri&#34;&gt;https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02533-6&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;dee2.io&#34;&gt;Digital Expression Explorer 2&lt;/a&gt; from Mark Ziemann.&lt;/li&gt;
+&lt;li&gt;Other databases I curated &lt;a href=&#34;https://github.com/crazyhottommy/RNA-seq-analysis#databases&#34; class=&#34;uri&#34;&gt;https://github.com/crazyhottommy/RNA-seq-analysis#databases&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Fast alignment and preprocessing of chromatin profiles with Chromap</title>
+      <link>/publication/2021-11-12-chromap/</link>
+      <pubDate>Fri, 12 Nov 2021 00:00:00 -0500</pubDate>
+      
+      <guid>/publication/2021-11-12-chromap/</guid>
+      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Be careful when left_join tables with duplicated rows</title>
       <link>/post/be-careful-when-left-join-tables-with-duplicated-rows/</link>
       <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>
@@ -943,398 +1027,6 @@ First I would ask why is testing for a difference in mean and a difference in SD
       
       <guid>/talk/2021-stat115-scrnaseq-lecture/</guid>
       <description>&lt;p&gt;I gave a guest lecture on single cell ATACseq for &lt;a href=&#34;https://canvas.harvard.edu/courses/49497/assignments/syllabus&#34; target=&#34;_blank&#34;&gt;STAT115&lt;/a&gt; to the Harvard students. The videos can be found at &lt;a href=&#34;https://liulab-dfci.github.io/bioinfo-combio/scatac.html&#34; target=&#34;_blank&#34;&gt;https://liulab-dfci.github.io/bioinfo-combio/scatac.html&lt;/a&gt;. slides can be found in the PDF as well. Shirley has put all her course videos in the above bookdown. Great resource for Bioinformatics!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>CHIPS: A Snakemake pipeline for quality control and reproducible processing of chromatin profiling data</title>
-      <link>/publication/2021-03-11-chips-snakemake/</link>
-      <pubDate>Wed, 10 Mar 2021 00:00:00 -0500</pubDate>
-      
-      <guid>/publication/2021-03-11-chips-snakemake/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>clustered dotplot for single-cell RNAseq</title>
-      <link>/post/clustered-dotplot-for-single-cell-rnaseq/</link>
-      <pubDate>Wed, 10 Mar 2021 00:00:00 +0000</pubDate>
-      
-      <guid>/post/clustered-dotplot-for-single-cell-rnaseq/</guid>
-      <description>&lt;p&gt;Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;Seurat&lt;/code&gt; has a nice function for that. However, it can not do the clustering for the rows and columns. David McGaughey has written a &lt;a href=&#34;http://davemcg.github.io/post/lets-plot-scrna-dotplots/&#34;&gt;blog post&lt;/a&gt; using ggplot2 and ggtree from Guangchuang Yu. It looks great!&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/clustered_dotplot.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In this post, I am trying to reproduce the same effect using &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/&#34;&gt;ComplexHeatmap&lt;/a&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Seurat)
-library(tidyverse)
-library(presto)
-library(ComplexHeatmap)
-library(circlize)
-# Load the PBMC dataset
-pbmc.data &amp;lt;- Read10X(data.dir = &amp;quot;~/Downloads/filtered_gene_bc_matrices/hg19/&amp;quot;)
-pbmc &amp;lt;- CreateSeuratObject(counts = pbmc.data, project = &amp;quot;pbmc3k&amp;quot;, min.cells = 3, min.features = 200)&lt;/code&gt;&lt;/pre&gt;
-&lt;div id=&#34;standard-processing&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;standard processing&lt;/h3&gt;
-&lt;p&gt;following &lt;a href=&#34;https://satijalab.org/seurat/articles/pbmc3k_tutorial.html&#34; class=&#34;uri&#34;&gt;https://satijalab.org/seurat/articles/pbmc3k_tutorial.html&lt;/a&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pbmc[[&amp;quot;percent.mt&amp;quot;]] &amp;lt;- PercentageFeatureSet(pbmc, pattern = &amp;quot;^MT-&amp;quot;)
-
-## ScaleData uses top variable genes only
-pbmc&amp;lt;- pbmc %&amp;gt;% 
-  NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;%
-  FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;%
-  ScaleData() %&amp;gt;%
-  RunPCA() %&amp;gt;%
-  FindNeighbors(dims = 1:10) %&amp;gt;%
-  FindClusters(resolution = 0.5) %&amp;gt;%
-  RunUMAP(dims = 1:10)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
-## 
-## Number of nodes: 2700
-## Number of edges: 97958
-## 
-## Running Louvain algorithm...
-## Maximum modularity in 10 random starts: 0.8717
-## Number of communities: 9
-## Elapsed time: 0 seconds&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;DimPlot(pbmc, reduction = &amp;quot;umap&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;new.cluster.ids &amp;lt;- c(&amp;quot;Naive CD4 T&amp;quot;, &amp;quot;CD14+ Mono&amp;quot;, &amp;quot;Memory CD4 T&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;CD8 T&amp;quot;, &amp;quot;FCGR3A+ Mono&amp;quot;, 
-    &amp;quot;NK&amp;quot;, &amp;quot;DC&amp;quot;, &amp;quot;Platelet&amp;quot;)
-names(new.cluster.ids) &amp;lt;- levels(pbmc)
-pbmc &amp;lt;- RenameIdents(pbmc, new.cluster.ids)
-DimPlot(pbmc, reduction = &amp;quot;umap&amp;quot;, label = TRUE, pt.size = 0.5) + NoLegend()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;find-marker-genes&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;find marker genes&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;markers&amp;lt;- presto::wilcoxauc(pbmc, &amp;#39;seurat_clusters&amp;#39;, assay = &amp;#39;data&amp;#39;)
-markers&amp;lt;- top_markers(markers, n = 10, auc_min = 0.5, pct_in_min = 20, pct_out_max = 20)
-
-markers&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 10 x 10
-##     rank `0`      `1`    `2`    `3`      `4`   `5`         `6`   `7`     `8`    
-##    &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;  
-##  1     1 CCR7     S100A8 AQP3   CD79A    GZMA  FCGR3A      GZMB  FCER1A  PPBP   
-##  2     2 PIK3IP1  FCN1   TRAT1  CD79B    CST7  IFITM3      PRF1  CLEC10A NRGN   
-##  3     3 PRKCQ-A… LGALS2 SPOCK2 MS4A1    GZMK  RP11-290F2… GNLY  HLA-DQ… PF4    
-##  4     4 LEF1     CFD    CD27   HLA-DQA1 LYAR  CFD         FGFB… CPVL    SDPR   
-##  5     5 TCF7     GRN    TRADD  HLA-DQB1 GZMM  MS4A7       CST7  HLA-DMB GNG11  
-##  6     6 CD27     MS4A6A CD3G   TCL1A    CD8A  CD68        GZMA  CD33    SPARC  
-##  7     7 MAL      AP1S2  RGCC   LINC009… KLRG1 SPI1        FCGR… CTSH    RGS18  
-##  8     8 RGCC     CD14   CD40LG HLA-DMA  PRF1  RHOC        SPON2 RNASE6  HIST1H…
-##  9     9 CD3G     CD68   LAT    VPREB3   GZMH  HCK         CCL4  KLF4    TPM4   
-## 10    10 LDLRAP1  LGALS3 FLT3LG HLA-DQA2 HOPX  IFI30       APMAP RNF130  GP9&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;all_markers&amp;lt;- markers %&amp;gt;%
-  select(-rank) %&amp;gt;% 
-  unclass() %&amp;gt;% 
-  stack() %&amp;gt;%
-  pull(values) %&amp;gt;%
-  unique() %&amp;gt;%
-   .[!is.na(.)]&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Seurat’s dot plot&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p&amp;lt;- DotPlot(object = pbmc, features = all_markers)
-p&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;lets-reproduce-it-using-complexheatmap&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Let’s reproduce it using Complexheatmap&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df&amp;lt;- p$data
-head(df)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##            avg.exp  pct.exp features.plot          id avg.exp.scaled
-## CCR7      2.993317 43.41534          CCR7 Naive CD4 T       2.337223
-## PIK3IP1   2.674179 42.11288       PIK3IP1 Naive CD4 T       1.844182
-## PRKCQ-AS1 2.167078 33.28509     PRKCQ-AS1 Naive CD4 T       2.123716
-## LEF1      2.003597 31.83792          LEF1 Naive CD4 T       2.027023
-## TCF7      2.253631 37.48191          TCF7 Naive CD4 T       1.773285
-## CD27      2.326533 39.07381          CD27 Naive CD4 T       1.210923&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;### the matrix for the scaled expression 
-exp_mat&amp;lt;-df %&amp;gt;% 
-  select(-pct.exp, -avg.exp) %&amp;gt;%  
-  pivot_wider(names_from = id, values_from = avg.exp.scaled) %&amp;gt;% 
-  as.data.frame() 
-    
-row.names(exp_mat) &amp;lt;- exp_mat$features.plot  
-exp_mat &amp;lt;- exp_mat[,-1] %&amp;gt;% as.matrix()
-
-head(exp_mat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##           Naive CD4 T          B Memory CD4 T FCGR3A+ Mono         NK
-## CCR7         2.337223  0.4065916    0.6473101   -0.5357480 -0.6116367
-## PIK3IP1      1.844182 -0.2277953    1.4179422   -0.6531667 -0.1884663
-## PRKCQ-AS1    2.123716 -0.6830185    1.0323842   -0.5907663  0.0349381
-## LEF1         2.027023 -0.5746819    1.4350437   -0.5707971 -0.4876044
-## TCF7         1.773285 -0.4479782    1.5832831   -0.5337908 -0.6645233
-## CD27         1.210923 -0.2029260    1.3852365   -0.7374133 -0.6415774
-##                CD8 T CD14+ Mono         DC   Platelet
-## CCR7      -0.4272161 -0.5827381 -0.5508353 -0.6829502
-## PIK3IP1    0.2223521 -0.8180393 -0.9991901 -0.5978184
-## PRKCQ-AS1  0.2375921 -0.6732668 -0.7407892 -0.7407892
-## LEF1      -0.3271094 -0.4091405 -0.7288104 -0.3639229
-## TCF7       0.2798941 -0.5843243 -0.6207981 -0.7850477
-## CD27       1.3328521 -0.7261509 -0.7919650 -0.8289795&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## the matrix for the percentage of cells express a gene
-
-percent_mat&amp;lt;-df %&amp;gt;% 
-  select(-avg.exp, -avg.exp.scaled) %&amp;gt;%  
-  pivot_wider(names_from = id, values_from = pct.exp) %&amp;gt;% 
-  as.data.frame() 
-    
-row.names(percent_mat) &amp;lt;- percent_mat$features.plot  
-percent_mat &amp;lt;- percent_mat[,-1] %&amp;gt;% as.matrix()
-
-head(percent_mat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##           Naive CD4 T         B Memory CD4 T FCGR3A+ Mono        NK     CD8 T
-## CCR7         43.41534 15.759312     26.37131     5.095541  2.702703  4.747774
-## PIK3IP1      42.11288 13.180516     40.92827    12.738854 13.513514 18.694362
-## PRKCQ-AS1    33.28509  1.146132     29.53586     4.458599 11.486486 13.353116
-## LEF1         31.83792  2.578797     32.27848     3.821656  4.054054  5.341246
-## TCF7         37.48191  9.169054     36.91983    17.197452  8.108108 18.991098
-## CD27         39.07381 12.034384     45.14768     4.458599  4.729730 25.816024
-##           CD14+ Mono        DC Platelet
-## CCR7        2.434077  8.333333 0.000000
-## PIK3IP1     6.693712  2.777778 6.666667
-## PRKCQ-AS1   1.419878  0.000000 0.000000
-## LEF1        5.070994  0.000000 6.666667
-## TCF7        9.736308 16.666667 6.666667
-## CD27        3.042596  2.777778 0.000000&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## the range is from 0 - 100
-range(percent_mat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1]   0 100&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## these two matrix have the same dimension
-dim(exp_mat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 80  9&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dim(percent_mat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 80  9&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(viridis)
-library(Polychrome)
-
-Polychrome::swatch(viridis(20))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## get an idea of the ranges of the matrix
-quantile(exp_mat, c(0.1, 0.5, 0.9, 0.99))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##        10%        50%        90%        99% 
-## -0.6695752 -0.3567907  1.7156356  2.5000000&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## any value that is greater than 2 will be mapped to yellow
-col_fun = circlize::colorRamp2(c(-1, 0, 2), viridis(20)[c(1,10, 20)])
-
-
-cell_fun = function(j, i, x, y, w, h, fill){
-          grid.rect(x = x, y = y, width = w, height = h, 
-                    gp = gpar(col = NA, fill = NA))
-          grid.circle(x=x,y=y,r= percent_mat[i, j]/100 * min(unit.c(w, h)),
-                      gp = gpar(fill = col_fun(exp_mat[i, j]), col = NA))}&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## also do a kmeans clustering for the genes with k = 4
-Heatmap(exp_mat,
-        heatmap_legend_param=list(title=&amp;quot;expression&amp;quot;),
-        column_title = &amp;quot;clustered dotplot&amp;quot;, 
-        col=col_fun,
-        rect_gp = gpar(type = &amp;quot;none&amp;quot;),
-        cell_fun = cell_fun,
-        row_names_gp = gpar(fontsize = 5),
-        row_km = 4,
-        border = &amp;quot;black&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;It looks pretty decent. One can now take advantage of all the awesome annotation function to add annotation bars in complexheatmap.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;colnames(exp_mat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Naive CD4 T&amp;quot;  &amp;quot;B&amp;quot;            &amp;quot;Memory CD4 T&amp;quot; &amp;quot;FCGR3A+ Mono&amp;quot; &amp;quot;NK&amp;quot;          
-## [6] &amp;quot;CD8 T&amp;quot;        &amp;quot;CD14+ Mono&amp;quot;   &amp;quot;DC&amp;quot;           &amp;quot;Platelet&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(RColorBrewer)
-cluster_anno&amp;lt;-  c(&amp;quot;CD4T&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;CD4T&amp;quot;, &amp;quot;Mono&amp;quot;, &amp;quot;NK&amp;quot;, &amp;quot;CD8T&amp;quot;, &amp;quot;CD14_Mono&amp;quot;, &amp;quot;DC&amp;quot;, &amp;quot;Platelet&amp;quot;)
-
-column_ha&amp;lt;- HeatmapAnnotation(
-    cluster_anno = cluster_anno,
-    col = list(cluster_anno = setNames(brewer.pal(8, &amp;quot;Paired&amp;quot;), unique(cluster_anno))
-    ),
-    na_col = &amp;quot;grey&amp;quot;
-)
-
-Heatmap(exp_mat,
-        heatmap_legend_param=list(title=&amp;quot;expression&amp;quot;),
-        column_title = &amp;quot;clustered dotplot&amp;quot;, 
-        col=col_fun,
-        rect_gp = gpar(type = &amp;quot;none&amp;quot;),
-        cell_fun = cell_fun,
-        row_names_gp = gpar(fontsize = 5),
-        row_km = 4,
-        border = &amp;quot;black&amp;quot;,
-        top_annotation = column_ha)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;update&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;UPDATE&lt;/h3&gt;
-&lt;p&gt;Zuguang mentioned: &lt;a href=&#34;https://twitter.com/jokergoo_gu/status/1372941312622743558&#34; class=&#34;uri&#34;&gt;https://twitter.com/jokergoo_gu/status/1372941312622743558&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Alternatively you can use &lt;code&gt;layer_fun&lt;/code&gt; which is a vectorized version of &lt;code&gt;cell_fun&lt;/code&gt;. It will speed up plotting in interactive graphics devices. Just change &lt;code&gt;percent_mat[i, j]&lt;/code&gt; to &lt;code&gt;pindex(percent_mat, i, j)&lt;/code&gt; and keep other code unchanged, and assign to &lt;code&gt;layer_fun&lt;/code&gt; argument.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;One can also create a legend for the dot size for the percentages. &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#add-customized-legends&#34; class=&#34;uri&#34;&gt;https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#add-customized-legends&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;I think for points, it might be the diameter. &lt;code&gt;size&lt;/code&gt; is directly passed to &lt;code&gt;grid.points()&lt;/code&gt; so it should mean the size of an arbitrary symbol.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Later, he confirmed that the size of points generated by grid.points(size = 10) is different from that from grid.circle(r=5)&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;For your case, I would suggest to also use grid.points in your layer_fun.
-If you use grid.circle in layer_fun, then you also need to use grid.circle to construct legend, which is a little bit complicated. You need to set &lt;code&gt;graphics&lt;/code&gt; argument in Legend()&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;See the last example in Section 5.2. &lt;a href=&#34;https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#discrete-legends&#34; class=&#34;uri&#34;&gt;https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html#discrete-legends&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;/div&gt;
-&lt;div id=&#34;use-grid.circle-in-both-the-heatmap-body-and-the-legend&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;use grid.circle() in both the heatmap body and the legend&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## To make the size of the dot in the heatmap body comparable to the legend, I used fixed
-## size unit.(2, &amp;quot;mm) rather than min(unit.c(w, h).
-
-layer_fun = function(j, i, x, y, w, h, fill){
-          grid.rect(x = x, y = y, width = w, height = h, 
-                    gp = gpar(col = NA, fill = NA))
-          grid.circle(x=x,y=y,r= pindex(percent_mat, i, j)/100 * unit(2, &amp;quot;mm&amp;quot;),
-                      gp = gpar(fill = col_fun(pindex(exp_mat, i, j)), col = NA))}
-
-
-lgd_list = list(
-    Legend( labels = c(0,0.25,0.5,0.75,1), title = &amp;quot;pt&amp;quot;,
-            graphics = list(
-              function(x, y, w, h) grid.circle(x = x, y = y, r = 0 * unit(2, &amp;quot;mm&amp;quot;),
-                                               gp = gpar(fill = &amp;quot;black&amp;quot;)),
-              function(x, y, w, h) grid.circle(x = x, y = y, r = 0.25 * unit(2, &amp;quot;mm&amp;quot;),
-                                               gp = gpar(fill = &amp;quot;black&amp;quot;)),
-              function(x, y, w, h) grid.circle(x = x, y = y, r = 0.5 * unit(2, &amp;quot;mm&amp;quot;),
-                                               gp = gpar(fill = &amp;quot;black&amp;quot;)),
-              function(x, y, w, h) grid.circle(x = x, y = y, r = 0.75 * unit(2, &amp;quot;mm&amp;quot;),
-                                               gp = gpar(fill = &amp;quot;black&amp;quot;)),
-              function(x, y, w, h) grid.circle(x = x, y = y, r = 1 * unit(2, &amp;quot;mm&amp;quot;),
-                                               gp = gpar(fill = &amp;quot;black&amp;quot;)))
-            ))
-
-set.seed(123)    
-hp&amp;lt;- Heatmap(exp_mat,
-        heatmap_legend_param=list(title=&amp;quot;expression&amp;quot;),
-        column_title = &amp;quot;clustered dotplot&amp;quot;, 
-        col=col_fun,
-        rect_gp = gpar(type = &amp;quot;none&amp;quot;),
-        layer_fun = layer_fun,
-        row_names_gp = gpar(fontsize = 5),
-        row_km = 4,
-        border = &amp;quot;black&amp;quot;,
-        top_annotation = column_ha)
-
-draw( hp, annotation_legend_list = lgd_list)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Note that, we use the percentage as the radius of the circle. The area of the dot is &lt;code&gt;pi *r^2&lt;/code&gt;.
-It will appear 4 times different if the original percentage is 0.5 versus 1 (2 times difference) which may not be desirable.
-see &lt;a href=&#34;https://stackoverflow.com/questions/64067450/does-size-for-ggplot2geom-point-refer-to-radius-diameter-area-or-somethin&#34; class=&#34;uri&#34;&gt;https://stackoverflow.com/questions/64067450/does-size-for-ggplot2geom-point-refer-to-radius-diameter-area-or-somethin&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;We can do a square root of the radius:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;layer_fun1 = function(j, i, x, y, w, h, fill){
-          grid.rect(x = x, y = y, width = w, height = h, 
-                    gp = gpar(col = NA, fill = NA))
-          grid.circle(x=x,y=y,r= sqrt(pindex(percent_mat, i, j)/100)  * unit(2, &amp;quot;mm&amp;quot;),
-                      gp = gpar(fill = col_fun(pindex(exp_mat, i, j)), col = NA))}
-
-lgd_list1 = list(
-    Legend( labels = c(0,0.25,0.5,0.75,1), title = &amp;quot;pt&amp;quot;,
-            graphics = list(
-              function(x, y, w, h) grid.circle(x = x, y = y, r = 0  * unit(2, &amp;quot;mm&amp;quot;),
-                                               gp = gpar(fill = &amp;quot;black&amp;quot;)),
-              function(x, y, w, h) grid.circle(x = x, y = y, r = sqrt(0.25) * unit(2, &amp;quot;mm&amp;quot;),
-                                               gp = gpar(fill = &amp;quot;black&amp;quot;)),
-              function(x, y, w, h) grid.circle(x = x, y = y, r = sqrt(0.5) * unit(2, &amp;quot;mm&amp;quot;),
-                                               gp = gpar(fill = &amp;quot;black&amp;quot;)),
-              function(x, y, w, h) grid.circle(x = x, y = y, r = sqrt(0.75) * unit(2, &amp;quot;mm&amp;quot;),
-                                               gp = gpar(fill = &amp;quot;black&amp;quot;)),
-              function(x, y, w, h) grid.circle(x = x, y = y, r = 1 * unit(2, &amp;quot;mm&amp;quot;),
-                                               gp = gpar(fill = &amp;quot;black&amp;quot;)))
-            ))
-
-set.seed(123)    
-hp1&amp;lt;- Heatmap(exp_mat,
-        heatmap_legend_param=list(title=&amp;quot;expression&amp;quot;),
-        column_title = &amp;quot;clustered dotplot&amp;quot;, 
-        col=col_fun,
-        rect_gp = gpar(type = &amp;quot;none&amp;quot;),
-        layer_fun = layer_fun1,
-        row_names_gp = gpar(fontsize = 5),
-        row_km = 4,
-        border = &amp;quot;black&amp;quot;,
-        top_annotation = column_ha)
-
-draw( hp1, annotation_legend_list = lgd_list1)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;use-grid.points-in-both-the-heatmap-body-and-the-legend&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;use grid.points() in both the heatmap body and the legend&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## note for grid.points, use col for the filling color of the points, while in grid.circle, use fill for the filling color of the circle. I should learn more about {grid}
-
-layer_fun2 = function(j, i, x, y, w, h, fill){
-          grid.rect(x = x, y = y, width = w, height = h, 
-                    gp = gpar(col = NA, fill = NA))
-          grid.points(x = x, y = y, 
-                     gp = gpar(col = col_fun(pindex(exp_mat, i, j))),
-                     size = pindex(percent_mat, i, j)/100 * unit(4, &amp;quot;mm&amp;quot;),
-                     pch = 16
-                    )
-}
-
-
-lgd_list2 = list(
-    Legend( labels = c(0,0.25,0.5,0.75,1), title = &amp;quot;pt&amp;quot;, type = &amp;quot;points&amp;quot;, pch = 16, size = c(0,0.25,0.5,0.75,1) * unit(4,&amp;quot;mm&amp;quot;),
-        legend_gp = gpar(col = &amp;quot;black&amp;quot;)))
-
-set.seed(123)
-hp2&amp;lt;- Heatmap(exp_mat,
-        heatmap_legend_param=list(title=&amp;quot;expression&amp;quot;),
-        column_title = &amp;quot;clustered dotplot&amp;quot;, 
-        col=col_fun,
-        rect_gp = gpar(type = &amp;quot;none&amp;quot;),
-        layer_fun = layer_fun2,
-        row_names_gp = gpar(fontsize = 5),
-        row_km = 4,
-        border = &amp;quot;black&amp;quot;,
-        top_annotation = column_ha)
-
-draw( hp2, annotation_legend_list = lgd_list2)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2021-03-10-clustered-dotplot-for-single-cell-rnaseq.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;conclusion&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Conclusion&lt;/h3&gt;
-&lt;p&gt;I would use &lt;code&gt;grid.circle&lt;/code&gt; to draw the dots in the legend and the heatmap body since I can fine-tune the looking of the dot size. I am not entirely sure how the size argument determines the size of the dots in &lt;code&gt;grid.points(size)&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Again, thanks &lt;a href=&#34;https://twitter.com/jokergoo_gu&#34;&gt;Zuguang Gu&lt;/a&gt; for this awesome package!!&lt;/p&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Precious lessons I learned from my Mom</title>
-      <link>/post/precious-lessons-i-learned-from-my-mom/</link>
-      <pubDate>Mon, 25 Jan 2021 00:00:00 +0000</pubDate>
-      
-      <guid>/post/precious-lessons-i-learned-from-my-mom/</guid>
-      <description>&lt;p&gt;I never have thought that my first blog post in 2021 would be non-technical. I shared this personal story on LinkedIn and want to make it a blog post.&lt;/p&gt;
-
-&lt;p&gt;I want to share how our beings are shaped by our life experiences. Let me take myself as an example. I grew up in a low-income family in China, but I inherited tremendous riches from my Mom in terms of precious characters. She taught me several things that money can&amp;rsquo;t buy.&lt;/p&gt;
-
-&lt;p&gt;First of all, honesty and integrity. When I was in primary school, I stole a five Chinese dollar bill and wanted to buy snacks. I put it under the pillow, but I could not fall asleep. I was so nervous that I could even hear my own heartbeats. My Mom found it out and was really mad at me. She punished me by kneeling on a washing board. It may not seem to be appropriate physical punishment; however, I learned that I could not steal, and I need to be an honest person. I have such a deep impression that I remember it so clearly even today. Later, there are many temptations in my life, but honesty is the limit that I never passed.&lt;/p&gt;
-
-&lt;p&gt;Second, grit and persistence. My mom used to work as a shoe mender and had a shabby booth by the street. It was scorching in the summer and freezing in the winter. Life had been harsh, but she worked hard and made ends meet for the whole family. Meanwhile, she saved my Dad&amp;rsquo;s salary for our tuition fees. What added insult to injury is that she was later diagnosed with tuberculosis and could not even get up for a few months. Again, she showed her persistence and finally recovered. She reminded me often that only knowledge can change my destine. She was very stingy with herself, but when I wanted some money to buy books, to attend workshops, she never hesitated to pay for them. All those things have a profound impact on me. I studied diligently and did not let her down. I ranked #1 in our county in the high-school entrance exam. I still remember her tears of joy when we got the news. Life always has ups and downs. Three years later, I didn&amp;rsquo;t do well in the college entrance exam and was admitted to a middle-ranked key university. I was in a dilemma, should I go to university or should I go back to study and take the exam next year again. My Mom encouraged me to stay, and I am glad I took her advice and made the optimal decision. To be honest, it was not easy. Some of my classmates stayed but eventually went to university before the deadline. Eventually, my efforts got paid off. I ranked #5 in the county the next year and went to a much better university, which changed my life trajectory. The university has an excellent culture to go abroad to study. I was saturated in such an ideal environment to prepare for English tests and apply for graduate schools.&lt;/p&gt;
-
-&lt;p&gt;On August 8th, 2008, I flew to the US to pursue a Ph.D., writing another chapter of life in English like many of you. It was the first time in my life I got enough stipend to support myself and even saved $50,000 during my Ph.D. I gave them all to my parents to buy an apartment in China. That&amp;rsquo;s the best investment I have ever made! I was grateful to my parents and also proud of myself.&lt;/p&gt;
-
-&lt;p&gt;When I look back, my Mom has passed many precious characters to me: kindness to people, humbleness, a high standard of working ethic, keeping my words and delivering the commitments, etc. When I have setbacks, I can boast about my resilience because I now see every failure as a good learning opportunity to make me a better human. Of course, she was restricted by her background, and her view of things has some limitations. However, those essential qualities have paved a solid foundation for my life and work.&lt;/p&gt;
-
-&lt;p&gt;Many years later, I got married; I went to work, and I am a father of two. All those events have a big impact on me. I attended A2C leadership camp which is also a life-changing experience. My views are enlightened, my horizon is broadened, and my vision is elevated. I learned enormously from our teachers and classmates.&lt;/p&gt;
-
-&lt;p&gt;Life is pretty interesting. You go through mountains and valleys, but you may enjoy different views at different altitudes. You go through the four seasons, and that’s why your life is colorful. Winter is harsh, but you may enjoy the white snow and more importantly, you believe that the buds are swelling, soon the leaves will unfold, and the flowers will be blossoming. Thank you all for reading this.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>The histologic phenotype of lung cancers may be driven by transcriptomic features rather than genomic characteristics</title>
-      <link>/publication/2021-01-05-mixed-histology/</link>
-      <pubDate>Tue, 05 Jan 2021 00:00:00 -0500</pubDate>
-      
-      <guid>/publication/2021-01-05-mixed-histology/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     

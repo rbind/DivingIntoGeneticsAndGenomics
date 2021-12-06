@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pipelines on DNA confesses Data speak</title>
+    <link>/tags/pipelines/</link>
+    <description>Recent content in Pipelines on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Sat, 26 Sep 2020 00:00:00 -0400</lastBuildDate>
+    
+	<atom:link href="/tags/pipelines/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>CANCER IMMUNOLOGIC DATA COMMONS(CIDC)</title>
+      <link>/project/cimac-cidc/</link>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      
+      <guid>/project/cimac-cidc/</guid>
+      <description>The CIMAC-CIDC Network is an NCI Cancer Moonshot initiative that provides cutting-edge technology and expertise in genomic, proteomic, and functional molecular analysis to enhance clinical trials in cancer immune therapies.
+The four Cancer Immune Monitoring and Analysis Centers (CIMACs) are at Dana-Farber Cancer Institute, Stanford University, MD Anderson, and Mount Sinai.
+I am now leading the bioinformatics effort in the Cancer Immunologic Data Commons(CIDC) as part of the NCI Cancer Moonshot project on cancer immunotherapy.</description>
+    </item>
+    
+  </channel>
+</rss>

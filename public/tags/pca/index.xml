@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PCA on DNA confesses Data speak</title>
+    <link>/tags/pca/</link>
+    <description>Recent content in PCA on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Fri, 04 Jan 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/pca/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>permutation test for PCA components</title>
+      <link>/post/permute-test-for-pca-components/</link>
+      <pubDate>Fri, 04 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/permute-test-for-pca-components/</guid>
+      <description>PCA is a critical method for dimension reduction for high-dimensional data. High-dimensional data are data with features (p) a lot more than observations (n). However, this is changing with single-cell RNAseq data. Now, we can sequence millions (n) of single cells and each cell has ~20,000 genes/features (p).
+I suggest you read my previous blog post on using svd to calculate PCs.
+Single-cell expression data PCA In single-cell RNAseq analysis, feature selection will be performed first.</description>
+    </item>
+    
+    <item>
+      <title>PCA in action</title>
+      <link>/post/pca-in-action/</link>
+      <pubDate>Tue, 18 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-in-action/</guid>
+      <description>PCA in practice. Principal Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).
+Let’s use a microarray data for demonstration.</description>
+    </item>
+    
+  </channel>
+</rss>

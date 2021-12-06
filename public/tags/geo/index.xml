@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>GEO on DNA confesses and Data speak</title>
+    <title>GEO on DNA confesses Data speak</title>
     <link>/tags/geo/</link>
-    <description>Recent content in GEO on DNA confesses and Data speak</description>
+    <description>Recent content in GEO on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Fri, 22 Jun 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 01 Dec 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/geo/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Obtain metadata for public datasets in GEO</title>
+      <link>/post/obtain-metadata-for-public-datasets-in-geo/</link>
+      <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/obtain-metadata-for-public-datasets-in-geo/</guid>
+      <description>There are so many public datasets there waiting for us to mine! It is the blessing and cursing as a computational biologist!
+Metadata, or the data describing (e.g., responder or non-responder for the treatment) the data are critical in interpreting the analysis. Without metadata, your data are useless.
+People usually go to GEO or ENA to download public data. I asked this question on twitter, and I will show you how to get the metadata as suggested by all the awesome tweeps.</description>
+    </item>
     
     <item>
       <title>How to upload files to GEO</title>

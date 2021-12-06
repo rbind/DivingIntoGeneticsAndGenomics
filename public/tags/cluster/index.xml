@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cluster on DNA confesses Data speak</title>
+    <link>/tags/cluster/</link>
+    <description>Recent content in Cluster on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Tue, 05 Feb 2019 00:00:00 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/cluster/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Evaluating single cell RNAseq cluster stability</title>
+      <link>/project/evaluating-scrnaseq-cluster/</link>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 -0500</pubDate>
+      
+      <guid>/project/evaluating-scrnaseq-cluster/</guid>
+      <description>The goal of scclusteval(Single Cell Cluster Evaluation) is to evaluate the single cell clustering stability by boostrapping/subsampling the cells and provide many visualization methods for comparing clusters.
+for Theory behind the method, see Christian Henning, “Cluster-wise assessment of cluster stability,” Research Report 271, Dept. of Statistical Science, University College London, December 2006)
+You can find the package at my github.</description>
+    </item>
+    
+  </channel>
+</rss>

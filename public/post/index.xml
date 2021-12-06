@@ -13,6 +13,26 @@
     
     
     <item>
+      <title>test</title>
+      <link>/post/test/</link>
+      <pubDate>Mon, 06 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/test/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Obtain metadata for public datasets in GEO</title>
+      <link>/post/obtain-metadata-for-public-datasets-in-geo/</link>
+      <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/obtain-metadata-for-public-datasets-in-geo/</guid>
+      <description>There are so many public datasets there waiting for us to mine! It is the blessing and cursing as a computational biologist!
+Metadata, or the data describing (e.g., responder or non-responder for the treatment) the data are critical in interpreting the analysis. Without metadata, your data are useless.
+People usually go to GEO or ENA to download public data. I asked this question on twitter, and I will show you how to get the metadata as suggested by all the awesome tweeps.</description>
+    </item>
+    
+    <item>
       <title>Be careful when left_join tables with duplicated rows</title>
       <link>/post/be-careful-when-left-join-tables-with-duplicated-rows/</link>
       <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>

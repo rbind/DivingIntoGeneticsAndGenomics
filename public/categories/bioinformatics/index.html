@@ -8,14 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="theme" content="hugo-academic">
-  <meta name="generator" content="Hugo 0.37" />
+  <meta name="generator" content="Hugo 0.42" />
   <meta name="author" content="Ming Tang">
 
   
   
   
   
-  <meta name="description" content="Senior Scientist">
+  <meta name="description" content="Director of Computational Biology">
 
   
   <link rel="alternate" hreflang="en-us" href="/categories/bioinformatics/">
@@ -75,8 +75,8 @@
   
 
   
-  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
-  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="alternate" href="/categories/bioinformatics/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/categories/bioinformatics/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
   
 
   <link rel="manifest" href="/site.webmanifest">
@@ -93,10 +93,10 @@
   <meta property="og:site_name" content="DNA confesses Data speak">
   <meta property="og:url" content="/categories/bioinformatics/">
   <meta property="og:title" content="Bioinformatics | DNA confesses Data speak">
-  <meta property="og:description" content="Senior Scientist">
+  <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2021-10-17T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2021-12-01T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,17 @@
   
   
   <div>
+    <h2><a href="/post/obtain-metadata-for-public-datasets-in-geo/">Obtain metadata for public datasets in GEO</a></h2>
+    <div class="article-style">
+      
+      There are so many public datasets there waiting for us to mine! It is the blessing and cursing as a computational biologist!
+Metadata, or the data describing (e.g., responder or non-responder for the treatment) the data are critical in interpreting the analysis. Without metadata, your data are useless.
+People usually go to GEO or ENA to download public data. I asked this question on twitter, and I will show you how to get the metadata as suggested by all the awesome tweeps.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/be-careful-when-left-join-tables-with-duplicated-rows/">Be careful when left_join tables with duplicated rows</a></h2>
     <div class="article-style">
       
@@ -373,17 +384,6 @@ library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samp
 Everything was OK until I encountered problems installing jpeg and Cairo R packages. Later, I also had an error installing scRepertoire dependency gsl.
 It turns out I have to install debian packages inside the container:
 $ apt update &amp;&amp; apt install -y &ndash;no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev \ &amp;&amp; apt install -y &ndash;no-install-recommends libx11-dev libcairo2-dev libxt-dev \ &amp;&amp; apt install -y libgsl-dev  However, singularity file system is read-only.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/">customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</a></h2>
-    <div class="article-style">
-      
-      Seurat is great for scRNAseq analysis and it provides many easy-to-use ggplot2 wrappers for visualization. However, this brings the cost of flexibility. For example, In FeaturePlot, one can specify multiple genes and also split.by to further split to multiple the conditions in the meta.data. If split.by is not NULL, the ncol is ignored so you can not arrange the grid.
-This is best to understand with an example.
-library(dplyr) library(Seurat) library(patchwork) library(ggplot2) # Load the PBMC dataset pbmc.
       
     </div>
   </div>

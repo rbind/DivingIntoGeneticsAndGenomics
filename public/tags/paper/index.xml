@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Paper on DNA confesses Data speak</title>
+    <link>/tags/paper/</link>
+    <description>Recent content in Paper on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Thu, 31 Dec 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/paper/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Review 2020</title>
+      <link>/post/review-2020/</link>
+      <pubDate>Thu, 31 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/review-2020/</guid>
+      <description>It is the end of the year again and it is a good time to review my 2020. I wrote one for 2019. It has been a tough year for many of us. It is the same for me. I switched my job from Harvard FAS informatics to Department of Data Science at Dana-Farber Cancer Institute during the shutdown because of COVID19 at the end of March and has been working from home since then.</description>
+    </item>
+    
+  </channel>
+</rss>

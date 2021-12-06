@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R on DNA confesses Data speak</title>
+    <link>/tags/r/</link>
+    <description>Recent content in R on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Wed, 01 Dec 2021 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Obtain metadata for public datasets in GEO</title>
+      <link>/post/obtain-metadata-for-public-datasets-in-geo/</link>
+      <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/obtain-metadata-for-public-datasets-in-geo/</guid>
+      <description>There are so many public datasets there waiting for us to mine! It is the blessing and cursing as a computational biologist!
+Metadata, or the data describing (e.g., responder or non-responder for the treatment) the data are critical in interpreting the analysis. Without metadata, your data are useless.
+People usually go to GEO or ENA to download public data. I asked this question on twitter, and I will show you how to get the metadata as suggested by all the awesome tweeps.</description>
+    </item>
+    
+    <item>
+      <title>Be careful when left_join tables with duplicated rows</title>
+      <link>/post/be-careful-when-left-join-tables-with-duplicated-rows/</link>
+      <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/be-careful-when-left-join-tables-with-duplicated-rows/</guid>
+      <description>This is going to be a really short blog post. I recently found that if I join two tables with one of the tables having duplicated rows, the final joined table also contains the duplicated rows. It could be the expected behavior for others but I want to make a note here for myself.
+library(tidyverse) df1&amp;lt;- tibble(key = c(&amp;quot;A&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;C&amp;quot;, &amp;quot;D&amp;quot;, &amp;quot;E&amp;quot;), value = 1:5) df1 ## # A tibble: 5 x 2 ## key value ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; ## 1 A 1 ## 2 B 2 ## 3 C 3 ## 4 D 4 ## 5 E 5 dataframe 2 has two identical rows for B.</description>
+    </item>
+    
+    <item>
+      <title>How to test if two distributions are different </title>
+      <link>/post/how-to-test-if-two-distributions-are-different/</link>
+      <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-test-if-two-distributions-are-different/</guid>
+      <description>I asked this question on Twitter:
+ what test to test if two distributions are different? I am aware of KS test. When n is large (which is common in genomic studies), the p-value is always significant. better to test against an effect size? how to do it in this context?
+ In genomics studies, it is very common to have large N (e.g., the number of introns, promoters in the genome, number of cells in the single-cell studies).</description>
+    </item>
+    
+    <item>
+      <title>dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </title>
+      <link>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</link>
+      <pubDate>Wed, 26 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</guid>
+      <description>It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).
+Let’s create some dummy data.
+library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samples, 3 clusters A,B,C # but in the treatment samples, cluster C is absent (0 cells) in sample7 sample_id&amp;lt;- c(paste0(&amp;quot;sample&amp;quot;, 1:6, &amp;quot;_control&amp;quot;, rep(c(&amp;quot;_A&amp;quot;,&amp;quot;_B&amp;quot;,&amp;quot;_C&amp;quot;),each = 6)), paste0(&amp;quot;sample&amp;quot;, 8:12, &amp;quot;_treatment&amp;quot;, rep(c(&amp;quot;_A&amp;quot;,&amp;quot;_B&amp;quot;, &amp;quot;_C&amp;quot;), each = 5))) sample_id&amp;lt;- c(sample_id, &amp;quot;sample7_treatment_A&amp;quot;, &amp;quot;sample7_treatment_B&amp;quot;) cell_id&amp;lt;- paste0(&amp;quot;cell&amp;quot;, 1:20000) cell_df&amp;lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), cell_id = cell_id) %&amp;gt;% tidyr::separate(sample_id, into = c(&amp;quot;sample_id&amp;quot;, &amp;quot;group&amp;quot;, &amp;quot;cluster_id&amp;quot;), sep= &amp;quot;_&amp;quot;) cell_num&amp;lt;- cell_df %&amp;gt;% group_by(group, cluster_id, sample_id)%&amp;gt;% summarize(n=n()) cell_num ## # A tibble: 35 x 4 ## # Groups: group, cluster_id [6] ## group cluster_id sample_id n ## &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; ## 1 control A sample1 551 ## 2 control A sample2 546 ## 3 control A sample3 544 ## 4 control A sample4 585 ## 5 control A sample5 588 ## 6 control A sample6 542 ## 7 control B sample1 550 ## 8 control B sample2 562 ## 9 control B sample3 574 ## 10 control B sample4 563 ## # … with 25 more rows total_cells&amp;lt;- cell_df %&amp;gt;% group_by(sample_id) %&amp;gt;% summarise(total = n()) total_cells ## # A tibble: 12 x 2 ## sample_id total ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; ## 1 sample1 1673 ## 2 sample10 1713 ## 3 sample11 1691 ## 4 sample12 1696 ## 5 sample2 1633 ## 6 sample3 1700 ## 7 sample4 1711 ## 8 sample5 1768 ## 9 sample6 1727 ## 10 sample7 1225 ## 11 sample8 1720 ## 12 sample9 1743 join the two dataframe to get percentage of cells per cluster per sample</description>
+    </item>
+    
+    <item>
+      <title>customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</title>
+      <link>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</link>
+      <pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</guid>
+      <description>Seurat is great for scRNAseq analysis and it provides many easy-to-use ggplot2 wrappers for visualization. However, this brings the cost of flexibility. For example, In FeaturePlot, one can specify multiple genes and also split.by to further split to multiple the conditions in the meta.data. If split.by is not NULL, the ncol is ignored so you can not arrange the grid.
+This is best to understand with an example.
+library(dplyr) library(Seurat) library(patchwork) library(ggplot2) # Load the PBMC dataset pbmc.</description>
+    </item>
+    
+    <item>
+      <title>Monty Hall problem- a peek through simulation</title>
+      <link>/post/monty-hall-problem-a-peek-through-simulation/</link>
+      <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/monty-hall-problem-a-peek-through-simulation/</guid>
+      <description>I am taking this STATE-80 course from Harvard Extension School. This course teaches commonly used distributions and probability theory. The instructor Hatch is a really good teacher and he uses simulation for all the demonstrations along with the formulas.
+In week 6, we revisited the Monty Hall problem which we played on the first day of class.
+If you have not heard about it, I quoted from the wiki:
+ Suppose you’re on a game show, and you’re given the choice of three doors: Behind one door is a car; behind the others, goats.</description>
+    </item>
+    
+    <item>
+      <title>Modeling single cell RNAseq data with multinomial distribution </title>
+      <link>/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/</link>
+      <pubDate>Tue, 26 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/</guid>
+      <description>I was reading Feature Selection and Dimension Reduction for Single Cell RNA-Seq based on a Multinomial Model. In the paper, the authors model the scRNAseq counts using a multinomial distribution.
+I was using negative binomial distribution for modeling in my last post, so I asked the question on twitter:
+for modeling RNAseq counts, what&#39;s the difference/advantages using negative binomial and multinomial distribution? — Ming Tang (@tangming2005) November 26, 2019   some quotes from the answers I get from Matthew</description>
+    </item>
+    
+    <item>
+      <title>negative bionomial distribution in (single-cell) RNAseq </title>
+      <link>/post/negative-bionomial-distribution-in-single-cell-rnaseq/</link>
+      <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/negative-bionomial-distribution-in-single-cell-rnaseq/</guid>
+      <description>This post is inspired by two posts written by Valentine Svensson:
+http://www.nxn.se/valent/2017/11/16/droplet-scrna-seq-is-not-zero-inflated
+http://www.nxn.se/valent/2018/1/30/count-depth-variation-makes-Poisson-scrna-seq-data-negative-binomial
+The original ipython notebook can be found at https://github.com/vals/Blog/blob/master/171116-zero-inflation/Negative%20control%20analysis.ipynb
+Thanks for writing those and put both the data and code in public. After I read Droplet scRNA-seq is not zero-inflated by Valentine Svensson, I want to gain some understanding of it. This post is an effort to replicate some of the analysis in the preprint using R. The original analysis was carried out in python.</description>
+    </item>
+    
+    <item>
+      <title>clustering scATACseq data: the TF-IDF way</title>
+      <link>/post/clustering-scatacseq-data-the-tf-idf-way/</link>
+      <pubDate>Fri, 03 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/clustering-scatacseq-data-the-tf-idf-way/</guid>
+      <description>scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
+I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
+A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.</description>
+    </item>
+    
+    <item>
+      <title>plot 10x scATAC coverage by cluster/group</title>
+      <link>/post/plot-10x-scatac-coverage-by-cluster-group/</link>
+      <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
+      <description>This post was inspired by Andrew Hill’s recent blog post.
+Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
+&amp;mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.</description>
+    </item>
+    
+    <item>
+      <title>Use docopt to write command line R utilities </title>
+      <link>/post/use-docopt-to-write-command-line-r-utilities/</link>
+      <pubDate>Fri, 22 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/use-docopt-to-write-command-line-r-utilities/</guid>
+      <description>I was writing an R script to plot the ATACseq fragment length distribution and wanted to turn the R script to a command line utility.
+I then (re)discovered this awesome docopt.R. One just needs to write the help message the you want to display and docopt() will parse the options, arguments and return a named list which can be accessed inside the R script. check http://docopt.org/ for more information as well.</description>
+    </item>
+    
+    <item>
+      <title>Evaluating single cell RNAseq cluster stability</title>
+      <link>/project/evaluating-scrnaseq-cluster/</link>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 -0500</pubDate>
+      
+      <guid>/project/evaluating-scrnaseq-cluster/</guid>
+      <description>The goal of scclusteval(Single Cell Cluster Evaluation) is to evaluate the single cell clustering stability by boostrapping/subsampling the cells and provide many visualization methods for comparing clusters.
+for Theory behind the method, see Christian Henning, “Cluster-wise assessment of cluster stability,” Research Report 271, Dept. of Statistical Science, University College London, December 2006)
+You can find the package at my github.</description>
+    </item>
+    
+    <item>
+      <title>Three gotchas when using R for Genomic data analysis</title>
+      <link>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</link>
+      <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</guid>
+      <description>During my daily work with R for genomic data analysis, I encountered several instances that R gives me some (bad) surprises.
+1. The devil 1 and 0 coordinate system read detail here https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey
+some files such as bed file is 0 based. Two genomic regions:
+chr1 0 1000 chr1 1001 2000  when you import that bed file into R using rtracklayer::import(), it will become
+chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 1 based unlike python).</description>
+    </item>
+    
+  </channel>
+</rss>

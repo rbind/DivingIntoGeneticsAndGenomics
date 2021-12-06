@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Linear-regresssion on DNA confesses Data speak</title>
+    <link>/tags/linear-regresssion/</link>
+    <description>Recent content in Linear-regresssion on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Fri, 02 Oct 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/linear-regresssion/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>compare slopes in linear regression</title>
+      <link>/post/compare-slopes-in-linear-regression/</link>
+      <pubDate>Fri, 02 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/compare-slopes-in-linear-regression/</guid>
+      <description>I asked this question on twitter.
+load the package library(tidyverse)  make some dummy data The dummy example: We have two groups of samples: disease and health. We treat those cells in vitro with different dosages (0, 1, 5) of a chemical X and count the cell number after 3 hours.
+x &amp;lt;- tibble( &amp;#39;0&amp;#39; = c(8.66, 11.50, 7.01, 13.40, 11.30, 8.13, 5.92, 7.54), &amp;#39;1&amp;#39; = c(22.10, 23.00, 22.00, 35.70, 32.</description>
+    </item>
+    
+  </channel>
+</rss>

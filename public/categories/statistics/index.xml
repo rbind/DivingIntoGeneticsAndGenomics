@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Statistics on DNA confesses Data speak</title>
+    <link>/categories/statistics/</link>
+    <description>Recent content in Statistics on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Sat, 07 Aug 2021 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/statistics/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to test if two distributions are different </title>
+      <link>/post/how-to-test-if-two-distributions-are-different/</link>
+      <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-test-if-two-distributions-are-different/</guid>
+      <description>I asked this question on Twitter:
+ what test to test if two distributions are different? I am aware of KS test. When n is large (which is common in genomic studies), the p-value is always significant. better to test against an effect size? how to do it in this context?
+ In genomics studies, it is very common to have large N (e.g., the number of introns, promoters in the genome, number of cells in the single-cell studies).</description>
+    </item>
+    
+    <item>
+      <title>compare slopes in linear regression</title>
+      <link>/post/compare-slopes-in-linear-regression/</link>
+      <pubDate>Fri, 02 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/compare-slopes-in-linear-regression/</guid>
+      <description>I asked this question on twitter.
+load the package library(tidyverse)  make some dummy data The dummy example: We have two groups of samples: disease and health. We treat those cells in vitro with different dosages (0, 1, 5) of a chemical X and count the cell number after 3 hours.
+x &amp;lt;- tibble( &amp;#39;0&amp;#39; = c(8.66, 11.50, 7.01, 13.40, 11.30, 8.13, 5.92, 7.54), &amp;#39;1&amp;#39; = c(22.10, 23.00, 22.00, 35.70, 32.</description>
+    </item>
+    
+    <item>
+      <title>Monty Hall problem- a peek through simulation</title>
+      <link>/post/monty-hall-problem-a-peek-through-simulation/</link>
+      <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/monty-hall-problem-a-peek-through-simulation/</guid>
+      <description>I am taking this STATE-80 course from Harvard Extension School. This course teaches commonly used distributions and probability theory. The instructor Hatch is a really good teacher and he uses simulation for all the demonstrations along with the formulas.
+In week 6, we revisited the Monty Hall problem which we played on the first day of class.
+If you have not heard about it, I quoted from the wiki:
+ Suppose you’re on a game show, and you’re given the choice of three doors: Behind one door is a car; behind the others, goats.</description>
+    </item>
+    
+    <item>
+      <title>negative bionomial distribution in (single-cell) RNAseq </title>
+      <link>/post/negative-bionomial-distribution-in-single-cell-rnaseq/</link>
+      <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/negative-bionomial-distribution-in-single-cell-rnaseq/</guid>
+      <description>This post is inspired by two posts written by Valentine Svensson:
+http://www.nxn.se/valent/2017/11/16/droplet-scrna-seq-is-not-zero-inflated
+http://www.nxn.se/valent/2018/1/30/count-depth-variation-makes-Poisson-scrna-seq-data-negative-binomial
+The original ipython notebook can be found at https://github.com/vals/Blog/blob/master/171116-zero-inflation/Negative%20control%20analysis.ipynb
+Thanks for writing those and put both the data and code in public. After I read Droplet scRNA-seq is not zero-inflated by Valentine Svensson, I want to gain some understanding of it. This post is an effort to replicate some of the analysis in the preprint using R. The original analysis was carried out in python.</description>
+    </item>
+    
+  </channel>
+</rss>

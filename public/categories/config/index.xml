@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Config on DNA confesses Data speak</title>
+    <link>/categories/config/</link>
+    <description>Recent content in Config on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Wed, 03 Oct 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/config/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>set up my new mac laptop</title>
+      <link>/post/set-up-my-new-mac-laptop/</link>
+      <pubDate>Wed, 03 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/set-up-my-new-mac-laptop/</guid>
+      <description>I am starting my first day at Harvard FAS informatics and I will keep a note here on how I set up my new laptop.
+customize terminal following this gist:
+download iterm2 for mac here.
+install on-my-zsh sh -c &amp;quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&amp;quot;  You will have to install git first for the upper command to work. Now, when you fire up your terminal, it looks much more prettier! (there are many other schemes for oh my zsh, I found the default is good.</description>
+    </item>
+    
+  </channel>
+</rss>

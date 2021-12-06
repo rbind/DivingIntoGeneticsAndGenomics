@@ -1,16 +1,38 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>GRanges on DNA confesses and Data speak</title>
+    <title>GRanges on DNA confesses Data speak</title>
     <link>/tags/granges/</link>
-    <description>Recent content in GRanges on DNA confesses and Data speak</description>
+    <description>Recent content in GRanges on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Fri, 07 Sep 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 29 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/granges/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Calculate scATACseq TSS enrichment score</title>
+      <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
+      <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/calculate-scatacseq-tss-enrichment-score/</guid>
+      <description>TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
+From the Encode page:
+ Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).</description>
+    </item>
+    
+    <item>
+      <title>plot 10x scATAC coverage by cluster/group</title>
+      <link>/post/plot-10x-scatac-coverage-by-cluster-group/</link>
+      <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
+      <description>This post was inspired by Andrew Hill’s recent blog post.
+Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
+&amp;mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.</description>
+    </item>
     
     <item>
       <title>Compute averages/sums on GRanges or equal length bins</title>

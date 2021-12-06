@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Publication_types on DNA confesses and Data speak</title>
+    <title>Publication_types on DNA confesses Data speak</title>
     <link>/publication_types/</link>
-    <description>Recent content in Publication_types on DNA confesses and Data speak</description>
+    <description>Recent content in Publication_types on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Tue, 21 Aug 2018 00:00:00 -0500</lastBuildDate>
+    <lastBuildDate>Mon, 06 Dec 2021 00:00:00 -0500</lastBuildDate>
     
 	<atom:link href="/publication_types/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,9 +15,18 @@
     <item>
       <title>2</title>
       <link>/publication_types/2/</link>
-      <pubDate>Tue, 21 Aug 2018 00:00:00 -0500</pubDate>
+      <pubDate>Mon, 06 Dec 2021 00:00:00 -0500</pubDate>
       
       <guid>/publication_types/2/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>6</title>
+      <link>/publication_types/6/</link>
+      <pubDate>Tue, 01 Aug 2017 00:00:00 -0400</pubDate>
+      
+      <guid>/publication_types/6/</guid>
       <description></description>
     </item>
     

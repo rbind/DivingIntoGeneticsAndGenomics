@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on DNA confesses and Data speak</title>
+    <title>Tags on DNA confesses Data speak</title>
     <link>/tags/</link>
-    <description>Recent content in Tags on DNA confesses and Data speak</description>
+    <description>Recent content in Tags on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Sun, 01 Jan 2017 00:00:00 -0600</lastBuildDate>
+    <lastBuildDate>Sun, 01 Jan 2017 00:00:00 -0500</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,34 +15,124 @@
     <item>
       <title>Content tagged as &#39;Academic&#39;</title>
       <link>/tags/academic/</link>
-      <pubDate>Sun, 01 Jan 2017 00:00:00 -0600</pubDate>
+      <pubDate>Sun, 01 Jan 2017 00:00:00 -0500</pubDate>
       
       <guid>/tags/academic/</guid>
       <description>Here is a list of all the content that has been tagged as academic.</description>
     </item>
     
     <item>
+      <title>ATACseq</title>
+      <link>/tags/atacseq/</link>
+      <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/atacseq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Bioconductor</title>
+      <link>/tags/bioconductor/</link>
+      <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/bioconductor/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Bioinformatics</title>
+      <link>/tags/bioinformatics/</link>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      
+      <guid>/tags/bioinformatics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Blogdown</title>
       <link>/tags/blogdown/</link>
-      <pubDate>Sat, 30 Jun 2018 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 28 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>/tags/blogdown/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>CIDC</title>
+      <link>/tags/cidc/</link>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      
+      <guid>/tags/cidc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CIMAC</title>
+      <link>/tags/cimac/</link>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      
+      <guid>/tags/cimac/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cancer immunology</title>
+      <link>/tags/cancer-immunology/</link>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      
+      <guid>/tags/cancer-immunology/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cluster</title>
+      <link>/tags/cluster/</link>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 -0500</pubDate>
+      
+      <guid>/tags/cluster/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Data</title>
       <link>/tags/data/</link>
-      <pubDate>Wed, 27 Jun 2018 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>
       
       <guid>/tags/data/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>Docker</title>
+      <link>/tags/docker/</link>
+      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Dotfile</title>
+      <link>/tags/dotfile/</link>
+      <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/dotfile/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>FDR</title>
+      <link>/tags/fdr/</link>
+      <pubDate>Sun, 13 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/fdr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>GEO</title>
       <link>/tags/geo/</link>
-      <pubDate>Fri, 22 Jun 2018 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
       
       <guid>/tags/geo/</guid>
       <description></description>
@@ -51,7 +141,7 @@
     <item>
       <title>GRanges</title>
       <link>/tags/granges/</link>
-      <pubDate>Fri, 07 Sep 2018 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/granges/</guid>
       <description></description>
@@ -60,27 +150,234 @@
     <item>
       <title>Genomics</title>
       <link>/tags/genomics/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 -0500</pubDate>
+      <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/genomics/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>Gff</title>
+      <link>/tags/gff/</link>
+      <pubDate>Mon, 28 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/gff/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HPC</title>
+      <link>/tags/hpc/</link>
+      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/hpc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Heatmap</title>
+      <link>/tags/heatmap/</link>
+      <pubDate>Wed, 19 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/heatmap/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Life</title>
+      <link>/tags/life/</link>
+      <pubDate>Mon, 25 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/life/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linear-regresssion</title>
+      <link>/tags/linear-regresssion/</link>
+      <pubDate>Fri, 02 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/linear-regresssion/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Mac setup</title>
+      <link>/tags/mac-setup/</link>
+      <pubDate>Wed, 03 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/mac-setup/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>PCA</title>
+      <link>/tags/pca/</link>
+      <pubDate>Fri, 04 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/pca/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Paper</title>
+      <link>/tags/paper/</link>
+      <pubDate>Thu, 31 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/paper/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Pipeline</title>
       <link>/tags/pipeline/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 -0500</pubDate>
+      <pubDate>Wed, 27 Apr 2016 00:00:00 -0400</pubDate>
       
       <guid>/tags/pipeline/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>Pipelines</title>
+      <link>/tags/pipelines/</link>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      
+      <guid>/tags/pipelines/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Pvalue</title>
+      <link>/tags/pvalue/</link>
+      <pubDate>Sun, 13 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/pvalue/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>/tags/python/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
+      
+      <guid>/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>R</title>
+      <link>/tags/r/</link>
+      <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/r/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Reproducible research</title>
+      <link>/tags/reproducible-research/</link>
+      <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/reproducible-research/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rstats</title>
+      <link>/tags/rstats/</link>
+      <pubDate>Fri, 02 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/rstats/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ScATACseq</title>
+      <link>/tags/scatacseq/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
+      
+      <guid>/tags/scatacseq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ScRNAseq</title>
+      <link>/tags/scrnaseq/</link>
+      <pubDate>Thu, 26 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/scrnaseq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Seurat</title>
+      <link>/tags/seurat/</link>
+      <pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/seurat/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Single-cell</title>
+      <link>/tags/single-cell/</link>
+      <pubDate>Thu, 26 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/single-cell/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Singularity</title>
+      <link>/tags/singularity/</link>
+      <pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/singularity/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Snakemake</title>
       <link>/tags/snakemake/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 -0500</pubDate>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
       
       <guid>/tags/snakemake/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ssh</title>
+      <link>/tags/ssh/</link>
+      <pubDate>Wed, 10 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/ssh/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Statistics</title>
+      <link>/tags/statistics/</link>
+      <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/statistics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tidyverse</title>
+      <link>/tags/tidyverse/</link>
+      <pubDate>Wed, 26 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/tidyverse/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Unix</title>
+      <link>/tags/unix/</link>
+      <pubDate>Mon, 28 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/unix/</guid>
       <description></description>
     </item>
     

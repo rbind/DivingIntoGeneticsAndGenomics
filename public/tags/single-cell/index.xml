@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Single-cell on DNA confesses Data speak</title>
+    <link>/tags/single-cell/</link>
+    <description>Recent content in Single-cell on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Thu, 26 Aug 2021 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/single-cell/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Matrix Factorization for single-cell RNAseq data</title>
+      <link>/post/matrix-factorization-for-single-cell-rnaseq-data/</link>
+      <pubDate>Thu, 26 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/matrix-factorization-for-single-cell-rnaseq-data/</guid>
+      <description>I am interested in learning more on matrix factorization and its application in scRNAseq data. I want to shout out to this paper: Enter the Matrix: Factorization Uncovers Knowledge from Omics by Elana J. Fertig group.
+A matrix is decomposed to two matrices: the amplitude matrix and the pattern matrix. You can then do all sorts of things with the decomposed matrices. Single cell matrix is no special, one can use the matrix factorization techniques to derive interesting biological insights.</description>
+    </item>
+    
+    <item>
+      <title>clustering scATACseq data: the TF-IDF way</title>
+      <link>/post/clustering-scatacseq-data-the-tf-idf-way/</link>
+      <pubDate>Fri, 03 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/clustering-scatacseq-data-the-tf-idf-way/</guid>
+      <description>scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
+I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
+A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.</description>
+    </item>
+    
+    <item>
+      <title>plot 10x scATAC coverage by cluster/group</title>
+      <link>/post/plot-10x-scatac-coverage-by-cluster-group/</link>
+      <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
+      <description>This post was inspired by Andrew Hill’s recent blog post.
+Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
+&amp;mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.</description>
+    </item>
+    
+    <item>
+      <title>Split a 10xscATAC bam file by cluster</title>
+      <link>/post/split-a-10xscatac-bam-file-by-cluster/</link>
+      <pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/split-a-10xscatac-bam-file-by-cluster/</guid>
+      <description>I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in IGV.
+The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.</description>
+    </item>
+    
+  </channel>
+</rss>

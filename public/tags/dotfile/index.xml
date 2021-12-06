@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dotfile on DNA confesses Data speak</title>
+    <link>/tags/dotfile/</link>
+    <description>Recent content in Dotfile on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Tue, 09 Oct 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/dotfile/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>set up odyssey HPC dot files</title>
+      <link>/post/set-up-odyssey-hpc-dot-files/</link>
+      <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/set-up-odyssey-hpc-dot-files/</guid>
+      <description>dot files Those files are originally got from Samir Amin, my labmate in Roel Verhaak&amp;rsquo;s lab. Thanks for sharing!
+.screenrc
+.bashrc
+.bash_profile
+and inside .profile.d folder, there is a file named 01_odyssey_config.sh. It was executed when you login the shell.
+You can grab my dot files in my github repo.
+Inside the .bash_profile:
+if [ -d $HOME/.profile.d ]; then for i in $HOME/.profile.d/*.sh; do if [ -r $i ]; then if [ &amp;quot;${-#*i}&amp;quot; !</description>
+    </item>
+    
+  </channel>
+</rss>

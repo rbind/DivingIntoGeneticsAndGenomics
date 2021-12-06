@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ScRNAseq on DNA confesses Data speak</title>
+    <link>/tags/scrnaseq/</link>
+    <description>Recent content in ScRNAseq on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Thu, 26 Aug 2021 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/scrnaseq/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Matrix Factorization for single-cell RNAseq data</title>
+      <link>/post/matrix-factorization-for-single-cell-rnaseq-data/</link>
+      <pubDate>Thu, 26 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/matrix-factorization-for-single-cell-rnaseq-data/</guid>
+      <description>I am interested in learning more on matrix factorization and its application in scRNAseq data. I want to shout out to this paper: Enter the Matrix: Factorization Uncovers Knowledge from Omics by Elana J. Fertig group.
+A matrix is decomposed to two matrices: the amplitude matrix and the pattern matrix. You can then do all sorts of things with the decomposed matrices. Single cell matrix is no special, one can use the matrix factorization techniques to derive interesting biological insights.</description>
+    </item>
+    
+    <item>
+      <title>clustered dotplot for single-cell RNAseq</title>
+      <link>/post/clustered-dotplot-for-single-cell-rnaseq/</link>
+      <pubDate>Wed, 10 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/clustered-dotplot-for-single-cell-rnaseq/</guid>
+      <description>Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.
+Seurat has a nice function for that. However, it can not do the clustering for the rows and columns. David McGaughey has written a blog post using ggplot2 and ggtree from Guangchuang Yu.</description>
+    </item>
+    
+    <item>
+      <title>Enhancement of scRNAseq heatmap using complexheatmap</title>
+      <link>/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/</link>
+      <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/</guid>
+      <description>When it comes to make a heatmap, ComplexHeatmap by Zuguang Gu is my favorite. Check it out! You will be amazed on how flexible it is and the documentation is in top niche.
+For Single-cell RNAseq, Seurat provides a DoHeatmap function using ggplot2. There are two limitations:
+ when your genes are not in the top variable gene list, the scale.data will not have that gene and DoHeatmap will drop those genes.</description>
+    </item>
+    
+    <item>
+      <title>dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </title>
+      <link>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</link>
+      <pubDate>Wed, 26 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</guid>
+      <description>It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).
+Let’s create some dummy data.
+library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samples, 3 clusters A,B,C # but in the treatment samples, cluster C is absent (0 cells) in sample7 sample_id&amp;lt;- c(paste0(&amp;quot;sample&amp;quot;, 1:6, &amp;quot;_control&amp;quot;, rep(c(&amp;quot;_A&amp;quot;,&amp;quot;_B&amp;quot;,&amp;quot;_C&amp;quot;),each = 6)), paste0(&amp;quot;sample&amp;quot;, 8:12, &amp;quot;_treatment&amp;quot;, rep(c(&amp;quot;_A&amp;quot;,&amp;quot;_B&amp;quot;, &amp;quot;_C&amp;quot;), each = 5))) sample_id&amp;lt;- c(sample_id, &amp;quot;sample7_treatment_A&amp;quot;, &amp;quot;sample7_treatment_B&amp;quot;) cell_id&amp;lt;- paste0(&amp;quot;cell&amp;quot;, 1:20000) cell_df&amp;lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), cell_id = cell_id) %&amp;gt;% tidyr::separate(sample_id, into = c(&amp;quot;sample_id&amp;quot;, &amp;quot;group&amp;quot;, &amp;quot;cluster_id&amp;quot;), sep= &amp;quot;_&amp;quot;) cell_num&amp;lt;- cell_df %&amp;gt;% group_by(group, cluster_id, sample_id)%&amp;gt;% summarize(n=n()) cell_num ## # A tibble: 35 x 4 ## # Groups: group, cluster_id [6] ## group cluster_id sample_id n ## &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; ## 1 control A sample1 551 ## 2 control A sample2 546 ## 3 control A sample3 544 ## 4 control A sample4 585 ## 5 control A sample5 588 ## 6 control A sample6 542 ## 7 control B sample1 550 ## 8 control B sample2 562 ## 9 control B sample3 574 ## 10 control B sample4 563 ## # … with 25 more rows total_cells&amp;lt;- cell_df %&amp;gt;% group_by(sample_id) %&amp;gt;% summarise(total = n()) total_cells ## # A tibble: 12 x 2 ## sample_id total ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; ## 1 sample1 1673 ## 2 sample10 1713 ## 3 sample11 1691 ## 4 sample12 1696 ## 5 sample2 1633 ## 6 sample3 1700 ## 7 sample4 1711 ## 8 sample5 1768 ## 9 sample6 1727 ## 10 sample7 1225 ## 11 sample8 1720 ## 12 sample9 1743 join the two dataframe to get percentage of cells per cluster per sample</description>
+    </item>
+    
+    <item>
+      <title>stacked violin plot for visualizing single-cell data in Seurat</title>
+      <link>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</link>
+      <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</guid>
+      <description>In scanpy, there is a function to create a stacked violin plot.
+There is no such function in Seurat, and many people were asking for this feature. e.g. https://github.com/satijalab/seurat/issues/300
+https://github.com/satijalab/seurat/issues/463
+The developers have not implemented this feature yet. In this post, I am trying to make a stacked violin plot in Seurat.
+The idea is to create a violin plot per gene using the VlnPlot in Seurat, then customize the axis text/tick and reduce the margin for each plot and finally concatenate by cowplot::plot_grid or patchwork::wrap_plots.</description>
+    </item>
+    
+    <item>
+      <title>compare kallisto-bustools and cellranger for single nuclei sequencing data</title>
+      <link>/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/</link>
+      <pubDate>Fri, 21 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/</guid>
+      <description>In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
+My next thought is: maybe the STAR aligner is doing something weird that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.</description>
+    </item>
+    
+    <item>
+      <title>cellranger mk reference with transgenes</title>
+      <link>/post/cellranger-mk-reference-with-transgenes/</link>
+      <pubDate>Tue, 18 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/cellranger-mk-reference-with-transgenes/</guid>
+      <description>The problem I am working on some 10x scRNAseq data from transgenic mouse. The cells express Tdtomato and Cre genes. I need to add those to the cellranger reference to get the counts for those two genes.
+The journey to the solution Following https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#addgene
+I created a fasta file for the two transgenes: tdTomato and Cre:
+tdtomato_cre.fa:
+&amp;gt;tdtomato dna:chromosome chromosome:GRCm38:tdtomato:1:1431:1 REF ATGGTGAGCAAGGGCGAGGAGGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGGGGCATGGCACCGGCAGCACCGGCAGCGGCAGCTCCGGCACCGCCTCCTCCGAGGACAACAACATGGCCGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGTACGGCATGGACGAGCTGTACAAGTAA &amp;gt;cre dna:chromosome chromosome:GRCm38:cre:1:1032:1 REF ATGGCCAATTTACTGACCGTACACCAAAATTTGCCTGCATTACCGGTCGATGCAACGAGTGATGAGGTTCGCAAGAACCTGATGGACATGTTCAGGGATCGCCAGGCGTTTTCTGAGCATACCTGGAAAATGCTTCTGTCCGTTTGCCGGTCGTGGGCGGCATGGTGCAAGTTGAATAACCGGAAATGGTTTCCCGCAGAACCTGAAGATGTTCGCGATTATCTTCTATATCTTCAGGCGCGCGGTCTGGCAGTAAAAACTATCCAGCAACATTTGGGCCAGCTAAACATGCTTCATCGTCGGTCCGGGCTGCCACGACCAAGTGACAGCAATGCTGTTTCACTGGTTATGCGGCGGATCCGAAAAGAAAACGTTGATGCCGGTGAACGTGCAAAACAGGCTCTAGCGTTCGAACGCACTGATTTCGACCAGGTTCGTTCACTCATGGAAAATAGCGATCGCTGCCAGGATATACGTAATCTGGCATTTCTGGGGATTGCTTATAACACCCTGTTACGTATAGCCGAAATTGCCAGGATCAGGGTTAAAGATATCTCACGTACTGACGGTGGGAGAATGTTAATCCATATTGGCAGAACGAAAACGCTGGTTAGCACCGCAGGTGTAGAGAAGGCACTTAGCCTGGGGGTAACTAAACTGGTCGAGCGATGGATTTCCGTCTCTGGTGTAGCTGATGATCCGAATAACTACCTGTTTTGCCGGGTCAGAAAAAATGGTGTTGCCGCGCCATCTGCCACCAGCCAGCTATCAACTCGCGCCCTGGAAGGGATTTTTGAAGCAACTCATCGATTGATTTACGGCGCTAAGGATGACTCTGGTCAGAGATACCTGGCCTGGTCTGGACACAGTGCCCGTGTCGGAGCCGCGCGAGATATGGCCCGCGCTGGAGTTTCAATACCGGAGATCATGCAAGCTGGTGGCTGGACCAATGTAAATATTGTCATGAACTATATCCGTAACCTGGATAGTGAAACAGGGGCAATGGTGCGCCTGCTGGAAGATGGCGATTAG  edit the genome.</description>
+    </item>
+    
+    <item>
+      <title>add pct_in for each cluster for scRNAseq result table using list column</title>
+      <link>/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/</link>
+      <pubDate>Tue, 04 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/</guid>
+      <description>Using nested dataframe and list column has transformed my way of data wrangling in R. For more on this topic, I highly recommend purrr tutorial from Jenney Bryan.
+In this post, I am going to show you how I use this to solve a problem for adding pct_in column from the differential scRNAseq result table.
+I am going to use presto for differential gene expression test. presto performs a fast Wilcoxon rank sum test and auROC analysis.</description>
+    </item>
+    
+    <item>
+      <title>Mixing mouse and human 10x single cell RNAseq data</title>
+      <link>/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/</link>
+      <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/</guid>
+      <description>In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.
+In this paper https://www.biorxiv.org/content/10.1101/630087v1.full
+ To deconvolute species, detect doublets and low quality cells, the mixed-species mapped data was used.</description>
+    </item>
+    
+    <item>
+      <title>negative bionomial distribution in (single-cell) RNAseq </title>
+      <link>/post/negative-bionomial-distribution-in-single-cell-rnaseq/</link>
+      <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/negative-bionomial-distribution-in-single-cell-rnaseq/</guid>
+      <description>This post is inspired by two posts written by Valentine Svensson:
+http://www.nxn.se/valent/2017/11/16/droplet-scrna-seq-is-not-zero-inflated
+http://www.nxn.se/valent/2018/1/30/count-depth-variation-makes-Poisson-scrna-seq-data-negative-binomial
+The original ipython notebook can be found at https://github.com/vals/Blog/blob/master/171116-zero-inflation/Negative%20control%20analysis.ipynb
+Thanks for writing those and put both the data and code in public. After I read Droplet scRNA-seq is not zero-inflated by Valentine Svensson, I want to gain some understanding of it. This post is an effort to replicate some of the analysis in the preprint using R. The original analysis was carried out in python.</description>
+    </item>
+    
+    <item>
+      <title>Run Rstudio server with singularity on HPC</title>
+      <link>/post/run-rstudio-server-with-singularity-on-hpc/</link>
+      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/run-rstudio-server-with-singularity-on-hpc/</guid>
+      <description>Background Please read the following before go ahead:
+ what is docker?
+ what is Rocker?
+ what is singularity?
+  from Harvard Research computing website: Odyssey has singularity installed.
+ Why Singularity? There are some important differences between Docker and Singularity:
+  Docker and Singularity have their own container formats. Docker containers may be imported to run via Singularity. Docker containers need root privileges for full functionality which is not suitable for a shared HPC environment.</description>
+    </item>
+    
+    <item>
+      <title>understand 10x scRNAseq and scATAC fastqs</title>
+      <link>/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
+      <pubDate>Wed, 06 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/understand-10x-scrnaseq-and-scatac-fastqs/</guid>
+      <description>single cell RNAseq Please read the following posts by Dave Tang. When I google, I always find his posts on top of the pages. Thanks for sharing your knowledge.
+https://davetang.org/muse/2018/06/06/10x-single-cell-bam-files/ https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/
+From the 10x manual:
+ The final Single Cell 3’ Libraries contain the P5 and P7 primers used in Illumina bridge amplification PCR. The 10x Barcode and Read 1 (primer site for sequencing read 1) is added to the molecules during the GEMRT incubation.</description>
+    </item>
+    
+    <item>
+      <title>Evaluating single cell RNAseq cluster stability</title>
+      <link>/project/evaluating-scrnaseq-cluster/</link>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 -0500</pubDate>
+      
+      <guid>/project/evaluating-scrnaseq-cluster/</guid>
+      <description>The goal of scclusteval(Single Cell Cluster Evaluation) is to evaluate the single cell clustering stability by boostrapping/subsampling the cells and provide many visualization methods for comparing clusters.
+for Theory behind the method, see Christian Henning, “Cluster-wise assessment of cluster stability,” Research Report 271, Dept. of Statistical Science, University College London, December 2006)
+You can find the package at my github.</description>
+    </item>
+    
+  </channel>
+</rss>

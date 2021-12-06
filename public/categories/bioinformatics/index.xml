@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Bioinformatics on DNA confesses Data speak</title>
+    <link>/categories/bioinformatics/</link>
+    <description>Recent content in Bioinformatics on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Wed, 01 Dec 2021 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/bioinformatics/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Obtain metadata for public datasets in GEO</title>
+      <link>/post/obtain-metadata-for-public-datasets-in-geo/</link>
+      <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/obtain-metadata-for-public-datasets-in-geo/</guid>
+      <description>There are so many public datasets there waiting for us to mine! It is the blessing and cursing as a computational biologist!
+Metadata, or the data describing (e.g., responder or non-responder for the treatment) the data are critical in interpreting the analysis. Without metadata, your data are useless.
+People usually go to GEO or ENA to download public data. I asked this question on twitter, and I will show you how to get the metadata as suggested by all the awesome tweeps.</description>
+    </item>
+    
+    <item>
+      <title>Be careful when left_join tables with duplicated rows</title>
+      <link>/post/be-careful-when-left-join-tables-with-duplicated-rows/</link>
+      <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/be-careful-when-left-join-tables-with-duplicated-rows/</guid>
+      <description>This is going to be a really short blog post. I recently found that if I join two tables with one of the tables having duplicated rows, the final joined table also contains the duplicated rows. It could be the expected behavior for others but I want to make a note here for myself.
+library(tidyverse) df1&amp;lt;- tibble(key = c(&amp;quot;A&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;C&amp;quot;, &amp;quot;D&amp;quot;, &amp;quot;E&amp;quot;), value = 1:5) df1 ## # A tibble: 5 x 2 ## key value ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; ## 1 A 1 ## 2 B 2 ## 3 C 3 ## 4 D 4 ## 5 E 5 dataframe 2 has two identical rows for B.</description>
+    </item>
+    
+    <item>
+      <title>Matrix Factorization for single-cell RNAseq data</title>
+      <link>/post/matrix-factorization-for-single-cell-rnaseq-data/</link>
+      <pubDate>Thu, 26 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/matrix-factorization-for-single-cell-rnaseq-data/</guid>
+      <description>I am interested in learning more on matrix factorization and its application in scRNAseq data. I want to shout out to this paper: Enter the Matrix: Factorization Uncovers Knowledge from Omics by Elana J. Fertig group.
+A matrix is decomposed to two matrices: the amplitude matrix and the pattern matrix. You can then do all sorts of things with the decomposed matrices. Single cell matrix is no special, one can use the matrix factorization techniques to derive interesting biological insights.</description>
+    </item>
+    
+    <item>
+      <title>How to test if two distributions are different </title>
+      <link>/post/how-to-test-if-two-distributions-are-different/</link>
+      <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-test-if-two-distributions-are-different/</guid>
+      <description>I asked this question on Twitter:
+ what test to test if two distributions are different? I am aware of KS test. When n is large (which is common in genomic studies), the p-value is always significant. better to test against an effect size? how to do it in this context?
+ In genomics studies, it is very common to have large N (e.g., the number of introns, promoters in the genome, number of cells in the single-cell studies).</description>
+    </item>
+    
+    <item>
+      <title>clustered dotplot for single-cell RNAseq</title>
+      <link>/post/clustered-dotplot-for-single-cell-rnaseq/</link>
+      <pubDate>Wed, 10 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/clustered-dotplot-for-single-cell-rnaseq/</guid>
+      <description>Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.
+Seurat has a nice function for that. However, it can not do the clustering for the rows and columns. David McGaughey has written a blog post using ggplot2 and ggtree from Guangchuang Yu.</description>
+    </item>
+    
+    <item>
+      <title>Review 2020</title>
+      <link>/post/review-2020/</link>
+      <pubDate>Thu, 31 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/review-2020/</guid>
+      <description>It is the end of the year again and it is a good time to review my 2020. I wrote one for 2019. It has been a tough year for many of us. It is the same for me. I switched my job from Harvard FAS informatics to Department of Data Science at Dana-Farber Cancer Institute during the shutdown because of COVID19 at the end of March and has been working from home since then.</description>
+    </item>
+    
+    <item>
+      <title>Enhancement of scRNAseq heatmap using complexheatmap</title>
+      <link>/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/</link>
+      <pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/</guid>
+      <description>When it comes to make a heatmap, ComplexHeatmap by Zuguang Gu is my favorite. Check it out! You will be amazed on how flexible it is and the documentation is in top niche.
+For Single-cell RNAseq, Seurat provides a DoHeatmap function using ggplot2. There are two limitations:
+ when your genes are not in the top variable gene list, the scale.data will not have that gene and DoHeatmap will drop those genes.</description>
+    </item>
+    
+    <item>
+      <title>dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </title>
+      <link>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</link>
+      <pubDate>Wed, 26 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/</guid>
+      <description>It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).
+Let’s create some dummy data.
+library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samples, 3 clusters A,B,C # but in the treatment samples, cluster C is absent (0 cells) in sample7 sample_id&amp;lt;- c(paste0(&amp;quot;sample&amp;quot;, 1:6, &amp;quot;_control&amp;quot;, rep(c(&amp;quot;_A&amp;quot;,&amp;quot;_B&amp;quot;,&amp;quot;_C&amp;quot;),each = 6)), paste0(&amp;quot;sample&amp;quot;, 8:12, &amp;quot;_treatment&amp;quot;, rep(c(&amp;quot;_A&amp;quot;,&amp;quot;_B&amp;quot;, &amp;quot;_C&amp;quot;), each = 5))) sample_id&amp;lt;- c(sample_id, &amp;quot;sample7_treatment_A&amp;quot;, &amp;quot;sample7_treatment_B&amp;quot;) cell_id&amp;lt;- paste0(&amp;quot;cell&amp;quot;, 1:20000) cell_df&amp;lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), cell_id = cell_id) %&amp;gt;% tidyr::separate(sample_id, into = c(&amp;quot;sample_id&amp;quot;, &amp;quot;group&amp;quot;, &amp;quot;cluster_id&amp;quot;), sep= &amp;quot;_&amp;quot;) cell_num&amp;lt;- cell_df %&amp;gt;% group_by(group, cluster_id, sample_id)%&amp;gt;% summarize(n=n()) cell_num ## # A tibble: 35 x 4 ## # Groups: group, cluster_id [6] ## group cluster_id sample_id n ## &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; ## 1 control A sample1 551 ## 2 control A sample2 546 ## 3 control A sample3 544 ## 4 control A sample4 585 ## 5 control A sample5 588 ## 6 control A sample6 542 ## 7 control B sample1 550 ## 8 control B sample2 562 ## 9 control B sample3 574 ## 10 control B sample4 563 ## # … with 25 more rows total_cells&amp;lt;- cell_df %&amp;gt;% group_by(sample_id) %&amp;gt;% summarise(total = n()) total_cells ## # A tibble: 12 x 2 ## sample_id total ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; ## 1 sample1 1673 ## 2 sample10 1713 ## 3 sample11 1691 ## 4 sample12 1696 ## 5 sample2 1633 ## 6 sample3 1700 ## 7 sample4 1711 ## 8 sample5 1768 ## 9 sample6 1727 ## 10 sample7 1225 ## 11 sample8 1720 ## 12 sample9 1743 join the two dataframe to get percentage of cells per cluster per sample</description>
+    </item>
+    
+    <item>
+      <title>setting up Travis CI for github repos</title>
+      <link>/post/setting-up-travis-ci-for-github-repos/</link>
+      <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/setting-up-travis-ci-for-github-repos/</guid>
+      <description>I wanted to set up Travis CI long time ago. Finally, I have a chance to do so. There are already many posts on how to do it. I write it down here for my own future reference. Thanks Tao Liu for the instructions. I have been learning a lot from him in collabrating with the MAESTRO project.
+ read the official documentation https://docs.travis-ci.com/user/tutorial/ Jean Fan&amp;rsquo;s blog post https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/ R specific https://docs.</description>
+    </item>
+    
+    <item>
+      <title>build your own singularity image</title>
+      <link>/post/build-your-own-singularity-image/</link>
+      <pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/build-your-own-singularity-image/</guid>
+      <description>I was using the tidyverse rocker image on HPC by singularity pull. see my previous post.
+Everything was OK until I encountered problems installing jpeg and Cairo R packages. Later, I also had an error installing scRepertoire dependency gsl.
+It turns out I have to install debian packages inside the container:
+$ apt update &amp;amp;&amp;amp; apt install -y --no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev \ &amp;amp;&amp;amp; apt install -y --no-install-recommends libx11-dev libcairo2-dev libxt-dev \ &amp;amp;&amp;amp; apt install -y libgsl-dev  However, singularity file system is read-only.</description>
+    </item>
+    
+    <item>
+      <title>customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</title>
+      <link>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</link>
+      <pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</guid>
+      <description>Seurat is great for scRNAseq analysis and it provides many easy-to-use ggplot2 wrappers for visualization. However, this brings the cost of flexibility. For example, In FeaturePlot, one can specify multiple genes and also split.by to further split to multiple the conditions in the meta.data. If split.by is not NULL, the ncol is ignored so you can not arrange the grid.
+This is best to understand with an example.
+library(dplyr) library(Seurat) library(patchwork) library(ggplot2) # Load the PBMC dataset pbmc.</description>
+    </item>
+    
+    <item>
+      <title>compare kallisto-bustools and cellranger for single nuclei sequencing data</title>
+      <link>/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/</link>
+      <pubDate>Fri, 21 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/</guid>
+      <description>In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
+My next thought is: maybe the STAR aligner is doing something weird that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.</description>
+    </item>
+    
+    <item>
+      <title>cellranger mk reference with transgenes</title>
+      <link>/post/cellranger-mk-reference-with-transgenes/</link>
+      <pubDate>Tue, 18 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/cellranger-mk-reference-with-transgenes/</guid>
+      <description>The problem I am working on some 10x scRNAseq data from transgenic mouse. The cells express Tdtomato and Cre genes. I need to add those to the cellranger reference to get the counts for those two genes.
+The journey to the solution Following https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#addgene
+I created a fasta file for the two transgenes: tdTomato and Cre:
+tdtomato_cre.fa:
+&amp;gt;tdtomato dna:chromosome chromosome:GRCm38:tdtomato:1:1431:1 REF ATGGTGAGCAAGGGCGAGGAGGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGGGGCATGGCACCGGCAGCACCGGCAGCGGCAGCTCCGGCACCGCCTCCTCCGAGGACAACAACATGGCCGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGTACGGCATGGACGAGCTGTACAAGTAA &amp;gt;cre dna:chromosome chromosome:GRCm38:cre:1:1032:1 REF ATGGCCAATTTACTGACCGTACACCAAAATTTGCCTGCATTACCGGTCGATGCAACGAGTGATGAGGTTCGCAAGAACCTGATGGACATGTTCAGGGATCGCCAGGCGTTTTCTGAGCATACCTGGAAAATGCTTCTGTCCGTTTGCCGGTCGTGGGCGGCATGGTGCAAGTTGAATAACCGGAAATGGTTTCCCGCAGAACCTGAAGATGTTCGCGATTATCTTCTATATCTTCAGGCGCGCGGTCTGGCAGTAAAAACTATCCAGCAACATTTGGGCCAGCTAAACATGCTTCATCGTCGGTCCGGGCTGCCACGACCAAGTGACAGCAATGCTGTTTCACTGGTTATGCGGCGGATCCGAAAAGAAAACGTTGATGCCGGTGAACGTGCAAAACAGGCTCTAGCGTTCGAACGCACTGATTTCGACCAGGTTCGTTCACTCATGGAAAATAGCGATCGCTGCCAGGATATACGTAATCTGGCATTTCTGGGGATTGCTTATAACACCCTGTTACGTATAGCCGAAATTGCCAGGATCAGGGTTAAAGATATCTCACGTACTGACGGTGGGAGAATGTTAATCCATATTGGCAGAACGAAAACGCTGGTTAGCACCGCAGGTGTAGAGAAGGCACTTAGCCTGGGGGTAACTAAACTGGTCGAGCGATGGATTTCCGTCTCTGGTGTAGCTGATGATCCGAATAACTACCTGTTTTGCCGGGTCAGAAAAAATGGTGTTGCCGCGCCATCTGCCACCAGCCAGCTATCAACTCGCGCCCTGGAAGGGATTTTTGAAGCAACTCATCGATTGATTTACGGCGCTAAGGATGACTCTGGTCAGAGATACCTGGCCTGGTCTGGACACAGTGCCCGTGTCGGAGCCGCGCGAGATATGGCCCGCGCTGGAGTTTCAATACCGGAGATCATGCAAGCTGGTGGCTGGACCAATGTAAATATTGTCATGAACTATATCCGTAACCTGGATAGTGAAACAGGGGCAATGGTGCGCCTGCTGGAAGATGGCGATTAG  edit the genome.</description>
+    </item>
+    
+    <item>
+      <title>add pct_in for each cluster for scRNAseq result table using list column</title>
+      <link>/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/</link>
+      <pubDate>Tue, 04 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/</guid>
+      <description>Using nested dataframe and list column has transformed my way of data wrangling in R. For more on this topic, I highly recommend purrr tutorial from Jenney Bryan.
+In this post, I am going to show you how I use this to solve a problem for adding pct_in column from the differential scRNAseq result table.
+I am going to use presto for differential gene expression test. presto performs a fast Wilcoxon rank sum test and auROC analysis.</description>
+    </item>
+    
+    <item>
+      <title>The end of 2019</title>
+      <link>/post/the-end-of-2019/</link>
+      <pubDate>Sun, 29 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/the-end-of-2019/</guid>
+      <description>It is the end of 2019. How time flies! It is a good time to reflect what I have achieved during the past year and what to look forward in 2020. I wrote a post for 2018 here. I am not the only one who has impostor syndrome :) It is important to celebrate your small successes/achievements by writing them down.
+ I taught a snakemake and scRNAseq workshop during the FAS informatics 2-week nanocourse.</description>
+    </item>
+    
+    <item>
+      <title>Mixing mouse and human 10x single cell RNAseq data</title>
+      <link>/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/</link>
+      <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/</guid>
+      <description>In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.
+In this paper https://www.biorxiv.org/content/10.1101/630087v1.full
+ To deconvolute species, detect doublets and low quality cells, the mixed-species mapped data was used.</description>
+    </item>
+    
+    <item>
+      <title>My opinionated selection of books/urls for bioinformatics/data science curriculum</title>
+      <link>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</link>
+      <pubDate>Thu, 12 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</guid>
+      <description>There was a paper on this topic: A New Online Computational Biology Curriculum.
+I am going to provide a biased list below (I have read most of the books if not all). I say it is biased because you will see many books of R are from Hadely Wickham. I now use tidyverse most of the time.
+Unix I suggest people who want to learn bioinformatics starting to learn unix commands first.</description>
+    </item>
+    
+    <item>
+      <title>Develop Bioconductor packages with docker container</title>
+      <link>/post/develop-bioconductor-packages-with-docker-container/</link>
+      <pubDate>Tue, 06 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/develop-bioconductor-packages-with-docker-container/</guid>
+      <description>Readings links to read:
+ https://www.bioconductor.org/developers/package-guidelines/#rcode
+ https://github.com/Bioconductor/Contributions
+ use container https://github.com/Bioconductor/bioconductor_full
+  I am following the last link.
+pull the container docker pull bioconductor/bioconductor_full:devel docker images REPOSITORY TAG IMAGE ID CREATED SIZE bioconductor/bioconductor_full devel ae3ec2be7376 3 hours ago 5.7GB seuratv3 latest 9b358ab1fd63 2 days ago 2.76GB  It is 5.7G in size.
+start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.</description>
+    </item>
+    
+    <item>
+      <title>Calculate scATACseq TSS enrichment score</title>
+      <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
+      <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/calculate-scatacseq-tss-enrichment-score/</guid>
+      <description>TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
+From the Encode page:
+ Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).</description>
+    </item>
+    
+    <item>
+      <title>clustering scATACseq data: the TF-IDF way</title>
+      <link>/post/clustering-scatacseq-data-the-tf-idf-way/</link>
+      <pubDate>Fri, 03 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/clustering-scatacseq-data-the-tf-idf-way/</guid>
+      <description>scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
+I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
+A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.</description>
+    </item>
+    
+    <item>
+      <title>Split a 10xscATAC bam file by cluster</title>
+      <link>/post/split-a-10xscatac-bam-file-by-cluster/</link>
+      <pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/split-a-10xscatac-bam-file-by-cluster/</guid>
+      <description>I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in IGV.
+The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.</description>
+    </item>
+    
+    <item>
+      <title>How to make a transcript to gene mapping file</title>
+      <link>/post/how-to-make-a-transcript-to-gene-mapping-file/</link>
+      <pubDate>Mon, 28 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-make-a-transcript-to-gene-mapping-file/</guid>
+      <description>I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
+Please read the specifications of those two file formats.</description>
+    </item>
+    
+  </channel>
+</rss>

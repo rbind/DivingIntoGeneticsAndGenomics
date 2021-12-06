@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>FDR on DNA confesses Data speak</title>
+    <link>/tags/fdr/</link>
+    <description>Recent content in FDR on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Sun, 13 Jan 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/fdr/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Understanding p value, multiple comparisons, FDR and q value</title>
+      <link>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</link>
+      <pubDate>Sun, 13 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</guid>
+      <description>UPDATE 01/29/2019. Read this awesome paper Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations.
+This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advanced Statistics for the Life Sciences on edx taught by Rafael Irizarry. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn.</description>
+    </item>
+    
+  </channel>
+</rss>

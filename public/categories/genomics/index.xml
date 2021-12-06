@@ -1,16 +1,97 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Genomics on DNA confesses and Data speak</title>
+    <title>Genomics on DNA confesses Data speak</title>
     <link>/categories/genomics/</link>
-    <description>Recent content in Genomics on DNA confesses and Data speak</description>
+    <description>Recent content in Genomics on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Fri, 07 Sep 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Jun 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/genomics/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Run Rstudio server with singularity on HPC</title>
+      <link>/post/run-rstudio-server-with-singularity-on-hpc/</link>
+      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/run-rstudio-server-with-singularity-on-hpc/</guid>
+      <description>Background Please read the following before go ahead:
+ what is docker?
+ what is Rocker?
+ what is singularity?
+  from Harvard Research computing website: Odyssey has singularity installed.
+ Why Singularity? There are some important differences between Docker and Singularity:
+  Docker and Singularity have their own container formats. Docker containers may be imported to run via Singularity. Docker containers need root privileges for full functionality which is not suitable for a shared HPC environment.</description>
+    </item>
+    
+    <item>
+      <title>Calculate scATACseq TSS enrichment score</title>
+      <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
+      <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/calculate-scatacseq-tss-enrichment-score/</guid>
+      <description>TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
+From the Encode page:
+ Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).</description>
+    </item>
+    
+    <item>
+      <title>understand 10x scRNAseq and scATAC fastqs</title>
+      <link>/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
+      <pubDate>Wed, 06 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/understand-10x-scrnaseq-and-scatac-fastqs/</guid>
+      <description>single cell RNAseq Please read the following posts by Dave Tang. When I google, I always find his posts on top of the pages. Thanks for sharing your knowledge.
+https://davetang.org/muse/2018/06/06/10x-single-cell-bam-files/ https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/
+From the 10x manual:
+ The final Single Cell 3’ Libraries contain the P5 and P7 primers used in Illumina bridge amplification PCR. The 10x Barcode and Read 1 (primer site for sequencing read 1) is added to the molecules during the GEMRT incubation.</description>
+    </item>
+    
+    <item>
+      <title>How to make a transcript to gene mapping file</title>
+      <link>/post/how-to-make-a-transcript-to-gene-mapping-file/</link>
+      <pubDate>Mon, 28 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-make-a-transcript-to-gene-mapping-file/</guid>
+      <description>I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
+Please read the specifications of those two file formats.</description>
+    </item>
+    
+    <item>
+      <title>Understanding p value, multiple comparisons, FDR and q value</title>
+      <link>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</link>
+      <pubDate>Sun, 13 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</guid>
+      <description>UPDATE 01/29/2019. Read this awesome paper Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations.
+This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advanced Statistics for the Life Sciences on edx taught by Rafael Irizarry. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn.</description>
+    </item>
+    
+    <item>
+      <title>PCA in action</title>
+      <link>/post/pca-in-action/</link>
+      <pubDate>Tue, 18 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-in-action/</guid>
+      <description>PCA in practice. Principal Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).
+Let’s use a microarray data for demonstration.</description>
+    </item>
+    
+    <item>
+      <title>Three gotchas when using R for Genomic data analysis</title>
+      <link>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</link>
+      <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</guid>
+      <description>During my daily work with R for genomic data analysis, I encountered several instances that R gives me some (bad) surprises.
+1. The devil 1 and 0 coordinate system read detail here https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey
+some files such as bed file is 0 based. Two genomic regions:
+chr1 0 1000 chr1 1001 2000  when you import that bed file into R using rtracklayer::import(), it will become
+chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 1 based unlike python).</description>
+    </item>
     
     <item>
       <title>Compute averages/sums on GRanges or equal length bins</title>

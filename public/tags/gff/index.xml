@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Gff on DNA confesses Data speak</title>
+    <link>/tags/gff/</link>
+    <description>Recent content in Gff on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Mon, 28 Jan 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/gff/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to make a transcript to gene mapping file</title>
+      <link>/post/how-to-make-a-transcript-to-gene-mapping-file/</link>
+      <pubDate>Mon, 28 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-make-a-transcript-to-gene-mapping-file/</guid>
+      <description>I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
+Please read the specifications of those two file formats.</description>
+    </item>
+    
+  </channel>
+</rss>

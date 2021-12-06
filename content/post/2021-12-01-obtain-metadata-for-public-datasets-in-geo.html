@@ -1,0 +1,63 @@
+---
+title: Obtain metadata for public datasets in GEO
+author: Ming Tang
+date: '2021-12-01'
+slug: obtain-metadata-for-public-datasets-in-geo
+categories:
+  - bioinformatics
+  - R
+tags:
+  - Bioconductor
+  - GEO
+  - R
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>There are so many public datasets there waiting for us to mine! It is the blessing and cursing as a computational biologist!</p>
+<p>Metadata, or the data describing (e.g., responder or non-responder for the treatment) the data are critical in interpreting the analysis. Without metadata, your data are useless.</p>
+<p>People usually go to <a href="https://www.ncbi.nlm.nih.gov/geo/"><code>GEO</code></a> or <a href="https://www.ebi.ac.uk/ena/browser/"><code>ENA</code></a> to download public data. I asked this question on twitter, and I will show you how to get the metadata as suggested by all the awesome tweeps. Thanks!</p>
+<blockquote class="twitter-tweet">
+<p lang="en" dir="ltr">
+how to download GEO metadata again? I remember there is a way to click and download a table with GSM ids and other associated metadata.
+</p>
+— Ming (Tommy) Tang (<span class="citation">@tangming2005</span>) <a href="https://twitter.com/tangming2005/status/1465420814258479104?ref_src=twsrc%5Etfw">November 29, 2021</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div id="use-sra-run-selector" class="section level3">
+<h3>Use SRA run selector</h3>
+<p>go to <a href="https://www.ncbi.nlm.nih.gov/Traces/study/" class="uri">https://www.ncbi.nlm.nih.gov/Traces/study/</a> and type in the accession number</p>
+<p>Click <code>Metadata</code> below the <code>Download</code> column, a <code>SraRuntable.txt</code> file will be downloaded.</p>
+</div>
+<div id="use-geoquery-or-geometadatadb" class="section level3">
+<h3>Use GEOquery or GEOmetadatadb</h3>
+<p>If you want to stay within <code>R</code>, take a look at <a href="https://www.bioconductor.org/packages/release/bioc/html/GEOmetadb.html">GEOmetadatadb</a> and
+<a href="https://www.bioconductor.org/packages/release/bioc/html/GEOquery.html">GEOquery</a>.</p>
+</div>
+<div id="nextflow" class="section level3">
+<h3>Nextflow</h3>
+<p>A nextflow pipeline: <a href="https://nf-co.re/fetchngs#sra--ena--ddbj--geo-ids">nf-core/fetchngs</a></p>
+</div>
+<div id="command-line-tool" class="section level3">
+<h3>Command line tool</h3>
+<p>check <a href="https://github.com/pachterlab/ffq#fetch-information-of-one-or-more-geo-study-and-all-of-their-runs">ffq</a> and <a href="https://github.com/saketkc/pysradb">pysradb</a></p>
+<pre class="bash"><code>pip install ffq
+ffq -t GSE GSE176021
+
+
+pip install pysradb
+pysradb metadata SRP000002  --detailed</code></pre>
+</div>
+<div id="other-resources" class="section level3">
+<h3>Other resources</h3>
+<ul>
+<li><a href="https://sra-explorer.info/">SraExplorer</a></li>
+<li><a href="http://rna.recount.bio/">Recount3</a> summaries and queries for large-scale RNA-seq expression and splicing. paper recently published <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02533-6" class="uri">https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02533-6</a></li>
+<li><a href="dee2.io">Digital Expression Explorer 2</a> from Mark Ziemann.</li>
+<li>Other databases I curated <a href="https://github.com/crazyhottommy/RNA-seq-analysis#databases" class="uri">https://github.com/crazyhottommy/RNA-seq-analysis#databases</a></li>
+</ul>
+</div>

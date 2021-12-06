@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>HPC on DNA confesses Data speak</title>
+    <link>/categories/hpc/</link>
+    <description>Recent content in HPC on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Sun, 09 Jun 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/hpc/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Run Rstudio server with singularity on HPC</title>
+      <link>/post/run-rstudio-server-with-singularity-on-hpc/</link>
+      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/run-rstudio-server-with-singularity-on-hpc/</guid>
+      <description>Background Please read the following before go ahead:
+ what is docker?
+ what is Rocker?
+ what is singularity?
+  from Harvard Research computing website: Odyssey has singularity installed.
+ Why Singularity? There are some important differences between Docker and Singularity:
+  Docker and Singularity have their own container formats. Docker containers may be imported to run via Singularity. Docker containers need root privileges for full functionality which is not suitable for a shared HPC environment.</description>
+    </item>
+    
+    <item>
+      <title>open files on remote with sublime by ssh</title>
+      <link>/post/open-files-on-remote-with-sublime-by-ssh/</link>
+      <pubDate>Wed, 10 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/open-files-on-remote-with-sublime-by-ssh/</guid>
+      <description>I am still suck at vim or emacs. I use nano to edit files on remote machines. But for more complicated editing, I prefer to use sublime.
+use this https://github.com/randy3k/RemoteSubl for editing remote files.
+Steps:
+on remote machine, install rmate ssh bio1 curl -o ~/bin/rmate https://raw.githubusercontent.com/aurora/rmate/master/rmate chmod u+x bin/rmate  on your local computer, install RemoteSubl on your local computer, open sublime, click tools &amp;ndash;&amp;gt; Command Palette &amp;ndash;&amp;gt; type Package control:Install Package &amp;ndash;&amp;gt; type RemoteSubl to install.</description>
+    </item>
+    
+    <item>
+      <title>set up odyssey HPC dot files</title>
+      <link>/post/set-up-odyssey-hpc-dot-files/</link>
+      <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/set-up-odyssey-hpc-dot-files/</guid>
+      <description>dot files Those files are originally got from Samir Amin, my labmate in Roel Verhaak&amp;rsquo;s lab. Thanks for sharing!
+.screenrc
+.bashrc
+.bash_profile
+and inside .profile.d folder, there is a file named 01_odyssey_config.sh. It was executed when you login the shell.
+You can grab my dot files in my github repo.
+Inside the .bash_profile:
+if [ -d $HOME/.profile.d ]; then for i in $HOME/.profile.d/*.sh; do if [ -r $i ]; then if [ &amp;quot;${-#*i}&amp;quot; !</description>
+    </item>
+    
+    <item>
+      <title>set up ssh odyssey HPC</title>
+      <link>/post/set-up-ssh-odyssey-hpc/</link>
+      <pubDate>Thu, 04 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/set-up-ssh-odyssey-hpc/</guid>
+      <description>request an account following here.
+ Harvard odyssey HPC requires a two-factor security login. First set up the VPN following here
+ Then read about OpenAuth here. One can download mobile apps such as Duo and google-Authenticator on your phone, but then each time you will need to type the password to the terminal. Or you can download the java program for desktop, if you have a FAS research computing account, you should be able to download it from the link FASRC send you.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ScATACseq on DNA confesses Data speak</title>
+    <link>/tags/scatacseq/</link>
+    <description>Recent content in ScATACseq on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Wed, 17 Jul 2019 00:00:00 -0400</lastBuildDate>
+    
+	<atom:link href="/tags/scatacseq/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Snakemake pipeline post-processing scATAC-seq</title>
+      <link>/project/single-cell-atacseq/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
+      
+      <guid>/project/single-cell-atacseq/</guid>
+      <description>What does it do? For single cell ATACseq experiment, one gets a merged bam file for all cells. After going through clustering, one groups similar cells into cell types (cell states). This workflow will split the bam by clusters to create a pseudo bulk bam for each cluster, create bigwig tracks for visulization, call peaks for each cluster and merge the peaks across the clusters. Finally it will count reads per peak per cell from the original bam file on the merged peaks.</description>
+    </item>
+    
+  </channel>
+</rss>

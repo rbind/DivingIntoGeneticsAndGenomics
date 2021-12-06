@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Singularity on DNA confesses Data speak</title>
+    <link>/tags/singularity/</link>
+    <description>Recent content in Singularity on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Thu, 02 Jul 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/singularity/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>build your own singularity image</title>
+      <link>/post/build-your-own-singularity-image/</link>
+      <pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/build-your-own-singularity-image/</guid>
+      <description>I was using the tidyverse rocker image on HPC by singularity pull. see my previous post.
+Everything was OK until I encountered problems installing jpeg and Cairo R packages. Later, I also had an error installing scRepertoire dependency gsl.
+It turns out I have to install debian packages inside the container:
+$ apt update &amp;amp;&amp;amp; apt install -y --no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev \ &amp;amp;&amp;amp; apt install -y --no-install-recommends libx11-dev libcairo2-dev libxt-dev \ &amp;amp;&amp;amp; apt install -y libgsl-dev  However, singularity file system is read-only.</description>
+    </item>
+    
+    <item>
+      <title>Run Rstudio server with singularity on HPC</title>
+      <link>/post/run-rstudio-server-with-singularity-on-hpc/</link>
+      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/run-rstudio-server-with-singularity-on-hpc/</guid>
+      <description>Background Please read the following before go ahead:
+ what is docker?
+ what is Rocker?
+ what is singularity?
+  from Harvard Research computing website: Odyssey has singularity installed.
+ Why Singularity? There are some important differences between Docker and Singularity:
+  Docker and Singularity have their own container formats. Docker containers may be imported to run via Singularity. Docker containers need root privileges for full functionality which is not suitable for a shared HPC environment.</description>
+    </item>
+    
+  </channel>
+</rss>

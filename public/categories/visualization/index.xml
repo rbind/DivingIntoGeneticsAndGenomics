@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Visualization on DNA confesses Data speak</title>
+    <link>/categories/visualization/</link>
+    <description>Recent content in Visualization on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Wed, 10 Mar 2021 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/visualization/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>clustered dotplot for single-cell RNAseq</title>
+      <link>/post/clustered-dotplot-for-single-cell-rnaseq/</link>
+      <pubDate>Wed, 10 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/clustered-dotplot-for-single-cell-rnaseq/</guid>
+      <description>Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.
+Seurat has a nice function for that. However, it can not do the clustering for the rows and columns. David McGaughey has written a blog post using ggplot2 and ggtree from Guangchuang Yu.</description>
+    </item>
+    
+    <item>
+      <title>stacked violin plot for visualizing single-cell data in Seurat</title>
+      <link>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</link>
+      <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</guid>
+      <description>In scanpy, there is a function to create a stacked violin plot.
+There is no such function in Seurat, and many people were asking for this feature. e.g. https://github.com/satijalab/seurat/issues/300
+https://github.com/satijalab/seurat/issues/463
+The developers have not implemented this feature yet. In this post, I am trying to make a stacked violin plot in Seurat.
+The idea is to create a violin plot per gene using the VlnPlot in Seurat, then customize the axis text/tick and reduce the margin for each plot and finally concatenate by cowplot::plot_grid or patchwork::wrap_plots.</description>
+    </item>
+    
+    <item>
+      <title>Align multiple ggplot2 plots by axis</title>
+      <link>/post/align-multiple-ggplot2-plots-by-axis/</link>
+      <pubDate>Fri, 07 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/align-multiple-ggplot2-plots-by-axis/</guid>
+      <description>I used to use cowplot to align multiple ggplot2 plots but when the x-axis are of different ranges, some extra work is needed to align the axis as well.
+The other day I was reading a blog post by GuangChuang Yu and he exactly tackled this problem. His packages such as ChIPseeker, ClusterProfiler, ggtree are quite popular among the users.
+Some dummy example from his post:
+library(dplyr) library(ggplot2) library(ggstance) library(cowplot) # devtools::install_github(&amp;quot;YuLab-SMU/treeio&amp;quot;) # devtools::install_github(&amp;quot;YuLab-SMU/ggtree&amp;quot;) library(tidytree) library(ggtree) no_legend=theme(legend.</description>
+    </item>
+    
+    <item>
+      <title>My opinionated selection of books/urls for bioinformatics/data science curriculum</title>
+      <link>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</link>
+      <pubDate>Thu, 12 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</guid>
+      <description>There was a paper on this topic: A New Online Computational Biology Curriculum.
+I am going to provide a biased list below (I have read most of the books if not all). I say it is biased because you will see many books of R are from Hadely Wickham. I now use tidyverse most of the time.
+Unix I suggest people who want to learn bioinformatics starting to learn unix commands first.</description>
+    </item>
+    
+    <item>
+      <title>plot 10x scATAC coverage by cluster/group</title>
+      <link>/post/plot-10x-scatac-coverage-by-cluster-group/</link>
+      <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
+      <description>This post was inspired by Andrew Hill’s recent blog post.
+Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
+&amp;mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.</description>
+    </item>
+    
+    <item>
+      <title>A tale of two heatmap functions</title>
+      <link>/post/a-tale-of-two-heatmap-functions/</link>
+      <pubDate>Wed, 19 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/a-tale-of-two-heatmap-functions/</guid>
+      <description>You probably do not understand heatmap! Please read You probably don’t understand heatmaps by Mick Watson
+In the blog post, Mick used heatmap function in the stats package, I will try to walk you through comparing heatmap, and heatmap.2 from gplots package.
+Before I start, I want to quote this:
+ “The defaults of almost every heat map function in R does the hierarchical clustering first, then scales the rows then displays the image”</description>
+    </item>
+    
+  </channel>
+</rss>
