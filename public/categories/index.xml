@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Wed, 01 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 15 May 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>Bioinformatics</title>
       <link>/categories/bioinformatics/</link>
-      <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 15 May 2022 00:00:00 +0000</pubDate>
       
       <guid>/categories/bioinformatics/</guid>
       <description></description>
@@ -63,6 +63,15 @@
       <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
       
       <guid>/categories/hpc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Machine learning</title>
+      <link>/categories/machine-learning/</link>
+      <pubDate>Sun, 15 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/machine-learning/</guid>
       <description></description>
     </item>
     
@@ -132,7 +141,7 @@
     <item>
       <title>Single-cell</title>
       <link>/categories/single-cell/</link>
-      <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 15 May 2022 00:00:00 +0000</pubDate>
       
       <guid>/categories/single-cell/</guid>
       <description></description>

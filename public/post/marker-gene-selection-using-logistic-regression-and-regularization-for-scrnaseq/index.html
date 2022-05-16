@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
+ Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
+ I am interested in using logistic regression to find marker genes and want to try fitting the model in the [tidymodel](https://www.tidymodels.org/) ecosystsem and using different regularization methods.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">
+  <meta property="og:title" content="marker gene selection using logistic regression and regularization for scRNAseq  | DNA confesses Data speak">
+  <meta property="og:description" content="why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
+ Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
+ I am interested in using logistic regression to find marker genes and want to try fitting the model in the [tidymodel](https://www.tidymodels.org/) ecosystsem and using different regularization methods.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2022-05-15T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2022-05-15T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>marker gene selection using logistic regression and regularization for scRNAseq  | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">marker gene selection using logistic regression and regularization for scRNAseq </h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2022-05-15 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      May 15, 2022
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    11 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/single-cell/">single-cell</a
+    >, 
+    
+    <a href="/categories/machine-learning/">machine learning</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=marker%20gene%20selection%20using%20logistic%20regression%20and%20regularization%20for%20scRNAseq%20&amp;url=%2fpost%2fmarker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fmarker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fmarker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq%2f&amp;title=marker%20gene%20selection%20using%20logistic%20regression%20and%20regularization%20for%20scRNAseq%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fmarker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq%2f&amp;title=marker%20gene%20selection%20using%20logistic%20regression%20and%20regularization%20for%20scRNAseq%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=marker%20gene%20selection%20using%20logistic%20regression%20and%20regularization%20for%20scRNAseq%20&amp;body=%2fpost%2fmarker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="why-this-blog-post" class="section level3">
+<h3>why this blog post?</h3>
+<p>I saw a biorxiv paper titled <a href="https://www.biorxiv.org/content/10.1101/2022.05.09.490241v1">A comparison of marker gene selection methods for single-cell RNA sequencing data</a></p>
+<blockquote>
+<p>Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression</p>
+</blockquote>
+<p>I am interested in using logistic regression to find marker genes and want to try fitting the model in the <code>[tidymodel](https://www.tidymodels.org/)</code> ecosystsem and using different regularization methods.</p>
+<p>I highly recommend you to watch the <a href="https://app.learney.me/maps/StatQuest?topic=Regularization">statquest videos</a> on those topics.</p>
+<p>Let’s use PBMC single-cell RNAseq data as an example.</p>
+<p>Load libraries</p>
+<pre class="r"><code>library(Seurat)
+library(tidyverse)
+library(tidymodels)
+library(scCustomize) # for plotting</code></pre>
+<p>Preprocess the data</p>
+<pre class="r"><code># Load the PBMC dataset
+pbmc.data &lt;- Read10X(data.dir = &quot;~/blog_data/filtered_gene_bc_matrices/hg19/&quot;)
+# Initialize the Seurat object with the raw (non-normalized data).
+pbmc &lt;- CreateSeuratObject(counts = pbmc.data, project = &quot;pbmc3k&quot;, min.cells = 3, min.features = 200)
+
+## routine processing
+pbmc&lt;- pbmc %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+## the annotation borrowed from Seurat tutorial
+new.cluster.ids &lt;- c(&quot;Naive CD4 T&quot;, &quot;CD14+ Mono&quot;, &quot;Memory CD4 T&quot;, &quot;B&quot;, &quot;CD8 T&quot;, &quot;FCGR3A+ Mono&quot;, 
+    &quot;NK&quot;, &quot;DC&quot;, &quot;Platelet&quot;)
+names(new.cluster.ids) &lt;- levels(pbmc)
+pbmc &lt;- RenameIdents(pbmc, new.cluster.ids)
+pbmc$cell_type&lt;- Idents(pbmc)
+DimPlot(pbmc)</code></pre>
+<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="marker-gene-detection-using-differential-expressin-analysis-between-clusters." class="section level3">
+<h3>Marker gene detection using differential expressin analysis between clusters.</h3>
+<pre class="r"><code>pbmc_subset&lt;- pbmc[, pbmc$cell_type %in% c(&quot;NK&quot;, &quot;B&quot;)]
+DimPlot(pbmc_subset)</code></pre>
+<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>Idents(pbmc_subset)&lt;- pbmc_subset$cell_type
+
+diff_markers&lt;- FindMarkers(pbmc_subset, ident.1 = &quot;B&quot;, ident.2 = &quot;NK&quot;, test.use = &quot;wilcox&quot;)
+
+diff_markers %&gt;%
+        arrange(p_val_adj, desc(abs(avg_log2FC))) %&gt;%
+        head(n = 20)</code></pre>
+<pre><code>#&gt;                 p_val avg_log2FC pct.1 pct.2    p_val_adj
+#&gt; GZMB     7.646318e-98  -5.553778 0.017 0.966 1.048616e-93
+#&gt; GZMA     2.929923e-95  -4.519094 0.011 0.939 4.018097e-91
+#&gt; PRF1     9.684091e-95  -4.635264 0.029 0.959 1.328076e-90
+#&gt; NKG7     8.032681e-92  -6.310372 0.083 0.986 1.101602e-87
+#&gt; CST7     4.498511e-91  -4.389481 0.037 0.946 6.169258e-87
+#&gt; CTSW     1.747566e-89  -4.144031 0.066 0.966 2.396612e-85
+#&gt; FGFBP2   3.777986e-87  -4.555937 0.034 0.912 5.181130e-83
+#&gt; GNLY     8.666212e-85  -6.080298 0.080 0.939 1.188484e-80
+#&gt; FCGR3A   1.278458e-79  -3.635596 0.034 0.858 1.753278e-75
+#&gt; CD247    1.428149e-77  -3.763002 0.040 0.851 1.958563e-73
+#&gt; GZMM     3.440488e-77  -3.248116 0.017 0.818 4.718285e-73
+#&gt; CD7      4.578399e-74  -3.330969 0.054 0.851 6.278817e-70
+#&gt; TYROBP   2.340536e-73  -3.560921 0.103 0.899 3.209811e-69
+#&gt; FCER1G   9.343826e-72  -3.499007 0.069 0.845 1.281412e-67
+#&gt; SPON2    7.917147e-70  -3.506623 0.011 0.743 1.085758e-65
+#&gt; CD74     1.880522e-69   3.659825 1.000 0.824 2.578947e-65
+#&gt; HLA-DRA  2.083409e-69   4.597057 1.000 0.365 2.857187e-65
+#&gt; SRGN     1.501958e-68  -3.151188 0.201 0.932 2.059785e-64
+#&gt; HLA-DPB1 3.257314e-66   3.595454 0.986 0.345 4.467080e-62
+#&gt; HLA-DRB1 2.058185e-65   3.710470 0.980 0.189 2.822594e-61</code></pre>
+<p>Note that p-values from this type of analysis are inflated as we clustered the cells first and then find the differences between the clusters. In other words, we double-dip the data.</p>
+<p>see slide 27 from my ABRF2022 talk <a href="https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf" class="uri">https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf</a></p>
+</div>
+<div id="lets-use-logistic-regression-to-find-marker-genes" class="section level3">
+<h3>Let’s use logistic regression to find marker genes</h3>
+<p>We can use logistic regression to classify B-cells and NK cells.</p>
+<pre class="r"><code>## re-process the data, as the most-variable genes will change when you only have NK and B cells vs all cells. use log normalized data
+pbmc_subset&lt;- pbmc_subset %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.1, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)</code></pre>
+<p>we use scaled data, because it was z-score transformed, so the highly expressed genes will not dominate the model</p>
+<pre class="r"><code>data&lt;- pbmc_subset@assays$RNA@scale.data
+# let&#39;s transpose the matrix and make it to a dataframe
+dim(data)</code></pre>
+<pre><code>#&gt; [1] 2000  497</code></pre>
+<pre class="r"><code>data&lt;- t(data) %&gt;%
+        as.data.frame()
+
+# now, every row is a cell with 2000 genes/features/predictors. 
+dim(data)</code></pre>
+<pre><code>#&gt; [1]  497 2000</code></pre>
+<pre class="r"><code>## add the cell type/the outcome/y to the dataframe
+data$cell_type&lt;- pbmc_subset$cell_type
+data$cell_barcode&lt;- rownames(data)
+## it is important to turn it to a factor for classification
+data$cell_type&lt;- factor(data$cell_type)</code></pre>
+</div>
+<div id="prepare-the-data" class="section level3">
+<h3>prepare the data</h3>
+<pre class="r"><code>set.seed(123)
+
+data$cell</code></pre>
+<pre><code>#&gt; NULL</code></pre>
+<pre class="r"><code>data_split &lt;- initial_split(data, strata = &quot;cell_type&quot;)
+data_train &lt;- training(data_split)
+data_test &lt;- testing(data_split)
+
+# 10 fold cross validation
+data_fold &lt;- vfold_cv(data_train, v = 10)</code></pre>
+<p>We will not look at the test data at all until we test our model.</p>
+</div>
+<div id="ridge-regression" class="section level3">
+<h3>Ridge Regression</h3>
+<p>In our training data, we have 2000 genes/features (<code>p</code>) and 273 cells/observations (<code>n</code>)
+and <code>p</code> &gt;&gt; <code>n</code>, so we will need to enforce sparsity of the model by regularization.</p>
+<p>We’ll set the penalty argument to <code>tune()</code> as a placeholder for now. This is a model hyperparameter that we will tune to find the best value for making predictions with our data. Setting mixture to a value of one means that the glmnet model will potentially remove irrelevant predictors and choose a simpler model.</p>
+<p>Let’s use L2 regularization/norm for ridge regression by specifying <code>mixture = 0</code>.
+and we need to tune the <code>penalty</code> hyperparameter.</p>
+<pre class="r"><code>ridge_spec&lt;-
+        logistic_reg(penalty = tune(), mixture = 0) %&gt;%
+        set_engine(&quot;glmnet&quot;) %&gt;%
+        set_mode(&quot;classification&quot;)
+
+ridge_recipe &lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&gt;% 
+  update_role(cell_barcode, new_role = &quot;ID&quot;)  %&gt;%
+  step_zv(all_predictors())
+
+# step_normalize(all_predictors())
+## the expression is already scaled, no need to do step_normalize
+
+ridge_workflow &lt;- workflow() %&gt;% 
+  add_recipe(ridge_recipe) %&gt;% 
+  add_model(ridge_spec)</code></pre>
+<p>tune the <code>penalty</code> hyper-parameter.</p>
+<pre class="r"><code>penalty_grid &lt;- grid_regular(penalty(range = c(-5, 5)), levels = 50)
+#penalty_grid
+tune_res &lt;- tune_grid(
+  ridge_workflow,
+  resamples = data_fold, 
+  grid = penalty_grid
+)
+
+# tune_res
+# check which penalty is the best 
+autoplot(tune_res)</code></pre>
+<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>best_penalty &lt;- select_best(tune_res, metric = &quot;accuracy&quot;)
+best_penalty</code></pre>
+<pre><code>#&gt; # A tibble: 1 × 2
+#&gt;   penalty .config              
+#&gt;     &lt;dbl&gt; &lt;chr&gt;                
+#&gt; 1 0.00001 Preprocessor1_Model01</code></pre>
+<pre class="r"><code>ridge_final &lt;- finalize_workflow(ridge_workflow, best_penalty)
+ridge_final_fit &lt;- fit(ridge_final, data = data_train)
+
+tidy(ridge_final_fit) %&gt;% arrange(desc(abs(estimate)))</code></pre>
+<pre><code>#&gt; # A tibble: 2,000 × 3
+#&gt;    term        estimate penalty
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1 (Intercept)  -1.21   0.00001
+#&gt;  2 NKG7          0.0318 0.00001
+#&gt;  3 GZMB          0.0307 0.00001
+#&gt;  4 HLA-DRA      -0.0307 0.00001
+#&gt;  5 CTSW          0.0305 0.00001
+#&gt;  6 GNLY          0.0297 0.00001
+#&gt;  7 PRF1          0.0296 0.00001
+#&gt;  8 GZMA          0.0295 0.00001
+#&gt;  9 CD74         -0.0295 0.00001
+#&gt; 10 FGFBP2        0.0295 0.00001
+#&gt; # … with 1,990 more rows</code></pre>
+<pre class="r"><code># augment(ridge_final_fit, new_data = data_test) </code></pre>
+<p>we see the NKG7, GZMB, CTSW GNLY, PRF1 etc on the top as the marker genes for NK cells which makes sense!</p>
+<pre class="r"><code>## confusion matrix
+predict(ridge_final_fit, new_data = data_test) %&gt;%
+        bind_cols(data_test %&gt;% select(cell_type)) %&gt;%
+        conf_mat(truth = cell_type, estimate = .pred_class)</code></pre>
+<pre><code>#&gt;           Truth
+#&gt; Prediction  B NK
+#&gt;         B  88  0
+#&gt;         NK  0 37</code></pre>
+</div>
+<div id="lasso-regression" class="section level3">
+<h3>Lasso regression</h3>
+<p>You need to use logistic_reg() and set mixture = 1 to specify a lasso model. The mixture argument specifies the amount of different types of regularization, mixture = 0 specifies only ridge regularization and mixture = 1 specifies only lasso regularization.</p>
+<p>Lasso will remove highly correlated features which may not be what we want here!</p>
+<pre class="r"><code>lasso_spec&lt;-
+        logistic_reg(penalty = tune(), mixture = 1) %&gt;%
+        set_engine(&quot;glmnet&quot;) %&gt;%
+        set_mode(&quot;classification&quot;)
+
+lasso_recipe &lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&gt;% 
+  update_role(cell_barcode, new_role = &quot;ID&quot;)  %&gt;%
+  step_zv(all_predictors())
+
+# step_normalize(all_predictors())
+## the expression is already scaled, no need to do step_normalize
+
+lasso_workflow &lt;- workflow() %&gt;% 
+  add_recipe(lasso_recipe) %&gt;% 
+  add_model(lasso_spec)
+
+penalty_grid &lt;- grid_regular(penalty(range = c(-5, 5)), levels = 50)
+#penalty_grid
+tune_res &lt;- tune_grid(
+  lasso_workflow,
+  resamples = data_fold, 
+  grid = penalty_grid
+)
+
+# tune_res
+# check which penalty is the best 
+autoplot(tune_res)</code></pre>
+<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>best_penalty &lt;- select_best(tune_res, metric = &quot;accuracy&quot;)
+best_penalty</code></pre>
+<pre><code>#&gt; # A tibble: 1 × 2
+#&gt;   penalty .config              
+#&gt;     &lt;dbl&gt; &lt;chr&gt;                
+#&gt; 1 0.00001 Preprocessor1_Model01</code></pre>
+<pre class="r"><code>lasso_final &lt;- finalize_workflow(lasso_workflow, best_penalty)
+lasso_final_fit &lt;- fit(lasso_final, data = data_train)
+
+## confusion matrix
+predict(lasso_final_fit, new_data = data_test) %&gt;%
+        bind_cols(data_test %&gt;% select(cell_type)) %&gt;%
+        conf_mat(truth = cell_type, estimate = .pred_class)</code></pre>
+<pre><code>#&gt;           Truth
+#&gt; Prediction  B NK
+#&gt;         B  88  0
+#&gt;         NK  0 37</code></pre>
+<pre class="r"><code>lasso_features&lt;- tidy(lasso_final_fit) %&gt;% 
+        arrange(desc(abs(estimate))) %&gt;%
+        filter(estimate != 0) 
+
+print(lasso_features, n = Inf)</code></pre>
+<pre><code>#&gt; # A tibble: 21 × 3
+#&gt;    term        estimate penalty
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1 (Intercept) -2.48    0.00001
+#&gt;  2 NKG7         1.70    0.00001
+#&gt;  3 CTSW         0.582   0.00001
+#&gt;  4 GZMA         0.561   0.00001
+#&gt;  5 HLA-DRA     -0.561   0.00001
+#&gt;  6 CD74        -0.485   0.00001
+#&gt;  7 CD79A       -0.423   0.00001
+#&gt;  8 CDC6         0.422   0.00001
+#&gt;  9 CDKN3        0.251   0.00001
+#&gt; 10 GNLY         0.245   0.00001
+#&gt; 11 CST7         0.195   0.00001
+#&gt; 12 GZMB         0.174   0.00001
+#&gt; 13 TYMS         0.155   0.00001
+#&gt; 14 PRF1         0.151   0.00001
+#&gt; 15 RRM2         0.142   0.00001
+#&gt; 16 KIFC1        0.0690  0.00001
+#&gt; 17 LTB         -0.0612  0.00001
+#&gt; 18 FGFBP2       0.0588  0.00001
+#&gt; 19 MGLL         0.0577  0.00001
+#&gt; 20 RPL13A      -0.0456  0.00001
+#&gt; 21 CDCA8        0.00842 0.00001</code></pre>
+<p>Because <code>Lasso regression</code> enforce sparsity, we can select the features with the coefficients/esitmates not equal to 0, but we will miss the correlated genes which were thrown out by the model.</p>
+<p>Also, if you are wondering how can I get a p-value for the coefficient, read <a href="https://stats.stackexchange.com/questions/410173/lasso-regression-p-values-and-coefficients" class="uri">https://stats.stackexchange.com/questions/410173/lasso-regression-p-values-and-coefficients</a></p>
+</div>
+<div id="elastic-net" class="section level3">
+<h3>Elastic-net</h3>
+<p>Setting mixture to a value between 0 and 1 lets us use both Lasso and Ridge (Elastic-net!!)</p>
+<p>Elastic-net gets the best world of both Lasso and Ridge.
+Thanks, <a href="https://twitter.com/Matthew_N_B">Matt Bernstein</a> for pointing the original elastic-net paper to me!</p>
+<p><a href="https://hastie.su.domains/Papers/elasticnet.pdf" class="uri">https://hastie.su.domains/Papers/elasticnet.pdf</a></p>
+<blockquote>
+<p>In addition, the elastic net encourages a
+grouping effect, where strongly correlated predictors tend to be in
+(out) the model together. The elastic net is particularly useful when
+the number of predictors (p) is much bigger than the number of observations (n)</p>
+</blockquote>
+<pre class="r"><code>elastic_recipe &lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&gt;% 
+  update_role(cell_barcode, new_role = &quot;ID&quot;) %&gt;%
+  step_zv(all_predictors())
+
+# we will tune both penalty and the mixture
+elastic_spec &lt;- 
+  logistic_reg(penalty = tune(), mixture = tune()) %&gt;% 
+  set_engine(&quot;glmnet&quot;) %&gt;%
+  set_mode(&quot;classification&quot;)
+
+elastic_workflow &lt;- workflow() %&gt;% 
+  add_recipe(elastic_recipe) %&gt;% 
+  add_model(elastic_spec)
+
+## tune both the penatly and the mixture from 0-1
+penalty_grid &lt;- grid_regular(penalty(range = c(-2, 2)), mixture(), levels = 50)
+
+doParallel::registerDoParallel()
+tune_res &lt;- tune_grid(
+  elastic_workflow,
+  resamples = data_fold, 
+  grid = penalty_grid
+)
+
+autoplot(tune_res)</code></pre>
+<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code>best_penalty &lt;- select_best(tune_res, metric = &quot;accuracy&quot;)
+elastic_final &lt;- finalize_workflow(elastic_workflow, best_penalty)
+elastic_final_fit &lt;- fit(elastic_final, data = data_train)
+
+## confusion matrix
+predict(elastic_final_fit, new_data = data_test) %&gt;%
+        bind_cols(data_test %&gt;% select(cell_type)) %&gt;%
+        conf_mat(truth = cell_type, estimate = .pred_class)</code></pre>
+<pre><code>#&gt;           Truth
+#&gt; Prediction  B NK
+#&gt;         B  88  0
+#&gt;         NK  0 37</code></pre>
+<pre class="r"><code>elastic_features&lt;- tidy(elastic_final_fit) %&gt;%
+  arrange(desc(abs(estimate))) %&gt;%
+  filter(estimate != 0) 
+
+head(elastic_features, n = 20)</code></pre>
+<pre><code>#&gt; # A tibble: 20 × 3
+#&gt;    term        estimate penalty
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1 (Intercept)  -1.84      0.01
+#&gt;  2 NKG7          0.105     0.01
+#&gt;  3 CTSW          0.100     0.01
+#&gt;  4 HLA-DRA      -0.0993    0.01
+#&gt;  5 GZMB          0.0971    0.01
+#&gt;  6 GNLY          0.0971    0.01
+#&gt;  7 CD74         -0.0949    0.01
+#&gt;  8 GZMA          0.0940    0.01
+#&gt;  9 FGFBP2        0.0932    0.01
+#&gt; 10 CST7          0.0929    0.01
+#&gt; 11 PRF1          0.0922    0.01
+#&gt; 12 CD79A        -0.0901    0.01
+#&gt; 13 GZMM          0.0867    0.01
+#&gt; 14 LTB          -0.0838    0.01
+#&gt; 15 LRRIQ3        0.0808    0.01
+#&gt; 16 CD247         0.0792    0.01
+#&gt; 17 TYROBP        0.0778    0.01
+#&gt; 18 CD7           0.0766    0.01
+#&gt; 19 FCGR3A        0.0765    0.01
+#&gt; 20 FCER1G        0.0712    0.01</code></pre>
+<pre class="r"><code>head(lasso_features, n = 20)</code></pre>
+<pre><code>#&gt; # A tibble: 20 × 3
+#&gt;    term        estimate penalty
+#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1 (Intercept)  -2.48   0.00001
+#&gt;  2 NKG7          1.70   0.00001
+#&gt;  3 CTSW          0.582  0.00001
+#&gt;  4 GZMA          0.561  0.00001
+#&gt;  5 HLA-DRA      -0.561  0.00001
+#&gt;  6 CD74         -0.485  0.00001
+#&gt;  7 CD79A        -0.423  0.00001
+#&gt;  8 CDC6          0.422  0.00001
+#&gt;  9 CDKN3         0.251  0.00001
+#&gt; 10 GNLY          0.245  0.00001
+#&gt; 11 CST7          0.195  0.00001
+#&gt; 12 GZMB          0.174  0.00001
+#&gt; 13 TYMS          0.155  0.00001
+#&gt; 14 PRF1          0.151  0.00001
+#&gt; 15 RRM2          0.142  0.00001
+#&gt; 16 KIFC1         0.0690 0.00001
+#&gt; 17 LTB          -0.0612 0.00001
+#&gt; 18 FGFBP2        0.0588 0.00001
+#&gt; 19 MGLL          0.0577 0.00001
+#&gt; 20 RPL13A       -0.0456 0.00001</code></pre>
+<pre class="r"><code>merged_markers&lt;- left_join(elastic_features, lasso_features, by = c(&quot;term&quot; = &quot;term&quot;)) %&gt;%
+        dplyr::rename(estimate.elastic = estimate.x, estimate.lasso= estimate.y) %&gt;%
+        select(-penalty.x, - penalty.y) 
+
+head(merged_markers, n = 20)</code></pre>
+<pre><code>#&gt; # A tibble: 20 × 3
+#&gt;    term        estimate.elastic estimate.lasso
+#&gt;    &lt;chr&gt;                  &lt;dbl&gt;          &lt;dbl&gt;
+#&gt;  1 (Intercept)          -1.84          -2.48  
+#&gt;  2 NKG7                  0.105          1.70  
+#&gt;  3 CTSW                  0.100          0.582 
+#&gt;  4 HLA-DRA              -0.0993        -0.561 
+#&gt;  5 GZMB                  0.0971         0.174 
+#&gt;  6 GNLY                  0.0971         0.245 
+#&gt;  7 CD74                 -0.0949        -0.485 
+#&gt;  8 GZMA                  0.0940         0.561 
+#&gt;  9 FGFBP2                0.0932         0.0588
+#&gt; 10 CST7                  0.0929         0.195 
+#&gt; 11 PRF1                  0.0922         0.151 
+#&gt; 12 CD79A                -0.0901        -0.423 
+#&gt; 13 GZMM                  0.0867        NA     
+#&gt; 14 LTB                  -0.0838        -0.0612
+#&gt; 15 LRRIQ3                0.0808        NA     
+#&gt; 16 CD247                 0.0792        NA     
+#&gt; 17 TYROBP                0.0778        NA     
+#&gt; 18 CD7                   0.0766        NA     
+#&gt; 19 FCGR3A                0.0765        NA     
+#&gt; 20 FCER1G                0.0712        NA</code></pre>
+<p>we see GZMM is missed by Lasso but picked up by elastic-net. GZMM is probably highly correlated with other granzymes such as GZMB, GZMA which are already in the model.</p>
+<p>FCRR3A (CD16) picked up as an NK cell marker by elastic too.</p>
+<p>From this <a href="https://ashpublications.org/bloodadvances/article/4/7/1388/454300/Diversity-of-peripheral-blood-human-NK-cells">paper</a>. CD16 is a pretty important marker for NK cell subytyping. It is sad that Lasso missed it.</p>
+<p>Let’s plot the gene expression level to check the raw data.</p>
+<pre class="r"><code>scCustomize::Stacked_VlnPlot(pbmc_subset, features = merged_markers %&gt;% slice(-1) %&gt;% pull(term) %&gt;% head(n = 20),
+                             colors_use = c(&quot;blue&quot;, &quot;red&quot;) )</code></pre>
+<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Many of the top genes picked up by elastic-net are very convincing to me. LRRIQ3 is low in both cell types.</p>
+</div>
+<div id="things-learned" class="section level3">
+<h3>Things learned</h3>
+<ul>
+<li><p>the tidymodel ecosystem makes the interface to different machine learning methods consistent. You can tell how similar the codes are for all three regularization methods (Time to write a function!).</p></li>
+<li><p>classification for B cells and NK cells are petty easy task as they are very different. All models perform well. Again, the purpose here is not to use the model to do prediction, but use the model to do feature selection.</p></li>
+<li><p>Seurat has an <a href="https://github.com/satijalab/seurat/blob/f1b2593ea72f2e6d6b16470dc7b9e9b645179923/R/differential_expression.R#L1670">implementation</a> of the logistic regression for marker gene selection: <code>glm(formula = fmla, data = model.data, family = "binomial")</code></p></li>
+</ul>
+<p>Other readings:</p>
+<ul>
+<li><a href="https://www.tmwr.org/">Tidy Modeling with R</a></li>
+<li><a href="https://stats.stackexchange.com/questions/108614/regression-in-pn-setting-how-to-choose-regularization-method-lasso-pls-pc">Regression in 𝑝&gt;𝑛 setting: how to choose regularization method (Lasso, PLS, PCR, ridge)?</a></li>
+<li><a href="https://towardsdatascience.com/bias-variance-and-regularization-in-linear-regression-lasso-ridge-and-elastic-net-8bf81991d0c5">Bias, Variance, and Regularization in Linear Regression: Lasso, Ridge, and Elastic Net — Differences and uses</a></li>
+<li><a href="https://uc-r.github.io/regularized_regression">Regularized Regression</a></li>
+</ul>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/single-cell/">single-cell</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/machine-learning/">machine learning</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/matrix-factorization-for-single-cell-rnaseq-data/">Matrix Factorization for single-cell RNAseq data</a></li>
+        
+        <li><a href="/project/cimac-cidc/">CANCER IMMUNOLOGIC DATA COMMONS(CIDC)</a></li>
+        
+        <li><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></li>
+        
+        <li><a href="/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></li>
+        
+        <li><a href="/post/split-a-10xscatac-bam-file-by-cluster/">Split a 10xscATAC bam file by cluster</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/review-2021/" rel="prev">Review 2021</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

@@ -11,12 +11,533 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>marker gene selection using logistic regression and regularization for scRNAseq </title>
+      <link>/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</link>
+      <pubDate>Sun, 15 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</guid>
+      <description>&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div id=&#34;why-this-blog-post&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;why this blog post?&lt;/h3&gt;
+&lt;p&gt;I saw a biorxiv paper titled &lt;a href=&#34;https://www.biorxiv.org/content/10.1101/2022.05.09.490241v1&#34;&gt;A comparison of marker gene selection methods for single-cell RNA sequencing data&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I am interested in using logistic regression to find marker genes and want to try fitting the model in the &lt;code&gt;[tidymodel](https://www.tidymodels.org/)&lt;/code&gt; ecosystsem and using different regularization methods.&lt;/p&gt;
+&lt;p&gt;I highly recommend you to watch the &lt;a href=&#34;https://app.learney.me/maps/StatQuest?topic=Regularization&#34;&gt;statquest videos&lt;/a&gt; on those topics.&lt;/p&gt;
+&lt;p&gt;Let’s use PBMC single-cell RNAseq data as an example.&lt;/p&gt;
+&lt;p&gt;Load libraries&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Seurat)
+library(tidyverse)
+library(tidymodels)
+library(scCustomize) # for plotting&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Preprocess the data&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Load the PBMC dataset
+pbmc.data &amp;lt;- Read10X(data.dir = &amp;quot;~/blog_data/filtered_gene_bc_matrices/hg19/&amp;quot;)
+# Initialize the Seurat object with the raw (non-normalized data).
+pbmc &amp;lt;- CreateSeuratObject(counts = pbmc.data, project = &amp;quot;pbmc3k&amp;quot;, min.cells = 3, min.features = 200)
+
+## routine processing
+pbmc&amp;lt;- pbmc %&amp;gt;% 
+  NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;%
+  FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;%
+  ScaleData() %&amp;gt;%
+  RunPCA(verbose = FALSE) %&amp;gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&amp;gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&amp;gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+## the annotation borrowed from Seurat tutorial
+new.cluster.ids &amp;lt;- c(&amp;quot;Naive CD4 T&amp;quot;, &amp;quot;CD14+ Mono&amp;quot;, &amp;quot;Memory CD4 T&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;CD8 T&amp;quot;, &amp;quot;FCGR3A+ Mono&amp;quot;, 
+    &amp;quot;NK&amp;quot;, &amp;quot;DC&amp;quot;, &amp;quot;Platelet&amp;quot;)
+names(new.cluster.ids) &amp;lt;- levels(pbmc)
+pbmc &amp;lt;- RenameIdents(pbmc, new.cluster.ids)
+pbmc$cell_type&amp;lt;- Idents(pbmc)
+DimPlot(pbmc)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;marker-gene-detection-using-differential-expressin-analysis-between-clusters.&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Marker gene detection using differential expressin analysis between clusters.&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pbmc_subset&amp;lt;- pbmc[, pbmc$cell_type %in% c(&amp;quot;NK&amp;quot;, &amp;quot;B&amp;quot;)]
+DimPlot(pbmc_subset)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Idents(pbmc_subset)&amp;lt;- pbmc_subset$cell_type
+
+diff_markers&amp;lt;- FindMarkers(pbmc_subset, ident.1 = &amp;quot;B&amp;quot;, ident.2 = &amp;quot;NK&amp;quot;, test.use = &amp;quot;wilcox&amp;quot;)
+
+diff_markers %&amp;gt;%
+        arrange(p_val_adj, desc(abs(avg_log2FC))) %&amp;gt;%
+        head(n = 20)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;                 p_val avg_log2FC pct.1 pct.2    p_val_adj
+#&amp;gt; GZMB     7.646318e-98  -5.553778 0.017 0.966 1.048616e-93
+#&amp;gt; GZMA     2.929923e-95  -4.519094 0.011 0.939 4.018097e-91
+#&amp;gt; PRF1     9.684091e-95  -4.635264 0.029 0.959 1.328076e-90
+#&amp;gt; NKG7     8.032681e-92  -6.310372 0.083 0.986 1.101602e-87
+#&amp;gt; CST7     4.498511e-91  -4.389481 0.037 0.946 6.169258e-87
+#&amp;gt; CTSW     1.747566e-89  -4.144031 0.066 0.966 2.396612e-85
+#&amp;gt; FGFBP2   3.777986e-87  -4.555937 0.034 0.912 5.181130e-83
+#&amp;gt; GNLY     8.666212e-85  -6.080298 0.080 0.939 1.188484e-80
+#&amp;gt; FCGR3A   1.278458e-79  -3.635596 0.034 0.858 1.753278e-75
+#&amp;gt; CD247    1.428149e-77  -3.763002 0.040 0.851 1.958563e-73
+#&amp;gt; GZMM     3.440488e-77  -3.248116 0.017 0.818 4.718285e-73
+#&amp;gt; CD7      4.578399e-74  -3.330969 0.054 0.851 6.278817e-70
+#&amp;gt; TYROBP   2.340536e-73  -3.560921 0.103 0.899 3.209811e-69
+#&amp;gt; FCER1G   9.343826e-72  -3.499007 0.069 0.845 1.281412e-67
+#&amp;gt; SPON2    7.917147e-70  -3.506623 0.011 0.743 1.085758e-65
+#&amp;gt; CD74     1.880522e-69   3.659825 1.000 0.824 2.578947e-65
+#&amp;gt; HLA-DRA  2.083409e-69   4.597057 1.000 0.365 2.857187e-65
+#&amp;gt; SRGN     1.501958e-68  -3.151188 0.201 0.932 2.059785e-64
+#&amp;gt; HLA-DPB1 3.257314e-66   3.595454 0.986 0.345 4.467080e-62
+#&amp;gt; HLA-DRB1 2.058185e-65   3.710470 0.980 0.189 2.822594e-61&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that p-values from this type of analysis are inflated as we clustered the cells first and then find the differences between the clusters. In other words, we double-dip the data.&lt;/p&gt;
+&lt;p&gt;see slide 27 from my ABRF2022 talk &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf&#34; class=&#34;uri&#34;&gt;https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lets-use-logistic-regression-to-find-marker-genes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Let’s use logistic regression to find marker genes&lt;/h3&gt;
+&lt;p&gt;We can use logistic regression to classify B-cells and NK cells.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## re-process the data, as the most-variable genes will change when you only have NK and B cells vs all cells. use log normalized data
+pbmc_subset&amp;lt;- pbmc_subset %&amp;gt;% 
+  NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;%
+  FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;%
+  ScaleData() %&amp;gt;%
+  RunPCA(verbose = FALSE) %&amp;gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&amp;gt;%
+  FindClusters(resolution = 0.1, verbose = FALSE) %&amp;gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;we use scaled data, because it was z-score transformed, so the highly expressed genes will not dominate the model&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&amp;lt;- pbmc_subset@assays$RNA@scale.data
+# let&amp;#39;s transpose the matrix and make it to a dataframe
+dim(data)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 2000  497&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&amp;lt;- t(data) %&amp;gt;%
+        as.data.frame()
+
+# now, every row is a cell with 2000 genes/features/predictors. 
+dim(data)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1]  497 2000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## add the cell type/the outcome/y to the dataframe
+data$cell_type&amp;lt;- pbmc_subset$cell_type
+data$cell_barcode&amp;lt;- rownames(data)
+## it is important to turn it to a factor for classification
+data$cell_type&amp;lt;- factor(data$cell_type)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;prepare-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;prepare the data&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(123)
+
+data$cell&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_split &amp;lt;- initial_split(data, strata = &amp;quot;cell_type&amp;quot;)
+data_train &amp;lt;- training(data_split)
+data_test &amp;lt;- testing(data_split)
+
+# 10 fold cross validation
+data_fold &amp;lt;- vfold_cv(data_train, v = 10)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We will not look at the test data at all until we test our model.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ridge-regression&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Ridge Regression&lt;/h3&gt;
+&lt;p&gt;In our training data, we have 2000 genes/features (&lt;code&gt;p&lt;/code&gt;) and 273 cells/observations (&lt;code&gt;n&lt;/code&gt;)
+and &lt;code&gt;p&lt;/code&gt; &amp;gt;&amp;gt; &lt;code&gt;n&lt;/code&gt;, so we will need to enforce sparsity of the model by regularization.&lt;/p&gt;
+&lt;p&gt;We’ll set the penalty argument to &lt;code&gt;tune()&lt;/code&gt; as a placeholder for now. This is a model hyperparameter that we will tune to find the best value for making predictions with our data. Setting mixture to a value of one means that the glmnet model will potentially remove irrelevant predictors and choose a simpler model.&lt;/p&gt;
+&lt;p&gt;Let’s use L2 regularization/norm for ridge regression by specifying &lt;code&gt;mixture = 0&lt;/code&gt;.
+and we need to tune the &lt;code&gt;penalty&lt;/code&gt; hyperparameter.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ridge_spec&amp;lt;-
+        logistic_reg(penalty = tune(), mixture = 0) %&amp;gt;%
+        set_engine(&amp;quot;glmnet&amp;quot;) %&amp;gt;%
+        set_mode(&amp;quot;classification&amp;quot;)
+
+ridge_recipe &amp;lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&amp;gt;% 
+  update_role(cell_barcode, new_role = &amp;quot;ID&amp;quot;)  %&amp;gt;%
+  step_zv(all_predictors())
+
+# step_normalize(all_predictors())
+## the expression is already scaled, no need to do step_normalize
+
+ridge_workflow &amp;lt;- workflow() %&amp;gt;% 
+  add_recipe(ridge_recipe) %&amp;gt;% 
+  add_model(ridge_spec)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;tune the &lt;code&gt;penalty&lt;/code&gt; hyper-parameter.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;penalty_grid &amp;lt;- grid_regular(penalty(range = c(-5, 5)), levels = 50)
+#penalty_grid
+tune_res &amp;lt;- tune_grid(
+  ridge_workflow,
+  resamples = data_fold, 
+  grid = penalty_grid
+)
+
+# tune_res
+# check which penalty is the best 
+autoplot(tune_res)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;best_penalty &amp;lt;- select_best(tune_res, metric = &amp;quot;accuracy&amp;quot;)
+best_penalty&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 1 × 2
+#&amp;gt;   penalty .config              
+#&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                
+#&amp;gt; 1 0.00001 Preprocessor1_Model01&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ridge_final &amp;lt;- finalize_workflow(ridge_workflow, best_penalty)
+ridge_final_fit &amp;lt;- fit(ridge_final, data = data_train)
+
+tidy(ridge_final_fit) %&amp;gt;% arrange(desc(abs(estimate)))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 2,000 × 3
+#&amp;gt;    term        estimate penalty
+#&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+#&amp;gt;  1 (Intercept)  -1.21   0.00001
+#&amp;gt;  2 NKG7          0.0318 0.00001
+#&amp;gt;  3 GZMB          0.0307 0.00001
+#&amp;gt;  4 HLA-DRA      -0.0307 0.00001
+#&amp;gt;  5 CTSW          0.0305 0.00001
+#&amp;gt;  6 GNLY          0.0297 0.00001
+#&amp;gt;  7 PRF1          0.0296 0.00001
+#&amp;gt;  8 GZMA          0.0295 0.00001
+#&amp;gt;  9 CD74         -0.0295 0.00001
+#&amp;gt; 10 FGFBP2        0.0295 0.00001
+#&amp;gt; # … with 1,990 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# augment(ridge_final_fit, new_data = data_test) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;we see the NKG7, GZMB, CTSW GNLY, PRF1 etc on the top as the marker genes for NK cells which makes sense!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## confusion matrix
+predict(ridge_final_fit, new_data = data_test) %&amp;gt;%
+        bind_cols(data_test %&amp;gt;% select(cell_type)) %&amp;gt;%
+        conf_mat(truth = cell_type, estimate = .pred_class)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;           Truth
+#&amp;gt; Prediction  B NK
+#&amp;gt;         B  88  0
+#&amp;gt;         NK  0 37&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lasso-regression&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Lasso regression&lt;/h3&gt;
+&lt;p&gt;You need to use logistic_reg() and set mixture = 1 to specify a lasso model. The mixture argument specifies the amount of different types of regularization, mixture = 0 specifies only ridge regularization and mixture = 1 specifies only lasso regularization.&lt;/p&gt;
+&lt;p&gt;Lasso will remove highly correlated features which may not be what we want here!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lasso_spec&amp;lt;-
+        logistic_reg(penalty = tune(), mixture = 1) %&amp;gt;%
+        set_engine(&amp;quot;glmnet&amp;quot;) %&amp;gt;%
+        set_mode(&amp;quot;classification&amp;quot;)
+
+lasso_recipe &amp;lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&amp;gt;% 
+  update_role(cell_barcode, new_role = &amp;quot;ID&amp;quot;)  %&amp;gt;%
+  step_zv(all_predictors())
+
+# step_normalize(all_predictors())
+## the expression is already scaled, no need to do step_normalize
+
+lasso_workflow &amp;lt;- workflow() %&amp;gt;% 
+  add_recipe(lasso_recipe) %&amp;gt;% 
+  add_model(lasso_spec)
+
+penalty_grid &amp;lt;- grid_regular(penalty(range = c(-5, 5)), levels = 50)
+#penalty_grid
+tune_res &amp;lt;- tune_grid(
+  lasso_workflow,
+  resamples = data_fold, 
+  grid = penalty_grid
+)
+
+# tune_res
+# check which penalty is the best 
+autoplot(tune_res)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;best_penalty &amp;lt;- select_best(tune_res, metric = &amp;quot;accuracy&amp;quot;)
+best_penalty&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 1 × 2
+#&amp;gt;   penalty .config              
+#&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                
+#&amp;gt; 1 0.00001 Preprocessor1_Model01&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lasso_final &amp;lt;- finalize_workflow(lasso_workflow, best_penalty)
+lasso_final_fit &amp;lt;- fit(lasso_final, data = data_train)
+
+## confusion matrix
+predict(lasso_final_fit, new_data = data_test) %&amp;gt;%
+        bind_cols(data_test %&amp;gt;% select(cell_type)) %&amp;gt;%
+        conf_mat(truth = cell_type, estimate = .pred_class)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;           Truth
+#&amp;gt; Prediction  B NK
+#&amp;gt;         B  88  0
+#&amp;gt;         NK  0 37&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lasso_features&amp;lt;- tidy(lasso_final_fit) %&amp;gt;% 
+        arrange(desc(abs(estimate))) %&amp;gt;%
+        filter(estimate != 0) 
+
+print(lasso_features, n = Inf)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 21 × 3
+#&amp;gt;    term        estimate penalty
+#&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+#&amp;gt;  1 (Intercept) -2.48    0.00001
+#&amp;gt;  2 NKG7         1.70    0.00001
+#&amp;gt;  3 CTSW         0.582   0.00001
+#&amp;gt;  4 GZMA         0.561   0.00001
+#&amp;gt;  5 HLA-DRA     -0.561   0.00001
+#&amp;gt;  6 CD74        -0.485   0.00001
+#&amp;gt;  7 CD79A       -0.423   0.00001
+#&amp;gt;  8 CDC6         0.422   0.00001
+#&amp;gt;  9 CDKN3        0.251   0.00001
+#&amp;gt; 10 GNLY         0.245   0.00001
+#&amp;gt; 11 CST7         0.195   0.00001
+#&amp;gt; 12 GZMB         0.174   0.00001
+#&amp;gt; 13 TYMS         0.155   0.00001
+#&amp;gt; 14 PRF1         0.151   0.00001
+#&amp;gt; 15 RRM2         0.142   0.00001
+#&amp;gt; 16 KIFC1        0.0690  0.00001
+#&amp;gt; 17 LTB         -0.0612  0.00001
+#&amp;gt; 18 FGFBP2       0.0588  0.00001
+#&amp;gt; 19 MGLL         0.0577  0.00001
+#&amp;gt; 20 RPL13A      -0.0456  0.00001
+#&amp;gt; 21 CDCA8        0.00842 0.00001&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because &lt;code&gt;Lasso regression&lt;/code&gt; enforce sparsity, we can select the features with the coefficients/esitmates not equal to 0, but we will miss the correlated genes which were thrown out by the model.&lt;/p&gt;
+&lt;p&gt;Also, if you are wondering how can I get a p-value for the coefficient, read &lt;a href=&#34;https://stats.stackexchange.com/questions/410173/lasso-regression-p-values-and-coefficients&#34; class=&#34;uri&#34;&gt;https://stats.stackexchange.com/questions/410173/lasso-regression-p-values-and-coefficients&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;elastic-net&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Elastic-net&lt;/h3&gt;
+&lt;p&gt;Setting mixture to a value between 0 and 1 lets us use both Lasso and Ridge (Elastic-net!!)&lt;/p&gt;
+&lt;p&gt;Elastic-net gets the best world of both Lasso and Ridge.
+Thanks, &lt;a href=&#34;https://twitter.com/Matthew_N_B&#34;&gt;Matt Bernstein&lt;/a&gt; for pointing the original elastic-net paper to me!&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://hastie.su.domains/Papers/elasticnet.pdf&#34; class=&#34;uri&#34;&gt;https://hastie.su.domains/Papers/elasticnet.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In addition, the elastic net encourages a
+grouping effect, where strongly correlated predictors tend to be in
+(out) the model together. The elastic net is particularly useful when
+the number of predictors (p) is much bigger than the number of observations (n)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;elastic_recipe &amp;lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&amp;gt;% 
+  update_role(cell_barcode, new_role = &amp;quot;ID&amp;quot;) %&amp;gt;%
+  step_zv(all_predictors())
+
+# we will tune both penalty and the mixture
+elastic_spec &amp;lt;- 
+  logistic_reg(penalty = tune(), mixture = tune()) %&amp;gt;% 
+  set_engine(&amp;quot;glmnet&amp;quot;) %&amp;gt;%
+  set_mode(&amp;quot;classification&amp;quot;)
+
+elastic_workflow &amp;lt;- workflow() %&amp;gt;% 
+  add_recipe(elastic_recipe) %&amp;gt;% 
+  add_model(elastic_spec)
+
+## tune both the penatly and the mixture from 0-1
+penalty_grid &amp;lt;- grid_regular(penalty(range = c(-2, 2)), mixture(), levels = 50)
+
+doParallel::registerDoParallel()
+tune_res &amp;lt;- tune_grid(
+  elastic_workflow,
+  resamples = data_fold, 
+  grid = penalty_grid
+)
+
+autoplot(tune_res)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;best_penalty &amp;lt;- select_best(tune_res, metric = &amp;quot;accuracy&amp;quot;)
+elastic_final &amp;lt;- finalize_workflow(elastic_workflow, best_penalty)
+elastic_final_fit &amp;lt;- fit(elastic_final, data = data_train)
+
+## confusion matrix
+predict(elastic_final_fit, new_data = data_test) %&amp;gt;%
+        bind_cols(data_test %&amp;gt;% select(cell_type)) %&amp;gt;%
+        conf_mat(truth = cell_type, estimate = .pred_class)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;           Truth
+#&amp;gt; Prediction  B NK
+#&amp;gt;         B  88  0
+#&amp;gt;         NK  0 37&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;elastic_features&amp;lt;- tidy(elastic_final_fit) %&amp;gt;%
+  arrange(desc(abs(estimate))) %&amp;gt;%
+  filter(estimate != 0) 
+
+head(elastic_features, n = 20)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 20 × 3
+#&amp;gt;    term        estimate penalty
+#&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+#&amp;gt;  1 (Intercept)  -1.84      0.01
+#&amp;gt;  2 NKG7          0.105     0.01
+#&amp;gt;  3 CTSW          0.100     0.01
+#&amp;gt;  4 HLA-DRA      -0.0993    0.01
+#&amp;gt;  5 GZMB          0.0971    0.01
+#&amp;gt;  6 GNLY          0.0971    0.01
+#&amp;gt;  7 CD74         -0.0949    0.01
+#&amp;gt;  8 GZMA          0.0940    0.01
+#&amp;gt;  9 FGFBP2        0.0932    0.01
+#&amp;gt; 10 CST7          0.0929    0.01
+#&amp;gt; 11 PRF1          0.0922    0.01
+#&amp;gt; 12 CD79A        -0.0901    0.01
+#&amp;gt; 13 GZMM          0.0867    0.01
+#&amp;gt; 14 LTB          -0.0838    0.01
+#&amp;gt; 15 LRRIQ3        0.0808    0.01
+#&amp;gt; 16 CD247         0.0792    0.01
+#&amp;gt; 17 TYROBP        0.0778    0.01
+#&amp;gt; 18 CD7           0.0766    0.01
+#&amp;gt; 19 FCGR3A        0.0765    0.01
+#&amp;gt; 20 FCER1G        0.0712    0.01&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(lasso_features, n = 20)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 20 × 3
+#&amp;gt;    term        estimate penalty
+#&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+#&amp;gt;  1 (Intercept)  -2.48   0.00001
+#&amp;gt;  2 NKG7          1.70   0.00001
+#&amp;gt;  3 CTSW          0.582  0.00001
+#&amp;gt;  4 GZMA          0.561  0.00001
+#&amp;gt;  5 HLA-DRA      -0.561  0.00001
+#&amp;gt;  6 CD74         -0.485  0.00001
+#&amp;gt;  7 CD79A        -0.423  0.00001
+#&amp;gt;  8 CDC6          0.422  0.00001
+#&amp;gt;  9 CDKN3         0.251  0.00001
+#&amp;gt; 10 GNLY          0.245  0.00001
+#&amp;gt; 11 CST7          0.195  0.00001
+#&amp;gt; 12 GZMB          0.174  0.00001
+#&amp;gt; 13 TYMS          0.155  0.00001
+#&amp;gt; 14 PRF1          0.151  0.00001
+#&amp;gt; 15 RRM2          0.142  0.00001
+#&amp;gt; 16 KIFC1         0.0690 0.00001
+#&amp;gt; 17 LTB          -0.0612 0.00001
+#&amp;gt; 18 FGFBP2        0.0588 0.00001
+#&amp;gt; 19 MGLL          0.0577 0.00001
+#&amp;gt; 20 RPL13A       -0.0456 0.00001&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;merged_markers&amp;lt;- left_join(elastic_features, lasso_features, by = c(&amp;quot;term&amp;quot; = &amp;quot;term&amp;quot;)) %&amp;gt;%
+        dplyr::rename(estimate.elastic = estimate.x, estimate.lasso= estimate.y) %&amp;gt;%
+        select(-penalty.x, - penalty.y) 
+
+head(merged_markers, n = 20)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 20 × 3
+#&amp;gt;    term        estimate.elastic estimate.lasso
+#&amp;gt;    &amp;lt;chr&amp;gt;                  &amp;lt;dbl&amp;gt;          &amp;lt;dbl&amp;gt;
+#&amp;gt;  1 (Intercept)          -1.84          -2.48  
+#&amp;gt;  2 NKG7                  0.105          1.70  
+#&amp;gt;  3 CTSW                  0.100          0.582 
+#&amp;gt;  4 HLA-DRA              -0.0993        -0.561 
+#&amp;gt;  5 GZMB                  0.0971         0.174 
+#&amp;gt;  6 GNLY                  0.0971         0.245 
+#&amp;gt;  7 CD74                 -0.0949        -0.485 
+#&amp;gt;  8 GZMA                  0.0940         0.561 
+#&amp;gt;  9 FGFBP2                0.0932         0.0588
+#&amp;gt; 10 CST7                  0.0929         0.195 
+#&amp;gt; 11 PRF1                  0.0922         0.151 
+#&amp;gt; 12 CD79A                -0.0901        -0.423 
+#&amp;gt; 13 GZMM                  0.0867        NA     
+#&amp;gt; 14 LTB                  -0.0838        -0.0612
+#&amp;gt; 15 LRRIQ3                0.0808        NA     
+#&amp;gt; 16 CD247                 0.0792        NA     
+#&amp;gt; 17 TYROBP                0.0778        NA     
+#&amp;gt; 18 CD7                   0.0766        NA     
+#&amp;gt; 19 FCGR3A                0.0765        NA     
+#&amp;gt; 20 FCER1G                0.0712        NA&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;we see GZMM is missed by Lasso but picked up by elastic-net. GZMM is probably highly correlated with other granzymes such as GZMB, GZMA which are already in the model.&lt;/p&gt;
+&lt;p&gt;FCRR3A (CD16) picked up as an NK cell marker by elastic too.&lt;/p&gt;
+&lt;p&gt;From this &lt;a href=&#34;https://ashpublications.org/bloodadvances/article/4/7/1388/454300/Diversity-of-peripheral-blood-human-NK-cells&#34;&gt;paper&lt;/a&gt;. CD16 is a pretty important marker for NK cell subytyping. It is sad that Lasso missed it.&lt;/p&gt;
+&lt;p&gt;Let’s plot the gene expression level to check the raw data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;scCustomize::Stacked_VlnPlot(pbmc_subset, features = merged_markers %&amp;gt;% slice(-1) %&amp;gt;% pull(term) %&amp;gt;% head(n = 20),
+                             colors_use = c(&amp;quot;blue&amp;quot;, &amp;quot;red&amp;quot;) )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Many of the top genes picked up by elastic-net are very convincing to me. LRRIQ3 is low in both cell types.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;things-learned&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Things learned&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;the tidymodel ecosystem makes the interface to different machine learning methods consistent. You can tell how similar the codes are for all three regularization methods (Time to write a function!).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;classification for B cells and NK cells are petty easy task as they are very different. All models perform well. Again, the purpose here is not to use the model to do prediction, but use the model to do feature selection.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Seurat has an &lt;a href=&#34;https://github.com/satijalab/seurat/blob/f1b2593ea72f2e6d6b16470dc7b9e9b645179923/R/differential_expression.R#L1670&#34;&gt;implementation&lt;/a&gt; of the logistic regression for marker gene selection: &lt;code&gt;glm(formula = fmla, data = model.data, family = &#34;binomial&#34;)&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Other readings:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.tmwr.org/&#34;&gt;Tidy Modeling with R&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://stats.stackexchange.com/questions/108614/regression-in-pn-setting-how-to-choose-regularization-method-lasso-pls-pc&#34;&gt;Regression in 𝑝&amp;gt;𝑛 setting: how to choose regularization method (Lasso, PLS, PCR, ridge)?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://towardsdatascience.com/bias-variance-and-regularization-in-linear-regression-lasso-ridge-and-elastic-net-8bf81991d0c5&#34;&gt;Bias, Variance, and Regularization in Linear Regression: Lasso, Ridge, and Elastic Net — Differences and uses&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://uc-r.github.io/regularized_regression&#34;&gt;Regularized Regression&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Single-Cell Analysis 101: Current Approaches and Open Questions</title>
+      <link>/talk/2022-single-cell-abrf/</link>
+      <pubDate>Tue, 29 Mar 2022 12:30:00 -0400</pubDate>
+      
+      <guid>/talk/2022-single-cell-abrf/</guid>
+      <description>&lt;p&gt;I gave a talk on single-cell analysis 101 in the ABRF2022 conference. Thank you, &lt;a href=&#34;https://twitter.com/biobenkj&#34; target=&#34;_blank&#34;&gt;Ben Johnson&lt;/a&gt; for the inivtation. I enjoyed it! The slides and video can be found in the links above!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/ABRF-single-cell.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Annual postdoc Alternative careers event King&#39;s College London</title>
+      <link>/talk/2022-alternative-path/</link>
+      <pubDate>Wed, 09 Mar 2022 06:00:00 -0500</pubDate>
+      
+      <guid>/talk/2022-alternative-path/</guid>
+      <description>
+
+&lt;p&gt;I shared my career path at the annual postdoc Alternative careers event King&amp;rsquo;s College London. I am glad that I can give some tips to the postdocs and reminds them alternative careers exist besides academia.&lt;/p&gt;
+
+&lt;h3 id=&#34;event&#34;&gt;Event&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/alternative_path_Kings.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;my-career-path-in-one-slide&#34;&gt;My career path in one slide:&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/Tommy_career_path.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Review 2021</title>
       <link>/post/review-2021/</link>
       <pubDate>Fri, 31 Dec 2021 00:00:00 +0000</pubDate>
       
       <guid>/post/review-2021/</guid>
-      <description>&lt;p&gt;This is the end of 2021. I can not believe it has been 2 years since the pandemic. It is a challenging time for many of us.&lt;/p&gt;
+      <description>
+
+&lt;p&gt;This is the end of 2021. I can not believe it has been 2 years since the pandemic. It is a challenging time for many of us. No matter what has happended, it is always good to sit down and spend some time to reflect for the past year. I wrote the annual review blog post every year, and you can find the one for 2020  at &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/review-2020/&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Before I go to the details, I want to thank everyone who has helped me and mentored me in 2021. Thanks, Shirley Liu, Ethan Cerami, James Linsay, Franziska Michor and Rafael A Irizarry at Dana-Farber for their mentorship and support. I have learned a lot from them during my stay at DFCI leading the bioinformatics effort for the Cancer Immunologic Data Commons (CIDC) project.&lt;/p&gt;
+
+&lt;p&gt;On Nov 1, I made the decision to join &lt;a href=&#34;https://www.immunitastx.com/&#34; target=&#34;_blank&#34;&gt;Immunitas&lt;/a&gt; to head up their computational biology team. It was a big change for me and I want to thank my previous mentors Roel Verhaak and Tim Sacton for their support. I also want to give special thanks to Thomas Tan, our CSO to have confidence in me and believed that I could do the job. Leaving academia is not leaving science. I am impressed by the quality of science that we are doing in the company. I believe we can make a difference in helping the patients!&lt;/p&gt;
+
+&lt;h3 id=&#34;some-highlights&#34;&gt;Some highlights&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;I published 2 (co-) first author papers, one last senior author paper and 5 co-author papers in 2021. &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/#publications&#34; target=&#34;_blank&#34;&gt;These inlcude&lt;/a&gt; a paper in &lt;em&gt;Nature communications&lt;/em&gt; which consists of a big chunk of my postdoc work started 5 years ago. I felt so happy to see it out. A finished paper is a good paper!&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I gave several &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/talk/&#34; target=&#34;_blank&#34;&gt;talks&lt;/a&gt;. I gave a keynote talk on reproducible research in genomic data science at the ISCB SC RSG Turkey Student Symposium 2021 &lt;a href=&#34;https://symposium.rsgturkey.com/&#34; target=&#34;_blank&#34;&gt;https://symposium.rsgturkey.com/&lt;/a&gt;. I recorded the scATACseq lecture and this keynote, and uploaded them to Youtube.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I love teaching and mentoring. My previous master thesis student &lt;a href=&#34;https://twitter.com/KelseyTLuu&#34; target=&#34;_blank&#34;&gt;Kelsey Lu&lt;/a&gt; defended her master several weeks ago. She did an excellent job. The associate computational biologist &lt;a href=&#34;https://twitter.com/gali_bai&#34; target=&#34;_blank&#34;&gt;Gali Bai&lt;/a&gt; who worked with me is applying for PhD program, I am sure she can get into a good one. I am very proud of both of them!&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I attended &lt;a href=&#34;https://www.toastmasters.org/&#34; target=&#34;_blank&#34;&gt;Toastmasters International&lt;/a&gt; and gave 3 speeches! This is a great place to practise public speaking skills. I will finish my pathway level 1 early 2022.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;things-need-to-do-or-to-improve-in-2022&#34;&gt;Things need to do or to improve in 2022&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;I have gained over 10 lb during the pandemic. I need to take care of my health more. Exercise regularly and keep fit.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Spend more time with the family and plan some trips (if the COVID situation turns better).&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Hone my leadership skills.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Read more books.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;We have recruited two more computational scientists joining us at Immunitas. Now, it is time to build up the team. I want to grow each of them to be the best version of themselves.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;I am humbled and honored to serve as the chair of @datacarpentry Genomics Curriculum Advisory Committee(CAC) starting in 2022. I look forward to serving and learning from the community.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;That&amp;rsquo;s it for me! I am sure 2022 is very exciting and challenging. I enjoy keep learning and keep coming out of my comfort zone in order to grow.&lt;/p&gt;
+
+&lt;h3 id=&#34;questions-worth-asking-yourself&#34;&gt;Questions worth asking yourself&lt;/h3&gt;
+
+&lt;p&gt;In every aspects of your life, such as social, at Home, Family, work, fitness, Hobbies&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;what worked well?&lt;/li&gt;
+&lt;li&gt;what didn&amp;rsquo;t work well?&lt;/li&gt;
+&lt;li&gt;How have you felt this year?&lt;/li&gt;
+&lt;li&gt;what&amp;rsquo;s made you happy?&lt;/li&gt;
+&lt;li&gt;what&amp;rsquo;s drained you?&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;what would you like to do differently next year?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I wish everyone a prosperous 2022!&lt;/p&gt;
 </description>
     </item>
     
@@ -998,36 +1519,6 @@ First I would ask why is testing for a difference in mean and a difference in SD
       
       <guid>/publication/2021-07-13-hierfit/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Chromatin state dynamics confers specific therapeutic strategies in enhancer subtypes of colorectal cancer</title>
-      <link>/publication/2021-05-30-chromatin-state-colorectal-cancer/</link>
-      <pubDate>Sun, 30 May 2021 00:00:00 -0400</pubDate>
-      
-      <guid>/publication/2021-05-30-chromatin-state-colorectal-cancer/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Fast analysis of scATAC-seq data using a predefined set of genomic regions</title>
-      <link>/talk/2021-fast-scatacseq/</link>
-      <pubDate>Fri, 23 Apr 2021 10:00:00 -0400</pubDate>
-      
-      <guid>/talk/2021-fast-scatacseq/</guid>
-      <description>&lt;p&gt;I am invited by Henry Rong in &lt;a href=&#34;http://cfce.dfci.harvard.edu/&#34; target=&#34;_blank&#34;&gt;Center for Functional Cancer Epigenomics&lt;/a&gt; (CFCE)  at Dana-Farber to give a presentation on &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/publication/2020-03-20-kallisto-scatac/&#34; target=&#34;_blank&#34;&gt;Fast analysis of scATAC-seq data using a predefined set of genomic regions&lt;/a&gt;. This project was a enjoyable collabration with &lt;a href=&#34;https://research.hsr.it/en/centers/omics-sciences/innovation-lab/davide-cittaro.html&#34; target=&#34;_blank&#34;&gt;Davide Cittaro&lt;/a&gt; at San Raffaele Scientific Institute in Italy.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>STAT115 single cell ATACseq lecture</title>
-      <link>/talk/2021-stat115-scrnaseq-lecture/</link>
-      <pubDate>Tue, 30 Mar 2021 12:00:00 -0400</pubDate>
-      
-      <guid>/talk/2021-stat115-scrnaseq-lecture/</guid>
-      <description>&lt;p&gt;I gave a guest lecture on single cell ATACseq for &lt;a href=&#34;https://canvas.harvard.edu/courses/49497/assignments/syllabus&#34; target=&#34;_blank&#34;&gt;STAT115&lt;/a&gt; to the Harvard students. The videos can be found at &lt;a href=&#34;https://liulab-dfci.github.io/bioinfo-combio/scatac.html&#34; target=&#34;_blank&#34;&gt;https://liulab-dfci.github.io/bioinfo-combio/scatac.html&lt;/a&gt;. slides can be found in the PDF as well. Shirley has put all her course videos in the above bookdown. Great resource for Bioinformatics!&lt;/p&gt;
 </description>
     </item>
     

@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2021-12-01T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2022-05-15T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,17 @@
   
   
   <div>
+    <h2><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></h2>
+    <div class="article-style">
+      
+      why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
+ Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
+ I am interested in using logistic regression to find marker genes and want to try fitting the model in the <a href="https://www.tidymodels.org/" target="_blank">tidymodel</a> ecosystsem and using different regularization methods.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/obtain-metadata-for-public-datasets-in-geo/">Obtain metadata for public datasets in GEO</a></h2>
     <div class="article-style">
       
@@ -372,18 +383,6 @@ library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samp
       
       I wanted to set up Travis CI long time ago. Finally, I have a chance to do so. There are already many posts on how to do it. I write it down here for my own future reference. Thanks Tao Liu for the instructions. I have been learning a lot from him in collabrating with the MAESTRO project.
  read the official documentation <a href="https://docs.travis-ci.com/user/tutorial/" target="_blank">https://docs.travis-ci.com/user/tutorial/</a> Jean Fan&rsquo;s blog post <a href="https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/" target="_blank">https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/</a> R specific <a href="https://docs" target="_blank">https://docs</a>.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/build-your-own-singularity-image/">build your own singularity image</a></h2>
-    <div class="article-style">
-      
-      I was using the tidyverse rocker image on HPC by singularity pull. see my previous post.
-Everything was OK until I encountered problems installing jpeg and Cairo R packages. Later, I also had an error installing scRepertoire dependency gsl.
-It turns out I have to install debian packages inside the container:
-$ apt update &amp;&amp; apt install -y &ndash;no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev \ &amp;&amp; apt install -y &ndash;no-install-recommends libx11-dev libcairo2-dev libxt-dev \ &amp;&amp; apt install -y libgsl-dev  However, singularity file system is read-only.
       
     </div>
   </div>

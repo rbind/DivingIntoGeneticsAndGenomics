@@ -1,0 +1,370 @@
+---
+title: 'marker gene selection using logistic regression and regularization for scRNAseq '
+author: Ming Tang
+date: '2022-05-15'
+slug: marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq
+categories:
+  - bioinformatics
+  - single-cell
+  - machine learning
+tags:
+  - single-cell
+  - bioinformatics
+  - machine learning
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+```
+
+
+### why this blog post?
+
+I saw a biorxiv paper titled [A comparison of marker gene selection methods for single-cell RNA sequencing data](https://www.biorxiv.org/content/10.1101/2022.05.09.490241v1)
+
+>Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
+
+I am interested in using logistic regression to find marker genes and want to try fitting the model in the [tidymodel](https://www.tidymodels.org/) ecosystem and using different regularization methods.
+
+I highly recommend you to watch the [statquest videos](https://app.learney.me/maps/StatQuest?topic=Regularization) on those topics.
+
+
+Let's use PBMC single-cell RNAseq data as an example. 
+
+Load libraries 
+
+```{r message=FALSE, warning=FALSE}
+library(Seurat)
+library(tidyverse)
+library(tidymodels)
+library(scCustomize) # for plotting
+```
+
+Preprocess the data
+
+```{r}
+# Load the PBMC dataset
+pbmc.data <- Read10X(data.dir = "~/blog_data/filtered_gene_bc_matrices/hg19/")
+# Initialize the Seurat object with the raw (non-normalized data).
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+
+## routine processing
+pbmc<- pbmc %>% 
+  NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+  FindVariableFeatures(selection.method = "vst", nfeatures = 2000) %>%
+  ScaleData() %>%
+  RunPCA(verbose = FALSE) %>%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %>%
+  FindClusters(resolution = 0.5, verbose = FALSE) %>%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+## the annotation borrowed from Seurat tutorial
+new.cluster.ids <- c("Naive CD4 T", "CD14+ Mono", "Memory CD4 T", "B", "CD8 T", "FCGR3A+ Mono", 
+    "NK", "DC", "Platelet")
+names(new.cluster.ids) <- levels(pbmc)
+pbmc <- RenameIdents(pbmc, new.cluster.ids)
+pbmc$cell_type<- Idents(pbmc)
+DimPlot(pbmc)
+```
+
+### Marker gene detection using differential expression analysis between clusters.
+
+```{r}
+pbmc_subset<- pbmc[, pbmc$cell_type %in% c("NK", "B")]
+DimPlot(pbmc_subset)
+
+Idents(pbmc_subset)<- pbmc_subset$cell_type
+
+diff_markers<- FindMarkers(pbmc_subset, ident.1 = "B", ident.2 = "NK", test.use = "wilcox")
+
+diff_markers %>%
+        arrange(p_val_adj, desc(abs(avg_log2FC))) %>%
+        head(n = 20)
+```
+
+Note that p-values from this type of analysis are inflated as we clustered the cells first and then find the differences between the clusters. In other words, we double-dip the data.
+
+see slide 27 from my ABRF2022 talk https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf
+
+### Let's use logistic regression to find marker genes
+
+We can use logistic regression to classify B-cells and NK cells. 
+
+```{r}
+
+
+## re-process the data, as the most-variable genes will change when you only have NK and B cells vs all cells. use log normalized data
+pbmc_subset<- pbmc_subset %>% 
+  NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+  FindVariableFeatures(selection.method = "vst", nfeatures = 2000) %>%
+  ScaleData() %>%
+  RunPCA(verbose = FALSE) %>%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %>%
+  FindClusters(resolution = 0.1, verbose = FALSE) %>%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+```
+
+we use scaled data, because it was z-score transformed, so the highly expressed genes will not dominate the model
+ 
+```{r}
+data<- pbmc_subset@assays$RNA@scale.data
+# let's transpose the matrix and make it to a dataframe
+dim(data)
+
+data<- t(data) %>%
+        as.data.frame()
+
+# now, every row is a cell with 2000 genes/features/predictors. 
+dim(data)
+
+## add the cell type/the outcome/y to the dataframe
+data$cell_type<- pbmc_subset$cell_type
+data$cell_barcode<- rownames(data)
+## it is important to turn it to a factor for classification
+data$cell_type<- factor(data$cell_type)
+```
+
+### prepare the data 
+
+```{r}
+set.seed(123)
+
+data_split <- initial_split(data, strata = "cell_type")
+data_train <- training(data_split)
+data_test <- testing(data_split)
+
+# 10 fold cross validation
+data_fold <- vfold_cv(data_train, v = 10)
+```
+
+We will not look at the test data at all until we test our model. 
+
+
+### Ridge Regression 
+
+In our training data, we have 2000 genes/features (`p`) and 273 cells/observations (`n`)
+and  `p` >> `n`, so we will need to enforce sparsity of the model by regularization.
+
+We’ll set the penalty argument to `tune()` as a placeholder for now. This is a model hyper parameter that we will tune to find the best value for making predictions with our data. Setting mixture to a value of one means that the glmnet model will potentially remove irrelevant predictors and choose a simpler model.
+
+Let's use L2 regularization/norm for ridge regression  by specifying `mixture = 0`.
+and we need to tune the `penalty` hyper parameter.
+
+```{r}
+ridge_spec<-
+        logistic_reg(penalty = tune(), mixture = 0) %>%
+        set_engine("glmnet") %>%
+        set_mode("classification")
+
+ridge_recipe <- 
+  recipe(formula = cell_type ~ ., data = data_train) %>% 
+  update_role(cell_barcode, new_role = "ID")  %>%
+  step_zv(all_predictors())
+
+# step_normalize(all_predictors())
+## the expression is already scaled, no need to do step_normalize
+
+ridge_workflow <- workflow() %>% 
+  add_recipe(ridge_recipe) %>% 
+  add_model(ridge_spec)
+```
+
+tune the `penalty` hyper-parameter.
+
+```{r}
+penalty_grid <- grid_regular(penalty(range = c(-5, 5)), levels = 50)
+#penalty_grid
+tune_res <- tune_grid(
+  ridge_workflow,
+  resamples = data_fold, 
+  grid = penalty_grid
+)
+
+# tune_res
+# check which penalty is the best 
+autoplot(tune_res)
+
+best_penalty <- select_best(tune_res, metric = "accuracy")
+best_penalty
+ridge_final <- finalize_workflow(ridge_workflow, best_penalty)
+ridge_final_fit <- fit(ridge_final, data = data_train)
+
+tidy(ridge_final_fit) %>% arrange(desc(abs(estimate)))
+
+# augment(ridge_final_fit, new_data = data_test) 
+```
+
+we see the NKG7, GZMB, CTSW GNLY, PRF1 etc on the top as the marker genes for NK cells which makes sense!
+
+```{r}
+## confusion matrix
+predict(ridge_final_fit, new_data = data_test) %>%
+        bind_cols(data_test %>% select(cell_type)) %>%
+        conf_mat(truth = cell_type, estimate = .pred_class)
+```
+
+### Lasso regression
+
+You need to use `logistic_reg()` and set `mixture = 1` to specify a lasso model. The mixture argument specifies the amount of different types of regularization, `mixture = 0` specifies only ridge regularization and `mixture = 1` specifies only lasso regularization.
+
+Lasso will remove highly correlated features which may not be what we want here!
+
+```{r}
+lasso_spec<-
+        logistic_reg(penalty = tune(), mixture = 1) %>%
+        set_engine("glmnet") %>%
+        set_mode("classification")
+
+lasso_recipe <- 
+  recipe(formula = cell_type ~ ., data = data_train) %>% 
+  update_role(cell_barcode, new_role = "ID")  %>%
+  step_zv(all_predictors())
+
+# step_normalize(all_predictors())
+## the expression is already scaled, no need to do step_normalize
+
+lasso_workflow <- workflow() %>% 
+  add_recipe(lasso_recipe) %>% 
+  add_model(lasso_spec)
+
+penalty_grid <- grid_regular(penalty(range = c(-5, 5)), levels = 50)
+#penalty_grid
+tune_res <- tune_grid(
+  lasso_workflow,
+  resamples = data_fold, 
+  grid = penalty_grid
+)
+
+# tune_res
+# check which penalty is the best 
+autoplot(tune_res)
+
+best_penalty <- select_best(tune_res, metric = "accuracy")
+best_penalty
+lasso_final <- finalize_workflow(lasso_workflow, best_penalty)
+lasso_final_fit <- fit(lasso_final, data = data_train)
+
+## confusion matrix
+predict(lasso_final_fit, new_data = data_test) %>%
+        bind_cols(data_test %>% select(cell_type)) %>%
+        conf_mat(truth = cell_type, estimate = .pred_class)
+
+lasso_features<- tidy(lasso_final_fit) %>% 
+        arrange(desc(abs(estimate))) %>%
+        filter(estimate != 0) 
+
+print(lasso_features, n = Inf)
+```
+
+Because `Lasso regression` enforce sparsity, we can select the features with the coefficients/estimates not equal to 0, but we will miss the correlated genes which were thrown out by the model.
+
+Also, if you are wondering how can I get a p-value for the coefficient, read https://stats.stackexchange.com/questions/410173/lasso-regression-p-values-and-coefficients
+
+
+### Elastic-net 
+
+Setting mixture to a value between 0 and 1 lets us use both Lasso and Ridge (Elastic-net!!)
+
+Elastic-net gets the best world of both Lasso and Ridge. 
+Thanks, [Matt Bernstein](https://twitter.com/Matthew_N_B) for pointing the original elastic-net paper to me!
+
+https://hastie.su.domains/Papers/elasticnet.pdf
+
+> In addition, the elastic net encourages a
+grouping effect, where strongly correlated predictors tend to be in
+(out) the model together. The elastic net is particularly useful when
+the number of predictors (p) is much bigger than the number of observations (n)
+
+
+```{r}
+elastic_recipe <- 
+  recipe(formula = cell_type ~ ., data = data_train) %>% 
+  update_role(cell_barcode, new_role = "ID") %>%
+  step_zv(all_predictors())
+
+# we will tune both penalty and the mixture
+elastic_spec <- 
+  logistic_reg(penalty = tune(), mixture = tune()) %>% 
+  set_engine("glmnet") %>%
+  set_mode("classification")
+
+elastic_workflow <- workflow() %>% 
+  add_recipe(elastic_recipe) %>% 
+  add_model(elastic_spec)
+
+## tune both the penalty and the mixture from 0-1
+penalty_grid <- grid_regular(penalty(range = c(-2, 2)), mixture(), levels = 50)
+
+doParallel::registerDoParallel()
+tune_res <- tune_grid(
+  elastic_workflow,
+  resamples = data_fold, 
+  grid = penalty_grid
+)
+
+autoplot(tune_res)
+
+best_penalty <- select_best(tune_res, metric = "accuracy")
+elastic_final <- finalize_workflow(elastic_workflow, best_penalty)
+elastic_final_fit <- fit(elastic_final, data = data_train)
+
+## confusion matrix
+predict(elastic_final_fit, new_data = data_test) %>%
+        bind_cols(data_test %>% select(cell_type)) %>%
+        conf_mat(truth = cell_type, estimate = .pred_class)
+
+elastic_features<- tidy(elastic_final_fit) %>%
+  arrange(desc(abs(estimate))) %>%
+  filter(estimate != 0) 
+
+head(elastic_features, n = 20)
+head(lasso_features, n = 20)
+
+
+merged_markers<- left_join(elastic_features, lasso_features, by = c("term" = "term")) %>%
+        dplyr::rename(estimate.elastic = estimate.x, estimate.lasso= estimate.y) %>%
+        select(-penalty.x, - penalty.y) 
+
+head(merged_markers, n = 20)
+```
+
+we see GZMM is missed by Lasso but picked up by elastic-net. GZMM is probably highly correlated with other granzymes such as GZMB, GZMA which are already in the model.
+
+FCRR3A (CD16) picked up as an NK cell marker by elastic too.
+
+From this [paper](https://ashpublications.org/bloodadvances/article/4/7/1388/454300/Diversity-of-peripheral-blood-human-NK-cells). CD16 is a pretty important marker for NK cell subytyping. It is sad that Lasso missed it.
+
+
+Let's plot the gene expression level to check the raw data.
+```{r fig.height = 10, fig.width = 4, fig.align = "center"}
+Idents(pbmc_subset)<- pbmc_subset$cell_type
+scCustomize::Stacked_VlnPlot(pbmc_subset, features = merged_markers %>% slice(-1) %>% pull(term) %>% head(n = 20),
+                             colors_use = c("blue", "red") )
+```
+
+Many of the top genes picked up by elastic-net are very convincing to me. LRRIQ3 is low in both cell types.
+
+
+### Things learned
+
+* the tidymodel ecosystem makes the interface to different machine learning methods consistent. You can tell how similar the codes are for all three regularization methods (Time to write a function!).
+
+* classification for B cells and NK cells are petty easy task as they are very different. All models perform well. Again, the purpose here is not to use the model to do prediction, but use the model to do feature selection.
+
+* Seurat has an [implementation](https://github.com/satijalab/seurat/blob/f1b2593ea72f2e6d6b16470dc7b9e9b645179923/R/differential_expression.R#L1670) of the logistic regression for marker gene selection: `glm(formula = fmla, data = model.data, family = "binomial")`
+
+Other readings:
+
+* [Tidy Modeling with R](https://www.tmwr.org/)
+* [Regression in  𝑝>𝑛  setting: how to choose regularization method (Lasso, PLS, PCR, ridge)?](https://stats.stackexchange.com/questions/108614/regression-in-pn-setting-how-to-choose-regularization-method-lasso-pls-pc)
+* [Bias, Variance, and Regularization in Linear Regression: Lasso, Ridge, and Elastic Net — Differences and uses](https://towardsdatascience.com/bias-variance-and-regularization-in-linear-regression-lasso-ridge-and-elastic-net-8bf81991d0c5)
+* [Regularized Regression](https://uc-r.github.io/regularized_regression)
+
