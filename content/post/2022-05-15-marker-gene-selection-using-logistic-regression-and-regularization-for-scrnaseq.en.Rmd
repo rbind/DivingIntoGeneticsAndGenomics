@@ -45,6 +45,7 @@ library(Seurat)
 library(tidyverse)
 library(tidymodels)
 library(scCustomize) # for plotting
+library(patchwork)
 ```
 
 Preprocess the data
@@ -337,6 +338,27 @@ head(merged_markers, n = 20)
 ```
 
 we see GZMM is missed by Lasso but picked up by elastic-net. GZMM is probably highly correlated with other granzymes such as GZMB, GZMA which are already in the model.
+
+```{r fig.height = 4, fig.width = 8, fig.align = "center"}
+
+p1<- ggplot(data_train, aes(x = GZMM, y = GZMB)) +
+        geom_point() +
+        geom_smooth(method = "lm", se = T) +
+        ggpubr::stat_cor() +
+        theme_bw(base_size = 14) +
+        ggtitle("correlation of GZMB and GZMM")
+
+p2<- ggplot(data_train, aes(x = GZMA, y = GZMB)) +
+        geom_point() +
+        geom_smooth(method = "lm", se = T) +
+        ggpubr::stat_cor() +
+        theme_bw(base_size = 14) +
+        ggtitle("correlation of GZMA and GZMB")
+
+p1 + p2
+
+
+```
 
 FCRR3A (CD16) picked up as an NK cell marker by elastic too.
 

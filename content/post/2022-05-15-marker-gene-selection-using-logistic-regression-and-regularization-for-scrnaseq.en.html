@@ -34,7 +34,8 @@ editor_options:
 <pre class="r"><code>library(Seurat)
 library(tidyverse)
 library(tidymodels)
-library(scCustomize) # for plotting</code></pre>
+library(scCustomize) # for plotting
+library(patchwork)</code></pre>
 <p>Preprocess the data</p>
 <pre class="r"><code># Load the PBMC dataset
 pbmc.data &lt;- Read10X(data.dir = &quot;~/blog_data/filtered_gene_bc_matrices/hg19/&quot;)
@@ -422,13 +423,29 @@ head(merged_markers, n = 20)</code></pre>
 #&gt; 19 FCGR3A                0.0765        NA     
 #&gt; 20 FCER1G                0.0712        NA</code></pre>
 <p>we see GZMM is missed by Lasso but picked up by elastic-net. GZMM is probably highly correlated with other granzymes such as GZMB, GZMA which are already in the model.</p>
+<pre class="r"><code>p1&lt;- ggplot(data_train, aes(x = GZMM, y = GZMB)) +
+        geom_point() +
+        geom_smooth(method = &quot;lm&quot;, se = T) +
+        ggpubr::stat_cor() +
+        theme_bw(base_size = 14) +
+        ggtitle(&quot;correlation of GZMB and GZMM&quot;)
+
+p2&lt;- ggplot(data_train, aes(x = GZMA, y = GZMB)) +
+        geom_point() +
+        geom_smooth(method = &quot;lm&quot;, se = T) +
+        ggpubr::stat_cor() +
+        theme_bw(base_size = 14) +
+        ggtitle(&quot;correlation of GZMA and GZMB&quot;)
+
+p1 + p2</code></pre>
+<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>FCRR3A (CD16) picked up as an NK cell marker by elastic too.</p>
 <p>From this <a href="https://ashpublications.org/bloodadvances/article/4/7/1388/454300/Diversity-of-peripheral-blood-human-NK-cells">paper</a>. CD16 is a pretty important marker for NK cell subytyping. It is sad that Lasso missed it.</p>
 <p>Let’s plot the gene expression level to check the raw data.</p>
 <pre class="r"><code>Idents(pbmc_subset)&lt;- pbmc_subset$cell_type
 scCustomize::Stacked_VlnPlot(pbmc_subset, features = merged_markers %&gt;% slice(-1) %&gt;% pull(term) %&gt;% head(n = 20),
                              colors_use = c(&quot;blue&quot;, &quot;red&quot;) )</code></pre>
-<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-13-1.png" width="384" style="display: block; margin: auto;" /></p>
+<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-14-1.png" width="384" style="display: block; margin: auto;" /></p>
 <p>Many of the top genes picked up by elastic-net are very convincing to me. LRRIQ3 is low in both cell types.</p>
 </div>
 <div id="things-learned" class="section level3">
