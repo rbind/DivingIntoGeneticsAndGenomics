@@ -368,3 +368,8 @@ Other readings:
 * [Bias, Variance, and Regularization in Linear Regression: Lasso, Ridge, and Elastic Net — Differences and uses](https://towardsdatascience.com/bias-variance-and-regularization-in-linear-regression-lasso-ridge-and-elastic-net-8bf81991d0c5)
 * [Regularized Regression](https://uc-r.github.io/regularized_regression)
 
+### UPDATE
+
+I did not see `MS4A1`/`CD20`in any of the regression results which is a well know B-cell marker. I then went back and found that somehow MS4A1 is not in the top 2000 most variable genes selected by Seurat in the subseted small object. This tells us feature engineer is very important too.
+
+
