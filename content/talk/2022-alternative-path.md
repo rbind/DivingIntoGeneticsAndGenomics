@@ -22,7 +22,7 @@ selected = false
 # Links (optional).
 url_pdf = ""
 url_slides = ""
-url_video = ""
+url_video = "https://www.youtube.com/watch?v=G6FN-MjU-7A"
 url_code = ""
 
 # Does the content use math formatting?
@@ -39,7 +39,7 @@ caption = "My caption :smile:"
 
 +++
 
-I shared my career path at the annual postdoc Alternative careers event King's College London. I am glad that I can give some tips to the postdocs and reminds them alternative careers exist besides academia.
+I shared my career path at the annual postdoc Alternative careers event King's College London. I am glad that I can give some tips to the postdocs and reminds them alternative careers exist besides academia. (Starting at 36 min at the youtube video I linked above).
 
 ### Event 
 
