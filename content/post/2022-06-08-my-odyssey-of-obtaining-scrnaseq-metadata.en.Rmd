@@ -1,0 +1,187 @@
+---
+title: 'My odyssey of obtaining scRNAseq metadata '
+author: Ming Tang
+date: '2022-06-08'
+slug: my-odyssey-of-obtaining-scrnaseq-metadata
+categories:
+  - bioinformatics
+  - scRNAseq
+  - R
+tags:
+  - scRNAseq
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+```
+
+I want to curate a public scRNAseq dataset from this paper [Single-cell analyses reveal key immune cell subsets associated with response to PD-L1 blockade in triple-negative breast cancer](https://pubmed.ncbi.nlm.nih.gov/34653365/)
+
+### ffq 
+
+I first tried [ffq](https://github.com/pachterlab/ffq), but it gave me errors.
+
+`ffq` fetches metadata information from the following databases:
+
+* GEO: Gene Expression Omnibus,
+* SRA: Sequence Read Archive,
+* EMBL-EBI: European Molecular BIology Laboratory’s European BIoinformatics Institute,
+* DDBJ: DNA Data Bank of Japan,
+* NIH Biosample: Biological source materials used in experimental assays,
+* ENCODE: The Encyclopedia of DNA Elements.
+
+```{bash eval =FALSE}
+(base) ➜  ~ ffq GSE169246
+[2022-06-06 14:32:22,716]    INFO Parsing GEO GSE169246
+[2022-06-06 14:32:24,418]    INFO Finding supplementary files for GEO GSE169246
+[2022-06-06 14:32:28,001] WARNING There are 83 samples for GSE169246
+[2022-06-06 14:32:28,001]    INFO Parsing GSM GSM5188367
+[2022-06-06 14:32:33,047]    INFO Finding supplementary files for GSM GSM5188367
+[2022-06-06 14:32:34,409]    INFO No supplementary files found for GSM5188367
+[2022-06-06 14:32:39,659]    INFO Getting sample for GSM5188367
+[2022-06-06 14:32:41,847] WARNING No sample found. Either the provided GSM accession is invalid or raw data was not provided for this record
+```
+
+### get the metadata using GEOquery
+
+other methods: pysradb https://github.com/saketkc/pysradb
+
+I then tried [`GEOquery`](https://bioconductor.org/packages/release/bioc/html/GEOquery.html)
+
+```{r}
+library(GEOquery)
+library(tidyverse)
+library(here)
+#getGEOSuppFiles(GEO ="GSE176021")
+# one can also get the matrix by setting GSEMatrix to TRUE
+meta<- getGEO(GEO= "GSE169246",GSEMatrix=FALSE)
+```
+
+
+The `meta` object's gsms slot contains useful information 
+
+```{r}
+## metadata 
+meta@gsms$GSM5188440@header$characteristics_ch1
+
+## sample ID, I need it because the count matrix cell name is prefixed by it
+meta@gsms$GSM5188440@header$title 
+
+## patient ID
+meta@gsms$GSM5188440@header$source_name_ch1
+```
+
+
+`meta@gsms` is a list of lists. `purrr::map()` is a perfect tool to tidy it.
+
+you can learn more `purrr` from https://jennybc.github.io/purrr-tutorial/
+
+
+```{r}
+
+# each list entry is one sample
+names(meta@gsms)
+
+meta@gsms$GSM5188367@header
+
+# extract the metadata from the header
+purrr::map(meta@gsms, ~.x@header$characteristics_ch1)[1:5]
+```
+
+Also, have you used the awesome `stack` and `unstack` function in base R? There are so many good hidden functions. 
+
+```{r}
+# save it to a variable
+meta1<- purrr::map(meta@gsms, ~.x@header$characteristics_ch1) %>%
+        stack() %>%
+        separate(values, into = c("condition", "value"), sep= ": ")%>%
+        pivot_wider(names_from= condition, values_from = value) %>%
+        janitor::clean_names()
+        
+
+meta2<- purrr::map(meta@gsms, ~.x@header$title) %>%
+        stack() %>%
+        dplyr::rename(sample_id = values)
+
+
+meta3<- purrr::map(meta@gsms, ~.x@header$source_name_ch1) %>%
+        stack() %>%
+        dplyr::rename(patient_id = values)
+
+
+
+head(meta1)
+head(meta2)
+head(meta3)
+
+##merge all of them
+
+meta<- left_join(meta1, meta2) %>%
+        left_join(meta3)
+
+head(meta)
+
+## remove the scATACseq samples
+meta<- meta %>%
+        filter(!str_detect(sample_id, "ATAC-seq"))
+```
+
+
+### Get the response data
+
+Now, I will need to go to the publication and find the supplementary table which contains the response data.
+It looks like this:
+
+![](/img/meta_excel.png)
+Everyone should read this https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/
+and [Data organization in spreadsheet](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989)
+
+Using excel wisely is not a rocket science, but using it correctly can make bioinformatician's life much easier.
+
+```{r}
+clinical_data<- readxl::read_xlsx("~/Downloads/1-s2.0-S1535610821004992-mmc2.xlsx", skip = 1)
+
+## there are many places need to be fixed
+print(clinical_data, n = 40)
+
+## remove the first row and the last 4 rows, fill in the NAs for the Treatment 
+clinical_data<- clinical_data %>%
+        janitor::clean_names() %>%
+        slice(2:23) %>%
+        tidyr::fill(treatment) %>%
+        dplyr::select(!(tumor:x15)) 
+```
+
+
+yeah, and N for not available , and sometimes - means not available. let's fix that.
+
+```{r}
+clinical_data<- clinical_data %>%
+        #trim off the white spaces. this will help the later step too
+        mutate_all(~str_trim(.x, side ="both")) %>%
+        mutate_at(vars(-pd_l1), ~str_replace(.x , "^-$", NA_character_)) %>%
+        mutate_all( ~str_replace(.x , "^N$", NA_character_))
+
+```
+
+merge the two tables
+```{r}
+meta<- meta %>%
+        left_join(clinical_data) %>%
+        arrange(patient_id, biopsied_lesion) %>%
+        select(-biopsied_lesion)
+
+print(meta, n = 20)
+```
+
+That's how much it takes to get the sample level metadata from a public dataset. It is hard to fully automate and one has to go to GEO and supplementary tables, and wrangle the data to a desired format. If you ask me, I will tell you this is the real-life bioinformatics.
+
+Happy BioinFORMATics
+
