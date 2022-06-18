@@ -1,0 +1,342 @@
+---
+title: Partial least square regression for marker gene identification in scRNAseq
+  data
+author: Ming Tang
+date: '2022-06-16'
+slug: partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data
+categories:
+  - bioinformatics
+  - single-cell
+tags:
+  - bioinformatics
+  - Bioconductor
+  - single-cell
+  - machine learning
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>This is an extension of my last blog post <a href="https://divingintogeneticsandgenomics.rbind.io/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq</a>.</p>
+<p>Let’s use the same PBMC single-cell RNAseq data as an example.</p>
+<p>Load libraries</p>
+<pre class="r"><code>library(Seurat)
+library(tidyverse)
+library(tidymodels)
+library(scCustomize) # for plotting
+library(patchwork)</code></pre>
+<p>Preprocess the data</p>
+<pre class="r"><code># Load the PBMC dataset
+pbmc.data &lt;- Read10X(data.dir = &quot;~/blog_data/filtered_gene_bc_matrices/hg19/&quot;)
+# Initialize the Seurat object with the raw (non-normalized data).
+pbmc &lt;- CreateSeuratObject(counts = pbmc.data, project = &quot;pbmc3k&quot;, min.cells = 3, min.features = 200)
+
+## routine processing
+pbmc&lt;- pbmc %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+## the annotation borrowed from Seurat tutorial
+new.cluster.ids &lt;- c(&quot;Naive CD4 T&quot;, &quot;CD14+ Mono&quot;, &quot;Memory CD4 T&quot;, &quot;B&quot;, &quot;CD8 T&quot;, &quot;FCGR3A+ Mono&quot;, 
+    &quot;NK&quot;, &quot;DC&quot;, &quot;Platelet&quot;)
+names(new.cluster.ids) &lt;- levels(pbmc)
+pbmc &lt;- RenameIdents(pbmc, new.cluster.ids)
+pbmc$cell_type&lt;- Idents(pbmc)
+DimPlot(pbmc)</code></pre>
+<p><img src="/post/2022-06-16-partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<div id="marker-gene-detection-using-differential-expression-analysis-between-clusters." class="section level3">
+<h3>Marker gene detection using differential expression analysis between clusters.</h3>
+<pre class="r"><code>pbmc_subset&lt;- pbmc[, pbmc$cell_type %in% c(&quot;NK&quot;, &quot;B&quot;)]
+DimPlot(pbmc_subset)</code></pre>
+<p><img src="/post/2022-06-16-partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>Idents(pbmc_subset)&lt;- pbmc_subset$cell_type
+
+diff_markers&lt;- FindMarkers(pbmc_subset, ident.1 = &quot;B&quot;, ident.2 = &quot;NK&quot;, test.use = &quot;wilcox&quot;)
+
+diff_markers %&gt;%
+        arrange(p_val_adj, desc(abs(avg_log2FC))) %&gt;%
+        head(n = 20)</code></pre>
+<pre><code>#&gt;                 p_val avg_log2FC pct.1 pct.2    p_val_adj
+#&gt; GZMB     7.646318e-98  -5.553778 0.017 0.966 1.048616e-93
+#&gt; GZMA     2.929923e-95  -4.519094 0.011 0.939 4.018097e-91
+#&gt; PRF1     9.684091e-95  -4.635264 0.029 0.959 1.328076e-90
+#&gt; NKG7     8.032681e-92  -6.310372 0.083 0.986 1.101602e-87
+#&gt; CST7     4.498511e-91  -4.389481 0.037 0.946 6.169258e-87
+#&gt; CTSW     1.747566e-89  -4.144031 0.066 0.966 2.396612e-85
+#&gt; FGFBP2   3.777986e-87  -4.555937 0.034 0.912 5.181130e-83
+#&gt; GNLY     8.666212e-85  -6.080298 0.080 0.939 1.188484e-80
+#&gt; FCGR3A   1.278458e-79  -3.635596 0.034 0.858 1.753278e-75
+#&gt; CD247    1.428149e-77  -3.763002 0.040 0.851 1.958563e-73
+#&gt; GZMM     3.440488e-77  -3.248116 0.017 0.818 4.718285e-73
+#&gt; CD7      4.578399e-74  -3.330969 0.054 0.851 6.278817e-70
+#&gt; TYROBP   2.340536e-73  -3.560921 0.103 0.899 3.209811e-69
+#&gt; FCER1G   9.343826e-72  -3.499007 0.069 0.845 1.281412e-67
+#&gt; SPON2    7.917147e-70  -3.506623 0.011 0.743 1.085758e-65
+#&gt; CD74     1.880522e-69   3.659825 1.000 0.824 2.578947e-65
+#&gt; HLA-DRA  2.083409e-69   4.597057 1.000 0.365 2.857187e-65
+#&gt; SRGN     1.501958e-68  -3.151188 0.201 0.932 2.059785e-64
+#&gt; HLA-DPB1 3.257314e-66   3.595454 0.986 0.345 4.467080e-62
+#&gt; HLA-DRB1 2.058185e-65   3.710470 0.980 0.189 2.822594e-61</code></pre>
+<p>Note that p-values from this type of analysis are inflated as we clustered the cells first and then find the differences between the clusters. In other words, we double-dip the data.</p>
+<p>see slide 27 from my ABRF2022 talk <a href="https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf" class="uri">https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf</a></p>
+</div>
+<div id="lets-use-partial-least-square-regression-to-find-marker-genes" class="section level3">
+<h3>Let’s use partial least square regression to find marker genes</h3>
+<p>According to wiki:</p>
+<blockquote>
+<p>Partial least squares regression (PLS regression) is a statistical method that bears some relation to principal components regression; instead of finding hyperplanes of maximum variance between the response and independent variables, it finds a linear regression model by projecting the predicted variables and the observable variables to a new space.</p>
+</blockquote>
+<p>Specifically, pls regression searches for a set of components (called latent vectors) that performs a simultaneous decomposition of X and Y with the constraint that these components explain as much as possible of the <strong>covariance</strong> between X and Y.</p>
+<p>related readings:</p>
+<p><a href="https://www.tidymodels.org/learn/models/pls/" class="uri">https://www.tidymodels.org/learn/models/pls/</a></p>
+<p><a href="https://mixomicsteam.github.io/Bookdown/plsda.html" class="uri">https://mixomicsteam.github.io/Bookdown/plsda.html</a></p>
+<blockquote>
+<p>PLS is a multivariate projection-based method that can address different types of integration problems. Its flexibility is the reason why it is the backbone of most methods in mixOmics. PLS is computationally very efficient when the number of variables p+q&gt;&gt; n the number of samples.</p>
+</blockquote>
+<p>It has many advantages as mentioned in this post <a href="https://towardsdatascience.com/partial-least-squares-f4e6714452a" class="uri">https://towardsdatascience.com/partial-least-squares-f4e6714452a</a></p>
+<ol style="list-style-type: decimal">
+<li>Partial Least Squares against multicollinearity.</li>
+<li>Partial Least Squares for multivariate outcome. You can have a matrix of Y of multiple outcome variables.</li>
+<li>Although Multivariate Multiple Regression works fine in many cases, it cannot handle multicollinearity. If your dataset has many correlated predictor variables, you will need to move to Partial Least Squares Regression.</li>
+<li>Principal Components Regression (PCR) is a regression method that proposes an alternative solution to having many correlated independent variables. PCR applies a Principal Components Analysis to the independent variables before entering them into an Ordinary Least Squares model.In Partial Least Squares (PLS), the identified components of the independent variables while be defined as to be related to the identified components of the dependent variables. In Principal Components Regression, the components are created without taking the dependent variables into account.</li>
+</ol>
+<div id="partial-least-squares-regression" class="section level4">
+<h4>Partial Least Squares Regression</h4>
+<p>The absolute most common Partial Least Squares model is Partial Least Squares Regression, or PLS Regression. Partial Least Squares Regression is the foundation of the other models in the family of PLS models. As it is a regression model, it applies when your dependent variables are <strong>numeric</strong>.</p>
+</div>
+<div id="partial-least-squares-discriminant-analysis" class="section level4">
+<h4>Partial Least Squares Discriminant Analysis</h4>
+<p>Partial Least Squares Discriminant Analysis, or <code>PLS-DA</code>, is the alternative to use when your dependent variables are <strong>categorical</strong>. Discriminant Analysis is a classification algorithm and PLS-DA adds the dimension reduction part to it.</p>
+<blockquote>
+<p>Although Partial Least Squares was not originally designed for classification and discrimination problems, it has often been used for that purpose (Nguyen and Rocke 2002; Tan et al. 2004). The response matrix Y is qualitative and is internally recoded as a dummy block matrix that records the membership of each observation, i.e. each of the response categories are coded via an indicator variable (see (Rohart, Gautier, et al. 2017) Suppl. Information S1 for an illustration). The PLS regression (now PLS-DA) is then run as if Y was a continuous matrix. This PLS classification trick works well in practice.</p>
+</blockquote>
+<p>Since we are classifying the cells, we are going to actually use PLS-DA</p>
+<pre class="r"><code>## re-process the data, as the most-variable genes will change when you only have NK and B cells vs all cells. use log normalized data
+pbmc_subset&lt;- pbmc_subset %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.1, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)</code></pre>
+<p>we use scaled data, because it was z-score transformed, so the highly expressed genes will not dominate the model</p>
+<pre class="r"><code>data&lt;- pbmc_subset@assays$RNA@scale.data
+# let&#39;s transpose the matrix and make it to a dataframe
+dim(data)</code></pre>
+<pre><code>#&gt; [1] 2000  497</code></pre>
+<pre class="r"><code>data&lt;- t(data) %&gt;%
+        as.data.frame()
+
+# now, every row is a cell with 2000 genes/features/predictors. 
+dim(data)</code></pre>
+<pre><code>#&gt; [1]  497 2000</code></pre>
+<pre class="r"><code>## add the cell type/the outcome/y to the dataframe
+data$cell_type&lt;- pbmc_subset$cell_type
+data$cell_barcode&lt;- rownames(data)
+## it is important to turn it to a factor for classification
+data$cell_type&lt;- factor(data$cell_type)</code></pre>
+</div>
+</div>
+<div id="prepare-the-data" class="section level3">
+<h3>prepare the data</h3>
+<pre class="r"><code>set.seed(123)
+
+data_split &lt;- initial_split(data, strata = &quot;cell_type&quot;)
+data_train &lt;- training(data_split)
+data_test &lt;- testing(data_split)
+
+# 10 fold cross validation
+data_fold &lt;- vfold_cv(data_train, v = 10)</code></pre>
+<p>We will not look at the test data at all until we test our model.</p>
+<pre class="r"><code>library(plsmod)
+pls_recipe &lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&gt;%
+  update_role(cell_barcode, new_role = &quot;ID&quot;) %&gt;%
+  step_pls(outcome = &quot;cell_type&quot;) %&gt;%
+  step_zv(all_predictors())
+
+## save tuning components to the next 
+## set_mode to classification to run pls-DA, set to regression to run pls
+pls_spec &lt;- pls(num_comp = 6) %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;mixOmics&quot;)
+
+pls_workflow &lt;- workflow() %&gt;% 
+  add_recipe(pls_recipe) %&gt;% 
+  add_model(pls_spec)
+
+
+pls_fit &lt;- fit(pls_workflow, data = data_train)
+
+## confusion matrix, perfect classification! 
+predict(pls_fit, new_data = data_test) %&gt;%
+        bind_cols(data_test %&gt;% select(cell_type)) %&gt;%
+        conf_mat(truth = cell_type, estimate = .pred_class)</code></pre>
+<pre><code>#&gt;           Truth
+#&gt; Prediction  B NK
+#&gt;         B  88  0
+#&gt;         NK  0 37</code></pre>
+<pre class="r"><code>tidy(pls_fit) %&gt;%
+  mutate(rank = dense_rank(desc(abs(value)))) %&gt;%
+  arrange(desc(abs(value))) %&gt;%
+  filter(component == 1) %&gt;%
+        head(n= 20)</code></pre>
+<pre><code>#&gt; # A tibble: 20 × 5
+#&gt;    term     value type       component  rank
+#&gt;    &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;int&gt;
+#&gt;  1 B        0.707 outcomes           1     2
+#&gt;  2 NK      -0.707 outcomes           1     2
+#&gt;  3 NKG7    -0.129 predictors         1     8
+#&gt;  4 GZMB    -0.126 predictors         1     9
+#&gt;  5 GZMA    -0.125 predictors         1    10
+#&gt;  6 HLA-DRA  0.125 predictors         1    11
+#&gt;  7 PRF1    -0.123 predictors         1    12
+#&gt;  8 CTSW    -0.123 predictors         1    14
+#&gt;  9 GNLY    -0.122 predictors         1    15
+#&gt; 10 CD74     0.120 predictors         1    17
+#&gt; 11 CST7    -0.119 predictors         1    18
+#&gt; 12 FGFBP2  -0.117 predictors         1    19
+#&gt; 13 CD79A    0.112 predictors         1    20
+#&gt; 14 GZMM    -0.111 predictors         1    21
+#&gt; 15 FCGR3A  -0.111 predictors         1    22
+#&gt; 16 CD7     -0.110 predictors         1    23
+#&gt; 17 CD247   -0.109 predictors         1    24
+#&gt; 18 TYROBP  -0.107 predictors         1    25
+#&gt; 19 FCER1G  -0.106 predictors         1    26
+#&gt; 20 LTB      0.105 predictors         1    28</code></pre>
+<p>see top weighted genes in component1 are NKG7,GZMB,GZMA, PRF1, CTSW, GNLY for NK cells, and HLA-DRA, CD74, CD79A etc for B cells.
+This makes sense!</p>
+<pre class="r"><code>pls_fit$fit$fit$fit$variates$X %&gt;%
+        as.data.frame() %&gt;%
+        cbind(cell_type = data_train$cell_type) %&gt;%
+        ggplot(aes(x=comp1, y = comp2)) +
+        geom_point(aes(color = cell_type)) +
+        theme_bw(base_size = 14)</code></pre>
+<p><img src="/post/2022-06-16-partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+The first two PLSR components of the <code>X</code> matrix can separate NK and B cells well.</p>
+<pre class="r"><code>tidy(pls_fit) %&gt;%
+  filter(component == 1) %&gt;%
+  ggplot(aes(x= value)) +
+  geom_histogram(color = &quot;white&quot;, bins = 100) +
+  coord_cartesian(xlim=c(-0.1, 0.1))</code></pre>
+<p><img src="/post/2022-06-16-partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+The weights distribution of PLS component 1. one can set a cut off to get the marker genes.</p>
+<p>Let’s see the top genes for each of the 6 PLS components</p>
+<pre class="r"><code>tidy(pls_fit) %&gt;%
+  filter(!term %in% c(&quot;NK&quot;, &quot;B&quot;)) %&gt;%
+  group_by(component) %&gt;%
+  slice_max(abs(value), n = 20) %&gt;%
+  ungroup() %&gt;%
+  ggplot(aes(value, fct_reorder(term, value), fill = factor(component))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~component, scales = &quot;free_y&quot;) +
+  labs(y = NULL)</code></pre>
+<p><img src="/post/2022-06-16-partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="fine-tune-the-hyperparameter-number-of-components" class="section level3">
+<h3>fine tune the hyperparameter: number of components</h3>
+<pre class="r"><code>pls_recipe &lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&gt;%
+  update_role(cell_barcode, new_role = &quot;ID&quot;) %&gt;%
+  step_pls( outcome = &quot;cell_type&quot;)
+
+
+pls_spec &lt;- pls(num_comp = tune()) %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;mixOmics&quot;)
+
+pls_workflow &lt;- workflow() %&gt;% 
+  add_recipe(pls_recipe) %&gt;% 
+  add_model(pls_spec)
+
+
+num_comp_grid &lt;- grid_regular(num_comp(c(1, 20)), levels = 10)
+
+doParallel::registerDoParallel()
+tune_res &lt;- tune_grid(
+  pls_workflow,
+  resamples = data_fold, 
+  grid = num_comp_grid
+)
+
+# tune_res
+# check which penalty is the best 
+autoplot(tune_res)</code></pre>
+<p><img src="/post/2022-06-16-partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code>best_penalty &lt;- select_best(tune_res, metric = &quot;accuracy&quot;)
+
+best_penalty</code></pre>
+<pre><code>#&gt; # A tibble: 1 × 2
+#&gt;   num_comp .config              
+#&gt;      &lt;int&gt; &lt;chr&gt;                
+#&gt; 1        1 Preprocessor1_Model01</code></pre>
+<p>The following is not RUN since it picked 1 component. but for a more complicated dataset, you will select more components.</p>
+<pre class="r"><code>pls_final &lt;- finalize_workflow(pls_workflow, best_penalty)
+pls_final_fit &lt;- fit(pls_final, data = data_train)</code></pre>
+</div>
+<div id="sparse-pls-da" class="section level3">
+<h3>sparse PLS-DA</h3>
+<p>sPLS has been recently developed to perform simultaneous variable selection in both data sets X and Y data sets, by including LASSO<br />
+<code>L1</code> penalization in PLS on each pair of loading vectors (Lê Cao et al. 2008).</p>
+<p>by adding <code>L1</code> penalty, we can enforce the genes weights to be 0 if they do not contribute to the outcome Y.</p>
+<p>We define a sparse PLS model by setting the <code>predictor_prop</code> argument to a value less than one. This allows the model fitting process to set certain loadings to zero via regularization.</p>
+<pre class="r"><code>library(plsmod)
+
+pls_recipe &lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&gt;%
+  update_role(cell_barcode, new_role = &quot;ID&quot;) %&gt;%
+  step_pls(outcome = &quot;cell_type&quot;) %&gt;%
+  step_zv(all_predictors())
+
+# Note that using tidymodels_prefer() will resulting getting parsnip::pls() instead of mixOmics::pls() when simply running pls().
+tidymodels_prefer()
+
+pls_spec &lt;- pls(num_comp = 6, predictor_prop = 1/10) %&gt;% 
+  set_mode(&quot;classification&quot;) %&gt;% 
+  set_engine(&quot;mixOmics&quot;)
+
+
+pls_workflow &lt;- workflow() %&gt;% 
+  add_recipe(pls_recipe) %&gt;% 
+  add_model(pls_spec)
+
+
+pls_fit &lt;- fit(pls_workflow, data = data_train)
+
+tidy(pls_fit) %&gt;%
+  filter(!term %in% c(&quot;NK&quot;, &quot;B&quot;)) %&gt;%
+        filter(component == 1, value !=0) %&gt;%
+        arrange(desc(abs(value))) </code></pre>
+<pre><code>#&gt; # A tibble: 200 × 4
+#&gt;    term     value type       component
+#&gt;    &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt;
+#&gt;  1 NKG7    -0.190 predictors         1
+#&gt;  2 GZMB    -0.184 predictors         1
+#&gt;  3 GZMA    -0.183 predictors         1
+#&gt;  4 HLA-DRA  0.182 predictors         1
+#&gt;  5 PRF1    -0.180 predictors         1
+#&gt;  6 CTSW    -0.179 predictors         1
+#&gt;  7 GNLY    -0.177 predictors         1
+#&gt;  8 CD74     0.174 predictors         1
+#&gt;  9 CST7    -0.172 predictors         1
+#&gt; 10 FGFBP2  -0.168 predictors         1
+#&gt; # … with 190 more rows</code></pre>
+<p>we started with 2000 genes, and now 1/10 of the genes are retained with weights not equal to 0.</p>
+<p>If one wants to calculate the feature importance across all components:</p>
+<blockquote>
+<p>A VIP score is a measure of a variable’s importance in the PLS-DA model. It summarizes the contribution a variable makes to the model. The VIP score of a variable is calculated as a weighted sum of the squared correlations between the PLS-DA components and the original variable.</p>
+</blockquote>
+<p>One can use <a href="https://rdrr.io/cran/mixOmics/man/vip.html"><code>mixOmics::vip</code></a> to calculate it.</p>
+<p>Further reading: <a href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-3310-7">So you think you can PLS-DA?</a></p>
+</div>
