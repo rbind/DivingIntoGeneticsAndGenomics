@@ -224,7 +224,7 @@ This makes sense!</p>
         geom_point(aes(color = cell_type)) +
         theme_bw(base_size = 14)</code></pre>
 <p><img src="/post/2022-06-16-partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-9-1.png" width="672" />
-The first two PLSR components of the <code>X</code> matrix can separate NK and B cells well.</p>
+The first PLSR component of the <code>X</code> matrix can separate NK and B cells well.</p>
 <pre class="r"><code>tidy(pls_fit) %&gt;%
   filter(component == 1) %&gt;%
   ggplot(aes(x= value)) +

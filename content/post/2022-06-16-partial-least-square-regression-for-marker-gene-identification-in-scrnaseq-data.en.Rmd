@@ -218,7 +218,7 @@ pls_fit$fit$fit$fit$variates$X %>%
         theme_bw(base_size = 14)
 
 ```
-The first two PLSR components of the `X` matrix can separate NK and B cells well.
+The first PLSR component of the `X` matrix can separate NK and B cells well.
 
 
 ```{r}
