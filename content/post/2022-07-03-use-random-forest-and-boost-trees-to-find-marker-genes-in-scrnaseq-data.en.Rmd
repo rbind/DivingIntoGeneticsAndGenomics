@@ -1,0 +1,373 @@
+---
+title: use random forest and boost trees to find marker genes in scRNAseq data
+author: Ming Tang
+date: '2022-07-03'
+slug: use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data
+categories:
+  - bioinformatics
+  - scRNAseq
+  - R
+tags:
+  - bioinformatics
+  - scRNAseq
+  - R
+  - rstats
+  - Seurat
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+```
+
+
+This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: [logistic regression](https://divingintogeneticsandgenomics.rbind.io/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/) and [partial least square regression](https://divingintogeneticsandgenomics.rbind.io/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/).
+
+This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost).
+I highly recommend going through https://app.learney.me/maps/StatQuest for related sections by [Josh Starmer](https://twitter.com/joshuastarmer). Note, all the tree based methods can be used to do both classification and regression. 
+
+Let's use the same PBMC single-cell RNAseq data as an example. 
+
+Load libraries 
+
+```{r message=FALSE, warning=FALSE}
+library(Seurat)
+library(tidyverse)
+library(tidymodels)
+library(scCustomize) # for plotting
+library(patchwork)
+```
+
+Preprocess the data
+
+```{r}
+# Load the PBMC dataset
+pbmc.data <- Read10X(data.dir = "~/blog_data/filtered_gene_bc_matrices/hg19/")
+# Initialize the Seurat object with the raw (non-normalized data).
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+
+## routine processing
+pbmc<- pbmc %>% 
+  NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+  FindVariableFeatures(selection.method = "vst", nfeatures = 2000) %>%
+  ScaleData() %>%
+  RunPCA(verbose = FALSE) %>%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %>%
+  FindClusters(resolution = 0.5, verbose = FALSE) %>%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+## the annotation borrowed from Seurat tutorial
+new.cluster.ids <- c("Naive CD4 T", "CD14+ Mono", "Memory CD4 T", "B", "CD8 T", "FCGR3A+ Mono", 
+    "NK", "DC", "Platelet")
+names(new.cluster.ids) <- levels(pbmc)
+pbmc <- RenameIdents(pbmc, new.cluster.ids)
+pbmc$cell_type<- Idents(pbmc)
+DimPlot(pbmc, label = TRUE, repel = TRUE) + NoLegend()
+```
+
+### Marker gene detection using differential expression analysis between clusters.
+
+```{r}
+pbmc_subset<- pbmc[, pbmc$cell_type %in% c("NK", "B")]
+DimPlot(pbmc_subset)
+
+Idents(pbmc_subset)<- pbmc_subset$cell_type
+
+diff_markers<- FindMarkers(pbmc_subset, ident.1 = "B", ident.2 = "NK", test.use = "wilcox")
+
+diff_markers %>%
+        arrange(p_val_adj, desc(abs(avg_log2FC))) %>%
+        head(n = 20)
+```
+
+Note that p-values from this type of analysis are inflated as we clustered the cells first and then find the differences between the clusters. In other words, we double-dip the data.
+
+see slide 27 from my ABRF2022 talk https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf
+
+### random forest 
+
+re-process the data.
+
+```{r}
+
+## re-process the data, as the most-variable genes will change when you only have NK and B cells vs all cells. use log normalized data
+pbmc_subset<- pbmc_subset %>% 
+  NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+  FindVariableFeatures(selection.method = "vst", nfeatures = 2000) %>%
+  ScaleData() %>%
+  RunPCA(verbose = FALSE) %>%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %>%
+  FindClusters(resolution = 0.1, verbose = FALSE) %>%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+```
+
+we use scaled data, because it was z-score transformed, so the highly expressed genes will not dominate the model
+ 
+```{r}
+data<- pbmc_subset@assays$RNA@scale.data
+# let's transpose the matrix and make it to a dataframe
+dim(data)
+
+data<- t(data) %>%
+        as.data.frame()
+
+# now, every row is a cell with 2000 genes/features/predictors. 
+dim(data)
+
+## add the cell type/the outcome/y to the dataframe
+data$cell_type<- pbmc_subset$cell_type
+data$cell_barcode<- rownames(data)
+## it is important to turn it to a factor for classification
+data$cell_type<- factor(data$cell_type)
+```
+
+### prepare the data for model traning and testing
+
+```{r}
+set.seed(123)
+
+data_split <- initial_split(data, strata = "cell_type")
+data_train <- training(data_split)
+data_test <- testing(data_split)
+
+# 10 fold cross validation
+data_fold <- vfold_cv(data_train, v = 10)
+```
+
+
+### random forest
+
+By default, `randomForest()` uses  `p / 3` variables when building a random forest of regression trees, and `sqrt(p)` variables when building a random forest of classification trees. Since we have 2000 genes/predictors, the default is `sqrt(2000)` = 45.
+
+```{r}
+
+rf_recipe <- 
+  recipe(formula = cell_type ~ ., data = data_train) %>%
+  update_role(cell_barcode, new_role = "ID") %>%
+  step_zv(all_predictors())
+
+## feature importance sore to TRUE
+rf_spec <- rand_forest() %>%
+  set_engine("randomForest", importance = TRUE) %>%
+  set_mode("classification")
+
+rf_workflow <- workflow() %>% 
+  add_recipe(rf_recipe) %>% 
+  add_model(rf_spec)
+
+
+rf_fit <- fit(rf_workflow, data = data_train)
+
+## confusion matrix, perfect classification! 
+predict(rf_fit, new_data = data_test) %>%
+        bind_cols(data_test %>% select(cell_type)) %>%
+        conf_mat(truth = cell_type, estimate = .pred_class)
+
+# use vip https://koalaverse.github.io/vip/articles/vip.html
+# also read https://github.com/tidymodels/parsnip/issues/311
+rf_fit %>%
+        extract_fit_parsnip() %>%
+        vip::vip(geom = "col", num_features = 25) + 
+        theme_bw(base_size = 14)+
+        labs(title = "Random forest variable importance") 
+
+
+# tidy(rf_fit) 
+# Error: No tidy method for objects of class randomForest
+
+rf_fit %>%
+        extract_fit_parsnip() %>%
+        vip::vi_model() %>%
+        arrange(desc(abs(Importance))) %>%
+        head(n = 20)
+
+rf_features<- rf_fit %>%
+        extract_fit_parsnip() %>%
+        vip::vi_model() %>%
+        arrange(desc(abs(Importance))) %>%
+        head(n = 20) %>%
+        pull(Variable)
+```
+
+visualize the raw data 
+
+```{r fig.height = 10, fig.width = 4, fig.align = "center"}
+Idents(pbmc_subset)<- pbmc_subset$cell_type
+scCustomize::Stacked_VlnPlot(pbmc_subset, features = rf_features,
+                             colors_use = c("blue", "red") )
+```
+
+
+### parameter tunning for the mtry and number of trees
+
+```{r}
+
+rf_recipe <- 
+  recipe(formula = cell_type ~ ., data = data_train) %>%
+  update_role(cell_barcode, new_role = "ID") %>%
+  step_zv(all_predictors())
+
+## feature importance sore to TRUE, tune mtry and number of trees
+rf_spec <- rand_forest(mtry = tune(), trees = tune()) %>%
+  set_engine("randomForest", importance = TRUE) %>%
+  set_mode("classification")
+
+rf_workflow <- workflow() %>% 
+  add_recipe(rf_recipe) %>% 
+  add_model(rf_spec)
+```
+
+How to set up the `tree()` and `mtry()`.
+
+```{r}
+trees() %>% value_seq(n = 5)
+mtry()
+```
+
+The range is [1,?], the max is the max number of predictors, in our case, 2000.
+I will set it from 10 to 100 just for this example.
+
+```{r}
+rf_grid<- grid_regular(mtry(range= c(10, 100)), trees(), levels = 3)
+
+doParallel::registerDoParallel()
+
+# save_pred = TRUE for later ROC curve
+tune_res <- tune_grid(
+  rf_workflow,
+  resamples = data_fold, 
+  grid = rf_grid,
+  control = control_grid(save_pred = TRUE)
+)
+
+# tune_res
+# check which penalty is the best 
+autoplot(tune_res)
+
+
+#select_best(tune_res, metric = "roc_auc")
+
+best_penalty <- select_best(tune_res, metric = "accuracy")
+
+best_penalty
+
+rf_final <- finalize_workflow(rf_workflow, best_penalty)
+rf_final_fit <- fit(rf_final, data = data_train)
+
+#confusion matrix for the test data
+predict(rf_final_fit, new_data = data_test) %>%
+        bind_cols(data_test %>% select(cell_type)) %>%
+        conf_mat(truth = cell_type, estimate = .pred_class)
+
+
+# tune_res %>% collect_predictions()
+# only for the best model
+rf_auc<- 
+        tune_res %>% collect_predictions(parameter = best_penalty) %>%
+        roc_curve(cell_type, .pred_B) %>% 
+        mutate(model = "Random Forest") 
+
+
+rf_auc %>% 
+        ggplot(aes(x = 1 - specificity, y = sensitivity, col = model)) + 
+        geom_path(lwd = 1.5, alpha = 0.8) +
+        geom_abline(lty = 3) + 
+        coord_equal()
+
+tune_res %>% collect_metrics(parameters= best_penalty)
+```
+This dummy example gives `AUC` of 1.
+
+
+### boosting tree
+
+The `xgboost` packages give a good implementation of boosted trees. It has many parameters (e.g., eta learning rate) to tune and we know that setting trees too high can lead to overfitting. Nevertheless, let us try fitting a boosted tree. We set tree = 5000 to grow 5000 trees with a maximal depth of 4 by setting tree_depth = 4 (default is 6).
+ 
+```{r}
+bt_recipe <- 
+  recipe(formula = cell_type ~ ., data = data_train) %>%
+  update_role(cell_barcode, new_role = "ID") %>%
+  step_zv(all_predictors())
+
+## feature importance sore to TRUE, tune mtry and number of trees
+bt_spec <- 
+        boost_tree(trees = 5000, tree_depth = 4) %>%
+        set_engine("xgboost") %>%
+        set_mode("classification")
+        
+bt_workflow <- workflow() %>% 
+  add_recipe(bt_recipe) %>% 
+  add_model(bt_spec)
+
+
+bt_fit <- fit(bt_workflow, data = data_train)
+
+## confusion matrix, perfect classification! 
+predict(bt_fit, new_data = data_test) %>%
+        bind_cols(data_test %>% select(cell_type)) %>%
+        conf_mat(truth = cell_type, estimate = .pred_class)
+
+# use vip https://koalaverse.github.io/vip/articles/vip.html
+# also read https://github.com/tidymodels/parsnip/issues/311
+bt_fit %>%
+        extract_fit_parsnip() %>%
+        vip::vip(geom = "col", num_features = 25) + 
+        theme_bw(base_size = 14)+
+        labs(title = "XGboost variable importance") 
+
+
+bt_fit %>%
+        extract_fit_parsnip() %>%
+        vip::vi_model() %>%
+        arrange(desc(abs(Importance))) 
+
+
+bt_features<- bt_fit %>%
+        extract_fit_parsnip() %>%
+        vip::vi_model() %>%
+        arrange(desc(abs(Importance))) %>%
+        pull(Variable)
+       
+```
+
+Xgboost does feature selection and only 18 features were retained. Let me visualize the data.
+
+
+```{r fig.height = 10, fig.width = 4, fig.align = "center"}
+Idents(pbmc_subset)<- pbmc_subset$cell_type
+scCustomize::Stacked_VlnPlot(pbmc_subset, features = bt_features,
+                             colors_use = c("blue", "red") )
+```
+
+It picked up lowly expressed genes such as `ZWINT`, `ECL1`, `ACAP3` and `NECAP2`.
+
+for boosting trees, it is easily get over-fitted with large number of trees. random forest does not in terms of the number of the trees but it gets over-fitted in other means.
+
+From https://www.tmwr.org/tuning.html
+
+>Another (perhaps more debatable) counterexample of a parameter that does not need to be tuned is the number of trees in a random forest or bagging model. This value should instead be chosen to be large enough to ensure numerical stability in the results; tuning it cannot improve performance as long as the value is large enough to produce reliable results. For random forests, this value is typically in the thousands while the number of trees needed for bagging is around 50 to 100.
+
+
+### conclusions
+
+* For this 'simple' marker gene identification task, we can use differential gene expression, logistic regression, partial least square regression, and random forest. All of them give sensible results. Also, B cells and NK cells are pretty different. For more subtle different cell types such as CD14+ monocyte vs FCGR3A+/CD16+ monocyte, different methods may have different advantages. For more complicated task with non-linear relationship data, deep learning may outperform those conventional statistical learning methods. 
+
+* Regression based methods are easy to interpret and they tell you whether a feature is positively  or negatively associated with the outcome based on the sign of the coefficients. Random forest, on the other hand, gives you only the important features. [SHAP](https://shap.readthedocs.io/en/latest/) may be able to do it according to this [post](https://datascience.stackexchange.com/questions/73459/positive-or-negative-impact-of-features-in-prediction-with-random-forest)
+
+* If you have read my previous posts you will find that the `tidymodels` really unifies the semantic to call different models and you only need minimal changes for the code to run different models. Neat!
+
+* Finally, always visualize your raw data. Your brain will tell you how reasonable the marker genes are.
+
+More readings:
+
+1. [Deep learning does not outperform classical machine learning for cell-type annotation](https://www.biorxiv.org/content/10.1101/653907v2.full)
+
+
+
