@@ -133,8 +133,8 @@ data_test &lt;- testing(data_split)
 # 10 fold cross validation
 data_fold &lt;- vfold_cv(data_train, v = 10)</code></pre>
 </div>
-<div id="random-forest-1" class="section level3">
-<h3>random forest</h3>
+<div id="random-forest-in-action" class="section level3">
+<h3>random forest in action</h3>
 <p>By default, <code>randomForest()</code> uses <code>p / 3</code> variables when building a random forest of regression trees, and <code>sqrt(p)</code> variables when building a random forest of classification trees. Since we have 2000 genes/predictors, the default is <code>sqrt(2000)</code> = 45.</p>
 <pre class="r"><code>rf_recipe &lt;- 
   recipe(formula = cell_type ~ ., data = data_train) %&gt;%
@@ -398,6 +398,7 @@ scCustomize::Stacked_VlnPlot(pbmc_subset, features = bt_features,
 </ul>
 <p>More readings:</p>
 <ol style="list-style-type: decimal">
-<li><a href="https://www.biorxiv.org/content/10.1101/653907v2.full">Deep learning does not outperform classical machine learning for cell-type annotation</a></li>
+<li><p><a href="https://www.biorxiv.org/content/10.1101/653907v2.full">Deep learning does not outperform classical machine learning for cell-type annotation</a></p></li>
+<li><p><a href="https://pubmed.ncbi.nlm.nih.gov/34088715/">A machine learning method for the discovery of minimum marker gene combinations for cell type identification from single-cell RNA sequencing</a></p></li>
 </ol>
 </div>

@@ -90,6 +90,7 @@ Note that p-values from this type of analysis are inflated as we clustered the c
 
 see slide 27 from my ABRF2022 talk https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf
 
+
 ### random forest 
 
 re-process the data.
@@ -142,7 +143,7 @@ data_fold <- vfold_cv(data_train, v = 10)
 ```
 
 
-### random forest
+### random forest in action 
 
 By default, `randomForest()` uses  `p / 3` variables when building a random forest of regression trees, and `sqrt(p)` variables when building a random forest of classification trees. Since we have 2000 genes/predictors, the default is `sqrt(2000)` = 45.
 
@@ -368,6 +369,8 @@ From https://www.tmwr.org/tuning.html
 More readings:
 
 1. [Deep learning does not outperform classical machine learning for cell-type annotation](https://www.biorxiv.org/content/10.1101/653907v2.full)
+
+2. [A machine learning method for the discovery of minimum marker gene combinations for cell type identification from single-cell RNA sequencing](https://pubmed.ncbi.nlm.nih.gov/34088715/)
 
 
 
