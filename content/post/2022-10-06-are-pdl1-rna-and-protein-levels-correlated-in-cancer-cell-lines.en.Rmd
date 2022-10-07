@@ -1,0 +1,223 @@
+---
+title: Are PDL1 RNA and protein levels correlated in cancer cell lines?
+author: Ming Tang
+date: '2022-10-06'
+slug: are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines
+categories:
+  - bioinformatics
+tags:
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+```
+
+
+Are protein and RNA levels correlated? This is a big question.
+
+![](/img/protein_vs_rna.png)
+
+see replies to this tweet at https://twitter.com/slavov_n/status/1561844133496512512.
+In general, [RNA and protein abundances should be correlated](http://rajlaboratory.blogspot.com/2015/05/rna-doesnt-correlate-with-protein-huh.html) 
+but there are exceptions of course. Biology is complicated/weird! 
+
+>One of my favorite examples is Hypoxia-inducible factor 1-alpha, HIF-1α. The protein is efficiently degraded in most tissues most of the time unless stabilized by hypoxia.
+
+[William Kaelin won Nobel prize](https://www.dana-farber.org/about-us/awards-and-honors/william-kaelin-2019-nobel-prize/) for his work on how cells sense oxygen through the HIF pathway in 2019.
+
+Coincidentally, [my first paper](https://divingintogeneticsandgenomics.rbind.io/publication/2011-09-13-ctcf-vegf-enhancer-blocking/) during PhD is on how CTCF functions as an enhancer block to attenuate the 
+HIF1 enhancers. 
+
+
+From this paper [Quantitative Proteomics of the Cancer Cell Line Encyclopedia](https://www.sciencedirect.com/science/article/pii/S0092867419313856?via%3Dihub#fig2), some genes are well-correlated between
+protein and RNA while others are not.
+
+
+![](/img/protein_vs_rna_ccle.png)
+
+
+From this review [mRNAs, proteins and the emerging principles of gene expression control](https://www.nature.com/articles/s41576-020-0258-4):
+
+>Therefore, mRNA levels should not be interpreted as the final output of gene expression.
+Instead, it is more instructive to think of mRNAs as what
+they mechanistically are: the templates for protein synthesis.
+
+### Explore proteomics data 
+
+Let's do some analysis to check if PDL1/CD274's mRNA and protein are correlated or not 
+across cancer cell lines. PDL1 is the ligand of PD1 and is a prominent immunotherapy
+target.
+
+The protemomics data are from this paper [Pan-cancer proteomic map of 949 human cell lines](https://www.sciencedirect.com/science/article/pii/S1535610822002744)
+
+Both the RNAseq and the proteomics data were downloaded from https://cellmodelpassports.sanger.ac.uk/downloads
+
+```{r}
+library(tidyverse)
+library(janitor)
+
+data<- read_tsv("~/blog_data/protein_matrix_averaged_20220713.tsv", skip = 1)
+
+#remove one more line
+data<- data %>%
+  dplyr::slice(-1) 
+
+data<- data %>%
+  dplyr::rename(model_name = symbol) %>%
+  dplyr::rename(model_id = `...2`)
+
+        
+head(data)
+```
+
+so each row is a cell line, and each column is a gene. It also has a model_id
+column that the consortium use internally.
+
+### read in the metadata:
+
+```{r}
+meta<- read_csv("~/blog_data/model_list_20220628.csv")
+
+head(meta)
+
+dim(meta)
+```
+ 
+Sanity check if `model_id` and `model_name` are 1:1 mapping or not.
+
+```{r}
+## model_id and model_name are not 1:1 mapping
+meta %>% select(model_id, model_name) %>%
+        distinct(model_name) %>%
+        dim()
+
+
+## three same cell line has duplicated lines
+meta %>%
+        count(model_name) %>%
+        dplyr::filter(n >1)
+
+## model id is unique, but not the model_name
+meta %>%
+        dplyr::filter(model_name %in% c("ML-1", "MS-1", "SLR24"))
+```
+
+Those lines have the same model_name but from different patients so a different model_id.
+
+```{r}
+head(data)
+
+exp_data<- data[, c("model_name", "model_id", "CD274")] %>%
+        left_join(meta)
+
+head(exp_data)
+
+table(is.na(exp_data$CD274))
+```
+
+only 159 lines with PDL1 expression at protein level.
+
+```{r}
+# distribution of the PDL1 protein level
+exp_data %>%
+        dplyr::filter(!is.na(CD274)) %>%
+        ggplot(aes(x= CD274)) +
+        geom_histogram(bins = 30, color = "white") +
+        ggtitle("PDL1 expression histogram") +
+        theme_classic(base_size = 14)
+
+
+p<- exp_data %>%
+        dplyr::filter(!is.na(CD274)) %>%
+        ggplot(aes(x = cancer_type, y= CD274 ,text = paste(cancer_type, model_name, sep=":"))) +
+        geom_boxplot() +
+        geom_point() +
+        theme_classic(base_size = 14) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+library(plotly)
+
+ggplot_p<- ggplotly(p)
+ggplot_p
+#save the interactive plots
+#htmlwidgets::saveWidget(ggplot_p, here("data/Proteomics_20220713/PDL1_proteomics_cell_line_20220718.html"), selfcontained = T)
+```
+
+### read in the  RNAseq data:
+
+```{r}
+rna<- read_csv("~/blog_data/rnaseq_tpm_20220624.csv")
+
+rna<- rna %>%
+        dplyr::slice(5: nrow(rna)) %>%
+        dplyr::rename(gene = `...2`) %>%
+        dplyr::select(-model_id) %>%
+        dplyr::mutate(across(!gene, as.numeric))
+
+head(rna)
+
+
+PDL1_rna_tpm<- rna %>%
+        dplyr::filter(gene == "CD274") %>%
+        pivot_longer(! gene, names_to = "model_id", values_to = "tpm") %>%
+        pivot_wider(names_from = gene, values_from = tpm) %>%
+        select(model_id, CD274)
+
+PDL1_rna_tpm<- dplyr::rename(PDL1_rna_tpm, CD274_rna = CD274)
+
+head(PDL1_rna_tpm)
+
+exp_data<- dplyr::rename(exp_data, CD274_protein = CD274)
+
+```
+
+
+**If we only include cell lines with both protein and RNA expression, we see the protein
+and RNA are positively correlated.**
+
+```{r}
+left_join(exp_data, PDL1_rna_tpm) %>%
+        dplyr::select(model_name, model_id, CD274_protein, CD274_rna, everything()) %>%
+        dplyr::filter(!is.na(CD274_protein), !is.na(CD274_rna)) %>%
+        arrange(desc(CD274_protein)) %>%
+        ggplot(aes(x=CD274_rna, y = CD274_protein)) +
+        scale_x_continuous(trans=scales::pseudo_log_trans(base = 2))+
+        geom_point() +
+        geom_smooth(method= "lm") +
+        theme_classic(base_size = 14)
+```
+
+Let's include all cell lines and designate the NAs to 0s.
+
+```{r}
+p2<- left_join(exp_data, PDL1_rna_tpm) %>%
+        dplyr::select(model_name, model_id, CD274_protein, CD274_rna, everything()) %>%
+        dplyr::arrange(desc(CD274_protein)) %>%
+        dplyr::mutate(CD274_rna = if_else(is.na(CD274_rna), 0, CD274_rna)) %>%
+        dplyr::mutate(CD274_protein = if_else(is.na(CD274_protein), 0, CD274_protein)) %>%
+        ggplot(aes(x= CD274_rna, y = CD274_protein, text = paste(model_name, cancer_type, sep =":"))) +
+        geom_point() +
+        scale_x_continuous(trans=scales::pseudo_log_trans(base = 2), breaks = c(0, 2, 4, 8, 16, 32, 64, 100, 200, 400, 600))+ 
+        geom_smooth(method= "lm") +
+        theme_classic(base_size = 14) 
+
+
+ggplot_p2<- ggplotly(p2)
+
+ggplot_p2
+```
+
+We see a bunch of cell lines with 0 protein level expression but have some levels of RNA expression. 
+**Are the NAs in the proteomics data means PDL1 is not detected or not assayed?**
+
+And what's going on for `MDA-MB-231` breast cancer cell line in the bottom? it has high RNA expression level but the protein is very low. Also, `PC-3` (non-small cell lung cancer) and `D-245MG` (glioblastoma) cell line have decent protein expression but no RNA expression. I guess it is a technical problem.
+
+
+
