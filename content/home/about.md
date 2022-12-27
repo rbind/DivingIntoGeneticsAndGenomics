@@ -36,9 +36,9 @@ weight = 5
 
 I am now the Director of Computational Biology at [Immunitas Therapeutics](https://www.immunitastx.com/). At Immunitas, we employ a single cell sequencing platform to dissect the biology of immune cells in human tumors. Our focus on human samples allows us to start with and stay closer to the most relevant and translatable biology for patients and accelerates the pace of our research. My new north star is "bringing drugs to patients".
 
-![](/img/cell_line_to_command_line.png)
+![](/img/bookcover.png)
 
-[Sign up for my book](https://divingintogeneticsandgenomics.ck.page/) to start transforming yourself to a computational biologist.
+[Grab my book](https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line) to start transforming yourself to a computational biologist.
 
 I am a computational biologist working on genomics, epigenomics and transcriptomics. I use R primary for data wrangling and visualization in the [tidyverse](https://www.tidyverse.org/) ecosystem; I use python for writing [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflows and reformatting data; I am a unix geek learning shell tricks almost every month; I care about reproducible research and open science.
 
