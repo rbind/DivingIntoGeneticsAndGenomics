@@ -1,0 +1,120 @@
+---
+title: 'transpose single-cell cell x gene dataframe to gene x cell '
+author: Ming Tang
+date: '2023-01-04'
+slug: transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell
+categories:
+  - bioinformatics
+  - scRNAseq
+tags:
+  - scRNAseq
+  - bioinformatics
+  - tidyverse
+header:
+  caption: ''
+  image: ''
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+```
+
+
+Single cell matrix is often represented as gene x cell in [`R/Seurat`](https://satijalab.org/seurat/), but it is represented as cell x gene in [`python/scanpy`](https://scanpy.readthedocs.io/en/stable/).
+
+Let's use a real example to show how to transpose between the two formats.
+The GEO accession page is at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763
+
+
+### Download the data 
+
+We can use command line to download the count matrix at ftp: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/
+
+```{bash eval=FALSE}
+wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/GSE154763_ESCA_normalized_expression.csv.gz -O ~/blog_data/GSE154763_ESCA_normalized_expression.csv.gz
+
+# decompress the file
+gunzip GSE154763_ESCA_normalized_expression.csv.gz
+
+# this GEO matrix is cell x gene
+# take a look by https://www.visidata.org/
+vd  GSE154763_ESCA_normalized_expression.csv
+```
+
+![](/img/vd_example.png)
+
+Note, most GEO data I downloaded before is gene x cell, this one is cell x gene.
+
+The data is normalized by [logNormalization](https://satijalab.org/seurat/reference/lognormalize). Let's revert back to the raw counts using https://github.com/immunitastx/recover-counts. It uses binary search to find the total counts per cell to make the smallest count to be 0.
+
+```{bash eval=FALSE}
+wget https://raw.githubusercontent.com/immunitastx/recover-counts/main/recover_counts_from_log_normalized_data.py
+
+chmod u+x recover_counts_from_log_normalized_data.py
+
+mamba install h5py numpy pandas
+
+# by default, the script assumes the input is cell x gene. to specify gene x cell, turn
+# on -t
+./recover_counts_from_log_normalized_data.py -m 10000 -d CSV GSE154763_ESCA_normalized_expression.csv -o GSE154763_ESCA_counts.csv
+
+vd GSE154763_ESCA_counts.csv
+```
+
+![](/img/vd_example2.png)
+Now the smallest counts are 0s and some are 1s; fewer are > 1.
+
+
+### transpose the dataframe
+
+
+Read into R:
+
+```{r}
+library(tidyverse)
+
+mat_df<- read_csv("~/blog_data/GSE154763_ESCA_counts.csv")
+
+mat_df[1:5, 1:5]
+
+mat_transposed_df<- mat_df %>%
+        tidyr::pivot_longer(cols = -1, names_to = "genes") %>% 
+        tidyr::pivot_wider(names_from = index, values_from = value)
+
+mat_transposed_df[1:5, 1:5]
+```
+Now, the dataframe is transposed to gene x cell.
+
+One can also use `t()` to transpose, but it is used for matrix in R, you will have to make the 
+dataframe to matrix first
+
+```{r}
+cells<- mat_df$index
+mat2<- as.matrix(mat_df[, -1])
+
+rownames(mat2)<- cells
+
+mat2_transpose<- t(mat2)
+
+mat2[1:5, 1:5]
+```
+
+### make a Seurat object:
+
+```{r eval=FALSE}
+
+genes<- mat_transposed_df$genes
+mat<- mat_transposed_df[, -1] %>%
+        as.matrix()
+
+rownames(mat)<- genes
+
+library(Seurat)
+obj<- CreateSeuratObject(counts = mat)
+```
+
+You see most of the work happens before creating the Seurat object. Once you have a Seurat object,
+you can use [scCustomize](https://samuel-marsh.github.io/scCustomize/) to make a lot of nice visualizations.
+

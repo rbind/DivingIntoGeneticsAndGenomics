@@ -1,0 +1,117 @@
+---
+title: 'transpose single-cell cell x gene dataframe to gene x cell '
+author: Ming Tang
+date: '2023-01-04'
+slug: transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell
+categories:
+  - bioinformatics
+  - scRNAseq
+tags:
+  - scRNAseq
+  - bioinformatics
+  - tidyverse
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Single cell matrix is often represented as gene x cell in <a href="https://satijalab.org/seurat/"><code>R/Seurat</code></a>, but it is represented as cell x gene in <a href="https://scanpy.readthedocs.io/en/stable/"><code>python/scanpy</code></a>.</p>
+<p>Let’s use a real example to show how to transpose between the two formats.
+The GEO accession page is at <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763" class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763</a></p>
+<div id="download-the-data" class="section level3">
+<h3>Download the data</h3>
+<p>We can use command line to download the count matrix at ftp: <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/" class="uri">https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/</a></p>
+<pre class="bash"><code>wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/GSE154763_ESCA_normalized_expression.csv.gz -O ~/blog_data/GSE154763_ESCA_normalized_expression.csv.gz
+
+# decompress the file
+gunzip GSE154763_ESCA_normalized_expression.csv.gz
+
+# this GEO matrix is cell x gene
+# take a look by https://www.visidata.org/
+vd  GSE154763_ESCA_normalized_expression.csv</code></pre>
+<p><img src="/img/vd_example.png" /></p>
+<p>Note, most GEO data I downloaded before is gene x cell, this one is cell x gene.</p>
+<p>The data is normalized by <a href="https://satijalab.org/seurat/reference/lognormalize">logNormalization</a>. Let’s revert back to the raw counts using <a href="https://github.com/immunitastx/recover-counts" class="uri">https://github.com/immunitastx/recover-counts</a>. It uses binary search to find the total counts per cell to make the smallest count to be 0.</p>
+<pre class="bash"><code>wget https://raw.githubusercontent.com/immunitastx/recover-counts/main/recover_counts_from_log_normalized_data.py
+
+chmod u+x recover_counts_from_log_normalized_data.py
+
+mamba install h5py numpy pandas
+
+# by default, the script assumes the input is cell x gene. to specify gene x cell, turn
+# on -t
+./recover_counts_from_log_normalized_data.py -m 10000 -d CSV GSE154763_ESCA_normalized_expression.csv -o GSE154763_ESCA_counts.csv
+
+vd GSE154763_ESCA_counts.csv</code></pre>
+<p><img src="/img/vd_example2.png" />
+Now the smallest counts are 0s and some are 1s; fewer are &gt; 1.</p>
+</div>
+<div id="transpose-the-dataframe" class="section level3">
+<h3>transpose the dataframe</h3>
+<p>Read into R:</p>
+<pre class="r"><code>library(tidyverse)
+
+mat_df&lt;- read_csv(&quot;~/blog_data/GSE154763_ESCA_counts.csv&quot;)
+
+mat_df[1:5, 1:5]</code></pre>
+<pre><code>#&gt; # A tibble: 5 × 5
+#&gt;   index              `RP11-34P13.7` FO538757.2 AP006222.2 `RP4-669L17.10`
+#&gt;   &lt;chr&gt;                       &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;           &lt;dbl&gt;
+#&gt; 1 AAACGGGAGATCCTGT-5              0          1          0               0
+#&gt; 2 AAACGGGTCGGCCGAT-5              0          1          0               0
+#&gt; 3 AAAGATGGTAATCGTC-5              0          1          0               0
+#&gt; 4 AAAGCAACAGCCAATT-5              0          0          0               0
+#&gt; 5 AAAGCAACATACTCTT-5              0          1          0               0</code></pre>
+<pre class="r"><code>mat_transposed_df&lt;- mat_df %&gt;%
+        tidyr::pivot_longer(cols = -1, names_to = &quot;genes&quot;) %&gt;% 
+        tidyr::pivot_wider(names_from = index, values_from = value)
+
+mat_transposed_df[1:5, 1:5]</code></pre>
+<pre><code>#&gt; # A tibble: 5 × 5
+#&gt;   genes      `AAACGGGAGATCC…` `AAACGGGTCGGCC…` `AAAGATGGTAATC…` `AAAGCAACAGCCA…`
+#&gt;   &lt;chr&gt;                 &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+#&gt; 1 RP11-34P1…                0                0                0                0
+#&gt; 2 FO538757.2                1                1                1                0
+#&gt; 3 AP006222.2                0                0                0                0
+#&gt; 4 RP4-669L1…                0                0                0                0
+#&gt; 5 RP11-206L…                0                0                0                0</code></pre>
+<p>Now, the dataframe is transposed to gene x cell.</p>
+<p>One can also use <code>t()</code> to transpose, but it is used for matrix in R, you will have to make the
+dataframe to matrix first</p>
+<pre class="r"><code>cells&lt;- mat_df$index
+mat2&lt;- as.matrix(mat_df[, -1])
+
+rownames(mat2)&lt;- cells
+
+mat2_transpose&lt;- t(mat2)
+
+mat2[1:5, 1:5]</code></pre>
+<pre><code>#&gt;                    RP11-34P13.7 FO538757.2 AP006222.2 RP4-669L17.10
+#&gt; AAACGGGAGATCCTGT-5            0          1          0             0
+#&gt; AAACGGGTCGGCCGAT-5            0          1          0             0
+#&gt; AAAGATGGTAATCGTC-5            0          1          0             0
+#&gt; AAAGCAACAGCCAATT-5            0          0          0             0
+#&gt; AAAGCAACATACTCTT-5            0          1          0             0
+#&gt;                    RP11-206L10.9
+#&gt; AAACGGGAGATCCTGT-5             0
+#&gt; AAACGGGTCGGCCGAT-5             0
+#&gt; AAAGATGGTAATCGTC-5             0
+#&gt; AAAGCAACAGCCAATT-5             0
+#&gt; AAAGCAACATACTCTT-5             0</code></pre>
+</div>
+<div id="make-a-seurat-object" class="section level3">
+<h3>make a Seurat object:</h3>
+<pre class="r"><code>genes&lt;- mat_transposed_df$genes
+mat&lt;- mat_transposed_df[, -1] %&gt;%
+        as.matrix()
+
+rownames(mat)&lt;- genes
+
+library(Seurat)
+obj&lt;- CreateSeuratObject(counts = mat)</code></pre>
+<p>You see most of the work happens before creating the Seurat object. Once you have a Seurat object,
+you can use <a href="https://samuel-marsh.github.io/scCustomize/">scCustomize</a> to make a lot of nice visualizations.</p>
+</div>
