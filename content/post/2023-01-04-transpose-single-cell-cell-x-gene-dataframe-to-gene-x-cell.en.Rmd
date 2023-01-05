@@ -47,7 +47,7 @@ vd  GSE154763_ESCA_normalized_expression.csv
 
 Note, most GEO data I downloaded before is gene x cell, this one is cell x gene.
 
-The data is normalized by [logNormalization](https://satijalab.org/seurat/reference/lognormalize). Let's revert back to the raw counts using https://github.com/immunitastx/recover-counts. It uses binary search to find the total counts per cell to make the smallest count to be 0.
+The data is normalized by [logNormalization](https://satijalab.org/seurat/reference/lognormalize). Let's revert back to the raw counts using https://github.com/immunitastx/recover-counts. It uses binary search to find the total count to make the smallest non-zero count one. In other words, it assumes the smallest non-zero value is a count of 1.
 
 ```{bash eval=FALSE}
 wget https://raw.githubusercontent.com/immunitastx/recover-counts/main/recover_counts_from_log_normalized_data.py
