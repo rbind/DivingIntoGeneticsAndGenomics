@@ -289,3 +289,31 @@ In the coming post, let’s see if <code>DINO</code> helps for other correlated 
 <h3>Further reading</h3>
 <p><a href="http://michaelskinnider.com/files/Nat%20Meth%202019%20-%20Evaluating%20measures%20of%20association%20for%20single-cell%20transcriptomics.pdf">Evaluating measures of association for single-cell transcriptomics</a></p>
 </div>
+<div id="why-i-love-sharing" class="section level3">
+<h3>Why I love sharing</h3>
+<p>Because I get to know more from the replies.</p>
+<blockquote class="twitter-tweet">
+<p lang="en" dir="ltr">
+There is the "zero inflated" Kendall tau and Spearman correlation metrics as described in <a href="https://t.co/Guh26SWGET">https://t.co/Guh26SWGET</a> and implemented with sample-specific weights in the scHOT package <a href="https://t.co/BcsHVl5tKk">https://t.co/BcsHVl5tKk</a> see the weightedZIKendall() and weightedZISpearman() functions
+</p>
+— Shila Ghazanfar (<span class="citation">@shazanfar</span>) <a href="https://twitter.com/shazanfar/status/1615538897722961921?ref_src=twsrc%5Etfw">January 18, 2023</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>Let me try the the “zero inflated” Kendall tau and Spearman described in <a href="https://www.sciencedirect.com/science/article/abs/pii/S0167715214003137">Association of zero-inflated continuous variables</a>.</p>
+<p>Implemented in <code>weightedZIKendall()</code> and <code>weightedZISpearman()</code> in the <a href="http://www.bioconductor.org/packages/release/bioc/html/scHOT.html">scHOT</a> package</p>
+<pre class="r"><code>#BiocManager::install(&quot;scHOT&quot;)
+library(scHOT)
+CD3D&lt;- expression_data %&gt;% 
+        filter(seurat_annotations == &quot;Naive CD4 T&quot;) %&gt;%
+        pull(CD3D)
+
+CD4&lt;- expression_data %&gt;% 
+        filter(seurat_annotations == &quot;Naive CD4 T&quot;) %&gt;%
+        pull(CD4)
+
+scHOT::weightedZIKendall(CD3D, CD4)</code></pre>
+<pre><code>#&gt; [1] 0.009568571</code></pre>
+<pre class="r"><code>scHOT::weightedSpearman(CD3D, CD4)</code></pre>
+<pre><code>#&gt; [1] -0.004406211</code></pre>
+<p>The coefficient is very small. I will try it with other highly correlated genes in my next post.</p>
+</div>

@@ -299,3 +299,33 @@ Until next post, take care of others, take care of yourself!
 ### Further reading
 
 [Evaluating measures of association for single-cell transcriptomics](http://michaelskinnider.com/files/Nat%20Meth%202019%20-%20Evaluating%20measures%20of%20association%20for%20single-cell%20transcriptomics.pdf)
+
+
+### Why I love sharing
+
+Because I get to know more from the replies.
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">There is the &quot;zero inflated&quot; Kendall tau and Spearman correlation metrics as described in <a href="https://t.co/Guh26SWGET">https://t.co/Guh26SWGET</a> and implemented with sample-specific weights in the scHOT package <a href="https://t.co/BcsHVl5tKk">https://t.co/BcsHVl5tKk</a> see the weightedZIKendall() and weightedZISpearman() functions</p>&mdash; Shila Ghazanfar (@shazanfar) <a href="https://twitter.com/shazanfar/status/1615538897722961921?ref_src=twsrc%5Etfw">January 18, 2023</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+Let me try the the "zero inflated" Kendall tau and Spearman described in [Association of zero-inflated continuous variables](https://www.sciencedirect.com/science/article/abs/pii/S0167715214003137).
+
+Implemented in `weightedZIKendall()` and `weightedZISpearman()` in the [scHOT](http://www.bioconductor.org/packages/release/bioc/html/scHOT.html) package
+
+```{r}
+#BiocManager::install("scHOT")
+library(scHOT)
+CD3D<- expression_data %>% 
+        filter(seurat_annotations == "Naive CD4 T") %>%
+        pull(CD3D)
+
+CD4<- expression_data %>% 
+        filter(seurat_annotations == "Naive CD4 T") %>%
+        pull(CD4)
+
+scHOT::weightedZIKendall(CD3D, CD4)
+
+scHOT::weightedSpearman(CD3D, CD4)
+```
+
+The coefficient is very small. I will try it with other highly correlated genes in my next post.
