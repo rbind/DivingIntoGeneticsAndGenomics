@@ -1,0 +1,276 @@
+---
+title: 'How to do gene correlation for single-cell RNAseq data (part 2) using meta-cell '
+author: Ming Tang
+date: '2023-01-23'
+slug: how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell
+categories:
+  - bioinformatics
+  - scRNAseq
+  - R
+tags:
+  - Bioconductor
+  - single-cell
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+In my last [blog post](https://divingintogeneticsandgenomics.rbind.io/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/), I showed that pearson gene correlation for single-cell data has flaws because of the sparsity of the count matrix.
+
+One way to get around it is to use the so called meta-cell. One can use KNN to find the K nearest neighbors and collapse them into a meta-cell. You can implement it from scratch, but one should not re-invent the wheel. For example, you can use [metacells](https://github.com/tanaylab/metacells).
+
+I want to keep the workflow within `R` and I found [`hdWGCNA`](https://smorabit.github.io/hdWGCNA/articles/basic_tutorial.html) has a function to do that. What's even better, it can be directly used with `Seurat`.
+
+For gene co-expression network analysis, you must have heard of `WGCNA`, it has been cited over 13,500 times. `WGCNA` is designed for bulk-RNAseq. For single-cell, `hdWGCNA` creates metacell using KNN and then use the same `WGCNA` workflow.
+
+Let's use the same pbmc data to try this tool.
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+```
+
+### Load libraries
+
+```{r}
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+library(SeuratData)
+library(hdWGCNA)
+library(WGCNA)
+set.seed(1234)
+```
+
+
+### prepare the data 
+
+```{r}
+data("pbmc3k")
+
+pbmc3k
+
+## routine processing
+pbmc3k<- pbmc3k %>% 
+  NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+  FindVariableFeatures(selection.method = "vst", nfeatures = 2000) %>%
+  ScaleData() %>%
+  RunPCA(verbose = FALSE) %>%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %>%
+  FindClusters(resolution = 0.5, verbose = FALSE) %>%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+Idents(pbmc3k)<- pbmc3k$seurat_annotations
+
+pbmc3k<- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]
+
+```
+
+### some functions we will use 
+
+```{r}
+matrix_to_expression_df<- function(x, obj){
+        df<- x %>%
+                as.matrix() %>% 
+                as.data.frame() %>%
+                tibble::rownames_to_column(var= "gene") %>%
+                tidyr::pivot_longer(cols = -1, names_to = "cell", values_to = "expression") %>%
+                tidyr::pivot_wider(names_from = "gene", values_from = expression) %>%
+                left_join(obj@meta.data %>% 
+                                  tibble::rownames_to_column(var = "cell"))
+        return(df)
+}
+
+
+get_expression_data<- function(obj, assay = "RNA", slot = "data", 
+                               genes = NULL, cells = NULL){
+        if (is.null(genes) & !is.null(cells)){
+                df<- GetAssayData(obj, assay = assay, slot = slot)[, cells, drop = FALSE] %>%
+                        matrix_to_expression_df(obj = obj)
+        } else if (!is.null(genes) & is.null(cells)){
+                df <- GetAssayData(obj, assay = assay, slot = slot)[genes, , drop = FALSE] %>%
+                        matrix_to_expression_df(obj = obj)
+        } else if (is.null(genes & is.null(cells))){
+                df <- GetAssayData(obj, assay = assay, slot = slot)[, , drop = FALSE] %>%
+                        matrix_to_expression_df(obj = obj)
+        } else {
+                df<- GetAssayData(obj, assay = assay, slot = slot)[genes, cells, drop = FALSE] %>%
+                        matrix_to_expression_df(obj = obj)
+        }
+        return(df)
+}
+
+```
+
+
+### construct metacell
+
+```{r}
+pbmc3k <- SetupForWGCNA(
+  pbmc3k,
+  gene_select = "fraction", # the gene selection approach
+  fraction = 0.05, # fraction of cells that a gene needs to be expressed in order to be included
+  wgcna_name = "tutorial" # the name of the hdWGCNA experiment
+)
+
+
+# construct metacells in each group.
+# choosing K is an art. 
+pbmc3k <- MetacellsByGroups(
+  seurat_obj = pbmc3k,
+  group.by = c("seurat_annotations", "orig.ident"), # specify the columns in seurat_obj@meta.data to group by
+  k = 10, # nearest-neighbors parameter
+  max_shared = 5, # maximum number of shared cells between two metacells
+  ident.group = 'seurat_annotations' # set the Idents of the metacell seurat object
+)
+
+```
+
+
+### routine processing for the meta-cell seurat object 
+
+```{r}
+# extract the metacell seurat object 
+pbmc_metacell <- GetMetacellObject(pbmc3k)
+
+pbmc_metacell <- pbmc_metacell %>%
+        NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+        FindVariableFeatures(selection.method = "vst", nfeatures = 2000) %>%
+        ScaleData() %>%
+        RunPCA(verbose = FALSE) %>%
+        FindNeighbors(dims = 1:10, verbose = FALSE) %>%
+        FindClusters(resolution = 0.5, verbose = FALSE) %>%
+        RunUMAP(dims = 1:10, verbose = FALSE)
+
+Idents(pbmc_metacell)<- pbmc_metacell$seurat_annotations
+
+p1<- DimPlot(pbmc3k, reduction = "umap", label = TRUE, repel = TRUE) + 
+        NoLegend() + ggtitle("single cell")
+
+p2<- DimPlot(pbmc_metacell, reduction = "umap", label = TRUE, repel = TRUE) + 
+        NoLegend() + ggtitle("meta cell")
+
+p1 + p2
+```
+
+Note, DCs and Platelet are dropped in the metacell because the number of cells are too few.
+Overall, the metacell clustering makes sense. Interestingly, Memory CD4 T and Naive CD4 T cells
+are more distinct after constructing metacells.
+
+### co-expression  network analysis
+
+Let's focus on naive NK cells
+
+>Next we will select the “soft power threshold”. This is an extremely important step in the hdWGNCA pipleine (and for vanilla WGCNA). hdWGCNA constructs a gene-gene correlation adjacency matrix to infer co-expression relationships between genes. The correlations are raised to a power to reduce the amount of noise present in the correlation matrix, thereby retaining the strong connections and removing the weak connections. Therefore, it is critical to determine a proper value for the soft power threshold.
+
+```{r}
+pbmc3k<- SetDatExpr(
+  pbmc3k,
+  group_name = "NK", # the name of the group of interest in the group.by column
+  group.by='seurat_annotations', 
+  assay = 'RNA', # using RNA assay
+  slot = 'data', # using normalized data
+  use_metacells=TRUE
+)
+
+# Test different soft powers:
+# https://stackoverflow.com/questions/57467678/wgcna-sharing-namespaces-for-statistical-methods
+bicor = WGCNA::bicor
+pbmc3k <- TestSoftPowers(
+  pbmc3k,
+  networkType = 'signed' # you can also use "unsigned" or "signed hybrid"
+)
+
+# plot the results:
+plot_list <- PlotSoftPowers(pbmc3k)
+
+# assemble with patchwork
+wrap_plots(plot_list, ncol=2)
+```
+
+we select `soft_power=12` based on the plot above.
+
+```{r}
+# construct co-expression network:
+pbmc3k <- ConstructNetwork(
+  pbmc3k, soft_power=12,
+  setDatExpr=FALSE,
+  tom_name = 'NK', # name of the topoligical overlap matrix written to disk
+  overwrite_tom = TRUE
+)
+
+PlotDendrogram(pbmc3k, main='NK hdWGCNA Dendrogram')
+```
+
+There are multiple co-expression modules are recovered. Ignore the `grey` module.
+
+```{r}
+# get the module assignment table:
+modules <- GetModules(pbmc3k)
+
+head(modules)
+
+table(modules$module)
+
+modules %>% filter(gene_name == "PRF1")
+
+modules %>% filter(gene_name == "GZMM")
+
+# GZMB is not in the same module...
+modules %>% filter(gene_name == "GZMB")
+```
+
+I cherry picked `PRF1` and `GZMM`.
+
+### correlation for metacell
+
+Let's see how it looks for single cell first:
+
+```{r}
+genes<- c("PRF1", "GZMM")
+
+expression_data<- get_expression_data(pbmc3k, genes = genes)
+
+# https://github.com/LKremer/ggpointdensity
+# ggpubr to add the correlation
+
+ggplot(expression_data, aes(x= PRF1, y = GZMM)) + 
+        #geom_smooth(method="lm") +
+        geom_point(size = 0.8) +
+        facet_wrap(~seurat_annotations) +
+        ggpubr::stat_cor(method = "pearson")
+```
+
+For metacell
+
+```{r}
+ggplot(get_expression_data(pbmc_metacell, genes = genes), aes(x= PRF1, y = GZMM)) + 
+        geom_smooth(method="lm") +
+        geom_point(size = 0.8) +
+        facet_wrap(~seurat_annotations) +
+        ggpubr::stat_cor(method = "pearson")
+```
+
+The metacell correlation scatter plot looks better than the single-cell one.
+
+### Take home messages:
+
+* Using metacell may help with single-cell RNA-seq gene correlation/co-expression analysis.
+
+* Do not re-invent the wheel. Use existing tools but do not trust them blindly.
+
+* Choosing the right K in the KNN is an art. Like many other bioinformatics problems, choosing the right
+parameters and cutoffs can be a major task itself.
+
+* Always visualize the data (EDA). Is the correlation looks convincing to you in the scatter plot?
+
+* When you have large N, the p-value will be tiny. Focus on the effect size (the correlation coefficient in this case).
+
+
+
+

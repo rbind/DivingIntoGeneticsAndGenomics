@@ -1,0 +1,294 @@
+---
+title: 'How to do gene correlation for single-cell RNAseq data (part 2) using meta-cell '
+author: Ming Tang
+date: '2023-01-23'
+slug: how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell
+categories:
+  - bioinformatics
+  - scRNAseq
+  - R
+tags:
+  - Bioconductor
+  - single-cell
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>In my last <a href="https://divingintogeneticsandgenomics.rbind.io/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/">blog post</a>, I showed that pearson gene correlation for single-cell data has flaws because of the sparsity of the count matrix.</p>
+<p>One way to get around it is to use the so called meta-cell. One can use KNN to find the K nearest neighbors and collapse them into a meta-cell. You can implement it from scratch, but one should not re-invent the wheel. For example, you can use <a href="https://github.com/tanaylab/metacells">metacells</a>.</p>
+<p>I want to keep the workflow within <code>R</code> and I found <a href="https://smorabit.github.io/hdWGCNA/articles/basic_tutorial.html"><code>hdWGCNA</code></a> has a function to do that. What’s even better, it can be directly used with <code>Seurat</code>.</p>
+<p>For gene co-expression network analysis, you must have heard of <code>WGCNA</code>, it has been cited over 13,500 times. <code>WGCNA</code> is designed for bulk-RNAseq. For single-cell, <code>hdWGCNA</code> creates metacell using KNN and then use the same <code>WGCNA</code> workflow.</p>
+<p>Let’s use the same pbmc data to try this tool.</p>
+<div id="load-libraries" class="section level3">
+<h3>Load libraries</h3>
+<pre class="r"><code>library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+library(SeuratData)
+library(hdWGCNA)
+library(WGCNA)
+set.seed(1234)</code></pre>
+</div>
+<div id="prepare-the-data" class="section level3">
+<h3>prepare the data</h3>
+<pre class="r"><code>data(&quot;pbmc3k&quot;)
+
+pbmc3k</code></pre>
+<pre><code>#&gt; An object of class Seurat 
+#&gt; 13714 features across 2700 samples within 1 assay 
+#&gt; Active assay: RNA (13714 features, 0 variable features)</code></pre>
+<pre class="r"><code>## routine processing
+pbmc3k&lt;- pbmc3k %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+Idents(pbmc3k)&lt;- pbmc3k$seurat_annotations
+
+pbmc3k&lt;- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]</code></pre>
+</div>
+<div id="some-functions-we-will-use" class="section level3">
+<h3>some functions we will use</h3>
+<pre class="r"><code>matrix_to_expression_df&lt;- function(x, obj){
+        df&lt;- x %&gt;%
+                as.matrix() %&gt;% 
+                as.data.frame() %&gt;%
+                tibble::rownames_to_column(var= &quot;gene&quot;) %&gt;%
+                tidyr::pivot_longer(cols = -1, names_to = &quot;cell&quot;, values_to = &quot;expression&quot;) %&gt;%
+                tidyr::pivot_wider(names_from = &quot;gene&quot;, values_from = expression) %&gt;%
+                left_join(obj@meta.data %&gt;% 
+                                  tibble::rownames_to_column(var = &quot;cell&quot;))
+        return(df)
+}
+
+
+get_expression_data&lt;- function(obj, assay = &quot;RNA&quot;, slot = &quot;data&quot;, 
+                               genes = NULL, cells = NULL){
+        if (is.null(genes) &amp; !is.null(cells)){
+                df&lt;- GetAssayData(obj, assay = assay, slot = slot)[, cells, drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else if (!is.null(genes) &amp; is.null(cells)){
+                df &lt;- GetAssayData(obj, assay = assay, slot = slot)[genes, , drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else if (is.null(genes &amp; is.null(cells))){
+                df &lt;- GetAssayData(obj, assay = assay, slot = slot)[, , drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else {
+                df&lt;- GetAssayData(obj, assay = assay, slot = slot)[genes, cells, drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        }
+        return(df)
+}</code></pre>
+</div>
+<div id="construct-metacell" class="section level3">
+<h3>construct metacell</h3>
+<pre class="r"><code>pbmc3k &lt;- SetupForWGCNA(
+  pbmc3k,
+  gene_select = &quot;fraction&quot;, # the gene selection approach
+  fraction = 0.05, # fraction of cells that a gene needs to be expressed in order to be included
+  wgcna_name = &quot;tutorial&quot; # the name of the hdWGCNA experiment
+)
+
+
+# construct metacells in each group.
+# choosing K is an art. 
+pbmc3k &lt;- MetacellsByGroups(
+  seurat_obj = pbmc3k,
+  group.by = c(&quot;seurat_annotations&quot;, &quot;orig.ident&quot;), # specify the columns in seurat_obj@meta.data to group by
+  k = 10, # nearest-neighbors parameter
+  max_shared = 5, # maximum number of shared cells between two metacells
+  ident.group = &#39;seurat_annotations&#39; # set the Idents of the metacell seurat object
+)</code></pre>
+</div>
+<div id="routine-processing-for-the-meta-cell-seurat-object" class="section level3">
+<h3>routine processing for the meta-cell seurat object</h3>
+<pre class="r"><code># extract the metacell seurat object 
+pbmc_metacell &lt;- GetMetacellObject(pbmc3k)
+
+pbmc_metacell &lt;- pbmc_metacell %&gt;%
+        NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+        FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+        ScaleData() %&gt;%
+        RunPCA(verbose = FALSE) %&gt;%
+        FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+        FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+        RunUMAP(dims = 1:10, verbose = FALSE)
+
+Idents(pbmc_metacell)&lt;- pbmc_metacell$seurat_annotations
+
+p1&lt;- DimPlot(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, repel = TRUE) + 
+        NoLegend() + ggtitle(&quot;single cell&quot;)
+
+p2&lt;- DimPlot(pbmc_metacell, reduction = &quot;umap&quot;, label = TRUE, repel = TRUE) + 
+        NoLegend() + ggtitle(&quot;meta cell&quot;)
+
+p1 + p2</code></pre>
+<p><img src="/post/2023-01-23-how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Note, DCs and Platelet are dropped in the metacell because the number of cells are too few.
+Overall, the metacell clustering makes sense. Interestingly, Memory CD4 T and Naive CD4 T cells
+are more distinct after constructing metacells.</p>
+</div>
+<div id="co-expression-network-analysis" class="section level3">
+<h3>co-expression network analysis</h3>
+<p>Let’s focus on naive NK cells</p>
+<blockquote>
+<p>Next we will select the “soft power threshold”. This is an extremely important step in the hdWGNCA pipleine (and for vanilla WGCNA). hdWGCNA constructs a gene-gene correlation adjacency matrix to infer co-expression relationships between genes. The correlations are raised to a power to reduce the amount of noise present in the correlation matrix, thereby retaining the strong connections and removing the weak connections. Therefore, it is critical to determine a proper value for the soft power threshold.</p>
+</blockquote>
+<pre class="r"><code>pbmc3k&lt;- SetDatExpr(
+  pbmc3k,
+  group_name = &quot;NK&quot;, # the name of the group of interest in the group.by column
+  group.by=&#39;seurat_annotations&#39;, 
+  assay = &#39;RNA&#39;, # using RNA assay
+  slot = &#39;data&#39;, # using normalized data
+  use_metacells=TRUE
+)</code></pre>
+<pre><code>#&gt;   ..Excluding 28 genes from the calculation due to too many missing samples or zero variance.</code></pre>
+<pre class="r"><code># Test different soft powers:
+# https://stackoverflow.com/questions/57467678/wgcna-sharing-namespaces-for-statistical-methods
+bicor = WGCNA::bicor
+pbmc3k &lt;- TestSoftPowers(
+  pbmc3k,
+  networkType = &#39;signed&#39; # you can also use &quot;unsigned&quot; or &quot;signed hybrid&quot;
+)</code></pre>
+<pre><code>#&gt; pickSoftThreshold: will use block size 3829.
+#&gt;  pickSoftThreshold: calculating connectivity for given powers...
+#&gt;    ..working on genes 1 through 3829 of 3829
+#&gt;    Power SFT.R.sq  slope truncated.R.sq  mean.k. median.k.  max.k.
+#&gt; 1      1  0.10400 10.700          0.979 1.97e+03  1.97e+03 2140.00
+#&gt; 2      2  0.00146  0.588          0.972 1.03e+03  1.03e+03 1220.00
+#&gt; 3      3  0.01420 -1.240          0.976 5.53e+02  5.51e+02  714.00
+#&gt; 4      4  0.09060 -2.310          0.982 3.02e+02  3.00e+02  426.00
+#&gt; 5      5  0.21600 -2.910          0.989 1.68e+02  1.67e+02  259.00
+#&gt; 6      6  0.33800 -3.080          0.985 9.56e+01  9.40e+01  160.00
+#&gt; 7      7  0.49900 -3.590          0.977 5.54e+01  5.41e+01  105.00
+#&gt; 8      8  0.62700 -3.990          0.968 3.27e+01  3.16e+01   70.60
+#&gt; 9      9  0.72000 -4.090          0.953 1.96e+01  1.88e+01   49.30
+#&gt; 10    10  0.77700 -4.090          0.922 1.20e+01  1.14e+01   35.60
+#&gt; 11    12  0.88400 -3.970          0.921 4.70e+00  4.35e+00   20.40
+#&gt; 12    14  0.94900 -3.680          0.941 1.97e+00  1.76e+00   13.30
+#&gt; 13    16  0.50900 -4.680          0.408 8.87e-01  7.47e-01    9.55
+#&gt; 14    18  0.50200 -4.040          0.400 4.27e-01  3.32e-01    7.44
+#&gt; 15    20  0.48900 -3.490          0.399 2.21e-01  1.54e-01    6.13
+#&gt; 16    22  0.44500 -3.760          0.374 1.23e-01  7.36e-02    5.25
+#&gt; 17    24  0.42900 -3.310          0.370 7.45e-02  3.62e-02    4.61
+#&gt; 18    26  0.41700 -3.000          0.376 4.88e-02  1.82e-02    4.13
+#&gt; 19    28  0.40500 -3.140          0.355 3.44e-02  9.39e-03    3.75
+#&gt; 20    30  0.39700 -2.930          0.360 2.59e-02  4.92e-03    3.43</code></pre>
+<pre class="r"><code># plot the results:
+plot_list &lt;- PlotSoftPowers(pbmc3k)</code></pre>
+<pre><code>#&gt;   Power    SFT.R.sq      slope truncated.R.sq    mean.k.  median.k.    max.k.
+#&gt; 1     1 0.104482638 10.6974118      0.9794689 1966.24968 1967.49111 2136.0980
+#&gt; 2     2 0.001455736  0.5883556      0.9719670 1031.60352 1031.10783 1221.3620
+#&gt; 3     3 0.014219159 -1.2409468      0.9755679  552.54983  550.97194  713.9150
+#&gt; 4     4 0.090647219 -2.3128225      0.9822797  301.99242  300.13466  425.8164
+#&gt; 5     5 0.216410422 -2.9075671      0.9886817  168.33374  166.55123  258.7715
+#&gt; 6     6 0.337671091 -3.0818337      0.9849525   95.64999   93.97877  160.0256</code></pre>
+<pre class="r"><code># assemble with patchwork
+wrap_plots(plot_list, ncol=2)</code></pre>
+<p><img src="/post/2023-01-23-how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>we select <code>soft_power=12</code> based on the plot above.</p>
+<pre class="r"><code># construct co-expression network:
+pbmc3k &lt;- ConstructNetwork(
+  pbmc3k, soft_power=12,
+  setDatExpr=FALSE,
+  tom_name = &#39;NK&#39;, # name of the topoligical overlap matrix written to disk
+  overwrite_tom = TRUE
+)</code></pre>
+<pre><code>#&gt;  Calculating consensus modules and module eigengenes block-wise from all genes
+#&gt;  Calculating topological overlaps block-wise from all genes
+#&gt;    Flagging genes and samples with too many missing values...
+#&gt;     ..step 1
+#&gt;     TOM calculation: adjacency..
+#&gt;     ..will not use multithreading.
+#&gt;      Fraction of slow calculations: 0.000000
+#&gt;     ..connectivity..
+#&gt;     ..matrix multiplication (system BLAS)..
+#&gt;     ..normalization..
+#&gt;     ..done.
+#&gt;  ..Working on block 1 .
+#&gt;  ..Working on block 1 .
+#&gt;  ..merging consensus modules that are too close..</code></pre>
+<pre class="r"><code>PlotDendrogram(pbmc3k, main=&#39;NK hdWGCNA Dendrogram&#39;)</code></pre>
+<p><img src="/post/2023-01-23-how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>There are multiple co-expression modules are recovered. Ignore the <code>grey</code> module.</p>
+<pre class="r"><code># get the module assignment table:
+modules &lt;- GetModules(pbmc3k)
+
+head(modules)</code></pre>
+<pre><code>#&gt;         gene_name     module      color
+#&gt; NOC2L       NOC2L       blue       blue
+#&gt; HES4         HES4       grey       grey
+#&gt; ISG15       ISG15       grey       grey
+#&gt; TNFRSF4   TNFRSF4    magenta    magenta
+#&gt; SDF4         SDF4 lightgreen lightgreen
+#&gt; UBE2J2     UBE2J2       grey       grey</code></pre>
+<pre class="r"><code>table(modules$module)</code></pre>
+<pre><code>#&gt; 
+#&gt;         blue         grey      magenta   lightgreen        brown        green 
+#&gt;          208         2078           75           50          197           96 
+#&gt;       salmon        black       grey60 midnightblue    turquoise       yellow 
+#&gt;           68           95           54           61          229          102 
+#&gt;  greenyellow          tan         pink          red       purple    lightcyan 
+#&gt;           74           72           80           96           74           55 
+#&gt;         cyan 
+#&gt;           65</code></pre>
+<pre class="r"><code>modules %&gt;% filter(gene_name == &quot;PRF1&quot;)</code></pre>
+<pre><code>#&gt;      gene_name    module     color
+#&gt; PRF1      PRF1 turquoise turquoise</code></pre>
+<pre class="r"><code>modules %&gt;% filter(gene_name == &quot;GZMM&quot;)</code></pre>
+<pre><code>#&gt;      gene_name    module     color
+#&gt; GZMM      GZMM turquoise turquoise</code></pre>
+<pre class="r"><code># GZMB is not in the same module...
+modules %&gt;% filter(gene_name == &quot;GZMB&quot;)</code></pre>
+<pre><code>#&gt;      gene_name module color
+#&gt; GZMB      GZMB   grey  grey</code></pre>
+<p>I cherry picked <code>PRF1</code> and <code>GZMM</code>.</p>
+</div>
+<div id="correlation-for-metacell" class="section level3">
+<h3>correlation for metacell</h3>
+<p>Let’s see how it looks for single cell first:</p>
+<pre class="r"><code>genes&lt;- c(&quot;PRF1&quot;, &quot;GZMM&quot;)
+
+expression_data&lt;- get_expression_data(pbmc3k, genes = genes)
+
+# https://github.com/LKremer/ggpointdensity
+# ggpubr to add the correlation
+
+ggplot(expression_data, aes(x= PRF1, y = GZMM)) + 
+        #geom_smooth(method=&quot;lm&quot;) +
+        geom_point(size = 0.8) +
+        facet_wrap(~seurat_annotations) +
+        ggpubr::stat_cor(method = &quot;pearson&quot;)</code></pre>
+<p><img src="/post/2023-01-23-how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell.en_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>For metacell</p>
+<pre class="r"><code>ggplot(get_expression_data(pbmc_metacell, genes = genes), aes(x= PRF1, y = GZMM)) + 
+        geom_smooth(method=&quot;lm&quot;) +
+        geom_point(size = 0.8) +
+        facet_wrap(~seurat_annotations) +
+        ggpubr::stat_cor(method = &quot;pearson&quot;)</code></pre>
+<p><img src="/post/2023-01-23-how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell.en_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>The metacell correlation scatter plot looks better than the single-cell one.</p>
+</div>
+<div id="take-home-messages" class="section level3">
+<h3>Take home messages:</h3>
+<ul>
+<li><p>Using metacell may help with single-cell RNA-seq gene correlation/co-expression analysis.</p></li>
+<li><p>Do not re-invent the wheel. Use existing tools but do not trust them blindly.</p></li>
+<li><p>Choosing the right K in the KNN is an art. Like many other bioinformatics problems, choosing the right
+parameters and cutoffs can be a major task itself.</p></li>
+<li><p>Always visualize the data (EDA). Is the correlation looks convincing to you in the scatter plot?</p></li>
+<li><p>When you have large N, the p-value will be tiny. Focus on the effect size (the correlation coefficient in this case).</p></li>
+</ul>
+</div>
