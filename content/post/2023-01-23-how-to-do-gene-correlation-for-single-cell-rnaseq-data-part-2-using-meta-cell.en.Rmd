@@ -265,7 +265,7 @@ The metacell correlation scatter plot looks better than the single-cell one.
 * Do not re-invent the wheel. Use existing tools but do not trust them blindly.
 
 * Choosing the right K in the KNN is an art. Like many other bioinformatics problems, choosing the right
-parameters and cutoffs can be a major task itself.
+parameters and cutoffs can be a major task itself!
 
 * Always visualize the data (EDA). Is the correlation looks convincing to you in the scatter plot?
 
