@@ -7,10 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Sun, 09 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 18 Dec 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/docker/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to run dockerized Rstudio server on google cloud</title>
+      <link>/post/how-to-run-dockerized-rstudio-server-on-google-cloud/</link>
+      <pubDate>Sun, 18 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-run-dockerized-rstudio-server-on-google-cloud/</guid>
+      <description>Create a google VM Follow the process using the console https://cloud.google.com/compute/docs/instances/create-start-instance#console_1
+Install docker Follow https://docs.docker.com/engine/install/debian/
+Note this example for the debian build. If you created your VM using ubuntu as the boot disk, you should follow the ubuntu section https://docs.docker.com/engine/install/ubuntu/.
+In the GCP VM:
+sudo apt-get update sudo apt-get install \ ca-certificates \ curl \ gnupg \ lsb-release sudo mkdir -p /etc/apt/keyrings curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.</description>
+    </item>
     
     <item>
       <title>Run Rstudio server with singularity on HPC</title>

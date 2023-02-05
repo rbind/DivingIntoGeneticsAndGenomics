@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2019-06-09T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2022-12-18T00:00:00&#43;00:00">
   
 
   
@@ -282,6 +282,19 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/how-to-run-dockerized-rstudio-server-on-google-cloud/">How to run dockerized Rstudio server on google cloud</a></h2>
+    <div class="article-style">
+      
+      Create a google VM Follow the process using the console <a href="https://cloud.google.com/compute/docs/instances/create-start-instance#console_1" target="_blank">https://cloud.google.com/compute/docs/instances/create-start-instance#console_1</a>
+Install docker Follow <a href="https://docs.docker.com/engine/install/debian/" target="_blank">https://docs.docker.com/engine/install/debian/</a>
+Note this example for the debian build. If you created your VM using ubuntu as the boot disk, you should follow the ubuntu section <a href="https://docs.docker.com/engine/install/ubuntu/" target="_blank">https://docs.docker.com/engine/install/ubuntu/</a>.
+In the GCP VM:
+sudo apt-get update sudo apt-get install \ ca-certificates \ curl \ gnupg \ lsb-release sudo mkdir -p /etc/apt/keyrings curl -fsSL <a href="https://download.docker.com/linux/debian/gpg" target="_blank">https://download.docker.com/linux/debian/gpg</a> | sudo gpg &ndash;dearmor -o /etc/apt/keyrings/docker.
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/post/run-rstudio-server-with-singularity-on-hpc/">Run Rstudio server with singularity on HPC</a></h2>

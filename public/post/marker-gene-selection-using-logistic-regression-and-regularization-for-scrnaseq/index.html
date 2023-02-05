@@ -19,7 +19,7 @@
   
   <meta name="description" content="why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
  Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
- I am interested in using logistic regression to find marker genes and want to try fitting the model in the [tidymodel](https://www.tidymodels.org/) ecosystsem and using different regularization methods.">
+ I am interested in using logistic regression to find marker genes and want to try fitting the model in the tidymodel ecosystem and using different regularization methods.">
 
   
   <link rel="alternate" hreflang="en-us" href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">
@@ -99,7 +99,7 @@
   <meta property="og:title" content="marker gene selection using logistic regression and regularization for scRNAseq  | DNA confesses Data speak">
   <meta property="og:description" content="why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
  Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
- I am interested in using logistic regression to find marker genes and want to try fitting the model in the [tidymodel](https://www.tidymodels.org/) ecosystsem and using different regularization methods.">
+ I am interested in using logistic regression to find marker genes and want to try fitting the model in the tidymodel ecosystem and using different regularization methods.">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2022-05-15T00:00:00&#43;00:00">
@@ -392,14 +392,15 @@
 <blockquote>
 <p>Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression</p>
 </blockquote>
-<p>I am interested in using logistic regression to find marker genes and want to try fitting the model in the <code>[tidymodel](https://www.tidymodels.org/)</code> ecosystsem and using different regularization methods.</p>
+<p>I am interested in using logistic regression to find marker genes and want to try fitting the model in the <a href="https://www.tidymodels.org/">tidymodel</a> ecosystem and using different regularization methods.</p>
 <p>I highly recommend you to watch the <a href="https://app.learney.me/maps/StatQuest?topic=Regularization">statquest videos</a> on those topics.</p>
 <p>Let’s use PBMC single-cell RNAseq data as an example.</p>
 <p>Load libraries</p>
 <pre class="r"><code>library(Seurat)
 library(tidyverse)
 library(tidymodels)
-library(scCustomize) # for plotting</code></pre>
+library(scCustomize) # for plotting
+library(patchwork)</code></pre>
 <p>Preprocess the data</p>
 <pre class="r"><code># Load the PBMC dataset
 pbmc.data &lt;- Read10X(data.dir = &quot;~/blog_data/filtered_gene_bc_matrices/hg19/&quot;)
@@ -425,8 +426,8 @@ pbmc$cell_type&lt;- Idents(pbmc)
 DimPlot(pbmc)</code></pre>
 <p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
-<div id="marker-gene-detection-using-differential-expressin-analysis-between-clusters." class="section level3">
-<h3>Marker gene detection using differential expressin analysis between clusters.</h3>
+<div id="marker-gene-detection-using-differential-expression-analysis-between-clusters." class="section level3">
+<h3>Marker gene detection using differential expression analysis between clusters.</h3>
 <pre class="r"><code>pbmc_subset&lt;- pbmc[, pbmc$cell_type %in% c(&quot;NK&quot;, &quot;B&quot;)]
 DimPlot(pbmc_subset)</code></pre>
 <p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
@@ -494,9 +495,7 @@ data$cell_type&lt;- factor(data$cell_type)</code></pre>
 <h3>prepare the data</h3>
 <pre class="r"><code>set.seed(123)
 
-data$cell</code></pre>
-<pre><code>#&gt; NULL</code></pre>
-<pre class="r"><code>data_split &lt;- initial_split(data, strata = &quot;cell_type&quot;)
+data_split &lt;- initial_split(data, strata = &quot;cell_type&quot;)
 data_train &lt;- training(data_split)
 data_test &lt;- testing(data_split)
 
@@ -508,9 +507,9 @@ data_fold &lt;- vfold_cv(data_train, v = 10)</code></pre>
 <h3>Ridge Regression</h3>
 <p>In our training data, we have 2000 genes/features (<code>p</code>) and 273 cells/observations (<code>n</code>)
 and <code>p</code> &gt;&gt; <code>n</code>, so we will need to enforce sparsity of the model by regularization.</p>
-<p>We’ll set the penalty argument to <code>tune()</code> as a placeholder for now. This is a model hyperparameter that we will tune to find the best value for making predictions with our data. Setting mixture to a value of one means that the glmnet model will potentially remove irrelevant predictors and choose a simpler model.</p>
+<p>We’ll set the penalty argument to <code>tune()</code> as a placeholder for now. This is a model hyper parameter that we will tune to find the best value for making predictions with our data. Setting mixture to a value of one means that the glmnet model will potentially remove irrelevant predictors and choose a simpler model.</p>
 <p>Let’s use L2 regularization/norm for ridge regression by specifying <code>mixture = 0</code>.
-and we need to tune the <code>penalty</code> hyperparameter.</p>
+and we need to tune the <code>penalty</code> hyper parameter.</p>
 <pre class="r"><code>ridge_spec&lt;-
         logistic_reg(penalty = tune(), mixture = 0) %&gt;%
         set_engine(&quot;glmnet&quot;) %&gt;%
@@ -577,7 +576,7 @@ predict(ridge_final_fit, new_data = data_test) %&gt;%
 </div>
 <div id="lasso-regression" class="section level3">
 <h3>Lasso regression</h3>
-<p>You need to use logistic_reg() and set mixture = 1 to specify a lasso model. The mixture argument specifies the amount of different types of regularization, mixture = 0 specifies only ridge regularization and mixture = 1 specifies only lasso regularization.</p>
+<p>You need to use <code>logistic_reg()</code> and set <code>mixture = 1</code> to specify a lasso model. The mixture argument specifies the amount of different types of regularization, <code>mixture = 0</code> specifies only ridge regularization and <code>mixture = 1</code> specifies only lasso regularization.</p>
 <p>Lasso will remove highly correlated features which may not be what we want here!</p>
 <pre class="r"><code>lasso_spec&lt;-
         logistic_reg(penalty = tune(), mixture = 1) %&gt;%
@@ -654,7 +653,7 @@ print(lasso_features, n = Inf)</code></pre>
 #&gt; 19 MGLL         0.0577  0.00001
 #&gt; 20 RPL13A      -0.0456  0.00001
 #&gt; 21 CDCA8        0.00842 0.00001</code></pre>
-<p>Because <code>Lasso regression</code> enforce sparsity, we can select the features with the coefficients/esitmates not equal to 0, but we will miss the correlated genes which were thrown out by the model.</p>
+<p>Because <code>Lasso regression</code> enforce sparsity, we can select the features with the coefficients/estimates not equal to 0, but we will miss the correlated genes which were thrown out by the model.</p>
 <p>Also, if you are wondering how can I get a p-value for the coefficient, read <a href="https://stats.stackexchange.com/questions/410173/lasso-regression-p-values-and-coefficients" class="uri">https://stats.stackexchange.com/questions/410173/lasso-regression-p-values-and-coefficients</a></p>
 </div>
 <div id="elastic-net" class="section level3">
@@ -684,7 +683,7 @@ elastic_workflow &lt;- workflow() %&gt;%
   add_recipe(elastic_recipe) %&gt;% 
   add_model(elastic_spec)
 
-## tune both the penatly and the mixture from 0-1
+## tune both the penalty and the mixture from 0-1
 penalty_grid &lt;- grid_regular(penalty(range = c(-2, 2)), mixture(), levels = 50)
 
 doParallel::registerDoParallel()
@@ -789,12 +788,29 @@ head(merged_markers, n = 20)</code></pre>
 #&gt; 19 FCGR3A                0.0765        NA     
 #&gt; 20 FCER1G                0.0712        NA</code></pre>
 <p>we see GZMM is missed by Lasso but picked up by elastic-net. GZMM is probably highly correlated with other granzymes such as GZMB, GZMA which are already in the model.</p>
+<pre class="r"><code>p1&lt;- ggplot(data_train, aes(x = GZMM, y = GZMB)) +
+        geom_point() +
+        geom_smooth(method = &quot;lm&quot;, se = T) +
+        ggpubr::stat_cor() +
+        theme_bw(base_size = 14) +
+        ggtitle(&quot;correlation of GZMB and GZMM&quot;)
+
+p2&lt;- ggplot(data_train, aes(x = GZMA, y = GZMB)) +
+        geom_point() +
+        geom_smooth(method = &quot;lm&quot;, se = T) +
+        ggpubr::stat_cor() +
+        theme_bw(base_size = 14) +
+        ggtitle(&quot;correlation of GZMA and GZMB&quot;)
+
+p1 + p2</code></pre>
+<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>FCRR3A (CD16) picked up as an NK cell marker by elastic too.</p>
 <p>From this <a href="https://ashpublications.org/bloodadvances/article/4/7/1388/454300/Diversity-of-peripheral-blood-human-NK-cells">paper</a>. CD16 is a pretty important marker for NK cell subytyping. It is sad that Lasso missed it.</p>
 <p>Let’s plot the gene expression level to check the raw data.</p>
-<pre class="r"><code>scCustomize::Stacked_VlnPlot(pbmc_subset, features = merged_markers %&gt;% slice(-1) %&gt;% pull(term) %&gt;% head(n = 20),
+<pre class="r"><code>Idents(pbmc_subset)&lt;- pbmc_subset$cell_type
+scCustomize::Stacked_VlnPlot(pbmc_subset, features = merged_markers %&gt;% slice(-1) %&gt;% pull(term) %&gt;% head(n = 20),
                              colors_use = c(&quot;blue&quot;, &quot;red&quot;) )</code></pre>
-<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-14-1.png" width="384" style="display: block; margin: auto;" /></p>
 <p>Many of the top genes picked up by elastic-net are very convincing to me. LRRIQ3 is low in both cell types.</p>
 </div>
 <div id="things-learned" class="section level3">
@@ -811,6 +827,10 @@ head(merged_markers, n = 20)</code></pre>
 <li><a href="https://towardsdatascience.com/bias-variance-and-regularization-in-linear-regression-lasso-ridge-and-elastic-net-8bf81991d0c5">Bias, Variance, and Regularization in Linear Regression: Lasso, Ridge, and Elastic Net — Differences and uses</a></li>
 <li><a href="https://uc-r.github.io/regularized_regression">Regularized Regression</a></li>
 </ul>
+</div>
+<div id="update" class="section level3">
+<h3>UPDATE</h3>
+<p>I did not see <code>MS4A1</code>/<code>CD20</code>in any of the regression results which is a well know B-cell marker. I then went back and found that somehow MS4A1 is not in the top 2000 most variable genes selected by Seurat in the subseted small object. This tells us feature engineer is very important too.</p>
 </div>
 
     </div>
@@ -855,6 +875,11 @@ head(merged_markers, n = 20)</code></pre>
     
     <div class="article-widget">
       <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/my-odyssey-of-obtaining-scrnaseq-metadata/" rel="next">My odyssey of obtaining scRNAseq metadata </a>
+  </div>
   
   
   <div class="post-nav-item">

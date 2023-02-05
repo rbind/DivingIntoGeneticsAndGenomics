@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2021-12-01T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2023-02-05T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,45 @@
   
   
   <div>
+    <h2><a href="/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/">How to make a triangle correlation heatmap with p-values labeled </a></h2>
+    <div class="article-style">
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/">How to do gene correlation for single-cell RNAseq data (part 2) using meta-cell </a></h2>
+    <div class="article-style">
+      
+      In my last blog post, I showed that pearson gene correlation for single-cell data has flaws because of the sparsity of the count matrix.
+One way to get around it is to use the so called meta-cell. One can use KNN to find the K nearest neighbors and collapse them into a meta-cell. You can implement it from scratch, but one should not re-invent the wheel. For example, you can use metacells.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">use random forest and boost trees to find marker genes in scRNAseq data</a></h2>
+    <div class="article-style">
+      
+      This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: logistic regression and partial least square regression.
+This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost). I highly recommend going through <a href="https://app.learney.me/maps/StatQuest" target="_blank">https://app.learney.me/maps/StatQuest</a> for related sections by Josh Starmer. Note, all the tree based methods can be used to do both classification and regression.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/my-odyssey-of-obtaining-scrnaseq-metadata/">My odyssey of obtaining scRNAseq metadata </a></h2>
+    <div class="article-style">
+      
+      I want to curate a public scRNAseq dataset from this paper Single-cell analyses reveal key immune cell subsets associated with response to PD-L1 blockade in triple-negative breast cancer
+ffq I first tried ffq, but it gave me errors.
+ffq fetches metadata information from the following databases:
+ GEO: Gene Expression Omnibus, SRA: Sequence Read Archive, EMBL-EBI: European Molecular BIology Laboratory’s European BIoinformatics Institute, DDBJ: DNA Data Bank of Japan, NIH Biosample: Biological source materials used in experimental assays, ENCODE: The Encyclopedia of DNA Elements.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/obtain-metadata-for-public-datasets-in-geo/">Obtain metadata for public datasets in GEO</a></h2>
     <div class="article-style">
       
@@ -345,53 +384,6 @@ My next thought is: maybe the STAR aligner is doing something weird that exclude
       There was a paper on this topic: A New Online Computational Biology Curriculum.
 I am going to provide a biased list below (I have read most of the books if not all). I say it is biased because you will see many books of R are from Hadely Wickham. I now use tidyverse most of the time.
 Unix I suggest people who want to learn bioinformatics starting to learn unix commands first.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/develop-bioconductor-packages-with-docker-container/">Develop Bioconductor packages with docker container</a></h2>
-    <div class="article-style">
-      
-      Readings links to read:
- <a href="https://www.bioconductor.org/developers/package-guidelines/#rcode" target="_blank">https://www.bioconductor.org/developers/package-guidelines/#rcode</a>
- <a href="https://github.com/Bioconductor/Contributions" target="_blank">https://github.com/Bioconductor/Contributions</a>
- use container <a href="https://github.com/Bioconductor/bioconductor_full" target="_blank">https://github.com/Bioconductor/bioconductor_full</a>
-  I am following the last link.
-pull the container docker pull bioconductor/bioconductor_full:devel docker images REPOSITORY TAG IMAGE ID CREATED SIZE bioconductor/bioconductor_full devel ae3ec2be7376 3 hours ago 5.7GB seuratv3 latest 9b358ab1fd63 2 days ago 2.76GB  It is 5.7G in size.
-start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
-    <div class="article-style">
-      
-      scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
-I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
-A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></h2>
-    <div class="article-style">
-      
-      This post was inspired by Andrew Hill’s recent blog post.
-Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
-&mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/use-docopt-to-write-command-line-r-utilities/">Use docopt to write command line R utilities </a></h2>
-    <div class="article-style">
-      
-      I was writing an R script to plot the ATACseq fragment length distribution and wanted to turn the R script to a command line utility.
-I then (re)discovered this awesome docopt.R. One just needs to write the help message the you want to display and docopt() will parse the options, arguments and return a named list which can be accessed inside the R script. check <a href="http://docopt.org/" target="_blank">http://docopt.org/</a> for more information as well.
       
     </div>
   </div>

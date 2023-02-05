@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2020-08-26T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2023-01-13T00:00:00&#43;00:00">
   
 
   
@@ -282,6 +282,27 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/">How to do gene correlation for single-cell RNAseq data (part 1)</a></h2>
+    <div class="article-style">
+      
+      Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) set.seed(1234)  prepare the data data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 features across 2700 samples within 1 assay #&gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&lt;- pbmc3k %&gt;% NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;% FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;% ScaleData() %&gt;% RunPCA(verbose = FALSE) %&gt;% FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;% FindClusters(resolution = 0.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/">transpose single-cell cell x gene dataframe to gene x cell </a></h2>
+    <div class="article-style">
+      
+      Single cell matrix is often represented as gene x cell in R/Seurat, but it is represented as cell x gene in python/scanpy.
+Let’s use a real example to show how to transpose between the two formats. The GEO accession page is at <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763" target="_blank">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763</a>
+Download the data We can use command line to download the count matrix at ftp: <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/" target="_blank">https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/</a>
+wget <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/GSE154763_ESCA_normalized_expression.csv.gz" target="_blank">https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/GSE154763_ESCA_normalized_expression.csv.gz</a> -O ~/blog_data/GSE154763_ESCA_normalized_expression.csv.gz # decompress the file gunzip GSE154763_ESCA_normalized_expression.csv.gz # this GEO matrix is cell x gene # take a look by <a href="https://www" target="_blank">https://www</a>.
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </a></h2>

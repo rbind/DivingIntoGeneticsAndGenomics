@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Sun, 15 May 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 05 Feb 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>Bioinformatics</title>
       <link>/categories/bioinformatics/</link>
-      <pubDate>Sun, 15 May 2022 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 05 Feb 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/bioinformatics/</guid>
       <description></description>
@@ -42,7 +42,7 @@
     <item>
       <title>Docker</title>
       <link>/categories/docker/</link>
-      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 18 Dec 2022 00:00:00 +0000</pubDate>
       
       <guid>/categories/docker/</guid>
       <description></description>
@@ -51,7 +51,7 @@
     <item>
       <title>Genomics</title>
       <link>/categories/genomics/</link>
-      <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 05 Feb 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/genomics/</guid>
       <description></description>
@@ -96,7 +96,7 @@
     <item>
       <title>R</title>
       <link>/categories/r/</link>
-      <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 05 Feb 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/r/</guid>
       <description></description>
@@ -105,7 +105,7 @@
     <item>
       <title>Review</title>
       <link>/categories/review/</link>
-      <pubDate>Fri, 28 Dec 2018 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 30 Dec 2022 00:00:00 +0000</pubDate>
       
       <guid>/categories/review/</guid>
       <description></description>
@@ -132,7 +132,7 @@
     <item>
       <title>ScRNAseq</title>
       <link>/categories/scrnaseq/</link>
-      <pubDate>Thu, 26 Aug 2021 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 23 Jan 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/scrnaseq/</guid>
       <description></description>
@@ -141,7 +141,7 @@
     <item>
       <title>Single-cell</title>
       <link>/categories/single-cell/</link>
-      <pubDate>Sun, 15 May 2022 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 16 Jun 2022 00:00:00 +0000</pubDate>
       
       <guid>/categories/single-cell/</guid>
       <description></description>

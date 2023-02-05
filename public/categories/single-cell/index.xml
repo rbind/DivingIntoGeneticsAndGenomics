@@ -7,10 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Sun, 15 May 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 16 Jun 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/single-cell/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Partial least square regression for marker gene identification in scRNAseq data</title>
+      <link>/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</link>
+      <pubDate>Thu, 16 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</guid>
+      <description>This is an extension of my last blog post marker gene selection using logistic regression and regularization for scRNAseq.
+Let’s use the same PBMC single-cell RNAseq data as an example.
+Load libraries
+library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # for plotting library(patchwork) Preprocess the data
+# Load the PBMC dataset pbmc.data &amp;lt;- Read10X(data.dir = &amp;quot;~/blog_data/filtered_gene_bc_matrices/hg19/&amp;quot;) # Initialize the Seurat object with the raw (non-normalized data). pbmc &amp;lt;- CreateSeuratObject(counts = pbmc.data, project = &amp;quot;pbmc3k&amp;quot;, min.</description>
+    </item>
     
     <item>
       <title>marker gene selection using logistic regression and regularization for scRNAseq </title>
@@ -20,7 +33,7 @@
       <guid>/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</guid>
       <description>why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
  Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
- I am interested in using logistic regression to find marker genes and want to try fitting the model in the [tidymodel](https://www.tidymodels.org/) ecosystsem and using different regularization methods.</description>
+ I am interested in using logistic regression to find marker genes and want to try fitting the model in the tidymodel ecosystem and using different regularization methods.</description>
     </item>
     
     <item>

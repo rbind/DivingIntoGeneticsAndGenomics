@@ -7,10 +7,63 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Thu, 26 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 23 Jan 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/scrnaseq/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to do gene correlation for single-cell RNAseq data (part 2) using meta-cell </title>
+      <link>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/</link>
+      <pubDate>Mon, 23 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/</guid>
+      <description>In my last blog post, I showed that pearson gene correlation for single-cell data has flaws because of the sparsity of the count matrix.
+One way to get around it is to use the so called meta-cell. One can use KNN to find the K nearest neighbors and collapse them into a meta-cell. You can implement it from scratch, but one should not re-invent the wheel. For example, you can use metacells.</description>
+    </item>
+    
+    <item>
+      <title>How to do gene correlation for single-cell RNAseq data (part 1)</title>
+      <link>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/</link>
+      <pubDate>Fri, 13 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/</guid>
+      <description>Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) set.seed(1234)  prepare the data data(&amp;quot;pbmc3k&amp;quot;) pbmc3k #&amp;gt; An object of class Seurat #&amp;gt; 13714 features across 2700 samples within 1 assay #&amp;gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&amp;lt;- pbmc3k %&amp;gt;% NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;% FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;% ScaleData() %&amp;gt;% RunPCA(verbose = FALSE) %&amp;gt;% FindNeighbors(dims = 1:10, verbose = FALSE) %&amp;gt;% FindClusters(resolution = 0.</description>
+    </item>
+    
+    <item>
+      <title>transpose single-cell cell x gene dataframe to gene x cell </title>
+      <link>/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/</link>
+      <pubDate>Wed, 04 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/</guid>
+      <description>Single cell matrix is often represented as gene x cell in R/Seurat, but it is represented as cell x gene in python/scanpy.
+Let’s use a real example to show how to transpose between the two formats. The GEO accession page is at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763
+Download the data We can use command line to download the count matrix at ftp: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/
+wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/GSE154763_ESCA_normalized_expression.csv.gz -O ~/blog_data/GSE154763_ESCA_normalized_expression.csv.gz # decompress the file gunzip GSE154763_ESCA_normalized_expression.csv.gz # this GEO matrix is cell x gene # take a look by https://www.</description>
+    </item>
+    
+    <item>
+      <title>use random forest and boost trees to find marker genes in scRNAseq data</title>
+      <link>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</link>
+      <pubDate>Sun, 03 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</guid>
+      <description>This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: logistic regression and partial least square regression.
+This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost). I highly recommend going through https://app.learney.me/maps/StatQuest for related sections by Josh Starmer. Note, all the tree based methods can be used to do both classification and regression.</description>
+    </item>
+    
+    <item>
+      <title>My odyssey of obtaining scRNAseq metadata </title>
+      <link>/post/my-odyssey-of-obtaining-scrnaseq-metadata/</link>
+      <pubDate>Wed, 08 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/post/my-odyssey-of-obtaining-scrnaseq-metadata/</guid>
+      <description>I want to curate a public scRNAseq dataset from this paper Single-cell analyses reveal key immune cell subsets associated with response to PD-L1 blockade in triple-negative breast cancer
+ffq I first tried ffq, but it gave me errors.
+ffq fetches metadata information from the following databases:
+ GEO: Gene Expression Omnibus, SRA: Sequence Read Archive, EMBL-EBI: European Molecular BIology Laboratory’s European BIoinformatics Institute, DDBJ: DNA Data Bank of Japan, NIH Biosample: Biological source materials used in experimental assays, ENCODE: The Encyclopedia of DNA Elements.</description>
+    </item>
     
     <item>
       <title>Matrix Factorization for single-cell RNAseq data</title>

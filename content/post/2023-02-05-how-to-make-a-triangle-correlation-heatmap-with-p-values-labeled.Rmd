@@ -1,0 +1,170 @@
+---
+title: 'How to make a triangle correlation heatmap with p-values labeled '
+author: Ming Tang
+date: '2023-02-05'
+slug: how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled
+categories:
+  - bioinformatics
+  - genomics
+  - R
+tags:
+  - Bioconductor
+  - heatmap
+header:
+  caption: ''
+  image: ''
+---
+
+In this blog post, I am going to show you how to make a correlation heatmap with p-values
+and significant values labeled in the heatmap body. Let's use the PBMC single cell data 
+as an example
+
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+```
+
+### Load libraries
+
+```{r}
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+library(SeuratData)
+library(hdWGCNA)
+library(WGCNA)
+set.seed(1234)
+```
+
+
+### prepare the data 
+
+```{r}
+data("pbmc3k")
+
+pbmc3k
+
+## routine processing
+pbmc3k<- pbmc3k %>% 
+  NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+  FindVariableFeatures(selection.method = "vst", nfeatures = 2000) %>%
+  ScaleData() %>%
+  RunPCA(verbose = FALSE) %>%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %>%
+  FindClusters(resolution = 0.5, verbose = FALSE) %>%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+Idents(pbmc3k)<- pbmc3k$seurat_annotations
+
+pbmc3k<- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]
+
+```
+
+### construct metacell
+
+```{r}
+pbmc3k <- SetupForWGCNA(
+  pbmc3k,
+  gene_select = "fraction", # the gene selection approach
+  fraction = 0.05, # fraction of cells that a gene needs to be expressed in order to be included
+  wgcna_name = "tutorial" # the name of the hdWGCNA experiment
+)
+
+
+# construct metacells in each group.
+# choosing K is an art. 
+pbmc3k <- MetacellsByGroups(
+  seurat_obj = pbmc3k,
+  group.by = c("seurat_annotations", "orig.ident"), # specify the columns in seurat_obj@meta.data to group by
+  k = 10, # nearest-neighbors parameter
+  max_shared = 5, # maximum number of shared cells between two metacells
+  ident.group = 'seurat_annotations' # set the Idents of the metacell seurat object
+)
+
+# extract the metacell seurat object 
+pbmc_metacell <- GetMetacellObject(pbmc3k)
+
+pbmc_metacell@meta.data %>% head()
+```
+
+`Hmisc::rcorr` function gives the pair-wise correlation coefficient and p-value
+
+```{r}
+
+genes<- c("GNLY", "NKG7", "KLRD1", "ITGB2", "PRF1", "IFNG", "NCAM1", "FCGR3A", "CCR7", "CXCR3", "IL2RB")
+cells<- WhichCells(pbmc_metacell, expression = seurat_annotations == "NK")
+
+mat<- pbmc_metacell@assays$RNA@data[genes, cells] %>% 
+  as.matrix() %>%
+  t()
+
+# Hmisc package gives the pair-wise correlation coefficient and p-value
+cor_res<- Hmisc::rcorr(mat) 
+cor_mat<- cor_res$r
+
+# sometimes, you may have NA in the matrix, and clustering does not play well with it
+# a simple hack is to turn the NA to 0
+cor_mat[is.na(cor_mat)]<- 0
+
+
+cor_p<- cor_res$P
+cor_p
+
+## add significant **
+cor_p[is.nan(cor_p)]<- 1
+
+## the diagonal are NA, make them 1 
+cor_p[is.na(cor_p)]<- 1
+
+col_fun<- circlize::colorRamp2(c(-1, 0, 1), c("green", "white", "red"))
+```
+
+
+Only lable the correlation coefficients with p-values that are <=0.05;
+add * for p value <=0.05 and ** for p value <=0.01
+
+```{r}
+cell_fun = function(j, i, x, y, w, h, fill){
+    if(as.numeric(x) <= 1 - as.numeric(y) + 1e-6) {
+            grid.rect(x, y, w, h, gp = gpar(fill = fill, col = fill))
+    }
+  
+    if (cor_p[i, j]  < 0.01 & as.numeric(x) <= 1 - as.numeric(y) + 1e-6){
+      grid.text(paste0(sprintf("%.2f", cor_mat[i, j]),"**"), x, y, gp = gpar(fontsize = 10))
+    } else if (cor_p[i, j]  <= 0.05 & as.numeric(x) <= 1 - as.numeric(y) + 1e-6){
+      grid.text(paste0(sprintf("%.2f", cor_mat[i, j]),"*"), x, y, gp = gpar(fontsize = 10))
+    }
+}
+
+
+hp<- ComplexHeatmap::Heatmap(cor_mat,
+                        rect_gp = gpar(type = "none"),
+                        column_dend_side = "bottom",
+                        column_title = "NK cells",
+                        name = "correlation", col = col_fun,
+                        cell_fun = cell_fun,
+                        cluster_rows = T, cluster_columns = T,
+                        row_names_side = "left")
+
+lgd_list = list(
+    Legend( labels = c("<0.01", "<0.05"), title = "pvalue",
+            graphics = list(
+              function(x, y, w, h) grid.text("**", x = x, y = y,
+                                               gp = gpar(fill = "black")),
+              function(x, y, w, h) grid.text("*", x = x, y = y,
+                                               gp = gpar(fill = "black")))
+            ))
+
+
+draw(hp, annotation_legend_list = lgd_list, ht_gap = unit(1, "cm") )
+```
+
+### Futher reading
+
+* https://github.com/jokergoo/ComplexHeatmap/issues/675
+* https://jokergoo.github.io/2021/07/22/make-triangle-heatmap/
+

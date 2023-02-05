@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: logistic regression and partial least square regression.
+This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost). I highly recommend going through https://app.learney.me/maps/StatQuest for related sections by Josh Starmer. Note, all the tree based methods can be used to do both classification and regression.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">
+  <meta property="og:title" content="use random forest and boost trees to find marker genes in scRNAseq data | DNA confesses Data speak">
+  <meta property="og:description" content="This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: logistic regression and partial least square regression.
+This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost). I highly recommend going through https://app.learney.me/maps/StatQuest for related sections by Josh Starmer. Note, all the tree based methods can be used to do both classification and regression.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2022-07-03T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2022-07-03T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>use random forest and boost trees to find marker genes in scRNAseq data | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">use random forest and boost trees to find marker genes in scRNAseq data</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2022-07-03 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Jul 3, 2022
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    10 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/scrnaseq/">scRNAseq</a
+    >, 
+    
+    <a href="/categories/r/">R</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=use%20random%20forest%20and%20boost%20trees%20to%20find%20marker%20genes%20in%20scRNAseq%20data&amp;url=%2fpost%2fuse-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fuse-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fuse-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data%2f&amp;title=use%20random%20forest%20and%20boost%20trees%20to%20find%20marker%20genes%20in%20scRNAseq%20data"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fuse-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data%2f&amp;title=use%20random%20forest%20and%20boost%20trees%20to%20find%20marker%20genes%20in%20scRNAseq%20data"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=use%20random%20forest%20and%20boost%20trees%20to%20find%20marker%20genes%20in%20scRNAseq%20data&amp;body=%2fpost%2fuse-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: <a href="https://divingintogeneticsandgenomics.rbind.io/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">logistic regression</a> and <a href="https://divingintogeneticsandgenomics.rbind.io/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">partial least square regression</a>.</p>
+<p>This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost).
+I highly recommend going through <a href="https://app.learney.me/maps/StatQuest" class="uri">https://app.learney.me/maps/StatQuest</a> for related sections by <a href="https://twitter.com/joshuastarmer">Josh Starmer</a>. Note, all the tree based methods can be used to do both classification and regression.</p>
+<p>Let’s use the same PBMC single-cell RNAseq data as an example.</p>
+<p>Load libraries</p>
+<pre class="r"><code>library(Seurat)
+library(tidyverse)
+library(tidymodels)
+library(scCustomize) # for plotting
+library(patchwork)</code></pre>
+<p>Preprocess the data</p>
+<pre class="r"><code># Load the PBMC dataset
+pbmc.data &lt;- Read10X(data.dir = &quot;~/blog_data/filtered_gene_bc_matrices/hg19/&quot;)
+# Initialize the Seurat object with the raw (non-normalized data).
+pbmc &lt;- CreateSeuratObject(counts = pbmc.data, project = &quot;pbmc3k&quot;, min.cells = 3, min.features = 200)
+
+## routine processing
+pbmc&lt;- pbmc %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+## the annotation borrowed from Seurat tutorial
+new.cluster.ids &lt;- c(&quot;Naive CD4 T&quot;, &quot;CD14+ Mono&quot;, &quot;Memory CD4 T&quot;, &quot;B&quot;, &quot;CD8 T&quot;, &quot;FCGR3A+ Mono&quot;, 
+    &quot;NK&quot;, &quot;DC&quot;, &quot;Platelet&quot;)
+names(new.cluster.ids) &lt;- levels(pbmc)
+pbmc &lt;- RenameIdents(pbmc, new.cluster.ids)
+pbmc$cell_type&lt;- Idents(pbmc)
+DimPlot(pbmc, label = TRUE, repel = TRUE) + NoLegend()</code></pre>
+<p><img src="/post/2022-07-03-use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<div id="marker-gene-detection-using-differential-expression-analysis-between-clusters." class="section level3">
+<h3>Marker gene detection using differential expression analysis between clusters.</h3>
+<pre class="r"><code>pbmc_subset&lt;- pbmc[, pbmc$cell_type %in% c(&quot;NK&quot;, &quot;B&quot;)]
+DimPlot(pbmc_subset)</code></pre>
+<p><img src="/post/2022-07-03-use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>Idents(pbmc_subset)&lt;- pbmc_subset$cell_type
+
+diff_markers&lt;- FindMarkers(pbmc_subset, ident.1 = &quot;B&quot;, ident.2 = &quot;NK&quot;, test.use = &quot;wilcox&quot;)
+
+diff_markers %&gt;%
+        arrange(p_val_adj, desc(abs(avg_log2FC))) %&gt;%
+        head(n = 20)</code></pre>
+<pre><code>#&gt;                 p_val avg_log2FC pct.1 pct.2    p_val_adj
+#&gt; GZMB     7.646318e-98  -5.553778 0.017 0.966 1.048616e-93
+#&gt; GZMA     2.929923e-95  -4.519094 0.011 0.939 4.018097e-91
+#&gt; PRF1     9.684091e-95  -4.635264 0.029 0.959 1.328076e-90
+#&gt; NKG7     8.032681e-92  -6.310372 0.083 0.986 1.101602e-87
+#&gt; CST7     4.498511e-91  -4.389481 0.037 0.946 6.169258e-87
+#&gt; CTSW     1.747566e-89  -4.144031 0.066 0.966 2.396612e-85
+#&gt; FGFBP2   3.777986e-87  -4.555937 0.034 0.912 5.181130e-83
+#&gt; GNLY     8.666212e-85  -6.080298 0.080 0.939 1.188484e-80
+#&gt; FCGR3A   1.278458e-79  -3.635596 0.034 0.858 1.753278e-75
+#&gt; CD247    1.428149e-77  -3.763002 0.040 0.851 1.958563e-73
+#&gt; GZMM     3.440488e-77  -3.248116 0.017 0.818 4.718285e-73
+#&gt; CD7      4.578399e-74  -3.330969 0.054 0.851 6.278817e-70
+#&gt; TYROBP   2.340536e-73  -3.560921 0.103 0.899 3.209811e-69
+#&gt; FCER1G   9.343826e-72  -3.499007 0.069 0.845 1.281412e-67
+#&gt; SPON2    7.917147e-70  -3.506623 0.011 0.743 1.085758e-65
+#&gt; CD74     1.880522e-69   3.659825 1.000 0.824 2.578947e-65
+#&gt; HLA-DRA  2.083409e-69   4.597057 1.000 0.365 2.857187e-65
+#&gt; SRGN     1.501958e-68  -3.151188 0.201 0.932 2.059785e-64
+#&gt; HLA-DPB1 3.257314e-66   3.595454 0.986 0.345 4.467080e-62
+#&gt; HLA-DRB1 2.058185e-65   3.710470 0.980 0.189 2.822594e-61</code></pre>
+<p>Note that p-values from this type of analysis are inflated as we clustered the cells first and then find the differences between the clusters. In other words, we double-dip the data.</p>
+<p>see slide 27 from my ABRF2022 talk <a href="https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf" class="uri">https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf</a></p>
+</div>
+<div id="random-forest" class="section level3">
+<h3>random forest</h3>
+<p>re-process the data.</p>
+<pre class="r"><code>## re-process the data, as the most-variable genes will change when you only have NK and B cells vs all cells. use log normalized data
+pbmc_subset&lt;- pbmc_subset %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.1, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)</code></pre>
+<p>we use scaled data, because it was z-score transformed, so the highly expressed genes will not dominate the model</p>
+<pre class="r"><code>data&lt;- pbmc_subset@assays$RNA@scale.data
+# let&#39;s transpose the matrix and make it to a dataframe
+dim(data)</code></pre>
+<pre><code>#&gt; [1] 2000  497</code></pre>
+<pre class="r"><code>data&lt;- t(data) %&gt;%
+        as.data.frame()
+
+# now, every row is a cell with 2000 genes/features/predictors. 
+dim(data)</code></pre>
+<pre><code>#&gt; [1]  497 2000</code></pre>
+<pre class="r"><code>## add the cell type/the outcome/y to the dataframe
+data$cell_type&lt;- pbmc_subset$cell_type
+data$cell_barcode&lt;- rownames(data)
+## it is important to turn it to a factor for classification
+data$cell_type&lt;- factor(data$cell_type)</code></pre>
+</div>
+<div id="prepare-the-data-for-model-traning-and-testing" class="section level3">
+<h3>prepare the data for model traning and testing</h3>
+<pre class="r"><code>set.seed(123)
+
+data_split &lt;- initial_split(data, strata = &quot;cell_type&quot;)
+data_train &lt;- training(data_split)
+data_test &lt;- testing(data_split)
+
+# 10 fold cross validation
+data_fold &lt;- vfold_cv(data_train, v = 10)</code></pre>
+</div>
+<div id="random-forest-in-action" class="section level3">
+<h3>random forest in action</h3>
+<p>By default, <code>randomForest()</code> uses <code>p / 3</code> variables when building a random forest of regression trees, and <code>sqrt(p)</code> variables when building a random forest of classification trees. Since we have 2000 genes/predictors, the default is <code>sqrt(2000)</code> = 45.</p>
+<pre class="r"><code>rf_recipe &lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&gt;%
+  update_role(cell_barcode, new_role = &quot;ID&quot;) %&gt;%
+  step_zv(all_predictors())
+
+## feature importance sore to TRUE
+rf_spec &lt;- rand_forest() %&gt;%
+  set_engine(&quot;randomForest&quot;, importance = TRUE) %&gt;%
+  set_mode(&quot;classification&quot;)
+
+rf_workflow &lt;- workflow() %&gt;% 
+  add_recipe(rf_recipe) %&gt;% 
+  add_model(rf_spec)
+
+
+rf_fit &lt;- fit(rf_workflow, data = data_train)
+
+## confusion matrix, perfect classification! 
+predict(rf_fit, new_data = data_test) %&gt;%
+        bind_cols(data_test %&gt;% select(cell_type)) %&gt;%
+        conf_mat(truth = cell_type, estimate = .pred_class)</code></pre>
+<pre><code>#&gt;           Truth
+#&gt; Prediction  B NK
+#&gt;         B  88  0
+#&gt;         NK  0 37</code></pre>
+<pre class="r"><code># use vip https://koalaverse.github.io/vip/articles/vip.html
+# also read https://github.com/tidymodels/parsnip/issues/311
+rf_fit %&gt;%
+        extract_fit_parsnip() %&gt;%
+        vip::vip(geom = &quot;col&quot;, num_features = 25) + 
+        theme_bw(base_size = 14)+
+        labs(title = &quot;Random forest variable importance&quot;) </code></pre>
+<p><img src="/post/2022-07-03-use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code># tidy(rf_fit) 
+# Error: No tidy method for objects of class randomForest
+
+rf_fit %&gt;%
+        extract_fit_parsnip() %&gt;%
+        vip::vi_model() %&gt;%
+        arrange(desc(abs(Importance))) %&gt;%
+        head(n = 20)</code></pre>
+<pre><code>#&gt; # A tibble: 20 × 2
+#&gt;    Variable Importance
+#&gt;    &lt;chr&gt;         &lt;dbl&gt;
+#&gt;  1 NKG7           8.00
+#&gt;  2 CTSW           7.68
+#&gt;  3 CD74           7.29
+#&gt;  4 GNLY           6.98
+#&gt;  5 HLA-DRA        6.95
+#&gt;  6 GZMA           6.88
+#&gt;  7 PRF1           6.79
+#&gt;  8 FGFBP2         6.63
+#&gt;  9 GZMB           6.58
+#&gt; 10 RPL13A         6.38
+#&gt; 11 CD79A          6.34
+#&gt; 12 FCGR3A         6.10
+#&gt; 13 B2M            5.80
+#&gt; 14 CST7           5.65
+#&gt; 15 CD7            5.52
+#&gt; 16 GZMM           5.49
+#&gt; 17 FCER1G         5.44
+#&gt; 18 LTB            5.38
+#&gt; 19 CFL1           5.30
+#&gt; 20 CCL5           5.19</code></pre>
+<pre class="r"><code>rf_features&lt;- rf_fit %&gt;%
+        extract_fit_parsnip() %&gt;%
+        vip::vi_model() %&gt;%
+        arrange(desc(abs(Importance))) %&gt;%
+        head(n = 20) %&gt;%
+        pull(Variable)</code></pre>
+<p>visualize the raw data</p>
+<pre class="r"><code>Idents(pbmc_subset)&lt;- pbmc_subset$cell_type
+scCustomize::Stacked_VlnPlot(pbmc_subset, features = rf_features,
+                             colors_use = c(&quot;blue&quot;, &quot;red&quot;) )</code></pre>
+<p><img src="/post/2022-07-03-use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-9-1.png" width="384" style="display: block; margin: auto;" /></p>
+</div>
+<div id="parameter-tunning-for-the-mtry-and-number-of-trees" class="section level3">
+<h3>parameter tunning for the mtry and number of trees</h3>
+<pre class="r"><code>rf_recipe &lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&gt;%
+  update_role(cell_barcode, new_role = &quot;ID&quot;) %&gt;%
+  step_zv(all_predictors())
+
+## feature importance sore to TRUE, tune mtry and number of trees
+rf_spec &lt;- rand_forest(mtry = tune(), trees = tune()) %&gt;%
+  set_engine(&quot;randomForest&quot;, importance = TRUE) %&gt;%
+  set_mode(&quot;classification&quot;)
+
+rf_workflow &lt;- workflow() %&gt;% 
+  add_recipe(rf_recipe) %&gt;% 
+  add_model(rf_spec)</code></pre>
+<p>How to set up the <code>tree()</code> and <code>mtry()</code>.</p>
+<pre class="r"><code>trees() %&gt;% value_seq(n = 5)</code></pre>
+<pre><code>#&gt; [1]    1  500 1000 1500 2000</code></pre>
+<pre class="r"><code>mtry()</code></pre>
+<pre><code>#&gt; # Randomly Selected Predictors (quantitative)
+#&gt; Range: [1, ?]</code></pre>
+<p>The range is [1,?], the max is the max number of predictors, in our case, 2000.
+I will set it from 10 to 100 just for this example.</p>
+<pre class="r"><code>rf_grid&lt;- grid_regular(mtry(range= c(10, 100)), trees(), levels = 3)
+
+doParallel::registerDoParallel()
+
+# save_pred = TRUE for later ROC curve
+tune_res &lt;- tune_grid(
+  rf_workflow,
+  resamples = data_fold, 
+  grid = rf_grid,
+  control = control_grid(save_pred = TRUE)
+)
+
+# tune_res
+# check which penalty is the best 
+autoplot(tune_res)</code></pre>
+<p><img src="/post/2022-07-03-use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code>#select_best(tune_res, metric = &quot;roc_auc&quot;)
+
+best_penalty &lt;- select_best(tune_res, metric = &quot;accuracy&quot;)
+
+best_penalty</code></pre>
+<pre><code>#&gt; # A tibble: 1 × 3
+#&gt;    mtry trees .config             
+#&gt;   &lt;int&gt; &lt;int&gt; &lt;chr&gt;               
+#&gt; 1    10  1000 Preprocessor1_Model4</code></pre>
+<pre class="r"><code>rf_final &lt;- finalize_workflow(rf_workflow, best_penalty)
+rf_final_fit &lt;- fit(rf_final, data = data_train)
+
+#confusion matrix for the test data
+predict(rf_final_fit, new_data = data_test) %&gt;%
+        bind_cols(data_test %&gt;% select(cell_type)) %&gt;%
+        conf_mat(truth = cell_type, estimate = .pred_class)</code></pre>
+<pre><code>#&gt;           Truth
+#&gt; Prediction  B NK
+#&gt;         B  88  0
+#&gt;         NK  0 37</code></pre>
+<pre class="r"><code># tune_res %&gt;% collect_predictions()
+# only for the best model
+rf_auc&lt;- 
+        tune_res %&gt;% collect_predictions(parameter = best_penalty) %&gt;%
+        roc_curve(cell_type, .pred_B) %&gt;% 
+        mutate(model = &quot;Random Forest&quot;) 
+
+
+rf_auc %&gt;% 
+        ggplot(aes(x = 1 - specificity, y = sensitivity, col = model)) + 
+        geom_path(lwd = 1.5, alpha = 0.8) +
+        geom_abline(lty = 3) + 
+        coord_equal()</code></pre>
+<p><img src="/post/2022-07-03-use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<pre class="r"><code>tune_res %&gt;% collect_metrics(parameters= best_penalty)</code></pre>
+<pre><code>#&gt; # A tibble: 18 × 8
+#&gt;     mtry trees .metric  .estimator  mean     n std_err .config             
+#&gt;    &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+#&gt;  1    10     1 accuracy binary     0.885    10 0.0182  Preprocessor1_Model1
+#&gt;  2    10     1 roc_auc  binary     0.851    10 0.0172  Preprocessor1_Model1
+#&gt;  3    55     1 accuracy binary     0.955    10 0.0136  Preprocessor1_Model2
+#&gt;  4    55     1 roc_auc  binary     0.945    10 0.0162  Preprocessor1_Model2
+#&gt;  5   100     1 accuracy binary     0.944    10 0.0116  Preprocessor1_Model3
+#&gt;  6   100     1 roc_auc  binary     0.922    10 0.0195  Preprocessor1_Model3
+#&gt;  7    10  1000 accuracy binary     0.995    10 0.00360 Preprocessor1_Model4
+#&gt;  8    10  1000 roc_auc  binary     1        10 0       Preprocessor1_Model4
+#&gt;  9    55  1000 accuracy binary     0.995    10 0.00360 Preprocessor1_Model5
+#&gt; 10    55  1000 roc_auc  binary     1        10 0       Preprocessor1_Model5
+#&gt; 11   100  1000 accuracy binary     0.995    10 0.00360 Preprocessor1_Model6
+#&gt; 12   100  1000 roc_auc  binary     1        10 0       Preprocessor1_Model6
+#&gt; 13    10  2000 accuracy binary     0.995    10 0.00360 Preprocessor1_Model7
+#&gt; 14    10  2000 roc_auc  binary     1        10 0       Preprocessor1_Model7
+#&gt; 15    55  2000 accuracy binary     0.995    10 0.00360 Preprocessor1_Model8
+#&gt; 16    55  2000 roc_auc  binary     1        10 0       Preprocessor1_Model8
+#&gt; 17   100  2000 accuracy binary     0.992    10 0.00409 Preprocessor1_Model9
+#&gt; 18   100  2000 roc_auc  binary     1        10 0       Preprocessor1_Model9</code></pre>
+<p>This dummy example gives <code>AUC</code> of 1.</p>
+</div>
+<div id="boosting-tree" class="section level3">
+<h3>boosting tree</h3>
+<p>The <code>xgboost</code> packages give a good implementation of boosted trees. It has many parameters (e.g., eta learning rate) to tune and we know that setting trees too high can lead to overfitting. Nevertheless, let us try fitting a boosted tree. We set tree = 5000 to grow 5000 trees with a maximal depth of 4 by setting tree_depth = 4 (default is 6).</p>
+<pre class="r"><code>bt_recipe &lt;- 
+  recipe(formula = cell_type ~ ., data = data_train) %&gt;%
+  update_role(cell_barcode, new_role = &quot;ID&quot;) %&gt;%
+  step_zv(all_predictors())
+
+## feature importance sore to TRUE, tune mtry and number of trees
+bt_spec &lt;- 
+        boost_tree(trees = 5000, tree_depth = 4) %&gt;%
+        set_engine(&quot;xgboost&quot;) %&gt;%
+        set_mode(&quot;classification&quot;)
+        
+bt_workflow &lt;- workflow() %&gt;% 
+  add_recipe(bt_recipe) %&gt;% 
+  add_model(bt_spec)
+
+
+bt_fit &lt;- fit(bt_workflow, data = data_train)
+
+## confusion matrix, perfect classification! 
+predict(bt_fit, new_data = data_test) %&gt;%
+        bind_cols(data_test %&gt;% select(cell_type)) %&gt;%
+        conf_mat(truth = cell_type, estimate = .pred_class)</code></pre>
+<pre><code>#&gt;           Truth
+#&gt; Prediction  B NK
+#&gt;         B  88  0
+#&gt;         NK  0 37</code></pre>
+<pre class="r"><code># use vip https://koalaverse.github.io/vip/articles/vip.html
+# also read https://github.com/tidymodels/parsnip/issues/311
+bt_fit %&gt;%
+        extract_fit_parsnip() %&gt;%
+        vip::vip(geom = &quot;col&quot;, num_features = 25) + 
+        theme_bw(base_size = 14)+
+        labs(title = &quot;XGboost variable importance&quot;) </code></pre>
+<p><img src="/post/2022-07-03-use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code>bt_fit %&gt;%
+        extract_fit_parsnip() %&gt;%
+        vip::vi_model() %&gt;%
+        arrange(desc(abs(Importance))) </code></pre>
+<pre><code>#&gt; # A tibble: 18 × 2
+#&gt;    Variable Importance
+#&gt;    &lt;chr&gt;         &lt;dbl&gt;
+#&gt;  1 CD74      0.487    
+#&gt;  2 NKG7      0.417    
+#&gt;  3 HLA-DRA   0.0407   
+#&gt;  4 ZWINT     0.0123   
+#&gt;  5 GAPDH     0.0116   
+#&gt;  6 MCM7      0.00959  
+#&gt;  7 CTSW      0.00510  
+#&gt;  8 CFL1      0.00470  
+#&gt;  9 RPL13A    0.00458  
+#&gt; 10 ECI1      0.00215  
+#&gt; 11 CD79A     0.00144  
+#&gt; 12 GNLY      0.00102  
+#&gt; 13 PRF1      0.000905 
+#&gt; 14 GZMA      0.000409 
+#&gt; 15 ACAP3     0.000393 
+#&gt; 16 PPP1CA    0.000256 
+#&gt; 17 TMSB10    0.000116 
+#&gt; 18 NECAP2    0.0000833</code></pre>
+<pre class="r"><code>bt_features&lt;- bt_fit %&gt;%
+        extract_fit_parsnip() %&gt;%
+        vip::vi_model() %&gt;%
+        arrange(desc(abs(Importance))) %&gt;%
+        pull(Variable)</code></pre>
+<p>Xgboost does feature selection and only 18 features were retained. Let me visualize the data.</p>
+<pre class="r"><code>Idents(pbmc_subset)&lt;- pbmc_subset$cell_type
+scCustomize::Stacked_VlnPlot(pbmc_subset, features = bt_features,
+                             colors_use = c(&quot;blue&quot;, &quot;red&quot;) )</code></pre>
+<p><img src="/post/2022-07-03-use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data.en_files/figure-html/unnamed-chunk-14-1.png" width="384" style="display: block; margin: auto;" /></p>
+<p>It picked up lowly expressed genes such as <code>ZWINT</code>, <code>ECL1</code>, <code>ACAP3</code> and <code>NECAP2</code>.</p>
+<p>for boosting trees, it is easily get over-fitted with large number of trees. random forest does not in terms of the number of the trees but it gets over-fitted in other means.</p>
+<p>From <a href="https://www.tmwr.org/tuning.html" class="uri">https://www.tmwr.org/tuning.html</a></p>
+<blockquote>
+<p>Another (perhaps more debatable) counterexample of a parameter that does not need to be tuned is the number of trees in a random forest or bagging model. This value should instead be chosen to be large enough to ensure numerical stability in the results; tuning it cannot improve performance as long as the value is large enough to produce reliable results. For random forests, this value is typically in the thousands while the number of trees needed for bagging is around 50 to 100.</p>
+</blockquote>
+</div>
+<div id="conclusions" class="section level3">
+<h3>conclusions</h3>
+<ul>
+<li><p>For this ‘simple’ marker gene identification task, we can use differential gene expression, logistic regression, partial least square regression, and random forest. All of them give sensible results. Also, B cells and NK cells are pretty different. For more subtle different cell types such as CD14+ monocyte vs FCGR3A+/CD16+ monocyte, different methods may have different advantages. For more complicated task with non-linear relationship data, deep learning may outperform those conventional statistical learning methods.</p></li>
+<li><p>Regression based methods are easy to interpret and they tell you whether a feature is positively or negatively associated with the outcome based on the sign of the coefficients. Random forest, on the other hand, gives you only the important features. <a href="https://shap.readthedocs.io/en/latest/">SHAP</a> may be able to do it according to this <a href="https://datascience.stackexchange.com/questions/73459/positive-or-negative-impact-of-features-in-prediction-with-random-forest">post</a></p></li>
+<li><p>If you have read my previous posts you will find that the <code>tidymodels</code> really unifies the semantic to call different models and you only need minimal changes for the code to run different models. Neat!</p></li>
+<li><p>Finally, always visualize your raw data. Your brain will tell you how reasonable the marker genes are.</p></li>
+</ul>
+<p>More readings:</p>
+<ol style="list-style-type: decimal">
+<li><p><a href="https://www.biorxiv.org/content/10.1101/653907v2.full">Deep learning does not outperform classical machine learning for cell-type annotation</a></p></li>
+<li><p><a href="https://pubmed.ncbi.nlm.nih.gov/34088715/">A machine learning method for the discovery of minimum marker gene combinations for cell type identification from single-cell RNA sequencing</a></p></li>
+</ol>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/scrnaseq/">scRNAseq</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/r/">R</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/rstats/">rstats</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/seurat/">Seurat</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </a></li>
+        
+        <li><a href="/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/">customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</a></li>
+        
+        <li><a href="/post/monty-hall-problem-a-peek-through-simulation/">Monty Hall problem- a peek through simulation</a></li>
+        
+        <li><a href="/post/negative-bionomial-distribution-in-single-cell-rnaseq/">negative bionomial distribution in (single-cell) RNAseq </a></li>
+        
+        <li><a href="/project/evaluating-scrnaseq-cluster/">Evaluating single cell RNAseq cluster stability</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines/" rel="next">Are PDL1 RNA and protein levels correlated in cancer cell lines?</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/" rel="prev">Partial least square regression for marker gene identification in scRNAseq data</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

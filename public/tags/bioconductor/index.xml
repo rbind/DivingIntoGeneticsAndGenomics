@@ -7,10 +7,42 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Wed, 01 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 05 Feb 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/bioconductor/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to make a triangle correlation heatmap with p-values labeled </title>
+      <link>/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</link>
+      <pubDate>Sun, 05 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</guid>
+      <description>In this blog post, I am going to show you how to make a correlation heatmap with p-values and significant values labeled in the heatmap body.</description>
+    </item>
+    
+    <item>
+      <title>How to do gene correlation for single-cell RNAseq data (part 2) using meta-cell </title>
+      <link>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/</link>
+      <pubDate>Mon, 23 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/</guid>
+      <description>In my last blog post, I showed that pearson gene correlation for single-cell data has flaws because of the sparsity of the count matrix.
+One way to get around it is to use the so called meta-cell. One can use KNN to find the K nearest neighbors and collapse them into a meta-cell. You can implement it from scratch, but one should not re-invent the wheel. For example, you can use metacells.</description>
+    </item>
+    
+    <item>
+      <title>Partial least square regression for marker gene identification in scRNAseq data</title>
+      <link>/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</link>
+      <pubDate>Thu, 16 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</guid>
+      <description>This is an extension of my last blog post marker gene selection using logistic regression and regularization for scRNAseq.
+Let’s use the same PBMC single-cell RNAseq data as an example.
+Load libraries
+library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # for plotting library(patchwork) Preprocess the data
+# Load the PBMC dataset pbmc.data &amp;lt;- Read10X(data.dir = &amp;quot;~/blog_data/filtered_gene_bc_matrices/hg19/&amp;quot;) # Initialize the Seurat object with the raw (non-normalized data). pbmc &amp;lt;- CreateSeuratObject(counts = pbmc.data, project = &amp;quot;pbmc3k&amp;quot;, min.</description>
+    </item>
     
     <item>
       <title>Obtain metadata for public datasets in GEO</title>

@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="I want to curate a public scRNAseq dataset from this paper Single-cell analyses reveal key immune cell subsets associated with response to PD-L1 blockade in triple-negative breast cancer
+ffq I first tried ffq, but it gave me errors.
+ffq fetches metadata information from the following databases:
+ GEO: Gene Expression Omnibus, SRA: Sequence Read Archive, EMBL-EBI: European Molecular BIology Laboratory’s European BIoinformatics Institute, DDBJ: DNA Data Bank of Japan, NIH Biosample: Biological source materials used in experimental assays, ENCODE: The Encyclopedia of DNA Elements.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/my-odyssey-of-obtaining-scrnaseq-metadata/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/my-odyssey-of-obtaining-scrnaseq-metadata/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/my-odyssey-of-obtaining-scrnaseq-metadata/">
+  <meta property="og:title" content="My odyssey of obtaining scRNAseq metadata  | DNA confesses Data speak">
+  <meta property="og:description" content="I want to curate a public scRNAseq dataset from this paper Single-cell analyses reveal key immune cell subsets associated with response to PD-L1 blockade in triple-negative breast cancer
+ffq I first tried ffq, but it gave me errors.
+ffq fetches metadata information from the following databases:
+ GEO: Gene Expression Omnibus, SRA: Sequence Read Archive, EMBL-EBI: European Molecular BIology Laboratory’s European BIoinformatics Institute, DDBJ: DNA Data Bank of Japan, NIH Biosample: Biological source materials used in experimental assays, ENCODE: The Encyclopedia of DNA Elements.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2022-06-08T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2022-06-08T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>My odyssey of obtaining scRNAseq metadata  | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">My odyssey of obtaining scRNAseq metadata </h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2022-06-08 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Jun 8, 2022
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    11 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/my-odyssey-of-obtaining-scrnaseq-metadata/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/scrnaseq/">scRNAseq</a
+    >, 
+    
+    <a href="/categories/r/">R</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=My%20odyssey%20of%20obtaining%20scRNAseq%20metadata%20&amp;url=%2fpost%2fmy-odyssey-of-obtaining-scrnaseq-metadata%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fmy-odyssey-of-obtaining-scrnaseq-metadata%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fmy-odyssey-of-obtaining-scrnaseq-metadata%2f&amp;title=My%20odyssey%20of%20obtaining%20scRNAseq%20metadata%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fmy-odyssey-of-obtaining-scrnaseq-metadata%2f&amp;title=My%20odyssey%20of%20obtaining%20scRNAseq%20metadata%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=My%20odyssey%20of%20obtaining%20scRNAseq%20metadata%20&amp;body=%2fpost%2fmy-odyssey-of-obtaining-scrnaseq-metadata%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>I want to curate a public scRNAseq dataset from this paper <a href="https://pubmed.ncbi.nlm.nih.gov/34653365/">Single-cell analyses reveal key immune cell subsets associated with response to PD-L1 blockade in triple-negative breast cancer</a></p>
+<div id="ffq" class="section level3">
+<h3>ffq</h3>
+<p>I first tried <a href="https://github.com/pachterlab/ffq">ffq</a>, but it gave me errors.</p>
+<p><code>ffq</code> fetches metadata information from the following databases:</p>
+<ul>
+<li>GEO: Gene Expression Omnibus,</li>
+<li>SRA: Sequence Read Archive,</li>
+<li>EMBL-EBI: European Molecular BIology Laboratory’s European BIoinformatics Institute,</li>
+<li>DDBJ: DNA Data Bank of Japan,</li>
+<li>NIH Biosample: Biological source materials used in experimental assays,</li>
+<li>ENCODE: The Encyclopedia of DNA Elements.</li>
+</ul>
+<pre class="bash"><code>(base) ➜  ~ ffq GSE169246
+[2022-06-06 14:32:22,716]    INFO Parsing GEO GSE169246
+[2022-06-06 14:32:24,418]    INFO Finding supplementary files for GEO GSE169246
+[2022-06-06 14:32:28,001] WARNING There are 83 samples for GSE169246
+[2022-06-06 14:32:28,001]    INFO Parsing GSM GSM5188367
+[2022-06-06 14:32:33,047]    INFO Finding supplementary files for GSM GSM5188367
+[2022-06-06 14:32:34,409]    INFO No supplementary files found for GSM5188367
+[2022-06-06 14:32:39,659]    INFO Getting sample for GSM5188367
+[2022-06-06 14:32:41,847] WARNING No sample found. Either the provided GSM accession is invalid or raw data was not provided for this record</code></pre>
+</div>
+<div id="get-the-metadata-using-geoquery" class="section level3">
+<h3>get the metadata using GEOquery</h3>
+<p>other methods: pysradb <a href="https://github.com/saketkc/pysradb" class="uri">https://github.com/saketkc/pysradb</a></p>
+<p>I then tried <a href="https://bioconductor.org/packages/release/bioc/html/GEOquery.html"><code>GEOquery</code></a></p>
+<pre class="r"><code>library(GEOquery)
+library(tidyverse)
+library(here)
+#getGEOSuppFiles(GEO =&quot;GSE176021&quot;)
+# one can also get the matrix by setting GSEMatrix to TRUE
+meta&lt;- getGEO(GEO= &quot;GSE169246&quot;,GSEMatrix=FALSE)</code></pre>
+<p>The <code>meta</code> object’s gsms slot contains useful information</p>
+<pre class="r"><code>## metadata 
+meta@gsms$GSM5188440@header$characteristics_ch1</code></pre>
+<pre><code>#&gt; [1] &quot;tissue: blood&quot;               &quot;disease state: TNBC patient&quot;
+#&gt; [3] &quot;group: Progression&quot;          &quot;treatment: Chemo&quot;</code></pre>
+<pre class="r"><code>## sample ID, I need it because the count matrix cell name is prefixed by it
+meta@gsms$GSM5188440@header$title </code></pre>
+<pre><code>#&gt; [1] &quot;Prog_P008_b&quot;</code></pre>
+<pre class="r"><code>## patient ID
+meta@gsms$GSM5188440@header$source_name_ch1</code></pre>
+<pre><code>#&gt; [1] &quot;P008&quot;</code></pre>
+<p><code>meta@gsms</code> is a list of lists. <code>purrr::map()</code> is a perfect tool to tidy it.</p>
+<p>you can learn more <code>purrr</code> from <a href="https://jennybc.github.io/purrr-tutorial/" class="uri">https://jennybc.github.io/purrr-tutorial/</a></p>
+<pre class="r"><code># each list entry is one sample
+names(meta@gsms)</code></pre>
+<pre><code>#&gt;  [1] &quot;GSM5188367&quot; &quot;GSM5188368&quot; &quot;GSM5188369&quot; &quot;GSM5188370&quot; &quot;GSM5188371&quot;
+#&gt;  [6] &quot;GSM5188372&quot; &quot;GSM5188373&quot; &quot;GSM5188374&quot; &quot;GSM5188375&quot; &quot;GSM5188376&quot;
+#&gt; [11] &quot;GSM5188377&quot; &quot;GSM5188378&quot; &quot;GSM5188379&quot; &quot;GSM5188380&quot; &quot;GSM5188381&quot;
+#&gt; [16] &quot;GSM5188382&quot; &quot;GSM5188383&quot; &quot;GSM5188384&quot; &quot;GSM5188385&quot; &quot;GSM5188386&quot;
+#&gt; [21] &quot;GSM5188387&quot; &quot;GSM5188388&quot; &quot;GSM5188389&quot; &quot;GSM5188390&quot; &quot;GSM5188391&quot;
+#&gt; [26] &quot;GSM5188392&quot; &quot;GSM5188393&quot; &quot;GSM5188394&quot; &quot;GSM5188395&quot; &quot;GSM5188396&quot;
+#&gt; [31] &quot;GSM5188397&quot; &quot;GSM5188398&quot; &quot;GSM5188399&quot; &quot;GSM5188400&quot; &quot;GSM5188401&quot;
+#&gt; [36] &quot;GSM5188402&quot; &quot;GSM5188403&quot; &quot;GSM5188404&quot; &quot;GSM5188405&quot; &quot;GSM5188406&quot;
+#&gt; [41] &quot;GSM5188407&quot; &quot;GSM5188408&quot; &quot;GSM5188409&quot; &quot;GSM5188410&quot; &quot;GSM5188411&quot;
+#&gt; [46] &quot;GSM5188412&quot; &quot;GSM5188413&quot; &quot;GSM5188414&quot; &quot;GSM5188415&quot; &quot;GSM5188416&quot;
+#&gt; [51] &quot;GSM5188417&quot; &quot;GSM5188418&quot; &quot;GSM5188419&quot; &quot;GSM5188420&quot; &quot;GSM5188421&quot;
+#&gt; [56] &quot;GSM5188422&quot; &quot;GSM5188423&quot; &quot;GSM5188424&quot; &quot;GSM5188425&quot; &quot;GSM5188426&quot;
+#&gt; [61] &quot;GSM5188427&quot; &quot;GSM5188428&quot; &quot;GSM5188429&quot; &quot;GSM5188430&quot; &quot;GSM5188431&quot;
+#&gt; [66] &quot;GSM5188432&quot; &quot;GSM5188433&quot; &quot;GSM5188434&quot; &quot;GSM5188435&quot; &quot;GSM5188436&quot;
+#&gt; [71] &quot;GSM5188437&quot; &quot;GSM5188438&quot; &quot;GSM5188439&quot; &quot;GSM5188440&quot; &quot;GSM5188441&quot;
+#&gt; [76] &quot;GSM5188442&quot; &quot;GSM5188443&quot; &quot;GSM5188444&quot; &quot;GSM5188445&quot; &quot;GSM5585280&quot;
+#&gt; [81] &quot;GSM5585281&quot; &quot;GSM5585282&quot; &quot;GSM5585283&quot;</code></pre>
+<pre class="r"><code>meta@gsms$GSM5188367@header</code></pre>
+<pre><code>#&gt; $channel_count
+#&gt; [1] &quot;1&quot;
+#&gt; 
+#&gt; $characteristics_ch1
+#&gt; [1] &quot;tissue: blood&quot;               &quot;disease state: TNBC patient&quot;
+#&gt; [3] &quot;group: Pre-treatment&quot;        &quot;treatment: anti-PDL1+Chemo&quot; 
+#&gt; 
+#&gt; $contact_address
+#&gt; [1] &quot;Yiheyuan Road&quot;
+#&gt; 
+#&gt; $contact_city
+#&gt; [1] &quot;Beijing&quot;
+#&gt; 
+#&gt; $contact_country
+#&gt; [1] &quot;China&quot;
+#&gt; 
+#&gt; $contact_department
+#&gt; [1] &quot;BIOPIC&quot;
+#&gt; 
+#&gt; $contact_email
+#&gt; [1] &quot;zhangyuanyuanbio@pku.edu.cn&quot;
+#&gt; 
+#&gt; $contact_institute
+#&gt; [1] &quot;Peking Univerisity&quot;
+#&gt; 
+#&gt; $contact_laboratory
+#&gt; [1] &quot;Zemin Zhang&#39;s Lab&quot;
+#&gt; 
+#&gt; $contact_name
+#&gt; [1] &quot;Yuanyuan,,Zhang&quot;
+#&gt; 
+#&gt; $contact_state
+#&gt; [1] &quot;Beijing&quot;
+#&gt; 
+#&gt; $`contact_zip/postal_code`
+#&gt; [1] &quot;100871&quot;
+#&gt; 
+#&gt; $data_processing
+#&gt; [1] &quot;For 10X data, Cell Ranger 3.0.0 was used to quantify gene expression level, identify TCR sequences and quantify ATAC-seq peaks .&quot;
+#&gt; [2] &quot;Genome_build: GRCh38 for RNA expression,TCR data and ATAC peaks.&quot;                                                                
+#&gt; 
+#&gt; $data_row_count
+#&gt; [1] &quot;0&quot;
+#&gt; 
+#&gt; $description
+#&gt; [1] &quot;10X Genomics platform&quot;
+#&gt; 
+#&gt; $extract_protocol_ch1
+#&gt; [1] &quot;Peripheral blood mononuclear cells (PBMCs) were isolated with HISTOPAQUE-1077 (Sigma-Aldrich) solution. In brief, 3 ml fresh peripheral blood was collected at baseline, 4 weeks after treatment initiation and disease progression in EDTA anticoagulant tubes and subsequently layered onto HISTOPAQUE-1077. Tumor biopsy samples were first stored in RNAlater RNA stabilization reagent (QIAGEN) after collection and kept on ice to avoid RNA degradation. Samples were then collected in the RPMI-1640 medium (Gibco) with 10% FBS (Gibco), and enzymatically digested with gentle MACS Tumor Dissociation Kit (Miltenyi Biotec) for 60 min on a rotor at 37 °C according to the manufacturer’s protocol. The dissociated cells were next passed through a 40-µm cell-strainer (BD) in the RPMI-1640 medium (Invitrogen) with 10% FBS until uniform cell suspensions were obtained. Subsequently, the suspended cells were passed through cell strainers and centrifuged at 400 g for 10 min. Red blood cells were removed via the same procedure described above. After washing twice with 1x PBS (Invitrogen), the cell pellets were re-suspended in sorting buffer (PBS supplemented with 1% FBS).&quot;
+#&gt; [2] &quot;single cells were sorted into 1.5 ml tubes (Eppendorf) and counted manually under the microscope. The concentration of single cell suspensions was adjusted to 500-1200 cells/ul. Cells were loaded between 7,000 and 15,000 cells/chip position using the 10x Chromium Single cell 5’ Library, Gel Bead &amp; Multiplex Kit and Chip Kit (10x Genomics, V3 barcoding chemistry) according to the manufacturer’s instructions. All the subsequent steps were performed following the standard manufacturer’s protocols. Purified libraries were analyzed by an Illumina Hiseq X Ten sequencer with 150-bp paired-end reads.&quot;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+#&gt; [3] &quot;10x Chromium Single cell 5’ + VDJ Library, and 10x Chromium Single cell ATAC-seq Library&quot;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+#&gt; 
+#&gt; $geo_accession
+#&gt; [1] &quot;GSM5188367&quot;
+#&gt; 
+#&gt; $instrument_model
+#&gt; [1] &quot;HiSeq X Ten&quot;
+#&gt; 
+#&gt; $last_update_date
+#&gt; [1] &quot;Sep 17 2021&quot;
+#&gt; 
+#&gt; $library_selection
+#&gt; [1] &quot;cDNA&quot;
+#&gt; 
+#&gt; $library_source
+#&gt; [1] &quot;transcriptomic&quot;
+#&gt; 
+#&gt; $library_strategy
+#&gt; [1] &quot;RNA-Seq&quot;
+#&gt; 
+#&gt; $molecule_ch1
+#&gt; [1] &quot;polyA RNA&quot;
+#&gt; 
+#&gt; $organism_ch1
+#&gt; [1] &quot;Homo sapiens&quot;
+#&gt; 
+#&gt; $platform_id
+#&gt; [1] &quot;GPL20795&quot;
+#&gt; 
+#&gt; $relation
+#&gt; [1] &quot;BioSample: https://www.ncbi.nlm.nih.gov/biosample/SAMN18383051&quot;
+#&gt; 
+#&gt; $series_id
+#&gt; [1] &quot;GSE169246&quot;
+#&gt; 
+#&gt; $source_name_ch1
+#&gt; [1] &quot;P007&quot;
+#&gt; 
+#&gt; $status
+#&gt; [1] &quot;Public on Sep 15 2021&quot;
+#&gt; 
+#&gt; $submission_date
+#&gt; [1] &quot;Mar 19 2021&quot;
+#&gt; 
+#&gt; $supplementary_file_1
+#&gt; [1] &quot;NONE&quot;
+#&gt; 
+#&gt; $taxid_ch1
+#&gt; [1] &quot;9606&quot;
+#&gt; 
+#&gt; $title
+#&gt; [1] &quot;Pre_P007_b&quot;
+#&gt; 
+#&gt; $treatment_protocol_ch1
+#&gt; [1] &quot;Half of 22 TNBC patients were treated with paclitaxel monotherapy and the other half were treated with paclitaxel plus atezolizumab as first-line treatment&quot;
+#&gt; 
+#&gt; $type
+#&gt; [1] &quot;SRA&quot;</code></pre>
+<pre class="r"><code># extract the metadata from the header
+purrr::map(meta@gsms, ~.x@header$characteristics_ch1)[1:5]</code></pre>
+<pre><code>#&gt; $GSM5188367
+#&gt; [1] &quot;tissue: blood&quot;               &quot;disease state: TNBC patient&quot;
+#&gt; [3] &quot;group: Pre-treatment&quot;        &quot;treatment: anti-PDL1+Chemo&quot; 
+#&gt; 
+#&gt; $GSM5188368
+#&gt; [1] &quot;tissue: lymph_node&quot;          &quot;disease state: TNBC patient&quot;
+#&gt; [3] &quot;group: Pre-treatment&quot;        &quot;treatment: anti-PDL1+Chemo&quot; 
+#&gt; 
+#&gt; $GSM5188369
+#&gt; [1] &quot;tissue: blood&quot;               &quot;disease state: TNBC patient&quot;
+#&gt; [3] &quot;group: Pre-treatment&quot;        &quot;treatment: anti-PDL1+Chemo&quot; 
+#&gt; 
+#&gt; $GSM5188370
+#&gt; [1] &quot;tissue: lymph_node&quot;          &quot;disease state: TNBC patient&quot;
+#&gt; [3] &quot;group: Pre-treatment&quot;        &quot;treatment: anti-PDL1+Chemo&quot; 
+#&gt; 
+#&gt; $GSM5188371
+#&gt; [1] &quot;tissue: blood&quot;               &quot;disease state: TNBC patient&quot;
+#&gt; [3] &quot;group: Pre-treatment&quot;        &quot;treatment: anti-PDL1+Chemo&quot;</code></pre>
+<p>Also, have you used the awesome <code>stack</code> and <code>unstack</code> function in base R? There are so many good hidden functions.</p>
+<pre class="r"><code># save it to a variable
+meta1&lt;- purrr::map(meta@gsms, ~.x@header$characteristics_ch1) %&gt;%
+        stack() %&gt;%
+        separate(values, into = c(&quot;condition&quot;, &quot;value&quot;), sep= &quot;: &quot;)%&gt;%
+        pivot_wider(names_from= condition, values_from = value) %&gt;%
+        janitor::clean_names()
+        
+
+meta2&lt;- purrr::map(meta@gsms, ~.x@header$title) %&gt;%
+        stack() %&gt;%
+        dplyr::rename(sample_id = values)
+
+
+meta3&lt;- purrr::map(meta@gsms, ~.x@header$source_name_ch1) %&gt;%
+        stack() %&gt;%
+        dplyr::rename(patient_id = values)
+
+
+
+head(meta1)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 5
+#&gt;   ind        tissue     disease_state group         treatment      
+#&gt;   &lt;fct&gt;      &lt;chr&gt;      &lt;chr&gt;         &lt;chr&gt;         &lt;chr&gt;          
+#&gt; 1 GSM5188367 blood      TNBC patient  Pre-treatment anti-PDL1+Chemo
+#&gt; 2 GSM5188368 lymph_node TNBC patient  Pre-treatment anti-PDL1+Chemo
+#&gt; 3 GSM5188369 blood      TNBC patient  Pre-treatment anti-PDL1+Chemo
+#&gt; 4 GSM5188370 lymph_node TNBC patient  Pre-treatment anti-PDL1+Chemo
+#&gt; 5 GSM5188371 blood      TNBC patient  Pre-treatment anti-PDL1+Chemo
+#&gt; 6 GSM5188372 blood      TNBC patient  Pre-treatment Chemo</code></pre>
+<pre class="r"><code>head(meta2)</code></pre>
+<pre><code>#&gt;    sample_id        ind
+#&gt; 1 Pre_P007_b GSM5188367
+#&gt; 2 Pre_P007_t GSM5188368
+#&gt; 3 Pre_P012_b GSM5188369
+#&gt; 4 Pre_P012_t GSM5188370
+#&gt; 5 Pre_P014_b GSM5188371
+#&gt; 6 Pre_P023_b GSM5188372</code></pre>
+<pre class="r"><code>head(meta3)</code></pre>
+<pre><code>#&gt;   patient_id        ind
+#&gt; 1       P007 GSM5188367
+#&gt; 2       P007 GSM5188368
+#&gt; 3       P012 GSM5188369
+#&gt; 4       P012 GSM5188370
+#&gt; 5       P014 GSM5188371
+#&gt; 6       P023 GSM5188372</code></pre>
+<pre class="r"><code>##merge all of them
+
+meta&lt;- left_join(meta1, meta2) %&gt;%
+        left_join(meta3)
+
+head(meta)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 7
+#&gt;   ind        tissue     disease_state group       treatment sample_id patient_id
+#&gt;   &lt;fct&gt;      &lt;chr&gt;      &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;     
+#&gt; 1 GSM5188367 blood      TNBC patient  Pre-treatm… anti-PDL… Pre_P007… P007      
+#&gt; 2 GSM5188368 lymph_node TNBC patient  Pre-treatm… anti-PDL… Pre_P007… P007      
+#&gt; 3 GSM5188369 blood      TNBC patient  Pre-treatm… anti-PDL… Pre_P012… P012      
+#&gt; 4 GSM5188370 lymph_node TNBC patient  Pre-treatm… anti-PDL… Pre_P012… P012      
+#&gt; 5 GSM5188371 blood      TNBC patient  Pre-treatm… anti-PDL… Pre_P014… P014      
+#&gt; 6 GSM5188372 blood      TNBC patient  Pre-treatm… Chemo     Pre_P023… P023</code></pre>
+<pre class="r"><code>## remove the scATACseq samples
+meta&lt;- meta %&gt;%
+        filter(!str_detect(sample_id, &quot;ATAC-seq&quot;))</code></pre>
+</div>
+<div id="get-the-response-data" class="section level3">
+<h3>Get the response data</h3>
+<p>Now, I will need to go to the publication and find the supplementary table which contains the response data.
+It looks like this:</p>
+<p><img src="/img/meta_excel.png" />
+Everyone should read this <a href="https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/" class="uri">https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/</a>
+and <a href="https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989">Data organization in spreadsheet</a></p>
+<p>Using excel wisely is not a rocket science, but using it correctly can make bioinformatician’s life much easier.</p>
+<pre class="r"><code>clinical_data&lt;- readxl::read_xlsx(&quot;~/Downloads/1-s2.0-S1535610821004992-mmc2.xlsx&quot;, skip = 1)
+
+## there are many places need to be fixed
+print(clinical_data, n = 40)</code></pre>
+<pre><code>#&gt; # A tibble: 27 × 19
+#&gt;    Treatment     `Patient ID` `Biopsied lesi…` `Diameter of b…` `Size of targe…`
+#&gt;    &lt;chr&gt;         &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;                       &lt;dbl&gt;
+#&gt;  1 &lt;NA&gt;          &lt;NA&gt;         &lt;NA&gt;             &lt;NA&gt;                           NA
+#&gt;  2 Anti-PD-L1+ … P019         Lymph Node       15                             36
+#&gt;  3 &lt;NA&gt;          P010         Lung             21                             35
+#&gt;  4 &lt;NA&gt;          P012         Lymph Node       28                             28
+#&gt;  5 &lt;NA&gt;          P007         Lymph Node       22                             22
+#&gt;  6 &lt;NA&gt;          P017         Lymph Node       16                             45
+#&gt;  7 &lt;NA&gt;          P001         -                -                              45
+#&gt;  8 &lt;NA&gt;          P002         Chest Wall       48                             48
+#&gt;  9 &lt;NA&gt;          P014         -                -                              11
+#&gt; 10 &lt;NA&gt;          P004         Chest Wall       35                             35
+#&gt; 11 &lt;NA&gt;          P005         Liver            87                             97
+#&gt; 12 &lt;NA&gt;          P016         Chest Wall       24                             24
+#&gt; 13 Chemo         P022         Breast           33                             48
+#&gt; 14 &lt;NA&gt;          P011         -                -                              30
+#&gt; 15 &lt;NA&gt;          P020         Breast           37                             55
+#&gt; 16 &lt;NA&gt;          P008         Lung             22                             22
+#&gt; 17 &lt;NA&gt;          P013         Liver            36                            152
+#&gt; 18 &lt;NA&gt;          P025         Breast           26                             26
+#&gt; 19 &lt;NA&gt;          P018         Breast           48                             48
+#&gt; 20 &lt;NA&gt;          P023         Breast           26                             42
+#&gt; 21 &lt;NA&gt;          P024         Breast           72                             95
+#&gt; 22 &lt;NA&gt;          P003         Chest Wall       11                             30
+#&gt; 23 &lt;NA&gt;          P028         -                26                             57
+#&gt; 24 N,Not availa… &lt;NA&gt;         &lt;NA&gt;             &lt;NA&gt;                           NA
+#&gt; 25 * Negative v… &lt;NA&gt;         &lt;NA&gt;             &lt;NA&gt;                           NA
+#&gt; 26 # PR,partial… &lt;NA&gt;         &lt;NA&gt;             &lt;NA&gt;                           NA
+#&gt; 27 $The + sign … &lt;NA&gt;         &lt;NA&gt;             &lt;NA&gt;                           NA
+#&gt; # … with 14 more variables: Age &lt;dbl&gt;, `Stage (TNM )` &lt;chr&gt;, `PD-L1` &lt;chr&gt;,
+#&gt; #   `TILs (%)` &lt;chr&gt;, Tumor &lt;chr&gt;, ...11 &lt;chr&gt;, ...12 &lt;chr&gt;, Blood &lt;chr&gt;,
+#&gt; #   ...14 &lt;chr&gt;, ...15 &lt;chr&gt;,
+#&gt; #   `Relative change of target lesions (8 weeks after treatment initiation vs. Pre-treatment)*` &lt;chr&gt;,
+#&gt; #   `Relative change of biopsied lesions (8 weeks after treatment initiation vs. Pre-treatment)*` &lt;chr&gt;,
+#&gt; #   `Clinical efficacy#` &lt;chr&gt;, `Time to progression (months)$` &lt;chr&gt;</code></pre>
+<pre class="r"><code>## remove the first row and the last 4 rows, fill in the NAs for the Treatment 
+clinical_data&lt;- clinical_data %&gt;%
+        janitor::clean_names() %&gt;%
+        slice(2:23) %&gt;%
+        tidyr::fill(treatment) %&gt;%
+        dplyr::select(!(tumor:x15)) </code></pre>
+<p>yeah, and N for not available , and sometimes - means not available. let’s fix that.</p>
+<pre class="r"><code>clinical_data&lt;- clinical_data %&gt;%
+        #trim off the white spaces. this will help the later step too
+        mutate_all(~str_trim(.x, side =&quot;both&quot;)) %&gt;%
+        mutate_at(vars(-pd_l1), ~str_replace(.x , &quot;^-$&quot;, NA_character_)) %&gt;%
+        mutate_all( ~str_replace(.x , &quot;^N$&quot;, NA_character_))</code></pre>
+<p>merge the two tables</p>
+<pre class="r"><code>meta&lt;- meta %&gt;%
+        left_join(clinical_data) %&gt;%
+        arrange(patient_id, biopsied_lesion) %&gt;%
+        select(-biopsied_lesion)
+
+print(meta, n = 20)</code></pre>
+<pre><code>#&gt; # A tibble: 83 × 17
+#&gt;    ind        tissue     disease_state group      treatment sample_id patient_id
+#&gt;    &lt;fct&gt;      &lt;chr&gt;      &lt;chr&gt;         &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;     
+#&gt;  1 GSM5188381 blood      TNBC patient  Pre-treat… anti-PDL… Pre_P001… P001      
+#&gt;  2 GSM5188414 blood      TNBC patient  Post-trea… anti-PDL… Post_P00… P001      
+#&gt;  3 GSM5188376 blood      TNBC patient  Pre-treat… anti-PDL… Pre_P002… P002      
+#&gt;  4 GSM5188377 chest_wall TNBC patient  Pre-treat… anti-PDL… Pre_P002… P002      
+#&gt;  5 GSM5188410 blood      TNBC patient  Post-trea… anti-PDL… Post_P00… P002      
+#&gt;  6 GSM5188411 chest_wall TNBC patient  Post-trea… anti-PDL… Post_P00… P002      
+#&gt;  7 GSM5188437 blood      TNBC patient  Progressi… anti-PDL… Prog_P00… P002      
+#&gt;  8 GSM5188401 chest_wall TNBC patient  Post-trea… Chemo     Post_P00… P003      
+#&gt;  9 GSM5585280 blood      TNBC patient  Pre-treat… Anti-PD-… Pre_P004… P004      
+#&gt; 10 GSM5585281 chest_wall TNBC patient  Pre-treat… Anti-PD-… Pre_P004… P004      
+#&gt; 11 GSM5585282 blood      TNBC patient  Post-trea… Anti-PD-… Post_P00… P004      
+#&gt; 12 GSM5585283 blood      TNBC patient  Progressi… Anti-PD-… Prog_P00… P004      
+#&gt; 13 GSM5188398 blood      TNBC patient  Pre-treat… anti-PDL… Pre_P005… P005      
+#&gt; 14 GSM5188399 liver      TNBC patient  Pre-treat… anti-PDL… Pre_P005… P005      
+#&gt; 15 GSM5188430 blood      TNBC patient  Post-trea… anti-PDL… Post_P00… P005      
+#&gt; 16 GSM5188431 liver      TNBC patient  Post-trea… anti-PDL… Post_P00… P005      
+#&gt; 17 GSM5188367 blood      TNBC patient  Pre-treat… anti-PDL… Pre_P007… P007      
+#&gt; 18 GSM5188368 lymph_node TNBC patient  Pre-treat… anti-PDL… Pre_P007… P007      
+#&gt; 19 GSM5188402 blood      TNBC patient  Post-trea… anti-PDL… Post_P00… P007      
+#&gt; 20 GSM5188433 blood      TNBC patient  Progressi… anti-PDL… Prog_P00… P007      
+#&gt; # … with 63 more rows, and 10 more variables:
+#&gt; #   diameter_of_biopsied_lesion_mm &lt;chr&gt;, size_of_target_lesion_som_mm &lt;chr&gt;,
+#&gt; #   age &lt;chr&gt;, stage_tnm &lt;chr&gt;, pd_l1 &lt;chr&gt;, ti_ls_percent &lt;chr&gt;,
+#&gt; #   relative_change_of_target_lesions_8_weeks_after_treatment_initiation_vs_pre_treatment &lt;chr&gt;,
+#&gt; #   relative_change_of_biopsied_lesions_8_weeks_after_treatment_initiation_vs_pre_treatment &lt;chr&gt;,
+#&gt; #   clinical_efficacy_number &lt;chr&gt;, time_to_progression_months &lt;chr&gt;</code></pre>
+<p>That’s how much it takes to get the sample level metadata from a public dataset. It is hard to fully automate and one has to go to GEO and supplementary tables, and wrangle the data to a desired format. If you ask me, I will tell you this is the real-life bioinformatics.</p>
+<p>Happy BioinFORMATics</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/scrnaseq/">scRNAseq</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/matrix-factorization-for-single-cell-rnaseq-data/">Matrix Factorization for single-cell RNAseq data</a></li>
+        
+        <li><a href="/post/clustered-dotplot-for-single-cell-rnaseq/">clustered dotplot for single-cell RNAseq</a></li>
+        
+        <li><a href="/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/">Enhancement of scRNAseq heatmap using complexheatmap</a></li>
+        
+        <li><a href="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </a></li>
+        
+        <li><a href="/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/">stacked violin plot for visualizing single-cell data in Seurat</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/" rel="next">Partial least square regression for marker gene identification in scRNAseq data</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/" rel="prev">marker gene selection using logistic regression and regularization for scRNAseq </a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

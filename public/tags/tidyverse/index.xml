@@ -7,10 +7,31 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Wed, 26 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 13 Jan 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/tidyverse/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to do gene correlation for single-cell RNAseq data (part 1)</title>
+      <link>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/</link>
+      <pubDate>Fri, 13 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/</guid>
+      <description>Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) set.seed(1234)  prepare the data data(&amp;quot;pbmc3k&amp;quot;) pbmc3k #&amp;gt; An object of class Seurat #&amp;gt; 13714 features across 2700 samples within 1 assay #&amp;gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&amp;lt;- pbmc3k %&amp;gt;% NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;% FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;% ScaleData() %&amp;gt;% RunPCA(verbose = FALSE) %&amp;gt;% FindNeighbors(dims = 1:10, verbose = FALSE) %&amp;gt;% FindClusters(resolution = 0.</description>
+    </item>
+    
+    <item>
+      <title>transpose single-cell cell x gene dataframe to gene x cell </title>
+      <link>/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/</link>
+      <pubDate>Wed, 04 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/</guid>
+      <description>Single cell matrix is often represented as gene x cell in R/Seurat, but it is represented as cell x gene in python/scanpy.
+Let’s use a real example to show how to transpose between the two formats. The GEO accession page is at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763
+Download the data We can use command line to download the count matrix at ftp: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/
+wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/GSE154763_ESCA_normalized_expression.csv.gz -O ~/blog_data/GSE154763_ESCA_normalized_expression.csv.gz # decompress the file gunzip GSE154763_ESCA_normalized_expression.csv.gz # this GEO matrix is cell x gene # take a look by https://www.</description>
+    </item>
     
     <item>
       <title>dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </title>

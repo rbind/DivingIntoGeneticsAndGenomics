@@ -1,0 +1,196 @@
+---
+title: 'How to make a triangle correlation heatmap with p-values labeled '
+author: Ming Tang
+date: '2023-02-05'
+slug: how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled
+categories:
+  - bioinformatics
+  - genomics
+  - R
+tags:
+  - Bioconductor
+  - heatmap
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>In this blog post, I am going to show you how to make a correlation heatmap with p-values
+and significant values labeled in the heatmap body. Let’s use the PBMC single cell data
+as an example</p>
+<div id="load-libraries" class="section level3">
+<h3>Load libraries</h3>
+<pre class="r"><code>library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+library(SeuratData)
+library(hdWGCNA)
+library(WGCNA)
+set.seed(1234)</code></pre>
+</div>
+<div id="prepare-the-data" class="section level3">
+<h3>prepare the data</h3>
+<pre class="r"><code>data(&quot;pbmc3k&quot;)
+
+pbmc3k</code></pre>
+<pre><code>#&gt; An object of class Seurat 
+#&gt; 13714 features across 2700 samples within 1 assay 
+#&gt; Active assay: RNA (13714 features, 0 variable features)</code></pre>
+<pre class="r"><code>## routine processing
+pbmc3k&lt;- pbmc3k %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+Idents(pbmc3k)&lt;- pbmc3k$seurat_annotations
+
+pbmc3k&lt;- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]</code></pre>
+</div>
+<div id="construct-metacell" class="section level3">
+<h3>construct metacell</h3>
+<pre class="r"><code>pbmc3k &lt;- SetupForWGCNA(
+  pbmc3k,
+  gene_select = &quot;fraction&quot;, # the gene selection approach
+  fraction = 0.05, # fraction of cells that a gene needs to be expressed in order to be included
+  wgcna_name = &quot;tutorial&quot; # the name of the hdWGCNA experiment
+)
+
+
+# construct metacells in each group.
+# choosing K is an art. 
+pbmc3k &lt;- MetacellsByGroups(
+  seurat_obj = pbmc3k,
+  group.by = c(&quot;seurat_annotations&quot;, &quot;orig.ident&quot;), # specify the columns in seurat_obj@meta.data to group by
+  k = 10, # nearest-neighbors parameter
+  max_shared = 5, # maximum number of shared cells between two metacells
+  ident.group = &#39;seurat_annotations&#39; # set the Idents of the metacell seurat object
+)
+
+# extract the metacell seurat object 
+pbmc_metacell &lt;- GetMetacellObject(pbmc3k)
+
+pbmc_metacell@meta.data %&gt;% head()</code></pre>
+<pre><code>#&gt;            orig.ident nCount_RNA nFeature_RNA
+#&gt; B#pbmc3k_1     pbmc3k     1794.8         3237
+#&gt; B#pbmc3k_2     pbmc3k     4170.4         4962
+#&gt; B#pbmc3k_3     pbmc3k     1765.7         3233
+#&gt; B#pbmc3k_4     pbmc3k     1731.3         3060
+#&gt; B#pbmc3k_5     pbmc3k     1982.2         3468
+#&gt; B#pbmc3k_6     pbmc3k     3084.5         4351
+#&gt;                                                                                                                                                     cells_merged
+#&gt; B#pbmc3k_1 CGCCATTGGAGCAG,TGCCGACTCTCCCA,GGTACATGAAAGCA,GATTGGACGGTGTT,ATCCCGTGGCTGAT,CCAGCTACCAGCTA,TTGGAGACTATGGC,GAAGTCACCCTGTC,CGAGGGCTACGACT,TTATCCGACTAGTG
+#&gt; B#pbmc3k_2 AAACATTGAGCTAC,TATGTCACGGAACG,AAACTTGAAAAACG,GGAGCCACCTTCTA,CATTTGTGGGATCT,GCTAGAACAGAGGC,CAGGTTGAGGATCT,ACTGAGACGTTGGT,ACGAAGCTCTGAGT,CGCGAGACAGGTCT
+#&gt; B#pbmc3k_3 CTACTATGTAAAGG,CCAGGTCTACACCA,TTGGTACTGAATCC,ATCGCGCTTTTCGT,GCACTAGAAGATGA,ATGACGTGACGACT,GGGCCAACGCGTTA,CGCCATTGGAGCAG,GAAAGCCTACGTTG,CATCATACGGAGCA
+#&gt; B#pbmc3k_4 GAGAAATGTTCTCA,ACCCAAGATTCACT,GGGCCAACGCGTTA,GAGTGGGAGTCTTT,TATTGCTGCCGTTC,GGCAATACGCTAAC,CGAGGGCTACGACT,CAGTGATGTACGCA,TCGATTTGTCGTGA,TGATCACTTCTACT
+#&gt; B#pbmc3k_5 CAGTTACTAAGGTA,AAGTGGCTTGGAGG,TGATTCACTGTCAG,TGCGAAACAGTCAC,TATACCACCTGATG,TTATTCCTGGTACT,TTGACACTGATAAG,CGAGGGCTACGACT,TACTCAACTGCTAG,TAGCTACTGAATAG
+#&gt; B#pbmc3k_6 TTCCAAACCTCCCA,CGCGATCTTTCTTG,AAATCAACAATGCC,ATCCCGTGGCTGAT,ACGAAGCTCTGAGT,TTTAGAGATCCTCG,AAACATTGAGCTAC,ACGACCCTTGACAC,GTAGCAACCATTTC,GAATTAACTGAAGA
+#&gt;            seurat_annotations
+#&gt; B#pbmc3k_1                  B
+#&gt; B#pbmc3k_2                  B
+#&gt; B#pbmc3k_3                  B
+#&gt; B#pbmc3k_4                  B
+#&gt; B#pbmc3k_5                  B
+#&gt; B#pbmc3k_6                  B</code></pre>
+<p><code>Hmisc::rcorr</code> function gives the pair-wise correlation coefficient and p-value</p>
+<pre class="r"><code>genes&lt;- c(&quot;GNLY&quot;, &quot;NKG7&quot;, &quot;KLRD1&quot;, &quot;ITGB2&quot;, &quot;PRF1&quot;, &quot;IFNG&quot;, &quot;NCAM1&quot;, &quot;FCGR3A&quot;, &quot;CCR7&quot;, &quot;CXCR3&quot;, &quot;IL2RB&quot;)
+cells&lt;- WhichCells(pbmc_metacell, expression = seurat_annotations == &quot;NK&quot;)
+
+mat&lt;- pbmc_metacell@assays$RNA@data[genes, cells] %&gt;% 
+  as.matrix() %&gt;%
+  t()
+
+# Hmisc package gives the pair-wise correlation coefficient and p-value
+cor_res&lt;- Hmisc::rcorr(mat) 
+cor_mat&lt;- cor_res$r
+
+# sometimes, you may have NA in the matrix, and clustering does not play well with it
+# a simple hack is to turn the NA to 0
+cor_mat[is.na(cor_mat)]&lt;- 0
+
+
+cor_p&lt;- cor_res$P
+cor_p</code></pre>
+<pre><code>#&gt;                GNLY         NKG7      KLRD1     ITGB2         PRF1       IFNG
+#&gt; GNLY             NA 1.034720e-02 0.01446758 0.2740351 5.598974e-06 0.13474999
+#&gt; NKG7   1.034720e-02           NA 0.09914756 0.2480082 7.635844e-05 0.59502786
+#&gt; KLRD1  1.446758e-02 9.914756e-02         NA 0.1174652 1.951340e-01 0.54200187
+#&gt; ITGB2  2.740351e-01 2.480082e-01 0.11746519        NA 1.956304e-01 0.77673864
+#&gt; PRF1   5.598974e-06 7.635844e-05 0.19513395 0.1956304           NA 0.27047205
+#&gt; IFNG   1.347500e-01 5.950279e-01 0.54200187 0.7767386 2.704720e-01         NA
+#&gt; NCAM1  8.662654e-03 6.572153e-01 0.39486873 0.3767390 3.435796e-04 0.60012618
+#&gt; FCGR3A 2.259989e-05 4.024618e-07 0.92716018 0.3407721 3.353928e-10 0.45453683
+#&gt; CCR7   4.702197e-02 1.452948e-02 0.34889863 0.2674199 2.461824e-04 0.78811106
+#&gt; CXCR3  9.232615e-13 8.725519e-04 0.06138810 0.1045795 6.629722e-05 0.02079542
+#&gt; IL2RB  1.199037e-02 7.699923e-02 0.16780117 0.1016665 9.815965e-04 0.09288220
+#&gt;               NCAM1       FCGR3A         CCR7        CXCR3        IL2RB
+#&gt; GNLY   0.0086626537 2.259989e-05 4.702197e-02 9.232615e-13 0.0119903711
+#&gt; NKG7   0.6572153099 4.024618e-07 1.452948e-02 8.725519e-04 0.0769992304
+#&gt; KLRD1  0.3948687306 9.271602e-01 3.488986e-01 6.138810e-02 0.1678011737
+#&gt; ITGB2  0.3767389762 3.407721e-01 2.674199e-01 1.045795e-01 0.1016664987
+#&gt; PRF1   0.0003435796 3.353928e-10 2.461824e-04 6.629722e-05 0.0009815965
+#&gt; IFNG   0.6001261787 4.545368e-01 7.881111e-01 2.079542e-02 0.0928821980
+#&gt; NCAM1            NA 4.384662e-01 2.119770e-02 1.787253e-01 0.7278303881
+#&gt; FCGR3A 0.4384662288           NA 1.065590e-01 1.939171e-06 0.0523142134
+#&gt; CCR7   0.0211977006 1.065590e-01           NA 5.449032e-07 0.0040966177
+#&gt; CXCR3  0.1787252622 1.939171e-06 5.449032e-07           NA 0.0001233260
+#&gt; IL2RB  0.7278303881 5.231421e-02 4.096618e-03 1.233260e-04           NA</code></pre>
+<pre class="r"><code>## add significant **
+cor_p[is.nan(cor_p)]&lt;- 1
+
+## the diagonal are NA, make them 1 
+cor_p[is.na(cor_p)]&lt;- 1
+
+col_fun&lt;- circlize::colorRamp2(c(-1, 0, 1), c(&quot;green&quot;, &quot;white&quot;, &quot;red&quot;))</code></pre>
+<p>Only lable the correlation coefficients with p-values that are &lt;=0.05;
+add * for p value &lt;=0.05 and ** for p value &lt;=0.01</p>
+<pre class="r"><code>cell_fun = function(j, i, x, y, w, h, fill){
+    if(as.numeric(x) &lt;= 1 - as.numeric(y) + 1e-6) {
+            grid.rect(x, y, w, h, gp = gpar(fill = fill, col = fill))
+    }
+  
+    if (cor_p[i, j]  &lt; 0.01 &amp; as.numeric(x) &lt;= 1 - as.numeric(y) + 1e-6){
+      grid.text(paste0(sprintf(&quot;%.2f&quot;, cor_mat[i, j]),&quot;**&quot;), x, y, gp = gpar(fontsize = 10))
+    } else if (cor_p[i, j]  &lt;= 0.05 &amp; as.numeric(x) &lt;= 1 - as.numeric(y) + 1e-6){
+      grid.text(paste0(sprintf(&quot;%.2f&quot;, cor_mat[i, j]),&quot;*&quot;), x, y, gp = gpar(fontsize = 10))
+    }
+}
+
+
+hp&lt;- ComplexHeatmap::Heatmap(cor_mat,
+                        rect_gp = gpar(type = &quot;none&quot;),
+                        column_dend_side = &quot;bottom&quot;,
+                        column_title = &quot;NK cells&quot;,
+                        name = &quot;correlation&quot;, col = col_fun,
+                        cell_fun = cell_fun,
+                        cluster_rows = T, cluster_columns = T,
+                        row_names_side = &quot;left&quot;)
+
+lgd_list = list(
+    Legend( labels = c(&quot;&lt;0.01&quot;, &quot;&lt;0.05&quot;), title = &quot;pvalue&quot;,
+            graphics = list(
+              function(x, y, w, h) grid.text(&quot;**&quot;, x = x, y = y,
+                                               gp = gpar(fill = &quot;black&quot;)),
+              function(x, y, w, h) grid.text(&quot;*&quot;, x = x, y = y,
+                                               gp = gpar(fill = &quot;black&quot;)))
+            ))
+
+
+draw(hp, annotation_legend_list = lgd_list, ht_gap = unit(1, &quot;cm&quot;) )</code></pre>
+<p><img src="/post/2023-02-05-how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="futher-reading" class="section level3">
+<h3>Futher reading</h3>
+<ul>
+<li><a href="https://github.com/jokergoo/ComplexHeatmap/issues/675" class="uri">https://github.com/jokergoo/ComplexHeatmap/issues/675</a></li>
+<li><a href="https://jokergoo.github.io/2021/07/22/make-triangle-heatmap/" class="uri">https://jokergoo.github.io/2021/07/22/make-triangle-heatmap/</a></li>
+</ul>
+</div>

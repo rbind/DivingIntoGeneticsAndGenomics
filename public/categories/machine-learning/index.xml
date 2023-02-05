@@ -20,7 +20,7 @@
       <guid>/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</guid>
       <description>why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
  Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
- I am interested in using logistic regression to find marker genes and want to try fitting the model in the [tidymodel](https://www.tidymodels.org/) ecosystsem and using different regularization methods.</description>
+ I am interested in using logistic regression to find marker genes and want to try fitting the model in the tidymodel ecosystem and using different regularization methods.</description>
     </item>
     
   </channel>

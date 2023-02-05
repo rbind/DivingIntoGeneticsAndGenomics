@@ -7,10 +7,44 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Thu, 26 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 04 Jan 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/scrnaseq/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>transpose single-cell cell x gene dataframe to gene x cell </title>
+      <link>/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/</link>
+      <pubDate>Wed, 04 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/</guid>
+      <description>Single cell matrix is often represented as gene x cell in R/Seurat, but it is represented as cell x gene in python/scanpy.
+Let’s use a real example to show how to transpose between the two formats. The GEO accession page is at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763
+Download the data We can use command line to download the count matrix at ftp: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/
+wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/GSE154763_ESCA_normalized_expression.csv.gz -O ~/blog_data/GSE154763_ESCA_normalized_expression.csv.gz # decompress the file gunzip GSE154763_ESCA_normalized_expression.csv.gz # this GEO matrix is cell x gene # take a look by https://www.</description>
+    </item>
+    
+    <item>
+      <title>use random forest and boost trees to find marker genes in scRNAseq data</title>
+      <link>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</link>
+      <pubDate>Sun, 03 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</guid>
+      <description>This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: logistic regression and partial least square regression.
+This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost). I highly recommend going through https://app.learney.me/maps/StatQuest for related sections by Josh Starmer. Note, all the tree based methods can be used to do both classification and regression.</description>
+    </item>
+    
+    <item>
+      <title>My odyssey of obtaining scRNAseq metadata </title>
+      <link>/post/my-odyssey-of-obtaining-scrnaseq-metadata/</link>
+      <pubDate>Wed, 08 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/post/my-odyssey-of-obtaining-scrnaseq-metadata/</guid>
+      <description>I want to curate a public scRNAseq dataset from this paper Single-cell analyses reveal key immune cell subsets associated with response to PD-L1 blockade in triple-negative breast cancer
+ffq I first tried ffq, but it gave me errors.
+ffq fetches metadata information from the following databases:
+ GEO: Gene Expression Omnibus, SRA: Sequence Read Archive, EMBL-EBI: European Molecular BIology Laboratory’s European BIoinformatics Institute, DDBJ: DNA Data Bank of Japan, NIH Biosample: Biological source materials used in experimental assays, ENCODE: The Encyclopedia of DNA Elements.</description>
+    </item>
     
     <item>
       <title>Matrix Factorization for single-cell RNAseq data</title>

@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Wed, 01 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 03 Jul 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>use random forest and boost trees to find marker genes in scRNAseq data</title>
+      <link>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</link>
+      <pubDate>Sun, 03 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</guid>
+      <description>This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: logistic regression and partial least square regression.
+This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost). I highly recommend going through https://app.learney.me/maps/StatQuest for related sections by Josh Starmer. Note, all the tree based methods can be used to do both classification and regression.</description>
+    </item>
     
     <item>
       <title>Obtain metadata for public datasets in GEO</title>

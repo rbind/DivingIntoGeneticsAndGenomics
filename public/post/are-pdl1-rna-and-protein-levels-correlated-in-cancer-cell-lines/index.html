@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Are protein and RNA levels correlated? This is a big question.
+see replies to this tweet at https://twitter.com/slavov_n/status/1561844133496512512. In general, RNA and protein abundances should be correlated but there are exceptions of course. Biology is complicated/weird!
+ One of my favorite examples is Hypoxia-inducible factor 1-alpha, HIF-1α. The protein is efficiently degraded in most tissues most of the time unless stabilized by hypoxia.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines/">
+  <meta property="og:title" content="Are PDL1 RNA and protein levels correlated in cancer cell lines? | DNA confesses Data speak">
+  <meta property="og:description" content="Are protein and RNA levels correlated? This is a big question.
+see replies to this tweet at https://twitter.com/slavov_n/status/1561844133496512512. In general, RNA and protein abundances should be correlated but there are exceptions of course. Biology is complicated/weird!
+ One of my favorite examples is Hypoxia-inducible factor 1-alpha, HIF-1α. The protein is efficiently degraded in most tissues most of the time unless stabilized by hypoxia.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2022-10-06T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2022-10-06T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Are PDL1 RNA and protein levels correlated in cancer cell lines? | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Are PDL1 RNA and protein levels correlated in cancer cell lines?</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2022-10-06 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Oct 6, 2022
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    38 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Are%20PDL1%20RNA%20and%20protein%20levels%20correlated%20in%20cancer%20cell%20lines%3f&amp;url=%2fpost%2fare-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fare-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fare-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines%2f&amp;title=Are%20PDL1%20RNA%20and%20protein%20levels%20correlated%20in%20cancer%20cell%20lines%3f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fare-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines%2f&amp;title=Are%20PDL1%20RNA%20and%20protein%20levels%20correlated%20in%20cancer%20cell%20lines%3f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Are%20PDL1%20RNA%20and%20protein%20levels%20correlated%20in%20cancer%20cell%20lines%3f&amp;body=%2fpost%2fare-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/plotly-binding/plotly.js"></script>
+<script src="/rmarkdown-libs/typedarray/typedarray.min.js"></script>
+<script src="/rmarkdown-libs/jquery/jquery.min.js"></script>
+<link href="/rmarkdown-libs/crosstalk/css/crosstalk.min.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
+<link href="/rmarkdown-libs/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/plotly-main/plotly-latest.min.js"></script>
+
+
+<p>Are protein and RNA levels correlated? This is a big question.</p>
+<p><img src="/img/protein_vs_rna.png" /></p>
+<p>see replies to this tweet at <a href="https://twitter.com/slavov_n/status/1561844133496512512" class="uri">https://twitter.com/slavov_n/status/1561844133496512512</a>.
+In general, <a href="http://rajlaboratory.blogspot.com/2015/05/rna-doesnt-correlate-with-protein-huh.html">RNA and protein abundances should be correlated</a>
+but there are exceptions of course. Biology is complicated/weird!</p>
+<blockquote>
+<p>One of my favorite examples is Hypoxia-inducible factor 1-alpha, HIF-1α. The protein is efficiently degraded in most tissues most of the time unless stabilized by hypoxia.</p>
+</blockquote>
+<p><a href="https://www.dana-farber.org/about-us/awards-and-honors/william-kaelin-2019-nobel-prize/">William Kaelin won Nobel prize</a> for his work on how cells sense oxygen through the HIF pathway in 2019.</p>
+<p>Coincidentally, <a href="https://divingintogeneticsandgenomics.rbind.io/publication/2011-09-13-ctcf-vegf-enhancer-blocking/">my first paper</a> during PhD is on how CTCF functions as an enhancer block to attenuate the
+HIF1 enhancers.</p>
+<p>From this paper <a href="https://www.sciencedirect.com/science/article/pii/S0092867419313856?via%3Dihub#fig2">Quantitative Proteomics of the Cancer Cell Line Encyclopedia</a>, some genes are well-correlated between
+protein and RNA while others are not.</p>
+<p><img src="/img/protein_vs_rna_ccle.png" /></p>
+<p>From this review <a href="https://www.nature.com/articles/s41576-020-0258-4">mRNAs, proteins and the emerging principles of gene expression control</a>:</p>
+<blockquote>
+<p>Therefore, mRNA levels should not be interpreted as the final output of gene expression.
+Instead, it is more instructive to think of mRNAs as what
+they mechanistically are: the templates for protein synthesis.</p>
+</blockquote>
+<div id="explore-proteomics-data" class="section level3">
+<h3>Explore proteomics data</h3>
+<p>Let’s do some analysis to check if PDL1/CD274’s mRNA and protein are correlated or not
+across cancer cell lines. PDL1 is the ligand of PD1 and is a prominent immunotherapy
+target.</p>
+<p>The protemomics data are from this paper <a href="https://www.sciencedirect.com/science/article/pii/S1535610822002744">Pan-cancer proteomic map of 949 human cell lines</a></p>
+<p>Both the RNAseq and the proteomics data were downloaded from <a href="https://cellmodelpassports.sanger.ac.uk/downloads" class="uri">https://cellmodelpassports.sanger.ac.uk/downloads</a></p>
+<pre class="r"><code>library(tidyverse)
+library(janitor)
+
+data&lt;- read_tsv(&quot;~/blog_data/protein_matrix_averaged_20220713.tsv&quot;, skip = 1)
+
+#remove one more line
+data&lt;- data %&gt;%
+  dplyr::slice(-1) 
+
+data&lt;- data %&gt;%
+  dplyr::rename(model_name = symbol) %&gt;%
+  dplyr::rename(model_id = `...2`)
+
+        
+head(data)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 8,459
+#&gt;   model_name model_id  `IGLV3-10` TRBV19 `IGHV3OR16-12` `IGHV3OR15-7` TRBV18
+#&gt;   &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt;  &lt;dbl&gt;          &lt;dbl&gt;         &lt;dbl&gt;  &lt;dbl&gt;
+#&gt; 1 201T       SIDM00055         NA     NA             NA            NA     NA
+#&gt; 2 22RV1      SIDM00499         NA     NA             NA            NA     NA
+#&gt; 3 23132-87   SIDM00980         NA     NA             NA            NA     NA
+#&gt; 4 42-MG-BA   SIDM00982         NA     NA             NA            NA     NA
+#&gt; 5 451Lu      SIDM01240         NA     NA             NA            NA     NA
+#&gt; 6 5637       SIDM00807         NA     NA             NA            NA     NA
+#&gt; # … with 8,452 more variables: `IGHV3-15` &lt;dbl&gt;, PIGBOS1 &lt;dbl&gt;,
+#&gt; #   `IGHV1-3` &lt;dbl&gt;, `IGHV1-18` &lt;dbl&gt;, NBDY &lt;dbl&gt;, MMP24OS &lt;dbl&gt;,
+#&gt; #   ZC3H11B &lt;dbl&gt;, GOLGA6L7 &lt;dbl&gt;, TLE7 &lt;dbl&gt;, RBM47 &lt;dbl&gt;, UBA6 &lt;dbl&gt;,
+#&gt; #   ESYT2 &lt;dbl&gt;, MED19 &lt;dbl&gt;, SHTN1 &lt;dbl&gt;, TMEM223 &lt;dbl&gt;, BICDL2 &lt;dbl&gt;,
+#&gt; #   MEX3A &lt;dbl&gt;, ILVBL &lt;dbl&gt;, C1orf226 &lt;dbl&gt;, PLEKHG3 &lt;dbl&gt;, SH3PXD2B &lt;dbl&gt;,
+#&gt; #   ZC3H12D &lt;dbl&gt;, WDR27 &lt;dbl&gt;, NBAS &lt;dbl&gt;, FAM234B &lt;dbl&gt;, FUOM &lt;dbl&gt;,
+#&gt; #   VWA8 &lt;dbl&gt;, SBNO1 &lt;dbl&gt;, GTPBP10 &lt;dbl&gt;, WDR91 &lt;dbl&gt;, KLRG2 &lt;dbl&gt;, …</code></pre>
+<p>so each row is a cell line, and each column is a gene. It also has a model_id
+column that the consortium use internally.</p>
+</div>
+<div id="read-in-the-metadata" class="section level3">
+<h3>read in the metadata:</h3>
+<pre class="r"><code>meta&lt;- read_csv(&quot;~/blog_data/model_list_20220628.csv&quot;)
+
+head(meta)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 97
+#&gt;   model_id sample_id patient_id parent_id model_name synonyms tissue cancer_type
+#&gt;   &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;      
+#&gt; 1 SIDM017… SIDS01659 SIDP01578  &lt;NA&gt;      PK-59      &lt;NA&gt;     Pancr… Pancreatic…
+#&gt; 2 SIDM001… SIDS00612 SIDP00541  &lt;NA&gt;      SNU-1033   &lt;NA&gt;     Large… Colorectal…
+#&gt; 3 SIDM014… SIDS01466 SIDP01347  &lt;NA&gt;      SNU-466    &lt;NA&gt;     Centr… Glioblasto…
+#&gt; 4 SIDM015… SIDS01363 SIDP01247  &lt;NA&gt;      IST-MES-2  &lt;NA&gt;     Lung   Mesothelio…
+#&gt; 5 SIDM016… SIDS01631 SIDP01557  &lt;NA&gt;      MUTZ-5     &lt;NA&gt;     Haema… B-Lymphobl…
+#&gt; 6 SIDM014… SIDS01493 SIDP01374  &lt;NA&gt;      TM-31      &lt;NA&gt;     Centr… Glioma     
+#&gt; # … with 89 more variables: cancer_type_ncit_id &lt;chr&gt;, tissue_status &lt;chr&gt;,
+#&gt; #   sample_site &lt;chr&gt;, cancer_type_detail &lt;chr&gt;, model_type &lt;chr&gt;,
+#&gt; #   growth_properties &lt;chr&gt;, model_treatment &lt;chr&gt;, sampling_day &lt;dbl&gt;,
+#&gt; #   sampling_month &lt;dbl&gt;, sampling_year &lt;dbl&gt;, doi &lt;chr&gt;, pmed &lt;dbl&gt;,
+#&gt; #   msi_status &lt;chr&gt;, ploidy_snp6 &lt;dbl&gt;, ploidy_wes &lt;dbl&gt;, ploidy_wgs &lt;dbl&gt;,
+#&gt; #   mutational_burden &lt;dbl&gt;, model_comments &lt;chr&gt;,
+#&gt; #   model_relations_comment &lt;chr&gt;, COSMIC_ID &lt;chr&gt;, BROAD_ID &lt;chr&gt;, …</code></pre>
+<pre class="r"><code>dim(meta)</code></pre>
+<pre><code>#&gt; [1] 2078   97</code></pre>
+<p>Sanity check if <code>model_id</code> and <code>model_name</code> are 1:1 mapping or not.</p>
+<pre class="r"><code>## model_id and model_name are not 1:1 mapping
+meta %&gt;% select(model_id, model_name) %&gt;%
+        distinct(model_name) %&gt;%
+        dim()</code></pre>
+<pre><code>#&gt; [1] 2075    1</code></pre>
+<pre class="r"><code>## three same cell line has duplicated lines
+meta %&gt;%
+        count(model_name) %&gt;%
+        dplyr::filter(n &gt;1)</code></pre>
+<pre><code>#&gt; # A tibble: 3 × 2
+#&gt;   model_name     n
+#&gt;   &lt;chr&gt;      &lt;int&gt;
+#&gt; 1 ML-1           2
+#&gt; 2 MS-1           2
+#&gt; 3 SLR24          2</code></pre>
+<pre class="r"><code>## model id is unique, but not the model_name
+meta %&gt;%
+        dplyr::filter(model_name %in% c(&quot;ML-1&quot;, &quot;MS-1&quot;, &quot;SLR24&quot;))</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 97
+#&gt;   model_id sample_id patient_id parent_id model_name synonyms tissue cancer_type
+#&gt;   &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;      
+#&gt; 1 SIDM004… SIDS01183 SIDP01069  &lt;NA&gt;      MS-1       &lt;NA&gt;     Skin   Other Soli…
+#&gt; 2 SIDM002… SIDS00693 SIDP00619  &lt;NA&gt;      MS-1       MS-1-L   Lung   Small Cell…
+#&gt; 3 SIDM004… SIDS01117 SIDP01005  &lt;NA&gt;      ML-1       &lt;NA&gt;     Haema… Acute Myel…
+#&gt; 4 SIDM004… SIDS01115 SIDP01004  &lt;NA&gt;      ML-1       &lt;NA&gt;     Thyro… Thyroid Gl…
+#&gt; 5 SIDM013… SIDS01455 SIDP01336  &lt;NA&gt;      SLR24      &lt;NA&gt;     Kidney Kidney Car…
+#&gt; 6 SIDM019… SIDS01788 SIDP01690  SIDM01851 SLR24      &lt;NA&gt;     Kidney Kidney Car…
+#&gt; # … with 89 more variables: cancer_type_ncit_id &lt;chr&gt;, tissue_status &lt;chr&gt;,
+#&gt; #   sample_site &lt;chr&gt;, cancer_type_detail &lt;chr&gt;, model_type &lt;chr&gt;,
+#&gt; #   growth_properties &lt;chr&gt;, model_treatment &lt;chr&gt;, sampling_day &lt;dbl&gt;,
+#&gt; #   sampling_month &lt;dbl&gt;, sampling_year &lt;dbl&gt;, doi &lt;chr&gt;, pmed &lt;dbl&gt;,
+#&gt; #   msi_status &lt;chr&gt;, ploidy_snp6 &lt;dbl&gt;, ploidy_wes &lt;dbl&gt;, ploidy_wgs &lt;dbl&gt;,
+#&gt; #   mutational_burden &lt;dbl&gt;, model_comments &lt;chr&gt;,
+#&gt; #   model_relations_comment &lt;chr&gt;, COSMIC_ID &lt;chr&gt;, BROAD_ID &lt;chr&gt;, …</code></pre>
+<p>Those lines have the same model_name but from different patients so a different model_id.</p>
+<pre class="r"><code>head(data)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 8,459
+#&gt;   model_name model_id  `IGLV3-10` TRBV19 `IGHV3OR16-12` `IGHV3OR15-7` TRBV18
+#&gt;   &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt;  &lt;dbl&gt;          &lt;dbl&gt;         &lt;dbl&gt;  &lt;dbl&gt;
+#&gt; 1 201T       SIDM00055         NA     NA             NA            NA     NA
+#&gt; 2 22RV1      SIDM00499         NA     NA             NA            NA     NA
+#&gt; 3 23132-87   SIDM00980         NA     NA             NA            NA     NA
+#&gt; 4 42-MG-BA   SIDM00982         NA     NA             NA            NA     NA
+#&gt; 5 451Lu      SIDM01240         NA     NA             NA            NA     NA
+#&gt; 6 5637       SIDM00807         NA     NA             NA            NA     NA
+#&gt; # … with 8,452 more variables: `IGHV3-15` &lt;dbl&gt;, PIGBOS1 &lt;dbl&gt;,
+#&gt; #   `IGHV1-3` &lt;dbl&gt;, `IGHV1-18` &lt;dbl&gt;, NBDY &lt;dbl&gt;, MMP24OS &lt;dbl&gt;,
+#&gt; #   ZC3H11B &lt;dbl&gt;, GOLGA6L7 &lt;dbl&gt;, TLE7 &lt;dbl&gt;, RBM47 &lt;dbl&gt;, UBA6 &lt;dbl&gt;,
+#&gt; #   ESYT2 &lt;dbl&gt;, MED19 &lt;dbl&gt;, SHTN1 &lt;dbl&gt;, TMEM223 &lt;dbl&gt;, BICDL2 &lt;dbl&gt;,
+#&gt; #   MEX3A &lt;dbl&gt;, ILVBL &lt;dbl&gt;, C1orf226 &lt;dbl&gt;, PLEKHG3 &lt;dbl&gt;, SH3PXD2B &lt;dbl&gt;,
+#&gt; #   ZC3H12D &lt;dbl&gt;, WDR27 &lt;dbl&gt;, NBAS &lt;dbl&gt;, FAM234B &lt;dbl&gt;, FUOM &lt;dbl&gt;,
+#&gt; #   VWA8 &lt;dbl&gt;, SBNO1 &lt;dbl&gt;, GTPBP10 &lt;dbl&gt;, WDR91 &lt;dbl&gt;, KLRG2 &lt;dbl&gt;, …</code></pre>
+<pre class="r"><code>exp_data&lt;- data[, c(&quot;model_name&quot;, &quot;model_id&quot;, &quot;CD274&quot;)] %&gt;%
+        left_join(meta)
+
+head(exp_data)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 98
+#&gt;   model_name model_id  CD274 sample_id patient_id parent_id synonyms      tissue
+#&gt;   &lt;chr&gt;      &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;         &lt;chr&gt; 
+#&gt; 1 201T       SIDM00055    NA SIDS00744 SIDP00668  &lt;NA&gt;      &lt;NA&gt;          Lung  
+#&gt; 2 22RV1      SIDM00499    NA SIDS00942 SIDP00842  &lt;NA&gt;      CWR22-Rv1;CW… Prost…
+#&gt; 3 23132-87   SIDM00980    NA SIDS00443 SIDP00380  &lt;NA&gt;      St 23132      Stoma…
+#&gt; 4 42-MG-BA   SIDM00982    NA SIDS00444 SIDP00381  &lt;NA&gt;      &lt;NA&gt;          Centr…
+#&gt; 5 451Lu      SIDM01240    NA SIDS00062 SIDP00048  SIDM00802 WM 451-Lu;WC… Skin  
+#&gt; 6 5637       SIDM00807    NA SIDS00057 SIDP00045  &lt;NA&gt;      &lt;NA&gt;          Bladd…
+#&gt; # … with 90 more variables: cancer_type &lt;chr&gt;, cancer_type_ncit_id &lt;chr&gt;,
+#&gt; #   tissue_status &lt;chr&gt;, sample_site &lt;chr&gt;, cancer_type_detail &lt;chr&gt;,
+#&gt; #   model_type &lt;chr&gt;, growth_properties &lt;chr&gt;, model_treatment &lt;chr&gt;,
+#&gt; #   sampling_day &lt;dbl&gt;, sampling_month &lt;dbl&gt;, sampling_year &lt;dbl&gt;, doi &lt;chr&gt;,
+#&gt; #   pmed &lt;dbl&gt;, msi_status &lt;chr&gt;, ploidy_snp6 &lt;dbl&gt;, ploidy_wes &lt;dbl&gt;,
+#&gt; #   ploidy_wgs &lt;dbl&gt;, mutational_burden &lt;dbl&gt;, model_comments &lt;chr&gt;,
+#&gt; #   model_relations_comment &lt;chr&gt;, COSMIC_ID &lt;chr&gt;, BROAD_ID &lt;chr&gt;, …</code></pre>
+<pre class="r"><code>table(is.na(exp_data$CD274))</code></pre>
+<pre><code>#&gt; 
+#&gt; FALSE  TRUE 
+#&gt;   159   790</code></pre>
+<p>only 159 lines with PDL1 expression at protein level.</p>
+<pre class="r"><code># distribution of the PDL1 protein level
+exp_data %&gt;%
+        dplyr::filter(!is.na(CD274)) %&gt;%
+        ggplot(aes(x= CD274)) +
+        geom_histogram(bins = 30, color = &quot;white&quot;) +
+        ggtitle(&quot;PDL1 expression histogram&quot;) +
+        theme_classic(base_size = 14)</code></pre>
+<p><img src="/post/2022-10-06-are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>p&lt;- exp_data %&gt;%
+        dplyr::filter(!is.na(CD274)) %&gt;%
+        ggplot(aes(x = cancer_type, y= CD274 ,text = paste(cancer_type, model_name, sep=&quot;:&quot;))) +
+        geom_boxplot() +
+        geom_point() +
+        theme_classic(base_size = 14) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+library(plotly)
+
+ggplot_p&lt;- ggplotly(p)
+ggplot_p</code></pre>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"data":[{"x":[4,13,33,33,19,13,33,33,18,18,15,22,5,29,5,23,5,33,13,19,23,7,6,9,13,13,13,13,29,13,32,27,23,27,28,3,11,13,26,21,25,23,23,17,24,23,23,24,2,26,4,4,33,22,26,12,19,3,29,22,27,16,16,28,15,5,2,25,33,13,2,32,27,14,13,24,4,10,17,4,23,23,13,14,19,9,23,13,5,9,26,12,30,14,20,23,23,23,23,20,23,23,23,31,23,23,23,20,23,23,23,23,14,12,1,6,27,24,24,28,28,29,29,29,23,15,15,27,1,26,9,33,22,8,24,2,26,31,14,21,13,16,16,16,32,12,32,29,17,32,4,26,26,4,3,26,13,13,13],"y":[4.63405,2.86466,2.23689,3.8272,2.61182,3.72485,3.97418,2.8252,1.33265,4.70939,1.94572,1.20519,0.455324,1.7021,2.46859,2.86658,1.82991,3.30325,3.59265,1.28103,0.984143,0.599616,2.97331,1.10576,2.15228,3.23373,2.75695,2.16032,-0.332793,3.28025,3.92306,2.72661,0.835006,1.40704,2.52073,2.52832,2.714,2.90493,2.89595,2.49252,2.09559,1.40186,2.8272,3.09667,2.93589,3.54949,3.15084,2.88716,1.01813,1.96144,3.29156,3.00566,2.54334,1.95949,3.45401,3.61589,3.12431,4.21453,0.538562,1.33074,2.69004,3.21898,2.19517,2.36981,1.86672,2.83571,2.32447,1.82293,3.40512,2.62901,2.03031,2.98192,3.71162,3.31935,2.50022,1.35126,1.16089,2.42074,3.69752,1.26609,3.85791,3.32045,2.90616,3.215,2.90132,2.20015,3.54529,3.01873,-1.62124,2.40711,3.10638,3.01437,0.485819,3.39503,1.85106,1.84824,2.57872,3.86469,2.32424,1.43836,2.2565,2.29447,2.28199,1.66449,-0.155363,3.1713,2.49706,3.14517,3.04768,2.03191,1.71136,4.1554,3.15335,4.40988,1.91998,3.33081,4.5106,1.05808,2.31428,2.88505,2.64861,2.74818,2.65519,3.42066,3.26411,2.29767,3.31157,1.47991,2.53891,2.95081,4.47443,4.17806,2.02346,2.68391,1.72867,3.64227,3.28754,3.61003,3.87119,1.00215,2.61896,2.04991,1.57973,1.83163,4.42902,3.88422,3.09173,2.62224,4.56377,3.93406,0.358609,2.00338,3.35529,2.45703,3.403,2.11315,2.27088,3.11201,2.80799],"hoverinfo":"y","type":"box","fillcolor":"rgba(255,255,255,1)","marker":{"opacity":null,"outliercolor":"rgba(0,0,0,1)","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"},"size":5.66929133858268},"line":{"color":"rgba(51,51,51,1)","width":1.88976377952756},"showlegend":false,"xaxis":"x","yaxis":"y","frame":null},{"x":[4,13,33,33,19,13,33,33,18,18,15,22,5,29,5,23,5,33,13,19,23,7,6,9,13,13,13,13,29,13,32,27,23,27,28,3,11,13,26,21,25,23,23,17,24,23,23,24,2,26,4,4,33,22,26,12,19,3,29,22,27,16,16,28,15,5,2,25,33,13,2,32,27,14,13,24,4,10,17,4,23,23,13,14,19,9,23,13,5,9,26,12,30,14,20,23,23,23,23,20,23,23,23,31,23,23,23,20,23,23,23,23,14,12,1,6,27,24,24,28,28,29,29,29,23,15,15,27,1,26,9,33,22,8,24,2,26,31,14,21,13,16,16,16,32,12,32,29,17,32,4,26,26,4,3,26,13,13,13],"y":[4.63405,2.86466,2.23689,3.8272,2.61182,3.72485,3.97418,2.8252,1.33265,4.70939,1.94572,1.20519,0.455324,1.7021,2.46859,2.86658,1.82991,3.30325,3.59265,1.28103,0.984143,0.599616,2.97331,1.10576,2.15228,3.23373,2.75695,2.16032,-0.332793,3.28025,3.92306,2.72661,0.835006,1.40704,2.52073,2.52832,2.714,2.90493,2.89595,2.49252,2.09559,1.40186,2.8272,3.09667,2.93589,3.54949,3.15084,2.88716,1.01813,1.96144,3.29156,3.00566,2.54334,1.95949,3.45401,3.61589,3.12431,4.21453,0.538562,1.33074,2.69004,3.21898,2.19517,2.36981,1.86672,2.83571,2.32447,1.82293,3.40512,2.62901,2.03031,2.98192,3.71162,3.31935,2.50022,1.35126,1.16089,2.42074,3.69752,1.26609,3.85791,3.32045,2.90616,3.215,2.90132,2.20015,3.54529,3.01873,-1.62124,2.40711,3.10638,3.01437,0.485819,3.39503,1.85106,1.84824,2.57872,3.86469,2.32424,1.43836,2.2565,2.29447,2.28199,1.66449,-0.155363,3.1713,2.49706,3.14517,3.04768,2.03191,1.71136,4.1554,3.15335,4.40988,1.91998,3.33081,4.5106,1.05808,2.31428,2.88505,2.64861,2.74818,2.65519,3.42066,3.26411,2.29767,3.31157,1.47991,2.53891,2.95081,4.47443,4.17806,2.02346,2.68391,1.72867,3.64227,3.28754,3.61003,3.87119,1.00215,2.61896,2.04991,1.57973,1.83163,4.42902,3.88422,3.09173,2.62224,4.56377,3.93406,0.358609,2.00338,3.35529,2.45703,3.403,2.11315,2.27088,3.11201,2.80799],"text":["cancer_type: Bladder Carcinoma<br />CD274:  4.634050<br />Bladder Carcinoma:647-V","cancer_type: Glioblastoma<br />CD274:  2.864660<br />Glioblastoma:8-MG-BA","cancer_type: Thyroid Gland Carcinoma<br />CD274:  2.236890<br />Thyroid Gland Carcinoma:8305C","cancer_type: Thyroid Gland Carcinoma<br />CD274:  3.827200<br />Thyroid Gland Carcinoma:8505C","cancer_type: Melanoma<br />CD274:  2.611820<br />Melanoma:A375","cancer_type: Glioblastoma<br />CD274:  3.724850<br />Glioblastoma:AM-38","cancer_type: Thyroid Gland Carcinoma<br />CD274:  3.974180<br />Thyroid Gland Carcinoma:ASH-3","cancer_type: Thyroid Gland Carcinoma<br />CD274:  2.825200<br />Thyroid Gland Carcinoma:B-CPAP","cancer_type: Kidney Carcinoma<br />CD274:  1.332650<br />Kidney Carcinoma:BB65-RCC","cancer_type: Kidney Carcinoma<br />CD274:  4.709390<br />Kidney Carcinoma:BFTC-909","cancer_type: Head and Neck Carcinoma<br />CD274:  1.945720<br />Head and Neck Carcinoma:BHY","cancer_type: Non-Cancerous<br />CD274:  1.205190<br />Non-Cancerous:BPH-1","cancer_type: Breast Carcinoma<br />CD274:  0.455324<br />Breast Carcinoma:BT-20","cancer_type: Pancreatic Carcinoma<br />CD274:  1.702100<br />Pancreatic Carcinoma:BxPC-3","cancer_type: Breast Carcinoma<br />CD274:  2.468590<br />Breast Carcinoma:CAL-120","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  2.866580<br />Non-Small Cell Lung Carcinoma:CAL-12T","cancer_type: Breast Carcinoma<br />CD274:  1.829910<br />Breast Carcinoma:CAL-148","cancer_type: Thyroid Gland Carcinoma<br />CD274:  3.303250<br />Thyroid Gland Carcinoma:CAL-62","cancer_type: Glioblastoma<br />CD274:  3.592650<br />Glioblastoma:CAS-1","cancer_type: Melanoma<br />CD274:  1.281030<br />Melanoma:COLO-800","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  0.984143<br />Non-Small Cell Lung Carcinoma:COR-L23","cancer_type: Chondrosarcoma<br />CD274:  0.599616<br />Chondrosarcoma:CS1","cancer_type: Cervical Carcinoma<br />CD274:  2.973310<br />Cervical Carcinoma:Ca-Ski","cancer_type: Colorectal Carcinoma<br />CD274:  1.105760<br />Colorectal Carcinoma:CaR-1","cancer_type: Glioblastoma<br />CD274:  2.152280<br />Glioblastoma:D-245MG","cancer_type: Glioblastoma<br />CD274:  3.233730<br />Glioblastoma:D-423MG","cancer_type: Glioblastoma<br />CD274:  2.756950<br />Glioblastoma:D-502MG","cancer_type: Glioblastoma<br />CD274:  2.160320<br />Glioblastoma:D-566MG","cancer_type: Pancreatic Carcinoma<br />CD274: -0.332793<br />Pancreatic Carcinoma:DAN-G","cancer_type: Glioblastoma<br />CD274:  3.280250<br />Glioblastoma:DBTRG-05MG","cancer_type: T-Cell Non-Hodgkin's Lymphoma<br />CD274:  3.923060<br />T-Cell Non-Hodgkin's Lymphoma:DEL","cancer_type: Other Solid Cancers<br />CD274:  2.726610<br />Other Solid Cancers:Daoy","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  0.835006<br />Non-Small Cell Lung Carcinoma:EMC-BAC-2","cancer_type: Other Solid Cancers<br />CD274:  1.407040<br />Other Solid Cancers:EPLC-272H","cancer_type: Ovarian Carcinoma<br />CD274:  2.520730<br />Ovarian Carcinoma:ES-2","cancer_type: Biliary Tract Carcinoma<br />CD274:  2.528320<br />Biliary Tract Carcinoma:ETK-1","cancer_type: Ewing's Sarcoma<br />CD274:  2.714000<br />Ewing's Sarcoma:EW-16","cancer_type: Glioblastoma<br />CD274:  2.904930<br />Glioblastoma:GB-1","cancer_type: Other Sarcomas<br />CD274:  2.895950<br />Other Sarcomas:GCT","cancer_type: Neuroblastoma<br />CD274:  2.492520<br />Neuroblastoma:GI-ME-N","cancer_type: Other Blood Cancers<br />CD274:  2.095590<br />Other Blood Cancers:HC-1","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  1.401860<br />Non-Small Cell Lung Carcinoma:HCC-78","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  2.827200<br />Non-Small Cell Lung Carcinoma:HCC-827","cancer_type: Hodgkin's Lymphoma<br />CD274:  3.096670<br />Hodgkin's Lymphoma:HDLM-2","cancer_type: Oral Cavity Carcinoma<br />CD274:  2.935890<br />Oral Cavity Carcinoma:HO-1-N-1","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  3.549490<br />Non-Small Cell Lung Carcinoma:HOP-62","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  3.150840<br />Non-Small Cell Lung Carcinoma:HOP-92","cancer_type: Oral Cavity Carcinoma<br />CD274:  2.887160<br />Oral Cavity Carcinoma:HSC-3","cancer_type: B-Cell Non-Hodgkin's Lymphoma<br />CD274:  1.018130<br />B-Cell Non-Hodgkin's Lymphoma:HT","cancer_type: Other Sarcomas<br />CD274:  1.961440<br />Other Sarcomas:HT-1080","cancer_type: Bladder Carcinoma<br />CD274:  3.291560<br />Bladder Carcinoma:HT-1197","cancer_type: Bladder Carcinoma<br />CD274:  3.005660<br />Bladder Carcinoma:HT-1376","cancer_type: Thyroid Gland Carcinoma<br />CD274:  2.543340<br />Thyroid Gland Carcinoma:HTC-C3","cancer_type: Non-Cancerous<br />CD274:  1.959490<br />Non-Cancerous:Hs-445","cancer_type: Other Sarcomas<br />CD274:  3.454010<br />Other Sarcomas:Hs-633T","cancer_type: Gastric Carcinoma<br />CD274:  3.615890<br />Gastric Carcinoma:Hs-746T","cancer_type: Melanoma<br />CD274:  3.124310<br />Melanoma:Hs-940-T","cancer_type: Biliary Tract Carcinoma<br />CD274:  4.214530<br />Biliary Tract Carcinoma:HuCCT1","cancer_type: Pancreatic Carcinoma<br />CD274:  0.538562<br />Pancreatic Carcinoma:HuP-T3","cancer_type: Non-Cancerous<br />CD274:  1.330740<br />Non-Cancerous:IM-9","cancer_type: Other Solid Cancers<br />CD274:  2.690040<br />Other Solid Cancers:JEG-3","cancer_type: Hepatocellular Carcinoma<br />CD274:  3.218980<br />Hepatocellular Carcinoma:JHH-4","cancer_type: Hepatocellular Carcinoma<br />CD274:  2.195170<br />Hepatocellular Carcinoma:JHH-6","cancer_type: Ovarian Carcinoma<br />CD274:  2.369810<br />Ovarian Carcinoma:JHOS-2","cancer_type: Head and Neck Carcinoma<br />CD274:  1.866720<br />Head and Neck Carcinoma:JHU-029","cancer_type: Breast Carcinoma<br />CD274:  2.835710<br />Breast Carcinoma:JIMT-1","cancer_type: B-Cell Non-Hodgkin's Lymphoma<br />CD274:  2.324470<br />B-Cell Non-Hodgkin's Lymphoma:JVM-2","cancer_type: Other Blood Cancers<br />CD274:  1.822930<br />Other Blood Cancers:JVM-3","cancer_type: Thyroid Gland Carcinoma<br />CD274:  3.405120<br />Thyroid Gland Carcinoma:K5","cancer_type: Glioblastoma<br />CD274:  2.629010<br />Glioblastoma:KALS-1","cancer_type: B-Cell Non-Hodgkin's Lymphoma<br />CD274:  2.030310<br />B-Cell Non-Hodgkin's Lymphoma:KARPAS-1106P","cancer_type: T-Cell Non-Hodgkin's Lymphoma<br />CD274:  2.981920<br />T-Cell Non-Hodgkin's Lymphoma:KARPAS-299","cancer_type: Other Solid Cancers<br />CD274:  3.711620<br />Other Solid Cancers:KGN","cancer_type: Glioma<br />CD274:  3.319350<br />Glioma:KINGS-1","cancer_type: Glioblastoma<br />CD274:  2.500220<br />Glioblastoma:KNS-81-FD","cancer_type: Oral Cavity Carcinoma<br />CD274:  1.351260<br />Oral Cavity Carcinoma:KON","cancer_type: Bladder Carcinoma<br />CD274:  1.160890<br />Bladder Carcinoma:KU-19-19","cancer_type: Esophageal Squamous Cell Carcinoma<br />CD274:  2.420740<br />Esophageal Squamous Cell Carcinoma:KYSE-150","cancer_type: Hodgkin's Lymphoma<br />CD274:  3.697520<br />Hodgkin's Lymphoma:L-1236","cancer_type: Bladder Carcinoma<br />CD274:  1.266090<br />Bladder Carcinoma:LB831-BLC","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  3.857910<br />Non-Small Cell Lung Carcinoma:LCLC-103H","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  3.320450<br />Non-Small Cell Lung Carcinoma:LCLC-97TM1","cancer_type: Glioblastoma<br />CD274:  2.906160<br />Glioblastoma:LN-18","cancer_type: Glioma<br />CD274:  3.215000<br />Glioma:LNZTA3WT4","cancer_type: Melanoma<br />CD274:  2.901320<br />Melanoma:LOXIMVI","cancer_type: Colorectal Carcinoma<br />CD274:  2.200150<br />Colorectal Carcinoma:LS-123","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  3.545290<br />Non-Small Cell Lung Carcinoma:LXF-289","cancer_type: Glioblastoma<br />CD274:  3.018730<br />Glioblastoma:M059J","cancer_type: Breast Carcinoma<br />CD274: -1.621240<br />Breast Carcinoma:MDA-MB-231","cancer_type: Colorectal Carcinoma<br />CD274:  2.407110<br />Colorectal Carcinoma:MDST8","cancer_type: Other Sarcomas<br />CD274:  3.106380<br />Other Sarcomas:MFH-ino","cancer_type: Gastric Carcinoma<br />CD274:  3.014370<br />Gastric Carcinoma:MKN7","cancer_type: Plasma Cell Myeloma<br />CD274:  0.485819<br />Plasma Cell Myeloma:MM1S","cancer_type: Glioma<br />CD274:  3.395030<br />Glioma:MOG-G-UVW","cancer_type: Mesothelioma<br />CD274:  1.851060<br />Mesothelioma:MPP-89","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  1.848240<br />Non-Small Cell Lung Carcinoma:NCI-H1568","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  2.578720<br />Non-Small Cell Lung Carcinoma:NCI-H1693","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  3.864690<br />Non-Small Cell Lung Carcinoma:NCI-H1915","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  2.324240<br />Non-Small Cell Lung Carcinoma:NCI-H2009","cancer_type: Mesothelioma<br />CD274:  1.438360<br />Mesothelioma:NCI-H2052","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  2.256500<br />Non-Small Cell Lung Carcinoma:NCI-H2085","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  2.294470<br />Non-Small Cell Lung Carcinoma:NCI-H2087","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  2.281990<br />Non-Small Cell Lung Carcinoma:NCI-H2135","cancer_type: Squamous Cell Lung Carcinoma<br />CD274:  1.664490<br />Squamous Cell Lung Carcinoma:NCI-H2170","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274: -0.155363<br />Non-Small Cell Lung Carcinoma:NCI-H2228","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  3.171300<br />Non-Small Cell Lung Carcinoma:NCI-H2347","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  2.497060<br />Non-Small Cell Lung Carcinoma:NCI-H2444","cancer_type: Mesothelioma<br />CD274:  3.145170<br />Mesothelioma:NCI-H2804","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  3.047680<br />Non-Small Cell Lung Carcinoma:NCI-H358","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  2.031910<br />Non-Small Cell Lung Carcinoma:NCI-H441","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  1.711360<br />Non-Small Cell Lung Carcinoma:NCI-H647","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  4.155400<br />Non-Small Cell Lung Carcinoma:NCI-H650","cancer_type: Glioma<br />CD274:  3.153350<br />Glioma:NMC-G1","cancer_type: Gastric Carcinoma<br />CD274:  4.409880<br />Gastric Carcinoma:NUGC-3","cancer_type: Acute Myeloid Leukemia<br />CD274:  1.919980<br />Acute Myeloid Leukemia:OCI-M1","cancer_type: Cervical Carcinoma<br />CD274:  3.330810<br />Cervical Carcinoma:OMC-1","cancer_type: Other Solid Cancers<br />CD274:  4.510600<br />Other Solid Cancers:ONS-76","cancer_type: Oral Cavity Carcinoma<br />CD274:  1.058080<br />Oral Cavity Carcinoma:OSC-19","cancer_type: Oral Cavity Carcinoma<br />CD274:  2.314280<br />Oral Cavity Carcinoma:OSC-20","cancer_type: Ovarian Carcinoma<br />CD274:  2.885050<br />Ovarian Carcinoma:OV-56","cancer_type: Ovarian Carcinoma<br />CD274:  2.648610<br />Ovarian Carcinoma:OVCA433","cancer_type: Pancreatic Carcinoma<br />CD274:  2.748180<br />Pancreatic Carcinoma:PANC-03-27","cancer_type: Pancreatic Carcinoma<br />CD274:  2.655190<br />Pancreatic Carcinoma:PANC-08-13","cancer_type: Pancreatic Carcinoma<br />CD274:  3.420660<br />Pancreatic Carcinoma:PANC-10-05","cancer_type: Non-Small Cell Lung Carcinoma<br />CD274:  3.264110<br />Non-Small Cell Lung Carcinoma:PC-3_[JPC-3]","cancer_type: Head and Neck Carcinoma<br />CD274:  2.297670<br />Head and Neck Carcinoma:PCI-30","cancer_type: Head and Neck Carcinoma<br />CD274:  3.311570<br />Head and Neck Carcinoma:PCI-4B","cancer_type: Other Solid Cancers<br />CD274:  1.479910<br />Other Solid Cancers:PFSK-1","cancer_type: Acute Myeloid Leukemia<br />CD274:  2.538910<br />Acute Myeloid Leukemia:QIMR-WIL","cancer_type: Other Sarcomas<br />CD274:  2.950810<br />Other Sarcomas:RKN","cancer_type: Colorectal Carcinoma<br />CD274:  4.474430<br />Colorectal Carcinoma:RKO","cancer_type: Thyroid Gland Carcinoma<br />CD274:  4.178060<br />Thyroid Gland Carcinoma:RO82-W-1","cancer_type: Non-Cancerous<br />CD274:  2.023460<br />Non-Cancerous:RPMI-6666","cancer_type: Chronic Myelogenous Leukemia<br />CD274:  2.683910<br />Chronic Myelogenous Leukemia:RPMI-8866","cancer_type: Oral Cavity Carcinoma<br />CD274:  1.728670<br />Oral Cavity Carcinoma:SAS","cancer_type: B-Cell Non-Hodgkin's Lymphoma<br />CD274:  3.642270<br />B-Cell Non-Hodgkin's Lymphoma:SCC-3","cancer_type: Other Sarcomas<br />CD274:  3.287540<br />Other Sarcomas:SK-LMS-1","cancer_type: Squamous Cell Lung Carcinoma<br />CD274:  3.610030<br />Squamous Cell Lung Carcinoma:SK-MES-1","cancer_type: Glioma<br />CD274:  3.871190<br />Glioma:SK-MG-1","cancer_type: Neuroblastoma<br />CD274:  1.002150<br />Neuroblastoma:SK-N-SH","cancer_type: Glioblastoma<br />CD274:  2.618960<br />Glioblastoma:SNB75","cancer_type: Hepatocellular Carcinoma<br />CD274:  2.049910<br />Hepatocellular Carcinoma:SNU-387","cancer_type: Hepatocellular Carcinoma<br />CD274:  1.579730<br />Hepatocellular Carcinoma:SNU-423","cancer_type: Hepatocellular Carcinoma<br />CD274:  1.831630<br />Hepatocellular Carcinoma:SNU-449","cancer_type: T-Cell Non-Hodgkin's Lymphoma<br />CD274:  4.429020<br />T-Cell Non-Hodgkin's Lymphoma:SR","cancer_type: Gastric Carcinoma<br />CD274:  3.884220<br />Gastric Carcinoma:STS-0421","cancer_type: T-Cell Non-Hodgkin's Lymphoma<br />CD274:  3.091730<br />T-Cell Non-Hodgkin's Lymphoma:SU-DHL-1","cancer_type: Pancreatic Carcinoma<br />CD274:  2.622240<br />Pancreatic Carcinoma:SU8686","cancer_type: Hodgkin's Lymphoma<br />CD274:  4.563770<br />Hodgkin's Lymphoma:SUP-HD1","cancer_type: T-Cell Non-Hodgkin's Lymphoma<br />CD274:  3.934060<br />T-Cell Non-Hodgkin's Lymphoma:SUP-M2","cancer_type: Bladder Carcinoma<br />CD274:  0.358609<br />Bladder Carcinoma:SW1710","cancer_type: Other Sarcomas<br />CD274:  2.003380<br />Other Sarcomas:SW872","cancer_type: Other Sarcomas<br />CD274:  3.355290<br />Other Sarcomas:SW982","cancer_type: Bladder Carcinoma<br />CD274:  2.457030<br />Bladder Carcinoma:T24","cancer_type: Biliary Tract Carcinoma<br />CD274:  3.403000<br />Biliary Tract Carcinoma:TGBC1TKB","cancer_type: Other Sarcomas<br />CD274:  2.113150<br />Other Sarcomas:VA-ES-BJ","cancer_type: Glioblastoma<br />CD274:  2.270880<br />Glioblastoma:YKG-1","cancer_type: Glioblastoma<br />CD274:  3.112010<br />Glioblastoma:no-10","cancer_type: Glioblastoma<br />CD274:  2.807990<br />Glioblastoma:no-11"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":29.0178497301785,"r":9.29846409298464,"b":289.182233291822,"l":39.983395599834},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,33.6],"tickmode":"array","ticktext":["Acute Myeloid Leukemia","B-Cell Non-Hodgkin's Lymphoma","Biliary Tract Carcinoma","Bladder Carcinoma","Breast Carcinoma","Cervical Carcinoma","Chondrosarcoma","Chronic Myelogenous Leukemia","Colorectal Carcinoma","Esophageal Squamous Cell Carcinoma","Ewing's Sarcoma","Gastric Carcinoma","Glioblastoma","Glioma","Head and Neck Carcinoma","Hepatocellular Carcinoma","Hodgkin's Lymphoma","Kidney Carcinoma","Melanoma","Mesothelioma","Neuroblastoma","Non-Cancerous","Non-Small Cell Lung Carcinoma","Oral Cavity Carcinoma","Other Blood Cancers","Other Sarcomas","Other Solid Cancers","Ovarian Carcinoma","Pancreatic Carcinoma","Plasma Cell Myeloma","Squamous Cell Lung Carcinoma","T-Cell Non-Hodgkin's Lymphoma","Thyroid Gland Carcinoma"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33],"categoryorder":"array","categoryarray":["Acute Myeloid Leukemia","B-Cell Non-Hodgkin's Lymphoma","Biliary Tract Carcinoma","Bladder Carcinoma","Breast Carcinoma","Cervical Carcinoma","Chondrosarcoma","Chronic Myelogenous Leukemia","Colorectal Carcinoma","Esophageal Squamous Cell Carcinoma","Ewing's Sarcoma","Gastric Carcinoma","Glioblastoma","Glioma","Head and Neck Carcinoma","Hepatocellular Carcinoma","Hodgkin's Lymphoma","Kidney Carcinoma","Melanoma","Mesothelioma","Neuroblastoma","Non-Cancerous","Non-Small Cell Lung Carcinoma","Oral Cavity Carcinoma","Other Blood Cancers","Other Sarcomas","Other Solid Cancers","Ovarian Carcinoma","Pancreatic Carcinoma","Plasma Cell Myeloma","Squamous Cell Lung Carcinoma","T-Cell Non-Hodgkin's Lymphoma","Thyroid Gland Carcinoma"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":4.64923204649232,"tickwidth":0.845314917544058,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":14.8775425487754},"tickangle":-90,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.845314917544058,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"cancer_type","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-1.9377715,5.0259215],"tickmode":"array","ticktext":["0","2","4"],"tickvals":[2.22044604925031e-16,2,4],"categoryorder":"array","categoryarray":["0","2","4"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":4.64923204649232,"tickwidth":0.845314917544058,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":14.8775425487754},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.845314917544058,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"CD274","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":2.40515390121689,"font":{"color":"rgba(0,0,0,1)","family":"","size":14.8775425487754}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"bf6c1a27972":{"x":{},"y":{},"text":{},"type":"box"},"bf6c51d32c34":{"x":{},"y":{},"text":{}}},"cur_data":"bf6c1a27972","visdat":{"bf6c1a27972":["function (y) ","x"],"bf6c51d32c34":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>#save the interactive plots
+#htmlwidgets::saveWidget(ggplot_p, here(&quot;data/Proteomics_20220713/PDL1_proteomics_cell_line_20220718.html&quot;), selfcontained = T)</code></pre>
+</div>
+<div id="read-in-the-rnaseq-data" class="section level3">
+<h3>read in the RNAseq data:</h3>
+<pre class="r"><code>rna&lt;- read_csv(&quot;~/blog_data/rnaseq_tpm_20220624.csv&quot;)
+
+rna&lt;- rna %&gt;%
+        dplyr::slice(5: nrow(rna)) %&gt;%
+        dplyr::rename(gene = `...2`) %&gt;%
+        dplyr::select(-model_id) %&gt;%
+        dplyr::mutate(across(!gene, as.numeric))
+
+head(rna)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 1,432
+#&gt;   gene     SIDM00001 SIDM00002 SIDM00003 SIDM00005 SIDM00006 SIDM00007 SIDM00008
+#&gt;   &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+#&gt; 1 A1BG          0.53      0.78      0.49      3.29      0.56      1.43      0   
+#&gt; 2 A1BG-AS1      2.43      6.01     11.5       7.71      7.53     16.2       0.06
+#&gt; 3 A1CF          0.03      0         0         0         0.04      0         0.06
+#&gt; 4 A2M           0.33      0.75     29.1       0.87     86.2       0.07      0.06
+#&gt; 5 A2M-AS1       0         0.71      0.83      5.59      1.04      1.67      0.06
+#&gt; 6 A2ML1         0         0.57      0         0.19      0         0         0.32
+#&gt; # … with 1,424 more variables: SIDM00009 &lt;dbl&gt;, SIDM00011 &lt;dbl&gt;,
+#&gt; #   SIDM00014 &lt;dbl&gt;, SIDM00015 &lt;dbl&gt;, SIDM00016 &lt;dbl&gt;, SIDM00017 &lt;dbl&gt;,
+#&gt; #   SIDM00018 &lt;dbl&gt;, SIDM00023 &lt;dbl&gt;, SIDM00025 &lt;dbl&gt;, SIDM00026 &lt;dbl&gt;,
+#&gt; #   SIDM00027 &lt;dbl&gt;, SIDM00029 &lt;dbl&gt;, SIDM00032 &lt;dbl&gt;, SIDM00036 &lt;dbl&gt;,
+#&gt; #   SIDM00040 &lt;dbl&gt;, SIDM00041 &lt;dbl&gt;, SIDM00042 &lt;dbl&gt;, SIDM00043 &lt;dbl&gt;,
+#&gt; #   SIDM00044 &lt;dbl&gt;, SIDM00045 &lt;dbl&gt;, SIDM00046 &lt;dbl&gt;, SIDM00047 &lt;dbl&gt;,
+#&gt; #   SIDM00048 &lt;dbl&gt;, SIDM00049 &lt;dbl&gt;, SIDM00050 &lt;dbl&gt;, SIDM00051 &lt;dbl&gt;, …</code></pre>
+<pre class="r"><code>PDL1_rna_tpm&lt;- rna %&gt;%
+        dplyr::filter(gene == &quot;CD274&quot;) %&gt;%
+        pivot_longer(! gene, names_to = &quot;model_id&quot;, values_to = &quot;tpm&quot;) %&gt;%
+        pivot_wider(names_from = gene, values_from = tpm) %&gt;%
+        select(model_id, CD274)
+
+PDL1_rna_tpm&lt;- dplyr::rename(PDL1_rna_tpm, CD274_rna = CD274)
+
+head(PDL1_rna_tpm)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 2
+#&gt;   model_id  CD274_rna
+#&gt;   &lt;chr&gt;         &lt;dbl&gt;
+#&gt; 1 SIDM00001     17.3 
+#&gt; 2 SIDM00002      0.04
+#&gt; 3 SIDM00003      1   
+#&gt; 4 SIDM00005      1.78
+#&gt; 5 SIDM00006      2.41
+#&gt; 6 SIDM00007     36.9</code></pre>
+<pre class="r"><code>exp_data&lt;- dplyr::rename(exp_data, CD274_protein = CD274)</code></pre>
+<p><strong>If we only include cell lines with both protein and RNA expression, we see the protein
+and RNA are positively correlated.</strong></p>
+<pre class="r"><code>left_join(exp_data, PDL1_rna_tpm) %&gt;%
+        dplyr::select(model_name, model_id, CD274_protein, CD274_rna, everything()) %&gt;%
+        dplyr::filter(!is.na(CD274_protein), !is.na(CD274_rna)) %&gt;%
+        arrange(desc(CD274_protein)) %&gt;%
+        ggplot(aes(x=CD274_rna, y = CD274_protein)) +
+        scale_x_continuous(trans=scales::pseudo_log_trans(base = 2))+
+        geom_point() +
+        geom_smooth(method= &quot;lm&quot;) +
+        theme_classic(base_size = 14)</code></pre>
+<p><img src="/post/2022-10-06-are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Let’s include all cell lines and designate the NAs to 0s.</p>
+<pre class="r"><code>p2&lt;- left_join(exp_data, PDL1_rna_tpm) %&gt;%
+        dplyr::select(model_name, model_id, CD274_protein, CD274_rna, everything()) %&gt;%
+        dplyr::arrange(desc(CD274_protein)) %&gt;%
+        dplyr::mutate(CD274_rna = if_else(is.na(CD274_rna), 0, CD274_rna)) %&gt;%
+        dplyr::mutate(CD274_protein = if_else(is.na(CD274_protein), 0, CD274_protein)) %&gt;%
+        ggplot(aes(x= CD274_rna, y = CD274_protein, text = paste(model_name, cancer_type, sep =&quot;:&quot;))) +
+        geom_point() +
+        scale_x_continuous(trans=scales::pseudo_log_trans(base = 2), breaks = c(0, 2, 4, 8, 16, 32, 64, 100, 200, 400, 600))+ 
+        geom_smooth(method= &quot;lm&quot;) +
+        theme_classic(base_size = 14) 
+
+
+ggplot_p2&lt;- ggplotly(p2)
+
+ggplot_p2</code></pre>
+<div id="htmlwidget-2" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2">{"x":{"data":[{"x":[8.80765190531007,6.84220846141765,8.17579132996644,4.22830709701914,7.80822067605246,8.04157042617427,6.06425654378686,5.23635973286411,6.48528451205682,4.39420931661077,7.84896299691111,5.96176325405045,8.82407474005889,6.66661236492336,7.05156284819125,6.45485692745226,6.77911661345996,7.59279472394135,6.3818369378781,4.46956929472565,6.71327694095771,6.949629359749,6.9710603230471,4.52503112626233,1.70759947910904,5.020626934231,5.73305060914084,6.28138030856267,5.30433969879014,6.33650431652408,5.45459717362565,4.2511520568927,5.06608276847582,5.20348070618178,5.70346593725968,4.66728788196112,3.87069616708832,6.82767682686394,5.50054996292913,3.41464639723251,5.73630068253343,0,6.05408982165611,3.08035546251019,3.06513828522793,5.84341650818057,5.86362069831111,4.85720975296493,2.93373787069347,3.04804532681752,3.83592689038733,3.22144608854181,7.8645222648692,7.53803664471148,4.55167837317709,5.52987229092323,5.66816638751388,5.43239681941079,7.88095632497822,4.48893490493394,4.28549681873042,5.11098689857111,3.17168333981748,5.51102294452353,5.48775276125453,3.01501678882705,6.12772202543297,1.73166317735682,5.6556333956799,3.27843983373177,5.35100991723193,5.27559622269404,5.86659000636692,3.53558455608364,4.329821604159,5.28005569258297,3.58416631441677,0.97097284304367,5.96868908867059,5.51764823916922,6.79010781723737,5.32534830314847,5.28153912861557,4.2428172814039,3.56855344486366,1.7553968272782,3.52691447991636,5.32066597398414,7.43025012454798,2.85562234540378,5.54044537587182,3.97577309265183,6.31908543490492,4.30017934154872,7.01900919935799,5.11971977047979,4.94403784385446,2.51229676830073,1.79807461826984,7.67344970528066,5.1932723056973,3.93220361520046,4.86761250756595,4.6667208679069,5.11764529694144,1.6667403168359,5.49736127842901,6.2108856036061,3.88534687969562,5.34179572579959,5.36681995650481,0,3.18584933133397,6.37089804805545,4.51120565340067,5.90632959434071,6.11695539515788,8.7014534175552,2.45225919277844,6.00933651613019,5.04484406428281,5.00724455355449,5.14356851655284,2.78965019504594,4.4715175479571,2.58885670015277,3.49298363132462,0.0721047296606963,6.59171483808054,3.91991850904289,5.53579031974866,3.1397089607879,0.300782223344986,5.60556953264703,0,5.7831464812434,4.51183695560664,6.58526925798859,3.5877457451816,3.49806027454787,8.18007547727493,1.21990353673032,3.35022252701761,4.95940580981086,4.47734663488705,6.92621559842104,6.4251174761603,1.17230338980546,2.77733777725957,5.82445338755209,2.20085242587421,4.15349664713956,4.32623897187734,0.95339007258998,3.02727073704418,1.94827415900912,4.46761841769098,4.33767237084164,5.21478254981999,0,0.25830286749364,2.01015212826724,1.49324403996879,1.15619815492299,6.43081366198336,3.42133663083583,1.15619815492299,1.94125290489567,4.43936324631686,2.71206987075717,0.92975203956586,2.33573893102626,0.7135394043,0.674828298702247,0.244091934123597,2.0235907951994,1.23553420741933,0.655300016579484,3.2725431770536,1.17230338980546,2.50984147233074,0.129667902091645,2.05342798984816,1.22512677841106,2.97222030084775,1.30694761137732,0.179870524497734,0.917849754913226,0.236977576369396,1.50684552051333,1.49778895487012,1.81712618994033,0.0937092695346021,0.935682368658445,4.11168606322505,0.745440273408646,0.158378146805503,2.13040186194219,0.279572466940327,0.648765377870712,2.19484859912338,2.43945126923155,0.988430730615007,0.648765377870712,1.78267834073612,0.115292846506191,7.13275290917673,0.0432743617268889,0.70711989485449,2.57714414761644,1.75146383810901,1.11814987374348,0.0937092695346021,4.37976201385226,0.208464591462514,0.25830286749364,0.0216396141795289,0.508759669148221,0.0288519775705558,0.808242595689932,3.58655357449896,2.59118845473983,3.46474340446696,2.17365466427548,0.244091934123597,0.244091934123597,3.53928464619547,1.35644937741622,0.172710578296039,1.71163331866174,3.72743011121792,0.251200417036023,0.129667902091645,3.71765020157635,1.23033699212339,0.244091934123597,0,2.21279230563288,1.23553420741933,4.67463891883023,3.67674098067898,1.82468732768621,0.286649236874532,2.36569902738963,0,1.35644937741622,1.48412076354326,0.82064086053518,3.69678597997779,0.251200417036023,0.661822089561649,0.549283953423017,0.208464591462514,0.384943738347739,3.23514495645143,1.05137721016166,0.0793082768762428,0,2.3521521821818,1.96222764774094,0.622502428845661,1.65012676536826,0.050484022851639,0.0937092695346021,0.050484022851639,0.0721047296606963,0.629086694833681,0.0793082768762428,1.56026882034657,1.80190205332136,0.535820388338779,0.555998718447118,4.04792726190113,0.321928094887362,0.194177035215011,4.07888086855562,3.74572631799613,0.300782223344986,4.47475882505494,1.95177361870581,2.5747908084038,0.136850706551508,1.00576385649158,3.70670621558157,2.26830664203939,0.115292846506191,0.194177035215011,2.54866188520974,1.95526566905488,1.18828888514995,0.412728670905618,1.33679677938811,4.34477272644703,0.569393777417183,4.08058132996947,1.13997250161802,0.508759669148221,2.40037805707645,0.615905923156526,4.30964387818057,3.08371596860915,2.97041014837401,4.6768932843984,3.52442785842248,1.75146383810901,0.515541313274851,0.0216396141795289,0.222731872882327,1.50232276955606,1.17764515813865,2.51963916349082,0.515541313274851,0.187026065995978,4.25266233922316,0.0432743617268889,0.0937092695346021,0.454125745364072,0.0288519775705558,1.06825495822069,2.69258041850608,0.286649236874532,0.115292846506191,0.194177035215011,3.45303197887409,0,0,0.0288519775705558,0.0937092695346021,0,0,0.0288519775705558,0.0865098493899855,0.0721047296606963,0.648765377870712,0.129667902091645,3.61255944175259,0.335987906982612,2.87891058961549,0.300782223344986,0.279572466940327,3.97485954101901,0.869686481772201,1.30192911525869,0.0793082768762428,0.251200417036023,1.02868095170083,0.244091934123597,0.377975279834223,2.81196446892958,0.172710578296039,0.661822089561649,1.64594885028493,0,0.208464591462514,0.959264876566033,5.98563206540109,0.172710578296039,4.68922990674666,1.39037380711337,1.42842928105523,2.7163669547792,0.839135871067184,0.789543305528911,1.8984886248259,0.208464591462514,1.90928338828415,0.857507507744726,0.576073902130503,0.732719439038163,0.115292846506191,1.10164081040295,0.549283953423017,0.314886814173525,0.0793082768762428,1.73564151365008,2.45225919277844,4.26468832323673,0.108100944483892,0.0865098493899855,0.832984549086277,3.10040522640136,4.25943921878647,1.79423856077157,1.70355627237504,1.21990353673032,2.09237470105283,0.136850706551508,4.16877038634636,0.187026065995978,0.151206001287576,0.108100944483892,0.398854239214138,1.04572380795516,0.661822089561649,3.83391478462242,1.51585797713745,1.36133198702268,0.0216396141795289,3.55277219849159,0.508759669148221,0.293719205582734,0.495164035448689,2.74610900032815,0.136850706551508,0.7135394043,0.122481890670877,4.45388821636772,3.42267102682507,3.5539922000069,3.17484308933688,1.58207480055715,0.307838141841241,0.542557813740149,0.314886814173525,3.31045622083583,0.0216396141795289,4.59284208622488,2.64835091893502,0.542557813740149,0.136850706551508,5.16703003922113,0.97097284304367,0.165546395917369,0.377975279834223,0.857507507744726,0.808242595689932,1.59933196424648,0.0288519775705558,3.48661299916187,0.0216396141795289,0.187026065995978,0.251200417036023,2.79169250479363,0.426566039444276,1.75146383810901,0.25830286749364,3.50438144713187,2.22168851104042,0.208464591462514,0.194177035215011,0.144030130539604,0.433470521728915,6.89297884177227,1.91644116940508,0.20132326556264,1.371060802777,0.179870524497734,0.687783542004987,2.15526106406477,0.412728670905618,0.474691238095041,0.0288519775705558,0.881810286336299,0.515541313274851,0.549283953423017,0.050484022851639,0.89989233300344,0.244091934123597,3.57217123004513,0.7832831477712,4.26917248630766,2.24808057710468,4.33980613130579,1.87302580111154,0.412728670905618,0.300782223344986,0.481525945725198,0.335987906982612,0.229857502610929,0.789543305528911,0.187026065995978,2.51474814102347,0.215600848385812,0.609297247931078,0.115292846506191,0.100906360122391,0.0288519775705558,5.07893367728127,0.576073902130503,0.615905923156526,0.136850706551508,0.454125745364072,0.851397368889567,0.251200417036023,1.0794382262226,0.115292846506191,0.555998718447118,2.93188038345928,0.758108036382712,0.136850706551508,0.802023058071734,0.508759669148221,3.37247258452133,1.59933196424648,2.04684472434715,4.81073257879917,2.08594848286949,1.38556354593559,3.29744260985336,4.00381224550791,0.0721047296606963,0.328961839992455,0.0865098493899855,0.357018636860576,0.251200417036023,1.14539447300436,3.45041669271183,1.8095311804761,1.27155330316361,2.23053496016147,3.92465583121388,2.95950282829029,3.3046865872536,0.881810286336299,0.758108036382712,0.857507507744726,0.795789952044123,0.286649236874532,0.426566039444276,0.7135394043,3.00443245518084,0.179870524497734,2.86536981726682,2.06651479789397,0,1.70759947910904,0,2.90752046073015,0.144030130539604,0.377975279834223,0.0793082768762428,0.251200417036023,0.115292846506191,0.911877807845374,1.89487476707679,0.0432743617268889,1.42842928105523,0.488350246376607,4.49085730163108,0.158378146805503,1.40949586926415,0.293719205582734,0.0721047296606963,0.764421919662643,0.905891998283054,0.0865098493899855,0.0721047296606963,0.293719205582734,1.04572380795516,0.739086470143308,0.108100944483892,1.62491036992721,1.27155330316361,4.04792726190113,0.236977576369396,2.07626087849706,0.050484022851639,1.47954232902548,1.72767567334522,0.0865098493899855,4.68755382031608,0.0216396141795289,0.412728670905618,0.569393777417183,0.745440273408646,0.7832831477712,0.751780808464472,0.0793082768762428,0.0648993858513722,1.47954232902548,0.92380783373437,3.75212940772005,0.0648993858513722,0.370998188732841,3.63926170904249,0.244091934123597,1.59933196424648,0.129667902091645,5.17941533120008,2.24225368766996,0.0865098493899855,2.51963916349082,0.0937092695346021,0.208464591462514,0.100906360122391,0.0793082768762428,0.0432743617268889,0.0288519775705558,0.25830286749364,0.335987906982612,0.0576924239578128,0.364012596666509,0.0793082768762428,2.85170553577666,4.31254365883617,0.050484022851639,1.1345370786418,0.84527348403244,2.39509299418327,1.95875033659093,1.13997250161802,1.39037380711337,0.0793082768762428,0.832984549086277,1.8095311804761,1.8912530606583,1.13997250161802,0.108100944483892,0.881810286336299,0.629086694833681,0.0937092695346021,1.20941785283627,1.53375172961638,2.73555398549306,0.555998718447118,1.82845527105562,1.80190205332136,0.419652049150008,0.307838141841241,4.74509151554787,2.16754702357643,0,3.06513828522793,2.41351239117896,1.56465105477681,1.36133198702268,4.1241087500551,1.49324403996879,0.661822089561649,0.501967210079644,0.687783542004987,4.36516924924566,3.00266105683671,0.602676475007944,1.15619815492299,2.12412624188509,0.229857502610929,2.31636939648229,1.11266042045613,0.172710578296039,3.77641743414534,2.04023463368525,1.371060802777,0.0793082768762428,0.488350246376607,0.244091934123597,5.14560613311551,5.89085650706918,0.314886814173525,1.31195358435018,4.77854684477532,3.50438144713187,0.529071767894786,2.78145311917527,0.569393777417183,1.36620245044271,3.18114240132549,2.276895987647,1.89487476707679,0.535820388338779,1.97606385326734,0.265399129135069,0.495164035448689,2.96678323490889,3.70560729039326,2.91317733489696,3.41732615012058,5.74250961296165,0.265399129135069,2.63482662493013,4.14295283426225,1.15619815492299,0.0793082768762428,2.57007321733179,0.158378146805503,1.86199342760392,3.09375204573657,0.609297247931078,0.108100944483892,0.405796026454419,0.25830286749364,3.09708236797084,0.0865098493899855,2.36299907453067,0.194177035215011,0.0865098493899855,0.122481890670877,1.02868095170083,0.419652049150008,2.78555723898294,4.16075161105908,0.488350246376607,0.215600848385812,0.609297247931078,1.42842928105523,0,0.158378146805503,1.94827415900912,0.100906360122391,2.26255423439962,0,1.50232276955606,0.0432743617268889,0.0937092695346021,0.222731872882327,0.655300016579484,0.535820388338779,1.92712030499181,0.0793082768762428,2.79169250479363,0.229857502610929,0.100906360122391,1.55147254138128,0.136850706551508,0.100906360122391,0.661822089561649,0.158378146805503,0.412728670905618,0.208464591462514,0.0648993858513722,0.694241913630617,5.6490385038484,1.31195358435018,3.96844856222312,0.335987906982612,1.16694831680532,0.108100944483892,2.13353047550756,0.515541313274851,1.771039387897,2.48756530734945,1.31694706763924,0.764421919662643,0.370998188732841,0.391903434266775,0.0216396141795289,0.208464591462514,0.94750138650526,1.65012676536826,0.419652049150008,0.0865098493899855,0.357018636860576,3.1967742166532,0.328961839992455,3.4942544416914,3.30613111649917,2.10515069921164,2.95035204964059,2.08594848286949,0.050484022851639,2.25678072264358,2.55821508641087,1.23033699212339,0.144030130539604,3.72743011121792,2.72492463328723,3.07361152905169,1.30192911525869,1.92712030499181,2.90940846526294,2.51963916349082,2.69039934366582,1.57773457089683,2.84186851012354,3.1557825264757,0.447250490501601,0.694241913630617,1.07385343799411,0.244091934123597,0.122481890670877,5.94734368415441,1.74752184470654,5.11265437652359,6.39440931626656,0.629086694833681,4.6129931892525,0.20132326556264,0.314886814173525,0.839135871067184,0.179870524497734,0.229857502610929,2.19785335235253,1.83970896320869,0.751780808464472,0.236977576369396,1.69950366487784,0.307838141841241,1.79807461826984,3.23817195757022,0.869686481772201,1.50684552051333,1.08500933979052,2.05670962214162,0.100906360122391,0.129667902091645,0.335987906982612,2.64160382595423,2.05013969842208,3.69124547090909,1.6206726475354,0.364012596666509,3.83893984821307,3.26365372401715,3.25171712655776,2.86925111826041,3.7241774182606,1.57338389402386,0.751780808464472,0.0216396141795289,0.0721047296606963,6.227535952959,0.307838141841241,3.77955582232043,0.279572466940327,0.0288519775705558,5.75884860888935,2.40037805707645,0.674828298702247,1.47035168491472,2.4725331349966,1.7903938495941,0.596043677907578,2.04684472434715,0.467846229823073,1.39037380711337,0.398854239214138,1.10164081040295,3.99842734199102,0.0288519775705558,1.32689669991161,1,0.236977576369396,0.70711989485449,4.08397629340281,0.165546395917369,3.60668949480091,1.48868798835874,7.32657536632427,2.11150083282658,0.0865098493899855,0.25830286749364,0.857507507744726,0.745440273408646,0.158378146805503,0.0865098493899855,0.136850706551508,1.74752184470654,0.158378146805503,0.535820388338779,2.1827724022023,0.100906360122391,1.24588976248845,4.0383361836726,0.151206001287576,2.86536981726682,0.187026065995978,1.94476726332251,1.02868095170083,0.208464591462514,1.61216689471346,0.467846229823073,0.307838141841241,4.85671251220368,0.501967210079644,0.576073902130503,0.642218235365359,1.97606385326734,0.194177035215011,1.31694706763924,0.454125745364072,2.26543306750012,4.58326127168809,1.99660189546338,0.622502428845661,1.88034056496136,4.87155586023741,3.82887232949152,1.69950366487784,2.61201520948425,0.0648993858513722,2.70560125303946,1.10164081040295,4.93511494727407,0.615905923156526,0.0648993858513722,0.151206001287576,0.460991028979505,0.89989233300344,0.0576924239578128,0.0216396141795289,4.83718554751268,4.06004325019901,0.569393777417183,2.4030138470273,0.501967210079644,2.1797389594995,1.99660189546338,0,0.562702021604752,1.26644622475589,1.37590707923932,0.887851467619862,2.02024150127593,0.508759669148221,0.050484022851639,0.433470521728915,0.187026065995978,1.33679677938811,3.12998036845815,0.0216396141795289,1.05137721016166,2.04023463368525,1.00576385649158,0.100906360122391,2.33022924465427,2.77733777725957,1.88034056496136,2.17060377208232,0.0216396141795289,2.33848649735593,3.20143169483166,5.38522141429696,0.549283953423017,0.501967210079644,1.46573940235746,0.535820388338779,2.79373204529611,1.66260157599627,0.481525945725198,2.53179887616928,0.495164035448689,0.314886814173525,2.8179931155335,3.05490613746623,0.655300016579484,6.44064517052969,0.350016444128193,1.97606385326734,0.481525945725198,1.08500933979052,2.56296938995875,0.144030130539604,0.719945862079786,3.17484308933688,1.92000852512663,0,1.21990353673032,0.0648993858513722,0.265399129135069],"y":[4.70939,4.63405,4.56377,4.5106,4.47443,4.42902,4.40988,4.21453,4.17806,4.1554,3.97418,3.93406,3.92306,3.88422,3.87119,3.86469,3.85791,3.8272,3.72485,3.71162,3.69752,3.64227,3.61589,3.61003,3.59265,3.54949,3.54529,3.45401,3.42066,3.40512,3.403,3.39503,3.35529,3.33081,3.32045,3.31935,3.31157,3.30325,3.29156,3.28754,3.28025,3.26411,3.23373,3.21898,3.215,3.1713,3.15335,3.15084,3.14517,3.12431,3.11201,3.10638,3.09667,3.09173,3.04768,3.01873,3.01437,3.00566,2.98192,2.97331,2.95081,2.93589,2.90616,2.90493,2.90132,2.89595,2.88716,2.88505,2.86658,2.86466,2.83571,2.8272,2.8252,2.80799,2.75695,2.74818,2.72661,2.714,2.69004,2.68391,2.65519,2.64861,2.62901,2.62224,2.61896,2.61182,2.57872,2.54334,2.53891,2.52832,2.52073,2.50022,2.49706,2.49252,2.46859,2.45703,2.42074,2.40711,2.36981,2.32447,2.32424,2.31428,2.29767,2.29447,2.28199,2.27088,2.2565,2.23689,2.20015,2.19517,2.16032,2.15228,2.11315,2.09559,2.04991,2.03191,2.03031,2.02346,2.00338,1.96144,1.95949,1.94572,1.91998,1.86672,1.85106,1.84824,1.83163,1.82991,1.82293,1.72867,1.71136,1.7021,1.66449,1.57973,1.47991,1.43836,1.40704,1.40186,1.35126,1.33265,1.33074,1.28103,1.26609,1.20519,1.16089,1.10576,1.05808,1.01813,1.00215,0.984143,0.835006,0.599616,0.538562,0.485819,0.455324,0.358609,-0.155363,-0.332793,-1.62124,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"text":["CD274_rna: 448.09<br />CD274_protein:  4.709390<br />BFTC-909:Kidney Carcinoma","CD274_rna: 114.73<br />CD274_protein:  4.634050<br />647-V:Bladder Carcinoma","CD274_rna: 289.17<br />CD274_protein:  4.563770<br />SUP-HD1:Hodgkin's Lymphoma","CD274_rna:  18.69<br />CD274_protein:  4.510600<br />ONS-76:Other Solid Cancers","CD274_rna: 224.13<br />CD274_protein:  4.474430<br />RKO:Colorectal Carcinoma","CD274_rna: 263.48<br />CD274_protein:  4.429020<br />SR:T-Cell Non-Hodgkin's Lymphoma","CD274_rna:  66.90<br />CD274_protein:  4.409880<br />NUGC-3:Gastric Carcinoma","CD274_rna:  37.67<br />CD274_protein:  4.214530<br />HuCCT1:Biliary Tract Carcinoma","CD274_rna:  89.58<br />CD274_protein:  4.178060<br />RO82-W-1:Thyroid Gland Carcinoma","CD274_rna:  20.98<br />CD274_protein:  4.155400<br />NCI-H650:Non-Small Cell Lung Carcinoma","CD274_rna: 230.55<br />CD274_protein:  3.974180<br />ASH-3:Thyroid Gland Carcinoma","CD274_rna:  62.31<br />CD274_protein:  3.934060<br />SUP-M2:T-Cell Non-Hodgkin's Lymphoma","CD274_rna: 453.22<br />CD274_protein:  3.923060<br />DEL:T-Cell Non-Hodgkin's Lymphoma","CD274_rna: 101.58<br />CD274_protein:  3.884220<br />STS-0421:Gastric Carcinoma","CD274_rna: 132.65<br />CD274_protein:  3.871190<br />SK-MG-1:Glioma","CD274_rna:  87.71<br />CD274_protein:  3.864690<br />NCI-H1915:Non-Small Cell Lung Carcinoma","CD274_rna: 109.82<br />CD274_protein:  3.857910<br />LCLC-103H:Non-Small Cell Lung Carcinoma","CD274_rna: 193.04<br />CD274_protein:  3.827200<br />8505C:Thyroid Gland Carcinoma","CD274_rna:  83.38<br />CD274_protein:  3.724850<br />AM-38:Glioblastoma","CD274_rna:  22.11<br />CD274_protein:  3.711620<br />KGN:Other Solid Cancers","CD274_rna: 104.92<br />CD274_protein:  3.697520<br />L-1236:Hodgkin's Lymphoma","CD274_rna: 123.60<br />CD274_protein:  3.642270<br />SCC-3:B-Cell Non-Hodgkin's Lymphoma","CD274_rna: 125.45<br />CD274_protein:  3.615890<br />Hs-746T:Gastric Carcinoma","CD274_rna:  22.98<br />CD274_protein:  3.610030<br />SK-MES-1:Squamous Cell Lung Carcinoma","CD274_rna:   2.96<br />CD274_protein:  3.592650<br />CAS-1:Glioblastoma","CD274_rna:  32.43<br />CD274_protein:  3.549490<br />HOP-62:Non-Small Cell Lung Carcinoma","CD274_rna:  53.17<br />CD274_protein:  3.545290<br />LXF-289:Non-Small Cell Lung Carcinoma","CD274_rna:  77.77<br />CD274_protein:  3.454010<br />Hs-633T:Other Sarcomas","CD274_rna:  39.49<br />CD274_protein:  3.420660<br />PANC-10-05:Pancreatic Carcinoma","CD274_rna:  80.80<br />CD274_protein:  3.405120<br />K5:Thyroid Gland Carcinoma","CD274_rna:  43.83<br />CD274_protein:  3.403000<br />TGBC1TKB:Biliary Tract Carcinoma","CD274_rna:  18.99<br />CD274_protein:  3.395030<br />MOG-G-UVW:Glioma","CD274_rna:  33.47<br />CD274_protein:  3.355290<br />SW982:Other Sarcomas","CD274_rna:  36.82<br />CD274_protein:  3.330810<br />OMC-1:Cervical Carcinoma","CD274_rna:  52.09<br />CD274_protein:  3.320450<br />LCLC-97TM1:Non-Small Cell Lung Carcinoma","CD274_rna:  25.37<br />CD274_protein:  3.319350<br />KINGS-1:Glioma","CD274_rna:  14.56<br />CD274_protein:  3.311570<br />PCI-4B:Head and Neck Carcinoma","CD274_rna: 113.58<br />CD274_protein:  3.303250<br />CAL-62:Thyroid Gland Carcinoma","CD274_rna:  45.25<br />CD274_protein:  3.291560<br />HT-1197:Bladder Carcinoma","CD274_rna:  10.57<br />CD274_protein:  3.287540<br />SK-LMS-1:Other Sarcomas","CD274_rna:  53.29<br />CD274_protein:  3.280250<br />DBTRG-05MG:Glioblastoma","CD274_rna:   0.00<br />CD274_protein:  3.264110<br />PC-3_[JPC-3]:Non-Small Cell Lung Carcinoma","CD274_rna:  66.43<br />CD274_protein:  3.233730<br />D-423MG:Glioblastoma","CD274_rna:   8.34<br />CD274_protein:  3.218980<br />JHH-4:Hepatocellular Carcinoma","CD274_rna:   8.25<br />CD274_protein:  3.215000<br />LNZTA3WT4:Glioma","CD274_rna:  57.40<br />CD274_protein:  3.171300<br />NCI-H2347:Non-Small Cell Lung Carcinoma","CD274_rna:  58.21<br />CD274_protein:  3.153350<br />NMC-G1:Glioma","CD274_rna:  28.95<br />CD274_protein:  3.150840<br />HOP-92:Non-Small Cell Lung Carcinoma","CD274_rna:   7.51<br />CD274_protein:  3.145170<br />NCI-H2804:Mesothelioma","CD274_rna:   8.15<br />CD274_protein:  3.124310<br />Hs-940-T:Melanoma","CD274_rna:  14.21<br />CD274_protein:  3.112010<br />no-10:Glioblastoma","CD274_rna:   9.22<br />CD274_protein:  3.106380<br />MFH-ino:Other Sarcomas","CD274_rna: 233.05<br />CD274_protein:  3.096670<br />HDLM-2:Hodgkin's Lymphoma","CD274_rna: 185.85<br />CD274_protein:  3.091730<br />SU-DHL-1:T-Cell Non-Hodgkin's Lymphoma","CD274_rna:  23.41<br />CD274_protein:  3.047680<br />NCI-H358:Non-Small Cell Lung Carcinoma","CD274_rna:  46.18<br />CD274_protein:  3.018730<br />M059J:Glioblastoma","CD274_rna:  50.83<br />CD274_protein:  3.014370<br />MKN7:Gastric Carcinoma","CD274_rna:  43.16<br />CD274_protein:  3.005660<br />HT-1376:Bladder Carcinoma","CD274_rna: 235.72<br />CD274_protein:  2.981920<br />KARPAS-299:T-Cell Non-Hodgkin's Lymphoma","CD274_rna:  22.41<br />CD274_protein:  2.973310<br />Ca-Ski:Cervical Carcinoma","CD274_rna:  19.45<br />CD274_protein:  2.950810<br />RKN:Other Sarcomas","CD274_rna:  34.53<br />CD274_protein:  2.935890<br />HO-1-N-1:Oral Cavity Carcinoma","CD274_rna:   8.90<br />CD274_protein:  2.906160<br />LN-18:Glioblastoma","CD274_rna:  45.58<br />CD274_protein:  2.904930<br />GB-1:Glioblastoma","CD274_rna:  44.85<br />CD274_protein:  2.901320<br />LOXIMVI:Melanoma","CD274_rna:   7.96<br />CD274_protein:  2.895950<br />GCT:Other Sarcomas","CD274_rna:  69.91<br />CD274_protein:  2.887160<br />HSC-3:Oral Cavity Carcinoma","CD274_rna:   3.02<br />CD274_protein:  2.885050<br />OV-56:Ovarian Carcinoma","CD274_rna:  50.39<br />CD274_protein:  2.866580<br />CAL-12T:Non-Small Cell Lung Carcinoma","CD274_rna:   9.60<br />CD274_protein:  2.864660<br />8-MG-BA:Glioblastoma","CD274_rna:  40.79<br />CD274_protein:  2.835710<br />JIMT-1:Breast Carcinoma","CD274_rna:  38.71<br />CD274_protein:  2.827200<br />HCC-827:Non-Small Cell Lung Carcinoma","CD274_rna:  58.33<br />CD274_protein:  2.825200<br />B-CPAP:Thyroid Gland Carcinoma","CD274_rna:  11.51<br />CD274_protein:  2.807990<br />no-11:Glioblastoma","CD274_rna:  20.06<br />CD274_protein:  2.756950<br />D-502MG:Glioblastoma","CD274_rna:  38.83<br />CD274_protein:  2.748180<br />PANC-03-27:Pancreatic Carcinoma","CD274_rna:  11.91<br />CD274_protein:  2.726610<br />Daoy:Other Solid Cancers","CD274_rna:   1.45<br />CD274_protein:  2.714000<br />EW-16:Ewing's Sarcoma","CD274_rna:  62.61<br />CD274_protein:  2.690040<br />JEG-3:Other Solid Cancers","CD274_rna:  45.79<br />CD274_protein:  2.683910<br />RPMI-8866:Chronic Myelogenous Leukemia","CD274_rna: 110.66<br />CD274_protein:  2.655190<br />PANC-08-13:Pancreatic Carcinoma","CD274_rna:  40.07<br />CD274_protein:  2.648610<br />OVCA433:Ovarian Carcinoma","CD274_rna:  38.87<br />CD274_protein:  2.629010<br />KALS-1:Glioblastoma","CD274_rna:  18.88<br />CD274_protein:  2.622240<br />SU8686:Pancreatic Carcinoma","CD274_rna:  11.78<br />CD274_protein:  2.618960<br />SNB75:Glioblastoma","CD274_rna:   3.08<br />CD274_protein:  2.611820<br />A375:Melanoma","CD274_rna:  11.44<br />CD274_protein:  2.578720<br />NCI-H1693:Non-Small Cell Lung Carcinoma","CD274_rna:  39.94<br />CD274_protein:  2.543340<br />HTC-C3:Thyroid Gland Carcinoma","CD274_rna: 172.47<br />CD274_protein:  2.538910<br />QIMR-WIL:Acute Myeloid Leukemia","CD274_rna:   7.10<br />CD274_protein:  2.528320<br />ETK-1:Biliary Tract Carcinoma","CD274_rna:  46.52<br />CD274_protein:  2.520730<br />ES-2:Ovarian Carcinoma","CD274_rna:  15.67<br />CD274_protein:  2.500220<br />KNS-81-FD:Glioblastoma","CD274_rna:  79.83<br />CD274_protein:  2.497060<br />NCI-H2444:Non-Small Cell Lung Carcinoma","CD274_rna:  19.65<br />CD274_protein:  2.492520<br />GI-ME-N:Neuroblastoma","CD274_rna: 129.69<br />CD274_protein:  2.468590<br />CAL-120:Breast Carcinoma","CD274_rna:  34.74<br />CD274_protein:  2.457030<br />T24:Bladder Carcinoma","CD274_rna:  30.75<br />CD274_protein:  2.420740<br />KYSE-150:Esophageal Squamous Cell Carcinoma","CD274_rna:   5.53<br />CD274_protein:  2.407110<br />MDST8:Colorectal Carcinoma","CD274_rna:   3.19<br />CD274_protein:  2.369810<br />JHOS-2:Ovarian Carcinoma","CD274_rna: 204.14<br />CD274_protein:  2.324470<br />JVM-2:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:  36.56<br />CD274_protein:  2.324240<br />NCI-H2009:Non-Small Cell Lung Carcinoma","CD274_rna:  15.20<br />CD274_protein:  2.314280<br />OSC-20:Oral Cavity Carcinoma","CD274_rna:  29.16<br />CD274_protein:  2.297670<br />PCI-30:Head and Neck Carcinoma","CD274_rna:  25.36<br />CD274_protein:  2.294470<br />NCI-H2087:Non-Small Cell Lung Carcinoma","CD274_rna:  34.69<br />CD274_protein:  2.281990<br />NCI-H2135:Non-Small Cell Lung Carcinoma","CD274_rna:   2.86<br />CD274_protein:  2.270880<br />YKG-1:Glioblastoma","CD274_rna:  45.15<br />CD274_protein:  2.256500<br />NCI-H2085:Non-Small Cell Lung Carcinoma","CD274_rna:  74.06<br />CD274_protein:  2.236890<br />8305C:Thyroid Gland Carcinoma","CD274_rna:  14.71<br />CD274_protein:  2.200150<br />LS-123:Colorectal Carcinoma","CD274_rna:  40.53<br />CD274_protein:  2.195170<br />JHH-6:Hepatocellular Carcinoma","CD274_rna:  41.24<br />CD274_protein:  2.160320<br />D-566MG:Glioblastoma","CD274_rna:   0.00<br />CD274_protein:  2.152280<br />D-245MG:Glioblastoma","CD274_rna:   8.99<br />CD274_protein:  2.113150<br />VA-ES-BJ:Other Sarcomas","CD274_rna:  82.75<br />CD274_protein:  2.095590<br />HC-1:Other Blood Cancers","CD274_rna:  22.76<br />CD274_protein:  2.049910<br />SNU-387:Hepatocellular Carcinoma","CD274_rna:  59.96<br />CD274_protein:  2.031910<br />NCI-H441:Non-Small Cell Lung Carcinoma","CD274_rna:  69.39<br />CD274_protein:  2.030310<br />KARPAS-1106P:B-Cell Non-Hodgkin's Lymphoma","CD274_rna: 416.29<br />CD274_protein:  2.023460<br />RPMI-6666:Non-Cancerous","CD274_rna:   5.29<br />CD274_protein:  2.003380<br />SW872:Other Sarcomas","CD274_rna:  64.40<br />CD274_protein:  1.961440<br />HT-1080:Other Sarcomas","CD274_rna:  32.98<br />CD274_protein:  1.959490<br />Hs-445:Non-Cancerous","CD274_rna:  32.13<br />CD274_protein:  1.945720<br />BHY:Head and Neck Carcinoma","CD274_rna:  35.32<br />CD274_protein:  1.919980<br />OCI-M1:Acute Myeloid Leukemia","CD274_rna:   6.77<br />CD274_protein:  1.866720<br />JHU-029:Head and Neck Carcinoma","CD274_rna:  22.14<br />CD274_protein:  1.851060<br />MPP-89:Mesothelioma","CD274_rna:   5.85<br />CD274_protein:  1.848240<br />NCI-H1568:Non-Small Cell Lung Carcinoma","CD274_rna:  11.17<br />CD274_protein:  1.831630<br />SNU-449:Hepatocellular Carcinoma","CD274_rna:   0.10<br />CD274_protein:  1.829910<br />CAL-148:Breast Carcinoma","CD274_rna:  96.44<br />CD274_protein:  1.822930<br />JVM-3:Other Blood Cancers","CD274_rna:  15.07<br />CD274_protein:  1.728670<br />SAS:Oral Cavity Carcinoma","CD274_rna:  46.37<br />CD274_protein:  1.711360<br />NCI-H647:Non-Small Cell Lung Carcinoma","CD274_rna:   8.70<br />CD274_protein:  1.702100<br />BxPC-3:Pancreatic Carcinoma","CD274_rna:   0.42<br />CD274_protein:  1.664490<br />NCI-H2170:Squamous Cell Lung Carcinoma","CD274_rna:  48.67<br />CD274_protein:  1.579730<br />SNU-423:Hepatocellular Carcinoma","CD274_rna:   0.00<br />CD274_protein:  1.479910<br />PFSK-1:Other Solid Cancers","CD274_rna:  55.05<br />CD274_protein:  1.438360<br />NCI-H2052:Mesothelioma","CD274_rna:  22.77<br />CD274_protein:  1.407040<br />EPLC-272H:Other Solid Cancers","CD274_rna:  96.01<br />CD274_protein:  1.401860<br />HCC-78:Non-Small Cell Lung Carcinoma","CD274_rna:  11.94<br />CD274_protein:  1.351260<br />KON:Oral Cavity Carcinoma","CD274_rna:  11.21<br />CD274_protein:  1.332650<br />BB65-RCC:Kidney Carcinoma","CD274_rna: 290.03<br />CD274_protein:  1.330740<br />IM-9:Non-Cancerous","CD274_rna:   1.90<br />CD274_protein:  1.281030<br />COLO-800:Melanoma","CD274_rna:  10.10<br />CD274_protein:  1.266090<br />LB831-BLC:Bladder Carcinoma","CD274_rna:  31.08<br />CD274_protein:  1.205190<br />BPH-1:Non-Cancerous","CD274_rna:  22.23<br />CD274_protein:  1.160890<br />KU-19-19:Bladder Carcinoma","CD274_rna: 121.61<br />CD274_protein:  1.105760<br />CaR-1:Colorectal Carcinoma","CD274_rna:  85.92<br />CD274_protein:  1.058080<br />OSC-19:Oral Cavity Carcinoma","CD274_rna:   1.81<br />CD274_protein:  1.018130<br />HT:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   6.71<br />CD274_protein:  1.002150<br />SK-N-SH:Neuroblastoma","CD274_rna:  56.65<br />CD274_protein:  0.984143<br />COR-L23:Non-Small Cell Lung Carcinoma","CD274_rna:   4.38<br />CD274_protein:  0.835006<br />EMC-BAC-2:Non-Small Cell Lung Carcinoma","CD274_rna:  17.74<br />CD274_protein:  0.599616<br />CS1:Chondrosarcoma","CD274_rna:  20.01<br />CD274_protein:  0.538562<br />HuP-T3:Pancreatic Carcinoma","CD274_rna:   1.42<br />CD274_protein:  0.485819<br />MM1S:Plasma Cell Myeloma","CD274_rna:   8.03<br />CD274_protein:  0.455324<br />BT-20:Breast Carcinoma","CD274_rna:   3.60<br />CD274_protein:  0.358609<br />SW1710:Bladder Carcinoma","CD274_rna:  22.08<br />CD274_protein: -0.155363<br />NCI-H2228:Non-Small Cell Lung Carcinoma","CD274_rna:  20.17<br />CD274_protein: -0.332793<br />DAN-G:Pancreatic Carcinoma","CD274_rna:  37.11<br />CD274_protein: -1.621240<br />MDA-MB-231:Breast Carcinoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />201T:Non-Small Cell Lung Carcinoma","CD274_rna:   0.36<br />CD274_protein:  0.000000<br />22RV1:Prostate Carcinoma","CD274_rna:   3.78<br />CD274_protein:  0.000000<br />23132-87:Gastric Carcinoma","CD274_rna:   2.46<br />CD274_protein:  0.000000<br />42-MG-BA:Glioblastoma","CD274_rna:   1.78<br />CD274_protein:  0.000000<br />451Lu:Melanoma","CD274_rna:  86.26<br />CD274_protein:  0.000000<br />5637:Bladder Carcinoma","CD274_rna:  10.62<br />CD274_protein:  0.000000<br />639-V:Bladder Carcinoma","CD274_rna:   1.78<br />CD274_protein:  0.000000<br />697:B-Lymphoblastic Leukemia","CD274_rna:   3.58<br />CD274_protein:  0.000000<br />769-P:Kidney Carcinoma","CD274_rna:  21.65<br />CD274_protein:  0.000000<br />786-0:Kidney Carcinoma","CD274_rna:   6.40<br />CD274_protein:  0.000000<br />A172:Glioblastoma","CD274_rna:   1.38<br />CD274_protein:  0.000000<br />A204:Rhabdomyosarcoma","CD274_rna:   4.85<br />CD274_protein:  0.000000<br />A2058:Melanoma","CD274_rna:   1.03<br />CD274_protein:  0.000000<br />A253:Head and Neck Carcinoma","CD274_rna:   0.97<br />CD274_protein:  0.000000<br />A2780:Ovarian Carcinoma","CD274_rna:   0.34<br />CD274_protein:  0.000000<br />A3-KAW:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   3.82<br />CD274_protein:  0.000000<br />A388:Other Solid Cancers","CD274_rna:   1.93<br />CD274_protein:  0.000000<br />A4-Fuk:B-Lymphoblastic Leukemia","CD274_rna:   0.94<br />CD274_protein:  0.000000<br />A427:Non-Small Cell Lung Carcinoma","CD274_rna:   9.56<br />CD274_protein:  0.000000<br />A431:Other Solid Cancers","CD274_rna:   1.81<br />CD274_protein:  0.000000<br />A498:Kidney Carcinoma","CD274_rna:   5.52<br />CD274_protein:  0.000000<br />A549:Non-Small Cell Lung Carcinoma","CD274_rna:   0.18<br />CD274_protein:  0.000000<br />A673:Ewing's Sarcoma","CD274_rna:   3.91<br />CD274_protein:  0.000000<br />A704:Kidney Carcinoma","CD274_rna:   1.91<br />CD274_protein:  0.000000<br />ABC-1:Non-Small Cell Lung Carcinoma","CD274_rna:   7.72<br />CD274_protein:  0.000000<br />ACHN:Kidney Carcinoma","CD274_rna:   2.07<br />CD274_protein:  0.000000<br />AGS:Gastric Carcinoma","CD274_rna:   0.25<br />CD274_protein:  0.000000<br />ALL-PO:B-Lymphoblastic Leukemia","CD274_rna:   1.36<br />CD274_protein:  0.000000<br />ALL-SIL:T-Lymphoblastic Leukemia","CD274_rna:   0.33<br />CD274_protein:  0.000000<br />AMO-1:Plasma Cell Myeloma","CD274_rna:   2.49<br />CD274_protein:  0.000000<br />AN3-CA:Endometrial Carcinoma","CD274_rna:   2.47<br />CD274_protein:  0.000000<br />ATN-1:T-Lymphoblastic Leukemia","CD274_rna:   3.24<br />CD274_protein:  0.000000<br />AU565:Breast Carcinoma","CD274_rna:   0.13<br />CD274_protein:  0.000000<br />AsPC-1:Pancreatic Carcinoma","CD274_rna:   1.39<br />CD274_protein:  0.000000<br />BALL-1:B-Lymphoblastic Leukemia","CD274_rna:  17.23<br />CD274_protein:  0.000000<br />BB30-HNC:Head and Neck Carcinoma","CD274_rna:   1.08<br />CD274_protein:  0.000000<br />BC-1:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.22<br />CD274_protein:  0.000000<br />BC-3:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   4.15<br />CD274_protein:  0.000000<br />BE-13:T-Lymphoblastic Leukemia","CD274_rna:   0.39<br />CD274_protein:  0.000000<br />BE2-M17:Neuroblastoma","CD274_rna:   0.93<br />CD274_protein:  0.000000<br />BEN:Non-Small Cell Lung Carcinoma","CD274_rna:   4.36<br />CD274_protein:  0.000000<br />BFTC-905:Bladder Carcinoma","CD274_rna:   5.24<br />CD274_protein:  0.000000<br />BHT-101:Thyroid Gland Carcinoma","CD274_rna:   1.48<br />CD274_protein:  0.000000<br />BICR22:Oral Cavity Carcinoma","CD274_rna:   0.93<br />CD274_protein:  0.000000<br />BICR31:Oral Cavity Carcinoma","CD274_rna:   3.15<br />CD274_protein:  0.000000<br />BICR78:Oral Cavity Carcinoma","CD274_rna:   0.16<br />CD274_protein:  0.000000<br />BL-41:Burkitt's Lymphoma","CD274_rna: 140.33<br />CD274_protein:  0.000000<br />BONNA-12:Other Blood Cancers","CD274_rna:   0.06<br />CD274_protein:  0.000000<br />BT-474:Breast Carcinoma","CD274_rna:   1.02<br />CD274_protein:  0.000000<br />BT-483:Breast Carcinoma","CD274_rna:   5.80<br />CD274_protein:  0.000000<br />BT-549:Breast Carcinoma","CD274_rna:   3.07<br />CD274_protein:  0.000000<br />BV-173:Chronic Myelogenous Leukemia","CD274_rna:   1.71<br />CD274_protein:  0.000000<br />Becker:Glioma","CD274_rna:   0.13<br />CD274_protein:  0.000000<br />C-33-A:Cervical Carcinoma","CD274_rna:  20.77<br />CD274_protein:  0.000000<br />C-4-I:Cervical Carcinoma","CD274_rna:   0.29<br />CD274_protein:  0.000000<br />C2BBe1:Colorectal Carcinoma","CD274_rna:   0.36<br />CD274_protein:  0.000000<br />C32:Melanoma","CD274_rna:   0.03<br />CD274_protein:  0.000000<br />C3A:Hepatocellular Carcinoma","CD274_rna:   0.72<br />CD274_protein:  0.000000<br />CA46:Burkitt's Lymphoma","CD274_rna:   0.04<br />CD274_protein:  0.000000<br />CADO-ES1:Ewing's Sarcoma","CD274_rna:   1.18<br />CD274_protein:  0.000000<br />CAKI-1:Kidney Carcinoma","CD274_rna:  11.93<br />CD274_protein:  0.000000<br />CAL-27:Oral Cavity Carcinoma","CD274_rna:   5.86<br />CD274_protein:  0.000000<br />CAL-29:Bladder Carcinoma","CD274_rna:  10.95<br />CD274_protein:  0.000000<br />CAL-33:Oral Cavity Carcinoma","CD274_rna:   4.29<br />CD274_protein:  0.000000<br />CAL-39:Other Solid Cancers","CD274_rna:   0.34<br />CD274_protein:  0.000000<br />CAL-51:Breast Carcinoma","CD274_rna:   0.34<br />CD274_protein:  0.000000<br />CAL-54:Kidney Carcinoma","CD274_rna:  11.54<br />CD274_protein:  0.000000<br />CAL-72:Osteosarcoma","CD274_rna:   2.17<br />CD274_protein:  0.000000<br />CAL-78:Chondrosarcoma","CD274_rna:   0.24<br />CD274_protein:  0.000000<br />CAMA-1:Breast Carcinoma","CD274_rna:   2.97<br />CD274_protein:  0.000000<br />CAPAN-1:Pancreatic Carcinoma","CD274_rna:  13.17<br />CD274_protein:  0.000000<br />CAPAN-2:Pancreatic Carcinoma","CD274_rna:   0.35<br />CD274_protein:  0.000000<br />CCK-81:Colorectal Carcinoma","CD274_rna:   0.18<br />CD274_protein:  0.000000<br />CCRF-CEM:T-Lymphoblastic Leukemia","CD274_rna:  13.08<br />CD274_protein:  0.000000<br />CFPAC-1:Pancreatic Carcinoma","CD274_rna:   1.92<br />CD274_protein:  0.000000<br />CGTH-W-1:Thyroid Gland Carcinoma","CD274_rna:   0.34<br />CD274_protein:  0.000000<br />CHL-1:Melanoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />CHP-126:Neuroblastoma","CD274_rna:   4.42<br />CD274_protein:  0.000000<br />CHP-212:Neuroblastoma","CD274_rna:   1.93<br />CD274_protein:  0.000000<br />CHSA0011:Chondrosarcoma","CD274_rna:  25.50<br />CD274_protein:  0.000000<br />CHSA0108:Chondrosarcoma","CD274_rna:  12.71<br />CD274_protein:  0.000000<br />CHSA8926:Chondrosarcoma","CD274_rna:   3.26<br />CD274_protein:  0.000000<br />CL-11:Colorectal Carcinoma","CD274_rna:   0.40<br />CD274_protein:  0.000000<br />CML-T1:Chronic Myelogenous Leukemia","CD274_rna:   4.96<br />CD274_protein:  0.000000<br />COLO-205:Colorectal Carcinoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />COLO-320-HSR:Colorectal Carcinoma","CD274_rna:   2.17<br />CD274_protein:  0.000000<br />COLO-668:Small Cell Lung Carcinoma","CD274_rna:   2.44<br />CD274_protein:  0.000000<br />COLO-678:Colorectal Carcinoma","CD274_rna:   1.20<br />CD274_protein:  0.000000<br />COLO-679:Melanoma","CD274_rna:  12.89<br />CD274_protein:  0.000000<br />COLO-680N:Esophageal Squamous Cell Carcinoma","CD274_rna:   0.35<br />CD274_protein:  0.000000<br />COLO-684:Endometrial Carcinoma","CD274_rna:   0.95<br />CD274_protein:  0.000000<br />COLO-783:Melanoma","CD274_rna:   0.78<br />CD274_protein:  0.000000<br />COLO-792:Melanoma","CD274_rna:   0.29<br />CD274_protein:  0.000000<br />COLO-824:Breast Carcinoma","CD274_rna:   0.54<br />CD274_protein:  0.000000<br />COLO-829:Melanoma","CD274_rna:   9.31<br />CD274_protein:  0.000000<br />COR-L105:Non-Small Cell Lung Carcinoma","CD274_rna:   1.59<br />CD274_protein:  0.000000<br />COR-L279:Small Cell Lung Carcinoma","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />COR-L303:Small Cell Lung Carcinoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />COR-L311:Small Cell Lung Carcinoma","CD274_rna:   4.91<br />CD274_protein:  0.000000<br />COR-L32:Squamous Cell Lung Carcinoma","CD274_rna:   3.64<br />CD274_protein:  0.000000<br />COR-L321:Other Solid Cancers","CD274_rna:   0.89<br />CD274_protein:  0.000000<br />COR-L88:Small Cell Lung Carcinoma","CD274_rna:   2.82<br />CD274_protein:  0.000000<br />COR-L95:Small Cell Lung Carcinoma","CD274_rna:   0.07<br />CD274_protein:  0.000000<br />CP50-MEL-B:Melanoma","CD274_rna:   0.13<br />CD274_protein:  0.000000<br />CP66-MEL:Melanoma","CD274_rna:   0.07<br />CD274_protein:  0.000000<br />CPC-N:Small Cell Lung Carcinoma","CD274_rna:   0.10<br />CD274_protein:  0.000000<br />CRO-AP2:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.90<br />CD274_protein:  0.000000<br />CTB-1:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />CTV-1:T-Lymphoblastic Leukemia","CD274_rna:   2.61<br />CD274_protein:  0.000000<br />CW-2:Colorectal Carcinoma","CD274_rna:   3.20<br />CD274_protein:  0.000000<br />Ca9-22:Oral Cavity Carcinoma","CD274_rna:   0.76<br />CD274_protein:  0.000000<br />Calu-3:Non-Small Cell Lung Carcinoma","CD274_rna:   0.79<br />CD274_protein:  0.000000<br />Calu-6:Non-Small Cell Lung Carcinoma","CD274_rna:  16.48<br />CD274_protein:  0.000000<br />Caov-3:Ovarian Carcinoma","CD274_rna:   0.45<br />CD274_protein:  0.000000<br />Caov-4:Ovarian Carcinoma","CD274_rna:   0.27<br />CD274_protein:  0.000000<br />ChaGo-K-1:Other Solid Cancers","CD274_rna:  16.84<br />CD274_protein:  0.000000<br />D-247MG:Glioblastoma","CD274_rna:  13.34<br />CD274_protein:  0.000000<br />D-263MG:Glioblastoma","CD274_rna:   0.42<br />CD274_protein:  0.000000<br />D-283MED:Other Solid Cancers","CD274_rna:  22.19<br />CD274_protein:  0.000000<br />D-336MG:Glioblastoma","CD274_rna:   3.61<br />CD274_protein:  0.000000<br />D-392MG:Glioblastoma","CD274_rna:   5.79<br />CD274_protein:  0.000000<br />D-542MG:Glioblastoma","CD274_rna:   0.19<br />CD274_protein:  0.000000<br />DB:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   1.51<br />CD274_protein:  0.000000<br />DG-75:Burkitt's Lymphoma","CD274_rna:  12.98<br />CD274_protein:  0.000000<br />DJM-1:Other Solid Cancers","CD274_rna:   4.61<br />CD274_protein:  0.000000<br />DK-MG:Glioblastoma","CD274_rna:   0.16<br />CD274_protein:  0.000000<br />DMS-114:Small Cell Lung Carcinoma","CD274_rna:   0.27<br />CD274_protein:  0.000000<br />DMS-273:Small Cell Lung Carcinoma","CD274_rna:   5.68<br />CD274_protein:  0.000000<br />DMS-53:Small Cell Lung Carcinoma","CD274_rna:   3.62<br />CD274_protein:  0.000000<br />DMS-79:Small Cell Lung Carcinoma","CD274_rna:   1.84<br />CD274_protein:  0.000000<br />DND-41:T-Lymphoblastic Leukemia","CD274_rna:   0.58<br />CD274_protein:  0.000000<br />DOHH-2:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   2.13<br />CD274_protein:  0.000000<br />DOK:Oral Cavity Carcinoma","CD274_rna:  20.27<br />CD274_protein:  0.000000<br />DOV13:Ovarian Carcinoma","CD274_rna:   0.81<br />CD274_protein:  0.000000<br />DSH1:Bladder Carcinoma","CD274_rna:  16.86<br />CD274_protein:  0.000000<br />DU-145:Prostate Carcinoma","CD274_rna:   1.75<br />CD274_protein:  0.000000<br />DU-4475:Breast Carcinoma","CD274_rna:   0.72<br />CD274_protein:  0.000000<br />Daudi:Burkitt's Lymphoma","CD274_rna:   5.09<br />CD274_protein:  0.000000<br />Detroit562:Head and Neck Carcinoma","CD274_rna:   0.88<br />CD274_protein:  0.000000<br />DiFi:Colorectal Carcinoma","CD274_rna:  19.78<br />CD274_protein:  0.000000<br />DoTc2-4510:Cervical Carcinoma","CD274_rna:   8.36<br />CD274_protein:  0.000000<br />EB-3:Burkitt's Lymphoma","CD274_rna:   7.71<br />CD274_protein:  0.000000<br />EB2:Burkitt's Lymphoma","CD274_rna:  25.54<br />CD274_protein:  0.000000<br />EBC-1:Squamous Cell Lung Carcinoma","CD274_rna:  11.42<br />CD274_protein:  0.000000<br />EC-GI-10:Esophageal Squamous Cell Carcinoma","CD274_rna:   3.07<br />CD274_protein:  0.000000<br />ECC10:Gastric Carcinoma","CD274_rna:   0.73<br />CD274_protein:  0.000000<br />ECC12:Gastric Carcinoma","CD274_rna:   0.03<br />CD274_protein:  0.000000<br />EFM-19:Breast Carcinoma","CD274_rna:   0.31<br />CD274_protein:  0.000000<br />EFM-192A:Breast Carcinoma","CD274_rna:   2.48<br />CD274_protein:  0.000000<br />EFO-21:Ovarian Carcinoma","CD274_rna:   1.82<br />CD274_protein:  0.000000<br />EFO-27:Ovarian Carcinoma","CD274_rna:   5.56<br />CD274_protein:  0.000000<br />EJM:Plasma Cell Myeloma","CD274_rna:   0.73<br />CD274_protein:  0.000000<br />EKVX:Non-Small Cell Lung Carcinoma","CD274_rna:   0.26<br />CD274_protein:  0.000000<br />EM-2:Chronic Myelogenous Leukemia","CD274_rna:  19.01<br />CD274_protein:  0.000000<br />EMC-BAC-1:Non-Small Cell Lung Carcinoma","CD274_rna:   0.06<br />CD274_protein:  0.000000<br />EN:Endometrial Carcinoma","CD274_rna:   0.13<br />CD274_protein:  0.000000<br />ES1:Ewing's Sarcoma","CD274_rna:   0.64<br />CD274_protein:  0.000000<br />ES4:Ewing's Sarcoma","CD274_rna:   0.04<br />CD274_protein:  0.000000<br />ES5:Ewing's Sarcoma","CD274_rna:   1.62<br />CD274_protein:  0.000000<br />ES6:Ewing's Sarcoma","CD274_rna:   6.31<br />CD274_protein:  0.000000<br />ES7:Ewing's Sarcoma","CD274_rna:   0.40<br />CD274_protein:  0.000000<br />ES8:Ewing's Sarcoma","CD274_rna:   0.16<br />CD274_protein:  0.000000<br />ESO26:Esophageal Carcinoma","CD274_rna:   0.27<br />CD274_protein:  0.000000<br />ESO51:Esophageal Carcinoma","CD274_rna:  10.86<br />CD274_protein:  0.000000<br />ESS-1:Other Sarcomas","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />EVSA-T:Breast Carcinoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />EW-1:Ewing's Sarcoma","CD274_rna:   0.04<br />CD274_protein:  0.000000<br />EW-11:Ewing's Sarcoma","CD274_rna:   0.13<br />CD274_protein:  0.000000<br />EW-12:Ewing's Sarcoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />EW-13:Ewing's Sarcoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />EW-18:Ewing's Sarcoma","CD274_rna:   0.04<br />CD274_protein:  0.000000<br />EW-22:Ewing's Sarcoma","CD274_rna:   0.12<br />CD274_protein:  0.000000<br />EW-24:Ewing's Sarcoma","CD274_rna:   0.10<br />CD274_protein:  0.000000<br />EW-3:Ewing's Sarcoma","CD274_rna:   0.93<br />CD274_protein:  0.000000<br />EW-7:Ewing's Sarcoma","CD274_rna:   0.18<br />CD274_protein:  0.000000<br />EoL-1-cell:Acute Myeloid Leukemia","CD274_rna:  12.15<br />CD274_protein:  0.000000<br />FADU:Head and Neck Carcinoma","CD274_rna:   0.47<br />CD274_protein:  0.000000<br />FLO-1:Esophageal Carcinoma","CD274_rna:   7.22<br />CD274_protein:  0.000000<br />FTC-133:Thyroid Gland Carcinoma","CD274_rna:   0.42<br />CD274_protein:  0.000000<br />FU-OV-1:Ovarian Carcinoma","CD274_rna:   0.39<br />CD274_protein:  0.000000<br />FU97:Gastric Carcinoma","CD274_rna:  15.66<br />CD274_protein:  0.000000<br />Farage:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   1.28<br />CD274_protein:  0.000000<br />G-292-Clone-A141B1:Osteosarcoma","CD274_rna:   2.06<br />CD274_protein:  0.000000<br />G-361:Melanoma","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />G-401:Other Solid Cancers","CD274_rna:   0.35<br />CD274_protein:  0.000000<br />G-402:Other Sarcomas","CD274_rna:   1.55<br />CD274_protein:  0.000000<br />G-MEL:Melanoma","CD274_rna:   0.34<br />CD274_protein:  0.000000<br />GA-10:Burkitt's Lymphoma","CD274_rna:   0.53<br />CD274_protein:  0.000000<br />GAK:Melanoma","CD274_rna:   6.88<br />CD274_protein:  0.000000<br />GAMG:Glioblastoma","CD274_rna:   0.24<br />CD274_protein:  0.000000<br />GCIY:Gastric Carcinoma","CD274_rna:   0.95<br />CD274_protein:  0.000000<br />GDM-1:Acute Myeloid Leukemia","CD274_rna:   2.81<br />CD274_protein:  0.000000<br />GI-1:Glioblastoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />GOTO:Neuroblastoma","CD274_rna:   0.29<br />CD274_protein:  0.000000<br />GP5d:Colorectal Carcinoma","CD274_rna:   1.43<br />CD274_protein:  0.000000<br />GR-ST:B-Lymphoblastic Leukemia","CD274_rna:  63.35<br />CD274_protein:  0.000000<br />GRANTA-519:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.24<br />CD274_protein:  0.000000<br />H-EMC-SS:Chondrosarcoma","CD274_rna:  25.76<br />CD274_protein:  0.000000<br />H3255:Non-Small Cell Lung Carcinoma","CD274_rna:   2.24<br />CD274_protein:  0.000000<br />H4:Glioma","CD274_rna:   2.32<br />CD274_protein:  0.000000<br />H9:T-Cell Non-Hodgkin's Lymphoma","CD274_rna:   6.42<br />CD274_protein:  0.000000<br />HA7-RCC:Kidney Carcinoma","CD274_rna:   1.23<br />CD274_protein:  0.000000<br />HAL-01:B-Lymphoblastic Leukemia","CD274_rna:   1.15<br />CD274_protein:  0.000000<br />HARA:Squamous Cell Lung Carcinoma","CD274_rna:   3.46<br />CD274_protein:  0.000000<br />HCC-15:Squamous Cell Lung Carcinoma","CD274_rna:   0.29<br />CD274_protein:  0.000000<br />HCC-33:Small Cell Lung Carcinoma","CD274_rna:   3.49<br />CD274_protein:  0.000000<br />HCC-366:Non-Small Cell Lung Carcinoma","CD274_rna:   1.26<br />CD274_protein:  0.000000<br />HCC1143:Breast Carcinoma","CD274_rna:   0.82<br />CD274_protein:  0.000000<br />HCC1187:Breast Carcinoma","CD274_rna:   1.06<br />CD274_protein:  0.000000<br />HCC1395:Breast Carcinoma","CD274_rna:   0.16<br />CD274_protein:  0.000000<br />HCC1419:Breast Carcinoma","CD274_rna:   1.68<br />CD274_protein:  0.000000<br />HCC1428:Breast Carcinoma","CD274_rna:   0.78<br />CD274_protein:  0.000000<br />HCC1500:Breast Carcinoma","CD274_rna:   0.44<br />CD274_protein:  0.000000<br />HCC1569:Breast Carcinoma","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />HCC1599:Breast Carcinoma","CD274_rna:   3.03<br />CD274_protein:  0.000000<br />HCC1806:Breast Carcinoma","CD274_rna:   5.29<br />CD274_protein:  0.000000<br />HCC1937:Breast Carcinoma","CD274_rna:  19.17<br />CD274_protein:  0.000000<br />HCC1954:Breast Carcinoma","CD274_rna:   0.15<br />CD274_protein:  0.000000<br />HCC2157:Breast Carcinoma","CD274_rna:   0.12<br />CD274_protein:  0.000000<br />HCC2218:Breast Carcinoma","CD274_rna:   1.22<br />CD274_protein:  0.000000<br />HCC2998:Colorectal Carcinoma","CD274_rna:   8.46<br />CD274_protein:  0.000000<br />HCC38:Breast Carcinoma","CD274_rna:  19.10<br />CD274_protein:  0.000000<br />HCC70:Breast Carcinoma","CD274_rna:   3.18<br />CD274_protein:  0.000000<br />HCE-4:Esophageal Squamous Cell Carcinoma","CD274_rna:   2.95<br />CD274_protein:  0.000000<br />HCT-116:Colorectal Carcinoma","CD274_rna:   1.90<br />CD274_protein:  0.000000<br />HCT-15:Colorectal Carcinoma","CD274_rna:   4.03<br />CD274_protein:  0.000000<br />HDQ-P1:Breast Carcinoma","CD274_rna:   0.19<br />CD274_protein:  0.000000<br />HEC-1:Endometrial Carcinoma","CD274_rna:  17.93<br />CD274_protein:  0.000000<br />HEL:Acute Myeloid Leukemia","CD274_rna:   0.26<br />CD274_protein:  0.000000<br />HGC-27:Gastric Carcinoma","CD274_rna:   0.21<br />CD274_protein:  0.000000<br />HH:T-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.15<br />CD274_protein:  0.000000<br />HL-60:Acute Myeloid Leukemia","CD274_rna:   0.56<br />CD274_protein:  0.000000<br />HLE:Hepatocellular Carcinoma","CD274_rna:   1.58<br />CD274_protein:  0.000000<br />HMV-II:Melanoma","CD274_rna:   0.95<br />CD274_protein:  0.000000<br />HO-1-u-1:Oral Cavity Carcinoma","CD274_rna:  14.19<br />CD274_protein:  0.000000<br />HOS:Osteosarcoma","CD274_rna:   2.51<br />CD274_protein:  0.000000<br />HPAC:Pancreatic Carcinoma","CD274_rna:   2.18<br />CD274_protein:  0.000000<br />HSC-2:Oral Cavity Carcinoma","CD274_rna:   0.03<br />CD274_protein:  0.000000<br />HSC-39:Gastric Carcinoma","CD274_rna:  11.65<br />CD274_protein:  0.000000<br />HSC-4:Oral Cavity Carcinoma","CD274_rna:   0.72<br />CD274_protein:  0.000000<br />HT-115:Colorectal Carcinoma","CD274_rna:   0.41<br />CD274_protein:  0.000000<br />HT-144:Melanoma","CD274_rna:   0.70<br />CD274_protein:  0.000000<br />HT-29:Colorectal Carcinoma","CD274_rna:   6.56<br />CD274_protein:  0.000000<br />HT-3:Cervical Carcinoma","CD274_rna:   0.19<br />CD274_protein:  0.000000<br />HT55:Colorectal Carcinoma","CD274_rna:   1.03<br />CD274_protein:  0.000000<br />HeLa:Cervical Carcinoma","CD274_rna:   0.17<br />CD274_protein:  0.000000<br />Hep3B2-1-7:Hepatocellular Carcinoma","CD274_rna:  21.87<br />CD274_protein:  0.000000<br />Hey:Ovarian Carcinoma","CD274_rna:  10.63<br />CD274_protein:  0.000000<br />Hs-578-T:Breast Carcinoma","CD274_rna:  11.66<br />CD274_protein:  0.000000<br />Hs-683:Glioma","CD274_rna:   8.92<br />CD274_protein:  0.000000<br />Hs-766T:Pancreatic Carcinoma","CD274_rna:   2.66<br />CD274_protein:  0.000000<br />Hs-939-T:Melanoma","CD274_rna:   0.43<br />CD274_protein:  0.000000<br />HuH-7:Hepatocellular Carcinoma","CD274_rna:   0.77<br />CD274_protein:  0.000000<br />HuO-3N1:Osteosarcoma","CD274_rna:   0.44<br />CD274_protein:  0.000000<br />HuO9:Osteosarcoma","CD274_rna:   9.82<br />CD274_protein:  0.000000<br />HuP-T4:Pancreatic Carcinoma","CD274_rna:   0.03<br />CD274_protein:  0.000000<br />HuTu-80:Other Solid Cancers","CD274_rna:  24.09<br />CD274_protein:  0.000000<br />IA-LM:Non-Small Cell Lung Carcinoma","CD274_rna:   6.11<br />CD274_protein:  0.000000<br />IGR-1:Melanoma","CD274_rna:   0.77<br />CD274_protein:  0.000000<br />IGR-37:Melanoma","CD274_rna:   0.19<br />CD274_protein:  0.000000<br />IGROV-1:Ovarian Carcinoma","CD274_rna:  35.90<br />CD274_protein:  0.000000<br />IHH-4:Thyroid Gland Carcinoma","CD274_rna:   1.45<br />CD274_protein:  0.000000<br />IM-95:Gastric Carcinoma","CD274_rna:   0.23<br />CD274_protein:  0.000000<br />IMR-5:Neuroblastoma","CD274_rna:   0.53<br />CD274_protein:  0.000000<br />IPC-298:Melanoma","CD274_rna:   1.26<br />CD274_protein:  0.000000<br />IST-MEL1:Melanoma","CD274_rna:   1.18<br />CD274_protein:  0.000000<br />IST-MES1:Mesothelioma","CD274_rna:   2.70<br />CD274_protein:  0.000000<br />IST-SL1:Small Cell Lung Carcinoma","CD274_rna:   0.04<br />CD274_protein:  0.000000<br />IST-SL2:Small Cell Lung Carcinoma","CD274_rna:  11.12<br />CD274_protein:  0.000000<br />J82:Bladder Carcinoma","CD274_rna:   0.03<br />CD274_protein:  0.000000<br />JAR:Other Solid Cancers","CD274_rna:   0.26<br />CD274_protein:  0.000000<br />JEKO-1:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.35<br />CD274_protein:  0.000000<br />JHH-1:Hepatocellular Carcinoma","CD274_rna:   6.78<br />CD274_protein:  0.000000<br />JHH-2:Hepatocellular Carcinoma","CD274_rna:   0.60<br />CD274_protein:  0.000000<br />JHH-7:Hepatocellular Carcinoma","CD274_rna:   3.07<br />CD274_protein:  0.000000<br />JHOS-3:Ovarian Carcinoma","CD274_rna:   0.36<br />CD274_protein:  0.000000<br />JHOS-4:Ovarian Carcinoma","CD274_rna:  11.26<br />CD274_protein:  0.000000<br />JHU-011:Head and Neck Carcinoma","CD274_rna:   4.45<br />CD274_protein:  0.000000<br />JHU-022:Oral Cavity Carcinoma","CD274_rna:   0.29<br />CD274_protein:  0.000000<br />JJN-3:Plasma Cell Myeloma","CD274_rna:   0.27<br />CD274_protein:  0.000000<br />JM1:B-Lymphoblastic Leukemia","CD274_rna:   0.20<br />CD274_protein:  0.000000<br />JSC-1:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.61<br />CD274_protein:  0.000000<br />JURL-MK1:Chronic Myelogenous Leukemia","CD274_rna: 118.84<br />CD274_protein:  0.000000<br />JiyoyeP-2003:Burkitt's Lymphoma","CD274_rna:   3.51<br />CD274_protein:  0.000000<br />Jurkat:T-Lymphoblastic Leukemia","CD274_rna:   0.28<br />CD274_protein:  0.000000<br />K-562:Chronic Myelogenous Leukemia","CD274_rna:   2.20<br />CD274_protein:  0.000000<br />K052:Acute Myeloid Leukemia","CD274_rna:   0.25<br />CD274_protein:  0.000000<br />K2:Melanoma","CD274_rna:   0.99<br />CD274_protein:  0.000000<br />KARPAS-231:B-Lymphoblastic Leukemia","CD274_rna:   4.23<br />CD274_protein:  0.000000<br />KARPAS-422:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.58<br />CD274_protein:  0.000000<br />KARPAS-45:T-Lymphoblastic Leukemia","CD274_rna:   0.67<br />CD274_protein:  0.000000<br />KARPAS-620:Plasma Cell Myeloma","CD274_rna:   0.04<br />CD274_protein:  0.000000<br />KASUMI-1:Acute Myeloid Leukemia","CD274_rna:   1.30<br />CD274_protein:  0.000000<br />KATOIII:Gastric Carcinoma","CD274_rna:   0.73<br />CD274_protein:  0.000000<br />KCL-22:Chronic Myelogenous Leukemia","CD274_rna:   0.78<br />CD274_protein:  0.000000<br />KE-37:T-Lymphoblastic Leukemia","CD274_rna:   0.07<br />CD274_protein:  0.000000<br />KELLY:Neuroblastoma","CD274_rna:   1.33<br />CD274_protein:  0.000000<br />KG-1:Acute Myeloid Leukemia","CD274_rna:   0.34<br />CD274_protein:  0.000000<br />KLE:Endometrial Carcinoma","CD274_rna:  11.81<br />CD274_protein:  0.000000<br />KM-H2:Hodgkin's Lymphoma","CD274_rna:   1.14<br />CD274_protein:  0.000000<br />KM12:Colorectal Carcinoma","CD274_rna:  19.23<br />CD274_protein:  0.000000<br />KMH-2:Thyroid Gland Carcinoma","CD274_rna:   4.54<br />CD274_protein:  0.000000<br />KMOE-2:Acute Myeloid Leukemia","CD274_rna:  20.20<br />CD274_protein:  0.000000<br />KMRC-1:Kidney Carcinoma","CD274_rna:   3.39<br />CD274_protein:  0.000000<br />KMRC-20:Kidney Carcinoma","CD274_rna:   0.58<br />CD274_protein:  0.000000<br />KMS-11:Plasma Cell Myeloma","CD274_rna:   0.42<br />CD274_protein:  0.000000<br />KMS-12-BM:Plasma Cell Myeloma","CD274_rna:   0.68<br />CD274_protein:  0.000000<br />KNS-42:Glioblastoma","CD274_rna:   0.47<br />CD274_protein:  0.000000<br />KNS-62:Squamous Cell Lung Carcinoma","CD274_rna:   0.32<br />CD274_protein:  0.000000<br />KOPN-8:B-Lymphoblastic Leukemia","CD274_rna:   1.15<br />CD274_protein:  0.000000<br />KOSC-2:Head and Neck Carcinoma","CD274_rna:   0.26<br />CD274_protein:  0.000000<br />KP-1N:Pancreatic Carcinoma","CD274_rna:   5.54<br />CD274_protein:  0.000000<br />KP-2:Pancreatic Carcinoma","CD274_rna:   0.30<br />CD274_protein:  0.000000<br />KP-3:Pancreatic Carcinoma","CD274_rna:   0.87<br />CD274_protein:  0.000000<br />KP-4:Pancreatic Carcinoma","CD274_rna:   0.16<br />CD274_protein:  0.000000<br />KP-N-RT-BM-1:Neuroblastoma","CD274_rna:   0.14<br />CD274_protein:  0.000000<br />KP-N-YN:Neuroblastoma","CD274_rna:   0.04<br />CD274_protein:  0.000000<br />KP-N-YS:Neuroblastoma","CD274_rna:  33.77<br />CD274_protein:  0.000000<br />KS-1:Glioblastoma","CD274_rna:   0.82<br />CD274_protein:  0.000000<br />KU812:Chronic Myelogenous Leukemia","CD274_rna:   0.88<br />CD274_protein:  0.000000<br />KURAMOCHI:Ovarian Carcinoma","CD274_rna:   0.19<br />CD274_protein:  0.000000<br />KY821:Acute Myeloid Leukemia","CD274_rna:   0.64<br />CD274_protein:  0.000000<br />KYAE-1:Esophageal Carcinoma","CD274_rna:   1.25<br />CD274_protein:  0.000000<br />KYM-1:Rhabdomyosarcoma","CD274_rna:   0.35<br />CD274_protein:  0.000000<br />KYSE-140:Esophageal Squamous Cell Carcinoma","CD274_rna:   1.64<br />CD274_protein:  0.000000<br />KYSE-180:Esophageal Squamous Cell Carcinoma","CD274_rna:   0.16<br />CD274_protein:  0.000000<br />KYSE-220:Esophageal Squamous Cell Carcinoma","CD274_rna:   0.79<br />CD274_protein:  0.000000<br />KYSE-270:Esophageal Squamous Cell Carcinoma","CD274_rna:   7.50<br />CD274_protein:  0.000000<br />KYSE-410:Esophageal Squamous Cell Carcinoma","CD274_rna:   1.10<br />CD274_protein:  0.000000<br />KYSE-450:Esophageal Squamous Cell Carcinoma","CD274_rna:   0.19<br />CD274_protein:  0.000000<br />KYSE-50:Esophageal Squamous Cell Carcinoma","CD274_rna:   1.17<br />CD274_protein:  0.000000<br />KYSE-510:Esophageal Squamous Cell Carcinoma","CD274_rna:   0.72<br />CD274_protein:  0.000000<br />KYSE-520:Esophageal Squamous Cell Carcinoma","CD274_rna:  10.26<br />CD274_protein:  0.000000<br />KYSE-70:Esophageal Squamous Cell Carcinoma","CD274_rna:   2.70<br />CD274_protein:  0.000000<br />L-363:Plasma Cell Myeloma","CD274_rna:   3.89<br />CD274_protein:  0.000000<br />L-428:Hodgkin's Lymphoma","CD274_rna:  28.03<br />CD274_protein:  0.000000<br />L-540:Hodgkin's Lymphoma","CD274_rna:   4.01<br />CD274_protein:  0.000000<br />LAMA-84:Chronic Myelogenous Leukemia","CD274_rna:   2.23<br />CD274_protein:  0.000000<br />LAN-6:Neuroblastoma","CD274_rna:   9.73<br />CD274_protein:  0.000000<br />LB1047-RCC:Kidney Carcinoma","CD274_rna:  15.98<br />CD274_protein:  0.000000<br />LB2241-RCC:Kidney Carcinoma","CD274_rna:   0.10<br />CD274_protein:  0.000000<br />LB2518-MEL:Melanoma","CD274_rna:   0.46<br />CD274_protein:  0.000000<br />LB373-MEL-D:Melanoma","CD274_rna:   0.12<br />CD274_protein:  0.000000<br />LB647-SCLC:Small Cell Lung Carcinoma","CD274_rna:   0.50<br />CD274_protein:  0.000000<br />LB771-HNC:Head and Neck Carcinoma","CD274_rna:   0.35<br />CD274_protein:  0.000000<br />LB996-RCC:Kidney Carcinoma","CD274_rna:   1.76<br />CD274_protein:  0.000000<br />LC-1-sq:Squamous Cell Lung Carcinoma","CD274_rna:  10.84<br />CD274_protein:  0.000000<br />LC-2-ad:Non-Small Cell Lung Carcinoma","CD274_rna:   3.22<br />CD274_protein:  0.000000<br />LC4-1:B-Lymphoblastic Leukemia","CD274_rna:   2.00<br />CD274_protein:  0.000000<br />LK-2:Squamous Cell Lung Carcinoma","CD274_rna:   4.48<br />CD274_protein:  0.000000<br />LN-229:Glioblastoma","CD274_rna:  15.12<br />CD274_protein:  0.000000<br />LN-405:Glioblastoma","CD274_rna:   7.65<br />CD274_protein:  0.000000<br />LNCaP-Clone-FGC:Prostate Carcinoma","CD274_rna:   9.78<br />CD274_protein:  0.000000<br />LOU-NH91:Squamous Cell Lung Carcinoma","CD274_rna:   1.30<br />CD274_protein:  0.000000<br />LOUCY:T-Lymphoblastic Leukemia","CD274_rna:   1.10<br />CD274_protein:  0.000000<br />LP-1:Plasma Cell Myeloma","CD274_rna:   1.26<br />CD274_protein:  0.000000<br />LS-180:Colorectal Carcinoma","CD274_rna:   1.16<br />CD274_protein:  0.000000<br />LS-411N:Colorectal Carcinoma","CD274_rna:   0.40<br />CD274_protein:  0.000000<br />LS-513:Colorectal Carcinoma","CD274_rna:   0.60<br />CD274_protein:  0.000000<br />LS1034:Colorectal Carcinoma","CD274_rna:   1.03<br />CD274_protein:  0.000000<br />LU-134-A:Small Cell Lung Carcinoma","CD274_rna:   7.90<br />CD274_protein:  0.000000<br />LU-135:Small Cell Lung Carcinoma","CD274_rna:   0.25<br />CD274_protein:  0.000000<br />LU-139:Small Cell Lung Carcinoma","CD274_rna:   7.15<br />CD274_protein:  0.000000<br />LU-165:Small Cell Lung Carcinoma","CD274_rna:   3.95<br />CD274_protein:  0.000000<br />LU-65:Non-Small Cell Lung Carcinoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />LU-99A:Non-Small Cell Lung Carcinoma","CD274_rna:   2.96<br />CD274_protein:  0.000000<br />LoVo:Colorectal Carcinoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />MC-IXC:Ewing's Sarcoma","CD274_rna:   7.37<br />CD274_protein:  0.000000<br />MC116:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.20<br />CD274_protein:  0.000000<br />MCF7:Breast Carcinoma","CD274_rna:   0.53<br />CD274_protein:  0.000000<br />MDA-MB-157:Breast Carcinoma","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />MDA-MB-175-VII:Breast Carcinoma","CD274_rna:   0.35<br />CD274_protein:  0.000000<br />MDA-MB-330:Breast Carcinoma","CD274_rna:   0.16<br />CD274_protein:  0.000000<br />MDA-MB-361:Breast Carcinoma","CD274_rna:   1.35<br />CD274_protein:  0.000000<br />MDA-MB-415:Breast Carcinoma","CD274_rna:   3.45<br />CD274_protein:  0.000000<br />MDA-MB-436:Breast Carcinoma","CD274_rna:   0.06<br />CD274_protein:  0.000000<br />MDA-MB-453:Breast Carcinoma","CD274_rna:   2.32<br />CD274_protein:  0.000000<br />MDA-MB-468:Breast Carcinoma","CD274_rna:   0.69<br />CD274_protein:  0.000000<br />ME-1:Acute Myeloid Leukemia","CD274_rna:  22.44<br />CD274_protein:  0.000000<br />ME-180:Cervical Carcinoma","CD274_rna:   0.22<br />CD274_protein:  0.000000<br />MEG-01:Chronic Myelogenous Leukemia","CD274_rna:   2.28<br />CD274_protein:  0.000000<br />MEL-HO:Melanoma","CD274_rna:   0.41<br />CD274_protein:  0.000000<br />MEL-JUSO:Melanoma","CD274_rna:   0.10<br />CD274_protein:  0.000000<br />MES-SA:Other Sarcomas","CD274_rna:   1.11<br />CD274_protein:  0.000000<br />MFE-280:Endometrial Carcinoma","CD274_rna:   1.34<br />CD274_protein:  0.000000<br />MFE-296:Endometrial Carcinoma","CD274_rna:   0.12<br />CD274_protein:  0.000000<br />MFE-319:Endometrial Carcinoma","CD274_rna:   0.10<br />CD274_protein:  0.000000<br />MFM-223:Breast Carcinoma","CD274_rna:   0.41<br />CD274_protein:  0.000000<br />MG-63:Osteosarcoma","CD274_rna:   1.58<br />CD274_protein:  0.000000<br />MHH-CALL-4:B-Lymphoblastic Leukemia","CD274_rna:   1.07<br />CD274_protein:  0.000000<br />MHH-ES-1:Ewing's Sarcoma","CD274_rna:   0.15<br />CD274_protein:  0.000000<br />MHH-NB-11:Neuroblastoma","CD274_rna:   2.76<br />CD274_protein:  0.000000<br />MHH-PREB-1:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   2.00<br />CD274_protein:  0.000000<br />MIA-PaCa-2:Pancreatic Carcinoma","CD274_rna:  16.48<br />CD274_protein:  0.000000<br />MKN28:Gastric Carcinoma","CD274_rna:   0.33<br />CD274_protein:  0.000000<br />MKN45:Gastric Carcinoma","CD274_rna:   3.98<br />CD274_protein:  0.000000<br />ML-1:Thyroid Gland Carcinoma","CD274_rna:   0.07<br />CD274_protein:  0.000000<br />ML-2:Acute Myeloid Leukemia","CD274_rna:   2.43<br />CD274_protein:  0.000000<br />MLMA:Other Blood Cancers","CD274_rna:   3.01<br />CD274_protein:  0.000000<br />MMAc-SF:Melanoma","CD274_rna:   0.12<br />CD274_protein:  0.000000<br />MN-60:B-Lymphoblastic Leukemia","CD274_rna:  25.73<br />CD274_protein:  0.000000<br />MOG-G-CCM:Glioma","CD274_rna:   0.03<br />CD274_protein:  0.000000<br />MOLM-13:Acute Myeloid Leukemia","CD274_rna:   0.58<br />CD274_protein:  0.000000<br />MOLM-16:Acute Myeloid Leukemia","CD274_rna:   0.81<br />CD274_protein:  0.000000<br />MOLP-8:Plasma Cell Myeloma","CD274_rna:   1.08<br />CD274_protein:  0.000000<br />MOLT-13:T-Lymphoblastic Leukemia","CD274_rna:   1.14<br />CD274_protein:  0.000000<br />MOLT-16:T-Lymphoblastic Leukemia","CD274_rna:   1.09<br />CD274_protein:  0.000000<br />MOLT-4:T-Lymphoblastic Leukemia","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />MONO-MAC-6:Acute Myeloid Leukemia","CD274_rna:   0.09<br />CD274_protein:  0.000000<br />MRK-nu-1:Breast Carcinoma","CD274_rna:   2.43<br />CD274_protein:  0.000000<br />MS-1:Small Cell Lung Carcinoma","CD274_rna:   1.37<br />CD274_protein:  0.000000<br />MS751:Cervical Carcinoma","CD274_rna:  13.40<br />CD274_protein:  0.000000<br />MSTO-211H:Mesothelioma","CD274_rna:   0.09<br />CD274_protein:  0.000000<br />MV-4-11:Acute Myeloid Leukemia","CD274_rna:   0.52<br />CD274_protein:  0.000000<br />MY-M12:Other Blood Cancers","CD274_rna:  12.38<br />CD274_protein:  0.000000<br />MZ1-PC:Pancreatic Carcinoma","CD274_rna:   0.34<br />CD274_protein:  0.000000<br />MZ2-MEL:Melanoma","CD274_rna:   2.70<br />CD274_protein:  0.000000<br />MZ7-mel:Melanoma","CD274_rna:   0.18<br />CD274_protein:  0.000000<br />Mewo:Melanoma","CD274_rna:  36.21<br />CD274_protein:  0.000000<br />Mo-T:Other Blood Cancers","CD274_rna:   4.52<br />CD274_protein:  0.000000<br />NALM-6:B-Lymphoblastic Leukemia","CD274_rna:   0.12<br />CD274_protein:  0.000000<br />NAMALWA:Burkitt's Lymphoma","CD274_rna:   5.56<br />CD274_protein:  0.000000<br />NB(TU)1-10:Neuroblastoma","CD274_rna:   0.13<br />CD274_protein:  0.000000<br />NB1:Neuroblastoma","CD274_rna:   0.29<br />CD274_protein:  0.000000<br />NB10:Neuroblastoma","CD274_rna:   0.14<br />CD274_protein:  0.000000<br />NB12:Neuroblastoma","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />NB13:Neuroblastoma","CD274_rna:   0.06<br />CD274_protein:  0.000000<br />NB14:Neuroblastoma","CD274_rna:   0.04<br />CD274_protein:  0.000000<br />NB17:Neuroblastoma","CD274_rna:   0.36<br />CD274_protein:  0.000000<br />NB4:Acute Myeloid Leukemia","CD274_rna:   0.47<br />CD274_protein:  0.000000<br />NB5:Neuroblastoma","CD274_rna:   0.08<br />CD274_protein:  0.000000<br />NB6:Neuroblastoma","CD274_rna:   0.51<br />CD274_protein:  0.000000<br />NB69:Neuroblastoma","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />NB7:Neuroblastoma","CD274_rna:   7.08<br />CD274_protein:  0.000000<br />NCC010:Kidney Carcinoma","CD274_rna:  19.82<br />CD274_protein:  0.000000<br />NCC021:Kidney Carcinoma","CD274_rna:   0.07<br />CD274_protein:  0.000000<br />NCCIT:Other Solid Cancers","CD274_rna:   1.74<br />CD274_protein:  0.000000<br />NCI-H1048:Small Cell Lung Carcinoma","CD274_rna:   1.24<br />CD274_protein:  0.000000<br />NCI-H1092:Small Cell Lung Carcinoma","CD274_rna:   5.07<br />CD274_protein:  0.000000<br />NCI-H1105:Small Cell Lung Carcinoma","CD274_rna:   3.63<br />CD274_protein:  0.000000<br />NCI-H1155:Non-Small Cell Lung Carcinoma","CD274_rna:   1.75<br />CD274_protein:  0.000000<br />NCI-H1299:Non-Small Cell Lung Carcinoma","CD274_rna:   2.24<br />CD274_protein:  0.000000<br />NCI-H1304:Small Cell Lung Carcinoma","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />NCI-H1341:Small Cell Lung Carcinoma","CD274_rna:   1.22<br />CD274_protein:  0.000000<br />NCI-H1355:Non-Small Cell Lung Carcinoma","CD274_rna:   3.22<br />CD274_protein:  0.000000<br />NCI-H1435:Non-Small Cell Lung Carcinoma","CD274_rna:   3.44<br />CD274_protein:  0.000000<br />NCI-H1436:Small Cell Lung Carcinoma","CD274_rna:   1.75<br />CD274_protein:  0.000000<br />NCI-H1437:Non-Small Cell Lung Carcinoma","CD274_rna:   0.15<br />CD274_protein:  0.000000<br />NCI-H146:Small Cell Lung Carcinoma","CD274_rna:   1.30<br />CD274_protein:  0.000000<br />NCI-H1563:Non-Small Cell Lung Carcinoma","CD274_rna:   0.90<br />CD274_protein:  0.000000<br />NCI-H1573:Non-Small Cell Lung Carcinoma","CD274_rna:   0.13<br />CD274_protein:  0.000000<br />NCI-H1581:Non-Small Cell Lung Carcinoma","CD274_rna:   1.88<br />CD274_protein:  0.000000<br />NCI-H1623:Non-Small Cell Lung Carcinoma","CD274_rna:   2.55<br />CD274_protein:  0.000000<br />NCI-H1648:Non-Small Cell Lung Carcinoma","CD274_rna:   6.51<br />CD274_protein:  0.000000<br />NCI-H1650:Non-Small Cell Lung Carcinoma","CD274_rna:   0.79<br />CD274_protein:  0.000000<br />NCI-H1651:Non-Small Cell Lung Carcinoma","CD274_rna:   3.27<br />CD274_protein:  0.000000<br />NCI-H1666:Non-Small Cell Lung Carcinoma","CD274_rna:   3.20<br />CD274_protein:  0.000000<br />NCI-H1688:Small Cell Lung Carcinoma","CD274_rna:   0.59<br />CD274_protein:  0.000000<br />NCI-H1694:Small Cell Lung Carcinoma","CD274_rna:   0.43<br />CD274_protein:  0.000000<br />NCI-H1703:Squamous Cell Lung Carcinoma","CD274_rna:  26.78<br />CD274_protein:  0.000000<br />NCI-H1734:Non-Small Cell Lung Carcinoma","CD274_rna:   4.27<br />CD274_protein:  0.000000<br />NCI-H1755:Non-Small Cell Lung Carcinoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />NCI-H1770:Non-Small Cell Lung Carcinoma","CD274_rna:   8.25<br />CD274_protein:  0.000000<br />NCI-H1781:Non-Small Cell Lung Carcinoma","CD274_rna:   5.14<br />CD274_protein:  0.000000<br />NCI-H1792:Non-Small Cell Lung Carcinoma","CD274_rna:   2.62<br />CD274_protein:  0.000000<br />NCI-H1793:Non-Small Cell Lung Carcinoma","CD274_rna:   2.18<br />CD274_protein:  0.000000<br />NCI-H1836:Small Cell Lung Carcinoma","CD274_rna:  17.38<br />CD274_protein:  0.000000<br />NCI-H1838:Non-Small Cell Lung Carcinoma","CD274_rna:   2.46<br />CD274_protein:  0.000000<br />NCI-H1876:Small Cell Lung Carcinoma","CD274_rna:   0.95<br />CD274_protein:  0.000000<br />NCI-H1944:Non-Small Cell Lung Carcinoma","CD274_rna:   0.71<br />CD274_protein:  0.000000<br />NCI-H196:Small Cell Lung Carcinoma","CD274_rna:   0.99<br />CD274_protein:  0.000000<br />NCI-H1963:Small Cell Lung Carcinoma","CD274_rna:  20.56<br />CD274_protein:  0.000000<br />NCI-H1975:Non-Small Cell Lung Carcinoma","CD274_rna:   7.89<br />CD274_protein:  0.000000<br />NCI-H1993:Non-Small Cell Lung Carcinoma","CD274_rna:   0.86<br />CD274_protein:  0.000000<br />NCI-H2023:Squamous Cell Lung Carcinoma","CD274_rna:   1.78<br />CD274_protein:  0.000000<br />NCI-H2029:Small Cell Lung Carcinoma","CD274_rna:   4.13<br />CD274_protein:  0.000000<br />NCI-H2030:Non-Small Cell Lung Carcinoma","CD274_rna:   0.32<br />CD274_protein:  0.000000<br />NCI-H2066:Squamous Cell Lung Carcinoma","CD274_rna:   4.78<br />CD274_protein:  0.000000<br />NCI-H2081:Small Cell Lung Carcinoma","CD274_rna:   1.70<br />CD274_protein:  0.000000<br />NCI-H209:Small Cell Lung Carcinoma","CD274_rna:   0.24<br />CD274_protein:  0.000000<br />NCI-H211:Small Cell Lung Carcinoma","CD274_rna:  13.63<br />CD274_protein:  0.000000<br />NCI-H2110:Non-Small Cell Lung Carcinoma","CD274_rna:   3.87<br />CD274_protein:  0.000000<br />NCI-H2122:Non-Small Cell Lung Carcinoma","CD274_rna:   2.20<br />CD274_protein:  0.000000<br />NCI-H2141:Small Cell Lung Carcinoma","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />NCI-H2171:Small Cell Lung Carcinoma","CD274_rna:   0.69<br />CD274_protein:  0.000000<br />NCI-H2172:Non-Small Cell Lung Carcinoma","CD274_rna:   0.34<br />CD274_protein:  0.000000<br />NCI-H2227:Small Cell Lung Carcinoma","CD274_rna:  35.37<br />CD274_protein:  0.000000<br />NCI-H226:Mesothelioma","CD274_rna:  59.32<br />CD274_protein:  0.000000<br />NCI-H2291:Non-Small Cell Lung Carcinoma","CD274_rna:   0.44<br />CD274_protein:  0.000000<br />NCI-H23:Non-Small Cell Lung Carcinoma","CD274_rna:   2.08<br />CD274_protein:  0.000000<br />NCI-H2342:Non-Small Cell Lung Carcinoma","CD274_rna:  27.41<br />CD274_protein:  0.000000<br />NCI-H2369:Mesothelioma","CD274_rna:  11.26<br />CD274_protein:  0.000000<br />NCI-H2373:Mesothelioma","CD274_rna:   0.75<br />CD274_protein:  0.000000<br />NCI-H2405:Non-Small Cell Lung Carcinoma","CD274_rna:   6.73<br />CD274_protein:  0.000000<br />NCI-H2452:Mesothelioma","CD274_rna:   0.81<br />CD274_protein:  0.000000<br />NCI-H2461:Mesothelioma","CD274_rna:   2.19<br />CD274_protein:  0.000000<br />NCI-H250:Small Cell Lung Carcinoma","CD274_rna:   8.96<br />CD274_protein:  0.000000<br />NCI-H2591:Mesothelioma","CD274_rna:   4.64<br />CD274_protein:  0.000000<br />NCI-H2595:Mesothelioma","CD274_rna:   3.45<br />CD274_protein:  0.000000<br />NCI-H2722:Mesothelioma","CD274_rna:   0.76<br />CD274_protein:  0.000000<br />NCI-H2731:Mesothelioma","CD274_rna:   3.68<br />CD274_protein:  0.000000<br />NCI-H2795:Mesothelioma","CD274_rna:   0.37<br />CD274_protein:  0.000000<br />NCI-H28:Mesothelioma","CD274_rna:   0.70<br />CD274_protein:  0.000000<br />NCI-H2803:Mesothelioma","CD274_rna:   7.69<br />CD274_protein:  0.000000<br />NCI-H2810:Mesothelioma","CD274_rna:  12.97<br />CD274_protein:  0.000000<br />NCI-H2818:Mesothelioma","CD274_rna:   7.40<br />CD274_protein:  0.000000<br />NCI-H2869:Mesothelioma","CD274_rna:  10.59<br />CD274_protein:  0.000000<br />NCI-H290:Mesothelioma","CD274_rna:  53.52<br />CD274_protein:  0.000000<br />NCI-H292:Other Solid Cancers","CD274_rna:   0.37<br />CD274_protein:  0.000000<br />NCI-H3118:Head and Neck Carcinoma","CD274_rna:   6.05<br />CD274_protein:  0.000000<br />NCI-H3122:Non-Small Cell Lung Carcinoma","CD274_rna:  17.61<br />CD274_protein:  0.000000<br />NCI-H322M:Non-Small Cell Lung Carcinoma","CD274_rna:   1.78<br />CD274_protein:  0.000000<br />NCI-H345:Small Cell Lung Carcinoma","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />NCI-H446:Small Cell Lung Carcinoma","CD274_rna:   5.77<br />CD274_protein:  0.000000<br />NCI-H460:Non-Small Cell Lung Carcinoma","CD274_rna:   0.22<br />CD274_protein:  0.000000<br />NCI-H508:Colorectal Carcinoma","CD274_rna:   3.36<br />CD274_protein:  0.000000<br />NCI-H510A:Small Cell Lung Carcinoma","CD274_rna:   8.42<br />CD274_protein:  0.000000<br />NCI-H513:Non-Small Cell Lung Carcinoma","CD274_rna:   0.87<br />CD274_protein:  0.000000<br />NCI-H520:Squamous Cell Lung Carcinoma","CD274_rna:   0.15<br />CD274_protein:  0.000000<br />NCI-H522:Non-Small Cell Lung Carcinoma","CD274_rna:   0.57<br />CD274_protein:  0.000000<br />NCI-H524:Small Cell Lung Carcinoma","CD274_rna:   0.36<br />CD274_protein:  0.000000<br />NCI-H526:Small Cell Lung Carcinoma","CD274_rna:   8.44<br />CD274_protein:  0.000000<br />NCI-H596:Non-Small Cell Lung Carcinoma","CD274_rna:   0.12<br />CD274_protein:  0.000000<br />NCI-H64:Small Cell Lung Carcinoma","CD274_rna:   4.95<br />CD274_protein:  0.000000<br />NCI-H660:Prostate Carcinoma","CD274_rna:   0.27<br />CD274_protein:  0.000000<br />NCI-H661:Non-Small Cell Lung Carcinoma","CD274_rna:   0.12<br />CD274_protein:  0.000000<br />NCI-H69:Small Cell Lung Carcinoma","CD274_rna:   0.17<br />CD274_protein:  0.000000<br />NCI-H716:Colorectal Carcinoma","CD274_rna:   1.55<br />CD274_protein:  0.000000<br />NCI-H720:Other Solid Cancers","CD274_rna:   0.59<br />CD274_protein:  0.000000<br />NCI-H727:Other Solid Cancers","CD274_rna:   6.75<br />CD274_protein:  0.000000<br />NCI-H740:Small Cell Lung Carcinoma","CD274_rna:  17.83<br />CD274_protein:  0.000000<br />NCI-H747:Colorectal Carcinoma","CD274_rna:   0.69<br />CD274_protein:  0.000000<br />NCI-H748:Small Cell Lung Carcinoma","CD274_rna:   0.30<br />CD274_protein:  0.000000<br />NCI-H810:Non-Small Cell Lung Carcinoma","CD274_rna:   0.87<br />CD274_protein:  0.000000<br />NCI-H82:Small Cell Lung Carcinoma","CD274_rna:   2.32<br />CD274_protein:  0.000000<br />NCI-H838:Non-Small Cell Lung Carcinoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />NCI-H847:Small Cell Lung Carcinoma","CD274_rna:   0.22<br />CD274_protein:  0.000000<br />NCI-H929:Plasma Cell Myeloma","CD274_rna:   3.60<br />CD274_protein:  0.000000<br />NCI-N87:Gastric Carcinoma","CD274_rna:   0.14<br />CD274_protein:  0.000000<br />NEC8:Other Solid Cancers","CD274_rna:   4.59<br />CD274_protein:  0.000000<br />NH-12:Neuroblastoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />NK-92MI:Other Blood Cancers","CD274_rna:   2.48<br />CD274_protein:  0.000000<br />NKM-1:Acute Myeloid Leukemia","CD274_rna:   0.06<br />CD274_protein:  0.000000<br />NOMO-1:Acute Myeloid Leukemia","CD274_rna:   0.13<br />CD274_protein:  0.000000<br />NOS-1:Osteosarcoma","CD274_rna:   0.31<br />CD274_protein:  0.000000<br />NTERA-2-cl-D1:Other Solid Cancers","CD274_rna:   0.94<br />CD274_protein:  0.000000<br />NU-DUL-1:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.76<br />CD274_protein:  0.000000<br />NUGC-4:Gastric Carcinoma","CD274_rna:   3.54<br />CD274_protein:  0.000000<br />NY:Osteosarcoma","CD274_rna:   0.11<br />CD274_protein:  0.000000<br />OACM5-1:Esophageal Carcinoma","CD274_rna:   6.78<br />CD274_protein:  0.000000<br />OACp4C:Esophageal Carcinoma","CD274_rna:   0.32<br />CD274_protein:  0.000000<br />OAW-28:Ovarian Carcinoma","CD274_rna:   0.14<br />CD274_protein:  0.000000<br />OAW-42:Ovarian Carcinoma","CD274_rna:   2.59<br />CD274_protein:  0.000000<br />OC-314:Ovarian Carcinoma","CD274_rna:   0.19<br />CD274_protein:  0.000000<br />OCI-AML2:Acute Myeloid Leukemia","CD274_rna:   0.14<br />CD274_protein:  0.000000<br />OCI-AML5:Acute Myeloid Leukemia","CD274_rna:   0.95<br />CD274_protein:  0.000000<br />OCI-LY-19:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.22<br />CD274_protein:  0.000000<br />OCI-LY7:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.58<br />CD274_protein:  0.000000<br />OCUB-M:Breast Carcinoma","CD274_rna:   0.29<br />CD274_protein:  0.000000<br />OCUM-1:Gastric Carcinoma","CD274_rna:   0.09<br />CD274_protein:  0.000000<br />OE19:Esophageal Carcinoma","CD274_rna:   1.00<br />CD274_protein:  0.000000<br />OE21:Esophageal Squamous Cell Carcinoma","CD274_rna:  50.16<br />CD274_protein:  0.000000<br />OE33:Esophageal Carcinoma","CD274_rna:   2.08<br />CD274_protein:  0.000000<br />OPM-2:Plasma Cell Myeloma","CD274_rna:  15.59<br />CD274_protein:  0.000000<br />OS-RC-2:Kidney Carcinoma","CD274_rna:   0.47<br />CD274_protein:  0.000000<br />OV-17R:Ovarian Carcinoma","CD274_rna:   1.80<br />CD274_protein:  0.000000<br />OV-7:Ovarian Carcinoma","CD274_rna:   0.15<br />CD274_protein:  0.000000<br />OV-90:Ovarian Carcinoma","CD274_rna:   4.16<br />CD274_protein:  0.000000<br />OVCA420:Ovarian Carcinoma","CD274_rna:   0.73<br />CD274_protein:  0.000000<br />OVCAR-3:Ovarian Carcinoma","CD274_rna:   3.12<br />CD274_protein:  0.000000<br />OVCAR-4:Ovarian Carcinoma","CD274_rna:   5.43<br />CD274_protein:  0.000000<br />OVCAR-5:Ovarian Carcinoma","CD274_rna:   2.09<br />CD274_protein:  0.000000<br />OVCAR-8:Ovarian Carcinoma","CD274_rna:   1.11<br />CD274_protein:  0.000000<br />OVISE:Ovarian Carcinoma","CD274_rna:   0.52<br />CD274_protein:  0.000000<br />OVK-18:Ovarian Carcinoma","CD274_rna:   0.55<br />CD274_protein:  0.000000<br />OVKATE:Ovarian Carcinoma","CD274_rna:   0.03<br />CD274_protein:  0.000000<br />OVMIU:Ovarian Carcinoma","CD274_rna:   0.29<br />CD274_protein:  0.000000<br />OVTOKO:Ovarian Carcinoma","CD274_rna:   1.41<br />CD274_protein:  0.000000<br />P12-ICHIKAWA:T-Lymphoblastic Leukemia","CD274_rna:   2.82<br />CD274_protein:  0.000000<br />P30-OHK:B-Lymphoblastic Leukemia","CD274_rna:   0.59<br />CD274_protein:  0.000000<br />P31-FUJ:Acute Myeloid Leukemia","CD274_rna:   0.12<br />CD274_protein:  0.000000<br />P32-ISH:Burkitt's Lymphoma","CD274_rna:   0.50<br />CD274_protein:  0.000000<br />PA-1:Ovarian Carcinoma","CD274_rna:   9.06<br />CD274_protein:  0.000000<br />PA-TU-8902:Pancreatic Carcinoma","CD274_rna:   0.46<br />CD274_protein:  0.000000<br />PA-TU-8988T:Pancreatic Carcinoma","CD274_rna:  11.18<br />CD274_protein:  0.000000<br />PANC-02-03:Pancreatic Carcinoma","CD274_rna:   9.79<br />CD274_protein:  0.000000<br />PANC-04-03:Pancreatic Carcinoma","CD274_rna:   4.07<br />CD274_protein:  0.000000<br />PC-14:Non-Small Cell Lung Carcinoma","CD274_rna:   7.60<br />CD274_protein:  0.000000<br />PC-3:Prostate Carcinoma","CD274_rna:   4.01<br />CD274_protein:  0.000000<br />PCI-15A:Head and Neck Carcinoma","CD274_rna:   0.07<br />CD274_protein:  0.000000<br />PCI-6A:Head and Neck Carcinoma","CD274_rna:   4.57<br />CD274_protein:  0.000000<br />PE-CA-PJ15:Oral Cavity Carcinoma","CD274_rna:   5.72<br />CD274_protein:  0.000000<br />PEO1:Ovarian Carcinoma","CD274_rna:   1.92<br />CD274_protein:  0.000000<br />PF-382:T-Lymphoblastic Leukemia","CD274_rna:   0.20<br />CD274_protein:  0.000000<br />PL-21:Acute Myeloid Leukemia","CD274_rna:  13.17<br />CD274_protein:  0.000000<br />PL4:Pancreatic Carcinoma","CD274_rna:   6.46<br />CD274_protein:  0.000000<br />PSN1:Pancreatic Carcinoma","CD274_rna:   8.30<br />CD274_protein:  0.000000<br />PWR-1E:Non-Cancerous","CD274_rna:   2.06<br />CD274_protein:  0.000000<br />QGP-1:Other Solid Cancers","CD274_rna:   3.54<br />CD274_protein:  0.000000<br />RCC-AB:Kidney Carcinoma","CD274_rna:   7.38<br />CD274_protein:  0.000000<br />RCC-ER:Kidney Carcinoma","CD274_rna:   5.56<br />CD274_protein:  0.000000<br />RCC-FG2:Kidney Carcinoma","CD274_rna:   6.30<br />CD274_protein:  0.000000<br />RCC-JF:Kidney Carcinoma","CD274_rna:   2.65<br />CD274_protein:  0.000000<br />RCC-JW:Kidney Carcinoma","CD274_rna:   7.03<br />CD274_protein:  0.000000<br />RCC-MF:Kidney Carcinoma","CD274_rna:   8.80<br />CD274_protein:  0.000000<br />RCC10RGB:Kidney Carcinoma","CD274_rna:   0.63<br />CD274_protein:  0.000000<br />RCH-ACV:B-Lymphoblastic Leukemia","CD274_rna:   1.00<br />CD274_protein:  0.000000<br />RCM-1:Colorectal Carcinoma","CD274_rna:   1.63<br />CD274_protein:  0.000000<br />RD:Rhabdomyosarcoma","CD274_rna:   0.34<br />CD274_protein:  0.000000<br />REH:B-Lymphoblastic Leukemia","CD274_rna:   0.17<br />CD274_protein:  0.000000<br />RERF-GC-1B:Gastric Carcinoma","CD274_rna:  61.69<br />CD274_protein:  0.000000<br />RERF-LC-KJ:Non-Small Cell Lung Carcinoma","CD274_rna:   3.06<br />CD274_protein:  0.000000<br />RERF-LC-MS:Non-Small Cell Lung Carcinoma","CD274_rna:  34.57<br />CD274_protein:  0.000000<br />RERF-LC-Sq1:Squamous Cell Lung Carcinoma","CD274_rna:  84.11<br />CD274_protein:  0.000000<br />RF-48:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.90<br />CD274_protein:  0.000000<br />RH-1:Ewing's Sarcoma","CD274_rna:  24.43<br />CD274_protein:  0.000000<br />RH-18:Rhabdomyosarcoma","CD274_rna:   0.28<br />CD274_protein:  0.000000<br />RH-41:Rhabdomyosarcoma","CD274_rna:   0.44<br />CD274_protein:  0.000000<br />RL:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   1.23<br />CD274_protein:  0.000000<br />RL95-2:Endometrial Carcinoma","CD274_rna:   0.25<br />CD274_protein:  0.000000<br />RMG-I:Ovarian Carcinoma","CD274_rna:   0.32<br />CD274_protein:  0.000000<br />ROS-50:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   4.37<br />CD274_protein:  0.000000<br />RPMI-7951:Melanoma","CD274_rna:   3.30<br />CD274_protein:  0.000000<br />RPMI-8226:Plasma Cell Myeloma","CD274_rna:   1.09<br />CD274_protein:  0.000000<br />RPMI-8402:T-Lymphoblastic Leukemia","CD274_rna:   0.33<br />CD274_protein:  0.000000<br />RS4-11:B-Lymphoblastic Leukemia","CD274_rna:   2.94<br />CD274_protein:  0.000000<br />RT-112:Bladder Carcinoma","CD274_rna:   0.43<br />CD274_protein:  0.000000<br />RT4:Bladder Carcinoma","CD274_rna:   3.19<br />CD274_protein:  0.000000<br />RVH-421:Melanoma","CD274_rna:   9.33<br />CD274_protein:  0.000000<br />RXF393:Kidney Carcinoma","CD274_rna:   1.28<br />CD274_protein:  0.000000<br />Raji:Burkitt's Lymphoma","CD274_rna:   2.49<br />CD274_protein:  0.000000<br />Ramos-2G6-4C10:Burkitt's Lymphoma","CD274_rna:   1.65<br />CD274_protein:  0.000000<br />SAT:Head and Neck Carcinoma","CD274_rna:   3.92<br />CD274_protein:  0.000000<br />SBC-1:Small Cell Lung Carcinoma","CD274_rna:   0.14<br />CD274_protein:  0.000000<br />SBC-3:Small Cell Lung Carcinoma","CD274_rna:   0.18<br />CD274_protein:  0.000000<br />SBC-5:Small Cell Lung Carcinoma","CD274_rna:   0.47<br />CD274_protein:  0.000000<br />SC-1:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   6.08<br />CD274_protein:  0.000000<br />SCC-15:Oral Cavity Carcinoma","CD274_rna:   3.90<br />CD274_protein:  0.000000<br />SCC-25:Oral Cavity Carcinoma","CD274_rna:  12.84<br />CD274_protein:  0.000000<br />SCC-4:Oral Cavity Carcinoma","CD274_rna:   2.75<br />CD274_protein:  0.000000<br />SCC-9:Oral Cavity Carcinoma","CD274_rna:   0.51<br />CD274_protein:  0.000000<br />SCC90:Head and Neck Carcinoma","CD274_rna:  14.24<br />CD274_protein:  0.000000<br />SCH:Gastric Carcinoma","CD274_rna:   9.50<br />CD274_protein:  0.000000<br />SF126:Glioblastoma","CD274_rna:   9.42<br />CD274_protein:  0.000000<br />SF268:Glioma","CD274_rna:   7.17<br />CD274_protein:  0.000000<br />SF295:Glioblastoma","CD274_rna:  13.14<br />CD274_protein:  0.000000<br />SF539:Glioblastoma","CD274_rna:   2.64<br />CD274_protein:  0.000000<br />SH-4:Melanoma","CD274_rna:   1.09<br />CD274_protein:  0.000000<br />SHP-77:Small Cell Lung Carcinoma","CD274_rna:   0.03<br />CD274_protein:  0.000000<br />SIG-M5:Acute Myeloid Leukemia","CD274_rna:   0.10<br />CD274_protein:  0.000000<br />SIMA:Neuroblastoma","CD274_rna:  74.92<br />CD274_protein:  0.000000<br />SISO:Cervical Carcinoma","CD274_rna:   0.43<br />CD274_protein:  0.000000<br />SJRH30:Rhabdomyosarcoma","CD274_rna:  13.66<br />CD274_protein:  0.000000<br />SJSA-1:Osteosarcoma","CD274_rna:   0.39<br />CD274_protein:  0.000000<br />SK-CO-1:Colorectal Carcinoma","CD274_rna:   0.04<br />CD274_protein:  0.000000<br />SK-ES-1:Ewing's Sarcoma","CD274_rna:  54.13<br />CD274_protein:  0.000000<br />SK-GT-2:Gastric Carcinoma","CD274_rna:   5.09<br />CD274_protein:  0.000000<br />SK-GT-4:Esophageal Carcinoma","CD274_rna:   0.97<br />CD274_protein:  0.000000<br />SK-HEP-1:Hepatocellular Carcinoma","CD274_rna:   2.41<br />CD274_protein:  0.000000<br />SK-LU-1:Non-Small Cell Lung Carcinoma","CD274_rna:   5.37<br />CD274_protein:  0.000000<br />SK-MEL-1:Melanoma","CD274_rna:   3.17<br />CD274_protein:  0.000000<br />SK-MEL-2:Melanoma","CD274_rna:   0.85<br />CD274_protein:  0.000000<br />SK-MEL-24:Melanoma","CD274_rna:   3.89<br />CD274_protein:  0.000000<br />SK-MEL-28:Melanoma","CD274_rna:   0.66<br />CD274_protein:  0.000000<br />SK-MEL-3:Melanoma","CD274_rna:   2.24<br />CD274_protein:  0.000000<br />SK-MEL-30:Melanoma","CD274_rna:   0.56<br />CD274_protein:  0.000000<br />SK-MEL-5:Melanoma","CD274_rna:   1.68<br />CD274_protein:  0.000000<br />SK-MM-2:Plasma Cell Myeloma","CD274_rna:  15.92<br />CD274_protein:  0.000000<br />SK-N-AS:Neuroblastoma","CD274_rna:   0.04<br />CD274_protein:  0.000000<br />SK-N-DZ:Neuroblastoma","CD274_rna:   2.11<br />CD274_protein:  0.000000<br />SK-N-FI:Neuroblastoma","CD274_rna:   1.50<br />CD274_protein:  0.000000<br />SK-OV-3:Ovarian Carcinoma","CD274_rna:   0.33<br />CD274_protein:  0.000000<br />SK-PN-DW:Other Solid Cancers","CD274_rna:   1.02<br />CD274_protein:  0.000000<br />SK-UT-1:Other Sarcomas","CD274_rna:  16.90<br />CD274_protein:  0.000000<br />SKG-IIIa:Cervical Carcinoma","CD274_rna:   0.23<br />CD274_protein:  0.000000<br />SKM-1:Acute Myeloid Leukemia","CD274_rna:  12.10<br />CD274_protein:  0.000000<br />SKN:Other Sarcomas","CD274_rna:   2.45<br />CD274_protein:  0.000000<br />SKN-3:Head and Neck Carcinoma","CD274_rna: 160.51<br />CD274_protein:  0.000000<br />SLVL:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   4.09<br />CD274_protein:  0.000000<br />SN12C:Kidney Carcinoma","CD274_rna:   0.12<br />CD274_protein:  0.000000<br />SNG-M:Endometrial Carcinoma","CD274_rna:   0.36<br />CD274_protein:  0.000000<br />SNU-1:Gastric Carcinoma","CD274_rna:   1.26<br />CD274_protein:  0.000000<br />SNU-16:Gastric Carcinoma","CD274_rna:   1.08<br />CD274_protein:  0.000000<br />SNU-175:Colorectal Carcinoma","CD274_rna:   0.22<br />CD274_protein:  0.000000<br />SNU-283:Colorectal Carcinoma","CD274_rna:   0.12<br />CD274_protein:  0.000000<br />SNU-398:Hepatocellular Carcinoma","CD274_rna:   0.19<br />CD274_protein:  0.000000<br />SNU-407:Colorectal Carcinoma","CD274_rna:   3.06<br />CD274_protein:  0.000000<br />SNU-475:Hepatocellular Carcinoma","CD274_rna:   0.22<br />CD274_protein:  0.000000<br />SNU-5:Gastric Carcinoma","CD274_rna:   0.76<br />CD274_protein:  0.000000<br />SNU-61:Colorectal Carcinoma","CD274_rna:   4.32<br />CD274_protein:  0.000000<br />SNU-81:Colorectal Carcinoma","CD274_rna:   0.14<br />CD274_protein:  0.000000<br />SNU-C1:Colorectal Carcinoma","CD274_rna:   1.95<br />CD274_protein:  0.000000<br />SNU-C2B:Colorectal Carcinoma","CD274_rna:  16.37<br />CD274_protein:  0.000000<br />SNU-C5:Colorectal Carcinoma","CD274_rna:   0.21<br />CD274_protein:  0.000000<br />SU-DHL-10:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   7.15<br />CD274_protein:  0.000000<br />SU-DHL-16:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.26<br />CD274_protein:  0.000000<br />SU-DHL-4:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   3.59<br />CD274_protein:  0.000000<br />SU-DHL-6:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   1.55<br />CD274_protein:  0.000000<br />SU-DHL-8:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.29<br />CD274_protein:  0.000000<br />SUIT-2:Pancreatic Carcinoma","CD274_rna:   2.73<br />CD274_protein:  0.000000<br />SUP-B15:B-Lymphoblastic Leukemia","CD274_rna:   0.66<br />CD274_protein:  0.000000<br />SUP-B8:B-Lymphoblastic Leukemia","CD274_rna:   0.43<br />CD274_protein:  0.000000<br />SUP-T1:T-Lymphoblastic Leukemia","CD274_rna:  28.94<br />CD274_protein:  0.000000<br />SW1088:Glioma","CD274_rna:   0.71<br />CD274_protein:  0.000000<br />SW1116:Colorectal Carcinoma","CD274_rna:   0.82<br />CD274_protein:  0.000000<br />SW1271:Small Cell Lung Carcinoma","CD274_rna:   0.92<br />CD274_protein:  0.000000<br />SW13:Other Solid Cancers","CD274_rna:   3.68<br />CD274_protein:  0.000000<br />SW1417:Colorectal Carcinoma","CD274_rna:   0.27<br />CD274_protein:  0.000000<br />SW1463:Colorectal Carcinoma","CD274_rna:   2.09<br />CD274_protein:  0.000000<br />SW156:Kidney Carcinoma","CD274_rna:   0.64<br />CD274_protein:  0.000000<br />SW1573:Non-Small Cell Lung Carcinoma","CD274_rna:   4.60<br />CD274_protein:  0.000000<br />SW1783:Glioma","CD274_rna:  23.93<br />CD274_protein:  0.000000<br />SW1990:Pancreatic Carcinoma","CD274_rna:   3.74<br />CD274_protein:  0.000000<br />SW48:Colorectal Carcinoma","CD274_rna:   0.89<br />CD274_protein:  0.000000<br />SW620:Colorectal Carcinoma","CD274_rna:   3.41<br />CD274_protein:  0.000000<br />SW626:Colorectal Carcinoma","CD274_rna:  29.24<br />CD274_protein:  0.000000<br />SW684:Other Sarcomas","CD274_rna:  14.14<br />CD274_protein:  0.000000<br />SW756:Cervical Carcinoma","CD274_rna:   2.94<br />CD274_protein:  0.000000<br />SW780:Bladder Carcinoma","CD274_rna:   5.95<br />CD274_protein:  0.000000<br />SW837:Colorectal Carcinoma","CD274_rna:   0.09<br />CD274_protein:  0.000000<br />SW948:Colorectal Carcinoma","CD274_rna:   6.37<br />CD274_protein:  0.000000<br />SW954:Other Solid Cancers","CD274_rna:   1.68<br />CD274_protein:  0.000000<br />SW962:Other Solid Cancers","CD274_rna:  30.56<br />CD274_protein:  0.000000<br />Saos-2:Osteosarcoma","CD274_rna:   0.88<br />CD274_protein:  0.000000<br />SiHa:Cervical Carcinoma","CD274_rna:   0.09<br />CD274_protein:  0.000000<br />T-T:Esophageal Squamous Cell Carcinoma","CD274_rna:   0.21<br />CD274_protein:  0.000000<br />T47D:Breast Carcinoma","CD274_rna:   0.65<br />CD274_protein:  0.000000<br />T84:Colorectal Carcinoma","CD274_rna:   1.33<br />CD274_protein:  0.000000<br />T98G:Glioblastoma","CD274_rna:   0.08<br />CD274_protein:  0.000000<br />TALL-1:T-Lymphoblastic Leukemia","CD274_rna:   0.03<br />CD274_protein:  0.000000<br />TC-71:Ewing's Sarcoma","CD274_rna:  28.55<br />CD274_protein:  0.000000<br />TCCSUP:Bladder Carcinoma","CD274_rna:  16.62<br />CD274_protein:  0.000000<br />TE-1:Esophageal Squamous Cell Carcinoma","CD274_rna:   0.81<br />CD274_protein:  0.000000<br />TE-10:Esophageal Squamous Cell Carcinoma","CD274_rna:   5.10<br />CD274_protein:  0.000000<br />TE-11:Esophageal Squamous Cell Carcinoma","CD274_rna:   0.71<br />CD274_protein:  0.000000<br />TE-12:Esophageal Squamous Cell Carcinoma","CD274_rna:   4.31<br />CD274_protein:  0.000000<br />TE-15:Esophageal Squamous Cell Carcinoma","CD274_rna:   3.74<br />CD274_protein:  0.000000<br />TE-4:Esophageal Squamous Cell Carcinoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />TE-441-T:Rhabdomyosarcoma","CD274_rna:   0.80<br />CD274_protein:  0.000000<br />TE-5:Esophageal Squamous Cell Carcinoma","CD274_rna:   1.99<br />CD274_protein:  0.000000<br />TE-6:Esophageal Squamous Cell Carcinoma","CD274_rna:   2.21<br />CD274_protein:  0.000000<br />TE-8:Esophageal Squamous Cell Carcinoma","CD274_rna:   1.31<br />CD274_protein:  0.000000<br />TE-9:Esophageal Squamous Cell Carcinoma","CD274_rna:   3.81<br />CD274_protein:  0.000000<br />TGBC11TKB:Gastric Carcinoma","CD274_rna:   0.72<br />CD274_protein:  0.000000<br />TGBC24TKB:Biliary Tract Carcinoma","CD274_rna:   0.07<br />CD274_protein:  0.000000<br />TGW:Neuroblastoma","CD274_rna:   0.61<br />CD274_protein:  0.000000<br />THP-1:Acute Myeloid Leukemia","CD274_rna:   0.26<br />CD274_protein:  0.000000<br />TK:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   2.13<br />CD274_protein:  0.000000<br />TK10:Kidney Carcinoma","CD274_rna:   8.64<br />CD274_protein:  0.000000<br />TMK-1:Gastric Carcinoma","CD274_rna:   0.03<br />CD274_protein:  0.000000<br />TOV-112D:Ovarian Carcinoma","CD274_rna:   1.59<br />CD274_protein:  0.000000<br />TOV-21G:Ovarian Carcinoma","CD274_rna:   3.87<br />CD274_protein:  0.000000<br />TT:Thyroid Gland Carcinoma","CD274_rna:   1.51<br />CD274_protein:  0.000000<br />TT2609-C02:Thyroid Gland Carcinoma","CD274_rna:   0.14<br />CD274_protein:  0.000000<br />TUR:Acute Myeloid Leukemia","CD274_rna:   4.83<br />CD274_protein:  0.000000<br />TYK-nu:Ovarian Carcinoma","CD274_rna:   6.71<br />CD274_protein:  0.000000<br />U-118-MG:Glioma","CD274_rna:   3.41<br />CD274_protein:  0.000000<br />U-2-OS:Osteosarcoma","CD274_rna:   4.28<br />CD274_protein:  0.000000<br />U-266:Plasma Cell Myeloma","CD274_rna:   0.03<br />CD274_protein:  0.000000<br />U-698-M:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   4.86<br />CD274_protein:  0.000000<br />U-CH2:Other Solid Cancers","CD274_rna:   9.09<br />CD274_protein:  0.000000<br />U031:Kidney Carcinoma","CD274_rna:  41.77<br />CD274_protein:  0.000000<br />U251:Glioma","CD274_rna:   0.78<br />CD274_protein:  0.000000<br />UACC-257:Melanoma","CD274_rna:   0.71<br />CD274_protein:  0.000000<br />UACC-62:Melanoma","CD274_rna:   2.40<br />CD274_protein:  0.000000<br />UACC-812:Breast Carcinoma","CD274_rna:   0.76<br />CD274_protein:  0.000000<br />UACC-893:Breast Carcinoma","CD274_rna:   6.79<br />CD274_protein:  0.000000<br />UM-UC-3:Bladder Carcinoma","CD274_rna:   2.85<br />CD274_protein:  0.000000<br />UMC-11:Other Solid Cancers","CD274_rna:   0.68<br />CD274_protein:  0.000000<br />UWB1.289:Ovarian Carcinoma","CD274_rna:   5.61<br />CD274_protein:  0.000000<br />VAL:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   0.70<br />CD274_protein:  0.000000<br />VCaP:Prostate Carcinoma","CD274_rna:   0.44<br />CD274_protein:  0.000000<br />VMRC-LCD:Non-Small Cell Lung Carcinoma","CD274_rna:   6.91<br />CD274_protein:  0.000000<br />VMRC-MELG:Melanoma","CD274_rna:   8.19<br />CD274_protein:  0.000000<br />VMRC-RCW:Kidney Carcinoma","CD274_rna:   0.94<br />CD274_protein:  0.000000<br />VMRC-RCZ:Kidney Carcinoma","CD274_rna:  86.85<br />CD274_protein:  0.000000<br />WIL2-NS:Non-Cancerous","CD274_rna:   0.49<br />CD274_protein:  0.000000<br />WM-115:Melanoma","CD274_rna:   3.68<br />CD274_protein:  0.000000<br />WM1552C:Melanoma","CD274_rna:   0.68<br />CD274_protein:  0.000000<br />WM278:Melanoma","CD274_rna:   1.65<br />CD274_protein:  0.000000<br />WM35:Melanoma","CD274_rna:   5.74<br />CD274_protein:  0.000000<br />WM793B:Melanoma","CD274_rna:   0.20<br />CD274_protein:  0.000000<br />WSU-DLCL2:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   1.04<br />CD274_protein:  0.000000<br />WSU-NHL:B-Cell Non-Hodgkin's Lymphoma","CD274_rna:   8.92<br />CD274_protein:  0.000000<br />YAPC:Pancreatic Carcinoma","CD274_rna:   3.52<br />CD274_protein:  0.000000<br />YH-13:Glioblastoma","CD274_rna:   0.00<br />CD274_protein:  0.000000<br />YMB-1-E:Breast Carcinoma","CD274_rna:   1.90<br />CD274_protein:  0.000000<br />YT:Other Blood Cancers","CD274_rna:   0.09<br />CD274_protein:  0.000000<br />ZR-75-30:Breast Carcinoma","CD274_rna:   0.37<br />CD274_protein:  0.000000<br />huH-1:Hepatocellular Carcinoma"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"visible":false,"showlegend":false,"xaxis":null,"yaxis":null,"hoverinfo":"text","frame":null}],"layout":{"margin":{"t":29.0178497301785,"r":9.29846409298464,"b":51.1415525114155,"l":39.983395599834},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.441203737002945,9.26527847706184],"tickmode":"array","ticktext":["0","2","4","8","16","32","64","100","200","400","600"],"tickvals":[0,1.27155330316361,2.08272574089185,3.02203140402148,4.00560279056578,5.00140682255132,6.00035209155191,6.6440004376432,7.64389225579829,8.6438652065342,9.22882269796541],"categoryorder":"array","categoryarray":["0","2","4","8","16","32","64","100","200","400","600"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":4.64923204649232,"tickwidth":0.845314917544058,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":14.8775425487754},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.845314917544058,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"CD274_rna","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-1.9377715,5.0259215],"tickmode":"array","ticktext":["0","2","4"],"tickvals":[2.22044604925031e-16,2,4],"categoryorder":"array","categoryarray":["0","2","4"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":4.64923204649232,"tickwidth":0.845314917544058,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":14.8775425487754},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.845314917544058,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"CD274_protein","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":2.40515390121689,"font":{"color":"rgba(0,0,0,1)","family":"","size":14.8775425487754}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"bf6c458f9782":{"x":{},"y":{},"text":{},"type":"scatter"},"bf6c5623fb7b":{"x":{},"y":{},"text":{}}},"cur_data":"bf6c458f9782","visdat":{"bf6c458f9782":["function (y) ","x"],"bf6c5623fb7b":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>We see a bunch of cell lines with 0 protein level expression but have some levels of RNA expression.
+<strong>Are the NAs in the proteomics data means PDL1 is not detected or not assayed?</strong></p>
+<p>And what’s going on for <code>MDA-MB-231</code> breast cancer cell line in the bottom? it has high RNA expression level but the protein is very low. Also, <code>PC-3</code> (non-small cell lung cancer) and <code>D-245MG</code> (glioblastoma) cell line have decent protein expression but no RNA expression. I guess it is a technical problem.</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">use random forest and boost trees to find marker genes in scRNAseq data</a></li>
+        
+        <li><a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></li>
+        
+        <li><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></li>
+        
+        <li><a href="/project/cimac-cidc/">CANCER IMMUNOLOGIC DATA COMMONS(CIDC)</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/how-to-run-dockerized-rstudio-server-on-google-cloud/" rel="next">How to run dockerized Rstudio server on google cloud</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/" rel="prev">use random forest and boost trees to find marker genes in scRNAseq data</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

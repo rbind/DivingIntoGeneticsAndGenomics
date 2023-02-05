@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blogdown on DNA confesses Data speak</title>
+    <link>/tags/blogdown/</link>
+    <description>Recent content in Blogdown on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Fri, 28 Dec 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/blogdown/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>The end of 2018</title>
+      <link>/post/the-end-of-2018/</link>
+      <pubDate>Fri, 28 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/the-end-of-2018/</guid>
+      <description>It is almost the end of 2018. It is a good time to review what I have achieved during the year and look forward to a brand new 2019. I wrote a similar post for 2017 here.
+Some highlights of the year 2018:  My son Noah Tang was born in April. He is so lovely and we love him so much. Can&amp;rsquo;t believe he is almost 9 months old.</description>
+    </item>
+    
+    <item>
+      <title>my first try on Rmarkdown using blogdown</title>
+      <link>/post/my-first-try-on-rmarkdown-using-blogdown/</link>
+      <pubDate>Sat, 30 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/my-first-try-on-rmarkdown-using-blogdown/</guid>
+      <description>I have used blogdown writing regular markdown posts, but the real power is from the Rmarkdown! let me try it for this post.
+Note that you do not knit the Rmarkdown by yourself, rather you let blogdown do the heavy lift.
+library(tidyverse) library(ggplot2) head(mtcars)  ## mpg cyl disp hp drat wt qsec vs am gear carb ## Mazda RX4 21.0 6 160 110 3.90 2.620 16.46 0 1 4 4 ## Mazda RX4 Wag 21.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2019-01-13T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2019-08-06T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,53 @@
   
   
   <div>
+    <h2><a href="/post/develop-bioconductor-packages-with-docker-container/">Develop Bioconductor packages with docker container</a></h2>
+    <div class="article-style">
+      
+      Readings links to read:
+ <a href="https://www.bioconductor.org/developers/package-guidelines/#rcode" target="_blank">https://www.bioconductor.org/developers/package-guidelines/#rcode</a>
+ <a href="https://github.com/Bioconductor/Contributions" target="_blank">https://github.com/Bioconductor/Contributions</a>
+ use container <a href="https://github.com/Bioconductor/bioconductor_full" target="_blank">https://github.com/Bioconductor/bioconductor_full</a>
+  I am following the last link.
+pull the container docker pull bioconductor/bioconductor_full:devel docker images REPOSITORY TAG IMAGE ID CREATED SIZE bioconductor/bioconductor_full devel ae3ec2be7376 3 hours ago 5.7GB seuratv3 latest 9b358ab1fd63 2 days ago 2.76GB  It is 5.7G in size.
+start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
+    <div class="article-style">
+      
+      scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
+I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
+A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></h2>
+    <div class="article-style">
+      
+      This post was inspired by Andrew Hill’s recent blog post.
+Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
+&mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/use-docopt-to-write-command-line-r-utilities/">Use docopt to write command line R utilities </a></h2>
+    <div class="article-style">
+      
+      I was writing an R script to plot the ATACseq fragment length distribution and wanted to turn the R script to a command line utility.
+I then (re)discovered this awesome docopt.R. One just needs to write the help message the you want to display and docopt() will parse the options, arguments and return a named list which can be accessed inside the R script. check <a href="http://docopt.org/" target="_blank">http://docopt.org/</a> for more information as well.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">Understanding p value, multiple comparisons, FDR and q value</a></h2>
     <div class="article-style">
       
@@ -347,18 +394,6 @@ library(tidyverse) library(ggplot2) head(mtcars)  ## mpg cyl disp hp drat wt qse
     </div>
   </div>
   
-  <div>
-    <h2><a href="/post/hugo-academic-theme-blog-down-deployment-some-details/">hugo academic theme blog down deployment (some details)</a></h2>
-    <div class="article-style">
-      
-      I have been following this tutorial from Alison and tips from Leslie Myint for some customization for deploying my blogdown website
-It is quite straightforward to have a working site following Alison&rsquo;s guide. However, you always want some customization of your own site.
-I took the tips from Leslie.
-changed the menue bar to black. I like it better than the default white. in the config.toml file, change the theme:
-      
-    </div>
-  </div>
-  
 
   
 <nav>
@@ -366,6 +401,8 @@ changed the menue bar to black. I like it better than the default white. in the 
     
     <li><a href="/categories/r/">&lt;</a></li>
     
+    
+    <li><a href="/categories/r/page/3/">&gt;</a></li>
     
   </ul>
 </nav>
