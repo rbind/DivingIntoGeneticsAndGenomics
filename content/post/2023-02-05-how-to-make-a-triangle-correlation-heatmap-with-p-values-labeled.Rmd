@@ -17,7 +17,9 @@ header:
 
 In this blog post, I am going to show you how to make a correlation heatmap with p-values
 and significant values labeled in the heatmap body. Let's use the PBMC single cell data 
-as an example
+as an example.
+
+You may want to read my previous blog post [How to do gene correlation for single-cell RNAseq data](https://divingintogeneticsandgenomics.rbind.io/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/).
 
 
 ```{r, include=FALSE}
