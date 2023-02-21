@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2022-05-15T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2022-06-08T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,18 @@
   
   
   <div>
+    <h2><a href="/post/my-odyssey-of-obtaining-scrnaseq-metadata/">My odyssey of obtaining scRNAseq metadata </a></h2>
+    <div class="article-style">
+      
+      I want to curate a public scRNAseq dataset from this paper Single-cell analyses reveal key immune cell subsets associated with response to PD-L1 blockade in triple-negative breast cancer
+ffq I first tried ffq, but it gave me errors.
+ffq fetches metadata information from the following databases:
+ GEO: Gene Expression Omnibus, SRA: Sequence Read Archive, EMBL-EBI: European Molecular BIology Laboratory’s European BIoinformatics Institute, DDBJ: DNA Data Bank of Japan, NIH Biosample: Biological source materials used in experimental assays, ENCODE: The Encyclopedia of DNA Elements.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></h2>
     <div class="article-style">
       
@@ -373,16 +385,6 @@ For Single-cell RNAseq, Seurat provides a DoHeatmap function using ggplot2. Ther
       It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).
 Let’s create some dummy data.
 library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samples, 3 clusters A,B,C # but in the treatment samples, cluster C is absent (0 cells) in sample7 sample_id&lt;- c(paste0(&quot;sample&quot;, 1:6, &quot;_control&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;,&quot;_C&quot;),each = 6)), paste0(&quot;sample&quot;, 8:12, &quot;_treatment&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;, &quot;_C&quot;), each = 5))) sample_id&lt;- c(sample_id, &quot;sample7_treatment_A&quot;, &quot;sample7_treatment_B&quot;) cell_id&lt;- paste0(&quot;cell&quot;, 1:20000) cell_df&lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), cell_id = cell_id) %&gt;% tidyr::separate(sample_id, into = c(&quot;sample_id&quot;, &quot;group&quot;, &quot;cluster<em>id&quot;), sep= &quot;</em>&quot;) cell_num&lt;- cell_df %&gt;% group_by(group, cluster_id, sample_id)%&gt;% summarize(n=n()) cell_num ## # A tibble: 35 x 4 ## # Groups: group, cluster_id [6] ## group cluster_id sample_id n ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; ## 1 control A sample1 551 ## 2 control A sample2 546 ## 3 control A sample3 544 ## 4 control A sample4 585 ## 5 control A sample5 588 ## 6 control A sample6 542 ## 7 control B sample1 550 ## 8 control B sample2 562 ## 9 control B sample3 574 ## 10 control B sample4 563 ## # … with 25 more rows total_cells&lt;- cell_df %&gt;% group_by(sample_id) %&gt;% summarise(total = n()) total_cells ## # A tibble: 12 x 2 ## sample_id total ## &lt;chr&gt; &lt;int&gt; ## 1 sample1 1673 ## 2 sample10 1713 ## 3 sample11 1691 ## 4 sample12 1696 ## 5 sample2 1633 ## 6 sample3 1700 ## 7 sample4 1711 ## 8 sample5 1768 ## 9 sample6 1727 ## 10 sample7 1225 ## 11 sample8 1720 ## 12 sample9 1743 join the two dataframe to get percentage of cells per cluster per sample
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/setting-up-travis-ci-for-github-repos/">setting up Travis CI for github repos</a></h2>
-    <div class="article-style">
-      
-      I wanted to set up Travis CI long time ago. Finally, I have a chance to do so. There are already many posts on how to do it. I write it down here for my own future reference. Thanks Tao Liu for the instructions. I have been learning a lot from him in collabrating with the MAESTRO project.
- read the official documentation <a href="https://docs.travis-ci.com/user/tutorial/" target="_blank">https://docs.travis-ci.com/user/tutorial/</a> Jean Fan&rsquo;s blog post <a href="https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/" target="_blank">https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/</a> R specific <a href="https://docs" target="_blank">https://docs</a>.
       
     </div>
   </div>

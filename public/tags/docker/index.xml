@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Sun, 18 Dec 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 16 Feb 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/docker/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to commit changes to a docker image</title>
+      <link>/post/how-to-commit-changes-to-a-docker-image/</link>
+      <pubDate>Thu, 16 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-commit-changes-to-a-docker-image/</guid>
+      <description>sudo docker images -a REPOSITORY TAG IMAGE ID CREATED SIZE rocker/tidyverse latest d4d41e410fb7 2 months ago 2.16GB r-base latest 3de1ef2039fb 3 months ago 838MB bioconductor/bioconductor_docker RELEASE_3_15 75cc0e27e8ea 6 months ago 4.23GB hello-world latest feb5d9fea6a5 17 months ago 13.3kB  </description>
+    </item>
     
     <item>
       <title>How to run dockerized Rstudio server on google cloud</title>

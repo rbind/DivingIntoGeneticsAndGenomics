@@ -11,6 +11,23 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>How to commit changes to a docker image</title>
+      <link>/post/how-to-commit-changes-to-a-docker-image/</link>
+      <pubDate>Thu, 16 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-commit-changes-to-a-docker-image/</guid>
+      <description>&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo docker images -a
+
+REPOSITORY                         TAG            IMAGE ID       CREATED         SIZE
+rocker/tidyverse                   latest         d4d41e410fb7   2 months ago    2.16GB
+r-base                             latest         3de1ef2039fb   3 months ago    838MB
+bioconductor/bioconductor_docker   RELEASE_3_15   75cc0e27e8ea   6 months ago    4.23GB
+hello-world                        latest         feb5d9fea6a5   17 months ago   13.3kB
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
       <title>How to make a triangle correlation heatmap with p-values labeled </title>
       <link>/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</link>
       <pubDate>Sun, 05 Feb 2023 00:00:00 +0000</pubDate>
@@ -20,7 +37,182 @@
 
 
 &lt;p&gt;In this blog post, I am going to show you how to make a correlation heatmap with p-values
-and significant values labeled in the heatmap body.&lt;/p&gt;
+and significant values labeled in the heatmap body. Let’s use the PBMC single cell data
+as an example.&lt;/p&gt;
+&lt;p&gt;You may want to read my previous blog post &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/&#34;&gt;How to do gene correlation for single-cell RNAseq data&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;load-libraries&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Load libraries&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+library(SeuratData)
+library(hdWGCNA)
+library(WGCNA)
+set.seed(1234)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;prepare-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;prepare the data&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(&amp;quot;pbmc3k&amp;quot;)
+
+pbmc3k&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; An object of class Seurat 
+#&amp;gt; 13714 features across 2700 samples within 1 assay 
+#&amp;gt; Active assay: RNA (13714 features, 0 variable features)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## routine processing
+pbmc3k&amp;lt;- pbmc3k %&amp;gt;% 
+  NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;%
+  FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;%
+  ScaleData() %&amp;gt;%
+  RunPCA(verbose = FALSE) %&amp;gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&amp;gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&amp;gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+Idents(pbmc3k)&amp;lt;- pbmc3k$seurat_annotations
+
+pbmc3k&amp;lt;- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;construct-metacell&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;construct metacell&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pbmc3k &amp;lt;- SetupForWGCNA(
+  pbmc3k,
+  gene_select = &amp;quot;fraction&amp;quot;, # the gene selection approach
+  fraction = 0.05, # fraction of cells that a gene needs to be expressed in order to be included
+  wgcna_name = &amp;quot;tutorial&amp;quot; # the name of the hdWGCNA experiment
+)
+
+
+# construct metacells in each group.
+# choosing K is an art. 
+pbmc3k &amp;lt;- MetacellsByGroups(
+  seurat_obj = pbmc3k,
+  group.by = c(&amp;quot;seurat_annotations&amp;quot;, &amp;quot;orig.ident&amp;quot;), # specify the columns in seurat_obj@meta.data to group by
+  k = 10, # nearest-neighbors parameter
+  max_shared = 5, # maximum number of shared cells between two metacells
+  ident.group = &amp;#39;seurat_annotations&amp;#39; # set the Idents of the metacell seurat object
+)
+
+# extract the metacell seurat object 
+pbmc_metacell &amp;lt;- GetMetacellObject(pbmc3k)
+
+pbmc_metacell@meta.data %&amp;gt;% head()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;            orig.ident nCount_RNA nFeature_RNA
+#&amp;gt; B#pbmc3k_1     pbmc3k     1794.8         3237
+#&amp;gt; B#pbmc3k_2     pbmc3k     4170.4         4962
+#&amp;gt; B#pbmc3k_3     pbmc3k     1765.7         3233
+#&amp;gt; B#pbmc3k_4     pbmc3k     1731.3         3060
+#&amp;gt; B#pbmc3k_5     pbmc3k     1982.2         3468
+#&amp;gt; B#pbmc3k_6     pbmc3k     3084.5         4351
+#&amp;gt;                                                                                                                                                     cells_merged
+#&amp;gt; B#pbmc3k_1 CGCCATTGGAGCAG,TGCCGACTCTCCCA,GGTACATGAAAGCA,GATTGGACGGTGTT,ATCCCGTGGCTGAT,CCAGCTACCAGCTA,TTGGAGACTATGGC,GAAGTCACCCTGTC,CGAGGGCTACGACT,TTATCCGACTAGTG
+#&amp;gt; B#pbmc3k_2 AAACATTGAGCTAC,TATGTCACGGAACG,AAACTTGAAAAACG,GGAGCCACCTTCTA,CATTTGTGGGATCT,GCTAGAACAGAGGC,CAGGTTGAGGATCT,ACTGAGACGTTGGT,ACGAAGCTCTGAGT,CGCGAGACAGGTCT
+#&amp;gt; B#pbmc3k_3 CTACTATGTAAAGG,CCAGGTCTACACCA,TTGGTACTGAATCC,ATCGCGCTTTTCGT,GCACTAGAAGATGA,ATGACGTGACGACT,GGGCCAACGCGTTA,CGCCATTGGAGCAG,GAAAGCCTACGTTG,CATCATACGGAGCA
+#&amp;gt; B#pbmc3k_4 GAGAAATGTTCTCA,ACCCAAGATTCACT,GGGCCAACGCGTTA,GAGTGGGAGTCTTT,TATTGCTGCCGTTC,GGCAATACGCTAAC,CGAGGGCTACGACT,CAGTGATGTACGCA,TCGATTTGTCGTGA,TGATCACTTCTACT
+#&amp;gt; B#pbmc3k_5 CAGTTACTAAGGTA,AAGTGGCTTGGAGG,TGATTCACTGTCAG,TGCGAAACAGTCAC,TATACCACCTGATG,TTATTCCTGGTACT,TTGACACTGATAAG,CGAGGGCTACGACT,TACTCAACTGCTAG,TAGCTACTGAATAG
+#&amp;gt; B#pbmc3k_6 TTCCAAACCTCCCA,CGCGATCTTTCTTG,AAATCAACAATGCC,ATCCCGTGGCTGAT,ACGAAGCTCTGAGT,TTTAGAGATCCTCG,AAACATTGAGCTAC,ACGACCCTTGACAC,GTAGCAACCATTTC,GAATTAACTGAAGA
+#&amp;gt;            seurat_annotations
+#&amp;gt; B#pbmc3k_1                  B
+#&amp;gt; B#pbmc3k_2                  B
+#&amp;gt; B#pbmc3k_3                  B
+#&amp;gt; B#pbmc3k_4                  B
+#&amp;gt; B#pbmc3k_5                  B
+#&amp;gt; B#pbmc3k_6                  B&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;Hmisc::rcorr&lt;/code&gt; function gives the pair-wise correlation coefficient and p-value&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;genes&amp;lt;- c(&amp;quot;GNLY&amp;quot;, &amp;quot;NKG7&amp;quot;, &amp;quot;KLRD1&amp;quot;, &amp;quot;ITGB2&amp;quot;, &amp;quot;PRF1&amp;quot;, &amp;quot;IFNG&amp;quot;, &amp;quot;NCAM1&amp;quot;, &amp;quot;FCGR3A&amp;quot;, &amp;quot;CCR7&amp;quot;, &amp;quot;CXCR3&amp;quot;, &amp;quot;IL2RB&amp;quot;)
+cells&amp;lt;- WhichCells(pbmc_metacell, expression = seurat_annotations == &amp;quot;NK&amp;quot;)
+
+mat&amp;lt;- pbmc_metacell@assays$RNA@data[genes, cells] %&amp;gt;% 
+  as.matrix() %&amp;gt;%
+  t()
+
+# Hmisc package gives the pair-wise correlation coefficient and p-value
+cor_res&amp;lt;- Hmisc::rcorr(mat) 
+cor_mat&amp;lt;- cor_res$r
+
+# sometimes, you may have NA in the matrix, and clustering does not play well with it
+# a simple hack is to turn the NA to 0
+cor_mat[is.na(cor_mat)]&amp;lt;- 0
+
+
+cor_p&amp;lt;- cor_res$P
+cor_p&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;                GNLY         NKG7      KLRD1     ITGB2         PRF1       IFNG
+#&amp;gt; GNLY             NA 1.034720e-02 0.01446758 0.2740351 5.598974e-06 0.13474999
+#&amp;gt; NKG7   1.034720e-02           NA 0.09914756 0.2480082 7.635844e-05 0.59502786
+#&amp;gt; KLRD1  1.446758e-02 9.914756e-02         NA 0.1174652 1.951340e-01 0.54200187
+#&amp;gt; ITGB2  2.740351e-01 2.480082e-01 0.11746519        NA 1.956304e-01 0.77673864
+#&amp;gt; PRF1   5.598974e-06 7.635844e-05 0.19513395 0.1956304           NA 0.27047205
+#&amp;gt; IFNG   1.347500e-01 5.950279e-01 0.54200187 0.7767386 2.704720e-01         NA
+#&amp;gt; NCAM1  8.662654e-03 6.572153e-01 0.39486873 0.3767390 3.435796e-04 0.60012618
+#&amp;gt; FCGR3A 2.259989e-05 4.024618e-07 0.92716018 0.3407721 3.353928e-10 0.45453683
+#&amp;gt; CCR7   4.702197e-02 1.452948e-02 0.34889863 0.2674199 2.461824e-04 0.78811106
+#&amp;gt; CXCR3  9.232615e-13 8.725519e-04 0.06138810 0.1045795 6.629722e-05 0.02079542
+#&amp;gt; IL2RB  1.199037e-02 7.699923e-02 0.16780117 0.1016665 9.815965e-04 0.09288220
+#&amp;gt;               NCAM1       FCGR3A         CCR7        CXCR3        IL2RB
+#&amp;gt; GNLY   0.0086626537 2.259989e-05 4.702197e-02 9.232615e-13 0.0119903711
+#&amp;gt; NKG7   0.6572153099 4.024618e-07 1.452948e-02 8.725519e-04 0.0769992304
+#&amp;gt; KLRD1  0.3948687306 9.271602e-01 3.488986e-01 6.138810e-02 0.1678011737
+#&amp;gt; ITGB2  0.3767389762 3.407721e-01 2.674199e-01 1.045795e-01 0.1016664987
+#&amp;gt; PRF1   0.0003435796 3.353928e-10 2.461824e-04 6.629722e-05 0.0009815965
+#&amp;gt; IFNG   0.6001261787 4.545368e-01 7.881111e-01 2.079542e-02 0.0928821980
+#&amp;gt; NCAM1            NA 4.384662e-01 2.119770e-02 1.787253e-01 0.7278303881
+#&amp;gt; FCGR3A 0.4384662288           NA 1.065590e-01 1.939171e-06 0.0523142134
+#&amp;gt; CCR7   0.0211977006 1.065590e-01           NA 5.449032e-07 0.0040966177
+#&amp;gt; CXCR3  0.1787252622 1.939171e-06 5.449032e-07           NA 0.0001233260
+#&amp;gt; IL2RB  0.7278303881 5.231421e-02 4.096618e-03 1.233260e-04           NA&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## add significant **
+cor_p[is.nan(cor_p)]&amp;lt;- 1
+
+## the diagonal are NA, make them 1 
+cor_p[is.na(cor_p)]&amp;lt;- 1
+
+col_fun&amp;lt;- circlize::colorRamp2(c(-1, 0, 1), c(&amp;quot;green&amp;quot;, &amp;quot;white&amp;quot;, &amp;quot;red&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Only lable the correlation coefficients with p-values that are &amp;lt;=0.05;
+add * for p value &amp;lt;=0.05 and ** for p value &amp;lt;=0.01&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cell_fun = function(j, i, x, y, w, h, fill){
+    if(as.numeric(x) &amp;lt;= 1 - as.numeric(y) + 1e-6) {
+            grid.rect(x, y, w, h, gp = gpar(fill = fill, col = fill))
+    }
+  
+    if (cor_p[i, j]  &amp;lt; 0.01 &amp;amp; as.numeric(x) &amp;lt;= 1 - as.numeric(y) + 1e-6){
+      grid.text(paste0(sprintf(&amp;quot;%.2f&amp;quot;, cor_mat[i, j]),&amp;quot;**&amp;quot;), x, y, gp = gpar(fontsize = 10))
+    } else if (cor_p[i, j]  &amp;lt;= 0.05 &amp;amp; as.numeric(x) &amp;lt;= 1 - as.numeric(y) + 1e-6){
+      grid.text(paste0(sprintf(&amp;quot;%.2f&amp;quot;, cor_mat[i, j]),&amp;quot;*&amp;quot;), x, y, gp = gpar(fontsize = 10))
+    }
+}
+
+
+hp&amp;lt;- ComplexHeatmap::Heatmap(cor_mat,
+                        rect_gp = gpar(type = &amp;quot;none&amp;quot;),
+                        column_dend_side = &amp;quot;bottom&amp;quot;,
+                        column_title = &amp;quot;NK cells&amp;quot;,
+                        name = &amp;quot;correlation&amp;quot;, col = col_fun,
+                        cell_fun = cell_fun,
+                        cluster_rows = T, cluster_columns = T,
+                        row_names_side = &amp;quot;left&amp;quot;)
+
+lgd_list = list(
+    Legend( labels = c(&amp;quot;&amp;lt;0.01&amp;quot;, &amp;quot;&amp;lt;0.05&amp;quot;), title = &amp;quot;pvalue&amp;quot;,
+            graphics = list(
+              function(x, y, w, h) grid.text(&amp;quot;**&amp;quot;, x = x, y = y,
+                                               gp = gpar(fill = &amp;quot;black&amp;quot;)),
+              function(x, y, w, h) grid.text(&amp;quot;*&amp;quot;, x = x, y = y,
+                                               gp = gpar(fill = &amp;quot;black&amp;quot;)))
+            ))
+
+
+draw(hp, annotation_legend_list = lgd_list, ht_gap = unit(1, &amp;quot;cm&amp;quot;) )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2023-02-05-how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;futher-reading&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Futher reading&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/jokergoo/ComplexHeatmap/issues/675&#34; class=&#34;uri&#34;&gt;https://github.com/jokergoo/ComplexHeatmap/issues/675&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://jokergoo.github.io/2021/07/22/make-triangle-heatmap/&#34; class=&#34;uri&#34;&gt;https://jokergoo.github.io/2021/07/22/make-triangle-heatmap/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
 </description>
     </item>
     
@@ -2834,18 +3026,6 @@ scCustomize::Stacked_VlnPlot(pbmc_subset, features = merged_markers %&amp;gt;% s
       
       <guid>/publication/2022-05-11-extensive-mets/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Single-Cell Analysis 101: Current Approaches and Open Questions</title>
-      <link>/talk/2022-single-cell-abrf/</link>
-      <pubDate>Tue, 29 Mar 2022 12:30:00 -0400</pubDate>
-      
-      <guid>/talk/2022-single-cell-abrf/</guid>
-      <description>&lt;p&gt;I gave a talk on single-cell analysis 101 in the ABRF2022 conference. Thank you, &lt;a href=&#34;https://twitter.com/biobenkj&#34; target=&#34;_blank&#34;&gt;Ben Johnson&lt;/a&gt; for the inivtation. I enjoyed it! The slides and video can be found in the links above!&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/ABRF-single-cell.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 </description>
     </item>
     

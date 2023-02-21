@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Sun, 05 Feb 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 16 Feb 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/bioinformatics/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to commit changes to a docker image</title>
+      <link>/post/how-to-commit-changes-to-a-docker-image/</link>
+      <pubDate>Thu, 16 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-commit-changes-to-a-docker-image/</guid>
+      <description>sudo docker images -a REPOSITORY TAG IMAGE ID CREATED SIZE rocker/tidyverse latest d4d41e410fb7 2 months ago 2.16GB r-base latest 3de1ef2039fb 3 months ago 838MB bioconductor/bioconductor_docker RELEASE_3_15 75cc0e27e8ea 6 months ago 4.23GB hello-world latest feb5d9fea6a5 17 months ago 13.3kB  </description>
+    </item>
     
     <item>
       <title>How to make a triangle correlation heatmap with p-values labeled </title>
@@ -18,7 +27,9 @@
       <pubDate>Sun, 05 Feb 2023 00:00:00 +0000</pubDate>
       
       <guid>/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</guid>
-      <description>In this blog post, I am going to show you how to make a correlation heatmap with p-values and significant values labeled in the heatmap body.</description>
+      <description>In this blog post, I am going to show you how to make a correlation heatmap with p-values and significant values labeled in the heatmap body. Let’s use the PBMC single cell data as an example.
+You may want to read my previous blog post How to do gene correlation for single-cell RNAseq data.
+Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) library(hdWGCNA) library(WGCNA) set.seed(1234)  prepare the data data(&amp;quot;pbmc3k&amp;quot;) pbmc3k #&amp;gt; An object of class Seurat #&amp;gt; 13714 features across 2700 samples within 1 assay #&amp;gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&amp;lt;- pbmc3k %&amp;gt;% NormalizeData(normalization.</description>
     </item>
     
     <item>

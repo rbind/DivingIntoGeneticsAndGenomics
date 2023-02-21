@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2023-02-05T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2023-02-16T00:00:00&#43;00:00">
   
 
   
@@ -284,8 +284,19 @@
   
   
   <div>
+    <h2><a href="/post/how-to-commit-changes-to-a-docker-image/">How to commit changes to a docker image</a></h2>
+    <div class="article-style">
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/">How to make a triangle correlation heatmap with p-values labeled </a></h2>
     <div class="article-style">
+      
+      In this blog post, I am going to show you how to make a correlation heatmap with p-values and significant values labeled in the heatmap body. Let’s use the PBMC single cell data as an example.
+You may want to read my previous blog post How to do gene correlation for single-cell RNAseq data.
+Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) library(hdWGCNA) library(WGCNA) set.seed(1234)  prepare the data data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 features across 2700 samples within 1 assay #&gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&lt;- pbmc3k %&gt;% NormalizeData(normalization.
       
     </div>
   </div>
@@ -377,18 +388,6 @@ library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # fo
 
 <h1 id="load-the-pbmc-dataset-pbmc-data-lt-read10x-data-dir-quot-blog-data-filtered-gene-bc-matrices-hg19-quot-initialize-the-seurat-object-with-the-raw-non-normalized-data-pbmc-lt-createseuratobject-counts-pbmc-data-project-quot-pbmc3k-quot-min">Load the PBMC dataset pbmc.data &lt;- Read10X(data.dir = &quot;~/blog_data/filtered_gene_bc_matrices/hg19/&quot;) # Initialize the Seurat object with the raw (non-normalized data). pbmc &lt;- CreateSeuratObject(counts = pbmc.data, project = &quot;pbmc3k&quot;, min.</h1>
 
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/my-odyssey-of-obtaining-scrnaseq-metadata/">My odyssey of obtaining scRNAseq metadata </a></h2>
-    <div class="article-style">
-      
-      I want to curate a public scRNAseq dataset from this paper Single-cell analyses reveal key immune cell subsets associated with response to PD-L1 blockade in triple-negative breast cancer
-ffq I first tried ffq, but it gave me errors.
-ffq fetches metadata information from the following databases:
- GEO: Gene Expression Omnibus, SRA: Sequence Read Archive, EMBL-EBI: European Molecular BIology Laboratory’s European BIoinformatics Institute, DDBJ: DNA Data Bank of Japan, NIH Biosample: Biological source materials used in experimental assays, ENCODE: The Encyclopedia of DNA Elements.
       
     </div>
   </div>

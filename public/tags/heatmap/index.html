@@ -287,6 +287,10 @@
     <h2><a href="/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/">How to make a triangle correlation heatmap with p-values labeled </a></h2>
     <div class="article-style">
       
+      In this blog post, I am going to show you how to make a correlation heatmap with p-values and significant values labeled in the heatmap body. Let’s use the PBMC single cell data as an example.
+You may want to read my previous blog post How to do gene correlation for single-cell RNAseq data.
+Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) library(hdWGCNA) library(WGCNA) set.seed(1234)  prepare the data data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 features across 2700 samples within 1 assay #&gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&lt;- pbmc3k %&gt;% NormalizeData(normalization.
+      
     </div>
   </div>
   

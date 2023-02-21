@@ -13,10 +13,14 @@
   
   
   
-  <meta name="description" content="Director of Computational Biology">
+    
+      
+    
+  
+  <meta name="description" content="sudo docker images -a REPOSITORY TAG IMAGE ID CREATED SIZE rocker/tidyverse latest d4d41e410fb7 2 months ago 2.16GB r-base latest 3de1ef2039fb 3 months ago 838MB bioconductor/bioconductor_docker RELEASE_3_15 75cc0e27e8ea 6 months ago 4.23GB hello-world latest feb5d9fea6a5 17 months ago 13.3kB  ">
 
   
-  <link rel="alternate" hreflang="en-us" href="/post/">
+  <link rel="alternate" hreflang="en-us" href="/post/how-to-commit-changes-to-a-docker-image/">
 
   
 
@@ -32,6 +36,13 @@
   
     
   
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
   
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
@@ -66,15 +77,15 @@
   
 
   
-  <link rel="alternate" href="/post/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
-  <link rel="feed" href="/post/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/post/">
+  <link rel="canonical" href="/post/how-to-commit-changes-to-a-docker-image/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -82,18 +93,20 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="DNA confesses Data speak">
-  <meta property="og:url" content="/post/">
-  <meta property="og:title" content="Posts | DNA confesses Data speak">
-  <meta property="og:description" content="Director of Computational Biology">
+  <meta property="og:url" content="/post/how-to-commit-changes-to-a-docker-image/">
+  <meta property="og:title" content="How to commit changes to a docker image | DNA confesses Data speak">
+  <meta property="og:description" content="sudo docker images -a REPOSITORY TAG IMAGE ID CREATED SIZE rocker/tidyverse latest d4d41e410fb7 2 months ago 2.16GB r-base latest 3de1ef2039fb 3 months ago 838MB bioconductor/bioconductor_docker RELEASE_3_15 75cc0e27e8ea 6 months ago 4.23GB hello-world latest feb5d9fea6a5 17 months ago 13.3kB  ">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2018-06-29T00:00:00&#43;00:00">
+  <meta property="article:published_time" content="2023-02-16T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-02-16T00:00:00&#43;00:00">
   
 
   
   
 
-  <title>Posts | DNA confesses Data speak</title>
+  <title>How to commit changes to a docker image | DNA confesses Data speak</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -263,64 +276,188 @@
 </nav>
 
 
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
 
 
+  <div class="article-container">
+    <h1 itemprop="name">How to commit changes to a docker image</h1>
 
-<div class="universal-wrapper">
+    
 
-  <h1>Posts</h1>
+<div class="article-metadata">
 
+  <span class="article-date">
+    
+    <time datetime="2023-02-16 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Feb 16, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    1 min read
+  </span>
   
 
   
   
-    
-    
-      
-
-<div class="pub-list-item" itemscope itemprop="blogPost" itemtype="http://schema.org/BlogPosting">
-  <i class="fa fa-newspaper-o pub-icon" aria-hidden="true"></i>
-  <a href="/post/hugo-academic-theme-blog-down-deployment-some-details/" itemprop="url"><span itemprop="headline">hugo academic theme blog down deployment (some details)</span></a>
-</div>
-
-    
-  
-    
-    
-      
-
-<div class="pub-list-item" itemscope itemprop="blogPost" itemtype="http://schema.org/BlogPosting">
-  <i class="fa fa-newspaper-o pub-icon" aria-hidden="true"></i>
-  <a href="/post/crontab-for-backup/" itemprop="url"><span itemprop="headline">Backup automatically with cron</span></a>
-</div>
-
-    
-  
-    
-    
-      
-
-<div class="pub-list-item" itemscope itemprop="blogPost" itemtype="http://schema.org/BlogPosting">
-  <i class="fa fa-newspaper-o pub-icon" aria-hidden="true"></i>
-  <a href="/post/how-to-upload-files-to-geo/" itemprop="url"><span itemprop="headline">How to upload files to GEO</span></a>
-</div>
-
-    
+  <span class="middot-divider"></span>
+  <a href="/post/how-to-commit-changes-to-a-docker-image/#disqus_thread"></a>
   
 
   
-<nav>
-  <ul class="pager">
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
     
-    <li><a href="/post/page/6/">&lt;</a></li>
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
     
+    <a href="/categories/docker/">docker</a
+    >
     
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=How%20to%20commit%20changes%20to%20a%20docker%20image&amp;url=%2fpost%2fhow-to-commit-changes-to-a-docker-image%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fhow-to-commit-changes-to-a-docker-image%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fhow-to-commit-changes-to-a-docker-image%2f&amp;title=How%20to%20commit%20changes%20to%20a%20docker%20image"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fhow-to-commit-changes-to-a-docker-image%2f&amp;title=How%20to%20commit%20changes%20to%20a%20docker%20image"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=How%20to%20commit%20changes%20to%20a%20docker%20image&amp;body=%2fpost%2fhow-to-commit-changes-to-a-docker-image%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
   </ul>
-</nav>
+</div>
 
 
+  
 
 </div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <pre><code class="language-bash">sudo docker images -a
+
+REPOSITORY                         TAG            IMAGE ID       CREATED         SIZE
+rocker/tidyverse                   latest         d4d41e410fb7   2 months ago    2.16GB
+r-base                             latest         3de1ef2039fb   3 months ago    838MB
+bioconductor/bioconductor_docker   RELEASE_3_15   75cc0e27e8ea   6 months ago    4.23GB
+hello-world                        latest         feb5d9fea6a5   17 months ago   13.3kB
+</code></pre>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/docker/">docker</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/how-to-run-dockerized-rstudio-server-on-google-cloud/">How to run dockerized Rstudio server on google cloud</a></li>
+        
+        <li><a href="/post/run-rstudio-server-with-singularity-on-hpc/">Run Rstudio server with singularity on HPC</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/" rel="prev">How to make a triangle correlation heatmap with p-values labeled </a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
 <footer class="site-footer">
   <div class="container">
     <p class="powered-by">
@@ -388,6 +525,27 @@
     
 
     
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
     
 
     

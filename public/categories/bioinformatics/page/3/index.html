@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2020-07-02T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2020-07-15T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,16 @@
   
   
   <div>
+    <h2><a href="/post/setting-up-travis-ci-for-github-repos/">setting up Travis CI for github repos</a></h2>
+    <div class="article-style">
+      
+      I wanted to set up Travis CI long time ago. Finally, I have a chance to do so. There are already many posts on how to do it. I write it down here for my own future reference. Thanks Tao Liu for the instructions. I have been learning a lot from him in collabrating with the MAESTRO project.
+ read the official documentation <a href="https://docs.travis-ci.com/user/tutorial/" target="_blank">https://docs.travis-ci.com/user/tutorial/</a> Jean Fan&rsquo;s blog post <a href="https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/" target="_blank">https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/</a> R specific <a href="https://docs" target="_blank">https://docs</a>.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/build-your-own-singularity-image/">build your own singularity image</a></h2>
     <div class="article-style">
       
@@ -383,17 +393,6 @@ Unix I suggest people who want to learn bioinformatics starting to learn unix co
   I am following the last link.
 pull the container docker pull bioconductor/bioconductor_full:devel docker images REPOSITORY TAG IMAGE ID CREATED SIZE bioconductor/bioconductor_full devel ae3ec2be7376 3 hours ago 5.7GB seuratv3 latest 9b358ab1fd63 2 days ago 2.76GB  It is 5.7G in size.
 start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/calculate-scatacseq-tss-enrichment-score/">Calculate scATACseq TSS enrichment score</a></h2>
-    <div class="article-style">
-      
-      TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
-From the Encode page:
- Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).
       
     </div>
   </div>
