@@ -24,7 +24,7 @@ will be gone. You will need to modify the docker image if you want to keep using
 ### Step 1
 
 ```bash
-sudo docker images -a
+$ sudo docker images -a
 
 REPOSITORY                         TAG            IMAGE ID       CREATED         SIZE
 rocker/tidyverse                   latest         d4d41e410fb7   2 months ago    2.16GB
@@ -38,7 +38,7 @@ hello-world                        latest         feb5d9fea6a5   17 months ago  
 run the `bioconductor/bioconductor_docker` docker container interactively in bash:
  
 ```bash
-sudo docker run -it 75cc0e27e8ea bin/bash
+$ sudo docker run -it 75cc0e27e8ea bin/bash
 ```
 
 ### Step 3
@@ -46,10 +46,10 @@ sudo docker run -it 75cc0e27e8ea bin/bash
 Modify the container by installing `gsutils`
 
 ```bash
-gstuil
+$ gstuil
 bash: gstuil: command not found
 
-curl -sSL https://sdk.cloud.google.com | bash
+$ curl -sSL https://sdk.cloud.google.com | bash
 
 Performing post processing steps...done.
 
@@ -64,7 +64,7 @@ Do you want to continue (Y/n)?
 It will add the gsutil to your `PATH`. Exit the container:
 
 ```bash
-exit
+$ exit
 ```
 
 ### Step 4 
