@@ -14,7 +14,7 @@ header:
 ---
 
 [Docker](https://www.docker.com/) is a great tool to ensure reproducibility of your computing work. I was
-using the bioconductor image on google cloud, but the image does have the `gsutil` command.
+using the bioconductor image on google cloud, but the image does not have the `gsutil` command.
 
 
 You can install once in the container, but once you exit the container, the gsutil command
@@ -46,8 +46,8 @@ $ sudo docker run -it 75cc0e27e8ea bin/bash
 Modify the container by installing `gsutils`
 
 ```bash
-$ gstuil
-bash: gstuil: command not found
+$ gsutil
+bash: gsutil: command not found
 
 $ curl -sSL https://sdk.cloud.google.com | bash
 
