@@ -1,0 +1,169 @@
+---
+title: 'How to deal with overplotting without being fooled '
+author: Ming Tang
+date: '2023-03-05'
+slug: how-to-deal-with-overplotting-without-being-fooled
+categories:
+  - bioinformatics
+  - visualization
+tags:
+  - ggplot
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Let me be clear, when you have gazillions of data points in a scatter plot, you
+want to deal with the overplotting to avoid drawing misleading conclusions.</p>
+<p>Let’s start with a single-cell example.</p>
+<p>Load the libraries:</p>
+<pre class="r"><code>library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+library(SeuratData)
+set.seed(1234)</code></pre>
+<p>prepare the data</p>
+<pre class="r"><code>data(&quot;pbmc3k&quot;)
+
+pbmc3k</code></pre>
+<pre><code>#&gt; An object of class Seurat 
+#&gt; 13714 features across 2700 samples within 1 assay 
+#&gt; Active assay: RNA (13714 features, 0 variable features)</code></pre>
+<pre class="r"><code>## routine processing
+pbmc3k&lt;- pbmc3k %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+Idents(pbmc3k)&lt;- pbmc3k$seurat_annotations
+
+pbmc3k&lt;- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]
+
+DimPlot(pbmc3k, reduction = &quot;umap&quot;, label = TRUE)</code></pre>
+<p><img src="/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<div id="illusion-1-dots-are-masked." class="section level3">
+<h3>Illusion 1: dots are masked.</h3>
+<pre class="r"><code>FeaturePlot(pbmc3k, features = c(&quot;CD4&quot;, &quot;CD3D&quot;))</code></pre>
+<p><img src="/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>ggplot plot the dots with the order that they show in the dataframe. When you have
+a lot of dots, they plot on top of each other. The blue dot can be masked by
+the grey dot if the grey dot/cell appears after the blue dot/cell.</p>
+<pre class="r"><code>FeaturePlot(pbmc3k, features = c(&quot;CD4&quot;, &quot;CD3D&quot;), order = TRUE)</code></pre>
+<p><img src="/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>You can tell that it appears both CD4 and CD3D have enhanced expression after you set the <code>order =TRUE</code>.
+Essentially, this will cause the cells with some expression of those genes plotted in the last.</p>
+<p>Note, by default, <code>scCustomize::FeaturePlot_scCustom</code> set the order by TRUE. <a href="https://samuel-marsh.github.io/scCustomize/articles/Gene_Expression_Plotting.html#plot-gene-expression-in-2d-space-pcatsneumap" class="uri">https://samuel-marsh.github.io/scCustomize/articles/Gene_Expression_Plotting.html#plot-gene-expression-in-2d-space-pcatsneumap</a></p>
+</div>
+<div id="illusion2-number-of-dots" class="section level3">
+<h3>Illusion2: number of dots</h3>
+<p>Only when you plot the density of the points you know where are the dots are concentrated.</p>
+<pre class="r"><code>p1&lt;- FeaturePlot(pbmc3k, features = &quot;CD3D&quot;, order = TRUE)
+
+p2&lt;- scCustomize::Plot_Density_Custom(seurat_object = pbmc3k, features = &quot;CD3D&quot;,
+                                      viridis_palette= &quot;viridis&quot;)
+
+p1 | p2</code></pre>
+<p><img src="/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>How the plot on the right was made?
+No worries, let me show you how to plot the density plot from scratch using <code>ggplot2</code>.</p>
+<p>First, some helper functions:</p>
+<pre class="r"><code>matrix_to_expression_df&lt;- function(x, obj){
+        df&lt;- x %&gt;%
+                as.matrix() %&gt;% 
+                as.data.frame() %&gt;%
+                tibble::rownames_to_column(var= &quot;gene&quot;) %&gt;%
+                tidyr::pivot_longer(cols = -1, names_to = &quot;cell&quot;, values_to = &quot;expression&quot;) %&gt;%
+                tidyr::pivot_wider(names_from = &quot;gene&quot;, values_from = expression) %&gt;%
+                left_join(obj@meta.data %&gt;% 
+                                  tibble::rownames_to_column(var = &quot;cell&quot;))
+        return(df)
+}
+
+
+get_expression_data&lt;- function(obj, assay = &quot;RNA&quot;, slot = &quot;data&quot;, 
+                               genes = NULL, cells = NULL){
+        if (is.null(genes) &amp; !is.null(cells)){
+                df&lt;- GetAssayData(obj, assay = assay, slot = slot)[, cells, drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else if (!is.null(genes) &amp; is.null(cells)){
+                df &lt;- GetAssayData(obj, assay = assay, slot = slot)[genes, , drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else if (is.null(genes &amp; is.null(cells))){
+                df &lt;- GetAssayData(obj, assay = assay, slot = slot)[, , drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else {
+                df&lt;- GetAssayData(obj, assay = assay, slot = slot)[genes, cells, drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        }
+        return(df)
+}</code></pre>
+<pre class="r"><code>library(ggpointdensity)
+
+## fetch the dataframe
+df&lt;- get_expression_data(pbmc3k, genes = &quot;CD3D&quot;)
+
+umap_cor&lt;- pbmc3k@reductions$umap@cell.embeddings  %&gt;%
+        as.data.frame() %&gt;%
+        tibble::rownames_to_column(var = &quot;cell&quot;)
+
+df&lt;- left_join(df, umap_cor)
+
+head(df)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 10
+#&gt;   cell            CD3D orig.ident nCount_RNA nFeature_RNA seurat_annotations
+#&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;fct&gt;           &lt;dbl&gt;        &lt;int&gt; &lt;fct&gt;             
+#&gt; 1 AAACATACAACCAC  2.86 pbmc3k           2419          779 Memory CD4 T      
+#&gt; 2 AAACATTGAGCTAC  0    pbmc3k           4903         1352 B                 
+#&gt; 3 AAACATTGATCAGC  3.49 pbmc3k           3147         1129 Memory CD4 T      
+#&gt; 4 AAACCGTGCTTCCG  0    pbmc3k           2639          960 CD14+ Mono        
+#&gt; 5 AAACCGTGTATGCG  0    pbmc3k            980          521 NK                
+#&gt; 6 AAACGCACTGGTAC  1.73 pbmc3k           2163          781 Memory CD4 T      
+#&gt; # … with 4 more variables: RNA_snn_res.0.5 &lt;fct&gt;, seurat_clusters &lt;fct&gt;,
+#&gt; #   UMAP_1 &lt;dbl&gt;, UMAP_2 &lt;dbl&gt;</code></pre>
+<pre class="r"><code>p3&lt;- ggplot(df, aes(x= UMAP_1, y= UMAP_2 )) +
+        geom_point(data = df %&gt;% filter(CD3D == 0), color = &quot;#440154FF&quot;, size = 0.6) +
+        ggpointdensity::geom_pointdensity(data = df %&gt;% filter(CD3D &gt; 0), size = 0.6) +
+        viridis::scale_color_viridis() +
+        theme_classic(base_size = 14) +
+        ggtitle(&quot;from scratch&quot;)
+
+p2 | p3</code></pre>
+<p><img src="/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>They look similar enough. Note the legend is different (density vs number of neighbors), but you get the idea.</p>
+</div>
+<div id="rastering" class="section level3">
+<h3>Rastering</h3>
+<p>Have you found that when you have gazillions of points, the resulting PDF or PNG file is so big and your computer
+is so slow to view them?</p>
+<p>Rastering the image come to the rescue. Let’s use <a href="https://github.com/exaexa/scattermore" class="uri">https://github.com/exaexa/scattermore</a></p>
+<pre class="r"><code>library(scattermore)
+
+ggplot(df, aes(x=UMAP_1, y= UMAP_2)) +
+        geom_scattermore() +
+        theme_classic(base_size = 14) +
+        ggtitle(&quot;geom_scattermore&quot;)</code></pre>
+<p><img src="/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>you can not see the difference here. But if you zoom in
+the figure on your computer, you will see the rectangles of the points.</p>
+<p>For this small dataset (only 3000 cells), you can not feel the plotting speed.
+Hoever, when you have millions of cells, you may want to give <code>scattermore</code> a try!</p>
+<p>The same thing applies to heatmap too.</p>
+<p>Please read:</p>
+<ul>
+<li><a href="https://jokergoo.github.io/2020/06/30/rasterization-in-complexheatmap/" class="uri">https://jokergoo.github.io/2020/06/30/rasterization-in-complexheatmap/</a><br />
+</li>
+<li><a href="https://gdevailly.netlify.app/post/plotting-big-matrices-in-r/">Plotting heatmaps from big matrices in R</a></li>
+</ul>
+</div>
