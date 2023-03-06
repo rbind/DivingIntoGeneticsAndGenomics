@@ -57,7 +57,7 @@ DimPlot(pbmc3k, reduction = &quot;umap&quot;, label = TRUE)</code></pre>
 <h3>Illusion 1: dots are masked.</h3>
 <pre class="r"><code>FeaturePlot(pbmc3k, features = c(&quot;CD4&quot;, &quot;CD3D&quot;))</code></pre>
 <p><img src="/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>ggplot plot the dots with the order that they show in the dataframe. When you have
+<p><code>ggplot2</code> plots the dots with the order that they show in the dataframe. When you have
 a lot of dots, they plot on top of each other. The blue dot can be masked by
 the grey dot if the grey dot/cell appears after the blue dot/cell.</p>
 <pre class="r"><code>FeaturePlot(pbmc3k, features = c(&quot;CD4&quot;, &quot;CD3D&quot;), order = TRUE)</code></pre>
@@ -155,10 +155,10 @@ ggplot(df, aes(x=UMAP_1, y= UMAP_2)) +
         theme_classic(base_size = 14) +
         ggtitle(&quot;geom_scattermore&quot;)</code></pre>
 <p><img src="/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>you can not see the difference here. But if you zoom in
+<p>You can not see the difference here. But if you zoom in
 the figure on your computer, you will see the rectangles of the points.</p>
-<p>For this small dataset (only 3000 cells), you can not feel the plotting speed.
-Hoever, when you have millions of cells, you may want to give <code>scattermore</code> a try!</p>
+<p>For this small dataset (only 3000 cells), you can not feel the differences of plotting speed.
+However, when you have millions of cells, you may want to give <code>scattermore</code> a try!</p>
 <p>The same thing applies to heatmap too.</p>
 <p>Please read:</p>
 <ul>

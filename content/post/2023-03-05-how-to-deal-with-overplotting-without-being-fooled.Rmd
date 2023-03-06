@@ -69,7 +69,7 @@ FeaturePlot(pbmc3k, features = c("CD4", "CD3D"))
 ```
 
 
-ggplot plot the dots with the order that they show in the dataframe. When you have 
+`ggplot2` plots the dots with the order that they show in the dataframe. When you have 
 a lot of dots, they plot on top of each other. The blue dot can be masked by
 the grey dot if the grey dot/cell appears after the blue dot/cell.
 
@@ -176,11 +176,11 @@ ggplot(df, aes(x=UMAP_1, y= UMAP_2)) +
         ggtitle("geom_scattermore")
 ```
 
- you can not see the difference here. But if you zoom in
+You can not see the difference here. But if you zoom in
 the figure on your computer, you will see the rectangles of the points.
 
-For this small dataset (only 3000 cells), you can not feel the plotting speed.
-Hoever, when you have millions of cells, you may want to give `scattermore` a try!
+For this small dataset (only 3000 cells), you can not feel the differences of plotting speed.
+However, when you have millions of cells, you may want to give `scattermore` a try!
 
 The same thing applies to heatmap too.
 
