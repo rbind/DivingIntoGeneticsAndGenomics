@@ -1,5 +1,5 @@
 +++
-date = 2023-03-18T11:15:00  # Schedule page publish date.
+date = 2023-03-06T11:15:00  # Schedule page publish date.
 
 title = "Learn Computational Biology the Right Way"
 time_start = 2023-03-18T11:15:00
