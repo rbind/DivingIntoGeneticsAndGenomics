@@ -22,6 +22,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+### Sign up for my newsletter to not miss a post like this
+
+https://divingintogeneticsandgenomics.ck.page/newsletter
+
+
+### The problem 
+
 Let me be clear, when you have gazillions of data points in a scatter plot, you
 want to deal with the overplotting to avoid drawing misleading conclusions.
 

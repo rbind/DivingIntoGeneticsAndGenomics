@@ -19,6 +19,12 @@ editor_options:
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
+<div id="sign-up-for-my-newsletter-to-not-miss-a-post-like-this" class="section level3">
+<h3>Sign up for my newsletter to not miss a post like this</h3>
+<p><a href="https://divingintogeneticsandgenomics.ck.page/newsletter" class="uri">https://divingintogeneticsandgenomics.ck.page/newsletter</a></p>
+</div>
+<div id="the-problem" class="section level3">
+<h3>The problem</h3>
 <p>Let me be clear, when you have gazillions of data points in a scatter plot, you
 want to deal with the overplotting to avoid drawing misleading conclusions.</p>
 <p>Let’s start with a single-cell example.</p>
@@ -53,6 +59,7 @@ pbmc3k&lt;- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]
 
 DimPlot(pbmc3k, reduction = &quot;umap&quot;, label = TRUE)</code></pre>
 <p><img src="/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
 <div id="illusion-1-dots-are-masked." class="section level3">
 <h3>Illusion 1: dots are masked.</h3>
 <pre class="r"><code>FeaturePlot(pbmc3k, features = c(&quot;CD4&quot;, &quot;CD3D&quot;))</code></pre>

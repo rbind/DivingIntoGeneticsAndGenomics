@@ -13,6 +13,12 @@ header:
   image: ''
 ---
 
+### Sign up for my newsletter to not miss a post like this
+
+https://divingintogeneticsandgenomics.ck.page/newsletter
+
+### Start here
+
 [Docker](https://www.docker.com/) is a great tool to ensure reproducibility of your computing work. I was
 using the bioconductor image on google cloud, but the image does not have the `gsutil` command.
 
