@@ -26,3 +26,5 @@ options(blogdown.hugo.version = "0.42")
 # devtools::install_version("blogdown", version = "0.9", repos = "http://cran.us.r-project.org") 
 # remove.packages("blogdown") # only 1.7 works for serving the sites..
 # devtools::install_version("blogdown", version = "1.7", repos = "http://cran.us.r-project.org")
+
+Sys.setenv(RETICULATE_PYTHON = "/Users/tommytang/Library/r-miniconda/envs/r-reticulate/bin/python")
