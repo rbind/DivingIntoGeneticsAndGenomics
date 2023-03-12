@@ -18,6 +18,10 @@ editor_options:
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
+<div id="sign-up-for-my-newsletter-to-not-miss-a-post-like-this" class="section level3">
+<h3>Sign up for my newsletter to not miss a post like this</h3>
+<p><a href="https://divingintogeneticsandgenomics.ck.page/newsletter" class="uri">https://divingintogeneticsandgenomics.ck.page/newsletter</a></p>
+</div>
 <div id="introduction" class="section level3">
 <h3>Introduction</h3>
 <p>Are you a machine learning practitioner or data analyst looking to broaden your skill set? Look nowhere else! This blog post will offer an introduction to deep learning, which is currently the hottest topic in machine learning. Using the well-known <a href="https://en.wikipedia.org/wiki/MNIST_database">MNIST dataset</a>) and the Keras package, we will investigate the potential of deep learning.</p>
@@ -158,7 +162,7 @@ For binary classification, you will use <code>binary_crossentropy</code>.</p>
 <pre class="r"><code>metrics&lt;- network %&gt;% evaluate(test_images, test_labels)
 metrics</code></pre>
 <pre><code>#&gt;       loss   accuracy 
-#&gt; 0.07076193 0.97979999</code></pre>
+#&gt; 0.08828809 0.97460002</code></pre>
 <p>98% accuracy! impressive.</p>
 </div>
 <div id="how-does-random-forest-perform" class="section level3">
@@ -213,7 +217,7 @@ res&lt;- predict(rf_fit, new_data = data_test) %&gt;%
         bind_cols(data_test %&gt;% select(label)) 
 
 toc()</code></pre>
-<pre><code>#&gt; 152.222 sec elapsed</code></pre>
+<pre><code>#&gt; 193.75 sec elapsed</code></pre>
 <pre class="r"><code>accuracy(res, truth = label, estimate = .pred_class)</code></pre>
 <pre><code>#&gt; # A tibble: 1 × 3
 #&gt;   .metric  .estimator .estimate

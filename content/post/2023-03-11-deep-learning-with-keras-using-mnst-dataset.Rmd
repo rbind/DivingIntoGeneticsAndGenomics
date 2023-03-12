@@ -15,6 +15,11 @@ editor_options:
   chunk_output_type: console
 ---
 
+### Sign up for my newsletter to not miss a post like this
+
+https://divingintogeneticsandgenomics.ck.page/newsletter
+
+
 ```{r, include=FALSE}
 knitr::opts_chunk$set(
   comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
