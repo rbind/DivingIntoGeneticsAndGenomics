@@ -18,7 +18,9 @@
       <pubDate>Thu, 16 Feb 2023 00:00:00 +0000</pubDate>
       
       <guid>/post/how-to-commit-changes-to-a-docker-image/</guid>
-      <description>sudo docker images -a REPOSITORY TAG IMAGE ID CREATED SIZE rocker/tidyverse latest d4d41e410fb7 2 months ago 2.16GB r-base latest 3de1ef2039fb 3 months ago 838MB bioconductor/bioconductor_docker RELEASE_3_15 75cc0e27e8ea 6 months ago 4.23GB hello-world latest feb5d9fea6a5 17 months ago 13.3kB  </description>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+Start here Docker is a great tool to ensure reproducibility of your computing work. I was using the bioconductor image on google cloud, but the image does not have the gsutil command.
+You can install once in the container, but once you exit the container, the gsutil command will be gone. You will need to modify the docker image if you want to keep using it.</description>
     </item>
     
     <item>

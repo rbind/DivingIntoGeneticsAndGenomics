@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ggplot on DNA confesses Data speak</title>
+    <link>/tags/ggplot/</link>
+    <description>Recent content in Ggplot on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <lastBuildDate>Sun, 05 Mar 2023 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/ggplot/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to deal with overplotting without being fooled </title>
+      <link>/post/how-to-deal-with-overplotting-without-being-fooled/</link>
+      <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-deal-with-overplotting-without-being-fooled/</guid>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+ The problem Let me be clear, when you have gazillions of data points in a scatter plot, you want to deal with the overplotting to avoid drawing misleading conclusions.
+Let’s start with a single-cell example.
+Load the libraries:
+library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) set.seed(1234) prepare the data
+data(&amp;quot;pbmc3k&amp;quot;) pbmc3k #&amp;gt; An object of class Seurat #&amp;gt; 13714 features across 2700 samples within 1 assay #&amp;gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&amp;lt;- pbmc3k %&amp;gt;% NormalizeData(normalization.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -11,12 +11,445 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Deep learning with Keras using MNST dataset </title>
+      <link>/post/deep-learning-with-keras-using-mnst-dataset/</link>
+      <pubDate>Sat, 11 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/deep-learning-with-keras-using-mnst-dataset/</guid>
+      <description>&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div id=&#34;introduction&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Introduction&lt;/h3&gt;
+&lt;p&gt;Are you a machine learning practitioner or data analyst looking to broaden your skill set? Look nowhere else! This blog post will offer an introduction to deep learning, which is currently the hottest topic in machine learning. Using the well-known &lt;a href=&#34;https://en.wikipedia.org/wiki/MNIST_database&#34;&gt;MNST dataset&lt;/a&gt;) and the Keras package, we will investigate the potential of deep learning.&lt;/p&gt;
+&lt;p&gt;A high-level deep learning package called Keras, which is based on TensorFlow, enables quick and simple experimentation with deep neural networks. Anyone can master deep learning in a matter of hours with Keras. No prior knowledge is necessary as we walk you through the fundamentals of Keras, from installation to creating a deep learning model from scratch!&lt;/p&gt;
+&lt;p&gt;I recommend watching the youtube series from 3blue1brown: &lt;a href=&#34;https://www.3blue1brown.com/topics/neural-networks&#34; class=&#34;uri&#34;&gt;https://www.3blue1brown.com/topics/neural-networks&lt;/a&gt; to get intutive understanding of how neural network works.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;img/MNST.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Josh Starmer also has very nice videos on this topic &lt;a href=&#34;https://statquest.org/video-index/&#34; class=&#34;uri&#34;&gt;https://statquest.org/video-index/&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;install-the-package&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Install the package&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install.packages(&amp;quot;keras&amp;quot;) install the keras R package
+library(keras)
+#install_keras(version = &amp;quot;release&amp;quot;)  install the core Keras library and TensorFlow&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It installs tensorflow to &lt;code&gt;/Users/tommytang/Library/r-miniconda/envs/r-reticulate/bin/python&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;To set the value of &lt;code&gt;RETICULATE_PYTHON&lt;/code&gt;, insert &lt;code&gt;Sys.setenv(RETICULATE_PYTHON = PATH)&lt;/code&gt; into your project’s &lt;code&gt;.Rprofile&lt;/code&gt;, where PATH is your preferred Python binary.&lt;/p&gt;
+&lt;p&gt;I added this
+&lt;code&gt;Sys.setenv(RETICULATE_PYTHON = &#34;/Users/tommytang/Library/r-miniconda/envs/r-reticulate/bin/python&#34;)&lt;/code&gt; to my &lt;code&gt;.Rprofile&lt;/code&gt; in the same folder as the &lt;code&gt;.Rproj&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Take a read &lt;a href=&#34;https://rstudio.github.io/reticulate/articles/versions.html&#34; class=&#34;uri&#34;&gt;https://rstudio.github.io/reticulate/articles/versions.html&lt;/a&gt; to further understand how to configure python path inside Rstudio.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;get-the-data-and-do-exploratory-data-analysis&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Get the data and do exploratory data analysis&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(reticulate)
+use_condaenv(&amp;quot;r-reticulate&amp;quot;)
+mnist&amp;lt;- dataset_mnist()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;split the training and testing sets&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;train_images&amp;lt;- mnist$train$x
+train_labels&amp;lt;- mnist$train$y
+train_labels&amp;lt;- to_categorical(train_labels)
+
+test_images&amp;lt;- mnist$test$x
+test_labels&amp;lt;- mnist$test$y
+test_labels&amp;lt;- to_categorical(test_labels)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The training sets is a 3D tensor&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dim(train_images)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 60000    28    28&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It is an array of 60,000 matrices of 28x28 integers. Each matrix is a grayscale image:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the fifth matrix
+digit&amp;lt;- train_images[5, ,]
+dim(digit)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 28 28&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(as.raster(digit, max = 255))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2023-03-11-deep-learning-with-keras-using-mnst-dataset_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It is a matrix denoting the image of 9.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;reshape-the-data-into-2d-tensor&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;reshape the data into 2D tensor&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;train_images&amp;lt;- array_reshape(train_images, c(60000, 28 * 28))
+train_images&amp;lt;- train_images/255
+
+
+test_images&amp;lt;- array_reshape(test_images, c(10000, 28 * 28))
+test_images&amp;lt;- test_images/255&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dim(train_images)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 60000   784&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, it becomes a 6000 x 784 2D tensor.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;exploratory-data-analysis&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;exploratory data analysis&lt;/h3&gt;
+&lt;p&gt;Before doing any analysis, &lt;a href=&#34;https://en.wikipedia.org/wiki/Exploratory_data_analysis&#34;&gt;exploratory data analysis&lt;/a&gt; (EDA) is the first thing you should do.&lt;/p&gt;
+&lt;p&gt;Let’s use &lt;a href=&#34;https://cran.r-project.org/web/packages/irlba/index.html&#34;&gt;irlba&lt;/a&gt; (Fast Truncated Singular Value Decomposition and Principal Components Analysis for Large Dense and Sparse Matrices) for PCA. &lt;code&gt;irlba&lt;/code&gt; is both faster and more memory efficient than the usual R &lt;code&gt;svd&lt;/code&gt; function for computing a few of the largest singular vectors and corresponding singular values of a matrix.&lt;/p&gt;
+&lt;p&gt;Read my old post on &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/pca-in-action/&#34;&gt;PCA&lt;/a&gt; if you want to learn more.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(irlba)
+library(ggplot2)
+library(dplyr)
+
+dim(train_images)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 60000   784&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pca.results &amp;lt;- irlba(A = train_images, nv = 30)
+
+image_pc_loadings&amp;lt;- pca.results$u
+
+colnames(image_pc_loadings)&amp;lt;- paste0(&amp;quot;PC_&amp;quot;, 1:30)
+
+
+labels_vector&amp;lt;- apply(mnist$train$y, 1, max) %&amp;gt;%
+        as.character()
+
+image_pc_df&amp;lt;- image_pc_loadings %&amp;gt;%
+        as.data.frame() %&amp;gt;%
+        dplyr::bind_cols(label = labels_vector)
+
+
+ggplot(image_pc_df, aes(x=PC_1, y = PC_2)) +
+        scattermore::geom_scattermore(aes(color = label)) +
+        theme_classic(base_size = 14)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2023-03-11-deep-learning-with-keras-using-mnst-dataset_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You can see some structure of the data by using PCA.&lt;/p&gt;
+&lt;p&gt;Let’s use &lt;a href=&#34;https://github.com/jlmelville/uwot&#34;&gt;&lt;code&gt;uwot&lt;/code&gt;&lt;/a&gt; for UMAP dimension reduction which may give you a better visualization of
+the data structure.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://umap-learn.readthedocs.io/en/latest/&#34;&gt;UMAP&lt;/a&gt; is a form of non-linear dimension reduction technique that is useful for visulizing the data. It is very popular in single-cell
+data analysis.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(uwot)
+mnist_umap &amp;lt;- umap(train_images, n_neighbors = 15, min_dist = 0.001, verbose = TRUE, pca = 50)
+
+colnames(mnist_umap)&amp;lt;- c(&amp;quot;UMAP_1&amp;quot;, &amp;quot;UMAP_2&amp;quot;)
+mnist_umap&amp;lt;- bind_cols(mnist_umap, label = labels_vector)
+
+ggplot(mnist_umap, aes(x=UMAP_1, y = UMAP_2)) +
+        scattermore::geom_scattermore(aes(color = label)) +
+        theme_classic(base_size = 14)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2023-03-11-deep-learning-with-keras-using-mnst-dataset_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Wow. most of the images are separated by its digits. Note that when you have many data points, they plot on top
+of each other. The best way is to calculate a metric on the cluster purity rather than judge by your eyes.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;
+&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;
+I think most people using UMAPs don&#39;t realize that when points are colored in order (the default way of plotting), buried colors make the points appear to be (much!) better grouped together than they really are. &lt;br&gt;This figure is from the supplement of &lt;a href=&#34;https://t.co/a0Ltb5lCGN&#34;&gt;https://t.co/a0Ltb5lCGN&lt;/a&gt; &lt;a href=&#34;https://t.co/ZMVYB9bJTW&#34;&gt;pic.twitter.com/ZMVYB9bJTW&lt;/a&gt;
+&lt;/p&gt;
+— Lior Pachter (&lt;span class=&#34;citation&#34;&gt;@lpachter&lt;/span&gt;) &lt;a href=&#34;https://twitter.com/lpachter/status/1634194744783040512?ref_src=twsrc%5Etfw&#34;&gt;March 10, 2023&lt;/a&gt;
+&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+&lt;p&gt;See also my previous blog post &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/post/how-to-deal-with-overplotting-without-being-fooled/&#34;&gt;How to deal with overplotting without being fooled&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;train-the-network&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Train the network&lt;/h3&gt;
+&lt;p&gt;Now, let’s construct the network using two dense layers.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;network&amp;lt;- keras_model_sequential() %&amp;gt;%
+        layer_dense(unit= 512, activation = &amp;quot;relu&amp;quot;, input_shape = c(28 * 28))%&amp;gt;%
+        layer_dense(units = 10, activation = &amp;quot;softmax&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The last layer has 10 nerons because we are predicting the images to be &lt;code&gt;0-9&lt;/code&gt; and the activation function is softmax
+to give a probability of the image predicted to 0-9. The sum of them will be 1.&lt;/p&gt;
+&lt;p&gt;In the compilation step, you may configure the learning process by specifying the optimizer and loss function(s) the model should employ as well as the metrics you wish to track while it is being trained.&lt;/p&gt;
+&lt;p&gt;Compile the network by telling the loss function and metrics. &lt;code&gt;categorical_crossentropy&lt;/code&gt; is good for categorical classifications.
+For binary classification, you will use &lt;code&gt;binary_crossentropy&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;network %&amp;gt;%
+        compile(optimizer = &amp;quot;rmsprop&amp;quot;,
+                loss = &amp;quot;categorical_crossentropy&amp;quot;,
+                metrics= c(&amp;quot;accuracy&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;compile() function modifies the network in place (rather than returning a new network object, as is more conventional in R.&lt;/p&gt;
+&lt;p&gt;Finally, the training loop:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;network %&amp;gt;%
+        fit(train_images, train_labels, epochs = 5, batch_size = 128)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The network will iterate on the training data in mini-batches of 128 samples, 5 times over(each iteration over all the training data is called an epoch).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;evaluate-the-model&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;evaluate the model&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metrics&amp;lt;- network %&amp;gt;% evaluate(test_images, test_labels)
+metrics&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;       loss   accuracy 
+#&amp;gt; 0.06163944 0.98170000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;98% accuracy! impressive.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;how-does-random-forest-perform&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;How does random forest perform?&lt;/h3&gt;
+&lt;p&gt;Random forest is my go-to for machine learning after linear regression, before deep learning.&lt;/p&gt;
+&lt;p&gt;Let’s see how it performs.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidymodels)
+set.seed(123)
+
+data_train&amp;lt;- train_images
+colnames(data_train)&amp;lt;- paste0(&amp;quot;feature&amp;quot;, 1:784)
+data_train&amp;lt;- bind_cols(as.data.frame(data_train), label =  apply(mnist$train$y, 1, max) %&amp;gt;%
+        as.character())
+
+data_test&amp;lt;- test_images
+colnames(data_test)&amp;lt;- paste0(&amp;quot;feature&amp;quot;, 1:784)
+data_test&amp;lt;- bind_cols(as.data.frame(data_test), label = apply(mnist$test$y, 1, max) %&amp;gt;%
+        as.character())
+
+# it is key to turn it to a factor for classification
+data_train$label&amp;lt;- factor(data_train$label)
+data_test$label&amp;lt;- factor(data_test$label)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It turns out 60,000 images is a lot for random forest and it takes hours to fit the model.
+what impresses me about the deep learning model apart from its accuracy is its speed.
+For 60,000 images, it finished in seconds.&lt;/p&gt;
+&lt;p&gt;Let me just randomly take 3000 images.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_train&amp;lt;- dplyr::sample_n(data_train, size = 3000)
+dim(data_train)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 3000  785&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidymodels)
+library(tictoc)
+
+tic()
+rf_recipe &amp;lt;- 
+  recipe(formula = label ~ ., data = data_train)
+#  update_role(cell_barcode, new_role = &amp;quot;ID&amp;quot;) %&amp;gt;%
+#  step_zv(all_predictors())
+
+## feature importance sore to TRUE, one can tune the trees and mtry 
+rf_spec &amp;lt;- rand_forest() %&amp;gt;%
+  set_engine(&amp;quot;randomForest&amp;quot;, importance = TRUE) %&amp;gt;%
+  set_mode(&amp;quot;classification&amp;quot;)
+
+rf_workflow &amp;lt;- workflow() %&amp;gt;% 
+  add_recipe(rf_recipe) %&amp;gt;% 
+  add_model(rf_spec)
+
+
+rf_fit &amp;lt;- fit(rf_workflow, data = data_train)
+
+
+res&amp;lt;- predict(rf_fit, new_data = data_test) %&amp;gt;%
+        bind_cols(data_test %&amp;gt;% select(label)) 
+
+toc()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; 141.33 sec elapsed&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;accuracy(res, truth = label, estimate = .pred_class)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 1 × 3
+#&amp;gt;   .metric  .estimator .estimate
+#&amp;gt;   &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;
+#&amp;gt; 1 accuracy multiclass     0.936&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## confusion matrix,
+res %&amp;gt;% conf_mat(truth = label, estimate = .pred_class)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt;           Truth
+#&amp;gt; Prediction    0    1    2    3    4    5    6    7    8    9
+#&amp;gt;          0  967    0   11    4    1   10   17    2    4    6
+#&amp;gt;          1    1 1121    4    3    1    8    4   15    6    7
+#&amp;gt;          2    1    2  958   15    4    2    3   27    4    3
+#&amp;gt;          3    0    3    6  930    0   37    1    4   23   12
+#&amp;gt;          4    0    0   11    1  931    6   11    6    9   27
+#&amp;gt;          5    5    2    1   21    0  793    9    0   15    8
+#&amp;gt;          6    3    3   10    2    7   13  910    0    6    3
+#&amp;gt;          7    1    0   19   12    0    2    0  936    5    6
+#&amp;gt;          8    2    4    9   17    2   14    3    6  883    8
+#&amp;gt;          9    0    0    3    5   36    7    0   32   19  929&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;An accuracy of this un-tuned random forest model gives 93.6% accuracy. Not bad!&lt;/p&gt;
+&lt;p&gt;to summarize (and calling P the number of simultaneous workers you have) the complexities should be (depending on the implementations) :
+you should expect random forests to be slower than neural networks.
+&lt;a href=&#34;https://stats.stackexchange.com/questions/215970/speed-of-prediction-neural-network-vs-random-forest&#34; class=&#34;uri&#34;&gt;https://stats.stackexchange.com/questions/215970/speed-of-prediction-neural-network-vs-random-forest&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Random forest gives you the feature importance, so you can study the features. Deep learning is like a black box. It performs well, but you do not really know what’s going on within the box.&lt;/p&gt;
+&lt;p&gt;When you have millions of data points, the accuracy of deep learning models can be really high.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Learn Computational Biology the Right Way</title>
+      <link>/talk/2023-bioinfocongress/</link>
+      <pubDate>Mon, 06 Mar 2023 11:15:00 -0500</pubDate>
+      
+      <guid>/talk/2023-bioinfocongress/</guid>
+      <description>&lt;p&gt;As the Bioinforange platform, we prepare and share Turkish and English review articles, news articles, videos, and scientific short notes on many biological science fields, especially bioinformatics. At the same time, we organize seminars, workshops, conferences, and congress events with the participation of valuable scientists. We have a website called www.bioinforange.com (Turkish content) and www.bioinfocodes.com (English content). We are also present on all social media platforms as @bioinforange and @bioinfocodes. Our platform is followed by scientists and our student friends who are studying in many scientific fields. We have 10300 followers on Instagram and 8000 followers on Twitter and LinkedIn.&lt;/p&gt;
+
+&lt;p&gt;Our entire team consists of students; We have more than 150 members and 128 volunteer representatives from 80 universities over the world. We continue our efforts to increase the scientific sharing culture in Turkey and to contribute to the students without any profit motive, based on volunteerism. For more detailed information, you can visit &lt;a href=&#34;https://www.bioinforange.com&#34; target=&#34;_blank&#34;&gt;https://www.bioinforange.com&lt;/a&gt; or &lt;a href=&#34;https://www.youtube.com/@Bioinforange&#34; target=&#34;_blank&#34;&gt;https://www.youtube.com/@Bioinforange&lt;/a&gt;. At the same time, you can review our most recent congress (&lt;a href=&#34;https://www.bioinforange.com/bioinfocongress3/&#34; target=&#34;_blank&#34;&gt;https://www.bioinforange.com/bioinfocongress3/&lt;/a&gt;) and our published scientific journals (&lt;a href=&#34;https://www.bioinforange.com/bioinfojournal/&#34; target=&#34;_blank&#34;&gt;https://www.bioinforange.com/bioinfojournal/&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;By inviting scientists like you to our events, we would like to contribute to our student friends and science culture in the name of sharing knowledge thanks to you.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/bioinfocongress.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;/img/bioinfocongress2.jpeg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to deal with overplotting without being fooled </title>
+      <link>/post/how-to-deal-with-overplotting-without-being-fooled/</link>
+      <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-deal-with-overplotting-without-being-fooled/</guid>
+      <description>&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div id=&#34;sign-up-for-my-newsletter-to-not-miss-a-post-like-this&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Sign up for my newsletter to not miss a post like this&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://divingintogeneticsandgenomics.ck.page/newsletter&#34; class=&#34;uri&#34;&gt;https://divingintogeneticsandgenomics.ck.page/newsletter&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-problem&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The problem&lt;/h3&gt;
+&lt;p&gt;Let me be clear, when you have gazillions of data points in a scatter plot, you
+want to deal with the overplotting to avoid drawing misleading conclusions.&lt;/p&gt;
+&lt;p&gt;Let’s start with a single-cell example.&lt;/p&gt;
+&lt;p&gt;Load the libraries:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+library(SeuratData)
+set.seed(1234)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;prepare the data&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(&amp;quot;pbmc3k&amp;quot;)
+
+pbmc3k&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; An object of class Seurat 
+#&amp;gt; 13714 features across 2700 samples within 1 assay 
+#&amp;gt; Active assay: RNA (13714 features, 0 variable features)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## routine processing
+pbmc3k&amp;lt;- pbmc3k %&amp;gt;% 
+  NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;%
+  FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;%
+  ScaleData() %&amp;gt;%
+  RunPCA(verbose = FALSE) %&amp;gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&amp;gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&amp;gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+Idents(pbmc3k)&amp;lt;- pbmc3k$seurat_annotations
+
+pbmc3k&amp;lt;- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]
+
+DimPlot(pbmc3k, reduction = &amp;quot;umap&amp;quot;, label = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;illusion-1-dots-are-masked.&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Illusion 1: dots are masked.&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;FeaturePlot(pbmc3k, features = c(&amp;quot;CD4&amp;quot;, &amp;quot;CD3D&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ggplot2&lt;/code&gt; plots the dots with the order that they show in the dataframe. When you have
+a lot of dots, they plot on top of each other. The blue dot can be masked by
+the grey dot if the grey dot/cell appears after the blue dot/cell.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;FeaturePlot(pbmc3k, features = c(&amp;quot;CD4&amp;quot;, &amp;quot;CD3D&amp;quot;), order = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You can tell that it appears both CD4 and CD3D have enhanced expression after you set the &lt;code&gt;order =TRUE&lt;/code&gt;.
+Essentially, this will cause the cells with some expression of those genes plotted in the last.&lt;/p&gt;
+&lt;p&gt;Note, by default, &lt;code&gt;scCustomize::FeaturePlot_scCustom&lt;/code&gt; set the order by TRUE. &lt;a href=&#34;https://samuel-marsh.github.io/scCustomize/articles/Gene_Expression_Plotting.html#plot-gene-expression-in-2d-space-pcatsneumap&#34; class=&#34;uri&#34;&gt;https://samuel-marsh.github.io/scCustomize/articles/Gene_Expression_Plotting.html#plot-gene-expression-in-2d-space-pcatsneumap&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;illusion2-number-of-dots&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Illusion2: number of dots&lt;/h3&gt;
+&lt;p&gt;Only when you plot the density of the points you know where are the dots are concentrated.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p1&amp;lt;- FeaturePlot(pbmc3k, features = &amp;quot;CD3D&amp;quot;, order = TRUE)
+
+p2&amp;lt;- scCustomize::Plot_Density_Custom(seurat_object = pbmc3k, features = &amp;quot;CD3D&amp;quot;,
+                                      viridis_palette= &amp;quot;viridis&amp;quot;)
+
+p1 | p2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;How the plot on the right was made?
+No worries, let me show you how to plot the density plot from scratch using &lt;code&gt;ggplot2&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;First, some helper functions:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;matrix_to_expression_df&amp;lt;- function(x, obj){
+        df&amp;lt;- x %&amp;gt;%
+                as.matrix() %&amp;gt;% 
+                as.data.frame() %&amp;gt;%
+                tibble::rownames_to_column(var= &amp;quot;gene&amp;quot;) %&amp;gt;%
+                tidyr::pivot_longer(cols = -1, names_to = &amp;quot;cell&amp;quot;, values_to = &amp;quot;expression&amp;quot;) %&amp;gt;%
+                tidyr::pivot_wider(names_from = &amp;quot;gene&amp;quot;, values_from = expression) %&amp;gt;%
+                left_join(obj@meta.data %&amp;gt;% 
+                                  tibble::rownames_to_column(var = &amp;quot;cell&amp;quot;))
+        return(df)
+}
+
+
+get_expression_data&amp;lt;- function(obj, assay = &amp;quot;RNA&amp;quot;, slot = &amp;quot;data&amp;quot;, 
+                               genes = NULL, cells = NULL){
+        if (is.null(genes) &amp;amp; !is.null(cells)){
+                df&amp;lt;- GetAssayData(obj, assay = assay, slot = slot)[, cells, drop = FALSE] %&amp;gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else if (!is.null(genes) &amp;amp; is.null(cells)){
+                df &amp;lt;- GetAssayData(obj, assay = assay, slot = slot)[genes, , drop = FALSE] %&amp;gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else if (is.null(genes &amp;amp; is.null(cells))){
+                df &amp;lt;- GetAssayData(obj, assay = assay, slot = slot)[, , drop = FALSE] %&amp;gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else {
+                df&amp;lt;- GetAssayData(obj, assay = assay, slot = slot)[genes, cells, drop = FALSE] %&amp;gt;%
+                        matrix_to_expression_df(obj = obj)
+        }
+        return(df)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggpointdensity)
+
+## fetch the dataframe
+df&amp;lt;- get_expression_data(pbmc3k, genes = &amp;quot;CD3D&amp;quot;)
+
+umap_cor&amp;lt;- pbmc3k@reductions$umap@cell.embeddings  %&amp;gt;%
+        as.data.frame() %&amp;gt;%
+        tibble::rownames_to_column(var = &amp;quot;cell&amp;quot;)
+
+df&amp;lt;- left_join(df, umap_cor)
+
+head(df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 6 × 10
+#&amp;gt;   cell            CD3D orig.ident nCount_RNA nFeature_RNA seurat_annotations
+#&amp;gt;   &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt; &amp;lt;fct&amp;gt;           &amp;lt;dbl&amp;gt;        &amp;lt;int&amp;gt; &amp;lt;fct&amp;gt;             
+#&amp;gt; 1 AAACATACAACCAC  2.86 pbmc3k           2419          779 Memory CD4 T      
+#&amp;gt; 2 AAACATTGAGCTAC  0    pbmc3k           4903         1352 B                 
+#&amp;gt; 3 AAACATTGATCAGC  3.49 pbmc3k           3147         1129 Memory CD4 T      
+#&amp;gt; 4 AAACCGTGCTTCCG  0    pbmc3k           2639          960 CD14+ Mono        
+#&amp;gt; 5 AAACCGTGTATGCG  0    pbmc3k            980          521 NK                
+#&amp;gt; 6 AAACGCACTGGTAC  1.73 pbmc3k           2163          781 Memory CD4 T      
+#&amp;gt; # … with 4 more variables: RNA_snn_res.0.5 &amp;lt;fct&amp;gt;, seurat_clusters &amp;lt;fct&amp;gt;,
+#&amp;gt; #   UMAP_1 &amp;lt;dbl&amp;gt;, UMAP_2 &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p3&amp;lt;- ggplot(df, aes(x= UMAP_1, y= UMAP_2 )) +
+        geom_point(data = df %&amp;gt;% filter(CD3D == 0), color = &amp;quot;#440154FF&amp;quot;, size = 0.6) +
+        ggpointdensity::geom_pointdensity(data = df %&amp;gt;% filter(CD3D &amp;gt; 0), size = 0.6) +
+        viridis::scale_color_viridis() +
+        theme_classic(base_size = 14) +
+        ggtitle(&amp;quot;from scratch&amp;quot;)
+
+p2 | p3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;They look similar enough. Note the legend is different (density vs number of neighbors), but you get the idea.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rastering&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Rastering&lt;/h3&gt;
+&lt;p&gt;Have you found that when you have gazillions of points, the resulting PDF or PNG file is so big and your computer
+is so slow to view them?&lt;/p&gt;
+&lt;p&gt;Rastering the image come to the rescue. Let’s use &lt;a href=&#34;https://github.com/exaexa/scattermore&#34; class=&#34;uri&#34;&gt;https://github.com/exaexa/scattermore&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(scattermore)
+
+ggplot(df, aes(x=UMAP_1, y= UMAP_2)) +
+        geom_scattermore() +
+        theme_classic(base_size = 14) +
+        ggtitle(&amp;quot;geom_scattermore&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2023-03-05-how-to-deal-with-overplotting-without-being-fooled_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You can not see the difference here. But if you zoom in
+the figure on your computer, you will see the rectangles of the points.&lt;/p&gt;
+&lt;p&gt;For this small dataset (only 3000 cells), you can not feel the differences of plotting speed.
+However, when you have millions of cells, you may want to give &lt;code&gt;scattermore&lt;/code&gt; a try!&lt;/p&gt;
+&lt;p&gt;The same thing applies to heatmap too.&lt;/p&gt;
+&lt;p&gt;Please read:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://jokergoo.github.io/2020/06/30/rasterization-in-complexheatmap/&#34; class=&#34;uri&#34;&gt;https://jokergoo.github.io/2020/06/30/rasterization-in-complexheatmap/&lt;/a&gt;&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://gdevailly.netlify.app/post/plotting-big-matrices-in-r/&#34;&gt;Plotting heatmaps from big matrices in R&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>How to commit changes to a docker image</title>
       <link>/post/how-to-commit-changes-to-a-docker-image/</link>
       <pubDate>Thu, 16 Feb 2023 00:00:00 +0000</pubDate>
       
       <guid>/post/how-to-commit-changes-to-a-docker-image/</guid>
-      <description>&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo docker images -a
+      <description>
+
+&lt;h3 id=&#34;sign-up-for-my-newsletter-to-not-miss-a-post-like-this&#34;&gt;Sign up for my newsletter to not miss a post like this&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://divingintogeneticsandgenomics.ck.page/newsletter&#34; target=&#34;_blank&#34;&gt;https://divingintogeneticsandgenomics.ck.page/newsletter&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;start-here&#34;&gt;Start here&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.docker.com/&#34; target=&#34;_blank&#34;&gt;Docker&lt;/a&gt; is a great tool to ensure reproducibility of your computing work. I was
+using the bioconductor image on google cloud, but the image does not have the &lt;code&gt;gsutil&lt;/code&gt; command.&lt;/p&gt;
+
+&lt;p&gt;You can install once in the container, but once you exit the container, the gsutil command
+will be gone. You will need to modify the docker image if you want to keep using it.&lt;/p&gt;
+
+&lt;h3 id=&#34;step-1&#34;&gt;Step 1&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo docker images -a
 
 REPOSITORY                         TAG            IMAGE ID       CREATED         SIZE
 rocker/tidyverse                   latest         d4d41e410fb7   2 months ago    2.16GB
@@ -24,6 +457,136 @@ r-base                             latest         3de1ef2039fb   3 months ago   
 bioconductor/bioconductor_docker   RELEASE_3_15   75cc0e27e8ea   6 months ago    4.23GB
 hello-world                        latest         feb5d9fea6a5   17 months ago   13.3kB
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;step-2&#34;&gt;Step 2&lt;/h3&gt;
+
+&lt;p&gt;run the &lt;code&gt;bioconductor/bioconductor_docker&lt;/code&gt; docker container interactively in bash:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo docker run -it 75cc0e27e8ea bin/bash
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;step-3&#34;&gt;Step 3&lt;/h3&gt;
+
+&lt;p&gt;Modify the container by installing &lt;code&gt;gsutils&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ gsutil
+bash: gsutil: command not found
+
+$ curl -sSL https://sdk.cloud.google.com | bash
+
+Performing post processing steps...done.
+
+Update done!
+
+
+Modify profile to update your $PATH and enable shell command completion?
+
+Do you want to continue (Y/n)?
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It will add the gsutil to your &lt;code&gt;PATH&lt;/code&gt;. Exit the container:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ exit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;step-4&#34;&gt;Step 4&lt;/h3&gt;
+
+&lt;p&gt;Find the container ID:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo docker ps -a | head
+CONTAINER ID   IMAGE                                           COMMAND      CREATED             STATUS                          PORTS                                       NAMES
+ab9c4b13c67c   bioconductor/bioconductor_docker:RELEASE_3_15   &amp;quot;/init&amp;quot;      36 seconds ago      Up 35 seconds                   0.0.0.0:8787-&amp;gt;8787/tcp, :::8787-&amp;gt;8787/tcp   keen_khayyam
+d3786b7b53a5   75cc0e27e8ea                                    &amp;quot;bin/bash&amp;quot;   10 minutes ago      Exited (127) 23 seconds ago                                                 quirky_cori
+d6a94d025154   bioconductor/bioconductor_docker:RELEASE_3_15   &amp;quot;/init&amp;quot;      About an hour ago   Exited (0) About a minute ago                                               kind_goldwasser
+ab7e03d1d665   bioconductor/bioconductor_docker:RELEASE_3_15   &amp;quot;/init&amp;quot;      About an hour ago   Exited (0) About an hour ago                                                wonderful_bouman
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;sudo docker commit [CONTAINER_ID] [new_image_name]&lt;/code&gt; to commit the changes:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo docker commit d3786b7b53a5 bioconductor_gstuils
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;step-5&#34;&gt;Step 5&lt;/h3&gt;
+
+&lt;p&gt;Hoary! The &lt;code&gt;bioconductor_gstuils&lt;/code&gt; image is created!&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo docker images
+REPOSITORY                         TAG            IMAGE ID       CREATED         SIZE
+bioconductor_gstuils               latest         375c7ec8354f   2 minutes ago   5.49GB
+rocker/tidyverse                   latest         d4d41e410fb7   2 months ago    2.16GB
+r-base                             latest         3de1ef2039fb   3 months ago    838MB
+bioconductor/bioconductor_docker   RELEASE_3_15   75cc0e27e8ea   6 months ago    4.23GB
+hello-world                        latest         feb5d9fea6a5   17 months ago   13.3kB
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code&gt;gsutil&lt;/code&gt; command is now avaiable in the new docker container.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo docker run -it bioconductor_gstuils bin/bash
+
+$ gsutil
+Usage: gsutil [-D] [-DD] [-h header]... [-i service_account] [-m] [-o section:flag=value]... [-q] [-u user_project] [command [opts...] args...]
+Available commands:
+  acl              Get, set, or change bucket and/or object ACLs
+  autoclass        Configure Autoclass feature
+  bucketpolicyonly Configure uniform bucket-level access
+  cat              Concatenate object content to stdout
+  compose          Concatenate a sequence of objects into a new composite object.
+  config           Obtain credentials and create configuration file
+  cors             Get or set a CORS JSON document for one or more buckets
+  cp               Copy files and objects
+  defacl           Get, set, or change default ACL on buckets
+  defstorageclass  Get or set the default storage class on buckets
+  du               Display object size usage
+  hash             Calculate file hashes
+  help             Get help about commands and topics
+  hmac             CRUD operations on service account HMAC keys.
+  iam              Get, set, or change bucket and/or object IAM permissions.
+  kms              Configure Cloud KMS encryption
+  label            Get, set, or change the label configuration of a bucket.
+  lifecycle        Get or set lifecycle configuration for a bucket
+  logging          Configure or retrieve logging on buckets
+  ls               List providers, buckets, or objects
+  mb               Make buckets
+  mv               Move/rename objects
+  notification     Configure object change notification
+  pap              Configure public access prevention
+  perfdiag         Run performance diagnostic
+  rb               Remove buckets
+  requesterpays    Enable or disable requester pays for one or more buckets
+  retention        Provides utilities to interact with Retention Policy feature.
+  rewrite          Rewrite objects
+  rm               Remove objects
+  rpo              Configure replication
+  rsync            Synchronize content of two buckets/directories
+  setmeta          Set metadata on already uploaded objects
+  signurl          Create a signed URL
+  stat             Display object status
+  test             Run gsutil unit/integration tests (for developers)
+  ubla             Configure Uniform bucket-level access
+  update           Update to the latest gsutil release
+  version          Print version info about gsutil
+  versioning       Enable or suspend versioning for one or more buckets
+  web              Set a website configuration for a bucket
+
+...
+
+Use gsutil help &amp;lt;command or topic&amp;gt; for detailed help.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Hmm.. but now the below command does not bring up the Rstudio.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo docker run \
+    -v /home/tommytang:/home/rstudio/tommytang \
+    -v /home/tommytang/R/host-site-library:/usr/local/lib/R/host-site-library \
+    -e R_LIBS_USER=/home/tommytang/R/host-site-library \
+  	-p 8787:8787 \
+  	bioconductor_gstuils
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;What&amp;rsquo;s wrong?&lt;/p&gt;
+
+&lt;p&gt;I know I can also add &lt;code&gt;RUN curl -sSL https://sdk.cloud.google.com | bash&lt;/code&gt; to the bioconductor &lt;a href=&#34;https://github.com/Bioconductor/bioconductor_docker/blob/master/Dockerfile&#34; target=&#34;_blank&#34;&gt;docker file&lt;/a&gt; and
+build a new docker image. That probably will work.&lt;/p&gt;
 </description>
     </item>
     
@@ -2187,845 +2750,6 @@ tidy(pls_fit) %&amp;gt;%
 &lt;p&gt;One can use &lt;a href=&#34;https://rdrr.io/cran/mixOmics/man/vip.html&#34;&gt;&lt;code&gt;mixOmics::vip&lt;/code&gt;&lt;/a&gt; to calculate it.&lt;/p&gt;
 &lt;p&gt;Further reading: &lt;a href=&#34;https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-3310-7&#34;&gt;So you think you can PLS-DA?&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>My odyssey of obtaining scRNAseq metadata </title>
-      <link>/post/my-odyssey-of-obtaining-scrnaseq-metadata/</link>
-      <pubDate>Wed, 08 Jun 2022 00:00:00 +0000</pubDate>
-      
-      <guid>/post/my-odyssey-of-obtaining-scrnaseq-metadata/</guid>
-      <description>&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-
-&lt;p&gt;I want to curate a public scRNAseq dataset from this paper &lt;a href=&#34;https://pubmed.ncbi.nlm.nih.gov/34653365/&#34;&gt;Single-cell analyses reveal key immune cell subsets associated with response to PD-L1 blockade in triple-negative breast cancer&lt;/a&gt;&lt;/p&gt;
-&lt;div id=&#34;ffq&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;ffq&lt;/h3&gt;
-&lt;p&gt;I first tried &lt;a href=&#34;https://github.com/pachterlab/ffq&#34;&gt;ffq&lt;/a&gt;, but it gave me errors.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;ffq&lt;/code&gt; fetches metadata information from the following databases:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;GEO: Gene Expression Omnibus,&lt;/li&gt;
-&lt;li&gt;SRA: Sequence Read Archive,&lt;/li&gt;
-&lt;li&gt;EMBL-EBI: European Molecular BIology Laboratory’s European BIoinformatics Institute,&lt;/li&gt;
-&lt;li&gt;DDBJ: DNA Data Bank of Japan,&lt;/li&gt;
-&lt;li&gt;NIH Biosample: Biological source materials used in experimental assays,&lt;/li&gt;
-&lt;li&gt;ENCODE: The Encyclopedia of DNA Elements.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;(base) ➜  ~ ffq GSE169246
-[2022-06-06 14:32:22,716]    INFO Parsing GEO GSE169246
-[2022-06-06 14:32:24,418]    INFO Finding supplementary files for GEO GSE169246
-[2022-06-06 14:32:28,001] WARNING There are 83 samples for GSE169246
-[2022-06-06 14:32:28,001]    INFO Parsing GSM GSM5188367
-[2022-06-06 14:32:33,047]    INFO Finding supplementary files for GSM GSM5188367
-[2022-06-06 14:32:34,409]    INFO No supplementary files found for GSM5188367
-[2022-06-06 14:32:39,659]    INFO Getting sample for GSM5188367
-[2022-06-06 14:32:41,847] WARNING No sample found. Either the provided GSM accession is invalid or raw data was not provided for this record&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;get-the-metadata-using-geoquery&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;get the metadata using GEOquery&lt;/h3&gt;
-&lt;p&gt;other methods: pysradb &lt;a href=&#34;https://github.com/saketkc/pysradb&#34; class=&#34;uri&#34;&gt;https://github.com/saketkc/pysradb&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;I then tried &lt;a href=&#34;https://bioconductor.org/packages/release/bioc/html/GEOquery.html&#34;&gt;&lt;code&gt;GEOquery&lt;/code&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(GEOquery)
-library(tidyverse)
-library(here)
-#getGEOSuppFiles(GEO =&amp;quot;GSE176021&amp;quot;)
-# one can also get the matrix by setting GSEMatrix to TRUE
-meta&amp;lt;- getGEO(GEO= &amp;quot;GSE169246&amp;quot;,GSEMatrix=FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The &lt;code&gt;meta&lt;/code&gt; object’s gsms slot contains useful information&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## metadata 
-meta@gsms$GSM5188440@header$characteristics_ch1&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] &amp;quot;tissue: blood&amp;quot;               &amp;quot;disease state: TNBC patient&amp;quot;
-#&amp;gt; [3] &amp;quot;group: Progression&amp;quot;          &amp;quot;treatment: Chemo&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## sample ID, I need it because the count matrix cell name is prefixed by it
-meta@gsms$GSM5188440@header$title &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] &amp;quot;Prog_P008_b&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## patient ID
-meta@gsms$GSM5188440@header$source_name_ch1&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] &amp;quot;P008&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;meta@gsms&lt;/code&gt; is a list of lists. &lt;code&gt;purrr::map()&lt;/code&gt; is a perfect tool to tidy it.&lt;/p&gt;
-&lt;p&gt;you can learn more &lt;code&gt;purrr&lt;/code&gt; from &lt;a href=&#34;https://jennybc.github.io/purrr-tutorial/&#34; class=&#34;uri&#34;&gt;https://jennybc.github.io/purrr-tutorial/&lt;/a&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# each list entry is one sample
-names(meta@gsms)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt;  [1] &amp;quot;GSM5188367&amp;quot; &amp;quot;GSM5188368&amp;quot; &amp;quot;GSM5188369&amp;quot; &amp;quot;GSM5188370&amp;quot; &amp;quot;GSM5188371&amp;quot;
-#&amp;gt;  [6] &amp;quot;GSM5188372&amp;quot; &amp;quot;GSM5188373&amp;quot; &amp;quot;GSM5188374&amp;quot; &amp;quot;GSM5188375&amp;quot; &amp;quot;GSM5188376&amp;quot;
-#&amp;gt; [11] &amp;quot;GSM5188377&amp;quot; &amp;quot;GSM5188378&amp;quot; &amp;quot;GSM5188379&amp;quot; &amp;quot;GSM5188380&amp;quot; &amp;quot;GSM5188381&amp;quot;
-#&amp;gt; [16] &amp;quot;GSM5188382&amp;quot; &amp;quot;GSM5188383&amp;quot; &amp;quot;GSM5188384&amp;quot; &amp;quot;GSM5188385&amp;quot; &amp;quot;GSM5188386&amp;quot;
-#&amp;gt; [21] &amp;quot;GSM5188387&amp;quot; &amp;quot;GSM5188388&amp;quot; &amp;quot;GSM5188389&amp;quot; &amp;quot;GSM5188390&amp;quot; &amp;quot;GSM5188391&amp;quot;
-#&amp;gt; [26] &amp;quot;GSM5188392&amp;quot; &amp;quot;GSM5188393&amp;quot; &amp;quot;GSM5188394&amp;quot; &amp;quot;GSM5188395&amp;quot; &amp;quot;GSM5188396&amp;quot;
-#&amp;gt; [31] &amp;quot;GSM5188397&amp;quot; &amp;quot;GSM5188398&amp;quot; &amp;quot;GSM5188399&amp;quot; &amp;quot;GSM5188400&amp;quot; &amp;quot;GSM5188401&amp;quot;
-#&amp;gt; [36] &amp;quot;GSM5188402&amp;quot; &amp;quot;GSM5188403&amp;quot; &amp;quot;GSM5188404&amp;quot; &amp;quot;GSM5188405&amp;quot; &amp;quot;GSM5188406&amp;quot;
-#&amp;gt; [41] &amp;quot;GSM5188407&amp;quot; &amp;quot;GSM5188408&amp;quot; &amp;quot;GSM5188409&amp;quot; &amp;quot;GSM5188410&amp;quot; &amp;quot;GSM5188411&amp;quot;
-#&amp;gt; [46] &amp;quot;GSM5188412&amp;quot; &amp;quot;GSM5188413&amp;quot; &amp;quot;GSM5188414&amp;quot; &amp;quot;GSM5188415&amp;quot; &amp;quot;GSM5188416&amp;quot;
-#&amp;gt; [51] &amp;quot;GSM5188417&amp;quot; &amp;quot;GSM5188418&amp;quot; &amp;quot;GSM5188419&amp;quot; &amp;quot;GSM5188420&amp;quot; &amp;quot;GSM5188421&amp;quot;
-#&amp;gt; [56] &amp;quot;GSM5188422&amp;quot; &amp;quot;GSM5188423&amp;quot; &amp;quot;GSM5188424&amp;quot; &amp;quot;GSM5188425&amp;quot; &amp;quot;GSM5188426&amp;quot;
-#&amp;gt; [61] &amp;quot;GSM5188427&amp;quot; &amp;quot;GSM5188428&amp;quot; &amp;quot;GSM5188429&amp;quot; &amp;quot;GSM5188430&amp;quot; &amp;quot;GSM5188431&amp;quot;
-#&amp;gt; [66] &amp;quot;GSM5188432&amp;quot; &amp;quot;GSM5188433&amp;quot; &amp;quot;GSM5188434&amp;quot; &amp;quot;GSM5188435&amp;quot; &amp;quot;GSM5188436&amp;quot;
-#&amp;gt; [71] &amp;quot;GSM5188437&amp;quot; &amp;quot;GSM5188438&amp;quot; &amp;quot;GSM5188439&amp;quot; &amp;quot;GSM5188440&amp;quot; &amp;quot;GSM5188441&amp;quot;
-#&amp;gt; [76] &amp;quot;GSM5188442&amp;quot; &amp;quot;GSM5188443&amp;quot; &amp;quot;GSM5188444&amp;quot; &amp;quot;GSM5188445&amp;quot; &amp;quot;GSM5585280&amp;quot;
-#&amp;gt; [81] &amp;quot;GSM5585281&amp;quot; &amp;quot;GSM5585282&amp;quot; &amp;quot;GSM5585283&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meta@gsms$GSM5188367@header&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; $channel_count
-#&amp;gt; [1] &amp;quot;1&amp;quot;
-#&amp;gt; 
-#&amp;gt; $characteristics_ch1
-#&amp;gt; [1] &amp;quot;tissue: blood&amp;quot;               &amp;quot;disease state: TNBC patient&amp;quot;
-#&amp;gt; [3] &amp;quot;group: Pre-treatment&amp;quot;        &amp;quot;treatment: anti-PDL1+Chemo&amp;quot; 
-#&amp;gt; 
-#&amp;gt; $contact_address
-#&amp;gt; [1] &amp;quot;Yiheyuan Road&amp;quot;
-#&amp;gt; 
-#&amp;gt; $contact_city
-#&amp;gt; [1] &amp;quot;Beijing&amp;quot;
-#&amp;gt; 
-#&amp;gt; $contact_country
-#&amp;gt; [1] &amp;quot;China&amp;quot;
-#&amp;gt; 
-#&amp;gt; $contact_department
-#&amp;gt; [1] &amp;quot;BIOPIC&amp;quot;
-#&amp;gt; 
-#&amp;gt; $contact_email
-#&amp;gt; [1] &amp;quot;zhangyuanyuanbio@pku.edu.cn&amp;quot;
-#&amp;gt; 
-#&amp;gt; $contact_institute
-#&amp;gt; [1] &amp;quot;Peking Univerisity&amp;quot;
-#&amp;gt; 
-#&amp;gt; $contact_laboratory
-#&amp;gt; [1] &amp;quot;Zemin Zhang&amp;#39;s Lab&amp;quot;
-#&amp;gt; 
-#&amp;gt; $contact_name
-#&amp;gt; [1] &amp;quot;Yuanyuan,,Zhang&amp;quot;
-#&amp;gt; 
-#&amp;gt; $contact_state
-#&amp;gt; [1] &amp;quot;Beijing&amp;quot;
-#&amp;gt; 
-#&amp;gt; $`contact_zip/postal_code`
-#&amp;gt; [1] &amp;quot;100871&amp;quot;
-#&amp;gt; 
-#&amp;gt; $data_processing
-#&amp;gt; [1] &amp;quot;For 10X data, Cell Ranger 3.0.0 was used to quantify gene expression level, identify TCR sequences and quantify ATAC-seq peaks .&amp;quot;
-#&amp;gt; [2] &amp;quot;Genome_build: GRCh38 for RNA expression,TCR data and ATAC peaks.&amp;quot;                                                                
-#&amp;gt; 
-#&amp;gt; $data_row_count
-#&amp;gt; [1] &amp;quot;0&amp;quot;
-#&amp;gt; 
-#&amp;gt; $description
-#&amp;gt; [1] &amp;quot;10X Genomics platform&amp;quot;
-#&amp;gt; 
-#&amp;gt; $extract_protocol_ch1
-#&amp;gt; [1] &amp;quot;Peripheral blood mononuclear cells (PBMCs) were isolated with HISTOPAQUE-1077 (Sigma-Aldrich) solution. In brief, 3 ml fresh peripheral blood was collected at baseline, 4 weeks after treatment initiation and disease progression in EDTA anticoagulant tubes and subsequently layered onto HISTOPAQUE-1077. Tumor biopsy samples were first stored in RNAlater RNA stabilization reagent (QIAGEN) after collection and kept on ice to avoid RNA degradation. Samples were then collected in the RPMI-1640 medium (Gibco) with 10% FBS (Gibco), and enzymatically digested with gentle MACS Tumor Dissociation Kit (Miltenyi Biotec) for 60 min on a rotor at 37 °C according to the manufacturer’s protocol. The dissociated cells were next passed through a 40-µm cell-strainer (BD) in the RPMI-1640 medium (Invitrogen) with 10% FBS until uniform cell suspensions were obtained. Subsequently, the suspended cells were passed through cell strainers and centrifuged at 400 g for 10 min. Red blood cells were removed via the same procedure described above. After washing twice with 1x PBS (Invitrogen), the cell pellets were re-suspended in sorting buffer (PBS supplemented with 1% FBS).&amp;quot;
-#&amp;gt; [2] &amp;quot;single cells were sorted into 1.5 ml tubes (Eppendorf) and counted manually under the microscope. The concentration of single cell suspensions was adjusted to 500-1200 cells/ul. Cells were loaded between 7,000 and 15,000 cells/chip position using the 10x Chromium Single cell 5’ Library, Gel Bead &amp;amp; Multiplex Kit and Chip Kit (10x Genomics, V3 barcoding chemistry) according to the manufacturer’s instructions. All the subsequent steps were performed following the standard manufacturer’s protocols. Purified libraries were analyzed by an Illumina Hiseq X Ten sequencer with 150-bp paired-end reads.&amp;quot;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-#&amp;gt; [3] &amp;quot;10x Chromium Single cell 5’ + VDJ Library, and 10x Chromium Single cell ATAC-seq Library&amp;quot;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-#&amp;gt; 
-#&amp;gt; $geo_accession
-#&amp;gt; [1] &amp;quot;GSM5188367&amp;quot;
-#&amp;gt; 
-#&amp;gt; $instrument_model
-#&amp;gt; [1] &amp;quot;HiSeq X Ten&amp;quot;
-#&amp;gt; 
-#&amp;gt; $last_update_date
-#&amp;gt; [1] &amp;quot;Sep 17 2021&amp;quot;
-#&amp;gt; 
-#&amp;gt; $library_selection
-#&amp;gt; [1] &amp;quot;cDNA&amp;quot;
-#&amp;gt; 
-#&amp;gt; $library_source
-#&amp;gt; [1] &amp;quot;transcriptomic&amp;quot;
-#&amp;gt; 
-#&amp;gt; $library_strategy
-#&amp;gt; [1] &amp;quot;RNA-Seq&amp;quot;
-#&amp;gt; 
-#&amp;gt; $molecule_ch1
-#&amp;gt; [1] &amp;quot;polyA RNA&amp;quot;
-#&amp;gt; 
-#&amp;gt; $organism_ch1
-#&amp;gt; [1] &amp;quot;Homo sapiens&amp;quot;
-#&amp;gt; 
-#&amp;gt; $platform_id
-#&amp;gt; [1] &amp;quot;GPL20795&amp;quot;
-#&amp;gt; 
-#&amp;gt; $relation
-#&amp;gt; [1] &amp;quot;BioSample: https://www.ncbi.nlm.nih.gov/biosample/SAMN18383051&amp;quot;
-#&amp;gt; 
-#&amp;gt; $series_id
-#&amp;gt; [1] &amp;quot;GSE169246&amp;quot;
-#&amp;gt; 
-#&amp;gt; $source_name_ch1
-#&amp;gt; [1] &amp;quot;P007&amp;quot;
-#&amp;gt; 
-#&amp;gt; $status
-#&amp;gt; [1] &amp;quot;Public on Sep 15 2021&amp;quot;
-#&amp;gt; 
-#&amp;gt; $submission_date
-#&amp;gt; [1] &amp;quot;Mar 19 2021&amp;quot;
-#&amp;gt; 
-#&amp;gt; $supplementary_file_1
-#&amp;gt; [1] &amp;quot;NONE&amp;quot;
-#&amp;gt; 
-#&amp;gt; $taxid_ch1
-#&amp;gt; [1] &amp;quot;9606&amp;quot;
-#&amp;gt; 
-#&amp;gt; $title
-#&amp;gt; [1] &amp;quot;Pre_P007_b&amp;quot;
-#&amp;gt; 
-#&amp;gt; $treatment_protocol_ch1
-#&amp;gt; [1] &amp;quot;Half of 22 TNBC patients were treated with paclitaxel monotherapy and the other half were treated with paclitaxel plus atezolizumab as first-line treatment&amp;quot;
-#&amp;gt; 
-#&amp;gt; $type
-#&amp;gt; [1] &amp;quot;SRA&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extract the metadata from the header
-purrr::map(meta@gsms, ~.x@header$characteristics_ch1)[1:5]&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; $GSM5188367
-#&amp;gt; [1] &amp;quot;tissue: blood&amp;quot;               &amp;quot;disease state: TNBC patient&amp;quot;
-#&amp;gt; [3] &amp;quot;group: Pre-treatment&amp;quot;        &amp;quot;treatment: anti-PDL1+Chemo&amp;quot; 
-#&amp;gt; 
-#&amp;gt; $GSM5188368
-#&amp;gt; [1] &amp;quot;tissue: lymph_node&amp;quot;          &amp;quot;disease state: TNBC patient&amp;quot;
-#&amp;gt; [3] &amp;quot;group: Pre-treatment&amp;quot;        &amp;quot;treatment: anti-PDL1+Chemo&amp;quot; 
-#&amp;gt; 
-#&amp;gt; $GSM5188369
-#&amp;gt; [1] &amp;quot;tissue: blood&amp;quot;               &amp;quot;disease state: TNBC patient&amp;quot;
-#&amp;gt; [3] &amp;quot;group: Pre-treatment&amp;quot;        &amp;quot;treatment: anti-PDL1+Chemo&amp;quot; 
-#&amp;gt; 
-#&amp;gt; $GSM5188370
-#&amp;gt; [1] &amp;quot;tissue: lymph_node&amp;quot;          &amp;quot;disease state: TNBC patient&amp;quot;
-#&amp;gt; [3] &amp;quot;group: Pre-treatment&amp;quot;        &amp;quot;treatment: anti-PDL1+Chemo&amp;quot; 
-#&amp;gt; 
-#&amp;gt; $GSM5188371
-#&amp;gt; [1] &amp;quot;tissue: blood&amp;quot;               &amp;quot;disease state: TNBC patient&amp;quot;
-#&amp;gt; [3] &amp;quot;group: Pre-treatment&amp;quot;        &amp;quot;treatment: anti-PDL1+Chemo&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Also, have you used the awesome &lt;code&gt;stack&lt;/code&gt; and &lt;code&gt;unstack&lt;/code&gt; function in base R? There are so many good hidden functions.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# save it to a variable
-meta1&amp;lt;- purrr::map(meta@gsms, ~.x@header$characteristics_ch1) %&amp;gt;%
-        stack() %&amp;gt;%
-        separate(values, into = c(&amp;quot;condition&amp;quot;, &amp;quot;value&amp;quot;), sep= &amp;quot;: &amp;quot;)%&amp;gt;%
-        pivot_wider(names_from= condition, values_from = value) %&amp;gt;%
-        janitor::clean_names()
-        
-
-meta2&amp;lt;- purrr::map(meta@gsms, ~.x@header$title) %&amp;gt;%
-        stack() %&amp;gt;%
-        dplyr::rename(sample_id = values)
-
-
-meta3&amp;lt;- purrr::map(meta@gsms, ~.x@header$source_name_ch1) %&amp;gt;%
-        stack() %&amp;gt;%
-        dplyr::rename(patient_id = values)
-
-
-
-head(meta1)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 6 × 5
-#&amp;gt;   ind        tissue     disease_state group         treatment      
-#&amp;gt;   &amp;lt;fct&amp;gt;      &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;          
-#&amp;gt; 1 GSM5188367 blood      TNBC patient  Pre-treatment anti-PDL1+Chemo
-#&amp;gt; 2 GSM5188368 lymph_node TNBC patient  Pre-treatment anti-PDL1+Chemo
-#&amp;gt; 3 GSM5188369 blood      TNBC patient  Pre-treatment anti-PDL1+Chemo
-#&amp;gt; 4 GSM5188370 lymph_node TNBC patient  Pre-treatment anti-PDL1+Chemo
-#&amp;gt; 5 GSM5188371 blood      TNBC patient  Pre-treatment anti-PDL1+Chemo
-#&amp;gt; 6 GSM5188372 blood      TNBC patient  Pre-treatment Chemo&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(meta2)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt;    sample_id        ind
-#&amp;gt; 1 Pre_P007_b GSM5188367
-#&amp;gt; 2 Pre_P007_t GSM5188368
-#&amp;gt; 3 Pre_P012_b GSM5188369
-#&amp;gt; 4 Pre_P012_t GSM5188370
-#&amp;gt; 5 Pre_P014_b GSM5188371
-#&amp;gt; 6 Pre_P023_b GSM5188372&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(meta3)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt;   patient_id        ind
-#&amp;gt; 1       P007 GSM5188367
-#&amp;gt; 2       P007 GSM5188368
-#&amp;gt; 3       P012 GSM5188369
-#&amp;gt; 4       P012 GSM5188370
-#&amp;gt; 5       P014 GSM5188371
-#&amp;gt; 6       P023 GSM5188372&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;##merge all of them
-
-meta&amp;lt;- left_join(meta1, meta2) %&amp;gt;%
-        left_join(meta3)
-
-head(meta)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 6 × 7
-#&amp;gt;   ind        tissue     disease_state group       treatment sample_id patient_id
-#&amp;gt;   &amp;lt;fct&amp;gt;      &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;     
-#&amp;gt; 1 GSM5188367 blood      TNBC patient  Pre-treatm… anti-PDL… Pre_P007… P007      
-#&amp;gt; 2 GSM5188368 lymph_node TNBC patient  Pre-treatm… anti-PDL… Pre_P007… P007      
-#&amp;gt; 3 GSM5188369 blood      TNBC patient  Pre-treatm… anti-PDL… Pre_P012… P012      
-#&amp;gt; 4 GSM5188370 lymph_node TNBC patient  Pre-treatm… anti-PDL… Pre_P012… P012      
-#&amp;gt; 5 GSM5188371 blood      TNBC patient  Pre-treatm… anti-PDL… Pre_P014… P014      
-#&amp;gt; 6 GSM5188372 blood      TNBC patient  Pre-treatm… Chemo     Pre_P023… P023&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## remove the scATACseq samples
-meta&amp;lt;- meta %&amp;gt;%
-        filter(!str_detect(sample_id, &amp;quot;ATAC-seq&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;get-the-response-data&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Get the response data&lt;/h3&gt;
-&lt;p&gt;Now, I will need to go to the publication and find the supplementary table which contains the response data.
-It looks like this:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/meta_excel.png&#34; /&gt;
-Everyone should read this &lt;a href=&#34;https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/&#34; class=&#34;uri&#34;&gt;https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/&lt;/a&gt;
-and &lt;a href=&#34;https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989&#34;&gt;Data organization in spreadsheet&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Using excel wisely is not a rocket science, but using it correctly can make bioinformatician’s life much easier.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;clinical_data&amp;lt;- readxl::read_xlsx(&amp;quot;~/Downloads/1-s2.0-S1535610821004992-mmc2.xlsx&amp;quot;, skip = 1)
-
-## there are many places need to be fixed
-print(clinical_data, n = 40)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 27 × 19
-#&amp;gt;    Treatment     `Patient ID` `Biopsied lesi…` `Diameter of b…` `Size of targe…`
-#&amp;gt;    &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;                       &amp;lt;dbl&amp;gt;
-#&amp;gt;  1 &amp;lt;NA&amp;gt;          &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;             &amp;lt;NA&amp;gt;                           NA
-#&amp;gt;  2 Anti-PD-L1+ … P019         Lymph Node       15                             36
-#&amp;gt;  3 &amp;lt;NA&amp;gt;          P010         Lung             21                             35
-#&amp;gt;  4 &amp;lt;NA&amp;gt;          P012         Lymph Node       28                             28
-#&amp;gt;  5 &amp;lt;NA&amp;gt;          P007         Lymph Node       22                             22
-#&amp;gt;  6 &amp;lt;NA&amp;gt;          P017         Lymph Node       16                             45
-#&amp;gt;  7 &amp;lt;NA&amp;gt;          P001         -                -                              45
-#&amp;gt;  8 &amp;lt;NA&amp;gt;          P002         Chest Wall       48                             48
-#&amp;gt;  9 &amp;lt;NA&amp;gt;          P014         -                -                              11
-#&amp;gt; 10 &amp;lt;NA&amp;gt;          P004         Chest Wall       35                             35
-#&amp;gt; 11 &amp;lt;NA&amp;gt;          P005         Liver            87                             97
-#&amp;gt; 12 &amp;lt;NA&amp;gt;          P016         Chest Wall       24                             24
-#&amp;gt; 13 Chemo         P022         Breast           33                             48
-#&amp;gt; 14 &amp;lt;NA&amp;gt;          P011         -                -                              30
-#&amp;gt; 15 &amp;lt;NA&amp;gt;          P020         Breast           37                             55
-#&amp;gt; 16 &amp;lt;NA&amp;gt;          P008         Lung             22                             22
-#&amp;gt; 17 &amp;lt;NA&amp;gt;          P013         Liver            36                            152
-#&amp;gt; 18 &amp;lt;NA&amp;gt;          P025         Breast           26                             26
-#&amp;gt; 19 &amp;lt;NA&amp;gt;          P018         Breast           48                             48
-#&amp;gt; 20 &amp;lt;NA&amp;gt;          P023         Breast           26                             42
-#&amp;gt; 21 &amp;lt;NA&amp;gt;          P024         Breast           72                             95
-#&amp;gt; 22 &amp;lt;NA&amp;gt;          P003         Chest Wall       11                             30
-#&amp;gt; 23 &amp;lt;NA&amp;gt;          P028         -                26                             57
-#&amp;gt; 24 N,Not availa… &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;             &amp;lt;NA&amp;gt;                           NA
-#&amp;gt; 25 * Negative v… &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;             &amp;lt;NA&amp;gt;                           NA
-#&amp;gt; 26 # PR,partial… &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;             &amp;lt;NA&amp;gt;                           NA
-#&amp;gt; 27 $The + sign … &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;             &amp;lt;NA&amp;gt;                           NA
-#&amp;gt; # … with 14 more variables: Age &amp;lt;dbl&amp;gt;, `Stage (TNM )` &amp;lt;chr&amp;gt;, `PD-L1` &amp;lt;chr&amp;gt;,
-#&amp;gt; #   `TILs (%)` &amp;lt;chr&amp;gt;, Tumor &amp;lt;chr&amp;gt;, ...11 &amp;lt;chr&amp;gt;, ...12 &amp;lt;chr&amp;gt;, Blood &amp;lt;chr&amp;gt;,
-#&amp;gt; #   ...14 &amp;lt;chr&amp;gt;, ...15 &amp;lt;chr&amp;gt;,
-#&amp;gt; #   `Relative change of target lesions (8 weeks after treatment initiation vs. Pre-treatment)*` &amp;lt;chr&amp;gt;,
-#&amp;gt; #   `Relative change of biopsied lesions (8 weeks after treatment initiation vs. Pre-treatment)*` &amp;lt;chr&amp;gt;,
-#&amp;gt; #   `Clinical efficacy#` &amp;lt;chr&amp;gt;, `Time to progression (months)$` &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## remove the first row and the last 4 rows, fill in the NAs for the Treatment 
-clinical_data&amp;lt;- clinical_data %&amp;gt;%
-        janitor::clean_names() %&amp;gt;%
-        slice(2:23) %&amp;gt;%
-        tidyr::fill(treatment) %&amp;gt;%
-        dplyr::select(!(tumor:x15)) &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;yeah, and N for not available , and sometimes - means not available. let’s fix that.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;clinical_data&amp;lt;- clinical_data %&amp;gt;%
-        #trim off the white spaces. this will help the later step too
-        mutate_all(~str_trim(.x, side =&amp;quot;both&amp;quot;)) %&amp;gt;%
-        mutate_at(vars(-pd_l1), ~str_replace(.x , &amp;quot;^-$&amp;quot;, NA_character_)) %&amp;gt;%
-        mutate_all( ~str_replace(.x , &amp;quot;^N$&amp;quot;, NA_character_))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;merge the two tables&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meta&amp;lt;- meta %&amp;gt;%
-        left_join(clinical_data) %&amp;gt;%
-        arrange(patient_id, biopsied_lesion) %&amp;gt;%
-        select(-biopsied_lesion)
-
-print(meta, n = 20)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 83 × 17
-#&amp;gt;    ind        tissue     disease_state group      treatment sample_id patient_id
-#&amp;gt;    &amp;lt;fct&amp;gt;      &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;     
-#&amp;gt;  1 GSM5188381 blood      TNBC patient  Pre-treat… anti-PDL… Pre_P001… P001      
-#&amp;gt;  2 GSM5188414 blood      TNBC patient  Post-trea… anti-PDL… Post_P00… P001      
-#&amp;gt;  3 GSM5188376 blood      TNBC patient  Pre-treat… anti-PDL… Pre_P002… P002      
-#&amp;gt;  4 GSM5188377 chest_wall TNBC patient  Pre-treat… anti-PDL… Pre_P002… P002      
-#&amp;gt;  5 GSM5188410 blood      TNBC patient  Post-trea… anti-PDL… Post_P00… P002      
-#&amp;gt;  6 GSM5188411 chest_wall TNBC patient  Post-trea… anti-PDL… Post_P00… P002      
-#&amp;gt;  7 GSM5188437 blood      TNBC patient  Progressi… anti-PDL… Prog_P00… P002      
-#&amp;gt;  8 GSM5188401 chest_wall TNBC patient  Post-trea… Chemo     Post_P00… P003      
-#&amp;gt;  9 GSM5585280 blood      TNBC patient  Pre-treat… Anti-PD-… Pre_P004… P004      
-#&amp;gt; 10 GSM5585281 chest_wall TNBC patient  Pre-treat… Anti-PD-… Pre_P004… P004      
-#&amp;gt; 11 GSM5585282 blood      TNBC patient  Post-trea… Anti-PD-… Post_P00… P004      
-#&amp;gt; 12 GSM5585283 blood      TNBC patient  Progressi… Anti-PD-… Prog_P00… P004      
-#&amp;gt; 13 GSM5188398 blood      TNBC patient  Pre-treat… anti-PDL… Pre_P005… P005      
-#&amp;gt; 14 GSM5188399 liver      TNBC patient  Pre-treat… anti-PDL… Pre_P005… P005      
-#&amp;gt; 15 GSM5188430 blood      TNBC patient  Post-trea… anti-PDL… Post_P00… P005      
-#&amp;gt; 16 GSM5188431 liver      TNBC patient  Post-trea… anti-PDL… Post_P00… P005      
-#&amp;gt; 17 GSM5188367 blood      TNBC patient  Pre-treat… anti-PDL… Pre_P007… P007      
-#&amp;gt; 18 GSM5188368 lymph_node TNBC patient  Pre-treat… anti-PDL… Pre_P007… P007      
-#&amp;gt; 19 GSM5188402 blood      TNBC patient  Post-trea… anti-PDL… Post_P00… P007      
-#&amp;gt; 20 GSM5188433 blood      TNBC patient  Progressi… anti-PDL… Prog_P00… P007      
-#&amp;gt; # … with 63 more rows, and 10 more variables:
-#&amp;gt; #   diameter_of_biopsied_lesion_mm &amp;lt;chr&amp;gt;, size_of_target_lesion_som_mm &amp;lt;chr&amp;gt;,
-#&amp;gt; #   age &amp;lt;chr&amp;gt;, stage_tnm &amp;lt;chr&amp;gt;, pd_l1 &amp;lt;chr&amp;gt;, ti_ls_percent &amp;lt;chr&amp;gt;,
-#&amp;gt; #   relative_change_of_target_lesions_8_weeks_after_treatment_initiation_vs_pre_treatment &amp;lt;chr&amp;gt;,
-#&amp;gt; #   relative_change_of_biopsied_lesions_8_weeks_after_treatment_initiation_vs_pre_treatment &amp;lt;chr&amp;gt;,
-#&amp;gt; #   clinical_efficacy_number &amp;lt;chr&amp;gt;, time_to_progression_months &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;That’s how much it takes to get the sample level metadata from a public dataset. It is hard to fully automate and one has to go to GEO and supplementary tables, and wrangle the data to a desired format. If you ask me, I will tell you this is the real-life bioinformatics.&lt;/p&gt;
-&lt;p&gt;Happy BioinFORMATics&lt;/p&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>marker gene selection using logistic regression and regularization for scRNAseq </title>
-      <link>/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</link>
-      <pubDate>Sun, 15 May 2022 00:00:00 +0000</pubDate>
-      
-      <guid>/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</guid>
-      <description>&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-
-&lt;div id=&#34;why-this-blog-post&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;why this blog post?&lt;/h3&gt;
-&lt;p&gt;I saw a biorxiv paper titled &lt;a href=&#34;https://www.biorxiv.org/content/10.1101/2022.05.09.490241v1&#34;&gt;A comparison of marker gene selection methods for single-cell RNA sequencing data&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;I am interested in using logistic regression to find marker genes and want to try fitting the model in the &lt;a href=&#34;https://www.tidymodels.org/&#34;&gt;tidymodel&lt;/a&gt; ecosystem and using different regularization methods.&lt;/p&gt;
-&lt;p&gt;I highly recommend you to watch the &lt;a href=&#34;https://app.learney.me/maps/StatQuest?topic=Regularization&#34;&gt;statquest videos&lt;/a&gt; on those topics.&lt;/p&gt;
-&lt;p&gt;Let’s use PBMC single-cell RNAseq data as an example.&lt;/p&gt;
-&lt;p&gt;Load libraries&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(Seurat)
-library(tidyverse)
-library(tidymodels)
-library(scCustomize) # for plotting
-library(patchwork)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Preprocess the data&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Load the PBMC dataset
-pbmc.data &amp;lt;- Read10X(data.dir = &amp;quot;~/blog_data/filtered_gene_bc_matrices/hg19/&amp;quot;)
-# Initialize the Seurat object with the raw (non-normalized data).
-pbmc &amp;lt;- CreateSeuratObject(counts = pbmc.data, project = &amp;quot;pbmc3k&amp;quot;, min.cells = 3, min.features = 200)
-
-## routine processing
-pbmc&amp;lt;- pbmc %&amp;gt;% 
-  NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;%
-  FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;%
-  ScaleData() %&amp;gt;%
-  RunPCA(verbose = FALSE) %&amp;gt;%
-  FindNeighbors(dims = 1:10, verbose = FALSE) %&amp;gt;%
-  FindClusters(resolution = 0.5, verbose = FALSE) %&amp;gt;%
-  RunUMAP(dims = 1:10, verbose = FALSE)
-
-## the annotation borrowed from Seurat tutorial
-new.cluster.ids &amp;lt;- c(&amp;quot;Naive CD4 T&amp;quot;, &amp;quot;CD14+ Mono&amp;quot;, &amp;quot;Memory CD4 T&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;CD8 T&amp;quot;, &amp;quot;FCGR3A+ Mono&amp;quot;, 
-    &amp;quot;NK&amp;quot;, &amp;quot;DC&amp;quot;, &amp;quot;Platelet&amp;quot;)
-names(new.cluster.ids) &amp;lt;- levels(pbmc)
-pbmc &amp;lt;- RenameIdents(pbmc, new.cluster.ids)
-pbmc$cell_type&amp;lt;- Idents(pbmc)
-DimPlot(pbmc)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;marker-gene-detection-using-differential-expression-analysis-between-clusters.&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Marker gene detection using differential expression analysis between clusters.&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pbmc_subset&amp;lt;- pbmc[, pbmc$cell_type %in% c(&amp;quot;NK&amp;quot;, &amp;quot;B&amp;quot;)]
-DimPlot(pbmc_subset)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Idents(pbmc_subset)&amp;lt;- pbmc_subset$cell_type
-
-diff_markers&amp;lt;- FindMarkers(pbmc_subset, ident.1 = &amp;quot;B&amp;quot;, ident.2 = &amp;quot;NK&amp;quot;, test.use = &amp;quot;wilcox&amp;quot;)
-
-diff_markers %&amp;gt;%
-        arrange(p_val_adj, desc(abs(avg_log2FC))) %&amp;gt;%
-        head(n = 20)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt;                 p_val avg_log2FC pct.1 pct.2    p_val_adj
-#&amp;gt; GZMB     7.646318e-98  -5.553778 0.017 0.966 1.048616e-93
-#&amp;gt; GZMA     2.929923e-95  -4.519094 0.011 0.939 4.018097e-91
-#&amp;gt; PRF1     9.684091e-95  -4.635264 0.029 0.959 1.328076e-90
-#&amp;gt; NKG7     8.032681e-92  -6.310372 0.083 0.986 1.101602e-87
-#&amp;gt; CST7     4.498511e-91  -4.389481 0.037 0.946 6.169258e-87
-#&amp;gt; CTSW     1.747566e-89  -4.144031 0.066 0.966 2.396612e-85
-#&amp;gt; FGFBP2   3.777986e-87  -4.555937 0.034 0.912 5.181130e-83
-#&amp;gt; GNLY     8.666212e-85  -6.080298 0.080 0.939 1.188484e-80
-#&amp;gt; FCGR3A   1.278458e-79  -3.635596 0.034 0.858 1.753278e-75
-#&amp;gt; CD247    1.428149e-77  -3.763002 0.040 0.851 1.958563e-73
-#&amp;gt; GZMM     3.440488e-77  -3.248116 0.017 0.818 4.718285e-73
-#&amp;gt; CD7      4.578399e-74  -3.330969 0.054 0.851 6.278817e-70
-#&amp;gt; TYROBP   2.340536e-73  -3.560921 0.103 0.899 3.209811e-69
-#&amp;gt; FCER1G   9.343826e-72  -3.499007 0.069 0.845 1.281412e-67
-#&amp;gt; SPON2    7.917147e-70  -3.506623 0.011 0.743 1.085758e-65
-#&amp;gt; CD74     1.880522e-69   3.659825 1.000 0.824 2.578947e-65
-#&amp;gt; HLA-DRA  2.083409e-69   4.597057 1.000 0.365 2.857187e-65
-#&amp;gt; SRGN     1.501958e-68  -3.151188 0.201 0.932 2.059785e-64
-#&amp;gt; HLA-DPB1 3.257314e-66   3.595454 0.986 0.345 4.467080e-62
-#&amp;gt; HLA-DRB1 2.058185e-65   3.710470 0.980 0.189 2.822594e-61&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Note that p-values from this type of analysis are inflated as we clustered the cells first and then find the differences between the clusters. In other words, we double-dip the data.&lt;/p&gt;
-&lt;p&gt;see slide 27 from my ABRF2022 talk &lt;a href=&#34;https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf&#34; class=&#34;uri&#34;&gt;https://divingintogeneticsandgenomics.rbind.io/files/slides/2022-03-29_single-cell-101.pdf&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;lets-use-logistic-regression-to-find-marker-genes&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Let’s use logistic regression to find marker genes&lt;/h3&gt;
-&lt;p&gt;We can use logistic regression to classify B-cells and NK cells.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## re-process the data, as the most-variable genes will change when you only have NK and B cells vs all cells. use log normalized data
-pbmc_subset&amp;lt;- pbmc_subset %&amp;gt;% 
-  NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;%
-  FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;%
-  ScaleData() %&amp;gt;%
-  RunPCA(verbose = FALSE) %&amp;gt;%
-  FindNeighbors(dims = 1:10, verbose = FALSE) %&amp;gt;%
-  FindClusters(resolution = 0.1, verbose = FALSE) %&amp;gt;%
-  RunUMAP(dims = 1:10, verbose = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;we use scaled data, because it was z-score transformed, so the highly expressed genes will not dominate the model&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&amp;lt;- pbmc_subset@assays$RNA@scale.data
-# let&amp;#39;s transpose the matrix and make it to a dataframe
-dim(data)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; [1] 2000  497&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&amp;lt;- t(data) %&amp;gt;%
-        as.data.frame()
-
-# now, every row is a cell with 2000 genes/features/predictors. 
-dim(data)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; [1]  497 2000&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## add the cell type/the outcome/y to the dataframe
-data$cell_type&amp;lt;- pbmc_subset$cell_type
-data$cell_barcode&amp;lt;- rownames(data)
-## it is important to turn it to a factor for classification
-data$cell_type&amp;lt;- factor(data$cell_type)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;prepare-the-data&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;prepare the data&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(123)
-
-data_split &amp;lt;- initial_split(data, strata = &amp;quot;cell_type&amp;quot;)
-data_train &amp;lt;- training(data_split)
-data_test &amp;lt;- testing(data_split)
-
-# 10 fold cross validation
-data_fold &amp;lt;- vfold_cv(data_train, v = 10)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We will not look at the test data at all until we test our model.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;ridge-regression&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Ridge Regression&lt;/h3&gt;
-&lt;p&gt;In our training data, we have 2000 genes/features (&lt;code&gt;p&lt;/code&gt;) and 273 cells/observations (&lt;code&gt;n&lt;/code&gt;)
-and &lt;code&gt;p&lt;/code&gt; &amp;gt;&amp;gt; &lt;code&gt;n&lt;/code&gt;, so we will need to enforce sparsity of the model by regularization.&lt;/p&gt;
-&lt;p&gt;We’ll set the penalty argument to &lt;code&gt;tune()&lt;/code&gt; as a placeholder for now. This is a model hyper parameter that we will tune to find the best value for making predictions with our data. Setting mixture to a value of one means that the glmnet model will potentially remove irrelevant predictors and choose a simpler model.&lt;/p&gt;
-&lt;p&gt;Let’s use L2 regularization/norm for ridge regression by specifying &lt;code&gt;mixture = 0&lt;/code&gt;.
-and we need to tune the &lt;code&gt;penalty&lt;/code&gt; hyper parameter.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ridge_spec&amp;lt;-
-        logistic_reg(penalty = tune(), mixture = 0) %&amp;gt;%
-        set_engine(&amp;quot;glmnet&amp;quot;) %&amp;gt;%
-        set_mode(&amp;quot;classification&amp;quot;)
-
-ridge_recipe &amp;lt;- 
-  recipe(formula = cell_type ~ ., data = data_train) %&amp;gt;% 
-  update_role(cell_barcode, new_role = &amp;quot;ID&amp;quot;)  %&amp;gt;%
-  step_zv(all_predictors())
-
-# step_normalize(all_predictors())
-## the expression is already scaled, no need to do step_normalize
-
-ridge_workflow &amp;lt;- workflow() %&amp;gt;% 
-  add_recipe(ridge_recipe) %&amp;gt;% 
-  add_model(ridge_spec)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;tune the &lt;code&gt;penalty&lt;/code&gt; hyper-parameter.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;penalty_grid &amp;lt;- grid_regular(penalty(range = c(-5, 5)), levels = 50)
-#penalty_grid
-tune_res &amp;lt;- tune_grid(
-  ridge_workflow,
-  resamples = data_fold, 
-  grid = penalty_grid
-)
-
-# tune_res
-# check which penalty is the best 
-autoplot(tune_res)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;best_penalty &amp;lt;- select_best(tune_res, metric = &amp;quot;accuracy&amp;quot;)
-best_penalty&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 1 × 2
-#&amp;gt;   penalty .config              
-#&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                
-#&amp;gt; 1 0.00001 Preprocessor1_Model01&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ridge_final &amp;lt;- finalize_workflow(ridge_workflow, best_penalty)
-ridge_final_fit &amp;lt;- fit(ridge_final, data = data_train)
-
-tidy(ridge_final_fit) %&amp;gt;% arrange(desc(abs(estimate)))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 2,000 × 3
-#&amp;gt;    term        estimate penalty
-#&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
-#&amp;gt;  1 (Intercept)  -1.21   0.00001
-#&amp;gt;  2 NKG7          0.0318 0.00001
-#&amp;gt;  3 GZMB          0.0307 0.00001
-#&amp;gt;  4 HLA-DRA      -0.0307 0.00001
-#&amp;gt;  5 CTSW          0.0305 0.00001
-#&amp;gt;  6 GNLY          0.0297 0.00001
-#&amp;gt;  7 PRF1          0.0296 0.00001
-#&amp;gt;  8 GZMA          0.0295 0.00001
-#&amp;gt;  9 CD74         -0.0295 0.00001
-#&amp;gt; 10 FGFBP2        0.0295 0.00001
-#&amp;gt; # … with 1,990 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# augment(ridge_final_fit, new_data = data_test) &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;we see the NKG7, GZMB, CTSW GNLY, PRF1 etc on the top as the marker genes for NK cells which makes sense!&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## confusion matrix
-predict(ridge_final_fit, new_data = data_test) %&amp;gt;%
-        bind_cols(data_test %&amp;gt;% select(cell_type)) %&amp;gt;%
-        conf_mat(truth = cell_type, estimate = .pred_class)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt;           Truth
-#&amp;gt; Prediction  B NK
-#&amp;gt;         B  88  0
-#&amp;gt;         NK  0 37&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;lasso-regression&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Lasso regression&lt;/h3&gt;
-&lt;p&gt;You need to use &lt;code&gt;logistic_reg()&lt;/code&gt; and set &lt;code&gt;mixture = 1&lt;/code&gt; to specify a lasso model. The mixture argument specifies the amount of different types of regularization, &lt;code&gt;mixture = 0&lt;/code&gt; specifies only ridge regularization and &lt;code&gt;mixture = 1&lt;/code&gt; specifies only lasso regularization.&lt;/p&gt;
-&lt;p&gt;Lasso will remove highly correlated features which may not be what we want here!&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lasso_spec&amp;lt;-
-        logistic_reg(penalty = tune(), mixture = 1) %&amp;gt;%
-        set_engine(&amp;quot;glmnet&amp;quot;) %&amp;gt;%
-        set_mode(&amp;quot;classification&amp;quot;)
-
-lasso_recipe &amp;lt;- 
-  recipe(formula = cell_type ~ ., data = data_train) %&amp;gt;% 
-  update_role(cell_barcode, new_role = &amp;quot;ID&amp;quot;)  %&amp;gt;%
-  step_zv(all_predictors())
-
-# step_normalize(all_predictors())
-## the expression is already scaled, no need to do step_normalize
-
-lasso_workflow &amp;lt;- workflow() %&amp;gt;% 
-  add_recipe(lasso_recipe) %&amp;gt;% 
-  add_model(lasso_spec)
-
-penalty_grid &amp;lt;- grid_regular(penalty(range = c(-5, 5)), levels = 50)
-#penalty_grid
-tune_res &amp;lt;- tune_grid(
-  lasso_workflow,
-  resamples = data_fold, 
-  grid = penalty_grid
-)
-
-# tune_res
-# check which penalty is the best 
-autoplot(tune_res)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;best_penalty &amp;lt;- select_best(tune_res, metric = &amp;quot;accuracy&amp;quot;)
-best_penalty&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 1 × 2
-#&amp;gt;   penalty .config              
-#&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                
-#&amp;gt; 1 0.00001 Preprocessor1_Model01&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lasso_final &amp;lt;- finalize_workflow(lasso_workflow, best_penalty)
-lasso_final_fit &amp;lt;- fit(lasso_final, data = data_train)
-
-## confusion matrix
-predict(lasso_final_fit, new_data = data_test) %&amp;gt;%
-        bind_cols(data_test %&amp;gt;% select(cell_type)) %&amp;gt;%
-        conf_mat(truth = cell_type, estimate = .pred_class)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt;           Truth
-#&amp;gt; Prediction  B NK
-#&amp;gt;         B  88  0
-#&amp;gt;         NK  0 37&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lasso_features&amp;lt;- tidy(lasso_final_fit) %&amp;gt;% 
-        arrange(desc(abs(estimate))) %&amp;gt;%
-        filter(estimate != 0) 
-
-print(lasso_features, n = Inf)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 21 × 3
-#&amp;gt;    term        estimate penalty
-#&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
-#&amp;gt;  1 (Intercept) -2.48    0.00001
-#&amp;gt;  2 NKG7         1.70    0.00001
-#&amp;gt;  3 CTSW         0.582   0.00001
-#&amp;gt;  4 GZMA         0.561   0.00001
-#&amp;gt;  5 HLA-DRA     -0.561   0.00001
-#&amp;gt;  6 CD74        -0.485   0.00001
-#&amp;gt;  7 CD79A       -0.423   0.00001
-#&amp;gt;  8 CDC6         0.422   0.00001
-#&amp;gt;  9 CDKN3        0.251   0.00001
-#&amp;gt; 10 GNLY         0.245   0.00001
-#&amp;gt; 11 CST7         0.195   0.00001
-#&amp;gt; 12 GZMB         0.174   0.00001
-#&amp;gt; 13 TYMS         0.155   0.00001
-#&amp;gt; 14 PRF1         0.151   0.00001
-#&amp;gt; 15 RRM2         0.142   0.00001
-#&amp;gt; 16 KIFC1        0.0690  0.00001
-#&amp;gt; 17 LTB         -0.0612  0.00001
-#&amp;gt; 18 FGFBP2       0.0588  0.00001
-#&amp;gt; 19 MGLL         0.0577  0.00001
-#&amp;gt; 20 RPL13A      -0.0456  0.00001
-#&amp;gt; 21 CDCA8        0.00842 0.00001&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Because &lt;code&gt;Lasso regression&lt;/code&gt; enforce sparsity, we can select the features with the coefficients/estimates not equal to 0, but we will miss the correlated genes which were thrown out by the model.&lt;/p&gt;
-&lt;p&gt;Also, if you are wondering how can I get a p-value for the coefficient, read &lt;a href=&#34;https://stats.stackexchange.com/questions/410173/lasso-regression-p-values-and-coefficients&#34; class=&#34;uri&#34;&gt;https://stats.stackexchange.com/questions/410173/lasso-regression-p-values-and-coefficients&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;elastic-net&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Elastic-net&lt;/h3&gt;
-&lt;p&gt;Setting mixture to a value between 0 and 1 lets us use both Lasso and Ridge (Elastic-net!!)&lt;/p&gt;
-&lt;p&gt;Elastic-net gets the best world of both Lasso and Ridge.
-Thanks, &lt;a href=&#34;https://twitter.com/Matthew_N_B&#34;&gt;Matt Bernstein&lt;/a&gt; for pointing the original elastic-net paper to me!&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://hastie.su.domains/Papers/elasticnet.pdf&#34; class=&#34;uri&#34;&gt;https://hastie.su.domains/Papers/elasticnet.pdf&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;In addition, the elastic net encourages a
-grouping effect, where strongly correlated predictors tend to be in
-(out) the model together. The elastic net is particularly useful when
-the number of predictors (p) is much bigger than the number of observations (n)&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;elastic_recipe &amp;lt;- 
-  recipe(formula = cell_type ~ ., data = data_train) %&amp;gt;% 
-  update_role(cell_barcode, new_role = &amp;quot;ID&amp;quot;) %&amp;gt;%
-  step_zv(all_predictors())
-
-# we will tune both penalty and the mixture
-elastic_spec &amp;lt;- 
-  logistic_reg(penalty = tune(), mixture = tune()) %&amp;gt;% 
-  set_engine(&amp;quot;glmnet&amp;quot;) %&amp;gt;%
-  set_mode(&amp;quot;classification&amp;quot;)
-
-elastic_workflow &amp;lt;- workflow() %&amp;gt;% 
-  add_recipe(elastic_recipe) %&amp;gt;% 
-  add_model(elastic_spec)
-
-## tune both the penalty and the mixture from 0-1
-penalty_grid &amp;lt;- grid_regular(penalty(range = c(-2, 2)), mixture(), levels = 50)
-
-doParallel::registerDoParallel()
-tune_res &amp;lt;- tune_grid(
-  elastic_workflow,
-  resamples = data_fold, 
-  grid = penalty_grid
-)
-
-autoplot(tune_res)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;best_penalty &amp;lt;- select_best(tune_res, metric = &amp;quot;accuracy&amp;quot;)
-elastic_final &amp;lt;- finalize_workflow(elastic_workflow, best_penalty)
-elastic_final_fit &amp;lt;- fit(elastic_final, data = data_train)
-
-## confusion matrix
-predict(elastic_final_fit, new_data = data_test) %&amp;gt;%
-        bind_cols(data_test %&amp;gt;% select(cell_type)) %&amp;gt;%
-        conf_mat(truth = cell_type, estimate = .pred_class)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt;           Truth
-#&amp;gt; Prediction  B NK
-#&amp;gt;         B  88  0
-#&amp;gt;         NK  0 37&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;elastic_features&amp;lt;- tidy(elastic_final_fit) %&amp;gt;%
-  arrange(desc(abs(estimate))) %&amp;gt;%
-  filter(estimate != 0) 
-
-head(elastic_features, n = 20)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 20 × 3
-#&amp;gt;    term        estimate penalty
-#&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
-#&amp;gt;  1 (Intercept)  -1.84      0.01
-#&amp;gt;  2 NKG7          0.105     0.01
-#&amp;gt;  3 CTSW          0.100     0.01
-#&amp;gt;  4 HLA-DRA      -0.0993    0.01
-#&amp;gt;  5 GZMB          0.0971    0.01
-#&amp;gt;  6 GNLY          0.0971    0.01
-#&amp;gt;  7 CD74         -0.0949    0.01
-#&amp;gt;  8 GZMA          0.0940    0.01
-#&amp;gt;  9 FGFBP2        0.0932    0.01
-#&amp;gt; 10 CST7          0.0929    0.01
-#&amp;gt; 11 PRF1          0.0922    0.01
-#&amp;gt; 12 CD79A        -0.0901    0.01
-#&amp;gt; 13 GZMM          0.0867    0.01
-#&amp;gt; 14 LTB          -0.0838    0.01
-#&amp;gt; 15 LRRIQ3        0.0808    0.01
-#&amp;gt; 16 CD247         0.0792    0.01
-#&amp;gt; 17 TYROBP        0.0778    0.01
-#&amp;gt; 18 CD7           0.0766    0.01
-#&amp;gt; 19 FCGR3A        0.0765    0.01
-#&amp;gt; 20 FCER1G        0.0712    0.01&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(lasso_features, n = 20)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 20 × 3
-#&amp;gt;    term        estimate penalty
-#&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
-#&amp;gt;  1 (Intercept)  -2.48   0.00001
-#&amp;gt;  2 NKG7          1.70   0.00001
-#&amp;gt;  3 CTSW          0.582  0.00001
-#&amp;gt;  4 GZMA          0.561  0.00001
-#&amp;gt;  5 HLA-DRA      -0.561  0.00001
-#&amp;gt;  6 CD74         -0.485  0.00001
-#&amp;gt;  7 CD79A        -0.423  0.00001
-#&amp;gt;  8 CDC6          0.422  0.00001
-#&amp;gt;  9 CDKN3         0.251  0.00001
-#&amp;gt; 10 GNLY          0.245  0.00001
-#&amp;gt; 11 CST7          0.195  0.00001
-#&amp;gt; 12 GZMB          0.174  0.00001
-#&amp;gt; 13 TYMS          0.155  0.00001
-#&amp;gt; 14 PRF1          0.151  0.00001
-#&amp;gt; 15 RRM2          0.142  0.00001
-#&amp;gt; 16 KIFC1         0.0690 0.00001
-#&amp;gt; 17 LTB          -0.0612 0.00001
-#&amp;gt; 18 FGFBP2        0.0588 0.00001
-#&amp;gt; 19 MGLL          0.0577 0.00001
-#&amp;gt; 20 RPL13A       -0.0456 0.00001&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;merged_markers&amp;lt;- left_join(elastic_features, lasso_features, by = c(&amp;quot;term&amp;quot; = &amp;quot;term&amp;quot;)) %&amp;gt;%
-        dplyr::rename(estimate.elastic = estimate.x, estimate.lasso= estimate.y) %&amp;gt;%
-        select(-penalty.x, - penalty.y) 
-
-head(merged_markers, n = 20)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 20 × 3
-#&amp;gt;    term        estimate.elastic estimate.lasso
-#&amp;gt;    &amp;lt;chr&amp;gt;                  &amp;lt;dbl&amp;gt;          &amp;lt;dbl&amp;gt;
-#&amp;gt;  1 (Intercept)          -1.84          -2.48  
-#&amp;gt;  2 NKG7                  0.105          1.70  
-#&amp;gt;  3 CTSW                  0.100          0.582 
-#&amp;gt;  4 HLA-DRA              -0.0993        -0.561 
-#&amp;gt;  5 GZMB                  0.0971         0.174 
-#&amp;gt;  6 GNLY                  0.0971         0.245 
-#&amp;gt;  7 CD74                 -0.0949        -0.485 
-#&amp;gt;  8 GZMA                  0.0940         0.561 
-#&amp;gt;  9 FGFBP2                0.0932         0.0588
-#&amp;gt; 10 CST7                  0.0929         0.195 
-#&amp;gt; 11 PRF1                  0.0922         0.151 
-#&amp;gt; 12 CD79A                -0.0901        -0.423 
-#&amp;gt; 13 GZMM                  0.0867        NA     
-#&amp;gt; 14 LTB                  -0.0838        -0.0612
-#&amp;gt; 15 LRRIQ3                0.0808        NA     
-#&amp;gt; 16 CD247                 0.0792        NA     
-#&amp;gt; 17 TYROBP                0.0778        NA     
-#&amp;gt; 18 CD7                   0.0766        NA     
-#&amp;gt; 19 FCGR3A                0.0765        NA     
-#&amp;gt; 20 FCER1G                0.0712        NA&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;we see GZMM is missed by Lasso but picked up by elastic-net. GZMM is probably highly correlated with other granzymes such as GZMB, GZMA which are already in the model.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p1&amp;lt;- ggplot(data_train, aes(x = GZMM, y = GZMB)) +
-        geom_point() +
-        geom_smooth(method = &amp;quot;lm&amp;quot;, se = T) +
-        ggpubr::stat_cor() +
-        theme_bw(base_size = 14) +
-        ggtitle(&amp;quot;correlation of GZMB and GZMM&amp;quot;)
-
-p2&amp;lt;- ggplot(data_train, aes(x = GZMA, y = GZMB)) +
-        geom_point() +
-        geom_smooth(method = &amp;quot;lm&amp;quot;, se = T) +
-        ggpubr::stat_cor() +
-        theme_bw(base_size = 14) +
-        ggtitle(&amp;quot;correlation of GZMA and GZMB&amp;quot;)
-
-p1 + p2&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;768&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;FCRR3A (CD16) picked up as an NK cell marker by elastic too.&lt;/p&gt;
-&lt;p&gt;From this &lt;a href=&#34;https://ashpublications.org/bloodadvances/article/4/7/1388/454300/Diversity-of-peripheral-blood-human-NK-cells&#34;&gt;paper&lt;/a&gt;. CD16 is a pretty important marker for NK cell subytyping. It is sad that Lasso missed it.&lt;/p&gt;
-&lt;p&gt;Let’s plot the gene expression level to check the raw data.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Idents(pbmc_subset)&amp;lt;- pbmc_subset$cell_type
-scCustomize::Stacked_VlnPlot(pbmc_subset, features = merged_markers %&amp;gt;% slice(-1) %&amp;gt;% pull(term) %&amp;gt;% head(n = 20),
-                             colors_use = c(&amp;quot;blue&amp;quot;, &amp;quot;red&amp;quot;) )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2022-05-15-marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;384&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Many of the top genes picked up by elastic-net are very convincing to me. LRRIQ3 is low in both cell types.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;things-learned&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Things learned&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;the tidymodel ecosystem makes the interface to different machine learning methods consistent. You can tell how similar the codes are for all three regularization methods (Time to write a function!).&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;classification for B cells and NK cells are petty easy task as they are very different. All models perform well. Again, the purpose here is not to use the model to do prediction, but use the model to do feature selection.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Seurat has an &lt;a href=&#34;https://github.com/satijalab/seurat/blob/f1b2593ea72f2e6d6b16470dc7b9e9b645179923/R/differential_expression.R#L1670&#34;&gt;implementation&lt;/a&gt; of the logistic regression for marker gene selection: &lt;code&gt;glm(formula = fmla, data = model.data, family = &#34;binomial&#34;)&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Other readings:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.tmwr.org/&#34;&gt;Tidy Modeling with R&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://stats.stackexchange.com/questions/108614/regression-in-pn-setting-how-to-choose-regularization-method-lasso-pls-pc&#34;&gt;Regression in 𝑝&amp;gt;𝑛 setting: how to choose regularization method (Lasso, PLS, PCR, ridge)?&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://towardsdatascience.com/bias-variance-and-regularization-in-linear-regression-lasso-ridge-and-elastic-net-8bf81991d0c5&#34;&gt;Bias, Variance, and Regularization in Linear Regression: Lasso, Ridge, and Elastic Net — Differences and uses&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://uc-r.github.io/regularized_regression&#34;&gt;Regularized Regression&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div id=&#34;update&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;UPDATE&lt;/h3&gt;
-&lt;p&gt;I did not see &lt;code&gt;MS4A1&lt;/code&gt;/&lt;code&gt;CD20&lt;/code&gt;in any of the regression results which is a well know B-cell marker. I then went back and found that somehow MS4A1 is not in the top 2000 most variable genes selected by Seurat in the subseted small object. This tells us feature engineer is very important too.&lt;/p&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Immunogenomic intertumor heterogeneity across primary and metastatic sites in a patient with lung adenocarcinoma</title>
-      <link>/publication/2022-05-11-extensive-mets/</link>
-      <pubDate>Wed, 11 May 2022 00:00:00 -0400</pubDate>
-      
-      <guid>/publication/2022-05-11-extensive-mets/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     

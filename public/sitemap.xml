@@ -5,6 +5,33 @@
     
     <url>
     
+      <loc>/post/deep-learning-with-keras-using-mnst-dataset/</loc>
+      <lastmod>2023-03-11T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/talk/2023-bioinfocongress/</loc>
+      <lastmod>2023-03-06T11:15:00-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/post/how-to-deal-with-overplotting-without-being-fooled/</loc>
+      <lastmod>2023-03-05T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/how-to-commit-changes-to-a-docker-image/</loc>
       <lastmod>2023-02-16T00:00:00+00:00</lastmod>
     </url>
@@ -1171,7 +1198,7 @@
     <url>
     
       <loc>/tags/bioinformatics/</loc>
-      <lastmod>2023-01-13T00:00:00+00:00</lastmod>
+      <lastmod>2023-03-05T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1181,7 +1208,7 @@
     <url>
     
       <loc>/categories/bioinformatics/</loc>
-      <lastmod>2023-02-16T00:00:00+00:00</lastmod>
+      <lastmod>2023-03-11T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1231,7 +1258,7 @@
     <url>
     
       <loc>/categories/</loc>
-      <lastmod>2023-02-16T00:00:00+00:00</lastmod>
+      <lastmod>2023-03-11T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1380,6 +1407,16 @@
     
     <url>
     
+      <loc>/tags/ggplot/</loc>
+      <lastmod>2023-03-05T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -1441,7 +1478,7 @@
     <url>
     
       <loc>/tags/machine-learning/</loc>
-      <lastmod>2022-06-16T00:00:00+00:00</lastmod>
+      <lastmod>2023-03-11T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1451,7 +1488,7 @@
     <url>
     
       <loc>/categories/machine-learning/</loc>
-      <lastmod>2022-05-15T00:00:00+00:00</lastmod>
+      <lastmod>2023-03-11T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1791,7 +1828,7 @@
     <url>
     
       <loc>/categories/visualization/</loc>
-      <lastmod>2021-03-10T00:00:00+00:00</lastmod>
+      <lastmod>2023-03-05T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

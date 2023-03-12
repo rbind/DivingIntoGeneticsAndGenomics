@@ -1,0 +1,251 @@
+---
+title: 'Deep learning with Keras using MNIST dataset '
+author: Ming Tang
+date: '2023-03-11'
+slug: deep-learning-with-keras-using-mnst-dataset
+categories:
+  - bioinformatics
+  - machine learning
+tags:
+  - machine learning
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<p>Are you a machine learning practitioner or data analyst looking to broaden your skill set? Look nowhere else! This blog post will offer an introduction to deep learning, which is currently the hottest topic in machine learning. Using the well-known <a href="https://en.wikipedia.org/wiki/MNIST_database">MNIST dataset</a>) and the Keras package, we will investigate the potential of deep learning.</p>
+<p>A high-level deep learning package called Keras, which is based on TensorFlow, enables quick and simple experimentation with deep neural networks. Anyone can run a deep learning model in a matter of hours with Keras. No prior knowledge is necessary as I walk you through the fundamentals of Keras, from installation to creating a deep learning model from scratch!</p>
+<p>I recommend watching the youtube series from 3blue1brown: <a href="https://www.3blue1brown.com/topics/neural-networks" class="uri">https://www.3blue1brown.com/topics/neural-networks</a> to get intuitive understanding of how neural network works.</p>
+<p><img src="/img/MNIST.png" /></p>
+<p>Josh Starmer also has very nice videos on this topic <a href="https://statquest.org/video-index/" class="uri">https://statquest.org/video-index/</a>.</p>
+</div>
+<div id="install-the-package" class="section level3">
+<h3>Install the package</h3>
+<pre class="r"><code>#install.packages(&quot;keras&quot;) install the keras R package
+library(keras)
+#install_keras(version = &quot;release&quot;)  install the core Keras library and TensorFlow
+set.seed(123)</code></pre>
+<p>It installs tensorflow to <code>/Users/tommytang/Library/r-miniconda/envs/r-reticulate/bin/python</code></p>
+<p>To set the value of <code>RETICULATE_PYTHON</code>, insert <code>Sys.setenv(RETICULATE_PYTHON = PATH)</code> into your project’s <code>.Rprofile</code>, where PATH is your preferred Python binary.</p>
+<p>I added this
+<code>Sys.setenv(RETICULATE_PYTHON = "/Users/tommytang/Library/r-miniconda/envs/r-reticulate/bin/python")</code> to my <code>.Rprofile</code> in the same folder as the <code>.Rproj</code>.</p>
+<p>Take a read <a href="https://rstudio.github.io/reticulate/articles/versions.html" class="uri">https://rstudio.github.io/reticulate/articles/versions.html</a> to further understand how to configure python path inside Rstudio.</p>
+</div>
+<div id="get-the-data-and-do-exploratory-data-analysis" class="section level3">
+<h3>Get the data and do exploratory data analysis</h3>
+<pre class="r"><code>library(reticulate)
+use_condaenv(&quot;r-reticulate&quot;)
+mnist&lt;- dataset_mnist()</code></pre>
+<p>split the training and testing sets</p>
+<pre class="r"><code>train_images&lt;- mnist$train$x
+train_labels&lt;- mnist$train$y
+train_labels&lt;- to_categorical(train_labels)
+
+test_images&lt;- mnist$test$x
+test_labels&lt;- mnist$test$y
+test_labels&lt;- to_categorical(test_labels)</code></pre>
+<p>The training sets is a 3D tensor. Tensors are just a fancy way to say multi-dimentional array.
+A 2D tensor is just a matrix.</p>
+<pre class="r"><code>dim(train_images)</code></pre>
+<pre><code>#&gt; [1] 60000    28    28</code></pre>
+<p>It is an array of 60,000 matrices of 28x28 integers. Each matrix is a grayscale image:</p>
+<pre class="r"><code># get the fifth matrix
+digit&lt;- train_images[5, ,]
+dim(digit)</code></pre>
+<pre><code>#&gt; [1] 28 28</code></pre>
+<pre class="r"><code>plot(as.raster(digit, max = 255))</code></pre>
+<p><img src="/post/2023-03-11-deep-learning-with-keras-using-mnst-dataset_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>It is a matrix denoting the image of 9.</p>
+</div>
+<div id="reshape-the-data-into-2d-tensor" class="section level3">
+<h3>reshape the data into 2D tensor</h3>
+<pre class="r"><code>train_images&lt;- array_reshape(train_images, c(60000, 28 * 28))
+train_images&lt;- train_images/255
+
+
+test_images&lt;- array_reshape(test_images, c(10000, 28 * 28))
+test_images&lt;- test_images/255</code></pre>
+<pre class="r"><code>dim(train_images)</code></pre>
+<pre><code>#&gt; [1] 60000   784</code></pre>
+<p>Now, it becomes a 6000 x 784 2D tensor.</p>
+</div>
+<div id="exploratory-data-analysis" class="section level3">
+<h3>exploratory data analysis</h3>
+<p>Before doing any analysis, <a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">exploratory data analysis</a> (EDA) is the first thing you should do.</p>
+<p>Let’s use <a href="https://cran.r-project.org/web/packages/irlba/index.html">irlba</a> (Fast Truncated Singular Value Decomposition and Principal Components Analysis for Large Dense and Sparse Matrices) for PCA. <code>irlba</code> is both faster and more memory efficient than the usual R <code>svd</code> function for computing a few of the largest singular vectors and corresponding singular values of a matrix.</p>
+<p>Read my old post on <a href="https://divingintogeneticsandgenomics.rbind.io/post/pca-in-action/">PCA</a> if you want to learn more.</p>
+<pre class="r"><code>library(irlba)
+library(ggplot2)
+library(dplyr)
+
+dim(train_images)</code></pre>
+<pre><code>#&gt; [1] 60000   784</code></pre>
+<pre class="r"><code>pca.results &lt;- irlba(A = train_images, nv = 30)
+
+image_pc_loadings&lt;- pca.results$u
+
+colnames(image_pc_loadings)&lt;- paste0(&quot;PC_&quot;, 1:30)
+
+
+labels_vector&lt;- apply(mnist$train$y, 1, max) %&gt;%
+        as.character()
+
+image_pc_df&lt;- image_pc_loadings %&gt;%
+        as.data.frame() %&gt;%
+        dplyr::bind_cols(label = labels_vector)
+
+
+ggplot(image_pc_df, aes(x=PC_1, y = PC_2)) +
+        scattermore::geom_scattermore(aes(color = label)) +
+        theme_classic(base_size = 14)</code></pre>
+<p><img src="/post/2023-03-11-deep-learning-with-keras-using-mnst-dataset_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>You can see some structure of the data by using PCA.</p>
+<p>Let’s use <a href="https://github.com/jlmelville/uwot"><code>uwot</code></a> for UMAP dimension reduction which may give you a better visualization of
+the data structure.</p>
+<p><a href="https://umap-learn.readthedocs.io/en/latest/">UMAP</a> is a form of non-linear dimension reduction technique that is useful for visualizing the data. It is very popular in single-cell
+data analysis.</p>
+<pre class="r"><code>library(uwot)
+mnist_umap &lt;- umap(train_images, n_neighbors = 15, min_dist = 0.001, verbose = TRUE, pca = 50)
+
+colnames(mnist_umap)&lt;- c(&quot;UMAP_1&quot;, &quot;UMAP_2&quot;)
+mnist_umap&lt;- bind_cols(mnist_umap, label = labels_vector)
+
+ggplot(mnist_umap, aes(x=UMAP_1, y = UMAP_2)) +
+        scattermore::geom_scattermore(aes(color = label)) +
+        theme_classic(base_size = 14)</code></pre>
+<p><img src="/post/2023-03-11-deep-learning-with-keras-using-mnst-dataset_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Wow. most of the images are separated by its digits. Note that when you have many data points, they plot on top
+of each other. The best way is to calculate a metric on the cluster purity rather than judge by your eyes.</p>
+<blockquote class="twitter-tweet">
+<p lang="en" dir="ltr">
+I think most people using UMAPs don't realize that when points are colored in order (the default way of plotting), buried colors make the points appear to be (much!) better grouped together than they really are. <br>This figure is from the supplement of <a href="https://t.co/a0Ltb5lCGN">https://t.co/a0Ltb5lCGN</a> <a href="https://t.co/ZMVYB9bJTW">pic.twitter.com/ZMVYB9bJTW</a>
+</p>
+— Lior Pachter (<span class="citation">@lpachter</span>) <a href="https://twitter.com/lpachter/status/1634194744783040512?ref_src=twsrc%5Etfw">March 10, 2023</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>See also my previous blog post <a href="https://divingintogeneticsandgenomics.rbind.io/post/how-to-deal-with-overplotting-without-being-fooled/">How to deal with overplotting without being fooled</a>.</p>
+</div>
+<div id="train-the-network" class="section level3">
+<h3>Train the network</h3>
+<p>Now, let’s construct the network using two dense layers.</p>
+<pre class="r"><code>network&lt;- keras_model_sequential() %&gt;%
+        layer_dense(unit= 512, activation = &quot;relu&quot;, input_shape = c(28 * 28))%&gt;%
+        layer_dense(units = 10, activation = &quot;softmax&quot;)</code></pre>
+<p>The last layer has 10 neurons because we are predicting the images to be <code>0-9</code> and the activation function is softmax
+to give a probability of the image predicted to 0-9. The sum of them will be 1.</p>
+<p>In the compilation step, you may configure the learning process by specifying the optimizer and loss function(s) the model should employ as well as the metrics you wish to track while it is being trained.</p>
+<p>Compile the network by telling the loss function and metrics. <code>categorical_crossentropy</code> is good for categorical classifications.
+For binary classification, you will use <code>binary_crossentropy</code>.</p>
+<pre class="r"><code>network %&gt;%
+        compile(optimizer = &quot;rmsprop&quot;,
+                loss = &quot;categorical_crossentropy&quot;,
+                metrics= c(&quot;accuracy&quot;))</code></pre>
+<p>compile() function modifies the network in place (rather than returning a new network object, as is more conventional in R.</p>
+<p>Finally, the training:</p>
+<pre class="r"><code>network %&gt;%
+        fit(train_images, train_labels, epochs = 5, batch_size = 128)</code></pre>
+<p>The network will iterate on the training data in mini-batches of 128 samples, 5 times over(each iteration over all the training data is called an epoch).</p>
+</div>
+<div id="evaluate-the-model" class="section level3">
+<h3>evaluate the model</h3>
+<pre class="r"><code>metrics&lt;- network %&gt;% evaluate(test_images, test_labels)
+metrics</code></pre>
+<pre><code>#&gt;       loss   accuracy 
+#&gt; 0.07076193 0.97979999</code></pre>
+<p>98% accuracy! impressive.</p>
+</div>
+<div id="how-does-random-forest-perform" class="section level3">
+<h3>How does random forest perform?</h3>
+<p>Random forest is my go-to for machine learning after linear regression, before deep learning.</p>
+<p>Let’s see how it performs using <a href="https://www.tidymodels.org/">tidymodels</a>.</p>
+<p>A book for you to read <a href="https://www.tidymodels.org/books/tmwr/" class="uri">https://www.tidymodels.org/books/tmwr/</a>.</p>
+<pre class="r"><code>library(tidymodels)
+set.seed(123)
+
+data_train&lt;- train_images
+colnames(data_train)&lt;- paste0(&quot;feature&quot;, 1:784)
+data_train&lt;- bind_cols(as.data.frame(data_train), label =  apply(mnist$train$y, 1, max) %&gt;%
+        as.character())
+
+data_test&lt;- test_images
+colnames(data_test)&lt;- paste0(&quot;feature&quot;, 1:784)
+data_test&lt;- bind_cols(as.data.frame(data_test), label = apply(mnist$test$y, 1, max) %&gt;%
+        as.character())
+
+# it is key to turn it to a factor for classification
+data_train$label&lt;- factor(data_train$label)
+data_test$label&lt;- factor(data_test$label)</code></pre>
+<p>It turns out 60,000 images is a lot for random forest and it takes hours to fit the model.
+what impresses me about the deep learning model apart from its accuracy is its speed.
+For 60,000 images, it finished in seconds.</p>
+<p>Let me just randomly take 3000 images.</p>
+<pre class="r"><code>data_train&lt;- dplyr::sample_n(data_train, size = 3000)
+dim(data_train)</code></pre>
+<pre><code>#&gt; [1] 3000  785</code></pre>
+<pre class="r"><code>library(tidymodels)
+library(tictoc)
+
+tic()
+rf_recipe &lt;- 
+  recipe(formula = label ~ ., data = data_train)
+
+## feature importance sore to TRUE, one can tune the trees and mtry 
+rf_spec &lt;- rand_forest() %&gt;%
+  set_engine(&quot;randomForest&quot;, importance = TRUE) %&gt;%
+  set_mode(&quot;classification&quot;)
+
+rf_workflow &lt;- workflow() %&gt;% 
+  add_recipe(rf_recipe) %&gt;% 
+  add_model(rf_spec)
+
+
+rf_fit &lt;- fit(rf_workflow, data = data_train)
+
+
+res&lt;- predict(rf_fit, new_data = data_test) %&gt;%
+        bind_cols(data_test %&gt;% select(label)) 
+
+toc()</code></pre>
+<pre><code>#&gt; 152.222 sec elapsed</code></pre>
+<pre class="r"><code>accuracy(res, truth = label, estimate = .pred_class)</code></pre>
+<pre><code>#&gt; # A tibble: 1 × 3
+#&gt;   .metric  .estimator .estimate
+#&gt;   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+#&gt; 1 accuracy multiclass     0.936</code></pre>
+<pre class="r"><code>## confusion matrix,
+res %&gt;% conf_mat(truth = label, estimate = .pred_class)</code></pre>
+<pre><code>#&gt;           Truth
+#&gt; Prediction    0    1    2    3    4    5    6    7    8    9
+#&gt;          0  967    0   11    4    1   10   17    2    4    6
+#&gt;          1    1 1121    4    3    1    8    4   15    6    7
+#&gt;          2    1    2  958   15    4    2    3   27    4    3
+#&gt;          3    0    3    6  930    0   37    1    4   23   12
+#&gt;          4    0    0   11    1  931    6   11    6    9   27
+#&gt;          5    5    2    1   21    0  793    9    0   15    8
+#&gt;          6    3    3   10    2    7   13  910    0    6    3
+#&gt;          7    1    0   19   12    0    2    0  936    5    6
+#&gt;          8    2    4    9   17    2   14    3    6  883    8
+#&gt;          9    0    0    3    5   36    7    0   32   19  929</code></pre>
+<p>An accuracy of this un-tuned random forest model gives 93.6% accuracy. Not bad! However, it is very slow.</p>
+<p>Calling <code>P</code> the number of simultaneous workers you have) the complexities should be (depending on the implementations) :
+<img src="/img/rf_vs_nn.png" /></p>
+<p><a href="https://stats.stackexchange.com/questions/215970/speed-of-prediction-neural-network-vs-random-forest">you should expect random forests to be slower than neural networks</a></p>
+</div>
+<div id="take-home-messages" class="section level3">
+<h3>Take home messages</h3>
+<p>Running a deep learning model with Keras is not hard (with less than 20 lines of code). What is harder? 👇</p>
+<ol style="list-style-type: decimal">
+<li><p>Defining the right question. This is always the most challenging part. How can deep learning help with this certain problem? have you tried conventional ML methods? Do you have the right/size data? When you have millions of data points, the accuracy of deep learning models can be really high.</p></li>
+<li><p>Getting the data into the proper format and reshaping the tensor into the right dimension is hard. In the next post, I will walk you through how to manipulate and do calculations for the arrays (tensors).</p></li>
+<li><p>Tuning the model is hard. What are some hyper-parameters to try? We have not tuned the hyperparameter in this example. In a future post. I will show you how to tune the epoch hyper-parameter to avoid over-fitting.</p></li>
+<li><p>Making sense of the model is hard (DL is notorious for its black box). what can you learn from the model. Random forest gives you the feature importance, so you can study the features. Deep learning is like a black box. It performs well, but you do not really know what’s going on within the black box.</p></li>
+<li><p>How can you improve it by adding additional information to the input (domain knowledge is the key)? In a future post, I will show you how to use T cell receptor (TCR) sequence to predict cancer and what information we can add to the input to improve the accuracy of prediction.</p></li>
+</ol>
+</div>

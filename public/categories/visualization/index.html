@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2021-03-10T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2023-03-05T00:00:00&#43;00:00">
   
 
   
@@ -282,6 +282,20 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/how-to-deal-with-overplotting-without-being-fooled/">How to deal with overplotting without being fooled </a></h2>
+    <div class="article-style">
+      
+      Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
+ The problem Let me be clear, when you have gazillions of data points in a scatter plot, you want to deal with the overplotting to avoid drawing misleading conclusions.
+Let’s start with a single-cell example.
+Load the libraries:
+library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) set.seed(1234) prepare the data
+data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 features across 2700 samples within 1 assay #&gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&lt;- pbmc3k %&gt;% NormalizeData(normalization.
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/post/clustered-dotplot-for-single-cell-rnaseq/">clustered dotplot for single-cell RNAseq</a></h2>

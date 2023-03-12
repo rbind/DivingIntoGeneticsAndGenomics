@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2020-07-15T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2020-09-10T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,28 @@
   
   
   <div>
+    <h2><a href="/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/">Enhancement of scRNAseq heatmap using complexheatmap</a></h2>
+    <div class="article-style">
+      
+      When it comes to make a heatmap, ComplexHeatmap by Zuguang Gu is my favorite. Check it out! You will be amazed on how flexible it is and the documentation is in top niche.
+For Single-cell RNAseq, Seurat provides a DoHeatmap function using ggplot2. There are two limitations:
+ when your genes are not in the top variable gene list, the scale.data will not have that gene and DoHeatmap will drop those genes.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </a></h2>
+    <div class="article-style">
+      
+      It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).
+Let’s create some dummy data.
+library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samples, 3 clusters A,B,C # but in the treatment samples, cluster C is absent (0 cells) in sample7 sample_id&lt;- c(paste0(&quot;sample&quot;, 1:6, &quot;_control&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;,&quot;_C&quot;),each = 6)), paste0(&quot;sample&quot;, 8:12, &quot;_treatment&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;, &quot;_C&quot;), each = 5))) sample_id&lt;- c(sample_id, &quot;sample7_treatment_A&quot;, &quot;sample7_treatment_B&quot;) cell_id&lt;- paste0(&quot;cell&quot;, 1:20000) cell_df&lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), cell_id = cell_id) %&gt;% tidyr::separate(sample_id, into = c(&quot;sample_id&quot;, &quot;group&quot;, &quot;cluster<em>id&quot;), sep= &quot;</em>&quot;) cell_num&lt;- cell_df %&gt;% group_by(group, cluster_id, sample_id)%&gt;% summarize(n=n()) cell_num ## # A tibble: 35 x 4 ## # Groups: group, cluster_id [6] ## group cluster_id sample_id n ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; ## 1 control A sample1 551 ## 2 control A sample2 546 ## 3 control A sample3 544 ## 4 control A sample4 585 ## 5 control A sample5 588 ## 6 control A sample6 542 ## 7 control B sample1 550 ## 8 control B sample2 562 ## 9 control B sample3 574 ## 10 control B sample4 563 ## # … with 25 more rows total_cells&lt;- cell_df %&gt;% group_by(sample_id) %&gt;% summarise(total = n()) total_cells ## # A tibble: 12 x 2 ## sample_id total ## &lt;chr&gt; &lt;int&gt; ## 1 sample1 1673 ## 2 sample10 1713 ## 3 sample11 1691 ## 4 sample12 1696 ## 5 sample2 1633 ## 6 sample3 1700 ## 7 sample4 1711 ## 8 sample5 1768 ## 9 sample6 1727 ## 10 sample7 1225 ## 11 sample8 1720 ## 12 sample9 1743 join the two dataframe to get percentage of cells per cluster per sample
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/setting-up-travis-ci-for-github-repos/">setting up Travis CI for github repos</a></h2>
     <div class="article-style">
       
@@ -367,32 +389,6 @@ I am going to use presto for differential gene expression test. presto performs 
       In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.
 In this paper <a href="https://www.biorxiv.org/content/10.1101/630087v1.full" target="_blank">https://www.biorxiv.org/content/10.1101/630087v1.full</a>
  To deconvolute species, detect doublets and low quality cells, the mixed-species mapped data was used.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/">My opinionated selection of books/urls for bioinformatics/data science curriculum</a></h2>
-    <div class="article-style">
-      
-      There was a paper on this topic: A New Online Computational Biology Curriculum.
-I am going to provide a biased list below (I have read most of the books if not all). I say it is biased because you will see many books of R are from Hadely Wickham. I now use tidyverse most of the time.
-Unix I suggest people who want to learn bioinformatics starting to learn unix commands first.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/develop-bioconductor-packages-with-docker-container/">Develop Bioconductor packages with docker container</a></h2>
-    <div class="article-style">
-      
-      Readings links to read:
- <a href="https://www.bioconductor.org/developers/package-guidelines/#rcode" target="_blank">https://www.bioconductor.org/developers/package-guidelines/#rcode</a>
- <a href="https://github.com/Bioconductor/Contributions" target="_blank">https://github.com/Bioconductor/Contributions</a>
- use container <a href="https://github.com/Bioconductor/bioconductor_full" target="_blank">https://github.com/Bioconductor/bioconductor_full</a>
-  I am following the last link.
-pull the container docker pull bioconductor/bioconductor_full:devel docker images REPOSITORY TAG IMAGE ID CREATED SIZE bioconductor/bioconductor_full devel ae3ec2be7376 3 hours ago 5.7GB seuratv3 latest 9b358ab1fd63 2 days ago 2.76GB  It is 5.7G in size.
-start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.
       
     </div>
   </div>
