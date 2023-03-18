@@ -48,7 +48,7 @@ x
 y<- matrix(x, nrow = 4)
 y
 ```
-The matrix is filled in a row-wise manner.
+The matrix is filled in a column-wise manner.
 
 
 A 3D tensor is a 3D array.
