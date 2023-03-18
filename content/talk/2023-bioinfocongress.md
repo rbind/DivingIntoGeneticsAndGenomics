@@ -20,7 +20,7 @@ selected = true
 #projects = ["deep-learning.md"]
 
 # Links (optional).
-#url_pdf = "files/slides/2022-07-09_ISCB_reproducible.pdf"
+url_pdf = "files/slides/2023-03-18_learn_compbio_the_right_way.pdf"
 url_slides = ""
 url_video = ""
 url_code = ""
