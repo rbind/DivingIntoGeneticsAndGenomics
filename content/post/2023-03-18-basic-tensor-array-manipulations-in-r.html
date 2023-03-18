@@ -1,0 +1,427 @@
+---
+title: Basic tensor/array manipulations in R
+author: Ming Tang
+date: '2023-03-18'
+slug: basic-tensor-array-manipulations-in-r
+categories:
+  - machine learning
+tags:
+  - deeplearning
+  - machine learning
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="sign-up-for-my-newsletter-to-not-miss-a-post-like-this" class="section level3">
+<h3>Sign up for my newsletter to not miss a post like this</h3>
+<p><a href="https://divingintogeneticsandgenomics.ck.page/newsletter" class="uri">https://divingintogeneticsandgenomics.ck.page/newsletter</a></p>
+<p>In my last post, I showed you how to build a neural network in <code>Keras</code> with less than 20 lines of code.
+One of the key road blocks for beginners is to transform the input to the right shape of tensor (the deep learning terminology) or
+array (the R built-in type).</p>
+<p>In this post, I am going to show you some basic manipulations of the array.</p>
+<pre class="r"><code>library(keras)
+set.seed(123)</code></pre>
+</div>
+<div id="construct-tensors" class="section level3">
+<h3>Construct tensors</h3>
+<p>A 2D tensor is just a matrix.</p>
+<pre class="r"><code>x&lt;- sample(c(0,1), size= 24, replace = TRUE)
+x</code></pre>
+<pre><code>#&gt;  [1] 0 0 0 1 0 1 1 1 0 0 1 1 1 0 1 0 1 0 0 0 0 1 0 0</code></pre>
+<pre class="r"><code>y&lt;- matrix(x, nrow = 4)
+y</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6]
+#&gt; [1,]    0    0    0    1    1    0
+#&gt; [2,]    0    1    0    0    0    1
+#&gt; [3,]    0    1    1    1    0    0
+#&gt; [4,]    1    1    1    0    0    0</code></pre>
+<p>The matrix is filled in a row-wise manner.</p>
+<p>A 3D tensor is a 3D array.</p>
+<pre class="r"><code>y&lt;- array(x, dim = c(2,3,4))</code></pre>
+<pre class="r"><code>x</code></pre>
+<pre><code>#&gt;  [1] 0 0 0 1 0 1 1 1 0 0 1 1 1 0 1 0 1 0 0 0 0 1 0 0</code></pre>
+<pre class="r"><code>y[,,1]</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    0    0    0
+#&gt; [2,]    0    1    1</code></pre>
+<pre class="r"><code>y[,,2]</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    1    0    1
+#&gt; [2,]    1    0    1</code></pre>
+<pre class="r"><code>y[,,3]</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    1    1    1
+#&gt; [2,]    0    0    0</code></pre>
+<p>pay attention on how the arrays are filled for each dimension.
+If you use <code>array</code> to construct the tensor, it fills the elements starting from the
+last dimension in the column wise manner.</p>
+<p>The first dimension is usually the sample. We can think it this 3D tensor represents
+two samples, and each sample has a 2D matrix to represent the time and the feature in
+timeseries data.</p>
+<pre class="r"><code>y[1,,]</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3] [,4]
+#&gt; [1,]    0    1    1    0
+#&gt; [2,]    0    0    1    0
+#&gt; [3,]    0    1    1    0</code></pre>
+<pre class="r"><code>y[2,,]</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3] [,4]
+#&gt; [1,]    0    1    0    0
+#&gt; [2,]    1    0    0    1
+#&gt; [3,]    1    1    0    0</code></pre>
+</div>
+<div id="reshape-the-array" class="section level3">
+<h3>reshape the array</h3>
+<p>If we use the <code>keras::array_reshape</code> function.</p>
+<blockquote>
+<p>by default, array_reshape() will fill the new dimensions in row-major (C-style) ordering, while dim&lt;-() will fill new dimensions in column-major (Fortran-style) ordering. This is done to be consistent with libraries like NumPy, Keras, and TensorFlow, which default to this sort of ordering when reshaping arrays.</p>
+</blockquote>
+<pre class="r"><code># the default is the C-stype: order = &quot;C&quot;
+z&lt;- array_reshape(x, dim = c(2,3,4))   
+
+x</code></pre>
+<pre><code>#&gt;  [1] 0 0 0 1 0 1 1 1 0 0 1 1 1 0 1 0 1 0 0 0 0 1 0 0</code></pre>
+<pre class="r"><code>z[1,,]</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3] [,4]
+#&gt; [1,]    0    0    0    1
+#&gt; [2,]    0    1    1    1
+#&gt; [3,]    0    0    1    1</code></pre>
+<pre class="r"><code>z[2,,]</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3] [,4]
+#&gt; [1,]    1    0    1    0
+#&gt; [2,]    1    0    0    0
+#&gt; [3,]    0    1    0    0</code></pre>
+<p>Now, it fills in the array starting from the first dimension and in a row-wise manner.</p>
+<pre class="r"><code>n&lt;- array_reshape(x, dim = c(2,3,4), order = &quot;F&quot;) 
+
+x</code></pre>
+<pre><code>#&gt;  [1] 0 0 0 1 0 1 1 1 0 0 1 1 1 0 1 0 1 0 0 0 0 1 0 0</code></pre>
+<pre class="r"><code>n[,,1]</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    0    0    0
+#&gt; [2,]    0    1    1</code></pre>
+<pre class="r"><code>n[,,2]</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    1    0    1
+#&gt; [2,]    1    0    1</code></pre>
+<p>Now, it fills in the array staring from the last dimension and in a column-wise manner.
+It is the same as the <code>dim()</code> method output:</p>
+<pre class="r"><code>all.equal(y, n)</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+</div>
+<div id="permutate-index" class="section level3">
+<h3>permutate index</h3>
+<pre class="r"><code>mat &lt;- replicate(3, matrix(runif(24),ncol=4), simplify=FALSE )
+
+mat</code></pre>
+<pre><code>#&gt; [[1]]
+#&gt;           [,1]       [,2]      [,3]      [,4]
+#&gt; [1,] 0.6557058 0.96302423 0.7584595 0.4137243
+#&gt; [2,] 0.7085305 0.90229905 0.2164079 0.3688455
+#&gt; [3,] 0.5440660 0.69070528 0.3181810 0.1524447
+#&gt; [4,] 0.5941420 0.79546742 0.2316258 0.1388061
+#&gt; [5,] 0.2891597 0.02461368 0.1428000 0.2330341
+#&gt; [6,] 0.1471136 0.47779597 0.4145463 0.4659625
+#&gt; 
+#&gt; [[2]]
+#&gt;            [,1]      [,2]       [,3]      [,4]
+#&gt; [1,] 0.26597264 0.5609480 0.66511519 0.8100644
+#&gt; [2,] 0.85782772 0.2065314 0.09484066 0.8123895
+#&gt; [3,] 0.04583117 0.1275317 0.38396964 0.7943423
+#&gt; [4,] 0.44220007 0.7533079 0.27438364 0.4398317
+#&gt; [5,] 0.79892485 0.8950454 0.81464004 0.7544752
+#&gt; [6,] 0.12189926 0.3744628 0.44851634 0.6292211
+#&gt; 
+#&gt; [[3]]
+#&gt;              [,1]      [,2]      [,3]      [,4]
+#&gt; [1,] 0.7101824014 0.3517979 0.1028646 0.1306957
+#&gt; [2,] 0.0006247733 0.1111354 0.4348927 0.6531019
+#&gt; [3,] 0.4753165741 0.2436195 0.9849570 0.3435165
+#&gt; [4,] 0.2201188852 0.6680556 0.8930511 0.6567581
+#&gt; [5,] 0.3798165377 0.4176468 0.8864691 0.3203732
+#&gt; [6,] 0.6127710033 0.7881958 0.1750527 0.1876911</code></pre>
+<p>It is a list of 3 matrices, each matrix is for one sample.</p>
+<p>Turn it to an array:</p>
+<pre class="r"><code>array1&lt;- simplify2array(mat)
+dim(array1)</code></pre>
+<pre><code>#&gt; [1] 6 4 3</code></pre>
+<pre class="r"><code># the last dimension is the sample.
+array1[,,1]</code></pre>
+<pre><code>#&gt;           [,1]       [,2]      [,3]      [,4]
+#&gt; [1,] 0.6557058 0.96302423 0.7584595 0.4137243
+#&gt; [2,] 0.7085305 0.90229905 0.2164079 0.3688455
+#&gt; [3,] 0.5440660 0.69070528 0.3181810 0.1524447
+#&gt; [4,] 0.5941420 0.79546742 0.2316258 0.1388061
+#&gt; [5,] 0.2891597 0.02461368 0.1428000 0.2330341
+#&gt; [6,] 0.1471136 0.47779597 0.4145463 0.4659625</code></pre>
+<p>How can I permutate it to have the first dimension to be 3?</p>
+<pre class="r"><code>array2&lt;- aperm(array1,  c(3,1,2))
+dim(array2)</code></pre>
+<pre><code>#&gt; [1] 3 6 4</code></pre>
+<pre class="r"><code>array2[1,,]</code></pre>
+<pre><code>#&gt;           [,1]       [,2]      [,3]      [,4]
+#&gt; [1,] 0.6557058 0.96302423 0.7584595 0.4137243
+#&gt; [2,] 0.7085305 0.90229905 0.2164079 0.3688455
+#&gt; [3,] 0.5440660 0.69070528 0.3181810 0.1524447
+#&gt; [4,] 0.5941420 0.79546742 0.2316258 0.1388061
+#&gt; [5,] 0.2891597 0.02461368 0.1428000 0.2330341
+#&gt; [6,] 0.1471136 0.47779597 0.4145463 0.4659625</code></pre>
+<pre class="r"><code>all.equal(mat[[1]], array2[1,,])</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<p>Use <code>unlist</code> to vectorize the list of matrices. <code>unlist</code> collects all the elements
+in a column-wise manner.</p>
+<pre class="r"><code>unlist(mat) %&gt;% head(n = 10)</code></pre>
+<pre><code>#&gt;  [1] 0.6557058 0.7085305 0.5440660 0.5941420 0.2891597 0.1471136 0.9630242
+#&gt;  [8] 0.9022990 0.6907053 0.7954674</code></pre>
+<pre class="r"><code>mat[[1]]</code></pre>
+<pre><code>#&gt;           [,1]       [,2]      [,3]      [,4]
+#&gt; [1,] 0.6557058 0.96302423 0.7584595 0.4137243
+#&gt; [2,] 0.7085305 0.90229905 0.2164079 0.3688455
+#&gt; [3,] 0.5440660 0.69070528 0.3181810 0.1524447
+#&gt; [4,] 0.5941420 0.79546742 0.2316258 0.1388061
+#&gt; [5,] 0.2891597 0.02461368 0.1428000 0.2330341
+#&gt; [6,] 0.1471136 0.47779597 0.4145463 0.4659625</code></pre>
+<pre class="r"><code>array3&lt;- unlist(mat) %&gt;% array(dim= c(6,4,3))
+all.equal(array1, array3)</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>array4&lt;- unlist(mat) %&gt;% array_reshape(dim=c(3,6,4))
+
+array4[1,,]</code></pre>
+<pre><code>#&gt;           [,1]      [,2]       [,3]      [,4]
+#&gt; [1,] 0.6557058 0.7085305 0.54406602 0.5941420
+#&gt; [2,] 0.2891597 0.1471136 0.96302423 0.9022990
+#&gt; [3,] 0.6907053 0.7954674 0.02461368 0.4777960
+#&gt; [4,] 0.7584595 0.2164079 0.31818101 0.2316258
+#&gt; [5,] 0.1428000 0.4145463 0.41372433 0.3688455
+#&gt; [6,] 0.1524447 0.1388061 0.23303410 0.4659625</code></pre>
+<pre class="r"><code>mat[[1]]</code></pre>
+<pre><code>#&gt;           [,1]       [,2]      [,3]      [,4]
+#&gt; [1,] 0.6557058 0.96302423 0.7584595 0.4137243
+#&gt; [2,] 0.7085305 0.90229905 0.2164079 0.3688455
+#&gt; [3,] 0.5440660 0.69070528 0.3181810 0.1524447
+#&gt; [4,] 0.5941420 0.79546742 0.2316258 0.1388061
+#&gt; [5,] 0.2891597 0.02461368 0.1428000 0.2330341
+#&gt; [6,] 0.1471136 0.47779597 0.4145463 0.4659625</code></pre>
+<p><code>array_reshap</code> put the sample in the first dimension, but it fills in the matrix in a row-wise manner.</p>
+<p>We can get all the element in a row-wise manner:</p>
+<pre class="r"><code># column-wise
+mat[[1]]</code></pre>
+<pre><code>#&gt;           [,1]       [,2]      [,3]      [,4]
+#&gt; [1,] 0.6557058 0.96302423 0.7584595 0.4137243
+#&gt; [2,] 0.7085305 0.90229905 0.2164079 0.3688455
+#&gt; [3,] 0.5440660 0.69070528 0.3181810 0.1524447
+#&gt; [4,] 0.5941420 0.79546742 0.2316258 0.1388061
+#&gt; [5,] 0.2891597 0.02461368 0.1428000 0.2330341
+#&gt; [6,] 0.1471136 0.47779597 0.4145463 0.4659625</code></pre>
+<pre class="r"><code>mat[[1]] %&gt;% c()</code></pre>
+<pre><code>#&gt;  [1] 0.65570580 0.70853047 0.54406602 0.59414202 0.28915974 0.14711365
+#&gt;  [7] 0.96302423 0.90229905 0.69070528 0.79546742 0.02461368 0.47779597
+#&gt; [13] 0.75845954 0.21640794 0.31818101 0.23162579 0.14280002 0.41454634
+#&gt; [19] 0.41372433 0.36884545 0.15244475 0.13880606 0.23303410 0.46596245</code></pre>
+<pre class="r"><code># row-wise, we first transpose it 
+mat[[1]] %&gt;% t() </code></pre>
+<pre><code>#&gt;           [,1]      [,2]      [,3]      [,4]       [,5]      [,6]
+#&gt; [1,] 0.6557058 0.7085305 0.5440660 0.5941420 0.28915974 0.1471136
+#&gt; [2,] 0.9630242 0.9022990 0.6907053 0.7954674 0.02461368 0.4777960
+#&gt; [3,] 0.7584595 0.2164079 0.3181810 0.2316258 0.14280002 0.4145463
+#&gt; [4,] 0.4137243 0.3688455 0.1524447 0.1388061 0.23303410 0.4659625</code></pre>
+<pre class="r"><code>mat[[1]] %&gt;% t() %&gt;% c()</code></pre>
+<pre><code>#&gt;  [1] 0.65570580 0.96302423 0.75845954 0.41372433 0.70853047 0.90229905
+#&gt;  [7] 0.21640794 0.36884545 0.54406602 0.69070528 0.31818101 0.15244475
+#&gt; [13] 0.59414202 0.79546742 0.23162579 0.13880606 0.28915974 0.02461368
+#&gt; [19] 0.14280002 0.23303410 0.14711365 0.47779597 0.41454634 0.46596245</code></pre>
+<pre class="r"><code>mat1&lt;- lapply(mat, function(x) x %&gt;%t() %&gt;% c()) %&gt;% unlist()
+
+array5&lt;- array_reshape(mat1, dim=c(3,6,4))
+array5[1,,]</code></pre>
+<pre><code>#&gt;           [,1]       [,2]      [,3]      [,4]
+#&gt; [1,] 0.6557058 0.96302423 0.7584595 0.4137243
+#&gt; [2,] 0.7085305 0.90229905 0.2164079 0.3688455
+#&gt; [3,] 0.5440660 0.69070528 0.3181810 0.1524447
+#&gt; [4,] 0.5941420 0.79546742 0.2316258 0.1388061
+#&gt; [5,] 0.2891597 0.02461368 0.1428000 0.2330341
+#&gt; [6,] 0.1471136 0.47779597 0.4145463 0.4659625</code></pre>
+<pre class="r"><code>mat[[1]]</code></pre>
+<pre><code>#&gt;           [,1]       [,2]      [,3]      [,4]
+#&gt; [1,] 0.6557058 0.96302423 0.7584595 0.4137243
+#&gt; [2,] 0.7085305 0.90229905 0.2164079 0.3688455
+#&gt; [3,] 0.5440660 0.69070528 0.3181810 0.1524447
+#&gt; [4,] 0.5941420 0.79546742 0.2316258 0.1388061
+#&gt; [5,] 0.2891597 0.02461368 0.1428000 0.2330341
+#&gt; [6,] 0.1471136 0.47779597 0.4145463 0.4659625</code></pre>
+<pre class="r"><code>all.equal(array5[1,,], mat[[1]])</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>all.equal(array5, array2)</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+</div>
+<div id="tensor-operations" class="section level3">
+<h3>tensor operations</h3>
+<p>In R, everything is vectorized, so you can do element-wise multiplication, subtraction and so on.</p>
+<pre class="r"><code>x</code></pre>
+<pre><code>#&gt;  [1] 0 0 0 1 0 1 1 1 0 0 1 1 1 0 1 0 1 0 0 0 0 1 0 0</code></pre>
+<pre class="r"><code>y&lt;- matrix(x, nrow = 4)
+y</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6]
+#&gt; [1,]    0    0    0    1    1    0
+#&gt; [2,]    0    1    0    0    0    1
+#&gt; [3,]    0    1    1    1    0    0
+#&gt; [4,]    1    1    1    0    0    0</code></pre>
+<pre class="r"><code>y + 2</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6]
+#&gt; [1,]    2    2    2    3    3    2
+#&gt; [2,]    2    3    2    2    2    3
+#&gt; [3,]    2    3    3    3    2    2
+#&gt; [4,]    3    3    3    2    2    2</code></pre>
+<pre class="r"><code>z&lt;- array_reshape(x, dim = c(2,3,4)) 
+z</code></pre>
+<pre><code>#&gt; , , 1
+#&gt; 
+#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    0    0    0
+#&gt; [2,]    1    1    0
+#&gt; 
+#&gt; , , 2
+#&gt; 
+#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    0    1    0
+#&gt; [2,]    0    0    1
+#&gt; 
+#&gt; , , 3
+#&gt; 
+#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    0    1    1
+#&gt; [2,]    1    0    0
+#&gt; 
+#&gt; , , 4
+#&gt; 
+#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    1    1    1
+#&gt; [2,]    0    0    0</code></pre>
+<pre class="r"><code>z + 2</code></pre>
+<pre><code>#&gt; , , 1
+#&gt; 
+#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    2    2    2
+#&gt; [2,]    3    3    2
+#&gt; 
+#&gt; , , 2
+#&gt; 
+#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    2    3    2
+#&gt; [2,]    2    2    3
+#&gt; 
+#&gt; , , 3
+#&gt; 
+#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    2    3    3
+#&gt; [2,]    3    2    2
+#&gt; 
+#&gt; , , 4
+#&gt; 
+#&gt;      [,1] [,2] [,3]
+#&gt; [1,]    3    3    3
+#&gt; [2,]    2    2    2</code></pre>
+<pre class="r"><code>array6&lt;- replicate(3, matrix(rnorm(24),ncol=4), simplify=FALSE) %&gt;%
+        simplify2array()
+        
+dim(array6)</code></pre>
+<pre><code>#&gt; [1] 6 4 3</code></pre>
+<pre class="r"><code>array6</code></pre>
+<pre><code>#&gt; , , 1
+#&gt; 
+#&gt;             [,1]       [,2]       [,3]        [,4]
+#&gt; [1,]  0.77996512 -0.2257710  0.3796395  0.44820978
+#&gt; [2,] -0.08336907  1.5164706 -0.5023235  0.05300423
+#&gt; [3,]  0.25331851 -1.5487528 -0.3332074  0.92226747
+#&gt; [4,] -0.02854676  0.5846137 -1.0185754  2.05008469
+#&gt; [5,] -0.04287046  0.1238542 -1.0717912 -0.49103117
+#&gt; [6,]  1.36860228  0.2159416  0.3035286 -2.30916888
+#&gt; 
+#&gt; , , 2
+#&gt; 
+#&gt;            [,1]         [,2]       [,3]       [,4]
+#&gt; [1,]  1.0057385  0.181303480 -0.2204866  0.9935039
+#&gt; [2,] -0.7092008 -0.138891362  0.3317820  0.5483970
+#&gt; [3,] -0.6880086  0.005764186  1.0968390  0.2387317
+#&gt; [4,]  1.0255714  0.385280401  0.4351815 -0.6279061
+#&gt; [5,] -0.2847730 -0.370660032 -0.3259316  1.3606524
+#&gt; [6,] -1.2207177  0.644376549  1.1488076 -0.6002596
+#&gt; 
+#&gt; , , 3
+#&gt; 
+#&gt;            [,1]        [,2]        [,3]       [,4]
+#&gt; [1,]  2.1873330 -0.24669188 -0.38022652  0.5194072
+#&gt; [2,]  1.5326106 -0.34754260  0.91899661  0.3011534
+#&gt; [3,] -0.2357004 -0.95161857 -0.57534696  0.1056762
+#&gt; [4,] -1.0264209 -0.04502772  0.60796432 -0.6407060
+#&gt; [5,] -0.7104066 -0.78490447 -1.61788271 -0.8497043
+#&gt; [6,]  0.2568837 -1.66794194 -0.05556197 -1.0241288</code></pre>
+<pre class="r"><code>## turn all negative to 0, the element-wise relu
+pmax(array6, 0)</code></pre>
+<pre><code>#&gt; , , 1
+#&gt; 
+#&gt;           [,1]      [,2]      [,3]       [,4]
+#&gt; [1,] 0.7799651 0.0000000 0.3796395 0.44820978
+#&gt; [2,] 0.0000000 1.5164706 0.0000000 0.05300423
+#&gt; [3,] 0.2533185 0.0000000 0.0000000 0.92226747
+#&gt; [4,] 0.0000000 0.5846137 0.0000000 2.05008469
+#&gt; [5,] 0.0000000 0.1238542 0.0000000 0.00000000
+#&gt; [6,] 1.3686023 0.2159416 0.3035286 0.00000000
+#&gt; 
+#&gt; , , 2
+#&gt; 
+#&gt;          [,1]        [,2]      [,3]      [,4]
+#&gt; [1,] 1.005739 0.181303480 0.0000000 0.9935039
+#&gt; [2,] 0.000000 0.000000000 0.3317820 0.5483970
+#&gt; [3,] 0.000000 0.005764186 1.0968390 0.2387317
+#&gt; [4,] 1.025571 0.385280401 0.4351815 0.0000000
+#&gt; [5,] 0.000000 0.000000000 0.0000000 1.3606524
+#&gt; [6,] 0.000000 0.644376549 1.1488076 0.0000000
+#&gt; 
+#&gt; , , 3
+#&gt; 
+#&gt;           [,1] [,2]      [,3]      [,4]
+#&gt; [1,] 2.1873330    0 0.0000000 0.5194072
+#&gt; [2,] 1.5326106    0 0.9189966 0.3011534
+#&gt; [3,] 0.0000000    0 0.0000000 0.1056762
+#&gt; [4,] 0.0000000    0 0.6079643 0.0000000
+#&gt; [5,] 0.0000000    0 0.0000000 0.0000000
+#&gt; [6,] 0.2568837    0 0.0000000 0.0000000</code></pre>
+</div>
+<div id="tensor-dot" class="section level3">
+<h3>tensor dot</h3>
+<p>for 2D tensors, it is like matrix multiplication, the number of columns for the first matrix
+has to be the same as the number of rows for the second matrix</p>
+<pre class="r"><code>mat2&lt;- sample(c(0,1), size= 24, replace = TRUE) %&gt;% matrix(ncol = 4)
+mat2</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3] [,4]
+#&gt; [1,]    0    0    1    1
+#&gt; [2,]    1    1    0    0
+#&gt; [3,]    0    1    0    1
+#&gt; [4,]    1    1    0    1
+#&gt; [5,]    0    0    0    1
+#&gt; [6,]    0    1    0    0</code></pre>
+<pre class="r"><code>mat3&lt;- sample(c(0,1), size= 28, replace = TRUE) %&gt;% matrix(nrow = 4)
+mat3</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+#&gt; [1,]    1    0    0    0    1    0    0
+#&gt; [2,]    0    0    1    0    1    1    1
+#&gt; [3,]    1    0    0    0    0    1    0
+#&gt; [4,]    0    0    1    0    0    1    0</code></pre>
+<pre class="r"><code>mat2 %*% mat3</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+#&gt; [1,]    1    0    1    0    0    2    0
+#&gt; [2,]    1    0    1    0    2    1    1
+#&gt; [3,]    0    0    2    0    1    2    1
+#&gt; [4,]    1    0    2    0    2    2    1
+#&gt; [5,]    0    0    1    0    0    1    0
+#&gt; [6,]    0    0    1    0    1    1    1</code></pre>
+<p>6x4 mat1 dot 4x7 mat2 == 6x7 matrix.</p>
+<p>You can take dot product of higher-dimensional tensors following the same rules for shape compatibility.</p>
+<p><strong>In my next blog post, I will show you how to use TCR sequences to predict cancer vs healthy samples.</strong> Stay tuned!</p>
+</div>

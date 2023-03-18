@@ -1,0 +1,250 @@
+---
+title: Basic tensor/array manipulations in R
+author: Ming Tang
+date: '2023-03-18'
+slug: basic-tensor-array-manipulations-in-r
+categories:
+  - machine learning
+tags:
+  - deeplearning
+  - machine learning
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+### Sign up for my newsletter to not miss a post like this
+
+https://divingintogeneticsandgenomics.ck.page/newsletter
+
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+```
+
+In my last post, I showed you how to build a neural network in `Keras` with less than 20 lines of code.
+One of the key road blocks for beginners is to transform the input to the right shape of tensor (the deep learning terminology) or 
+array (the R built-in type).
+
+In this post, I am going to show you some basic manipulations of the array.
+
+```{r}
+library(keras)
+set.seed(123)
+```
+
+
+### Construct tensors
+
+A 2D tensor is just a matrix.
+
+```{r}
+x<- sample(c(0,1), size= 24, replace = TRUE)
+x
+y<- matrix(x, nrow = 4)
+y
+```
+The matrix is filled in a row-wise manner.
+
+
+A 3D tensor is a 3D array.
+
+```{r}
+y<- array(x, dim = c(2,3,4))
+```
+
+```{r}
+x
+
+y[,,1]
+y[,,2]
+y[,,3]
+```
+
+pay attention on how the arrays are filled for each dimension. 
+If you use `array` to construct the tensor, it fills the elements starting from the
+last dimension in the column wise manner.
+
+
+The first dimension is usually the sample. We can think it this 3D tensor represents
+two samples, and each sample has a 2D matrix to represent the time and the feature in
+timeseries data.
+
+```{r}
+y[1,,]
+y[2,,]
+```
+
+
+### reshape the array
+
+If we use the `keras::array_reshape` function.
+
+>by default, array_reshape() will fill the new dimensions in row-major (C-style) ordering, while dim<-() will fill new dimensions in column-major (Fortran-style) ordering. This is done to be consistent with libraries like NumPy, Keras, and TensorFlow, which default to this sort of ordering when reshaping arrays.
+
+```{r}
+# the default is the C-stype: order = "C"
+z<- array_reshape(x, dim = c(2,3,4))   
+
+x
+z[1,,]
+z[2,,]
+
+```
+Now, it fills in the array starting from the first dimension and in a row-wise manner.
+
+```{r}
+n<- array_reshape(x, dim = c(2,3,4), order = "F") 
+
+x
+n[,,1]
+n[,,2]
+
+```
+
+Now, it fills in the array staring from the last dimension and in a column-wise manner.
+It is the same as the `dim()` method output:
+
+```{r}
+all.equal(y, n)
+```
+
+
+### permutate index 
+
+```{r}
+mat <- replicate(3, matrix(runif(24),ncol=4), simplify=FALSE )
+
+mat
+```
+
+It is a list of 3 matrices, each matrix is for one sample.
+
+Turn it to an array:
+```{r}
+array1<- simplify2array(mat)
+dim(array1)
+
+# the last dimension is the sample.
+array1[,,1]
+```
+
+
+How can I permutate it to have the first dimension to be 3?
+
+```{r}
+array2<- aperm(array1,  c(3,1,2))
+dim(array2)
+
+array2[1,,]
+
+all.equal(mat[[1]], array2[1,,])
+```
+
+Use `unlist` to vectorize the list of matrices. `unlist` collects all the elements
+in a column-wise manner.
+
+```{r}
+unlist(mat) %>% head(n = 10)
+mat[[1]]
+
+array3<- unlist(mat) %>% array(dim= c(6,4,3))
+all.equal(array1, array3)
+```
+
+
+```{r}
+array4<- unlist(mat) %>% array_reshape(dim=c(3,6,4))
+
+array4[1,,]
+mat[[1]]
+```
+
+`array_reshap` put the sample in the first dimension, but it fills in the matrix in a row-wise manner.
+
+We can get all the  element in a row-wise manner:
+
+```{r}
+# column-wise
+mat[[1]]
+mat[[1]] %>% c()
+
+# row-wise, we first transpose it 
+mat[[1]] %>% t() 
+
+mat[[1]] %>% t() %>% c()
+```
+
+
+```{r}
+mat1<- lapply(mat, function(x) x %>%t() %>% c()) %>% unlist()
+
+array5<- array_reshape(mat1, dim=c(3,6,4))
+array5[1,,]
+mat[[1]]
+
+all.equal(array5[1,,], mat[[1]])
+all.equal(array5, array2)
+```
+
+### tensor operations
+
+In R, everything is vectorized, so you can do element-wise multiplication, subtraction and so on.
+
+```{r}
+x
+y<- matrix(x, nrow = 4)
+y
+
+y + 2
+
+
+z<- array_reshape(x, dim = c(2,3,4)) 
+z
+z + 2
+
+
+
+```
+
+
+```{r}
+array6<- replicate(3, matrix(rnorm(24),ncol=4), simplify=FALSE) %>%
+        simplify2array()
+        
+dim(array6)
+array6
+
+## turn all negative to 0, the element-wise relu
+pmax(array6, 0)
+
+```
+
+### tensor dot
+
+for 2D tensors, it is like matrix multiplication, the number of columns for the first matrix
+has to be the same as the number of rows for the second matrix
+
+```{r}
+mat2<- sample(c(0,1), size= 24, replace = TRUE) %>% matrix(ncol = 4)
+mat2
+
+mat3<- sample(c(0,1), size= 28, replace = TRUE) %>% matrix(nrow = 4)
+mat3
+
+mat2 %*% mat3
+```
+
+6x4 mat1 dot 4x7 mat2 == 6x7 matrix.
+
+You can take dot product of higher-dimensional tensors following the same rules for shape compatibility. 
+
+
+**In my next blog post, I will show you how to use TCR sequences to predict cancer vs healthy samples.** Stay tuned!
+
+
+
