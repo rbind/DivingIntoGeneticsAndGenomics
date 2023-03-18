@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In my last post, I showed you how to build a neural network in `Keras` with less than 20 lines of code.
+In my [last post](https://divingintogeneticsandgenomics.rbind.io/post/deep-learning-with-keras-using-mnst-dataset/), I showed you how to build a neural network in `Keras` with less than 20 lines of code.
 One of the key road blocks for beginners is to transform the input to the right shape of tensor (the deep learning terminology) or 
 array (the R built-in type).
 
