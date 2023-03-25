@@ -1,0 +1,228 @@
+---
+title: Deep learning to predict cancer from healthy controls using TCRseq data
+author: Ming Tang
+date: '2023-03-24'
+slug: deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data
+categories:
+  - bioinformatics
+  - deeplearning
+tags:
+  - deeplearning
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="sign-up-for-my-newsletter-to-not-miss-a-post-like-this" class="section level3">
+<h3>Sign up for my newsletter to not miss a post like this</h3>
+<p><a href="https://divingintogeneticsandgenomics.ck.page/newsletter" class="uri">https://divingintogeneticsandgenomics.ck.page/newsletter</a></p>
+<p>The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.</p>
+<p>The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock. When the TCR encounters a target it recognizes, it sends signals to the T-cell telling it to attack and destroy the invader.</p>
+<p><a href="https://www.takarabio.com/about/bioview-blog/research-news/tcr-seq-methods-strengths-weaknesses-and-rankings">T-cell receptor (TCR) sequencing</a> data is one type of high-throughput sequencing data that provides valuable insights into the immune system’s response to cancer. We can now even get single-cell TCRseq data. In this blog post, we will discuss a deep learning model developed to predict cancer from healthy control using TCRseq data.</p>
+<p>This blog post is inspired by the publication <a href="https://pubmed.ncbi.nlm.nih.gov/32817363/">De novo prediction of cancer-associated T cell receptors for noninvasive cancer detection</a>. We will use the same training and testing data from <a href="https://github.com/s175573/DeepCAT" class="uri">https://github.com/s175573/DeepCAT</a></p>
+<p>Download the data.</p>
+<pre class="bash"><code>git clone https://github.com/s175573/DeepCAT</code></pre>
+<p>Load in to R:</p>
+<pre class="r"><code>library(keras)
+library(readr)
+set.seed(123)
+normal_CDR3&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/NormalCDR3.txt&quot;,
+                       col_names = FALSE)
+
+cancer_CDR3&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/TumorCDR3.txt&quot;,
+                       col_names = FALSE)
+
+train_CDR3&lt;- rbind(normal_CDR3, cancer_CDR3)
+train_label&lt;- c(rep(0, nrow(normal_CDR3)), rep(1, nrow(cancer_CDR3))) %&gt;% as.numeric()
+
+normal_CDR3_test&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/NormalCDR3_test.txt&quot;,
+                       col_names = FALSE)
+
+cancer_CDR3_test&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/TumorCDR3_test.txt&quot;,
+                       col_names = FALSE)
+
+test_CDR3&lt;- rbind(normal_CDR3_test, cancer_CDR3_test)
+test_label&lt;- c(rep(0, nrow(normal_CDR3_test)), rep(1, nrow(cancer_CDR3_test)))
+
+AAindex&lt;- read.table(&quot;/Users/tommytang/github_repos/DeepCAT/AAidx_PCA.txt&quot;,header = TRUE)
+
+## 20 aa
+total_aa&lt;- rownames(AAindex)
+total_aa</code></pre>
+<pre><code>#&gt;  [1] &quot;A&quot; &quot;R&quot; &quot;N&quot; &quot;D&quot; &quot;C&quot; &quot;E&quot; &quot;Q&quot; &quot;G&quot; &quot;H&quot; &quot;I&quot; &quot;L&quot; &quot;K&quot; &quot;M&quot; &quot;F&quot; &quot;P&quot; &quot;S&quot; &quot;T&quot; &quot;W&quot; &quot;Y&quot;
+#&gt; [20] &quot;V&quot;</code></pre>
+<p><a href="https://www.genome.jp/aaindex/">AAindex</a> is a database of numerical indices representing various physicochemical and biochemical properties of amino acids and pairs of amino acids. In this example, we are not using it. The original paper uses the PCA components as input on top of the CDR3 amino sequences.</p>
+<p>Because CDR3s with different lengths usually form distinct loop structures to interact with the antigens, the <code>deepcat</code> paper built five models each for lengths 12 through 16.</p>
+</div>
+<div id="one-hot-encoding-for-cdr3" class="section level3">
+<h3>one hot encoding for CDR3</h3>
+<pre class="r"><code>encode_one_cdr3&lt;- function(cdr3, length_cutoff){
+        res&lt;- matrix(0, nrow = length(total_aa), ncol = length_cutoff)
+        cdr3&lt;- unlist(stringr::str_split(cdr3, pattern = &quot;&quot;))
+        cdr3&lt;- cdr3[1:length_cutoff]
+        row_index&lt;- sapply(cdr3, function(x) which(total_aa==x)[1])
+        col_index&lt;- 1: length_cutoff
+        res[as.matrix(cbind(row_index, col_index))]&lt;- 1
+        return(res)
+
+}
+                        
+cdr3&lt;- &quot;CASSLKPNTEAFF&quot;
+
+encode_one_cdr3(cdr3, length_cutoff = 12)</code></pre>
+<pre><code>#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
+#&gt;  [1,]    0    1    0    0    0    0    0    0    0     0     1     0
+#&gt;  [2,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [3,]    0    0    0    0    0    0    0    1    0     0     0     0
+#&gt;  [4,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [5,]    1    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [6,]    0    0    0    0    0    0    0    0    0     1     0     0
+#&gt;  [7,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [8,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [9,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [10,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [11,]    0    0    0    0    1    0    0    0    0     0     0     0
+#&gt; [12,]    0    0    0    0    0    1    0    0    0     0     0     0
+#&gt; [13,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [14,]    0    0    0    0    0    0    0    0    0     0     0     1
+#&gt; [15,]    0    0    0    0    0    0    1    0    0     0     0     0
+#&gt; [16,]    0    0    1    1    0    0    0    0    0     0     0     0
+#&gt; [17,]    0    0    0    0    0    0    0    0    1     0     0     0
+#&gt; [18,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [19,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [20,]    0    0    0    0    0    0    0    0    0     0     0     0</code></pre>
+<p>This gives you a 20 x 12 matrix, the entry is 1 when the aa is matching the <code>total_aa</code>.</p>
+<p>e.g., the first aa is <code>C</code>, so the [5, 1] is 1.</p>
+</div>
+<div id="shape-the-training-and-testing-data" class="section level3">
+<h3>shape the training and testing data</h3>
+<p>Read my <a href="https://divingintogeneticsandgenomics.rbind.io/post/basic-tensor-array-manipulations-in-r/">previous post on tensor reshaping</a>.</p>
+<pre class="r"><code>length_cutoff = 12
+
+train_data&lt;- purrr::map(train_CDR3$X1, ~encode_one_cdr3(.x, length_cutoff = length_cutoff))
+
+# reshape the data to a 2D tensor
+train_data&lt;- array_reshape(unlist(train_data), dim = c(length(train_data), 20 * length_cutoff))
+
+# the 20x12 matrix is linearized to a 240 element vector
+dim(train_data)</code></pre>
+<pre><code>#&gt; [1] 70000   240</code></pre>
+<pre class="r"><code>test_data&lt;- purrr::map(test_CDR3$X1,  ~encode_one_cdr3(.x, length_cutoff = length_cutoff))
+test_data&lt;- array_reshape(unlist(test_data), dim= c(length(test_data), 20* length_cutoff))
+dim(test_data)</code></pre>
+<pre><code>#&gt; [1] 29851   240</code></pre>
+<p>The original paper used a Convolutional Neural Network (CNN), I will use a regular 2 dense-layer model.</p>
+<pre class="r"><code>y_train &lt;- as.numeric(train_label)
+y_test &lt;- as.numeric(test_label)
+
+
+model &lt;- keras_model_sequential() %&gt;% 
+        layer_dense(units = 16, activation = &quot;relu&quot;, input_shape = c(20 * length_cutoff)) %&gt;%
+        layer_dense(units = 16, activation = &quot;relu&quot;) %&gt;%
+        layer_dense(units = 1, activation = &quot;sigmoid&quot;)
+
+
+model %&gt;% compile(
+        optimizer = &quot;rmsprop&quot;,
+        loss = &quot;binary_crossentropy&quot;,
+        metrics = c(&quot;accuracy&quot;)
+)</code></pre>
+<p>If one use big epochs, the model will be over-fitted. Set apart 35000 CDR3 sequences for validation.</p>
+<pre class="r"><code>set.seed(123)
+val_indices &lt;- sample(nrow(train_data), 35000)
+x_val &lt;- train_data[val_indices,]
+partial_x_train &lt;- train_data[-val_indices,]
+
+y_val &lt;- y_train[val_indices]
+partial_y_train &lt;- y_train[-val_indices]
+
+history &lt;- model %&gt;% fit(partial_x_train, 
+                         partial_y_train, 
+                         epochs = 20, 
+                         batch_size = 512, 
+                         validation_data = list(x_val, y_val)
+)
+
+plot(history)</code></pre>
+<p><img src="/post/2023-03-24-deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="final-training-and-testing" class="section level3">
+<h3>final training and testing</h3>
+<pre class="r"><code>model %&gt;% fit(train_data, y_train, epochs = 20, batch_size = 512)
+results &lt;- model %&gt;% evaluate(test_data, y_test)
+results</code></pre>
+<pre><code>#&gt;      loss  accuracy 
+#&gt; 0.4229931 0.8065391</code></pre>
+<p>~80% accuracy. Not bad…</p>
+<p>Let’s increase the number of units in each layer.</p>
+<pre class="r"><code>model &lt;- keras_model_sequential() %&gt;% 
+        layer_dense(units = 64, activation = &quot;relu&quot;, input_shape = c(20 * length_cutoff)) %&gt;%
+        layer_dense(units = 64, activation = &quot;relu&quot;) %&gt;%
+        layer_dense(units = 1, activation = &quot;sigmoid&quot;)
+
+
+model %&gt;% compile(
+        optimizer = &quot;rmsprop&quot;,
+        loss = &quot;binary_crossentropy&quot;,
+        metrics = c(&quot;accuracy&quot;)
+)
+
+val_indices &lt;- sample(nrow(train_data), 35000)
+x_val &lt;- train_data[val_indices,]
+partial_x_train &lt;- train_data[-val_indices,]
+
+y_val &lt;- y_train[val_indices]
+partial_y_train &lt;- y_train[-val_indices]
+
+history &lt;- model %&gt;% fit(partial_x_train, 
+                         partial_y_train, 
+                         epochs = 20, 
+                         batch_size = 512, 
+                         validation_data = list(x_val, y_val)
+)
+
+plot(history)</code></pre>
+<p><img src="/post/2023-03-24-deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>with more units (neurons) in each layer, overfitting occurs much faster.
+after 10 epoch, the validation accuracy starts to plateau.</p>
+<pre class="r"><code>model %&gt;% fit(train_data, y_train, epochs = 10, batch_size = 512)
+results &lt;- model %&gt;% evaluate(test_data, y_test)
+results</code></pre>
+<pre><code>#&gt;      loss  accuracy 
+#&gt; 0.3731814 0.8282135</code></pre>
+<pre class="r"><code>predict(model, test_data[1:10, ])</code></pre>
+<pre><code>#&gt;             [,1]
+#&gt;  [1,] 0.08662453
+#&gt;  [2,] 0.23022524
+#&gt;  [3,] 0.21670932
+#&gt;  [4,] 0.03327328
+#&gt;  [5,] 0.03596783
+#&gt;  [6,] 0.07136077
+#&gt;  [7,] 0.06769678
+#&gt;  [8,] 0.03962836
+#&gt;  [9,] 0.16300359
+#&gt; [10,] 0.36324140</code></pre>
+</div>
+<div id="how-to-improve-the-accuracy-by-using-biology-domian-knowledge" class="section level3">
+<h3>How to improve the accuracy by using biology domian knowledge?</h3>
+<p>It is surprising to me that using only the CDR3 aa sequences can reach an accuracy of 80%.
+How can we further improve it?</p>
+<ul>
+<li>we can add the AA properties</li>
+<li>add the VDJ usage</li>
+<li>add HLA typing for each sample</li>
+</ul>
+</div>
+<div id="further-reading" class="section level3">
+<h3>Further reading</h3>
+<ul>
+<li><p><a href="https://www.nature.com/articles/s41467-021-21879-w">DeepTCR is a deep learning framework for revealing sequence concepts within T-cell repertoires</a></p></li>
+<li><p><a href="https://www.science.org/doi/10.1126/sciadv.abq5089">Deep learning reveals predictive sequence concepts within immune repertoires to immunotherapy</a></p></li>
+</ul>
+</div>
