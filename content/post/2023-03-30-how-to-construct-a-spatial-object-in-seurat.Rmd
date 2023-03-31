@@ -161,7 +161,8 @@ ImageDimPlot(vizgen.obj, fov = "p2s2", cols = "polychrome", axes = TRUE)
 
 
 ### Find cell markers
-```{r}
+
+```{r fig.height = 8, fig.width = 8, fig.align = "center"}
 library(tictoc)
 tic()
 markers<- presto::wilcoxauc(vizgen.obj, 'seurat_clusters', assay = 'data',seurat_assay= "Vizgen" )

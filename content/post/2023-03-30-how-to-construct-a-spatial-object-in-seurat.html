@@ -151,7 +151,7 @@ vizgen.obj &lt;- FindClusters(vizgen.obj, resolution = 0.3)</code></pre>
 tic()
 markers&lt;- presto::wilcoxauc(vizgen.obj, &#39;seurat_clusters&#39;, assay = &#39;data&#39;,seurat_assay= &quot;Vizgen&quot; )
 toc()</code></pre>
-<pre><code>#&gt; 1.047 sec elapsed</code></pre>
+<pre><code>#&gt; 1.137 sec elapsed</code></pre>
 <pre class="r"><code>top_markers&lt;- presto::top_markers(markers, n =3)
 
 top_markers</code></pre>
@@ -183,7 +183,7 @@ scCustomize::Clustered_DotPlot(vizgen.obj,
                                features = c(top_markers, manual_markers), 
                                plot_km_elbow = FALSE,
                                row_label_size = 8)</code></pre>
-<p><img src="/post/2023-03-30-how-to-construct-a-spatial-object-in-seurat_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/post/2023-03-30-how-to-construct-a-spatial-object-in-seurat_files/figure-html/unnamed-chunk-10-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>table(vizgen.obj$seurat_clusters)</code></pre>
 <pre><code>#&gt; 
 #&gt;     0     1     2     3     4     5     6     7     8     9    10    11 
