@@ -321,7 +321,7 @@ dimension becomes 26 x 26 (Think how many 3x3 patches you can get from a 28x28 g
 <p>Max-pooling consists of extracting windows from the output feature maps and outputting the max value of each channel. Instead of transforming local patches
 via a learned linear transformation, they are transformed via a hard coded max tensor operation. The max pooling is usually done with 2x2 window.
 That’s why after 1st max pooling, the 26 x 26 grid becomes 13 x 13; and after 2nd max pooling, 11 x 11 becomes 5x 5. Because of the border issues,
-the grid becomes smaller and smaller: 28 x 28 to 26 x 36; 13 x 13 to 11 x 11, 5x 5 to 3x3.</p>
+the grid becomes smaller and smaller: 28 x 28 to 26 x 26; 13 x 13 to 11 x 11, 5x 5 to 3x3.</p>
 <p>Let’s make a new model by padding:</p>
 <pre class="r"><code>model2&lt;- keras_model_sequential() %&gt;%
         layer_conv_2d(filters = 32, kernel_size = c(3,3), activation = &quot;relu&quot;,
@@ -378,7 +378,7 @@ max pooling reduces it to half: 14 x 14, but the second conv2d keeps it 14x 14, 
 <pre class="r"><code>metrics&lt;- model %&gt;% evaluate(test_images, test_labels)
 metrics</code></pre>
 <pre><code>#&gt;       loss   accuracy 
-#&gt; 0.02755355 0.99150002</code></pre>
+#&gt; 0.02705173 0.99220002</code></pre>
 <p>It blows my mind that this simple CNN reached an accuracy of ~99%!
 The time is a little longer than the regular dense layer neural network.</p>
 </div>
