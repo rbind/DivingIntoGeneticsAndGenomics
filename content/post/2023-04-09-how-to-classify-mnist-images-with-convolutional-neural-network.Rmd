@@ -85,7 +85,7 @@ It is a matrix denoting the image of 9.
 
 In our regular dense neural network model, we reshaped the tensor into 2D.
 
-Importantly, a `convnet`  takes tensors of shape (image_height, image_widht, image_channels), not including the
+Importantly, a `convnet`  takes tensors of shape (image_height, image_width, image_channels), not including the
 batch dimension. We will convert the input to size (28, 28, 1). For the MNIST dataset, it is black and white, so only 1 channel.
 
 For colored images, you will have 3 channels (RGB colors). 
@@ -150,34 +150,33 @@ model
 ```
 
 Convolutions operates over 3D tensors, called `feature maps` with two spatial axes (`height` and `width`) as well
-as the a `depth` axis. For an RGB image, the dimention of the depth axis is 3 with Red, green and blue channels.
+as the a `depth` axis. For an RGB image, the dimension of the depth axis is 3 with Red, green and blue channels.
 
 For the black and white MNIST images, the depth is 1 (levels of gray).
 
 The convolution extracts patches from its input feature map and applies the same transformation for all patches, producing
-an `output feature map`. This out put feature map is still 3D: width, height and depth. But the depth now is an arbitray 
+an `output feature map`. This out put feature map is still 3D: width, height and depth. But the depth now is an arbitrary 
 parameter of the layer and it does not represent the RGB colors: they are called filters. 
 
-Filters encode specific aspects of teh input data. At a higher level, a single filter can encode the concept "presence of a
+Filters encode specific aspects of the input data. At a higher level, a single filter can encode the concept "presence of a
 face in the image".
 
-In our MNIST example, we take a (28, 28, 1) input feature map and output a feature map of (26, 26, 32). IT computes 32 filters over its input.
-Each of those 32 output channels contains a 26 x 26 grid of values, which is a response map of the fitler over the input, indicating 
+In our MNIST example, we take a (28, 28, 1) input feature map and output a feature map of (26, 26, 32). It computes 32 filters over its input.
+Each of those 32 output channels contains a 26 x 26 grid of values, which is a response map of the filter over the input, indicating 
 the response of that filter pattern at different locations in the input.
 
 Two key parameters we defined in our model
 
 * size of the patches extracted from the inputs: they are typically 3x3 or 5x5. We used 3x3.  Without padding, for a 28 x 28 image, the output feature map
-dimention becomes 26 x 26 (Think how many 3x3 patches you can get from a 28x28 grid.)
+dimension becomes 26 x 26 (Think how many 3x3 patches you can get from a 28x28 grid.)
 
 * Depth of the output feature map: the number of filters computed by the convolution. We used 32 and ended with 64.
 
 
-Max-pooling consists of extracting windows from the output feature maps and outputing the max value of each channel. Instead of transforming local patches
-via a learned linear transformation, they are transformed via a hardcoded max tensor operation. The max pooling is usually done with 2x2 window.
-
-That's why after 1st max pooling, the 26 x 26 grid becomes 13 x 13; and after 2nd max pooling, 11 x 11 becomes 5x 5. Because of the border issues.
-The grid becomes smaller and smaller: 28 x 28 to 26 x 36; 13 x 13 to 11 x 11, 5x 5 to 3x3.
+Max-pooling consists of extracting windows from the output feature maps and outputting the max value of each channel. Instead of transforming local patches
+via a learned linear transformation, they are transformed via a hard coded max tensor operation. The max pooling is usually done with 2x2 window.
+That's why after 1st max pooling, the 26 x 26 grid becomes 13 x 13; and after 2nd max pooling, 11 x 11 becomes 5x 5. Because of the border issues,
+the grid becomes smaller and smaller: 28 x 28 to 26 x 36; 13 x 13 to 11 x 11, 5x 5 to 3x3.
 
 Let's make a new model by padding:
 
@@ -199,7 +198,7 @@ model2
 ```
 
 After we use `padding = same`(default is valid), our input image is 28x28, after 1st conv2d, it is still 28x28, 
-max pooling reduces it to half: 14 x 14, but the second 2d keeps it 14x 14, then max pooling reduced it to half again to 7x7 etc etc.
+max pooling reduces it to half: 14 x 14, but the second conv2d keeps it 14x 14, then max pooling reduced it to half again to 7x7 etc etc.
 
 Let's compile the first model:
 ```{r}
