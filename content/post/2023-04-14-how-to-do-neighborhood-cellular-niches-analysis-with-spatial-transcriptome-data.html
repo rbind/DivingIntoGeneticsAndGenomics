@@ -1,0 +1,318 @@
+---
+title: 'How to do neighborhood/cellular niches analysis with spatial transcriptome
+  data '
+author: Ming Tang
+date: '2023-04-14'
+slug: how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data
+categories:
+  - spatial
+  - bioinformatics
+  - R
+tags:
+  - bioinformatics
+  - R
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="sign-up-for-my-newsletter-to-not-miss-a-post-like-this" class="section level3">
+<h3>Sign up for my newsletter to not miss a post like this</h3>
+<p><a href="https://divingintogeneticsandgenomics.ck.page/newsletter" class="uri">https://divingintogeneticsandgenomics.ck.page/newsletter</a></p>
+<p>In a <a href="https://divingintogeneticsandgenomics.rbind.io/post/how-to-construct-a-spatial-object-in-seurat/">previous blog post</a>, I showed you how to make a Seurat spatial object from
+<a href="https://vizgen.com/">Vizgen</a> spatial transcriptome data. In this post, I am going to show you how to
+identify clusters of neighborhood or cellular niches where specific cell types tend
+to co-localize.</p>
+</div>
+<div id="read-in-the-data-and-pre-process" class="section level3">
+<h3>read in the data and pre-process</h3>
+<pre class="r"><code>library(Seurat)
+library(here)
+library(ggplot2)
+library(dplyr)
+
+# the LoadVizgen function requires the raw segmentation files which is too big. We will only use the x,y coordinates 
+# vizgen.obj &lt;- LoadVizgen(data.dir = here(&quot;data&quot;))
+
+vizgen.input &lt;- ReadVizgen(data.dir = &quot;~/blog_data/spatial_data&quot;, type = &quot;centroids&quot;)</code></pre>
+<p>For most of the analysis, we will only need the x,y coordinates (the center of the cell). You can also read in
+the raw segmentation file( which gives you more detailed cell shape information), or set <code>type = "box"</code> to get the
+rectangular information of a cell (xmin, xmax, ymin and ymax).</p>
+<p><code>vizgen.input</code> is a list containing the count matrix and the spatial centrioids.</p>
+<pre class="r"><code>vizgen.input$centroids %&gt;% head()</code></pre>
+<pre><code>#&gt;           x        y cell
+#&gt; 1 10145.793 5611.687 7650
+#&gt; 2  9975.309 5626.726 7654
+#&gt; 3 10129.183 5630.601 7655
+#&gt; 4 10112.692 5635.038 7656
+#&gt; 5 10151.574 5634.673 7657
+#&gt; 6 10099.624 5636.831 7658</code></pre>
+<pre class="r"><code>## This gives you the image 
+ggplot(vizgen.input$centroids, aes(x= x, y = y))+
+        geom_point(size = 0.1, color = &quot;grey&quot;) +
+        theme_classic()</code></pre>
+<p><img src="/post/2023-04-14-how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Create a seurat object. The documentation for making a spatial object is sparse.
+I went to the <a href="https://github.com/satijalab/seurat/blob/763259d05991d40721dee99c9919ec6d4491d15e/R/convenience.R#L139">source code</a>
+of <code>LoadVizgen</code> and came up with the code below.</p>
+<p>You can read the code from the same link and see how other types of spatial data (10x Xenium, nanostring) are read into Seurat.</p>
+<pre class="r"><code>## remove the Blank-* control probes
+blank_index&lt;- which(stringr::str_detect(rownames(vizgen.input$transcripts), &quot;^Blank&quot;))
+
+transcripts&lt;-vizgen.input$transcripts[-blank_index, ]
+
+dim(vizgen.input$transcripts)</code></pre>
+<pre><code>#&gt; [1]   550 71381</code></pre>
+<pre class="r"><code>dim(transcripts)</code></pre>
+<pre><code>#&gt; [1]   500 71381</code></pre>
+<p>There are 50 such probes.</p>
+</div>
+<div id="create-a-seurat-spatial-object" class="section level3">
+<h3>create a Seurat spatial object</h3>
+<pre class="r"><code>vizgen.obj&lt;- CreateSeuratObject(counts = transcripts, assay = &quot;Vizgen&quot;)
+
+cents &lt;- CreateCentroids(vizgen.input$centroids)
+segmentations.data &lt;- list(
+    &quot;centroids&quot; = cents,
+    &quot;segmentation&quot; = NULL
+  )
+
+coords &lt;- CreateFOV(
+    coords = segmentations.data,
+    type = c(&quot;segmentation&quot;, &quot;centroids&quot;),
+    molecules = NULL,
+    assay = &quot;Vizgen&quot;
+  )
+ 
+vizgen.obj[[&quot;p2s2&quot;]] &lt;- coords
+ 
+GetTissueCoordinates(vizgen.obj[[&quot;p2s2&quot;]][[&quot;centroids&quot;]]) %&gt;%
+        head()</code></pre>
+<pre><code>#&gt;           x        y cell
+#&gt; 1 10145.793 5611.687 7650
+#&gt; 2  9975.309 5626.726 7654
+#&gt; 3 10129.183 5630.601 7655
+#&gt; 4 10112.692 5635.038 7656
+#&gt; 5 10151.574 5634.673 7657
+#&gt; 6 10099.624 5636.831 7658</code></pre>
+<pre class="r"><code>ImageDimPlot(vizgen.obj, fov = &quot;p2s2&quot;, cols = &quot;polychrome&quot;, axes = TRUE)</code></pre>
+<p><img src="/post/2023-04-14-how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="standard-processing" class="section level3">
+<h3>standard processing</h3>
+<pre class="r"><code>vizgen.obj &lt;- NormalizeData(vizgen.obj, normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  ScaleData() 
+vizgen.obj &lt;- RunPCA(vizgen.obj, npcs = 30, features = rownames(vizgen.obj))
+vizgen.obj &lt;- RunUMAP(vizgen.obj, dims = 1:30)
+vizgen.obj &lt;- FindNeighbors(vizgen.obj, reduction = &quot;pca&quot;, dims = 1:30)
+vizgen.obj &lt;- FindClusters(vizgen.obj, resolution = 0.3)</code></pre>
+<pre><code>#&gt; Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+#&gt; 
+#&gt; Number of nodes: 71381
+#&gt; Number of edges: 2100209
+#&gt; 
+#&gt; Running Louvain algorithm...
+#&gt; Maximum modularity in 10 random starts: 0.9109
+#&gt; Number of communities: 14
+#&gt; Elapsed time: 29 seconds</code></pre>
+</div>
+<div id="umap-by-cluster" class="section level3">
+<h3>UMAP by cluster</h3>
+<pre class="r"><code>DimPlot(vizgen.obj, reduction = &quot;umap&quot;, label = TRUE)</code></pre>
+<p><img src="/post/2023-04-14-how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="image-plot-by-cluster" class="section level3">
+<h3>Image plot by cluster</h3>
+<pre class="r"><code>ImageDimPlot(vizgen.obj, fov = &quot;p2s2&quot;, cols = &quot;polychrome&quot;, axes = TRUE)</code></pre>
+<p><img src="/post/2023-04-14-how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="how-to-find-the-spatially-close-by-cells." class="section level3">
+<h3>How to find the spatially close-by cells.</h3>
+<p>One common task with spatial data is to count how many
+cells for a certain cell type is around a cell within a radius.</p>
+<p>The brute force way is to calculate the pairwise distances between all cells and use
+a distance cutoff to filter the cells.</p>
+<pre class="r"><code>distances&lt;- dist(mat)</code></pre>
+<p>However, this matrix has 71k rows/cells and calculating the pair-wise distance takes a long time
+and memory.</p>
+<p>One can use the nearest neighbor algorithm implemented in <a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestNeighbors.html" class="uri">https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestNeighbors.html</a>.</p>
+<p>You can read more on <code>kd-tree</code> to find the nearest neighbors efficiently.</p>
+<p><strong>Tip</strong>:
+For beginners, not knowing how to search and find the right tool is a roadblock.
+This is how I asked ChatGPT:</p>
+<blockquote>
+<p>find an R package implement the k-d tree to find the nearest neighbor as in the python function <a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestNeighbors.html" class="uri">https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestNeighbors.html</a></p>
+</blockquote>
+<p>and it gave me the <code>FNN</code> package, but it did not receive radius as an argument.</p>
+<p>I asked again:</p>
+<blockquote>
+<p>that’s good, can you find an R package also take the argument of radius to find the nearest neighbors within the area of the radius</p>
+</blockquote>
+<p>I then landed with <code>dbscan</code>:</p>
+<pre class="r"><code>vizgen.input$centroids %&gt;% head()</code></pre>
+<pre><code>#&gt;           x        y cell
+#&gt; 1 10145.793 5611.687 7650
+#&gt; 2  9975.309 5626.726 7654
+#&gt; 3 10129.183 5630.601 7655
+#&gt; 4 10112.692 5635.038 7656
+#&gt; 5 10151.574 5634.673 7657
+#&gt; 6 10099.624 5636.831 7658</code></pre>
+<pre class="r"><code>mat&lt;- vizgen.input$centroids[,1:2] 
+mat&lt;- as.matrix(mat)
+rownames(mat)&lt;- vizgen.input$centroids$cell</code></pre>
+<p>Reorder the cells in the coordinates matrix as the same order as in the Seurat object.</p>
+<p><strong>This is important</strong>.</p>
+<pre class="r"><code>Cells(vizgen.obj) %&gt;% head</code></pre>
+<pre><code>#&gt; [1] &quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; &quot;5&quot;</code></pre>
+<pre class="r"><code># reorder the matrix rows
+mat&lt;- mat[Cells(vizgen.obj), ]
+head(mat)</code></pre>
+<pre><code>#&gt;          x        y
+#&gt; 0 10557.32 5766.281
+#&gt; 1 10389.43 5770.098
+#&gt; 2 10368.95 5772.362
+#&gt; 3 10409.22 5774.434
+#&gt; 4 10375.96 5776.037
+#&gt; 5 10384.77 5775.849</code></pre>
+<p>In <a href="https://www.nature.com/articles/s41587-022-01467-z">Modeling intercellular communication in tissues using spatial graphs of cells</a>.</p>
+<blockquote>
+<p>Linear NCEMs were most predictive on an intermediate length scale of 69 µm across the six datasets (Fig. 1c), showing that cell–cell dependencies appear on length scales characteristic of molecular mechanisms of cell communication</p>
+</blockquote>
+<p>Let’s find the nearest cells within a radius of 50 µm. This arbitrary. You can use 100 µm too.</p>
+<pre class="r"><code>library(dbscan)
+eps &lt;- 50
+nn &lt;- frNN(x= mat, eps = eps)
+# Indices of the nearest neighbors within radius eps
+#nn$id
+
+# Distances to the nearest neighbors within radius eps
+#nn$dist
+
+## random pick one cell, the output is the index of all the nearest cells within 50um
+nn$id[&#39;7722&#39;]</code></pre>
+<pre><code>#&gt; $`7722`
+#&gt; [1] 27821  7725 27720 27820 27724  7721</code></pre>
+<pre class="r"><code>dat&lt;- mat[nn$id$`7722`, ]
+# those cells&#39; positions
+dat</code></pre>
+<pre><code>#&gt;              x        y
+#&gt; 27820 10287.40 5993.892
+#&gt; 7724  10256.69 6008.903
+#&gt; 27719 10297.86 5992.073
+#&gt; 27819 10296.64 5983.385
+#&gt; 27723 10310.45 6018.985
+#&gt; 7720  10303.98 5965.522</code></pre>
+<pre class="r"><code>mat[&#39;7722&#39;,]</code></pre>
+<pre><code>#&gt;         x         y 
+#&gt; 10273.341  6000.784</code></pre>
+<p>Seeing is believing. Let’s see if those cells are within the 50um radius or not:</p>
+<pre class="r"><code>vizgen.input$centroids %&gt;%
+        filter(cell %in% rownames(dat))%&gt;%
+        ggplot(aes(x=x, y = y)) +
+        geom_point() +
+        ggforce::geom_circle(aes(x0 = 10273.34 , y0 = 6000.784, r = 50)) +
+        geom_point(data = as.data.frame(mat[&#39;7722&#39;, , drop=FALSE]), aes(x=x, y=y), color = &quot;red&quot;, size = 3) +
+        coord_fixed()</code></pre>
+<p><img src="/post/2023-04-14-how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Yes, they are!</p>
+<p>Note, the cells are roughly 10um in width, and we are using the centriod. You can adjust the <code>eps</code> accordingly if you want
+to be really accurate.</p>
+</div>
+<div id="neigborhood-analysis" class="section level3">
+<h3>neigborhood analysis</h3>
+<p>Now, for each cell in the data, we need to count the number of cells of each cluster (0-11) within 50 um radius.</p>
+<p>Create the neighborhood count matrix.</p>
+<pre class="r"><code>all.equal(colnames(vizgen.obj), names(nn$id))</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code># this takes me 7mins, can figure a better way to do it
+x&lt;- purrr::map(nn$id, ~vizgen.obj$seurat_clusters[.x] %&gt;% table())
+
+nn_matrix&lt;- do.call(rbind,x)
+
+head(nn_matrix)</code></pre>
+<pre><code>#&gt;   0 1 2 3 4 5 6 7 8 9 10 11
+#&gt; 0 0 0 0 0 0 0 0 0 0 0  0  0
+#&gt; 1 4 0 3 7 0 0 0 0 1 2  0  0
+#&gt; 2 3 0 3 6 0 0 0 0 1 4  0  0
+#&gt; 3 5 0 1 7 0 0 0 0 0 2  0  0
+#&gt; 4 3 0 3 7 0 0 0 0 1 4  0  0
+#&gt; 5 4 0 3 7 0 0 0 0 1 4  0  0</code></pre>
+<p><code>nn_matrix</code>: the columns are cell clusters 0-11 identified by gene expression;
+the rows are cells.</p>
+<p>Create a Seurat object and do a regular single-cell count matrix analysis, but now
+we only have 12 features (clusters) instead of 20,000 genes.</p>
+<pre class="r"><code>nn_obj&lt;- CreateSeuratObject(counts = t(nn_matrix),  min.features = 5)</code></pre>
+<p>The normalization can be tricky, let’s try pearson residual normalization implemented
+in <code>SCTransform</code>.</p>
+<p>You can try log normalization too, but it will give you a lot of small clusters.</p>
+<pre class="r"><code>nn_obj&lt;- SCTransform(nn_obj, vst.flavor = &quot;v2&quot;)</code></pre>
+<pre><code>#&gt; 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%
+#&gt; 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%
+#&gt; 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+<pre class="r"><code>nn_obj &lt;- RunPCA(nn_obj, npcs = 30, features = rownames(nn_obj))
+ElbowPlot(nn_obj)</code></pre>
+<p><img src="/post/2023-04-14-how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre class="r"><code>nn_obj &lt;- FindNeighbors(nn_obj, reduction = &quot;pca&quot;, dims = 1:10)
+nn_obj &lt;- FindClusters(nn_obj, resolution = 0.3)</code></pre>
+<pre><code>#&gt; Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+#&gt; 
+#&gt; Number of nodes: 44174
+#&gt; Number of edges: 1194134
+#&gt; 
+#&gt; Running Louvain algorithm...
+#&gt; Maximum modularity in 10 random starts: 0.9215
+#&gt; Number of communities: 16
+#&gt; Elapsed time: 6 seconds</code></pre>
+<pre class="r"><code>nn_obj &lt;- RunUMAP(nn_obj, dims = 1:9)
+DimPlot(nn_obj)</code></pre>
+<p><img src="/post/2023-04-14-how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
+</div>
+<div id="visualize-the-neigborhood." class="section level3">
+<h3>Visualize the neigborhood.</h3>
+<p>put the neighborhood cluster info back to the vizgen.obj:</p>
+<pre class="r"><code>old_meta&lt;- vizgen.obj@meta.data %&gt;% 
+        tibble::rownames_to_column(var= &quot;cell_id&quot;)
+
+nn_meta&lt;- nn_obj@meta.data %&gt;%
+        tibble::rownames_to_column(var= &quot;cell_id&quot;) %&gt;%
+        select(cell_id, SCT_snn_res.0.3)
+
+## note, we filtered out some cells for the neighborhood analysis
+new_meta&lt;- old_meta %&gt;%
+        left_join(nn_meta)
+
+new_meta&lt;- as.data.frame(new_meta)
+rownames(new_meta)&lt;- old_meta$cell_id
+
+vizgen.obj@meta.data&lt;- new_meta</code></pre>
+<p>Visualize:</p>
+<pre class="r"><code>## the cells are colored by the clustering of the cells by expression
+p1&lt;- ImageDimPlot(vizgen.obj, fov = &quot;p2s2&quot;, cols = &quot;polychrome&quot;, axes = TRUE)
+
+
+## the cells are colored by the clustering of the cells by neighborhood 
+p2&lt;- ImageDimPlot(vizgen.obj, fov = &quot;p2s2&quot;, cols = &quot;polychrome&quot;, axes = TRUE, 
+                  group.by = &quot;SCT_snn_res.0.3&quot; )
+        
+p1 + p2</code></pre>
+<p><img src="/post/2023-04-14-how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data_files/figure-html/unnamed-chunk-18-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>Pretty cool! You see the clusters of cellular niches are spatially co-localized.
+Next step is to make sense of those neighborhoods/niches. Stay tuned for the next post!</p>
+</div>
