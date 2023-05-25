@@ -3,14 +3,14 @@
 
 # The URL of your website.
 # End your URL with a `/` trailing slash, e.g. `https://example.com/`.
-baseurl = "https://divingintogeneticsandgenomics.rbind.io/"
+baseurl = "https://divingintogeneticsandgenomics.com/"
 
 # Title of your site
 title = "DNA confesses Data speak"
 
 # Your copyright notice - appears in site footer.
 # To display a copyright symbol, type `&copy;`.
-copyright = "&copy; 2018 Ming Tang"
+copyright = "&copy; 2018 Ming 'Tommy' Tang"
 
 theme = "hugo-academic"
 enableEmoji = true
@@ -54,7 +54,7 @@ enableGitInfo = false
   font = "default"
 
   # Your details.
-  name = "Ming Tang"
+  name = "Ming Tommy Tang"
   role = "Director of Computational Biology"
 
   # Organizations/Affiliations.
