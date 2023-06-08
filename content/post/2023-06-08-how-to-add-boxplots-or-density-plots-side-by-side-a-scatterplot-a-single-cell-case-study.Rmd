@@ -112,6 +112,7 @@ df<- get_expression_data(obj = pbmc3k, genes = c("CD14", "FCGR3A"))
 head(df)
 ```
 
+Let's only focus on the monocytes and use CD14 and CD16/FCGR3A as an example.
 
 A plain scatter plot:
 ```{r}
@@ -120,7 +121,8 @@ df %>%
   ggplot(aes(x= CD14, y = FCGR3A)) +
   geom_point(aes(color = seurat_annotations))
 ```
-
+CD14+ monocytes are mostly CD14+CD16- and CD16+ monocytes are mostly CD16+CD14-
+which makes sense.There are also some intermedidate cells that are CD14+CD16+ in the middle.
 
 a scatter plot adding two boxplots:
 

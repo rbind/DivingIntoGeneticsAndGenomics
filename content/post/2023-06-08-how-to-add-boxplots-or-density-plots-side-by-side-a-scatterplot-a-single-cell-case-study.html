@@ -101,12 +101,15 @@ head(df)</code></pre>
 #&gt; 5 AAACCGTGTATG…     0   0    pbmc3k            980          521 NK              
 #&gt; 6 AAACGCACTGGT…     0   0    pbmc3k           2163          781 Memory CD4 T    
 #&gt; # … with 2 more variables: RNA_snn_res.0.5 &lt;fct&gt;, seurat_clusters &lt;fct&gt;</code></pre>
+<p>Let’s only focus on the monocytes and use CD14 and CD16/FCGR3A as an example.</p>
 <p>A plain scatter plot:</p>
 <pre class="r"><code>df %&gt;%
   filter(seurat_annotations %in% c(&quot;CD14+ Mono&quot;, &quot;FCGR3A+ Mono&quot;)) %&gt;%
   ggplot(aes(x= CD14, y = FCGR3A)) +
   geom_point(aes(color = seurat_annotations))</code></pre>
-<p><img src="/post/2023-06-08-how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<p><img src="/post/2023-06-08-how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study_files/figure-html/unnamed-chunk-7-1.png" width="576" />
+CD14+ monocytes are mostly CD14+CD16- and CD16+ monocytes are mostly CD16+CD14-
+which makes sense.There are also some intermedidate cells that are CD14+CD16+ in the middle.</p>
 <p>a scatter plot adding two boxplots:</p>
 <pre class="r"><code>df %&gt;%
   filter(seurat_annotations %in% c(&quot;CD14+ Mono&quot;, &quot;FCGR3A+ Mono&quot;)) %&gt;%
