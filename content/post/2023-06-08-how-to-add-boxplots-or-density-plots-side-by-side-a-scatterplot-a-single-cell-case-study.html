@@ -1,0 +1,182 @@
+---
+title: 'How to add boxplots or density plots side-by-side a scatterplot: a single
+  cell case study'
+author: Ming Tang
+date: '2023-06-08'
+slug: how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study
+categories:
+  - bioinformatics
+  - visualization
+tags:
+  - bioinformatics
+  - ggplot
+  - single-cell
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="introduce-ggside-using-single-cell-data" class="section level3">
+<h3>introduce ggside using single cell data</h3>
+<p>The <a href="https://cran.r-project.org/web/packages/ggside/vignettes/ggside_basic_usage.html">ggside</a> R package provides a new way to visualize data by combining the flexibility of ggplot2 with the power of side-by-side plots.</p>
+<p>We will use a single cell dataset to demonstrate its usage.</p>
+<p><code>ggside</code> allows users to create side-by-side plots of multiple variables, such as gene expression, cell type, and experimental conditions. This can be helpful for identifying patterns and trends in scRNA-seq data that would be difficult to see in individual plots. Additionally, <code>ggside</code> provides a number of features that make it easy to customize the appearance of side-by-side plots, such as changing the color scheme, adding labels, and adjusting the layout.</p>
+</div>
+<div id="load-libraries" class="section level3">
+<h3>Load libraries</h3>
+<pre class="r"><code># install.packages(&quot;ggside&quot;)
+library(ggside)
+library(Seurat)
+library(dplyr)
+library(SeuratData)</code></pre>
+<p>load the 3k pbmc dataset.</p>
+<pre class="r"><code>data(&quot;pbmc3k&quot;)
+
+pbmc3k</code></pre>
+<pre><code>#&gt; An object of class Seurat 
+#&gt; 13714 features across 2700 samples within 1 assay 
+#&gt; Active assay: RNA (13714 features, 0 variable features)</code></pre>
+<p>2700 immune cells from blood.</p>
+</div>
+<div id="routine-processing" class="section level3">
+<h3>routine processing</h3>
+<pre class="r"><code>pbmc3k&lt;- pbmc3k %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+Idents(pbmc3k)&lt;- pbmc3k$seurat_annotations
+
+DimPlot(pbmc3k, label = TRUE, repel=TRUE) + NoLegend()</code></pre>
+<p><img src="/post/2023-06-08-how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study_files/figure-html/unnamed-chunk-4-1.png" width="576" /></p>
+<p>some helper functions to extract the gene expression values from the seurat object</p>
+<pre class="r"><code>matrix_to_expression_df&lt;- function(x, obj){
+        df&lt;- x %&gt;%
+                as.matrix() %&gt;% 
+                as.data.frame() %&gt;%
+                tibble::rownames_to_column(var= &quot;gene&quot;) %&gt;%
+                tidyr::pivot_longer(cols = -1, names_to = &quot;cell&quot;, values_to = &quot;expression&quot;) %&gt;%
+                tidyr::pivot_wider(names_from = &quot;gene&quot;, values_from = expression) %&gt;%
+                left_join(obj@meta.data %&gt;% 
+                                  tibble::rownames_to_column(var = &quot;cell&quot;))
+        return(df)
+}
+
+
+get_expression_data&lt;- function(obj, assay = &quot;RNA&quot;, slot = &quot;data&quot;, 
+                               genes = NULL, cells = NULL){
+        if (is.null(genes) &amp; !is.null(cells)){
+                df&lt;- GetAssayData(obj, assay = assay, slot = slot)[, cells, drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else if (!is.null(genes) &amp; is.null(cells)){
+                df &lt;- GetAssayData(obj, assay = assay, slot = slot)[genes, , drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else if (is.null(genes &amp; is.null(cells))){
+                df &lt;- GetAssayData(obj, assay = assay, slot = slot)[, , drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else {
+                df&lt;- GetAssayData(obj, assay = assay, slot = slot)[genes, cells, drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        }
+        return(df)
+}</code></pre>
+<p>Test the function</p>
+<pre class="r"><code>df&lt;- get_expression_data(obj = pbmc3k, genes = c(&quot;CD14&quot;, &quot;FCGR3A&quot;))
+
+head(df)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 9
+#&gt;   cell           CD14 FCGR3A orig.ident nCount_RNA nFeature_RNA seurat_annotati…
+#&gt;   &lt;chr&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;           &lt;dbl&gt;        &lt;int&gt; &lt;fct&gt;           
+#&gt; 1 AAACATACAACC…     0   0    pbmc3k           2419          779 Memory CD4 T    
+#&gt; 2 AAACATTGAGCT…     0   0    pbmc3k           4903         1352 B               
+#&gt; 3 AAACATTGATCA…     0   0    pbmc3k           3147         1129 Memory CD4 T    
+#&gt; 4 AAACCGTGCTTC…     0   1.57 pbmc3k           2639          960 CD14+ Mono      
+#&gt; 5 AAACCGTGTATG…     0   0    pbmc3k            980          521 NK              
+#&gt; 6 AAACGCACTGGT…     0   0    pbmc3k           2163          781 Memory CD4 T    
+#&gt; # … with 2 more variables: RNA_snn_res.0.5 &lt;fct&gt;, seurat_clusters &lt;fct&gt;</code></pre>
+<p>A plain scatter plot:</p>
+<pre class="r"><code>df %&gt;%
+  filter(seurat_annotations %in% c(&quot;CD14+ Mono&quot;, &quot;FCGR3A+ Mono&quot;)) %&gt;%
+  ggplot(aes(x= CD14, y = FCGR3A)) +
+  geom_point(aes(color = seurat_annotations))</code></pre>
+<p><img src="/post/2023-06-08-how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<p>a scatter plot adding two boxplots:</p>
+<pre class="r"><code>df %&gt;%
+  filter(seurat_annotations %in% c(&quot;CD14+ Mono&quot;, &quot;FCGR3A+ Mono&quot;)) %&gt;%
+  ggplot(aes(x= CD14, y = FCGR3A)) +
+  geom_point(aes(color = seurat_annotations)) +
+  geom_xsideboxplot(aes(y = seurat_annotations, color = seurat_annotations), 
+                    orientation = &quot;y&quot;) +
+  geom_ysideboxplot(aes(x = seurat_annotations, color = seurat_annotations), 
+                    orientation = &quot;x&quot;)+
+  scale_xsidey_discrete() +
+  scale_ysidex_discrete()+
+  theme(ggside.panel.scale.x = 0.2,
+       ggside.panel.scale.y = 0.3)</code></pre>
+<p><img src="/post/2023-06-08-how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study_files/figure-html/unnamed-chunk-8-1.png" width="576" /></p>
+<p>a scatterplot adding one boxplot and one density plot</p>
+<pre class="r"><code>df %&gt;%
+  filter(seurat_annotations %in% c(&quot;CD14+ Mono&quot;, &quot;FCGR3A+ Mono&quot;)) %&gt;%
+  ggplot(aes(x= CD14, y = FCGR3A)) +
+  geom_point(aes(color = seurat_annotations)) +
+  geom_xsideboxplot(aes(y = seurat_annotations, color = seurat_annotations), 
+                    orientation = &quot;y&quot;) +
+  geom_ysidedensity(aes(x = after_stat(density), color = seurat_annotations, fill = seurat_annotations), 
+                    position = &quot;stack&quot;, alpha = 0.4) +
+  scale_xsidey_discrete() +
+  scale_ysidex_continuous(guide = guide_axis(angle = 90), minor_breaks = NULL) +
+  theme(ggside.panel.scale.x = 0.2,
+       ggside.panel.scale.y = 0.4)</code></pre>
+<p><img src="/post/2023-06-08-how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study_files/figure-html/unnamed-chunk-9-1.png" width="576" /></p>
+</div>
+<div id="alternative-way-use-patchwork" class="section level3">
+<h3>alternative way: use patchwork</h3>
+<p><a href="https://patchwork.data-imaginist.com/" class="uri">https://patchwork.data-imaginist.com/</a></p>
+<pre class="r"><code>library(patchwork)
+
+p1&lt;- df %&gt;%
+  filter(seurat_annotations %in% c(&quot;CD14+ Mono&quot;, &quot;FCGR3A+ Mono&quot;)) %&gt;%
+  ggplot(aes(x= seurat_annotations, y = CD14)) +
+  geom_boxplot(aes(color = seurat_annotations)) + 
+  xlab(&quot;&quot;) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    #legend.position = &quot;none&quot;, legend.text = element_blank()
+  )+
+  coord_flip()
+
+p2&lt;- df %&gt;%
+  filter(seurat_annotations %in% c(&quot;CD14+ Mono&quot;, &quot;FCGR3A+ Mono&quot;)) %&gt;%
+  ggplot(aes(x= CD14, y = FCGR3A)) +
+  geom_point(aes(color = seurat_annotations)) +
+  theme(legend.position = &quot;none&quot;, legend.text = element_blank()) 
+
+p3&lt;- df %&gt;%
+  filter(seurat_annotations %in% c(&quot;CD14+ Mono&quot;, &quot;FCGR3A+ Mono&quot;)) %&gt;%
+  ggplot(aes(x= seurat_annotations, y = FCGR3A)) +
+  geom_boxplot(aes(color = seurat_annotations)) +
+  theme(legend.position = &quot;none&quot;) +
+  ylab(&quot;&quot;) +
+  xlab(&quot;&quot;) +
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  ) 
+
+p1 + plot_spacer() + p2 + p3 +
+   plot_layout(widths = c(4, 2), heights = c(1, 5),
+               guides = &#39;collect&#39;)</code></pre>
+<p><img src="/post/2023-06-08-how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study_files/figure-html/unnamed-chunk-10-1.png" width="576" /></p>
+<p>I hope you enjoyed this post! More later. Happy Learning!</p>
+<p>I made a video for this in my <strong>chatomics youtube channel</strong>, <a href="https://www.youtube.com/watch?v=v4oBKNnGvtU">check it out</a>!</p>
+</div>
