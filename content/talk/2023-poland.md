@@ -22,7 +22,7 @@ selected = true
 # Links (optional).
 url_pdf = "files/slides/2022-06-09_single-cell-unsolved_problems.pdf"
 url_slides = ""
-url_video = ""
+url_video = "https://www.youtube.com/watch?v=fDz1lJ2el08"
 url_code = ""
 
 # Does the content use math formatting?
