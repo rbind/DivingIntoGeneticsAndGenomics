@@ -22,7 +22,7 @@ selected = true
 # Links (optional).
 url_pdf = "files/slides/2023-03-18_learn_compbio_the_right_way.pdf"
 url_slides = ""
-url_video = ""
+url_video = "https://www.youtube.com/watch?v=TvxS6JMFd_Y"
 url_code = ""
 
 # Does the content use math formatting?
