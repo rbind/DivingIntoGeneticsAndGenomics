@@ -6,20 +6,118 @@
     <description>Recent content in Posts on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Sun, 01 Jan 2017 00:00:00 -0500</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Deep learning with Keras using MNST dataset </title>
+      <title>Ten single-cell data benchmarking papers</title>
+      <link>/post/ten-single-cell-data-benchmarking-papers/</link>
+      <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/ten-single-cell-data-benchmarking-papers/</guid>
+      <description>I tweeted it at https://twitter.com/tangming2005/status/1679120948140572672
+I got asked to put all my posts in a central place and I think it is a good idea.  Benchmarking integration of single-cell differential expression
+ Benchmarking atlas-level data integration in single-cell genomics
+ A review of computational strategies for denoising and imputation of single-cell transcriptomic data
+ Benchmarking spatial and single-cell transcriptomics integration methods for transcript distribution prediction and cell type deconvolution</description>
+    </item>
+    
+    <item>
+      <title>Has AI changed the course of Drug Development?</title>
+      <link>/post/has-ai-changed-the-course-of-drug-development/</link>
+      <pubDate>Thu, 15 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/has-ai-changed-the-course-of-drug-development/</guid>
+      <description>What’s the drug development process? Has AI changed the course of Drug Development? To answer this question, we need first to understand the drug development process.
+The whole process includes the following:
+ target identification target pharmacology and biomarker development lead identification, lead optimization Clinical research &amp;amp; development regulatory review of IND (investigational new drug) and later phase clinical trials post-marketing knowledge  Biologics/antibodies drug development follows a similar path (you can find the map in the same link).</description>
+    </item>
+    
+    <item>
+      <title>How to add boxplots or density plots side-by-side a scatterplot: a single cell case study</title>
+      <link>/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/</link>
+      <pubDate>Thu, 08 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/</guid>
+      <description>introduce ggside using single cell data The ggside R package provides a new way to visualize data by combining the flexibility of ggplot2 with the power of side-by-side plots.
+We will use a single cell dataset to demonstrate its usage.
+ggside allows users to create side-by-side plots of multiple variables, such as gene expression, cell type, and experimental conditions. This can be helpful for identifying patterns and trends in scRNA-seq data that would be difficult to see in individual plots.</description>
+    </item>
+    
+    <item>
+      <title>Unlock the Power of Genomics Data Analysis: Watershed&#39;s Seamless Cloud Computing Solution</title>
+      <link>/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</link>
+      <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</guid>
+      <description>Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform.
+As an experienced bioinformatician who understands the needs of biotech startups, I know the challenges that arise when analyzing genomics data. The first solution that comes to mind is cloud computing. Unsurprisingly, AWS and Google Cloud Platform (GCP) are commonly used options. Cloud computing avoids large upfront costs and can scale more effectively compared to building an on-premise solution.</description>
+    </item>
+    
+    <item>
+      <title>How to do neighborhood/cellular niches analysis with spatial transcriptome data </title>
+      <link>/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/</link>
+      <pubDate>Fri, 14 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/</guid>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+In a previous blog post, I showed you how to make a Seurat spatial object from Vizgen spatial transcriptome data. In this post, I am going to show you how to identify clusters of neighborhood or cellular niches where specific cell types tend to co-localize.
+ read in the data and pre-process library(Seurat) library(here) library(ggplot2) library(dplyr) # the LoadVizgen function requires the raw segmentation files which is too big.</description>
+    </item>
+    
+    <item>
+      <title>How to classify MNIST images with convolutional neural network</title>
+      <link>/post/how-to-classify-mnist-images-with-convolutional-neural-network/</link>
+      <pubDate>Sun, 09 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-classify-mnist-images-with-convolutional-neural-network/</guid>
+      <description>Introduction An artificial intelligence system called a convolutional neural network (CNN) has gained a lot of popularity recently. For jobs like image recognition, where we want to teach a computer to recognize things in a picture, they are especially well suited.
+CNNs operate by dissecting an image into increasingly minute components, or “features.” The network then examines each feature and searches for patterns shared by various objects. For instance, a CNN might come to understand that some pixel patterns are frequently linked to faces, while others are linked to vehicles or trees.</description>
+    </item>
+    
+    <item>
+      <title>How to construct a spatial object in Seurat</title>
+      <link>/post/how-to-construct-a-spatial-object-in-seurat/</link>
+      <pubDate>Thu, 30 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-construct-a-spatial-object-in-seurat/</guid>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+Single-cell spatial transcriptome data is a new and advanced technology that combines the study of individual cells’ genes and their location in a tissue to understand the complex cellular and molecular differences within it. This allows scientists to investigate how genes are expressed and how cells interact with each other with much greater detail than before.</description>
+    </item>
+    
+    <item>
+      <title>Deep learning to predict cancer from healthy controls using TCRseq data</title>
+      <link>/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/</link>
+      <pubDate>Fri, 24 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/</guid>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
+The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock.</description>
+    </item>
+    
+    <item>
+      <title>Basic tensor/array manipulations in R</title>
+      <link>/post/basic-tensor-array-manipulations-in-r/</link>
+      <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/basic-tensor-array-manipulations-in-r/</guid>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+In my last post, I showed you how to build a neural network in Keras with less than 20 lines of code. One of the key road blocks for beginners is to transform the input to the right shape of tensor (the deep learning terminology) or array (the R built-in type).
+In this post, I am going to show you some basic manipulations of the array.</description>
+    </item>
+    
+    <item>
+      <title>Deep learning with Keras using MNIST dataset </title>
       <link>/post/deep-learning-with-keras-using-mnst-dataset/</link>
       <pubDate>Sat, 11 Mar 2023 00:00:00 +0000</pubDate>
       
       <guid>/post/deep-learning-with-keras-using-mnst-dataset/</guid>
-      <description>Introduction Are you a machine learning practitioner or data analyst looking to broaden your skill set? Look nowhere else! This blog post will offer an introduction to deep learning, which is currently the hottest topic in machine learning. Using the well-known MNST dataset) and the Keras package, we will investigate the potential of deep learning.
-A high-level deep learning package called Keras, which is based on TensorFlow, enables quick and simple experimentation with deep neural networks.</description>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+ Introduction Are you a machine learning practitioner or data analyst looking to broaden your skill set? Look nowhere else! This blog post will offer an introduction to deep learning, which is currently the hottest topic in machine learning. Using the well-known MNIST dataset) and the Keras package, we will investigate the potential of deep learning.</description>
     </item>
     
     <item>

@@ -1,0 +1,138 @@
+---
+title: Reuse the single cell data! How to create a seurat object from GEO datasets
+author: Ming Tang
+date: '2023-07-14'
+slug: reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets
+categories:
+  - bioinformatics
+  - single-cell
+tags:
+  - single-cell
+  - Seurat
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="download-the-data" class="section level3">
+<h3>Download the data</h3>
+<p><a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256" class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256</a></p>
+<pre class="bash"><code>cd data/GSE116256
+wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar
+tar xvf GSE116256_RAW.tar
+rm  GSE116256_RAW.tar</code></pre>
+<p>Depending on how the authors upload their data.</p>
+<p>Some authors may just upload the merged count matrix file. This is the easiest situation.</p>
+<p>In this dataset, each sample has a separate set of matrix (*dem.txt.gz), features and barcodes.</p>
+<p>Total, there are 43 samples. For each sample, it has an associated metadata file (*anno.txt.gz) too.</p>
+<p><img src="/img/geo_data.png" />
+You can inspect the files in command line:</p>
+<pre class="bash"><code>zless -S GSM3587923_AML1012-D0.dem.txt.gz</code></pre>
+<p>Go back to <code>R</code>.
+Load the libraries:</p>
+<pre class="r"><code>library(here)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(Seurat)
+library(purrr)
+library(readr)
+library(harmony)
+library(scCustomize)
+library(SeuratDisk)</code></pre>
+<p>read in the count matrix</p>
+<pre class="r"><code># a small function to read the counts
+read_counts&lt;- function(file){
+  x&lt;- read_tsv(file)
+  x&lt;- as.data.frame(x)
+  genes&lt;- x$Gene
+  x&lt;- x[, -1]
+  rownames(x)&lt;- genes
+  return(as.matrix(x))
+}
+
+
+counts_files&lt;- list.files(here(&quot;data/GSE116256&quot;), full.names = TRUE, pattern = &quot;*dem.txt.gz&quot;)
+
+samples&lt;- map_chr(counts_files, basename) 
+
+samples&lt;- str_replace(samples, &quot;(GSM[0-9]+_.+).dem.txt.gz&quot;, &quot;\\1&quot;)
+
+names(counts_files)&lt;- samples
+
+# for demonstration, only read in the first 4 samples
+counts&lt;- purrr::map(counts_files[1:4], read_counts)</code></pre>
+<p>read in the meta data</p>
+<pre class="r"><code>read_meta&lt;- function(file){
+  y&lt;- read_tsv(file)
+  y&lt;- as.data.frame(y)
+  cells&lt;- y$Cell
+  y&lt;- y[,-1]
+  rownames(y)&lt;- cells
+  return(y)
+}
+
+
+meta_files&lt;- list.files(here(&quot;data/GSE116256&quot;), full.names = TRUE, pattern = &quot;*anno.txt.gz&quot;)
+meta_names&lt;- map_chr(meta_files, basename)
+
+meta_names&lt;- str_replace(meta_names, &quot;(GSM[0-9]+_.+).anno.txt.gz&quot;, &quot;\\1&quot;)
+names(meta_files)&lt;- meta_names
+
+meta&lt;- purrr::map(meta_files[1:4], read_meta)</code></pre>
+</div>
+<div id="create-a-seurat-object" class="section level3">
+<h3>create a seurat object</h3>
+<pre class="r"><code>library(Matrix) #for sparse matrix
+objs&lt;- purrr::map2(counts, meta,  
+                   ~CreateSeuratObject(counts = as(.x, &quot;sparseMatrix&quot;), 
+                                       meta.data = .y))
+
+
+# merge to a single object 
+merged_seurat&lt;- purrr::reduce(objs, function(x,y) {merge(x,y)})
+
+## free memory
+rm(counts)
+rm(objs)
+rm(meta)
+gc()</code></pre>
+<pre><code>#&gt;            used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+#&gt; Ncells  3689597 197.1    5497751 293.7         NA   5497751 293.7
+#&gt; Vcells 13347274 101.9   99405309 758.5      32768 118504357 904.2</code></pre>
+</div>
+<div id="standard-preprocess-of-the-data" class="section level3">
+<h3>standard preprocess of the data</h3>
+<pre class="r"><code>merged_seurat&lt;- merged_seurat %&gt;%
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures( selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA() %&gt;%
+  RunHarmony(group.by.vars = &quot;orig.ident&quot;, dims.use = 1:30) %&gt;%
+  RunUMAP(reduction = &quot;harmony&quot;, dims = 1:30) %&gt;%
+  FindNeighbors(reduction = &quot;harmony&quot;, dims = 1:30) %&gt;% 
+  FindClusters(resolution = 0.6)</code></pre>
+<pre><code>#&gt; Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+#&gt; 
+#&gt; Number of nodes: 2392
+#&gt; Number of edges: 128252
+#&gt; 
+#&gt; Running Louvain algorithm...
+#&gt; Maximum modularity in 10 random starts: 0.8706
+#&gt; Number of communities: 11
+#&gt; Elapsed time: 0 seconds</code></pre>
+</div>
+<div id="visualization" class="section level3">
+<h3>visualization</h3>
+<pre class="r"><code>DimPlot_scCustom(seurat_object = merged_seurat)</code></pre>
+<p><img src="/post/2023-07-14-reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets_files/figure-html/unnamed-chunk-9-1.png" width="576" /></p>
+<p>I have a youtube video on this too! subscribe to chatomics!</p>
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=5e_8wr5Xx_Q" frameborder="0" allowfullscreen>
+</iframe>
+</div>

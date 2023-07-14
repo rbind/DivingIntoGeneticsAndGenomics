@@ -9,7 +9,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="theme" content="hugo-academic">
   <meta name="generator" content="Hugo 0.42" />
-  <meta name="author" content="Ming Tang">
+  <meta name="author" content="Ming Tommy Tang">
 
   
   
@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2019-09-12T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2020-07-02T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,84 @@
   
   
   <div>
+    <h2><a href="/post/build-your-own-singularity-image/">build your own singularity image</a></h2>
+    <div class="article-style">
+      
+      I was using the tidyverse rocker image on HPC by singularity pull. see my previous post.
+Everything was OK until I encountered problems installing jpeg and Cairo R packages. Later, I also had an error installing scRepertoire dependency gsl.
+It turns out I have to install debian packages inside the container:
+$ apt update &amp;&amp; apt install -y &ndash;no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev \ &amp;&amp; apt install -y &ndash;no-install-recommends libx11-dev libcairo2-dev libxt-dev \ &amp;&amp; apt install -y libgsl-dev  However, singularity file system is read-only.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/">customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</a></h2>
+    <div class="article-style">
+      
+      Seurat is great for scRNAseq analysis and it provides many easy-to-use ggplot2 wrappers for visualization. However, this brings the cost of flexibility. For example, In FeaturePlot, one can specify multiple genes and also split.by to further split to multiple the conditions in the meta.data. If split.by is not NULL, the ncol is ignored so you can not arrange the grid.
+This is best to understand with an example.
+library(dplyr) library(Seurat) library(patchwork) library(ggplot2) # Load the PBMC dataset pbmc.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
+    <div class="article-style">
+      
+      In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
+My next thought is: maybe the STAR aligner is doing something weird that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/cellranger-mk-reference-with-transgenes/">cellranger mk reference with transgenes</a></h2>
+    <div class="article-style">
+      
+      The problem I am working on some 10x scRNAseq data from transgenic mouse. The cells express Tdtomato and Cre genes. I need to add those to the cellranger reference to get the counts for those two genes.
+The journey to the solution Following <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#addgene" target="_blank">https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#addgene</a>
+I created a fasta file for the two transgenes: tdTomato and Cre:
+tdtomato_cre.fa:
+&gt;tdtomato dna:chromosome chromosome:GRCm38:tdtomato:1:1431:1 REF ATGGTGAGCAAGGGCGAGGAGGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGGGGCATGGCACCGGCAGCACCGGCAGCGGCAGCTCCGGCACCGCCTCCTCCGAGGACAACAACATGGCCGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGTACGGCATGGACGAGCTGTACAAGTAA &gt;cre dna:chromosome chromosome:GRCm38:cre:1:1032:1 REF ATGGCCAATTTACTGACCGTACACCAAAATTTGCCTGCATTACCGGTCGATGCAACGAGTGATGAGGTTCGCAAGAACCTGATGGACATGTTCAGGGATCGCCAGGCGTTTTCTGAGCATACCTGGAAAATGCTTCTGTCCGTTTGCCGGTCGTGGGCGGCATGGTGCAAGTTGAATAACCGGAAATGGTTTCCCGCAGAACCTGAAGATGTTCGCGATTATCTTCTATATCTTCAGGCGCGCGGTCTGGCAGTAAAAACTATCCAGCAACATTTGGGCCAGCTAAACATGCTTCATCGTCGGTCCGGGCTGCCACGACCAAGTGACAGCAATGCTGTTTCACTGGTTATGCGGCGGATCCGAAAAGAAAACGTTGATGCCGGTGAACGTGCAAAACAGGCTCTAGCGTTCGAACGCACTGATTTCGACCAGGTTCGTTCACTCATGGAAAATAGCGATCGCTGCCAGGATATACGTAATCTGGCATTTCTGGGGATTGCTTATAACACCCTGTTACGTATAGCCGAAATTGCCAGGATCAGGGTTAAAGATATCTCACGTACTGACGGTGGGAGAATGTTAATCCATATTGGCAGAACGAAAACGCTGGTTAGCACCGCAGGTGTAGAGAAGGCACTTAGCCTGGGGGTAACTAAACTGGTCGAGCGATGGATTTCCGTCTCTGGTGTAGCTGATGATCCGAATAACTACCTGTTTTGCCGGGTCAGAAAAAATGGTGTTGCCGCGCCATCTGCCACCAGCCAGCTATCAACTCGCGCCCTGGAAGGGATTTTTGAAGCAACTCATCGATTGATTTACGGCGCTAAGGATGACTCTGGTCAGAGATACCTGGCCTGGTCTGGACACAGTGCCCGTGTCGGAGCCGCGCGAGATATGGCCCGCGCTGGAGTTTCAATACCGGAGATCATGCAAGCTGGTGGCTGGACCAATGTAAATATTGTCATGAACTATATCCGTAACCTGGATAGTGAAACAGGGGCAATGGTGCGCCTGCTGGAAGATGGCGATTAG  edit the genome.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/">add pct_in for each cluster for scRNAseq result table using list column</a></h2>
+    <div class="article-style">
+      
+      Using nested dataframe and list column has transformed my way of data wrangling in R. For more on this topic, I highly recommend purrr tutorial from Jenney Bryan.
+In this post, I am going to show you how I use this to solve a problem for adding pct_in column from the differential scRNAseq result table.
+I am going to use presto for differential gene expression test. presto performs a fast Wilcoxon rank sum test and auROC analysis.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/the-end-of-2019/">The end of 2019</a></h2>
+    <div class="article-style">
+      
+      It is the end of 2019. How time flies! It is a good time to reflect what I have achieved during the past year and what to look forward in 2020. I wrote a post for 2018 here. I am not the only one who has impostor syndrome :) It is important to celebrate your small successes/achievements by writing them down.
+ I taught a snakemake and scRNAseq workshop during the FAS informatics 2-week nanocourse.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/">Mixing mouse and human 10x single cell RNAseq data</a></h2>
+    <div class="article-style">
+      
+      In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.
+In this paper <a href="https://www.biorxiv.org/content/10.1101/630087v1.full" target="_blank">https://www.biorxiv.org/content/10.1101/630087v1.full</a>
+ To deconvolute species, detect doublets and low quality cells, the mixed-species mapped data was used.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/">My opinionated selection of books/urls for bioinformatics/data science curriculum</a></h2>
     <div class="article-style">
       
@@ -320,37 +398,6 @@ From the Encode page:
     </div>
   </div>
   
-  <div>
-    <h2><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
-    <div class="article-style">
-      
-      scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
-I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
-A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/split-a-10xscatac-bam-file-by-cluster/">Split a 10xscATAC bam file by cluster</a></h2>
-    <div class="article-style">
-      
-      I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in IGV.
-The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/how-to-make-a-transcript-to-gene-mapping-file/">How to make a transcript to gene mapping file</a></h2>
-    <div class="article-style">
-      
-      I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
-Please read the specifications of those two file formats.
-      
-    </div>
-  </div>
-  
 
   
 <nav>
@@ -358,6 +405,8 @@ Please read the specifications of those two file formats.
     
     <li><a href="/categories/bioinformatics/page/3/">&lt;</a></li>
     
+    
+    <li><a href="/categories/bioinformatics/page/5/">&gt;</a></li>
     
   </ul>
 </nav>
@@ -369,7 +418,7 @@ Please read the specifications of those two file formats.
   <div class="container">
     <p class="powered-by">
 
-      &copy; 2018 Ming Tang &middot; 
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
 
       Powered by the
       <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for

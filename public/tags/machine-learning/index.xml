@@ -6,20 +6,52 @@
     <description>Recent content in Machine learning on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Sat, 11 Mar 2023 00:00:00 +0000</lastBuildDate>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Thu, 15 Jun 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Deep learning with Keras using MNST dataset </title>
+      <title>Has AI changed the course of Drug Development?</title>
+      <link>/post/has-ai-changed-the-course-of-drug-development/</link>
+      <pubDate>Thu, 15 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/has-ai-changed-the-course-of-drug-development/</guid>
+      <description>What’s the drug development process? Has AI changed the course of Drug Development? To answer this question, we need first to understand the drug development process.
+The whole process includes the following:
+ target identification target pharmacology and biomarker development lead identification, lead optimization Clinical research &amp;amp; development regulatory review of IND (investigational new drug) and later phase clinical trials post-marketing knowledge  Biologics/antibodies drug development follows a similar path (you can find the map in the same link).</description>
+    </item>
+    
+    <item>
+      <title>How to classify MNIST images with convolutional neural network</title>
+      <link>/post/how-to-classify-mnist-images-with-convolutional-neural-network/</link>
+      <pubDate>Sun, 09 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-classify-mnist-images-with-convolutional-neural-network/</guid>
+      <description>Introduction An artificial intelligence system called a convolutional neural network (CNN) has gained a lot of popularity recently. For jobs like image recognition, where we want to teach a computer to recognize things in a picture, they are especially well suited.
+CNNs operate by dissecting an image into increasingly minute components, or “features.” The network then examines each feature and searches for patterns shared by various objects. For instance, a CNN might come to understand that some pixel patterns are frequently linked to faces, while others are linked to vehicles or trees.</description>
+    </item>
+    
+    <item>
+      <title>Basic tensor/array manipulations in R</title>
+      <link>/post/basic-tensor-array-manipulations-in-r/</link>
+      <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/basic-tensor-array-manipulations-in-r/</guid>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+In my last post, I showed you how to build a neural network in Keras with less than 20 lines of code. One of the key road blocks for beginners is to transform the input to the right shape of tensor (the deep learning terminology) or array (the R built-in type).
+In this post, I am going to show you some basic manipulations of the array.</description>
+    </item>
+    
+    <item>
+      <title>Deep learning with Keras using MNIST dataset </title>
       <link>/post/deep-learning-with-keras-using-mnst-dataset/</link>
       <pubDate>Sat, 11 Mar 2023 00:00:00 +0000</pubDate>
       
       <guid>/post/deep-learning-with-keras-using-mnst-dataset/</guid>
-      <description>Introduction Are you a machine learning practitioner or data analyst looking to broaden your skill set? Look nowhere else! This blog post will offer an introduction to deep learning, which is currently the hottest topic in machine learning. Using the well-known MNST dataset) and the Keras package, we will investigate the potential of deep learning.
-A high-level deep learning package called Keras, which is based on TensorFlow, enables quick and simple experimentation with deep neural networks.</description>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+ Introduction Are you a machine learning practitioner or data analyst looking to broaden your skill set? Look nowhere else! This blog post will offer an introduction to deep learning, which is currently the hottest topic in machine learning. Using the well-known MNIST dataset) and the Keras package, we will investigate the potential of deep learning.</description>
     </item>
     
     <item>

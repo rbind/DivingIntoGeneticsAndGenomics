@@ -6,11 +6,34 @@
     <description>Recent content in Single-cell on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>&amp;copy; 2018 Ming Tang</copyright>
-    <lastBuildDate>Thu, 16 Jun 2022 00:00:00 +0000</lastBuildDate>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Thu, 13 Jul 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/single-cell/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ten single-cell data benchmarking papers</title>
+      <link>/post/ten-single-cell-data-benchmarking-papers/</link>
+      <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/ten-single-cell-data-benchmarking-papers/</guid>
+      <description>I tweeted it at https://twitter.com/tangming2005/status/1679120948140572672
+I got asked to put all my posts in a central place and I think it is a good idea.  Benchmarking integration of single-cell differential expression
+ Benchmarking atlas-level data integration in single-cell genomics
+ A review of computational strategies for denoising and imputation of single-cell transcriptomic data
+ Benchmarking spatial and single-cell transcriptomics integration methods for transcript distribution prediction and cell type deconvolution</description>
+    </item>
+    
+    <item>
+      <title>How to construct a spatial object in Seurat</title>
+      <link>/post/how-to-construct-a-spatial-object-in-seurat/</link>
+      <pubDate>Thu, 30 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-construct-a-spatial-object-in-seurat/</guid>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+Single-cell spatial transcriptome data is a new and advanced technology that combines the study of individual cells’ genes and their location in a tissue to understand the complex cellular and molecular differences within it. This allows scientists to investigate how genes are expressed and how cells interact with each other with much greater detail than before.</description>
+    </item>
     
     <item>
       <title>Partial least square regression for marker gene identification in scRNAseq data</title>

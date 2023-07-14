@@ -9,7 +9,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="theme" content="hugo-academic">
   <meta name="generator" content="Hugo 0.42" />
-  <meta name="author" content="Ming Tang">
+  <meta name="author" content="Ming Tommy Tang">
 
   
   
@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2019-08-06T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2020-02-21T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,27 @@
   
   
   <div>
+    <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
+    <div class="article-style">
+      
+      In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
+My next thought is: maybe the STAR aligner is doing something weird that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/">My opinionated selection of books/urls for bioinformatics/data science curriculum</a></h2>
+    <div class="article-style">
+      
+      There was a paper on this topic: A New Online Computational Biology Curriculum.
+I am going to provide a biased list below (I have read most of the books if not all). I say it is biased because you will see many books of R are from Hadely Wickham. I now use tidyverse most of the time.
+Unix I suggest people who want to learn bioinformatics starting to learn unix commands first.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/develop-bioconductor-packages-with-docker-container/">Develop Bioconductor packages with docker container</a></h2>
     <div class="article-style">
       
@@ -374,26 +395,6 @@ chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 
     </div>
   </div>
   
-  <div>
-    <h2><a href="/post/compute-averages-sums-on-granges-or-equal-length-bins/">Compute averages/sums on GRanges or equal length bins</a></h2>
-    <div class="article-style">
-      
-      Googling is a required technique for programmers. Once I have a programming problem in mind, the first thing I do is to google to see if other people have encountered the same problem and maybe they already have a solution. Do not re-invent the wheels. Actually, reading other people’s code and mimicing their code is a great way of learning. Today, I am going to show you how to compute binned averages/sums along a genome or any genomic regions of interest.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/my-first-try-on-rmarkdown-using-blogdown/">my first try on Rmarkdown using blogdown</a></h2>
-    <div class="article-style">
-      
-      I have used blogdown writing regular markdown posts, but the real power is from the Rmarkdown! let me try it for this post.
-Note that you do not knit the Rmarkdown by yourself, rather you let blogdown do the heavy lift.
-library(tidyverse) library(ggplot2) head(mtcars)  ## mpg cyl disp hp drat wt qsec vs am gear carb ## Mazda RX4 21.0 6 160 110 3.90 2.620 16.46 0 1 4 4 ## Mazda RX4 Wag 21.
-      
-    </div>
-  </div>
-  
 
   
 <nav>
@@ -414,7 +415,7 @@ library(tidyverse) library(ggplot2) head(mtcars)  ## mpg cyl disp hp drat wt qse
   <div class="container">
     <p class="powered-by">
 
-      &copy; 2018 Ming Tang &middot; 
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
 
       Powered by the
       <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+Single-cell spatial transcriptome data is a new and advanced technology that combines the study of individual cells’ genes and their location in a tissue to understand the complex cellular and molecular differences within it. This allows scientists to investigate how genes are expressed and how cells interact with each other with much greater detail than before.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/how-to-construct-a-spatial-object-in-seurat/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/how-to-construct-a-spatial-object-in-seurat/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/how-to-construct-a-spatial-object-in-seurat/">
+  <meta property="og:title" content="How to construct a spatial object in Seurat | DNA confesses Data speak">
+  <meta property="og:description" content="Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+Single-cell spatial transcriptome data is a new and advanced technology that combines the study of individual cells’ genes and their location in a tissue to understand the complex cellular and molecular differences within it. This allows scientists to investigate how genes are expressed and how cells interact with each other with much greater detail than before.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-03-30T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-03-30T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>How to construct a spatial object in Seurat | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">How to construct a spatial object in Seurat</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-03-30 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Mar 30, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    9 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/how-to-construct-a-spatial-object-in-seurat/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/spatial/">spatial</a
+    >, 
+    
+    <a href="/categories/r/">R</a
+    >, 
+    
+    <a href="/categories/single-cell/">single-cell</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=How%20to%20construct%20a%20spatial%20object%20in%20Seurat&amp;url=%2fpost%2fhow-to-construct-a-spatial-object-in-seurat%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fhow-to-construct-a-spatial-object-in-seurat%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fhow-to-construct-a-spatial-object-in-seurat%2f&amp;title=How%20to%20construct%20a%20spatial%20object%20in%20Seurat"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fhow-to-construct-a-spatial-object-in-seurat%2f&amp;title=How%20to%20construct%20a%20spatial%20object%20in%20Seurat"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=How%20to%20construct%20a%20spatial%20object%20in%20Seurat&amp;body=%2fpost%2fhow-to-construct-a-spatial-object-in-seurat%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="sign-up-for-my-newsletter-to-not-miss-a-post-like-this" class="section level3">
+<h3>Sign up for my newsletter to not miss a post like this</h3>
+<p><a href="https://divingintogeneticsandgenomics.ck.page/newsletter" class="uri">https://divingintogeneticsandgenomics.ck.page/newsletter</a></p>
+<p>Single-cell spatial transcriptome data is a new and advanced technology that combines the study of individual cells’ genes and their location in a tissue to understand the complex cellular and molecular differences within it. This allows scientists to investigate how genes are expressed and how cells interact with each other with much greater detail than before.</p>
+<p>Do not be intimidated by the complexity of the data. If you already know how to analyze regular single cell data (e.g., 10x data), it is not hard to understand and analyze spatial data. In this blog post, I will walk you through the basic analsyis steps.</p>
+</div>
+<div id="download-the-demo-data" class="section level3">
+<h3>download the demo data</h3>
+<p>Following <a href="https://satijalab.org/seurat/articles/spatial_vignette_2.html" class="uri">https://satijalab.org/seurat/articles/spatial_vignette_2.html</a></p>
+<p>Download the public breast <code>vizgen</code> cancer data.</p>
+<pre class="bash"><code>gsutil -m cp -n gs://vz-ffpe-showcase/HumanOvarianCancerPatient2Slice2/cell_by_gene.csv \
+    gs://vz-ffpe-showcase/HumanOvarianCancerPatient2Slice2/cell_metadata.csv \
+    ./spatial_data/
+</code></pre>
+<p>It is critical to understand the data files before you do anything.</p>
+<blockquote>
+<p>The data for each sample is split up across a few different files. <code>cell_by_gene.csv</code> is the standard file containing cells as rows and genes as columns. <code>cell_metadata.csv</code> contains additional information for cells relating to spatial data, namely x-y coordinates for each cell (min, center, and max). These files are both preprocessed. To access more raw data, we can examine the cell_bounds/ folder and detected_transcripts.csv. The former contains many files, named feature_data_{fov}.hdf5, corresponding to the fov column in cell_metadata.csv. These hdf5 files contain boundary coordinates for each cell, giving a less boxy outline than provided in the processed data. detected_transcripts.csv contains transcripts in each row with their respective x-y coordinates, which are then assigned to cells based on the cell boundaries.</p>
+</blockquote>
+</div>
+<div id="read-in-the-data-and-pre-process" class="section level3">
+<h3>read in the data and pre-process</h3>
+<pre class="r"><code>library(Seurat)
+library(here)
+library(ggplot2)
+library(dplyr)
+
+# the LoadVizgen function requires the raw segmentation files which is too big. We will only use the x,y coordinates 
+# vizgen.obj &lt;- LoadVizgen(data.dir = here(&quot;data&quot;))
+
+vizgen.input &lt;- ReadVizgen(data.dir = &quot;~/blog_data/spatial_data&quot;, type = &quot;centroids&quot;)</code></pre>
+<p>For most of the analysis, we will only need the x,y coordinates (the center of the cell). You can also read in
+the raw segmentation file( which gives you more detailed cell shape information), or set <code>type = "box"</code> to get the
+rectangular information of a cell (xmin, xmax, ymin and ymax).</p>
+<p><code>vizgen.input</code> is a list containing the count matrix and the spatial centrioids.</p>
+<pre class="r"><code>vizgen.input$centroids %&gt;% head()</code></pre>
+<pre><code>#&gt;           x        y cell
+#&gt; 1 10145.793 5611.687 7650
+#&gt; 2  9975.309 5626.726 7654
+#&gt; 3 10129.183 5630.601 7655
+#&gt; 4 10112.692 5635.038 7656
+#&gt; 5 10151.574 5634.673 7657
+#&gt; 6 10099.624 5636.831 7658</code></pre>
+<pre class="r"><code>## This gives you the image 
+ggplot(vizgen.input$centroids, aes(x= x, y = y))+
+        geom_point(size = 0.1, color = &quot;grey&quot;) +
+        theme_classic()</code></pre>
+<p><img src="/post/2023-03-30-how-to-construct-a-spatial-object-in-seurat_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Create a seurat object. The documentation for making a spatial object is sparse.
+I went to the <a href="https://github.com/satijalab/seurat/blob/763259d05991d40721dee99c9919ec6d4491d15e/R/convenience.R#L139">source code</a>
+of <code>LoadVizgen</code> and came up with the code below.</p>
+<p>You can read the code from the same link and see how other types of spatial data (10x Xenium, nanostring) are read into Seurat.</p>
+<pre class="r"><code>## remove the Blank-* control probes
+blank_index&lt;- which(stringr::str_detect(rownames(vizgen.input$transcripts), &quot;^Blank&quot;))
+
+transcripts&lt;-vizgen.input$transcripts[-blank_index, ]
+
+dim(vizgen.input$transcripts)</code></pre>
+<pre><code>#&gt; [1]   550 71381</code></pre>
+<pre class="r"><code>dim(transcripts)</code></pre>
+<pre><code>#&gt; [1]   500 71381</code></pre>
+<p>There are 50 such probes.</p>
+</div>
+<div id="create-a-seurat-spatial-object" class="section level3">
+<h3>create a Seurat spatial object</h3>
+<pre class="r"><code>vizgen.obj&lt;- CreateSeuratObject(counts = transcripts, assay = &quot;Vizgen&quot;)
+
+cents &lt;- CreateCentroids(vizgen.input$centroids)
+segmentations.data &lt;- list(
+    &quot;centroids&quot; = cents,
+    &quot;segmentation&quot; = NULL
+  )
+
+coords &lt;- CreateFOV(
+    coords = segmentations.data,
+    type = c(&quot;segmentation&quot;, &quot;centroids&quot;),
+    molecules = NULL,
+    assay = &quot;Vizgen&quot;
+  )
+ 
+vizgen.obj[[&quot;p2s2&quot;]] &lt;- coords
+ 
+GetTissueCoordinates(vizgen.obj[[&quot;p2s2&quot;]][[&quot;centroids&quot;]]) %&gt;%
+        head()</code></pre>
+<pre><code>#&gt;           x        y cell
+#&gt; 1 10145.793 5611.687 7650
+#&gt; 2  9975.309 5626.726 7654
+#&gt; 3 10129.183 5630.601 7655
+#&gt; 4 10112.692 5635.038 7656
+#&gt; 5 10151.574 5634.673 7657
+#&gt; 6 10099.624 5636.831 7658</code></pre>
+<pre class="r"><code>ImageDimPlot(vizgen.obj, fov = &quot;p2s2&quot;, cols = &quot;polychrome&quot;, axes = TRUE)</code></pre>
+<p><img src="/post/2023-03-30-how-to-construct-a-spatial-object-in-seurat_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Note, from this recent paper <a href="https://www.nature.com/articles/s41467-023-37168-7">A comprehensive benchmarking with practical guidelines for cellular deconvolution of spatial transcriptomics</a>, <code>sctransform normalization</code> works worse than log normalization for deconvolution.</p>
+<p>This part is the same as regular single-cell RNAseq data. For clustering, one can also incorporate the spatial information, but that’s
+something out of this tutorial.</p>
+<p>I will use log normalization.</p>
+<pre class="r"><code>vizgen.obj &lt;- NormalizeData(vizgen.obj, normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  ScaleData() 
+vizgen.obj &lt;- RunPCA(vizgen.obj, npcs = 30, features = rownames(vizgen.obj))
+vizgen.obj &lt;- RunUMAP(vizgen.obj, dims = 1:30)
+vizgen.obj &lt;- FindNeighbors(vizgen.obj, reduction = &quot;pca&quot;, dims = 1:30)
+vizgen.obj &lt;- FindClusters(vizgen.obj, resolution = 0.3)</code></pre>
+<pre><code>#&gt; Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+#&gt; 
+#&gt; Number of nodes: 71381
+#&gt; Number of edges: 2100209
+#&gt; 
+#&gt; Running Louvain algorithm...
+#&gt; Maximum modularity in 10 random starts: 0.9109
+#&gt; Number of communities: 14
+#&gt; Elapsed time: 23 seconds</code></pre>
+</div>
+<div id="umap-by-cluster" class="section level3">
+<h3>UMAP by cluster</h3>
+<pre class="r"><code>DimPlot(vizgen.obj, reduction = &quot;umap&quot;, label = TRUE)</code></pre>
+<p><img src="/post/2023-03-30-how-to-construct-a-spatial-object-in-seurat_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="image-plot-by-cluster" class="section level3">
+<h3>Image plot by cluster</h3>
+<pre class="r"><code>ImageDimPlot(vizgen.obj, fov = &quot;p2s2&quot;, cols = &quot;polychrome&quot;, axes = TRUE)</code></pre>
+<p><img src="/post/2023-03-30-how-to-construct-a-spatial-object-in-seurat_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="find-cell-markers" class="section level3">
+<h3>Find cell markers</h3>
+<pre class="r"><code>library(tictoc)
+tic()
+markers&lt;- presto::wilcoxauc(vizgen.obj, &#39;seurat_clusters&#39;, assay = &#39;data&#39;,seurat_assay= &quot;Vizgen&quot; )
+toc()</code></pre>
+<pre><code>#&gt; 1.137 sec elapsed</code></pre>
+<pre class="r"><code>top_markers&lt;- presto::top_markers(markers, n =3)
+
+top_markers</code></pre>
+<pre><code>#&gt; # A tibble: 3 × 13
+#&gt;    rank `0`   `1`    `10`  `11`  `2`   `3`   `4`   `5`   `6`   `7`   `8`   `9`  
+#&gt;   &lt;int&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+#&gt; 1     1 MUC1  LRP1   KIT   MZB1  FN1   COL1… C1QC  CDKN… COL4… LAMC2 ETS1  IL21 
+#&gt; 2     2 PKM   ENG    CTSG  CD79A SFRP2 FFAR2 CD14  LAMC2 VWF   MKI67 IL2RB IDO2 
+#&gt; 3     3 SOX9  COL1A1 ITGAM HLA-B COL1… CXCR1 CSF1R SERP… PECA… FOXM1 CD3E  XCL1</code></pre>
+<pre class="r"><code>top_markers&lt;- top_markers %&gt;% select(-rank) %&gt;% stack() %&gt;%
+        pull(values) %&gt;%
+        unique()
+
+top_markers</code></pre>
+<pre><code>#&gt;  [1] &quot;MUC1&quot;     &quot;PKM&quot;      &quot;SOX9&quot;     &quot;LRP1&quot;     &quot;ENG&quot;      &quot;COL1A1&quot;  
+#&gt;  [7] &quot;KIT&quot;      &quot;CTSG&quot;     &quot;ITGAM&quot;    &quot;MZB1&quot;     &quot;CD79A&quot;    &quot;HLA-B&quot;   
+#&gt; [13] &quot;FN1&quot;      &quot;SFRP2&quot;    &quot;FFAR2&quot;    &quot;CXCR1&quot;    &quot;C1QC&quot;     &quot;CD14&quot;    
+#&gt; [19] &quot;CSF1R&quot;    &quot;CDKN1A&quot;   &quot;LAMC2&quot;    &quot;SERPINA1&quot; &quot;COL4A1&quot;   &quot;VWF&quot;     
+#&gt; [25] &quot;PECAM1&quot;   &quot;MKI67&quot;    &quot;FOXM1&quot;    &quot;ETS1&quot;     &quot;IL2RB&quot;    &quot;CD3E&quot;    
+#&gt; [31] &quot;IL21&quot;     &quot;IDO2&quot;     &quot;XCL1&quot;</code></pre>
+<pre class="r"><code>manual_markers&lt;- c(&quot;CD3D&quot;, &quot;CD4&quot;, &quot;CD8A&quot;, &quot;CD8B&quot;, &quot;CD14&quot;,
+                                            &quot;MS4A1&quot;, &quot;FCGR3A&quot;, &quot;PTPRC&quot;, &quot;EPCAM&quot;, 
+                                            &quot;KIT&quot;, &quot;PDGFA&quot;, &quot;CCR7&quot;,&quot;GNLY&quot;, 
+                                            &quot;PRF1&quot;, &quot;GZMB&quot;, &quot;COL1A1&quot;, &quot;PECAM1&quot;, 
+                                            &quot;NKG7&quot;,&quot;XCL1&quot;, &quot;ICOS&quot;, &quot;PDCD1&quot;, &quot;TIGIT&quot;, 
+                                            &quot;HAVCR2&quot;, &quot;NCAM1&quot;, &quot;CD79A&quot;, &quot;ITGAM&quot;, 
+                                            &quot;ITGAX&quot;, &quot;FCER1A&quot;, &quot;CD86&quot;)
+scCustomize::Clustered_DotPlot(vizgen.obj,  
+                               features = c(top_markers, manual_markers), 
+                               plot_km_elbow = FALSE,
+                               row_label_size = 8)</code></pre>
+<p><img src="/post/2023-03-30-how-to-construct-a-spatial-object-in-seurat_files/figure-html/unnamed-chunk-10-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>table(vizgen.obj$seurat_clusters)</code></pre>
+<pre><code>#&gt; 
+#&gt;     0     1     2     3     4     5     6     7     8     9    10    11 
+#&gt; 34147 12200  6251  5505  5324  3122  1656  1164  1065   647   183   117</code></pre>
+<p>The cancer cell clusters (0,5,7) marked by EPCAM is the most abundant cells in this sample.
+cluster 8 is the T cells; cluster 4 is mono/mac, cluster 10 seems to be the MAST (KIT) cells;
+cluster 11 is the B (CD79A, MSA41) cells; cluster 2 is fibroblasts (SFRP2);
+cluster 1 is a different fibroblasts cluster; cluster 6 is Endothelial cells (PECAM1)</p>
+<p>cluster 9 probably is an artifact cluster. It is the strange circle in the UMAP.
+Let’s take a look at the count distribution for all clusters.</p>
+<pre class="r"><code>library(ggplot2)
+
+vizgen.obj@meta.data %&gt;%
+        ggplot(aes(x=  nCount_Vizgen)) +
+        geom_histogram() +
+        facet_wrap(~seurat_clusters, scales = &quot;free&quot;)</code></pre>
+<p><img src="/post/2023-03-30-how-to-construct-a-spatial-object-in-seurat_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+cluster 9 have very low counts for all the cells. Those cells should be removed from the pre-processing steps by:</p>
+<p><code>CreateSeuratObject(min.features = 5)</code>.</p>
+<p>min.features: Include cells where at least this many features are detected.</p>
+<pre class="r"><code>p1 &lt;- ImageFeaturePlot(vizgen.obj, features = c(&quot;EPCAM&quot;, &quot;CD79A&quot;))
+p1 </code></pre>
+<p><img src="/post/2023-03-30-how-to-construct-a-spatial-object-in-seurat_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>We plotted the feature expression on the image using the <code>ImageFeaturePlot</code>. Let’s reproduce it using <code>ggplot2</code>:</p>
+<pre class="r"><code>vizgen.input$centroids %&gt;%
+        ggplot(aes(x=y, y = x)) +
+        geom_point(color = &quot;grey&quot;, size = 0.2) +
+        theme_classic(base_size = 14)</code></pre>
+<p><img src="/post/2023-03-30-how-to-construct-a-spatial-object-in-seurat_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Now, we need to highlight the points using the expression value of <code>EPCAM</code>:</p>
+<p>Some helper function:</p>
+<pre class="r"><code>matrix_to_expression_df&lt;- function(x, obj){
+        df&lt;- x %&gt;%
+                as.matrix() %&gt;% 
+                as.data.frame() %&gt;%
+                tibble::rownames_to_column(var= &quot;gene&quot;) %&gt;%
+                tidyr::pivot_longer(cols = -1, names_to = &quot;cell&quot;, values_to = &quot;expression&quot;) %&gt;%
+                tidyr::pivot_wider(names_from = &quot;gene&quot;, values_from = expression) %&gt;%
+                left_join(obj@meta.data %&gt;% 
+                                  tibble::rownames_to_column(var = &quot;cell&quot;))
+        return(df)
+}
+
+
+get_expression_data&lt;- function(obj, assay = &quot;RNA&quot;, slot = &quot;data&quot;, 
+                               genes = NULL, cells = NULL){
+        if (is.null(genes) &amp; !is.null(cells)){
+                df&lt;- GetAssayData(obj, assay = assay, slot = slot)[, cells, drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else if (!is.null(genes) &amp; is.null(cells)){
+                df &lt;- GetAssayData(obj, assay = assay, slot = slot)[genes, , drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else if (is.null(genes &amp; is.null(cells))){
+                df &lt;- GetAssayData(obj, assay = assay, slot = slot)[, , drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        } else {
+                df&lt;- GetAssayData(obj, assay = assay, slot = slot)[genes, cells, drop = FALSE] %&gt;%
+                        matrix_to_expression_df(obj = obj)
+        }
+        return(df)
+}</code></pre>
+<p>Get the expression data and merge with the spatial information.</p>
+<pre class="r"><code>df&lt;- get_expression_data(vizgen.obj, assay=&quot;Vizgen&quot;, slot = &quot;data&quot;, genes = &quot;EPCAM&quot;)
+
+head(df)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 7
+#&gt;   cell  EPCAM orig.ident    nCount_Vizgen nFeature_Vizgen Vizgen_snn_res.0.3
+#&gt;   &lt;chr&gt; &lt;dbl&gt; &lt;fct&gt;                 &lt;dbl&gt;           &lt;int&gt; &lt;fct&gt;             
+#&gt; 1 0      0    SeuratProject             0               0 9                 
+#&gt; 2 1      0    SeuratProject             0               0 9                 
+#&gt; 3 2      0    SeuratProject            17              11 3                 
+#&gt; 4 3      3.93 SeuratProject           400             108 0                 
+#&gt; 5 4      0    SeuratProject             9               9 3                 
+#&gt; 6 5      0    SeuratProject             3               3 3                 
+#&gt; # … with 1 more variable: seurat_clusters &lt;fct&gt;</code></pre>
+<pre class="r"><code>vizgen.input$centroids %&gt;% head()</code></pre>
+<pre><code>#&gt;           x        y cell
+#&gt; 1 10145.793 5611.687 7650
+#&gt; 2  9975.309 5626.726 7654
+#&gt; 3 10129.183 5630.601 7655
+#&gt; 4 10112.692 5635.038 7656
+#&gt; 5 10151.574 5634.673 7657
+#&gt; 6 10099.624 5636.831 7658</code></pre>
+<pre class="r"><code>df&lt;- vizgen.input$centroids %&gt;%
+        left_join(df)
+
+head(df)</code></pre>
+<pre><code>#&gt;           x        y cell    EPCAM    orig.ident nCount_Vizgen nFeature_Vizgen
+#&gt; 1 10145.793 5611.687 7650 4.091399 SeuratProject           680             173
+#&gt; 2  9975.309 5626.726 7654 4.087071 SeuratProject           683             166
+#&gt; 3 10129.183 5630.601 7655 4.087276 SeuratProject          1195             225
+#&gt; 4 10112.692 5635.038 7656 4.255680 SeuratProject          1151             216
+#&gt; 5 10151.574 5634.673 7657 0.000000 SeuratProject             0               0
+#&gt; 6 10099.624 5636.831 7658 4.336921 SeuratProject          1325             218
+#&gt;   Vizgen_snn_res.0.3 seurat_clusters
+#&gt; 1                  4               4
+#&gt; 2                  0               0
+#&gt; 3                  0               0
+#&gt; 4                  0               0
+#&gt; 5                  9               9
+#&gt; 6                  0               0</code></pre>
+<p>Now, we have a dataframe with the spatial coordinates and the gene expression value.</p>
+<p>Ready to plot:</p>
+<pre class="r"><code>p1&lt;- ggplot(df, aes(x= y, y=x)) +
+        geom_point(aes(color = EPCAM), size = 0.1) +
+        scale_color_gradient(low=&quot;grey&quot;, high=&quot;red&quot;) +
+        coord_fixed()+
+        theme_classic(base_size = 14)
+        
+
+p2&lt;- ImageFeaturePlot(vizgen.obj, features =&quot;EPCAM&quot;)
+
+p1 + p2</code></pre>
+<p><img src="/post/2023-03-30-how-to-construct-a-spatial-object-in-seurat_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Looks pretty similar!</p>
+<p>Since it is spatial data, we want to explore the cell-cell contact information.
+In a future post, I will show you how to find the closest cells within a fixed radius of a cell.</p>
+</div>
+<div id="take-home-messages" class="section level3">
+<h3>Take home messages</h3>
+<ul>
+<li><p>Spatial data is similar to regular single-cell data for the count matrix, but with each cell, we have
+additional x,y coordinates for the spatial information.</p></li>
+<li><p>It is not hard to implement spatial visualization functions if you know the basics of <code>R</code> and <code>tidyverse</code>. <code>Seurat</code>
+nicely integrated the spatial information to the Seurat object, so we can plot conveniently.</p></li>
+<li><p>Bioconductor has a <a href="https://bioconductor.org/packages/release/bioc/html/SpatialExperiment.html">spatial experiment object</a> which is extended from the <a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html">SingleCellExperiment</a> object.</p></li>
+<li><p>If you use python, check <a href="https://squidpy.readthedocs.io/en/stable/"><code>squidpy</code></a> and the <a href="https://monkeybread.readthedocs.io/en/latest/notebooks/tutorial.html"><code>monkeybread</code></a> package developed in our compbio group at <a href="https://www.immunitastx.com/">Immunitas</a>.</p></li>
+</ul>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/r/">R</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/spatial/">spatial</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/single-cell/">single-cell</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">use random forest and boost trees to find marker genes in scRNAseq data</a></li>
+        
+        <li><a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></li>
+        
+        <li><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></li>
+        
+        <li><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></li>
+        
+        <li><a href="/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/how-to-classify-mnist-images-with-convolutional-neural-network/" rel="next">How to classify MNIST images with convolutional neural network</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/" rel="prev">Deep learning to predict cancer from healthy controls using TCRseq data</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

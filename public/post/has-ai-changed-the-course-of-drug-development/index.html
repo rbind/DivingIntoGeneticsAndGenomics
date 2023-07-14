@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="What’s the drug development process? Has AI changed the course of Drug Development? To answer this question, we need first to understand the drug development process.
+The whole process includes the following:
+ target identification target pharmacology and biomarker development lead identification, lead optimization Clinical research &amp; development regulatory review of IND (investigational new drug) and later phase clinical trials post-marketing knowledge  Biologics/antibodies drug development follows a similar path (you can find the map in the same link).">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/has-ai-changed-the-course-of-drug-development/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/has-ai-changed-the-course-of-drug-development/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/has-ai-changed-the-course-of-drug-development/">
+  <meta property="og:title" content="Has AI changed the course of Drug Development? | DNA confesses Data speak">
+  <meta property="og:description" content="What’s the drug development process? Has AI changed the course of Drug Development? To answer this question, we need first to understand the drug development process.
+The whole process includes the following:
+ target identification target pharmacology and biomarker development lead identification, lead optimization Clinical research &amp; development regulatory review of IND (investigational new drug) and later phase clinical trials post-marketing knowledge  Biologics/antibodies drug development follows a similar path (you can find the map in the same link).">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-06-15T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-06-15T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Has AI changed the course of Drug Development? | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Has AI changed the course of Drug Development?</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-06-15 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Jun 15, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/has-ai-changed-the-course-of-drug-development/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/machine-learning/">machine learning</a
+    >, 
+    
+    <a href="/categories/drug-development/">drug development</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Has%20AI%20changed%20the%20course%20of%20Drug%20Development%3f&amp;url=%2fpost%2fhas-ai-changed-the-course-of-drug-development%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fhas-ai-changed-the-course-of-drug-development%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fhas-ai-changed-the-course-of-drug-development%2f&amp;title=Has%20AI%20changed%20the%20course%20of%20Drug%20Development%3f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fhas-ai-changed-the-course-of-drug-development%2f&amp;title=Has%20AI%20changed%20the%20course%20of%20Drug%20Development%3f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Has%20AI%20changed%20the%20course%20of%20Drug%20Development%3f&amp;body=%2fpost%2fhas-ai-changed-the-course-of-drug-development%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<h3 id="what-s-the-drug-development-process">What’s the drug development process?</h3>
+
+<p>Has AI changed the course of Drug Development? To answer this question, we need first to understand the drug development process.</p>
+
+<p>The whole process includes the <a href="https://ncats.nih.gov/translation/maps" target="_blank">following</a>:</p>
+
+<ul>
+<li>target identification</li>
+<li>target pharmacology and biomarker development</li>
+<li>lead identification, lead optimization</li>
+<li>Clinical research &amp; development</li>
+<li>regulatory review of IND (investigational new drug) and later phase clinical trials</li>
+<li>post-marketing knowledge</li>
+</ul>
+
+<p><img src="/img/drug_small.png" alt="" /></p>
+
+<p>Biologics/antibodies drug development follows a similar path (you can find the map in the same <a href="https://ncats.nih.gov/translation/maps" target="_blank">link</a>). As you can see, new target identification is only a tiny component of the complicated drug development process.</p>
+
+<h3 id="what-is-ai">What is AI?</h3>
+
+<p>AI stands for artificial intelligence. It refers to the development of computer systems or machines that can perform tasks that typically require human intelligence. AI systems are designed to simulate human intelligence and are capable of learning, reasoning, problem-solving, and making decisions.</p>
+
+<p>The definition is broad. I prefer the term machine learning (ML) in the context of bioinformatics which includes: supervised and unsupervised machine learning approaches. This <a href="https://www.mdpi.com/1422-0067/22/6/2903" target="_blank">review</a> has a good summary:</p>
+
+<p><img src="/img/AI_bio.png" alt="" /></p>
+
+<p>Most AI/ML is applied to drug discovery, or the first step of the drug development process.  For small molecules, One can screen virtual libraries of large numbers of existing compounds that can inhibit or activate a new target. It can narrow down the list and then validate in experimental assays.</p>
+
+<p><a href="https://www.recursion.com/" target="_blank">Recursion</a> uses an array of robots to treat millions of cell samples with drugs and genetic perturbations, stain them, and image them. It then applies machine learning algorithms to search for informative relationships between the perturbations and the morphological features of the cells.</p>
+
+<p>Most of the AI companies are vague on their ML approaches in their websites.</p>
+
+<p>My favorite supervised machine learning technique is linear regression (logistic regression for classification) and random forest. They usually perform well when the data size is moderate. In addition, they are simple, easy to interpret compared with deep learning models in which multiple layers are wrapped in a black box. Image analysis and protein structure prediction may be the fields in that deep learning is better than conventional machine learning approaches.</p>
+
+<p>By analyzing single-cell RNAseq, single-cell TCRseq and spatial transcriptome data, our company <a href="https://www.immunitastx.com/" target="_blank">Immunitas</a> uses conventional machine-learning algorithms (e.g., linear regression and random forest) to identify new targets for immunotherapy. Our approaches do give sensible targets.</p>
+
+<p>In my experience,  most of the time, you do not need deep learning; you do not even need machine learning. A simple correlation analysis answers the question in hand.</p>
+
+<p><img src="/img/ML_meme.jpeg" alt="" /></p>
+
+<h3 id="we-are-not-there-yet">We are not there yet</h3>
+
+<p>With the recent development of the large language mode(LMM), the hype of how AI can transform drug development has reached its peak.</p>
+
+<p>What&rsquo;s the reality?</p>
+
+<p>AlphaFold2 (AF2) from DeepMind has very high accuracy in predicting protein structures. All the structures can be accessed at <a href="https://alphafold.ebi.ac.uk/" target="_blank">https://alphafold.ebi.ac.uk/</a>. Can you do antibody discovery with AlphaFold2? In this <a href="https://www.naturalantibody.com/use-case/deepmind-alphafold-for-antibody-discovery-whats-the-status/" target="_blank">post</a>:</p>
+
+<blockquote>
+<p><strong>Experimental conclusion: We performed a very easy experiment to check if there’s “a free lunch” for antibody discovery employing AlphaFold2. Unfortunately, according to our results, this is not the case”</strong></p>
+</blockquote>
+
+<p>At Immunitas, <a href="https://twitter.com/Matthew_N_B" target="_blank">Matt Bernstein</a> in our group used AlphaFold-multimer for a ligand deorphaning project, and the identified candidates are not validated by the experiment so far.</p>
+
+<p>Derek Lowe <a href="https://www.chemistryworld.com/opinion/why-alphafold-wont-revolutionise-drug-discovery/4016051.article" target="_blank">wrote</a>,</p>
+
+<blockquote>
+<p><strong>It is very, very rare for knowledge of a protein’s structure to be any sort of rate-limiting step in a drug discovery project</strong></p>
+</blockquote>
+
+<p>His comment makes sense as you can see how complicated the whole drug process is from the map in the beginning. Clinical trials usually are the bottlenecks.</p>
+
+<p>AI-designed compounds are still in their early stage. For example, an AI-discovered drug VRG50635 from <a href="https://www.vergegenomics.com/" target="_blank">Verge genomics</a> entered clinical trials. It is announced that the Phase 1 clinical trial data is positive this week. Phase I trial is mainly for safety. Whether it will reach clinical end point in later phases is still yet to see.</p>
+
+<p>Another AI-leading company, <a href="https://www.benevolent.com/" target="_blank">BenevolentAI</a>, recently underwent <a href="https://endpts.com/benevolentai-lays-off-around-180-staffers-cuts-pipeline-programs-in-reorg/" target="_blank">layoffs and restructuring</a> because of their atopic dermatitis program failure in the Phase 2a clinical trial.</p>
+
+<p>Derek Lowe wrote,</p>
+
+<blockquote>
+<p>There are no existing AI/ML systems that mitigate clinical failure risks due to target choice or toxicology.</p>
+</blockquote>
+
+<p>Generative AI is being used to design new proteins/antibodies. E.g., <a href="https://twitter.com/abscibio" target="_blank">@abscibio</a> claims they can de novo design antibodies from scratch, <a href="https://twitter.com/SurgeBiswas/status/1613232556673224705" target="_blank">but people disagree</a>. That being said, the field is advancing quickly; <a href="https://github.com/crazyhottommy/Machine_learning_drug_discovery#proteinantibody-design" target="_blank">see my notes</a>.</p>
+
+<p>See a full list of <a href="https://www.nature.com/articles/s41591-023-02361-0" target="_blank">AI-enabled drugs in clinical trials</a>.
+<img src="/img/AI_drugs.png" alt="" /></p>
+
+<h3 id="it-all-gets-down-to-data">It all gets down to data.</h3>
+
+<p>Small molecules are attractive for AI approaches in part owing to the availability of appropriate data to learn from, enabling good predictions about new molecules. Small molecules are well described by their chemical structure, which can be rendered quickly in a format that computers can use.</p>
+
+<p>In order for AI to work, it has to have enough data to train on. But the problem is that we do not have enough high-quality data. Last month, I was in the <a href="https://www.hub-xchange.com/xchanges/" target="_blank">HubX-Exchange meeting</a>: AI for drug discovery. In the roundtable on data quality which I facilitated, the Chemical informaticians complained about lacking quality data. Genomics data have the same problem. Data silos is another big <a href="https://timmermanreport.com/2023/06/pharma-rd-execs-offer-extravagant-expectations-for-ai-but-few-proof-points/" target="_blank">problem in pharma</a>. Even failed clinical trial data can be valuable but often they are not accessible.</p>
+
+<p>As Jacob mentions in this <a href="https://www.digitalisventures.com/blog/engineering-biology-how-to-build-data-centric-biotech" target="_blank">blog post</a>, the main barrier now is data.</p>
+
+<p>There are two strategies for solving this problem in drug development:</p>
+
+<ul>
+<li>Better tools and systems for data collection and management (so one can <a href="https://www.go-fair.org/fair-principles/" target="_blank">FAIR</a> the data)</li>
+<li>Building around novel high throughput biology (so one can generate a lot of data)</li>
+</ul>
+
+<p>I want to add one more:</p>
+
+<ul>
+<li>Avoid data silos (so data can be shared and reused)</li>
+</ul>
+
+<p>With enough data, AI could play an important role for drug development. However, we need to be reminded that it is just a tool, like any experimental assay. It is a small piece of the whole puzzle. We still need to perform experiments to validate the AI-discovered/designed drugs and ultimately test them in human patients. <strong>With enough high quality data</strong>, AI also can help design better clinical trials and recruit the right patients.</p>
+
+<p>Understanding the biology is as important. Bioinformaticians should work closely with biology experts. The domain knowledge is critical in selecting a good target from the top list generated by AI.  Even one day, the knowledge graph and LMM are so good, human expertise is still un-replaceable.</p>
+
+<p><strong>AI has not revolutionized drug development yet,</strong> but it may first disrupt the early detection of cancer</p>
+
+<p>Two companies, <a href="https://www.enidnews.com/region/grail-and-university-of-oxford-to-present-results-from-first-prospective-study-of-multi-cancer/article_de08bd8d-9dec-5d8f-b8e8-99a5a938ef52.html" target="_blank">GRAIL</a> and <a href="https://www.exai.bio/news/exai-bio-to-present-new-non-small-cell-lung-cancer-early-detection-data-at-the-american-association-for-cancer-research-aacr-2023-annual-meeting" target="_blank">EXAI</a>, announced their liquid biopsy&rsquo;s high accuracy and specificity for early cancer detection.</p>
+
+<p>This speaks for the success of using AI algorithms for the diagnosis.</p>
+
+<h3 id="references">References</h3>
+
+<ul>
+<li><p>Tapping into the drug discovery potential of AI <a href="https://www.nature.com/articles/d43747-021-00045-7" target="_blank">https://www.nature.com/articles/d43747-021-00045-7</a></p></li>
+
+<li><p><a href="https://www.fda.gov/media/167973/download" target="_blank">https://www.fda.gov/media/167973/download</a></p></li>
+
+<li><p><a href="https://www.fiercebiotech.com/biotech/benevolentai-makes-deep-cuts-after-midphase-flop-laying-180-and-shrinking-lab-footprint" target="_blank">https://www.fiercebiotech.com/biotech/benevolentai-makes-deep-cuts-after-midphase-flop-laying-180-and-shrinking-lab-footprint</a></p></li>
+
+<li><p>Artificial intelligence in drug discovery and development <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7577280/" target="_blank">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7577280/</a></p></li>
+
+<li><p><a href="https://decodingbio.substack.com/p/biobyte-032-ai-and-the-overlooked" target="_blank">https://decodingbio.substack.com/p/biobyte-032-ai-and-the-overlooked</a></p></li>
+
+<li><p>AI-designed drugs <a href="https://www.nature.com/articles/s41591-023-02361-0" target="_blank">https://www.nature.com/articles/s41591-023-02361-0</a></p></li>
+
+<li><p><a href="https://www.science.org/content/blog-post/has-ai-discovered-drug-now-guess" target="_blank">https://www.science.org/content/blog-post/has-ai-discovered-drug-now-guess</a></p></li>
+
+<li><p><a href="https://www.digitalisventures.com/blog/engineering-biology-how-to-build-data-centric-biotech" target="_blank">https://www.digitalisventures.com/blog/engineering-biology-how-to-build-data-centric-biotech</a></p></li>
+
+<li><p>Chris Dawn’s post  <a href="https://dwan.org/index.php/2023/06/12/a-tale-of-three-conferences/" target="_blank">https://dwan.org/index.php/2023/06/12/a-tale-of-three-conferences/</a></p></li>
+
+<li><p>AI for R&amp;D  <a href="https://timmermanreport.com/2023/06/pharma-rd-execs-offer-extravagant-expectations-for-ai-but-few-proof-points/" target="_blank">https://timmermanreport.com/2023/06/pharma-rd-execs-offer-extravagant-expectations-for-ai-but-few-proof-points/</a></p></li>
+</ul>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/machine-learning/">machine learning</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></li>
+        
+        <li><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></li>
+        
+        <li><a href="/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/">How to add boxplots or density plots side-by-side a scatterplot: a single cell case study</a></li>
+        
+        <li><a href="/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/">Unlock the Power of Genomics Data Analysis: Watershed&#39;s Seamless Cloud Computing Solution</a></li>
+        
+        <li><a href="/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/">How to do neighborhood/cellular niches analysis with spatial transcriptome data </a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/ten-single-cell-data-benchmarking-papers/" rel="next">Ten single-cell data benchmarking papers</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/" rel="prev">How to add boxplots or density plots side-by-side a scatterplot: a single cell case study</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

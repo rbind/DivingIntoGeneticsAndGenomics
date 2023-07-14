@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
+The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/">
+  <meta property="og:title" content="Deep learning to predict cancer from healthy controls using TCRseq data | DNA confesses Data speak">
+  <meta property="og:description" content="Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
+The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-03-24T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-03-24T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Deep learning to predict cancer from healthy controls using TCRseq data | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Deep learning to predict cancer from healthy controls using TCRseq data</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-03-24 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Mar 24, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/deeplearning/">deeplearning</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Deep%20learning%20to%20predict%20cancer%20from%20healthy%20controls%20using%20TCRseq%20data&amp;url=%2fpost%2fdeep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fdeep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fdeep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data%2f&amp;title=Deep%20learning%20to%20predict%20cancer%20from%20healthy%20controls%20using%20TCRseq%20data"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fdeep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data%2f&amp;title=Deep%20learning%20to%20predict%20cancer%20from%20healthy%20controls%20using%20TCRseq%20data"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Deep%20learning%20to%20predict%20cancer%20from%20healthy%20controls%20using%20TCRseq%20data&amp;body=%2fpost%2fdeep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="sign-up-for-my-newsletter-to-not-miss-a-post-like-this" class="section level3">
+<h3>Sign up for my newsletter to not miss a post like this</h3>
+<p><a href="https://divingintogeneticsandgenomics.ck.page/newsletter" class="uri">https://divingintogeneticsandgenomics.ck.page/newsletter</a></p>
+<p>The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.</p>
+<p>The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock. When the TCR encounters a target it recognizes, it sends signals to the T-cell telling it to attack and destroy the invader.</p>
+<p><a href="https://www.takarabio.com/about/bioview-blog/research-news/tcr-seq-methods-strengths-weaknesses-and-rankings">T-cell receptor (TCR) sequencing</a> data is one type of high-throughput sequencing data that provides valuable insights into the immune system’s response to cancer. We can now even get single-cell TCRseq data. In this blog post, we will discuss a deep learning model developed to predict cancer from healthy control using TCRseq data.</p>
+<p>This blog post is inspired by the publication <a href="https://pubmed.ncbi.nlm.nih.gov/32817363/">De novo prediction of cancer-associated T cell receptors for noninvasive cancer detection</a>. We will use the same training and testing data from <a href="https://github.com/s175573/DeepCAT" class="uri">https://github.com/s175573/DeepCAT</a></p>
+<p>Download the data.</p>
+<pre class="bash"><code>git clone https://github.com/s175573/DeepCAT</code></pre>
+<p>Load in to R:</p>
+<pre class="r"><code>library(keras)
+library(readr)
+set.seed(123)
+normal_CDR3&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/NormalCDR3.txt&quot;,
+                       col_names = FALSE)
+
+cancer_CDR3&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/TumorCDR3.txt&quot;,
+                       col_names = FALSE)
+
+train_CDR3&lt;- rbind(normal_CDR3, cancer_CDR3)
+train_label&lt;- c(rep(0, nrow(normal_CDR3)), rep(1, nrow(cancer_CDR3))) %&gt;% as.numeric()
+
+normal_CDR3_test&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/NormalCDR3_test.txt&quot;,
+                       col_names = FALSE)
+
+cancer_CDR3_test&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/TumorCDR3_test.txt&quot;,
+                       col_names = FALSE)
+
+test_CDR3&lt;- rbind(normal_CDR3_test, cancer_CDR3_test)
+test_label&lt;- c(rep(0, nrow(normal_CDR3_test)), rep(1, nrow(cancer_CDR3_test)))
+
+AAindex&lt;- read.table(&quot;/Users/tommytang/github_repos/DeepCAT/AAidx_PCA.txt&quot;,header = TRUE)
+
+## 20 aa
+total_aa&lt;- rownames(AAindex)
+total_aa</code></pre>
+<pre><code>#&gt;  [1] &quot;A&quot; &quot;R&quot; &quot;N&quot; &quot;D&quot; &quot;C&quot; &quot;E&quot; &quot;Q&quot; &quot;G&quot; &quot;H&quot; &quot;I&quot; &quot;L&quot; &quot;K&quot; &quot;M&quot; &quot;F&quot; &quot;P&quot; &quot;S&quot; &quot;T&quot; &quot;W&quot; &quot;Y&quot;
+#&gt; [20] &quot;V&quot;</code></pre>
+<p><a href="https://www.genome.jp/aaindex/">AAindex</a> is a database of numerical indices representing various physicochemical and biochemical properties of amino acids and pairs of amino acids. In this example, we are not using it. The original paper uses the PCA components as input on top of the CDR3 amino sequences.</p>
+<p>Because CDR3s with different lengths usually form distinct loop structures to interact with the antigens, the <code>deepcat</code> paper built five models each for lengths 12 through 16.</p>
+</div>
+<div id="one-hot-encoding-for-cdr3" class="section level3">
+<h3>one hot encoding for CDR3</h3>
+<pre class="r"><code>encode_one_cdr3&lt;- function(cdr3, length_cutoff){
+        res&lt;- matrix(0, nrow = length(total_aa), ncol = length_cutoff)
+        cdr3&lt;- unlist(stringr::str_split(cdr3, pattern = &quot;&quot;))
+        cdr3&lt;- cdr3[1:length_cutoff]
+        row_index&lt;- sapply(cdr3, function(x) which(total_aa==x)[1])
+        col_index&lt;- 1: length_cutoff
+        res[as.matrix(cbind(row_index, col_index))]&lt;- 1
+        return(res)
+
+}
+                        
+cdr3&lt;- &quot;CASSLKPNTEAFF&quot;
+
+encode_one_cdr3(cdr3, length_cutoff = 12)</code></pre>
+<pre><code>#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
+#&gt;  [1,]    0    1    0    0    0    0    0    0    0     0     1     0
+#&gt;  [2,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [3,]    0    0    0    0    0    0    0    1    0     0     0     0
+#&gt;  [4,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [5,]    1    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [6,]    0    0    0    0    0    0    0    0    0     1     0     0
+#&gt;  [7,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [8,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [9,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [10,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [11,]    0    0    0    0    1    0    0    0    0     0     0     0
+#&gt; [12,]    0    0    0    0    0    1    0    0    0     0     0     0
+#&gt; [13,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [14,]    0    0    0    0    0    0    0    0    0     0     0     1
+#&gt; [15,]    0    0    0    0    0    0    1    0    0     0     0     0
+#&gt; [16,]    0    0    1    1    0    0    0    0    0     0     0     0
+#&gt; [17,]    0    0    0    0    0    0    0    0    1     0     0     0
+#&gt; [18,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [19,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [20,]    0    0    0    0    0    0    0    0    0     0     0     0</code></pre>
+<p>This gives you a 20 x 12 matrix, the entry is 1 when the aa is matching the <code>total_aa</code>.</p>
+<p>e.g., the first aa is <code>C</code>, so the [5, 1] is 1.</p>
+</div>
+<div id="shape-the-training-and-testing-data" class="section level3">
+<h3>shape the training and testing data</h3>
+<p>Read my <a href="https://divingintogeneticsandgenomics.rbind.io/post/basic-tensor-array-manipulations-in-r/">previous post on tensor reshaping</a>.</p>
+<pre class="r"><code>length_cutoff = 12
+
+train_data&lt;- purrr::map(train_CDR3$X1, ~encode_one_cdr3(.x, length_cutoff = length_cutoff))
+
+# reshape the data to a 2D tensor
+train_data&lt;- array_reshape(unlist(train_data), dim = c(length(train_data), 20 * length_cutoff))
+
+# the 20x12 matrix is linearized to a 240 element vector
+dim(train_data)</code></pre>
+<pre><code>#&gt; [1] 70000   240</code></pre>
+<pre class="r"><code>test_data&lt;- purrr::map(test_CDR3$X1,  ~encode_one_cdr3(.x, length_cutoff = length_cutoff))
+test_data&lt;- array_reshape(unlist(test_data), dim= c(length(test_data), 20* length_cutoff))
+dim(test_data)</code></pre>
+<pre><code>#&gt; [1] 29851   240</code></pre>
+<p>The original paper used a Convolutional Neural Network (CNN), I will use a regular 2 dense-layer model.</p>
+<pre class="r"><code>y_train &lt;- as.numeric(train_label)
+y_test &lt;- as.numeric(test_label)
+
+
+model &lt;- keras_model_sequential() %&gt;% 
+        layer_dense(units = 16, activation = &quot;relu&quot;, input_shape = c(20 * length_cutoff)) %&gt;%
+        layer_dense(units = 16, activation = &quot;relu&quot;) %&gt;%
+        layer_dense(units = 1, activation = &quot;sigmoid&quot;)
+
+
+model %&gt;% compile(
+        optimizer = &quot;rmsprop&quot;,
+        loss = &quot;binary_crossentropy&quot;,
+        metrics = c(&quot;accuracy&quot;)
+)</code></pre>
+<p>If one use big epochs, the model will be over-fitted. Set apart 35000 CDR3 sequences for validation.</p>
+<pre class="r"><code>set.seed(123)
+val_indices &lt;- sample(nrow(train_data), 35000)
+x_val &lt;- train_data[val_indices,]
+partial_x_train &lt;- train_data[-val_indices,]
+
+y_val &lt;- y_train[val_indices]
+partial_y_train &lt;- y_train[-val_indices]
+
+history &lt;- model %&gt;% fit(partial_x_train, 
+                         partial_y_train, 
+                         epochs = 20, 
+                         batch_size = 512, 
+                         validation_data = list(x_val, y_val)
+)
+
+plot(history)</code></pre>
+<p><img src="/post/2023-03-24-deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="final-training-and-testing" class="section level3">
+<h3>final training and testing</h3>
+<pre class="r"><code>model %&gt;% fit(train_data, y_train, epochs = 20, batch_size = 512)
+results &lt;- model %&gt;% evaluate(test_data, y_test)
+results</code></pre>
+<pre><code>#&gt;      loss  accuracy 
+#&gt; 0.4229931 0.8065391</code></pre>
+<p>~80% accuracy. Not bad…</p>
+<p>Let’s increase the number of units in each layer.</p>
+<pre class="r"><code>model &lt;- keras_model_sequential() %&gt;% 
+        layer_dense(units = 64, activation = &quot;relu&quot;, input_shape = c(20 * length_cutoff)) %&gt;%
+        layer_dense(units = 64, activation = &quot;relu&quot;) %&gt;%
+        layer_dense(units = 1, activation = &quot;sigmoid&quot;)
+
+
+model %&gt;% compile(
+        optimizer = &quot;rmsprop&quot;,
+        loss = &quot;binary_crossentropy&quot;,
+        metrics = c(&quot;accuracy&quot;)
+)
+
+val_indices &lt;- sample(nrow(train_data), 35000)
+x_val &lt;- train_data[val_indices,]
+partial_x_train &lt;- train_data[-val_indices,]
+
+y_val &lt;- y_train[val_indices]
+partial_y_train &lt;- y_train[-val_indices]
+
+history &lt;- model %&gt;% fit(partial_x_train, 
+                         partial_y_train, 
+                         epochs = 20, 
+                         batch_size = 512, 
+                         validation_data = list(x_val, y_val)
+)
+
+plot(history)</code></pre>
+<p><img src="/post/2023-03-24-deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>with more units (neurons) in each layer, overfitting occurs much faster.
+after 10 epoch, the validation accuracy starts to plateau.</p>
+<pre class="r"><code>model %&gt;% fit(train_data, y_train, epochs = 10, batch_size = 512)
+results &lt;- model %&gt;% evaluate(test_data, y_test)
+results</code></pre>
+<pre><code>#&gt;      loss  accuracy 
+#&gt; 0.3731814 0.8282135</code></pre>
+<pre class="r"><code>predict(model, test_data[1:10, ])</code></pre>
+<pre><code>#&gt;             [,1]
+#&gt;  [1,] 0.08662453
+#&gt;  [2,] 0.23022524
+#&gt;  [3,] 0.21670932
+#&gt;  [4,] 0.03327328
+#&gt;  [5,] 0.03596783
+#&gt;  [6,] 0.07136077
+#&gt;  [7,] 0.06769678
+#&gt;  [8,] 0.03962836
+#&gt;  [9,] 0.16300359
+#&gt; [10,] 0.36324140</code></pre>
+</div>
+<div id="how-to-improve-the-accuracy-by-using-biology-domian-knowledge" class="section level3">
+<h3>How to improve the accuracy by using biology domian knowledge?</h3>
+<p>It is surprising to me that using only the CDR3 aa sequences can reach an accuracy of 80%.
+How can we further improve it?</p>
+<ul>
+<li>we can add the AA properties</li>
+<li>add the VDJ usage</li>
+<li>add HLA typing for each sample</li>
+</ul>
+</div>
+<div id="further-reading" class="section level3">
+<h3>Further reading</h3>
+<ul>
+<li><p><a href="https://www.nature.com/articles/s41467-021-21879-w">DeepTCR is a deep learning framework for revealing sequence concepts within T-cell repertoires</a></p></li>
+<li><p><a href="https://www.science.org/doi/10.1126/sciadv.abq5089">Deep learning reveals predictive sequence concepts within immune repertoires to immunotherapy</a></p></li>
+</ul>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/deeplearning/">deeplearning</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/basic-tensor-array-manipulations-in-r/">Basic tensor/array manipulations in R</a></li>
+        
+        <li><a href="/post/how-to-deal-with-overplotting-without-being-fooled/">How to deal with overplotting without being fooled </a></li>
+        
+        <li><a href="/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/">How to do gene correlation for single-cell RNAseq data (part 1)</a></li>
+        
+        <li><a href="/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/">transpose single-cell cell x gene dataframe to gene x cell </a></li>
+        
+        <li><a href="/post/how-to-run-dockerized-rstudio-server-on-google-cloud/">How to run dockerized Rstudio server on google cloud</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/how-to-construct-a-spatial-object-in-seurat/" rel="next">How to construct a spatial object in Seurat</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/basic-tensor-array-manipulations-in-r/" rel="prev">Basic tensor/array manipulations in R</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

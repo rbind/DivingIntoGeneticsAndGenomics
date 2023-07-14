@@ -9,7 +9,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="theme" content="hugo-academic">
   <meta name="generator" content="Hugo 0.42" />
-  <meta name="author" content="Ming Tang">
+  <meta name="author" content="Ming Tommy Tang">
 
   
   
@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2022-07-03T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2023-02-05T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,83 @@
   
   
   <div>
+    <h2><a href="/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/">How to make a triangle correlation heatmap with p-values labeled </a></h2>
+    <div class="article-style">
+      
+      In this blog post, I am going to show you how to make a correlation heatmap with p-values and significant values labeled in the heatmap body. Let’s use the PBMC single cell data as an example.
+You may want to read my previous blog post How to do gene correlation for single-cell RNAseq data.
+Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) library(hdWGCNA) library(WGCNA) set.seed(1234)  prepare the data data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 features across 2700 samples within 1 assay #&gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&lt;- pbmc3k %&gt;% NormalizeData(normalization.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/">How to do gene correlation for single-cell RNAseq data (part 2) using meta-cell </a></h2>
+    <div class="article-style">
+      
+      In my last blog post, I showed that pearson gene correlation for single-cell data has flaws because of the sparsity of the count matrix.
+One way to get around it is to use the so called meta-cell. One can use KNN to find the K nearest neighbors and collapse them into a meta-cell. You can implement it from scratch, but one should not re-invent the wheel. For example, you can use metacells.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/">How to do gene correlation for single-cell RNAseq data (part 1)</a></h2>
+    <div class="article-style">
+      
+      Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) set.seed(1234)  prepare the data data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 features across 2700 samples within 1 assay #&gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&lt;- pbmc3k %&gt;% NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;% FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;% ScaleData() %&gt;% RunPCA(verbose = FALSE) %&gt;% FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;% FindClusters(resolution = 0.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/">transpose single-cell cell x gene dataframe to gene x cell </a></h2>
+    <div class="article-style">
+      
+      Single cell matrix is often represented as gene x cell in R/Seurat, but it is represented as cell x gene in python/scanpy.
+Let’s use a real example to show how to transpose between the two formats. The GEO accession page is at <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763" target="_blank">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763</a>
+Download the data We can use command line to download the count matrix at ftp: <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/" target="_blank">https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/</a>
+wget <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/GSE154763_ESCA_normalized_expression.csv.gz" target="_blank">https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/GSE154763_ESCA_normalized_expression.csv.gz</a> -O ~/blog_data/GSE154763_ESCA_normalized_expression.csv.gz # decompress the file gunzip GSE154763_ESCA_normalized_expression.csv.gz # this GEO matrix is cell x gene # take a look by <a href="https://www" target="_blank">https://www</a>.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/review-2022/">Review 2022</a></h2>
+    <div class="article-style">
+      
+      Every year, I write a review for the past 12 months. Find my review for 2021.
+Some top wins:  Anna was born in September! It is a lot of work with three kids, but they are cute!
+ I am grateful for our CSO Thomas Tan, who has confidence in me to lead the team. We built an amazing computational biology team at Immunitas. I am so fortunate to have Matt, Tim and Michelle in the group.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/how-to-run-dockerized-rstudio-server-on-google-cloud/">How to run dockerized Rstudio server on google cloud</a></h2>
+    <div class="article-style">
+      
+      Create a google VM Follow the process using the console <a href="https://cloud.google.com/compute/docs/instances/create-start-instance#console_1" target="_blank">https://cloud.google.com/compute/docs/instances/create-start-instance#console_1</a>
+Install docker Follow <a href="https://docs.docker.com/engine/install/debian/" target="_blank">https://docs.docker.com/engine/install/debian/</a>
+Note this example for the debian build. If you created your VM using ubuntu as the boot disk, you should follow the ubuntu section <a href="https://docs.docker.com/engine/install/ubuntu/" target="_blank">https://docs.docker.com/engine/install/ubuntu/</a>.
+In the GCP VM:
+sudo apt-get update sudo apt-get install \ ca-certificates \ curl \ gnupg \ lsb-release sudo mkdir -p /etc/apt/keyrings curl -fsSL <a href="https://download.docker.com/linux/debian/gpg" target="_blank">https://download.docker.com/linux/debian/gpg</a> | sudo gpg &ndash;dearmor -o /etc/apt/keyrings/docker.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines/">Are PDL1 RNA and protein levels correlated in cancer cell lines?</a></h2>
+    <div class="article-style">
+      
+      Are protein and RNA levels correlated? This is a big question.
+see replies to this tweet at <a href="https://twitter.com/slavov_n/status/1561844133496512512" target="_blank">https://twitter.com/slavov_n/status/1561844133496512512</a>. In general, RNA and protein abundances should be correlated but there are exceptions of course. Biology is complicated/weird!
+ One of my favorite examples is Hypoxia-inducible factor 1-alpha, HIF-1α. The protein is efficiently degraded in most tissues most of the time unless stabilized by hypoxia.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">use random forest and boost trees to find marker genes in scRNAseq data</a></h2>
     <div class="article-style">
       
@@ -320,78 +397,6 @@ ffq fetches metadata information from the following databases:
     </div>
   </div>
   
-  <div>
-    <h2><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></h2>
-    <div class="article-style">
-      
-      why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
- Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
- I am interested in using logistic regression to find marker genes and want to try fitting the model in the tidymodel ecosystem and using different regularization methods.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/obtain-metadata-for-public-datasets-in-geo/">Obtain metadata for public datasets in GEO</a></h2>
-    <div class="article-style">
-      
-      There are so many public datasets there waiting for us to mine! It is the blessing and cursing as a computational biologist!
-Metadata, or the data describing (e.g., responder or non-responder for the treatment) the data are critical in interpreting the analysis. Without metadata, your data are useless.
-People usually go to GEO or ENA to download public data. I asked this question on twitter, and I will show you how to get the metadata as suggested by all the awesome tweeps.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/be-careful-when-left-join-tables-with-duplicated-rows/">Be careful when left_join tables with duplicated rows</a></h2>
-    <div class="article-style">
-      
-      This is going to be a really short blog post. I recently found that if I join two tables with one of the tables having duplicated rows, the final joined table also contains the duplicated rows. It could be the expected behavior for others but I want to make a note here for myself.
-library(tidyverse) df1&lt;- tibble(key = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;), value = 1:5) df1 ## # A tibble: 5 x 2 ## key value ## &lt;chr&gt; &lt;int&gt; ## 1 A 1 ## 2 B 2 ## 3 C 3 ## 4 D 4 ## 5 E 5 dataframe 2 has two identical rows for B.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/matrix-factorization-for-single-cell-rnaseq-data/">Matrix Factorization for single-cell RNAseq data</a></h2>
-    <div class="article-style">
-      
-      I am interested in learning more on matrix factorization and its application in scRNAseq data. I want to shout out to this paper: Enter the Matrix: Factorization Uncovers Knowledge from Omics by Elana J. Fertig group.
-A matrix is decomposed to two matrices: the amplitude matrix and the pattern matrix. You can then do all sorts of things with the decomposed matrices. Single cell matrix is no special, one can use the matrix factorization techniques to derive interesting biological insights.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/how-to-test-if-two-distributions-are-different/">How to test if two distributions are different </a></h2>
-    <div class="article-style">
-      
-      I asked this question on Twitter:
- what test to test if two distributions are different? I am aware of KS test. When n is large (which is common in genomic studies), the p-value is always significant. better to test against an effect size? how to do it in this context?
- In genomics studies, it is very common to have large N (e.g., the number of introns, promoters in the genome, number of cells in the single-cell studies).
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/clustered-dotplot-for-single-cell-rnaseq/">clustered dotplot for single-cell RNAseq</a></h2>
-    <div class="article-style">
-      
-      Dotplot is a nice way to visualize scRNAseq expression data across clusters. It gives information (by color) for the average expression level across cells within the cluster and the percentage (by size of the dot) of the cells express that gene within the cluster.
-Seurat has a nice function for that. However, it can not do the clustering for the rows and columns. David McGaughey has written a blog post using ggplot2 and ggtree from Guangchuang Yu.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/review-2020/">Review 2020</a></h2>
-    <div class="article-style">
-      
-      It is the end of the year again and it is a good time to review my 2020. I wrote one for 2019. It has been a tough year for many of us. It is the same for me. I switched my job from Harvard FAS informatics to Department of Data Science at Dana-Farber Cancer Institute during the shutdown because of COVID19 at the end of March and has been working from home since then.
-      
-    </div>
-  </div>
-  
 
   
 <nav>
@@ -412,7 +417,7 @@ Seurat has a nice function for that. However, it can not do the clustering for t
   <div class="container">
     <p class="powered-by">
 
-      &copy; 2018 Ming Tang &middot; 
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
 
       Powered by the
       <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for

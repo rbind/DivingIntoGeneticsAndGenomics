@@ -5,6 +5,105 @@
     
     <url>
     
+      <loc>/post/ten-single-cell-data-benchmarking-papers/</loc>
+      <lastmod>2023-07-13T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/talk/2023-patient-drug-discovery-pod/</loc>
+      <lastmod>2023-07-07T12:00:00-04:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/post/has-ai-changed-the-course-of-drug-development/</loc>
+      <lastmod>2023-06-15T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/talk/2023-poland/</loc>
+      <lastmod>2023-06-09T03:15:00-04:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/</loc>
+      <lastmod>2023-06-08T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</loc>
+      <lastmod>2023-06-07T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/</loc>
+      <lastmod>2023-04-14T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/post/how-to-classify-mnist-images-with-convolutional-neural-network/</loc>
+      <lastmod>2023-04-09T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/post/how-to-construct-a-spatial-object-in-seurat/</loc>
+      <lastmod>2023-03-30T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/</loc>
+      <lastmod>2023-03-24T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/post/basic-tensor-array-manipulations-in-r/</loc>
+      <lastmod>2023-03-18T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/post/deep-learning-with-keras-using-mnst-dataset/</loc>
       <lastmod>2023-03-11T00:00:00+00:00</lastmod>
     </url>
@@ -1197,8 +1296,8 @@
     
     <url>
     
-      <loc>/tags/bioinformatics/</loc>
-      <lastmod>2023-03-05T00:00:00+00:00</lastmod>
+      <loc>/categories/bioinformatics/</loc>
+      <lastmod>2023-07-13T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1207,8 +1306,8 @@
     
     <url>
     
-      <loc>/categories/bioinformatics/</loc>
-      <lastmod>2023-03-11T00:00:00+00:00</lastmod>
+      <loc>/tags/bioinformatics/</loc>
+      <lastmod>2023-07-13T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1258,7 +1357,17 @@
     <url>
     
       <loc>/categories/</loc>
-      <lastmod>2023-03-11T00:00:00+00:00</lastmod>
+      <lastmod>2023-07-13T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/cloud-computing/</loc>
+      <lastmod>2023-06-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1308,7 +1417,7 @@
     <url>
     
       <loc>/categories/data-management/</loc>
-      <lastmod>2018-06-27T00:00:00+00:00</lastmod>
+      <lastmod>2023-06-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1317,8 +1426,18 @@
     
     <url>
     
-      <loc>/tags/docker/</loc>
-      <lastmod>2023-02-16T00:00:00+00:00</lastmod>
+      <loc>/categories/deeplearning/</loc>
+      <lastmod>2023-04-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/deeplearning/</loc>
+      <lastmod>2023-04-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1337,8 +1456,28 @@
     
     <url>
     
+      <loc>/tags/docker/</loc>
+      <lastmod>2023-02-16T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/dotfile/</loc>
       <lastmod>2018-10-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/drug-development/</loc>
+      <lastmod>2023-06-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1377,8 +1516,8 @@
     
     <url>
     
-      <loc>/tags/genomics/</loc>
-      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
+      <loc>/categories/genomics/</loc>
+      <lastmod>2023-02-05T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1387,8 +1526,8 @@
     
     <url>
     
-      <loc>/categories/genomics/</loc>
-      <lastmod>2023-02-05T00:00:00+00:00</lastmod>
+      <loc>/tags/genomics/</loc>
+      <lastmod>2019-05-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1408,17 +1547,7 @@
     <url>
     
       <loc>/tags/ggplot/</loc>
-      <lastmod>2023-03-05T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/hpc/</loc>
-      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <lastmod>2023-06-08T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1428,6 +1557,16 @@
     <url>
     
       <loc>/categories/hpc/</loc>
+      <lastmod>2019-06-09T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/hpc/</loc>
       <lastmod>2019-06-09T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -1477,8 +1616,8 @@
     
     <url>
     
-      <loc>/tags/machine-learning/</loc>
-      <lastmod>2023-03-11T00:00:00+00:00</lastmod>
+      <loc>/categories/machine-learning/</loc>
+      <lastmod>2023-06-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1487,8 +1626,8 @@
     
     <url>
     
-      <loc>/categories/machine-learning/</loc>
-      <lastmod>2023-03-11T00:00:00+00:00</lastmod>
+      <loc>/tags/machine-learning/</loc>
+      <lastmod>2023-06-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1577,16 +1716,6 @@
     
     <url>
     
-      <loc>/tags/python/</loc>
-      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/categories/python/</loc>
       <lastmod>2019-09-12T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -1597,8 +1726,8 @@
     
     <url>
     
-      <loc>/tags/r/</loc>
-      <lastmod>2022-07-03T00:00:00+00:00</lastmod>
+      <loc>/tags/python/</loc>
+      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1608,7 +1737,17 @@
     <url>
     
       <loc>/categories/r/</loc>
-      <lastmod>2023-02-05T00:00:00+00:00</lastmod>
+      <lastmod>2023-04-14T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/r/</loc>
+      <lastmod>2023-04-14T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1637,16 +1776,6 @@
     
     <url>
     
-      <loc>/tags/rstats/</loc>
-      <lastmod>2022-07-03T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/categories/rstats/</loc>
       <lastmod>2021-08-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -1657,8 +1786,8 @@
     
     <url>
     
-      <loc>/tags/scatacseq/</loc>
-      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
+      <loc>/tags/rstats/</loc>
+      <lastmod>2022-07-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1677,8 +1806,8 @@
     
     <url>
     
-      <loc>/tags/scrnaseq/</loc>
-      <lastmod>2023-01-04T00:00:00+00:00</lastmod>
+      <loc>/tags/scatacseq/</loc>
+      <lastmod>2019-07-17T00:00:00-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1697,6 +1826,16 @@
     
     <url>
     
+      <loc>/tags/scrnaseq/</loc>
+      <lastmod>2023-01-04T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/seurat/</loc>
       <lastmod>2022-07-03T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -1707,18 +1846,8 @@
     
     <url>
     
-      <loc>/tags/single-cell/</loc>
-      <lastmod>2023-01-23T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/categories/single-cell/</loc>
-      <lastmod>2022-06-16T00:00:00+00:00</lastmod>
+      <lastmod>2023-07-13T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1727,8 +1856,8 @@
     
     <url>
     
-      <loc>/tags/singularity/</loc>
-      <lastmod>2020-07-02T00:00:00+00:00</lastmod>
+      <loc>/tags/single-cell/</loc>
+      <lastmod>2023-07-13T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1738,6 +1867,16 @@
     <url>
     
       <loc>/categories/singularity/</loc>
+      <lastmod>2020-07-02T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/singularity/</loc>
       <lastmod>2020-07-02T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -1757,6 +1896,26 @@
     
     <url>
     
+      <loc>/categories/spatial/</loc>
+      <lastmod>2023-04-14T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/spatial/</loc>
+      <lastmod>2023-03-30T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/ssh/</loc>
       <lastmod>2018-10-10T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -1767,7 +1926,7 @@
     
     <url>
     
-      <loc>/tags/statistics/</loc>
+      <loc>/categories/statistics/</loc>
       <lastmod>2021-08-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -1777,7 +1936,7 @@
     
     <url>
     
-      <loc>/categories/statistics/</loc>
+      <loc>/tags/statistics/</loc>
       <lastmod>2021-08-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -1828,7 +1987,7 @@
     <url>
     
       <loc>/categories/visualization/</loc>
-      <lastmod>2023-03-05T00:00:00+00:00</lastmod>
+      <lastmod>2023-06-08T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

@@ -6,11 +6,30 @@
     <description>Recent content in Talks &amp; Workshops on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Sun, 01 Jan 2017 00:00:00 -0500</lastBuildDate>
     
 	<atom:link href="/talk/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Patient Participation: The Unsung Hero of Drug Development</title>
+      <link>/talk/2023-patient-drug-discovery-pod/</link>
+      <pubDate>Fri, 07 Jul 2023 12:00:00 -0400</pubDate>
+      
+      <guid>/talk/2023-patient-drug-discovery-pod/</guid>
+      <description>Drumroll, please! 🥁 We&amp;rsquo;re ecstatic to unveil our newest episode of Decoding Life: Conversations with a Computational Biologist - &amp;ldquo;Patient Participation: The Unsung Hero of Drug Development&amp;rdquo;! Packed with valuable insights, we dive headfirst into the transformative role patients play in drug development.
+Thrilled to have 🎯 Ming &amp;ldquo;Tommy&amp;rdquo; Tang, Director of Computational Biology at Immunitas Therapeutics, as our guest. Together, we navigate the inspiring landscape of how patient contributions are revolutionizing drug discovery and the development of biological products.</description>
+    </item>
+    
+    <item>
+      <title>Single-cell analysis: best practices and unsolved problems</title>
+      <link>/talk/2023-poland/</link>
+      <pubDate>Fri, 09 Jun 2023 03:15:00 -0400</pubDate>
+      
+      <guid>/talk/2023-poland/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Learn Computational Biology the Right Way</title>

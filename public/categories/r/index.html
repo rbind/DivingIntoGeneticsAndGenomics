@@ -9,7 +9,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="theme" content="hugo-academic">
   <meta name="generator" content="Hugo 0.42" />
-  <meta name="author" content="Ming Tang">
+  <meta name="author" content="Ming Tommy Tang">
 
   
   
@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2023-02-05T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2023-04-14T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,27 @@
   
   
   <div>
+    <h2><a href="/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/">How to do neighborhood/cellular niches analysis with spatial transcriptome data </a></h2>
+    <div class="article-style">
+      
+      Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
+In a previous blog post, I showed you how to make a Seurat spatial object from Vizgen spatial transcriptome data. In this post, I am going to show you how to identify clusters of neighborhood or cellular niches where specific cell types tend to co-localize.
+ read in the data and pre-process library(Seurat) library(here) library(ggplot2) library(dplyr) # the LoadVizgen function requires the raw segmentation files which is too big.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/how-to-construct-a-spatial-object-in-seurat/">How to construct a spatial object in Seurat</a></h2>
+    <div class="article-style">
+      
+      Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
+Single-cell spatial transcriptome data is a new and advanced technology that combines the study of individual cells’ genes and their location in a tissue to understand the complex cellular and molecular differences within it. This allows scientists to investigate how genes are expressed and how cells interact with each other with much greater detail than before.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/">How to make a triangle correlation heatmap with p-values labeled </a></h2>
     <div class="article-style">
       
@@ -371,27 +392,6 @@ The idea is to create a violin plot per gene using the VlnPlot in Seurat, then c
     </div>
   </div>
   
-  <div>
-    <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
-    <div class="article-style">
-      
-      In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
-My next thought is: maybe the STAR aligner is doing something weird that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/">My opinionated selection of books/urls for bioinformatics/data science curriculum</a></h2>
-    <div class="article-style">
-      
-      There was a paper on this topic: A New Online Computational Biology Curriculum.
-I am going to provide a biased list below (I have read most of the books if not all). I say it is biased because you will see many books of R are from Hadely Wickham. I now use tidyverse most of the time.
-Unix I suggest people who want to learn bioinformatics starting to learn unix commands first.
-      
-    </div>
-  </div>
-  
 
   
 <nav>
@@ -410,7 +410,7 @@ Unix I suggest people who want to learn bioinformatics starting to learn unix co
   <div class="container">
     <p class="powered-by">
 
-      &copy; 2018 Ming Tang &middot; 
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
 
       Powered by the
       <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for

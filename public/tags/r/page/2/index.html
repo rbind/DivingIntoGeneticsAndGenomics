@@ -9,7 +9,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="theme" content="hugo-academic">
   <meta name="generator" content="Hugo 0.42" />
-  <meta name="author" content="Ming Tang">
+  <meta name="author" content="Ming Tommy Tang">
 
   
   
@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2019-04-29T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2019-11-21T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,30 @@
   
   
   <div>
+    <h2><a href="/post/negative-bionomial-distribution-in-single-cell-rnaseq/">negative bionomial distribution in (single-cell) RNAseq </a></h2>
+    <div class="article-style">
+      
+      This post is inspired by two posts written by Valentine Svensson:
+<a href="http://www.nxn.se/valent/2017/11/16/droplet-scrna-seq-is-not-zero-inflated" target="_blank">http://www.nxn.se/valent/2017/11/16/droplet-scrna-seq-is-not-zero-inflated</a>
+<a href="http://www.nxn.se/valent/2018/1/30/count-depth-variation-makes-Poisson-scrna-seq-data-negative-binomial" target="_blank">http://www.nxn.se/valent/2018/1/30/count-depth-variation-makes-Poisson-scrna-seq-data-negative-binomial</a>
+The original ipython notebook can be found at <a href="https://github.com/vals/Blog/blob/master/171116-zero-inflation/Negative%20control%20analysis.ipynb" target="_blank">https://github.com/vals/Blog/blob/master/171116-zero-inflation/Negative%20control%20analysis.ipynb</a>
+Thanks for writing those and put both the data and code in public. After I read Droplet scRNA-seq is not zero-inflated by Valentine Svensson, I want to gain some understanding of it. This post is an effort to replicate some of the analysis in the preprint using R. The original analysis was carried out in python.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
+    <div class="article-style">
+      
+      scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
+I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
+A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></h2>
     <div class="article-style">
       
@@ -344,7 +368,7 @@ chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 
   <div class="container">
     <p class="powered-by">
 
-      &copy; 2018 Ming Tang &middot; 
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
 
       Powered by the
       <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for

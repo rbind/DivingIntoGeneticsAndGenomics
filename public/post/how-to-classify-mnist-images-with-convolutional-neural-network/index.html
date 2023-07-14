@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Introduction An artificial intelligence system called a convolutional neural network (CNN) has gained a lot of popularity recently. For jobs like image recognition, where we want to teach a computer to recognize things in a picture, they are especially well suited.
+CNNs operate by dissecting an image into increasingly minute components, or “features.” The network then examines each feature and searches for patterns shared by various objects. For instance, a CNN might come to understand that some pixel patterns are frequently linked to faces, while others are linked to vehicles or trees.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/how-to-classify-mnist-images-with-convolutional-neural-network/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/how-to-classify-mnist-images-with-convolutional-neural-network/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/how-to-classify-mnist-images-with-convolutional-neural-network/">
+  <meta property="og:title" content="How to classify MNIST images with convolutional neural network | DNA confesses Data speak">
+  <meta property="og:description" content="Introduction An artificial intelligence system called a convolutional neural network (CNN) has gained a lot of popularity recently. For jobs like image recognition, where we want to teach a computer to recognize things in a picture, they are especially well suited.
+CNNs operate by dissecting an image into increasingly minute components, or “features.” The network then examines each feature and searches for patterns shared by various objects. For instance, a CNN might come to understand that some pixel patterns are frequently linked to faces, while others are linked to vehicles or trees.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-04-09T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-04-09T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>How to classify MNIST images with convolutional neural network | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">How to classify MNIST images with convolutional neural network</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-04-09 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Apr 9, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    17 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/how-to-classify-mnist-images-with-convolutional-neural-network/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/machine-learning/">machine learning</a
+    >, 
+    
+    <a href="/categories/deeplearning/">deeplearning</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=How%20to%20classify%20MNIST%20images%20with%20convolutional%20neural%20network&amp;url=%2fpost%2fhow-to-classify-mnist-images-with-convolutional-neural-network%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fhow-to-classify-mnist-images-with-convolutional-neural-network%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fhow-to-classify-mnist-images-with-convolutional-neural-network%2f&amp;title=How%20to%20classify%20MNIST%20images%20with%20convolutional%20neural%20network"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fhow-to-classify-mnist-images-with-convolutional-neural-network%2f&amp;title=How%20to%20classify%20MNIST%20images%20with%20convolutional%20neural%20network"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=How%20to%20classify%20MNIST%20images%20with%20convolutional%20neural%20network&amp;body=%2fpost%2fhow-to-classify-mnist-images-with-convolutional-neural-network%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<p>An artificial intelligence system called a convolutional neural network (CNN) has gained a lot of popularity recently. For jobs like image recognition, where we want to teach a computer to recognize things in a picture, they are especially well suited.</p>
+<p>CNNs operate by dissecting an image into increasingly minute components, or “features.” The network then examines each feature and searches for patterns shared by various objects. For instance, a CNN might come to understand that some pixel patterns are frequently linked to faces, while others are linked to vehicles or trees.</p>
+<p>The unique feature of CNNs is their capacity to discover these patterns on its own, without having to be explicitly trained to do so. This is what makes them so powerful: by analyzing thousands or even millions of images, a CNN can learn to recognize a wide variety of objects with remarkable accuracy.</p>
+<p>In a <a href="https://divingintogeneticsandgenomics.rbind.io/post/deep-learning-with-keras-using-mnst-dataset/">previous blog post</a>, we used a two-regular dense layer neural network for the MNIST images classification. The testing accuracy was 97.8%.</p>
+<p>Let’s implement a convolutional neural network and see how it performs.</p>
+<p>Understand CNN in a high level with <a href="https://www.youtube.com/watch?v=HGwBXDKFk9I">Josh Starmer’s video</a>.</p>
+<p><img src="/img/CNN.png" /></p>
+</div>
+<div id="lets-load-the-data" class="section level3">
+<h3>Let’s load the data</h3>
+<p>Load the libraries:</p>
+<pre class="r"><code>#install.packages(&quot;keras&quot;) install the keras R package
+library(keras)
+#install_keras(version = &quot;release&quot;)  install the core Keras library and TensorFlow</code></pre>
+<pre class="r"><code>library(reticulate)
+use_condaenv(&quot;r-reticulate&quot;)
+mnist&lt;- dataset_mnist()</code></pre>
+<p>split the training and testing sets</p>
+<pre class="r"><code>train_images&lt;- mnist$train$x
+train_labels&lt;- mnist$train$y
+train_labels&lt;- to_categorical(train_labels)
+
+test_images&lt;- mnist$test$x
+test_labels&lt;- mnist$test$y
+test_labels&lt;- to_categorical(test_labels)</code></pre>
+<p>The training sets is a 3D tensor</p>
+<pre class="r"><code>dim(train_images)</code></pre>
+<pre><code>#&gt; [1] 60000    28    28</code></pre>
+<p>It is an array of 60,000 matrices of 28x28 integers. Each matrix is a grayscale image:</p>
+<pre class="r"><code># get the fifth matrix
+digit&lt;- train_images[5, ,]
+dim(digit)</code></pre>
+<pre><code>#&gt; [1] 28 28</code></pre>
+<pre class="r"><code>plot(as.raster(digit, max = 255))</code></pre>
+<p><img src="/post/2023-04-09-how-to-classify-mnist-images-with-convolutional-neural-network_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>It is a matrix denoting the image of 9.</p>
+</div>
+<div id="reshape-the-data-into-3d-tensor" class="section level3">
+<h3>reshape the data into 3D tensor</h3>
+<p>In our regular dense neural network model, we reshaped the tensor into 2D.</p>
+<p>Importantly, a <code>convnet</code> takes tensors of shape (image_height, image_width, image_channels), not including the
+batch dimension. We will convert the input to size (28, 28, 1). For the MNIST dataset, it is black and white, so only 1 channel.</p>
+<p>For colored images, you will have 3 channels (RGB colors).</p>
+<pre class="r"><code># a 2D tensor/matrix
+digit</code></pre>
+<pre><code>#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]
+#&gt;  [1,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [2,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [3,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [4,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [5,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [6,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [7,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [8,]    0    0    0    0    0    0    0    0    0     0     0     0    55
+#&gt;  [9,]    0    0    0    0    0    0    0    0    0     0     0    87   232
+#&gt; [10,]    0    0    0    0    0    0    0    0    0     4    57   242   252
+#&gt; [11,]    0    0    0    0    0    0    0    0    0    96   252   252   183
+#&gt; [12,]    0    0    0    0    0    0    0    0  132   253   252   146    14
+#&gt; [13,]    0    0    0    0    0    0    0  126  253   247   176     9     0
+#&gt; [14,]    0    0    0    0    0    0   16  232  252   176     0     0     0
+#&gt; [15,]    0    0    0    0    0    0   22  252  252    30    22   119   197
+#&gt; [16,]    0    0    0    0    0    0   16  231  252   253   252   252   252
+#&gt; [17,]    0    0    0    0    0    0    0   55  235   253   217   138    42
+#&gt; [18,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [19,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [20,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [21,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [22,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [23,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [24,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [25,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [26,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [27,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [28,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;       [,14] [,15] [,16] [,17] [,18] [,19] [,20] [,21] [,22] [,23] [,24] [,25]
+#&gt;  [1,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [2,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [3,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [4,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [5,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [6,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [7,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [8,]   148   210   253   253   113    87   148    55     0     0     0     0
+#&gt;  [9,]   252   253   189   210   252   252   253   168     0     0     0     0
+#&gt; [10,]   190    65     5    12   182   252   253   116     0     0     0     0
+#&gt; [11,]    14     0     0    92   252   252   225    21     0     0     0     0
+#&gt; [12,]     0     0     0   215   252   252    79     0     0     0     0     0
+#&gt; [13,]     0     8    78   245   253   129     0     0     0     0     0     0
+#&gt; [14,]    36   201   252   252   169    11     0     0     0     0     0     0
+#&gt; [15,]   241   253   252   251    77     0     0     0     0     0     0     0
+#&gt; [16,]   226   227   252   231     0     0     0     0     0     0     0     0
+#&gt; [17,]    24   192   252   143     0     0     0     0     0     0     0     0
+#&gt; [18,]    62   255   253   109     0     0     0     0     0     0     0     0
+#&gt; [19,]    71   253   252    21     0     0     0     0     0     0     0     0
+#&gt; [20,]     0   253   252    21     0     0     0     0     0     0     0     0
+#&gt; [21,]    71   253   252    21     0     0     0     0     0     0     0     0
+#&gt; [22,]   106   253   252    21     0     0     0     0     0     0     0     0
+#&gt; [23,]    45   255   253    21     0     0     0     0     0     0     0     0
+#&gt; [24,]     0   218   252    56     0     0     0     0     0     0     0     0
+#&gt; [25,]     0    96   252   189    42     0     0     0     0     0     0     0
+#&gt; [26,]     0    14   184   252   170    11     0     0     0     0     0     0
+#&gt; [27,]     0     0    14   147   252    42     0     0     0     0     0     0
+#&gt; [28,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;       [,26] [,27] [,28]
+#&gt;  [1,]     0     0     0
+#&gt;  [2,]     0     0     0
+#&gt;  [3,]     0     0     0
+#&gt;  [4,]     0     0     0
+#&gt;  [5,]     0     0     0
+#&gt;  [6,]     0     0     0
+#&gt;  [7,]     0     0     0
+#&gt;  [8,]     0     0     0
+#&gt;  [9,]     0     0     0
+#&gt; [10,]     0     0     0
+#&gt; [11,]     0     0     0
+#&gt; [12,]     0     0     0
+#&gt; [13,]     0     0     0
+#&gt; [14,]     0     0     0
+#&gt; [15,]     0     0     0
+#&gt; [16,]     0     0     0
+#&gt; [17,]     0     0     0
+#&gt; [18,]     0     0     0
+#&gt; [19,]     0     0     0
+#&gt; [20,]     0     0     0
+#&gt; [21,]     0     0     0
+#&gt; [22,]     0     0     0
+#&gt; [23,]     0     0     0
+#&gt; [24,]     0     0     0
+#&gt; [25,]     0     0     0
+#&gt; [26,]     0     0     0
+#&gt; [27,]     0     0     0
+#&gt; [28,]     0     0     0</code></pre>
+<pre class="r"><code>#reshape it to 3D
+digit2&lt;- array_reshape(digit, c(28, 28, 1))
+digit2[,,1]</code></pre>
+<pre><code>#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]
+#&gt;  [1,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [2,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [3,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [4,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [5,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [6,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [7,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;  [8,]    0    0    0    0    0    0    0    0    0     0     0     0    55
+#&gt;  [9,]    0    0    0    0    0    0    0    0    0     0     0    87   232
+#&gt; [10,]    0    0    0    0    0    0    0    0    0     4    57   242   252
+#&gt; [11,]    0    0    0    0    0    0    0    0    0    96   252   252   183
+#&gt; [12,]    0    0    0    0    0    0    0    0  132   253   252   146    14
+#&gt; [13,]    0    0    0    0    0    0    0  126  253   247   176     9     0
+#&gt; [14,]    0    0    0    0    0    0   16  232  252   176     0     0     0
+#&gt; [15,]    0    0    0    0    0    0   22  252  252    30    22   119   197
+#&gt; [16,]    0    0    0    0    0    0   16  231  252   253   252   252   252
+#&gt; [17,]    0    0    0    0    0    0    0   55  235   253   217   138    42
+#&gt; [18,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [19,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [20,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [21,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [22,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [23,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [24,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [25,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [26,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [27,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt; [28,]    0    0    0    0    0    0    0    0    0     0     0     0     0
+#&gt;       [,14] [,15] [,16] [,17] [,18] [,19] [,20] [,21] [,22] [,23] [,24] [,25]
+#&gt;  [1,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [2,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [3,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [4,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [5,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [6,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [7,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;  [8,]   148   210   253   253   113    87   148    55     0     0     0     0
+#&gt;  [9,]   252   253   189   210   252   252   253   168     0     0     0     0
+#&gt; [10,]   190    65     5    12   182   252   253   116     0     0     0     0
+#&gt; [11,]    14     0     0    92   252   252   225    21     0     0     0     0
+#&gt; [12,]     0     0     0   215   252   252    79     0     0     0     0     0
+#&gt; [13,]     0     8    78   245   253   129     0     0     0     0     0     0
+#&gt; [14,]    36   201   252   252   169    11     0     0     0     0     0     0
+#&gt; [15,]   241   253   252   251    77     0     0     0     0     0     0     0
+#&gt; [16,]   226   227   252   231     0     0     0     0     0     0     0     0
+#&gt; [17,]    24   192   252   143     0     0     0     0     0     0     0     0
+#&gt; [18,]    62   255   253   109     0     0     0     0     0     0     0     0
+#&gt; [19,]    71   253   252    21     0     0     0     0     0     0     0     0
+#&gt; [20,]     0   253   252    21     0     0     0     0     0     0     0     0
+#&gt; [21,]    71   253   252    21     0     0     0     0     0     0     0     0
+#&gt; [22,]   106   253   252    21     0     0     0     0     0     0     0     0
+#&gt; [23,]    45   255   253    21     0     0     0     0     0     0     0     0
+#&gt; [24,]     0   218   252    56     0     0     0     0     0     0     0     0
+#&gt; [25,]     0    96   252   189    42     0     0     0     0     0     0     0
+#&gt; [26,]     0    14   184   252   170    11     0     0     0     0     0     0
+#&gt; [27,]     0     0    14   147   252    42     0     0     0     0     0     0
+#&gt; [28,]     0     0     0     0     0     0     0     0     0     0     0     0
+#&gt;       [,26] [,27] [,28]
+#&gt;  [1,]     0     0     0
+#&gt;  [2,]     0     0     0
+#&gt;  [3,]     0     0     0
+#&gt;  [4,]     0     0     0
+#&gt;  [5,]     0     0     0
+#&gt;  [6,]     0     0     0
+#&gt;  [7,]     0     0     0
+#&gt;  [8,]     0     0     0
+#&gt;  [9,]     0     0     0
+#&gt; [10,]     0     0     0
+#&gt; [11,]     0     0     0
+#&gt; [12,]     0     0     0
+#&gt; [13,]     0     0     0
+#&gt; [14,]     0     0     0
+#&gt; [15,]     0     0     0
+#&gt; [16,]     0     0     0
+#&gt; [17,]     0     0     0
+#&gt; [18,]     0     0     0
+#&gt; [19,]     0     0     0
+#&gt; [20,]     0     0     0
+#&gt; [21,]     0     0     0
+#&gt; [22,]     0     0     0
+#&gt; [23,]     0     0     0
+#&gt; [24,]     0     0     0
+#&gt; [25,]     0     0     0
+#&gt; [26,]     0     0     0
+#&gt; [27,]     0     0     0
+#&gt; [28,]     0     0     0</code></pre>
+<pre class="r"><code>dim(digit2)</code></pre>
+<pre><code>#&gt; [1] 28 28  1</code></pre>
+<p>reshape input tensor including the batch (6000 images):</p>
+<pre class="r"><code>#train_images&lt;- array_reshape(train_images, c(60000, 28 * 28))
+
+train_images&lt;- array_reshape(train_images, c(60000, 28, 28, 1))
+
+## one of the image
+# train_images[1,,,]
+train_images&lt;- train_images/255
+
+test_images&lt;- array_reshape(test_images, c(10000, 28, 28, 1))
+test_images&lt;- test_images/255</code></pre>
+<p>Read my previous <a href="https://divingintogeneticsandgenomics.rbind.io/post/deep-learning-with-keras-using-mnst-dataset/">post</a> on how to reshape tensors.</p>
+<pre class="r"><code>dim(train_images)</code></pre>
+<pre><code>#&gt; [1] 60000    28    28     1</code></pre>
+<pre class="r"><code>dim(test_images)</code></pre>
+<pre><code>#&gt; [1] 10000    28    28     1</code></pre>
+</div>
+<div id="build-the-network" class="section level3">
+<h3>build the network</h3>
+<pre class="r"><code>model&lt;- keras_model_sequential() %&gt;%
+        layer_conv_2d(filters = 32, kernel_size = c(3,3), activation = &quot;relu&quot;,
+                     input_shape = c(28, 28, 1)) %&gt;%
+        layer_max_pooling_2d(pool_size = c(2,2)) %&gt;%
+        layer_conv_2d(filters = 64, kernel_size =  c(3,3), activation = &quot;relu&quot;) %&gt;%
+        layer_max_pooling_2d(pool_size = c(2,2)) %&gt;%
+        layer_conv_2d(filters = 64, kernel_size =  c(3,3), activation = &quot;relu&quot;)
+
+model&lt;- model %&gt;%
+        layer_flatten() %&gt;%
+        layer_dense(units = 64, activation = &quot;relu&quot;) %&gt;%
+        layer_dense(units = 10, activation = &quot;softmax&quot;)</code></pre>
+<p>Take a look at the details of the model</p>
+<pre class="r"><code>model</code></pre>
+<pre><code>#&gt; Model: &quot;sequential&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; conv2d_2 (Conv2D)                   (None, 26, 26, 32)              320         
+#&gt; ________________________________________________________________________________
+#&gt; max_pooling2d_1 (MaxPooling2D)      (None, 13, 13, 32)              0           
+#&gt; ________________________________________________________________________________
+#&gt; conv2d_1 (Conv2D)                   (None, 11, 11, 64)              18496       
+#&gt; ________________________________________________________________________________
+#&gt; max_pooling2d (MaxPooling2D)        (None, 5, 5, 64)                0           
+#&gt; ________________________________________________________________________________
+#&gt; conv2d (Conv2D)                     (None, 3, 3, 64)                36928       
+#&gt; ________________________________________________________________________________
+#&gt; flatten (Flatten)                   (None, 576)                     0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_1 (Dense)                     (None, 64)                      36928       
+#&gt; ________________________________________________________________________________
+#&gt; dense (Dense)                       (None, 10)                      650         
+#&gt; ================================================================================
+#&gt; Total params: 93,322
+#&gt; Trainable params: 93,322
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<p>Convolutions operates over 3D tensors, called <code>feature maps</code> with two spatial axes (<code>height</code> and <code>width</code>) as well
+as the a <code>depth</code> axis. For an RGB image, the dimension of the depth axis is 3 with Red, green and blue channels.</p>
+<p>For the black and white MNIST images, the depth is 1 (levels of gray).</p>
+<p>The convolution extracts patches from its input feature map and applies the same transformation for all patches, producing
+an <code>output feature map</code>. This out put feature map is still 3D: width, height and depth. But the depth now is an arbitrary
+parameter of the layer and it does not represent the RGB colors: they are called filters.</p>
+<p>Filters encode specific aspects of the input data. At a higher level, a single filter can encode the concept “presence of a
+face in the image”.</p>
+<p>In our MNIST example, we take a (28, 28, 1) input feature map and output a feature map of (26, 26, 32). It computes 32 filters over its input.
+Each of those 32 output channels contains a 26 x 26 grid of values, which is a response map of the filter over the input, indicating
+the response of that filter pattern at different locations in the input.</p>
+<p>Two key parameters we defined in our model</p>
+<ul>
+<li><p>size of the patches extracted from the inputs: they are typically 3x3 or 5x5. We used 3x3. Without padding, for a 28 x 28 image, the output feature map
+dimension becomes 26 x 26 (Think how many 3x3 patches you can get from a 28x28 grid.)</p></li>
+<li><p>Depth of the output feature map: the number of filters computed by the convolution. We used 32 and ended with 64.</p></li>
+</ul>
+<p>Max-pooling consists of extracting windows from the output feature maps and outputting the max value of each channel. Instead of transforming local patches
+via a learned linear transformation, they are transformed via a hard coded max tensor operation. The max pooling is usually done with 2x2 window.
+That’s why after 1st max pooling, the 26 x 26 grid becomes 13 x 13; and after 2nd max pooling, 11 x 11 becomes 5x 5. Because of the border issues,
+the grid becomes smaller and smaller: 28 x 28 to 26 x 26; 13 x 13 to 11 x 11, 5x 5 to 3x3.</p>
+<p>Let’s make a new model by padding:</p>
+<pre class="r"><code>model2&lt;- keras_model_sequential() %&gt;%
+        layer_conv_2d(filters = 32, kernel_size = c(3,3), activation = &quot;relu&quot;,
+                     input_shape = c(28, 28, 1), padding = &quot;same&quot;) %&gt;%
+        layer_max_pooling_2d(pool_size = c(2,2), padding = &quot;same&quot;) %&gt;%
+        layer_conv_2d(filters = 64, kernel_size =  c(3,3), activation = &quot;relu&quot;, padding = &quot;same&quot;) %&gt;%
+        layer_max_pooling_2d(pool_size = c(2,2), padding = &quot;same&quot;) %&gt;%
+        layer_conv_2d(filters = 64, kernel_size =  c(3,3), activation = &quot;relu&quot;, padding = &quot;same&quot;)
+
+model2&lt;- model2 %&gt;%
+        layer_flatten() %&gt;%
+        layer_dense(units = 64, activation = &quot;relu&quot;) %&gt;%
+        layer_dense(units = 10, activation = &quot;softmax&quot;)
+
+model2</code></pre>
+<pre><code>#&gt; Model: &quot;sequential_1&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; conv2d_5 (Conv2D)                   (None, 28, 28, 32)              320         
+#&gt; ________________________________________________________________________________
+#&gt; max_pooling2d_3 (MaxPooling2D)      (None, 14, 14, 32)              0           
+#&gt; ________________________________________________________________________________
+#&gt; conv2d_4 (Conv2D)                   (None, 14, 14, 64)              18496       
+#&gt; ________________________________________________________________________________
+#&gt; max_pooling2d_2 (MaxPooling2D)      (None, 7, 7, 64)                0           
+#&gt; ________________________________________________________________________________
+#&gt; conv2d_3 (Conv2D)                   (None, 7, 7, 64)                36928       
+#&gt; ________________________________________________________________________________
+#&gt; flatten_1 (Flatten)                 (None, 3136)                    0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_3 (Dense)                     (None, 64)                      200768      
+#&gt; ________________________________________________________________________________
+#&gt; dense_2 (Dense)                     (None, 10)                      650         
+#&gt; ================================================================================
+#&gt; Total params: 257,162
+#&gt; Trainable params: 257,162
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<p>After we use <code>padding = same</code>(default is valid), our input image is 28x28, after 1st conv2d, it is still 28x28,
+max pooling reduces it to half: 14 x 14, but the second conv2d keeps it 14x 14, then max pooling reduced it to half again to 7x7 etc etc.</p>
+<p>Let’s compile the first model:</p>
+<pre class="r"><code>model %&gt;%
+        compile(optimizer = &quot;rmsprop&quot;,
+                loss = &quot;categorical_crossentropy&quot;,
+                metrics= c(&quot;accuracy&quot;))</code></pre>
+<p>Finally, train the model:</p>
+<pre class="r"><code>model %&gt;%
+        fit(train_images, train_labels, epochs = 5, batch_size = 64)</code></pre>
+<p>The network will iterate on the training data in mini-batches of 64 samples, 5 times over(each iteration over all the training data is called an epoch).</p>
+</div>
+<div id="evaluate-the-model" class="section level3">
+<h3>evaluate the model</h3>
+<pre class="r"><code>metrics&lt;- model %&gt;% evaluate(test_images, test_labels)
+metrics</code></pre>
+<pre><code>#&gt;       loss   accuracy 
+#&gt; 0.02705173 0.99220002</code></pre>
+<p>It blows my mind that this simple CNN reached an accuracy of ~99%!
+The time is a little longer than the regular dense layer neural network.</p>
+</div>
+<div id="take-home-messages" class="section level3">
+<h3>Take home messages</h3>
+<ul>
+<li><p>CNN reduces the number of input nodes and thus total number of parameters (the pooling step does it).</p></li>
+<li><p>CNNs are capable of hierarchical feature learning: CNNs use multiple layers to learn hierarchical representations of an image, starting with low-level features like edges and gradually building up to more complex features like shapes and objects. This allows them to extract more meaningful features from images, which can improve their accuracy and performance. it tolerate small shifts in where the pixle are in the image. CNN learns local features such as an “ear” and can find it in other places of the image.</p></li>
+<li><p>CNNs are able to learn on their own: One of the key advantages of CNNs is that they are able to learn from data without being explicitly programmed to do so. This means that they can automatically adapt to new data and improve their performance over time, making them highly flexible and adaptable.</p></li>
+<li><p>CNNs can be highly accurate: When trained on large datasets, CNNs can achieve very high levels of accuracy in image recognition tasks. In fact, in some cases they can even outperform humans, making them a valuable tool for tasks like medical diagnosis, quality control, and more.</p></li>
+<li><p>We can use k-fold cross-validation and a validate set to further increase the prediction accuracy for testing data.</p></li>
+</ul>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/deeplearning/">deeplearning</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/machine-learning/">machine learning</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/basic-tensor-array-manipulations-in-r/">Basic tensor/array manipulations in R</a></li>
+        
+        <li><a href="/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/">Deep learning to predict cancer from healthy controls using TCRseq data</a></li>
+        
+        <li><a href="/post/deep-learning-with-keras-using-mnst-dataset/">Deep learning with Keras using MNIST dataset </a></li>
+        
+        <li><a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></li>
+        
+        <li><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/" rel="next">How to do neighborhood/cellular niches analysis with spatial transcriptome data </a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/how-to-construct-a-spatial-object-in-seurat/" rel="prev">How to construct a spatial object in Seurat</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

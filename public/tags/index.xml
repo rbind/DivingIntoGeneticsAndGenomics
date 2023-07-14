@@ -6,7 +6,7 @@
     <description>Recent content in Tags on DNA confesses Data speak</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>&amp;copy; 2018 Ming Tang</copyright>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Sun, 01 Jan 2017 00:00:00 -0500</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
@@ -42,7 +42,7 @@
     <item>
       <title>Bioinformatics</title>
       <link>/tags/bioinformatics/</link>
-      <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/bioinformatics/</guid>
       <description></description>
@@ -99,6 +99,15 @@
       <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>
       
       <guid>/tags/data/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Deeplearning</title>
+      <link>/tags/deeplearning/</link>
+      <pubDate>Sun, 09 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/deeplearning/</guid>
       <description></description>
     </item>
     
@@ -168,7 +177,7 @@
     <item>
       <title>Ggplot</title>
       <link>/tags/ggplot/</link>
-      <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 08 Jun 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/ggplot/</guid>
       <description></description>
@@ -222,7 +231,7 @@
     <item>
       <title>Machine learning</title>
       <link>/tags/machine-learning/</link>
-      <pubDate>Sat, 11 Mar 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 15 Jun 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/machine-learning/</guid>
       <description></description>
@@ -285,7 +294,7 @@
     <item>
       <title>R</title>
       <link>/tags/r/</link>
-      <pubDate>Sun, 03 Jul 2022 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 14 Apr 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/r/</guid>
       <description></description>
@@ -339,7 +348,7 @@
     <item>
       <title>Single-cell</title>
       <link>/tags/single-cell/</link>
-      <pubDate>Mon, 23 Jan 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/single-cell/</guid>
       <description></description>
@@ -360,6 +369,15 @@
       <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
       
       <guid>/tags/snakemake/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Spatial</title>
+      <link>/tags/spatial/</link>
+      <pubDate>Thu, 30 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/spatial/</guid>
       <description></description>
     </item>
     
