@@ -155,5 +155,10 @@ DimPlot_scCustom(seurat_object = merged_seurat)
 
 I have a youtube video on this too! subscribe to chatomics!
 
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=5e_8wr5Xx_Q" frameborder="0" allowfullscreen></iframe>
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=5e_8wr5Xx_Q")
+```
+
 
