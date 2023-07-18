@@ -20,7 +20,7 @@ selected = true
 #projects = ["deep-learning.md"]
 
 # Links (optional).
-#url_pdf = "files/slides/2022-06-09_single-cell-unsolved_problems.pdf"
+url_pdf = "files/slides/Myeloid_targeting_talk_spatial.pdf"
 url_slides = ""
 #url_video = "https://open.spotify.com/episode/1vQdgYdTNbO1OXg8WhLBmO"
 url_code = ""
