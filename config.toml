@@ -224,11 +224,16 @@ enableGitInfo = false
   #
   #   Full list: https://jpswalsh.github.io/academicons/
 
-  [[params.social]]
-    icon = "envelope"
-    icon_pack = "fa"
-    link = "mailto:tangming2005@gmail.com"
+ # [[params.social]]
+ #   icon = "envelope"
+ #   icon_pack = "fa"
+ #   link = "mailto:tangming2005@gmail.com"
 
+  [[params.social]]
+    icon = "youtube"
+    icon_pack = "fa"
+    link = "https://www.youtube.com/channel/UC0DNFLi8yg1UVo67bCLMMJg"
+    
   [[params.social]]
     icon = "twitter"
     icon_pack = "fa"
@@ -249,10 +254,6 @@ enableGitInfo = false
     icon_pack = "fa"
     link = "https://github.com/crazyhottommy"
 
-  [[params.social]]
-    icon = "youtube"
-    icon_pack = "fa"
-    link = "https://www.youtube.com/channel/UC0DNFLi8yg1UVo67bCLMMJg"
     
 # Navigation Links
 #   To link a homepage widget, specify the URL as a hash `#` followed by the filename of the
