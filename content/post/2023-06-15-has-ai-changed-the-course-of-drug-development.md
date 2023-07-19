@@ -41,6 +41,11 @@ The definition is broad. I prefer the term machine learning (ML) in the context 
 
 Most AI/ML is applied to drug discovery, or the first step of the drug development process.  For small molecules, One can screen virtual libraries of large numbers of existing compounds that can inhibit or activate a new target. It can narrow down the list and then validate in experimental assays. 
 
+**UPDATE on 07/19/2023**, I saw this nice figure from https://twitter.com/bwhite5290/status/1680930702039347200 showing what AI can help with the drug development process:
+![](/img/AI_drug.jpeg)
+
+In addition to target identification, we can also apply AI/ML on lead identification and lead optimization.
+
 [Recursion](https://www.recursion.com/) uses an array of robots to treat millions of cell samples with drugs and genetic perturbations, stain them, and image them. It then applies machine learning algorithms to search for informative relationships between the perturbations and the morphological features of the cells.
 
 Most of the AI companies are vague on their ML approaches in their websites.
