@@ -1,0 +1,237 @@
+---
+title: 'scRNAseq clustering significance test: an unsolvable problem?'
+author: Ming Tang
+date: '2023-07-23'
+slug: scrnaseq-clustering-significant-test-an-unsolvable-problem
+categories:
+  - bioinformatics
+  - scRNAseq
+  - machine learning
+tags:
+  - bioinformatics
+  - Seurat
+  - machine learning
+header:
+  caption: ''
+  image: ''
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 4)  # Set the desired width and height
+```
+
+
+### Introductioon 
+
+In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights. 
+
+The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the `resolution` parameter. However, whether the newly generated clusters are meaningful or not is a question.
+
+I previously published a tool [scclusteval](https://github.com/crazyhottommy/scclusteval) trying to help with this problem.
+
+
+### Testing scRNAseq clustering significance
+
+Several days ago, I saw this paper came out [Significance analysis for clustering with single-cell RNA-sequencing data](https://pubmed.ncbi.nlm.nih.gov/37429993/) in *Nature Methods*. I am eager to give it a try.
+
+The biorxiv version can be found at https://www.biorxiv.org/content/10.1101/2022.08.01.502383v1
+
+The idea is based on the https://github.com/pkimes/sigclust2 which test significant clusters in hierarchical clustering.
+
+>However, it assumes an underlying parametric distribution for the data, specifically Gaussian distributions, where distinct populations have different centers. A given set of clusters can then be assessed in a formal and statistically rigorous manner by asking whether or not these clusters could have plausibly arisen under data from a single Gaussian distribution. If so, then the set of clusters likely indicates over-clustering.
+
+>Significance of Hierarchical Clustering (SHC) addresses this limitation by incorporating hypothesis testing within the hierarchical procedure. However, SHC is not directly applicable to scRNA-seq data due to the Gaussian distributional assumption, which is inappropriate for these sparse count data.
+
+[`scSHC`](https://github.com/igrabski/sc-SHC) implements the significance testing extending to single cell data which is sparse. It models the counts with poisson distribution and use a permutation test to test the significance for the testing statistics: `Silhouette width`.
+
+To calculate a Silhouette width score for a member of a cluster, you first calculate the average within cluster distances `C(i)` and the average closest neighbor distance `N(i)` and use the formula shown in Figure 1 to calculate `S(i)`.
+
+```{r echo=FALSE, fig.cap="Silhouette width", fig.show="hold", out.width = '100%'}
+
+knitr::include_graphics(c("/img/sihouette1.png", "/img/silhouette2.png"),  error = FALSE)
+```
+
+`Silhouette width` ranges from -1 to 1. 1 means that member is perfectly match to the cluster it was assigned to. -1 means that member should be placed in the neighboring cluster.
+
+Then, one does hypothesis testing by first stating the null hypothesis:
+
+- H0: there is only one cluster
+- H1: there are two clusters
+
+The figure below shows two scenarios:
+```{r echo=FALSE, fig.cap="significance test by permutation", fig.show="hold", out.width = '100%'}
+
+knitr::include_graphics(c("/img/scHSC.png"),  error = FALSE)
+```
+
+The first scenario is that the truth is 2 clusters and we identified two clusters by clustering algorithms. The second scenario is that the truth is only 1 cluster but we also identified two clusters by clustering algorithms. 
+
+Under the null hypothesis, one can estimate the distribution parameters and simulate the same distribution by e.g., 100 times and for each time, calculate the Silhouette width for all cells. we plot the simulated average silhouette width (for all cells) as a histogram and then compare the observed silhouette width in the data.
+
+For the two scenarios, we choose a significance level alpha = 0.05. 
+
+In the first scenario, the observed silhouette width is greater than all the simulated silhouette width, so we reject the null and accept the alternative: there are two clusters.
+
+In the second scenario, out of 100 permutations, 33 times of the permutation based silhouette score is greater than observed one, so the p-value is `33/100 = 0.33`.
+
+It is greater than `0.05`, so we fail to reject the null and accept that there is only one cluster in the data.
+
+`scSHC` tests the clustering significance at every splitting point hierarchically. 
+
+### install the package 
+```{r eval=FALSE}
+# dependency
+BiocManager::install("scry")
+devtools::install_github("igrabski/sc-SHC")
+```
+
+Load the libraries
+
+```{r}
+library(scSHC)
+library(dplyr)
+library(Seurat)
+library(scCustomize)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+library(SeuratData)
+set.seed(1234)
+```
+
+
+```{r}
+data("pbmc3k")
+
+pbmc3k
+```
+
+## routine processing
+
+```{r cache = TRUE, fig.height = 4, fig.width = 8, fig.align = "center"}
+pbmc3k<- pbmc3k %>% 
+  NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+  FindVariableFeatures(selection.method = "vst", nfeatures = 2000) %>%
+  ScaleData() %>%
+  RunPCA(verbose = FALSE) %>%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %>%
+  FindClusters(resolution = 0.5, verbose = FALSE) %>%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+pbmc3k<- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]
+
+p1<- DimPlot_scCustom(pbmc3k, reduction = "umap", label = TRUE, group.by = 
+                        "RNA_snn_res.0.5")
+
+p2<- DimPlot_scCustom(pbmc3k, reduction = "umap", label = TRUE, group.by = "seurat_annotations", label.size = 3)
+
+p1 + p2
+
+janitor::tabyl(pbmc3k@meta.data, seurat_annotations, RNA_snn_res.0.5)
+```
+
+Let's artificially increase the resolution (to 1) to over-cluster it.
+
+```{r, fig.height = 8, fig.width = 8, fig.align = "center"}
+## artificially increase the resolution
+pbmc3k<- pbmc3k %>%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %>%
+  FindClusters(resolution = 1, verbose = FALSE) 
+
+
+p3<- DimPlot_scCustom(pbmc3k, reduction = "umap", label = TRUE, group.by = "RNA_snn_res.1")
+
+(p1 + p3) / p2
+```
+
+CD4 naive cell cluster is split to 2 clusters (0 -> 0, 5)
+the CD14+ monocyte cluster is split into 2 clusters (1 -> 4, 6)
+
+```{r}
+janitor::tabyl(pbmc3k@meta.data, RNA_snn_res.1, RNA_snn_res.0.5)
+```
+
+### use scSHC to do the clustering
+
+```{r cache=TRUE}
+library(tictoc)
+
+tic()
+clusters<- scSHC(pbmc3k@assays$RNA@counts, cores = 6,
+                 num_PCs = 30,
+                 num_features = 2000)
+toc()
+```
+
+### visualize the data 
+
+The `scSHC` output is a list of 2 elements, the first element contains the cluster id for each cell and the second element contains 
+
+```{r}
+
+table(clusters[[1]])
+
+# the second 
+clusters[[2]]
+
+clusters[[1]] %>%
+  tibble::enframe() %>%
+  head()
+  
+scSHC_clusters<- clusters[[1]] %>%
+  tibble::enframe(name = "barcode", value = "scSHC_clusters")
+
+scSHC_clusters<- as.data.frame(scSHC_clusters)
+rownames(scSHC_clusters)<- scSHC_clusters$barcode
+head(scSHC_clusters)
+```
+
+add the scSHC cluster to the seurat metadata slot
+```{r}
+pbmc3k<- AddMetaData(pbmc3k, metadata = scSHC_clusters)
+pbmc3k@meta.data %>% head()
+
+all.equal(rownames(pbmc3k@meta.data), unname(pbmc3k$barcode))
+```
+
+plotting
+
+```{r, fig.height = 8, fig.width = 8, fig.align = "center"}
+
+p4<- DimPlot_scCustom(pbmc3k, group.by = "scSHC_clusters")
+
+(p2 + p4) / (p1 + p3)
+
+janitor::tabyl(pbmc3k@meta.data, seurat_annotations, scSHC_clusters)
+```
+
+What surprises me is that `scSHC` does not separate the CD14+ monocytes and the dendritic cells. (cluster 1 is a mix of CD14+ monocytes, DCs and platelet)
+
+### conclusions
+
+* One may fine tune `num_features` and `num_PCs` to get a better results. My conclusion is that although it seems statistically attractive, significance testing for scRNAseq clustering is still an unsolved problem. Cell type or cell state is inherently complicated and sometimes in a continuum. 
+
+* Also, we do not have a ground truth here. The Seurat cell annotations provided by the developers may not be 100% correct.
+
+* It took ~3mins using 6 CPUs for 3000 cells. It can take long time if you have a lot of cells and many clusters as `scSHC` test the cluster significance at every splitting node.
+
+
+### Further reading
+
+what is a cell type? https://twitter.com/tangming2005/status/1680932947619201025
+
+1. [A reference cell tree will serve science better than a reference cell atlas](https://www.sciencedirect.com/science/article/pii/S0092867422007838)
+
+2. [What is a cell type, and how to define it?](https://www.sciencedirect.com/science/article/pii/S0092867422007838)
+
+3. [The evolving concept of cell identity in the single cell era](https://journals.biologists.com/dev/article/146/12/dev169748/19444/The-evolving-concept-of-cell-identity-in-the) 
+
+4. [A periodic table of cell types](https://journals.biologists.com/dev/article/146/12/dev169854/19451/A-periodic-table-of-cell-types) 
+
+5. Bonus, a blog post by [Matthew Bernstein](https://twitter.com/Matthew_N_B)
+  On cell types and cell states https://mbernste.github.io/posts/cell_types_cell_states/
+  
+  
