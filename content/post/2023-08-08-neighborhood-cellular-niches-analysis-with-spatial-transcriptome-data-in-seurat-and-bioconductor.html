@@ -1,0 +1,910 @@
+---
+title: neighborhood/cellular niches analysis with spatial transcriptome data in Seurat
+  and Bioconductor
+author: Ming Tang
+date: '2023-08-08'
+slug: neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor
+categories:
+  - bioinformatics
+  - scRNAseq
+  - spatial
+tags:
+  - bioinformatics
+  - scRNAseq
+  - spatial
+header:
+  caption: ''
+  image: ''
+---
+
+
+
+<div id="spatial-transcriptome-cellular-niche-analysis-using-10x-xenium-data" class="section level3">
+<h3>Spatial transcriptome cellular niche analysis using 10x xenium data</h3>
+<p>go to <a href="https://www.10xgenomics.com/resources/datasets" class="uri">https://www.10xgenomics.com/resources/datasets</a></p>
+<p>There is a lung cancer and a breast cancer dataset. Let’s work on the lung cancer one.</p>
+<p><a href="https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard" class="uri">https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard</a></p>
+<p>37G zipped file!</p>
+<pre class="bash"><code>wget https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/1.3.0/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip
+
+unzip Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip 
+
+sudo tar xvzf cell_feature_matrix.tar.gz</code></pre>
+<p><code>cell_feature_matrix/</code>
+<code>cell_feature_matrix/barcodes.tsv.gz</code>
+<code>cell_feature_matrix/features.tsv.gz</code>
+<code>cell_feature_matrix/matrix.mtx.gz</code></p>
+</div>
+<div id="read-in-the-data-with-seurat" class="section level3">
+<h3>read in the data with Seurat</h3>
+<p>We really only care about the cell by gene count matrix which is inside the <code>cell_feature_matrix</code> folder,
+and the cell location x,y coordinates: <code>cells.csv.gz</code>.</p>
+<p>The <code>data/xenium</code> folder below contains the <code>cells.csv.gz</code> file and the <code>cell_feature_matrix</code> folder.</p>
+<p>The transcripts.csv.gz contains the molecule location information which is not needed for
+most of the analysis if you do not work on subcelluar locations of the RNAs.</p>
+<pre class="r"><code>library(Seurat)
+library(dplyr)
+library(here)
+library(tictoc)
+
+xenium_input&lt;- ReadXenium(
+  data.dir = &quot;~/github_repos/compbio_tutorials/data/xenium&quot;,
+  outs = &quot;matrix&quot;,
+  type = &quot;centroids&quot;,
+  mols.qv.threshold = 20
+)</code></pre>
+<p>construct a seurat object.
+<a href="https://github.com/satijalab/seurat/blob/763259d05991d40721dee99c9919ec6d4491d15e/R/convenience.R#L186" class="uri">https://github.com/satijalab/seurat/blob/763259d05991d40721dee99c9919ec6d4491d15e/R/convenience.R#L186</a></p>
+<pre class="r"><code>segmentations.data &lt;- list(
+    &quot;centroids&quot; = CreateCentroids(xenium_input$centroids)
+    #&quot;segmentation&quot; = CreateSegmentation(data$segmentations)
+  )
+
+coords &lt;- CreateFOV(
+    coords = segmentations.data,
+    type = &quot;centroids&quot;,
+    molecules = NULL,
+    assay = &quot;Xenium&quot;
+  )
+
+xenium.obj &lt;- CreateSeuratObject(counts = xenium_input$matrix[[&quot;Gene Expression&quot;]], assay = &quot;Xenium&quot;)
+xenium.obj[[&quot;NegativeControlCodeword&quot;]] &lt;- CreateAssayObject(counts = xenium_input$matrix[[&quot;Negative Control Codeword&quot;]])
+
+xenium.obj[[&quot;NegativeControlProbe&quot;]] &lt;- CreateAssayObject(counts = xenium_input$matrix[[&quot;Negative Control Probe&quot;]])
+
+xenium.obj[[&quot;fov&quot;]] &lt;- coords</code></pre>
+<p>filter the cells</p>
+<pre class="r"><code># remove cells with 0 counts
+xenium.obj &lt;- subset(xenium.obj, subset = nCount_Xenium &gt; 0)
+
+VlnPlot(xenium.obj, features = c(&quot;nFeature_Xenium&quot;, &quot;nCount_Xenium&quot;), ncol = 2, pt.size = 0)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-5-1.png" width="1152" /></p>
+<pre class="r"><code>median(xenium.obj$nCount_Xenium)</code></pre>
+<pre><code>#&gt; [1] 105</code></pre>
+<pre class="r"><code>median(xenium.obj$nFeature_Xenium)</code></pre>
+<pre><code>#&gt; [1] 62</code></pre>
+<p>median number of detected genes is around 62, and the median counts per cell is 105.</p>
+<pre class="r"><code>ImageFeaturePlot(xenium.obj, features = c(&quot;EPCAM&quot;, &quot;CD4&quot;, &quot;CD8A&quot;, &quot;CD79A&quot;), max.cutoff = c(20,
+    15, 6, 6), size = 0.75, cols = c(&quot;white&quot;, &quot;red&quot;))</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-7-1.png" width="1152" /></p>
+<p><code>EPCAM</code> mark the epithelial/tumor cells, and we also see some CD4, CD8 T cells and B cells.</p>
+<p>standard processing</p>
+<p>This takes 30mins</p>
+<pre class="r"><code>tic()
+xenium.obj &lt;- SCTransform(xenium.obj, assay = &quot;Xenium&quot;)</code></pre>
+<pre><code>#&gt; 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%
+#&gt; 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%
+#&gt; 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+<pre class="r"><code>xenium.obj &lt;- RunPCA(xenium.obj, npcs = 30, features = rownames(xenium.obj))
+xenium.obj &lt;- RunUMAP(xenium.obj, dims = 1:30)
+xenium.obj &lt;- FindNeighbors(xenium.obj, reduction = &quot;pca&quot;, dims = 1:30)
+xenium.obj &lt;- FindClusters(xenium.obj, resolution = 0.3)</code></pre>
+<pre><code>#&gt; Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+#&gt; 
+#&gt; Number of nodes: 530893
+#&gt; Number of edges: 17467378
+#&gt; 
+#&gt; Running Louvain algorithm...
+#&gt; Maximum modularity in 10 random starts: 0.9360
+#&gt; Number of communities: 21
+#&gt; Elapsed time: 824 seconds</code></pre>
+<pre class="r"><code>toc()</code></pre>
+<pre><code>#&gt; 2232.137 sec elapsed</code></pre>
+<pre class="r"><code>DimPlot(xenium.obj)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/plot-1.png" width="1152" /></p>
+<pre class="r"><code>FeaturePlot(xenium.obj, features = c(&quot;CD4&quot;, &quot;CD8A&quot;, &quot;EPCAM&quot;, &quot;NKG7&quot;, &quot;GZMB&quot;,
+                                     &quot;FOXP3&quot;))</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/plot-2.png" width="1152" /></p>
+<pre class="r"><code>ImageDimPlot(xenium.obj, cols = &quot;polychrome&quot;, size = 0.75)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/plot-3.png" width="1152" /></p>
+</div>
+<div id="find-all-markers-of-the-clusters-and-annotate-the-clusters-with-marker-genes" class="section level3">
+<h3>Find all markers of the clusters and annotate the clusters with marker genes</h3>
+<pre class="r"><code># devtools::install_github(&quot;immunogenomics/presto&quot;)
+library(presto)
+
+all_markers&lt;- presto::wilcoxauc(xenium.obj, assay = &quot;data&quot;,
+                                seurat_assay = &quot;Xenium&quot;)
+
+all_markers %&gt;% head()</code></pre>
+<pre><code>#&gt;   feature group     avgExpr        logFC   statistic       auc          pval
+#&gt; 1     ACE     0 0.221668593 -0.253886240 15537669449 0.4531079  0.000000e+00
+#&gt; 2    ACE2     0 0.005328125 -0.002081364 17111525722 0.4990046  9.218905e-10
+#&gt; 3   ACKR1     0 0.021724399 -0.062837265 16836952359 0.4909975 2.384530e-141
+#&gt; 4   ACTR3     0 0.965692723 -0.381113472 14948197656 0.4359178  0.000000e+00
+#&gt; 5  ADAM17     0 0.339432110  0.106478761 18344176529 0.5349510  0.000000e+00
+#&gt; 6  ADAM28     0 0.036061174 -0.027966375 16783860239 0.4894492 4.246117e-134
+#&gt;            padj    pct_in    pct_out
+#&gt; 1  0.000000e+00 16.297950 24.8933350
+#&gt; 2  1.047481e-09  0.516868  0.7159286
+#&gt; 3 4.744851e-141  1.856207  3.6336342
+#&gt; 4  0.000000e+00 53.824690 62.5498209
+#&gt; 5  0.000000e+00 25.355762 18.6602346
+#&gt; 6 8.239989e-134  3.178273  5.2801384</code></pre>
+<pre class="r"><code># presto is much faster than FindAllMarkers
+presto::top_markers(all_markers, n = 10, auc_min = 0.5, pct_in_min = 20)</code></pre>
+<pre><code>#&gt; # A tibble: 10 × 17
+#&gt;     rank `0`   `1`   `10`  `11`  `12`  `13`  `14`  `15`  `2`   `3`   `4`   `5`  
+#&gt;    &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+#&gt;  1     1 LTBP2 MARCO CD24  FCGBP CHIT1 MMRN1 KIT   MS4A1 SFTPD VWF   CD2   EPCAM
+#&gt;  2     2 FBN1  CD68  AGR3  AIF1  CD68  VWF   IL1R… IRF8  MUC1  GNG11 IL7R  MET  
+#&gt;  3     3 SLIT3 VSIG4 CP    CD68  LGMN  ECSCR MS4A2 FCMR  SFTA3 TMEM… KLRB1 KRT7 
+#&gt;  4     4 THBS2 ALOX5 TMC5  S100B PLA2… LYVE1 SLC1… FDCSP DMBT1 CD34  CD3E  MUC1 
+#&gt;  5     5 COL5… MCEM… FOXJ1 FCGR… MS4A… ACKR1 HPGDS IL7R  ATP1… ECSCR GZMA  BAIA…
+#&gt;  6     6 SVEP1 FCGR… TACS… MMP12 MARCO SELP  PTGS1 TNFR… RNF1… ACE   CTLA4 TACS…
+#&gt;  7     7 SFRP2 CD163 ATP1… CD14  SLC1… GNG11 ALOX5 BANK1 TMPR… SHAN… CD3D  CDH1 
+#&gt;  8     8 CTSK  CTSL  EHF   CD4   CD163 PLVAP FCER… GPR1… C16o… APOL… STAT4 RBM3 
+#&gt;  9     9 COL8… MS4A… CCDC… IGSF6 CTSK  ADGR… P2RX1 CD2   MALL  ADGR… GPR1… TOMM7
+#&gt; 10    10 NID1  AIF1  BAIA… VSIG4 IGSF6 SHAN… AREG  RARR… AGR3  FCN3  CD247 HNRN…
+#&gt; # ℹ 4 more variables: `6` &lt;chr&gt;, `7` &lt;chr&gt;, `8` &lt;chr&gt;, `9` &lt;chr&gt;</code></pre>
+<p>Based on the marker genes, I manually annotate the cell types.</p>
+<ul>
+<li>cluster 0: fibroblast.</li>
+<li>cluster 1: M2-like macrophage.</li>
+<li>cluster 10: ciliated epithelial cells.</li>
+<li>cluster 11: M2-like macrophage.</li>
+<li>cluster 12: M2-like macrophage.</li>
+<li>cluster 13: endothelia-1.</li>
+<li>cluster 14: mast cell.</li>
+<li>cluster 15: B cells.</li>
+<li>cluster 2: alveolar epithelial cells.</li>
+<li>cluster 3: endothelial-2.</li>
+<li>cluster 4: T/NK cells.</li>
+<li>cluster 5: alveolar epithelial cells.</li>
+<li>cluster 6: smooth muscle cells.</li>
+<li>cluster 7: M2-like macrophage.</li>
+<li>cluster 8: M1-like macrophage.</li>
+<li>cluster 9: plasma cells.</li>
+</ul>
+<p>Add the cell annotations</p>
+<pre class="r"><code>annotations&lt;- c(&quot;fibroblast&quot;, &quot;M2-like macrophage-1&quot;, &quot;ciliated epithelial cells&quot;, &quot;M2-like macrophage-2&quot;, &quot;M2-like macrophage-3&quot;, &quot;endothelial-1&quot;, &quot;mast cell&quot;, &quot;B cells-1&quot;, &quot;alveolar epithelial cells-1&quot;, &quot;endothelial-2&quot;, &quot;T/NK cells&quot;, &quot;alveolar epithelial cells-2&quot;, &quot;smooth muscle cells&quot;, &quot;M2-like macrophage-4&quot;, &quot;M1-like macrophage&quot;, &quot;plasma cells&quot;)
+
+names(annotations)&lt;- c(0,1,10,11,12,13,14,15,2,3,4,5,6,7,8,9)
+
+xenium.obj$annotations&lt;- annotations[xenium.obj$seurat_clusters]</code></pre>
+<p>cluster 4 is the T/NK cells, I want to subcluster it to more fine-grained clusters</p>
+<pre class="r"><code>table(xenium.obj$seurat_clusters)</code></pre>
+<pre><code>#&gt; 
+#&gt;     0     1     2     3     4     5     6     7     8     9    10    11    12 
+#&gt; 75261 64079 63996 61209 55166 52187 31937 31335 17504 16194 15057 13049 12487 
+#&gt;    13    14    15 
+#&gt; 12412  5525  3495</code></pre>
+<pre class="r"><code>xenium.obj&lt;- FindSubCluster(xenium.obj, cluster = 4, graph.name = &quot;SCT_snn&quot;,
+                            resolution = 0.2)</code></pre>
+<pre><code>#&gt; Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+#&gt; 
+#&gt; Number of nodes: 55166
+#&gt; Number of edges: 1705627
+#&gt; 
+#&gt; Running Louvain algorithm...
+#&gt; Maximum modularity in 10 random starts: 0.8845
+#&gt; Number of communities: 12
+#&gt; Elapsed time: 19 seconds</code></pre>
+<pre class="r"><code>table(xenium.obj$sub.cluster)</code></pre>
+<pre><code>#&gt; 
+#&gt;     0     1    10    11    12    13    14    15     2     3   4_0   4_1   4_2 
+#&gt; 75261 64079 15057 13049 12487 12412  5525  3495 63996 61209 24009 11719  5917 
+#&gt;   4_3   4_4   4_5   4_6     5     6     7     8     9 
+#&gt;  5624  5068  1862   967 52187 31937 31335 17504 16194</code></pre>
+<pre class="r"><code>Idents(xenium.obj)&lt;- xenium.obj$sub.cluster
+scCustomize::Clustered_DotPlot(xenium.obj[, xenium.obj$sub.cluster %&gt;%
+                                            stringr::str_detect(&quot;^4_&quot;)], 
+                               features = c(&quot;CD4&quot;, &quot;CD8A&quot;, &quot;NKG7&quot;, &quot;GZMB&quot;, 
+                               &quot;PDCD1&quot;, &quot;FOXP3&quot;), plot_km_elbow = FALSE)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-11-1.png" width="1152" /></p>
+<pre class="r"><code>all_markers2&lt;- presto::wilcoxauc(xenium.obj[,xenium.obj$sub.cluster %&gt;%
+                                            stringr::str_detect(&quot;^4_&quot;)],
+                                 assay = &quot;data&quot;, seurat_assay = &quot;Xenium&quot;)
+
+presto::top_markers(all_markers2, n = 20, auc_min = 0.5, pct_in_min = 20)</code></pre>
+<pre><code>#&gt; # A tibble: 20 × 8
+#&gt;     rank `4_0`    `4_1`  `4_2`   `4_3`  `4_4`   `4_5`    `4_6`  
+#&gt;    &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;  
+#&gt;  1     1 IL7R     KLRD1  SFRP2   CXCL13 CXCL9   PRG4     CHIT1  
+#&gt;  2     2 CD3E     KLRB1  THBS2   CTLA4  CCR7    SLIT3    CD68   
+#&gt;  3     3 CD2      GZMA   CTSK    CXCL9  IDO1    LTBP2    LGMN   
+#&gt;  4     4 CTLA4    FGFBP2 LTBP2   CD2    UBD     SVEP1    CTSK   
+#&gt;  5     5 CD3D     GZMB   THY1    CD8A   FSCN1   FBN1     IGSF6  
+#&gt;  6     6 CD28     FCGR3A COL5A2  UBD    IL7R    SERPINA3 MS4A4A 
+#&gt;  7     7 GPR171   CD247  RARRES1 GPI    CD83    TGM2     PLA2G7 
+#&gt;  8     8 GPR183   KRT7   FBN1    CHI3L1 CXCL10  APOD     MARCO  
+#&gt;  9     9 CD4      MUC1   COL8A1  MUC1   IRF8    NID1     CTSA   
+#&gt; 10    10 TC2N     ADGRE5 ALDH1A3 KRT7   NFKB1   ENAH     AIF1   
+#&gt; 11    11 LCK      AREG   IGF1    AIF1   GRINA   IL7R     RARRES1
+#&gt; 12    12 FCMR     SFTPD  PLA2G2A CD3E   GPR183  EPHX1    CD4    
+#&gt; 13    13 CXCR6    EPCAM  PDPN    PSMA1  S100B   PDPN     SLC1A3 
+#&gt; 14    14 ANKRD36C SFTA3  APOD    EPCAM  CD86    HIF1A    LAMP2  
+#&gt; 15    15 GPSM3    ATP1B1 SLIT3   CD68   IRF1    RARRES1  FCGR1A 
+#&gt; 16    16 STAT4    GNG11  NID1    CD27   CMTM6   CD4      CTSL   
+#&gt; 17    17 TMEM123  DMBT1  TGM2    CTSL   ACTR3   CTSK     FCGR3A 
+#&gt; 18    18 SRSF7    VWF    ENAH    SRSF2  AIF1    COL8A1   HEXA   
+#&gt; 19    19 CD163    RUNX3  EIF3E   CD3D   ALOX5   PCBP2    FCMR   
+#&gt; 20    20 CD8A     EPHX1  SVEP1   HNRNPC TMEM123 LGALS3BP ACE</code></pre>
+<p>more fine-grained annotation</p>
+<ul>
+<li>4_0: CD4 Tcells.</li>
+<li>4_1: NK cells.</li>
+<li>4_2: fibroblast.</li>
+<li>4_3: CD8 Tcells.</li>
+<li>4_5: PRG4 is a fibroblast marker we also see CD4 in this cluster.<br />
+</li>
+<li>4_6: macrophage.</li>
+</ul>
+<p>Interesting, subcluster the NK/T cells revealed fibroblasts and macrophage (4_6) populations.
+My experience with spatial data from 10x, nanostring and Vizgen are similar, they all have spill out transcripts of cells that maybe contaminating the nearby cells. Also, there is no clear cut of CD4 T cells and CD8 T cells.</p>
+</div>
+<div id="neighorhoods-analysis-in-seurat" class="section level3">
+<h3>neighorhoods analysis in Seurat</h3>
+<p>Cellular neighborhood/niche is aggregation of cells can result in ‘cellular neighbourhoods’. A neighbourhood is defined as a group of cells that with a similar composition together. These can be homotypic, containing cells of a single class (e.g. immune cells), or heterotypic (e.g. a mixture of tumour and immune cells).</p>
+<p>In one of my <a href="https://divingintogeneticsandgenomics.com/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/">previous post</a>, I showed you how to identify cellular neighborhood/niches within seurat.</p>
+<p>Let’s repeat it.</p>
+<pre class="r"><code>xenium_input$centroids %&gt;% head()</code></pre>
+<pre><code>#&gt;          x        y       cell
+#&gt; 1 366.5239 849.1828 aaaaaacg-1
+#&gt; 2 364.5222 863.8438 aaaaafen-1
+#&gt; 3 381.3140 863.7556 aaaaanfe-1
+#&gt; 4 388.0256 864.1576 aaaabekh-1
+#&gt; 5 394.2588 869.2458 aaaacacf-1
+#&gt; 6 390.1672 846.2146 aaaakgka-1</code></pre>
+<pre class="r"><code>mat&lt;- xenium_input$centroids[,1:2] 
+mat&lt;- as.matrix(mat)
+rownames(mat)&lt;- xenium_input$centroids$cell</code></pre>
+<p>Reorder the cells in the coordinates matrix as the same order as in the Seurat object.</p>
+<pre class="r"><code>Cells(xenium.obj) %&gt;% head()</code></pre>
+<pre><code>#&gt; [1] &quot;aaaaaacg-1&quot; &quot;aaaaafen-1&quot; &quot;aaaaanfe-1&quot; &quot;aaaabekh-1&quot; &quot;aaaacacf-1&quot;
+#&gt; [6] &quot;aaaakgka-1&quot;</code></pre>
+<pre class="r"><code>## make sure the order of the cells is the same 
+all.equal(Cells(xenium.obj), rownames(mat))</code></pre>
+<pre><code>#&gt; [1] &quot;Lengths (530893, 531165) differ (string compare on first 530893)&quot;
+#&gt; [2] &quot;519130 string mismatches&quot;</code></pre>
+<pre class="r"><code>head(mat)</code></pre>
+<pre><code>#&gt;                   x        y
+#&gt; aaaaaacg-1 366.5239 849.1828
+#&gt; aaaaafen-1 364.5222 863.8438
+#&gt; aaaaanfe-1 381.3140 863.7556
+#&gt; aaaabekh-1 388.0256 864.1576
+#&gt; aaaacacf-1 394.2588 869.2458
+#&gt; aaaakgka-1 390.1672 846.2146</code></pre>
+<pre class="r"><code># reorder the matrix rows
+mat&lt;- mat[Cells(xenium.obj), ]
+head(mat)</code></pre>
+<pre><code>#&gt;                   x        y
+#&gt; aaaaaacg-1 366.5239 849.1828
+#&gt; aaaaafen-1 364.5222 863.8438
+#&gt; aaaaanfe-1 381.3140 863.7556
+#&gt; aaaabekh-1 388.0256 864.1576
+#&gt; aaaacacf-1 394.2588 869.2458
+#&gt; aaaakgka-1 390.1672 846.2146</code></pre>
+<pre class="r"><code>all.equal(Cells(xenium.obj), rownames(mat))</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<p>Find the closest cells for each cell within 50 um radius.</p>
+<pre class="r"><code>library(dbscan)
+eps &lt;- 50
+tic()
+nn &lt;- frNN(x= mat, eps = eps)
+toc()</code></pre>
+<pre><code>#&gt; 21.538 sec elapsed</code></pre>
+<pre class="r"><code>nn$id %&gt;%
+  head(n=3)</code></pre>
+<pre><code>#&gt; $`aaaaaacg-1`
+#&gt;  [1]     2     3     6 82996     4 82999 40480 82992  6704 82997   120     5
+#&gt; [13]     7     8 83001 82998 82991 40489     9 83009 82995 83004 83006 83007
+#&gt; 
+#&gt; $`aaaaafen-1`
+#&gt;  [1] 82996     1 82992     3 82997 82999     4  6704 82998 82991 83001   120
+#&gt; [13]     5     6 82995     7     8 83000 83006 40480 83004 83009 84185 83007
+#&gt; [25] 83002 84187  6707     9 83010
+#&gt; 
+#&gt; $`aaaaanfe-1`
+#&gt;  [1]     4  6704 82999     5     7     2 82996 83001 82997     6     1     8
+#&gt; [13] 83009 82998 83004 82992 83007 83006 40480     9 83010 83000 82995 83014
+#&gt; [25] 83002 82991 83008 83015 40489 83005    10    11   120 40481    12</code></pre>
+<p>It is a list of list containing the indices of the cells that are within 50um radius.</p>
+<p>Create the neighborhood count matrix.</p>
+<pre class="r"><code># the same cell order
+all.equal(colnames(xenium.obj), names(nn$id))</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>nn$id %&gt;%
+  stack() %&gt;%
+  head()</code></pre>
+<pre><code>#&gt;   values        ind
+#&gt; 1      2 aaaaaacg-1
+#&gt; 2      3 aaaaaacg-1
+#&gt; 3      6 aaaaaacg-1
+#&gt; 4  82996 aaaaaacg-1
+#&gt; 5      4 aaaaaacg-1
+#&gt; 6  82999 aaaaaacg-1</code></pre>
+<pre class="r"><code>## make it to a dataframe 
+nn_df&lt;- nn$id %&gt;%
+  stack()</code></pre>
+<p>get the annotations for cells that are within the 50 um of each cell.</p>
+<pre class="r"><code>cluster_ids&lt;- xenium.obj$annotations %&gt;% unname()
+
+## vectorization, so much faster than the solution in my old post
+nn_df$cluster_id&lt;- cluster_ids[nn_df$values]
+
+head(nn_df)</code></pre>
+<pre><code>#&gt;   values        ind                  cluster_id
+#&gt; 1      2 aaaaaacg-1        M2-like macrophage-2
+#&gt; 2      3 aaaaaacg-1 alveolar epithelial cells-1
+#&gt; 3      6 aaaaaacg-1                   mast cell
+#&gt; 4  82996 aaaaaacg-1                   B cells-1
+#&gt; 5      4 aaaaaacg-1                   mast cell
+#&gt; 6  82999 aaaaaacg-1                   B cells-1</code></pre>
+<pre class="r"><code>nn_df$cluster_id&lt;- factor(nn_df$cluster_id)
+tic()
+nn_count&lt;- nn_df %&gt;%
+  group_by(ind) %&gt;%
+  count(cluster_id, .drop = FALSE)
+toc()</code></pre>
+<pre><code>#&gt; 64.036 sec elapsed</code></pre>
+<pre class="r"><code>head(nn_count)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 3
+#&gt; # Groups:   ind [1]
+#&gt;   ind        cluster_id                      n
+#&gt;   &lt;fct&gt;      &lt;fct&gt;                       &lt;int&gt;
+#&gt; 1 aaaaaacg-1 alveolar epithelial cells-1     1
+#&gt; 2 aaaaaacg-1 alveolar epithelial cells-2     0
+#&gt; 3 aaaaaacg-1 B cells-1                       5
+#&gt; 4 aaaaaacg-1 ciliated epithelial cells       0
+#&gt; 5 aaaaaacg-1 endothelial-1                   0
+#&gt; 6 aaaaaacg-1 endothelial-2                   0</code></pre>
+<p>pivot it to a wide format and create a <code>cell x cluster_id</code> matrix</p>
+<pre class="r"><code>nn_count&lt;- nn_count %&gt;%
+  tidyr::pivot_wider(names_from = cluster_id, values_from = n)
+
+head(nn_count)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 17
+#&gt; # Groups:   ind [6]
+#&gt;   ind        `alveolar epithelial cells-1` alveolar epithelial cel…¹ `B cells-1`
+#&gt;   &lt;fct&gt;                              &lt;int&gt;                     &lt;int&gt;       &lt;int&gt;
+#&gt; 1 aaaaaacg-1                             1                         0           5
+#&gt; 2 aaaaafen-1                             1                         0           4
+#&gt; 3 aaaaanfe-1                             0                         2           5
+#&gt; 4 aaaabekh-1                             1                         3           5
+#&gt; 5 aaaacacf-1                             1                         3           5
+#&gt; 6 aaaakgka-1                             1                         3           5
+#&gt; # ℹ abbreviated name: ¹​`alveolar epithelial cells-2`
+#&gt; # ℹ 13 more variables: `ciliated epithelial cells` &lt;int&gt;,
+#&gt; #   `endothelial-1` &lt;int&gt;, `endothelial-2` &lt;int&gt;, fibroblast &lt;int&gt;,
+#&gt; #   `M1-like macrophage` &lt;int&gt;, `M2-like macrophage-1` &lt;int&gt;,
+#&gt; #   `M2-like macrophage-2` &lt;int&gt;, `M2-like macrophage-3` &lt;int&gt;,
+#&gt; #   `M2-like macrophage-4` &lt;int&gt;, `mast cell` &lt;int&gt;, `plasma cells` &lt;int&gt;,
+#&gt; #   `smooth muscle cells` &lt;int&gt;, `T/NK cells` &lt;int&gt;</code></pre>
+<pre class="r"><code># convert to a matrix
+nn_mat&lt;- nn_count[,-1] %&gt;% as.matrix()
+rownames(nn_mat)&lt;- nn_count$ind
+
+head(nn_mat)</code></pre>
+<pre><code>#&gt;            alveolar epithelial cells-1 alveolar epithelial cells-2 B cells-1
+#&gt; aaaaaacg-1                           1                           0         5
+#&gt; aaaaafen-1                           1                           0         4
+#&gt; aaaaanfe-1                           0                           2         5
+#&gt; aaaabekh-1                           1                           3         5
+#&gt; aaaacacf-1                           1                           3         5
+#&gt; aaaakgka-1                           1                           3         5
+#&gt;            ciliated epithelial cells endothelial-1 endothelial-2 fibroblast
+#&gt; aaaaaacg-1                         0             0             0          0
+#&gt; aaaaafen-1                         0             0             0          0
+#&gt; aaaaanfe-1                         0             0             0          0
+#&gt; aaaabekh-1                         0             0             0          0
+#&gt; aaaacacf-1                         0             0             0          0
+#&gt; aaaakgka-1                         1             0             0          0
+#&gt;            M1-like macrophage M2-like macrophage-1 M2-like macrophage-2
+#&gt; aaaaaacg-1                  0                    0                    3
+#&gt; aaaaafen-1                  0                    0                    2
+#&gt; aaaaanfe-1                  0                    0                    3
+#&gt; aaaabekh-1                  0                    0                    2
+#&gt; aaaacacf-1                  0                    0                    3
+#&gt; aaaakgka-1                  0                    0                    4
+#&gt;            M2-like macrophage-3 M2-like macrophage-4 mast cell plasma cells
+#&gt; aaaaaacg-1                    1                    0        14            0
+#&gt; aaaaafen-1                    1                    0        20            1
+#&gt; aaaaanfe-1                    1                    0        23            1
+#&gt; aaaabekh-1                    1                    0        24            1
+#&gt; aaaacacf-1                    1                    0        25            1
+#&gt; aaaakgka-1                    1                    0        17            1
+#&gt;            smooth muscle cells T/NK cells
+#&gt; aaaaaacg-1                   0          0
+#&gt; aaaaafen-1                   0          0
+#&gt; aaaaanfe-1                   0          0
+#&gt; aaaabekh-1                   0          0
+#&gt; aaaacacf-1                   0          0
+#&gt; aaaakgka-1                   0          0</code></pre>
+<pre class="r"><code>all.equal(rownames(nn_mat), Cells(xenium.obj))</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<div id="k-means-clustering" class="section level4">
+<h4>k-means clustering</h4>
+<pre class="r"><code>set.seed(123)
+
+# I cheated here to make k=13 so I can compare it with the Louvian clustering later
+k_means_res&lt;- kmeans(nn_mat, centers = 13)
+
+k_means_id&lt;- k_means_res$cluster %&gt;%
+  tibble::enframe(name = &quot;cell_id&quot;, value = &quot;kmeans_cluster&quot;)
+
+head(k_means_id)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 2
+#&gt;   cell_id    kmeans_cluster
+#&gt;   &lt;chr&gt;               &lt;int&gt;
+#&gt; 1 aaaaaacg-1             11
+#&gt; 2 aaaaafen-1             11
+#&gt; 3 aaaaanfe-1             11
+#&gt; 4 aaaabekh-1             11
+#&gt; 5 aaaacacf-1             11
+#&gt; 6 aaaakgka-1             11</code></pre>
+<pre class="r"><code># add it to the metadata solot for nn_obj below
+k_means_df&lt;- as.data.frame(k_means_id)
+rownames(k_means_df)&lt;- k_means_id$cell_id</code></pre>
+</div>
+<div id="louvian-clustering-just-like-scranseq-data" class="section level4">
+<h4>Louvian clustering just like scRANseq data</h4>
+<p>Create a Seurat object and do a regular single-cell count matrix analysis, but now we only have 16 features (clusters) instead of 20,000 genes.</p>
+<pre class="r"><code>nn_obj&lt;- CreateSeuratObject(counts = t(nn_mat),  min.features = 5)</code></pre>
+<p>routine processing</p>
+<pre class="r"><code>nn_obj&lt;- SCTransform(nn_obj, vst.flavor = &quot;v2&quot;)</code></pre>
+<pre><code>#&gt; 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%
+#&gt; 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%
+#&gt; 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+<pre class="r"><code>## we only have 16 clusters/celltypes, max pc 16
+nn_obj &lt;- RunPCA(nn_obj, npcs = 15, features = rownames(nn_obj))
+ElbowPlot(nn_obj)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-20-1.png" width="1152" /></p>
+<pre class="r"><code>nn_obj &lt;- FindNeighbors(nn_obj, reduction = &quot;pca&quot;, dims = 1:15)
+nn_obj &lt;- FindClusters(nn_obj, resolution = 0.3)</code></pre>
+<pre><code>#&gt; Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+#&gt; 
+#&gt; Number of nodes: 483243
+#&gt; Number of edges: 12786808
+#&gt; 
+#&gt; Running Louvain algorithm...
+#&gt; Maximum modularity in 10 random starts: 0.9186
+#&gt; Number of communities: 13
+#&gt; Elapsed time: 286 seconds</code></pre>
+<pre class="r"><code>nn_obj &lt;- RunUMAP(nn_obj, dims = 1:10)
+
+
+DimPlot(nn_obj)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-20-2.png" width="1152" /></p>
+</div>
+<div id="suerat-v5-has-a-function-to-detect-neighborhood" class="section level4">
+<h4>Suerat V5 has a function to detect neighborhood</h4>
+<p><a href="https://satijalab.org/seurat/articles/seurat5_spatial_vignette_2" class="uri">https://satijalab.org/seurat/articles/seurat5_spatial_vignette_2</a></p>
+<p>I do not have Seurat V5 installed, so the code below is not run.</p>
+<pre class="r"><code>xenium.obj &lt;- BuildNicheAssay(object = xenium.obj, group.by = &quot;annotations&quot;,
+    niches.k = 5, neighbors.k = 30)</code></pre>
+</div>
+<div id="compare-k-means-and-the-louvian-clustering" class="section level4">
+<h4>compare k-means and the Louvian clustering</h4>
+<pre class="r"><code>nn_obj&lt;- AddMetaData(nn_obj, metadata = k_means_df )
+
+nn_obj@meta.data %&gt;%
+  head()</code></pre>
+<pre><code>#&gt;               orig.ident nCount_RNA nFeature_RNA nCount_SCT nFeature_SCT
+#&gt; aaaaaacg-1 SeuratProject         24            5         44            5
+#&gt; aaaaafen-1 SeuratProject         29            6         45            6
+#&gt; aaaaanfe-1 SeuratProject         35            6         44            6
+#&gt; aaaabekh-1 SeuratProject         37            7         44            7
+#&gt; aaaacacf-1 SeuratProject         39            7         44            7
+#&gt; aaaakgka-1 SeuratProject         33            8         43            8
+#&gt;            SCT_snn_res.0.3 seurat_clusters    cell_id kmeans_cluster
+#&gt; aaaaaacg-1               3               3 aaaaaacg-1             11
+#&gt; aaaaafen-1               3               3 aaaaafen-1             11
+#&gt; aaaaanfe-1               3               3 aaaaanfe-1             11
+#&gt; aaaabekh-1               3               3 aaaabekh-1             11
+#&gt; aaaacacf-1               3               3 aaaacacf-1             11
+#&gt; aaaakgka-1               3               3 aaaakgka-1             11</code></pre>
+<pre class="r"><code>table(nn_obj$kmeans_cluster, nn_obj$seurat_clusters)</code></pre>
+<pre><code>#&gt;     
+#&gt;          0     1     2     3     4     5     6     7     8     9    10    11
+#&gt;   1      0     0     0     0     0     0     0     0 10316     0     0     0
+#&gt;   2  14180  4543  1409  4753 11705  2406  3303  6691  5165    13   475   395
+#&gt;   3  62713   568   884  4075  5189   685  6473  4867   607   128   102     0
+#&gt;   4   8065  1942  2310 18508  5356 12663 22928 10179  8409  1015  1219   107
+#&gt;   5     23  3466     0  1097  1528 23703  2949   711  1570  5675  1102   541
+#&gt;   6      0   494 13303     8   752     0    33   139   188     0    20     0
+#&gt;   7      0 20142     0     0     0     0     0     0   471    10     3     0
+#&gt;   8      0   405     0     3     1   101     1     0   203  9862    38     0
+#&gt;   9   1578  1986 39849  1011  5615   212  2465  8996  1369     7   331     2
+#&gt;   10     0  6485     0     0     0     0     0     0    68     0     0     0
+#&gt;   11     0   362     1 16396    49  1479     8     0  1189    67    50     9
+#&gt;   12     0 25085     0    15    11    42     0    17   874   246  1178     8
+#&gt;   13     0  1189     0   344 12245  1038    23   567   426   543 12502  2816
+#&gt;     
+#&gt;         12
+#&gt;   1      0
+#&gt;   2     43
+#&gt;   3      0
+#&gt;   4     96
+#&gt;   5      0
+#&gt;   6      0
+#&gt;   7    307
+#&gt;   8      8
+#&gt;   9     56
+#&gt;   10    10
+#&gt;   11     0
+#&gt;   12  1022
+#&gt;   13    60</code></pre>
+<p>Some help functions from <code>scclusteval</code> to calculate the jaccard distances for two difference clustering methods:</p>
+<pre class="r"><code>#devtools::install_github(&quot;crazyhottommy/scclusteval&quot;)
+
+library(scclusteval)
+PairWiseJaccardSetsHeatmap(Idents(nn_obj), k_means_res$cluster, best_match = TRUE)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-23-1.png" width="1152" />
+x-axis is the k-means clustering: cluster1-13.
+y-axis is the Louvian clustering: cluster0-12.</p>
+<p>There are some 1-1 cluster mapping for the two different clustering methods.</p>
+<p>Add the niche information to the original seurat object.</p>
+<pre class="r"><code>nn_meta&lt;- nn_obj@meta.data %&gt;%
+  select(cell_id, SCT_snn_res.0.3, kmeans_cluster) 
+
+xenium.obj&lt;- AddMetaData(xenium.obj, nn_meta)</code></pre>
+<p>characterize the neighborhoods/niches by looking at the composition of cell types</p>
+<pre class="r"><code>library(ComplexHeatmap)
+
+# calculate the average abundance of cell types per niche
+average_cell_type_abundance&lt;- AverageExpression(
+  nn_obj,
+  assays = NULL,
+  features = rownames(nn_obj),
+  return.seurat = FALSE,
+  group.by = &quot;SCT_snn_res.0.3&quot;,
+)
+
+cell_fun = function(j, i, x, y, width, height, fill) {
+                grid::grid.rect(x = x, y = y, width = width *0.99, 
+                                height = height *0.99,
+                                gp = grid::gpar(col = &quot;grey&quot;, 
+                                                fill = fill, lty = 1, lwd = 0.5))
+}
+
+col_fun=circlize::colorRamp2(c(-2, 0, 2), c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;))
+
+
+Heatmap(t(scale(t(average_cell_type_abundance$SCT))),
+        show_row_dend = FALSE,
+        show_column_dend = FALSE,
+        rect_gp = grid::gpar(type = &quot;none&quot;),
+        cell_fun = cell_fun,
+        col = col_fun,
+        column_names_rot = 45)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-25-1.png" width="1152" /></p>
+<p>T/NK cells are mainly in niche 8 and 12.</p>
+<pre class="r"><code>scCustomize::Clustered_DotPlot(nn_obj, features= rownames(nn_obj), plot_km_elbow = FALSE)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-26-1.png" width="1152" /></p>
+<pre class="r"><code>scCustomize::Stacked_VlnPlot(nn_obj, features= rownames(nn_obj))</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-26-2.png" width="1152" /></p>
+<p>Niche 1 contains most of the endothelia-1 cells and looks likely there is a blood vessel there.</p>
+<pre class="r"><code>p1&lt;- ImageDimPlot(xenium.obj, fov = &quot;fov&quot;, cols = &quot;polychrome&quot;, axes = TRUE, 
+                  group.by = &quot;annotations&quot;)
+
+
+## the cells are colored by the clustering of the cells by neighborhood 
+p2&lt;- ImageDimPlot(xenium.obj, fov = &quot;fov&quot;, cols = &quot;polychrome&quot;, axes = TRUE, 
+                  group.by = &quot;SCT_snn_res.0.3&quot; )
+        
+p1 + p2</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-27-1.png" width="1152" /></p>
+<p>or table it using the tally counts</p>
+<pre class="r"><code>mat2&lt;- table(xenium.obj$SCT_snn_res.0.3, xenium.obj$annotations) 
+
+head(mat2)</code></pre>
+<pre><code>#&gt;    
+#&gt;     alveolar epithelial cells-1 alveolar epithelial cells-2 B cells-1
+#&gt;   0                         474                         352      7004
+#&gt;   1                        2992                        2431      1870
+#&gt;   2                         447                         478      2684
+#&gt;   3                         638                         597      3232
+#&gt;   4                        3541                         456      3819
+#&gt;   5                         445                         424      2632
+#&gt;    
+#&gt;     ciliated epithelial cells endothelial-1 endothelial-2 fibroblast
+#&gt;   0                     22020            87           309      13367
+#&gt;   1                      4829         33208           700       7492
+#&gt;   2                      8012            71           140       4601
+#&gt;   3                      4798            47           903       7517
+#&gt;   4                      5621           135           647       4325
+#&gt;   5                      2184            66          8190      12937
+#&gt;    
+#&gt;     M1-like macrophage M2-like macrophage-1 M2-like macrophage-2
+#&gt;   0                817                 7618                25948
+#&gt;   1                542                 3383                 2315
+#&gt;   2                369                29140                 6498
+#&gt;   3                741                  987                 5026
+#&gt;   4                463                 4054                 4424
+#&gt;   5                775                  498                 2809
+#&gt;    
+#&gt;     M2-like macrophage-3 M2-like macrophage-4 mast cell plasma cells
+#&gt;   0                 6919                  392       487          220
+#&gt;   1                 4802                  223       759          217
+#&gt;   2                 3401                  122       526          197
+#&gt;   3                 4014                 1410     15572          163
+#&gt;   4                12405                  761       577          600
+#&gt;   5                 5486                 1372      3180          265
+#&gt;    
+#&gt;     smooth muscle cells T/NK cells
+#&gt;   0                 422        123
+#&gt;   1                 637        267
+#&gt;   2                 967        103
+#&gt;   3                 464        101
+#&gt;   4                 512        111
+#&gt;   5                 956        110</code></pre>
+<pre class="r"><code>Heatmap(t(scale(mat2)),
+        show_row_dend = FALSE,
+        show_column_dend = FALSE,
+        rect_gp = grid::gpar(type = &quot;none&quot;),
+        cell_fun = cell_fun,
+        col = col_fun,
+        column_names_rot = 45)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-28-1.png" width="1152" /></p>
+<pre class="r"><code>mat3&lt;- table(xenium.obj$kmeans_cluster, xenium.obj$annotations)
+Heatmap(t(scale(mat3)),
+        show_row_dend = FALSE,
+        show_column_dend = FALSE,
+        rect_gp = grid::gpar(type = &quot;none&quot;),
+        cell_fun = cell_fun)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-28-2.png" width="1152" /></p>
+<p>Tally the counts may obscure the fine structures of the niches. For example,
+it only shows T/NK cells in niche 8 but not so clear in niche 12.</p>
+</div>
+</div>
+<div id="neigbhorhood-analysis-in-spatialexperiment" class="section level3">
+<h3>neigbhorhood analysis in SpatialExperiment</h3>
+<p>The <a href="https://trigosteam.github.io/SPIAT/articles/neighborhood.html">SPIAT bioconductor package</a> provides functions to do it and more functions to analyze the spatial data.
+But it only works with <code>SpatialExperiment</code> object. <a href="https://www.nature.com/articles/s41467-023-37822-0">Paper</a> describing it.</p>
+<p>Convert the seurat object to <a href="https://lmweber.org/OSTA-book/spatialexperiment.html">SpatialExperiment</a> object.</p>
+<p><a href="https://github.com/drighelli/SpatialExperiment/issues/115" class="uri">https://github.com/drighelli/SpatialExperiment/issues/115</a></p>
+<pre class="r"><code>library(SpatialExperiment)
+library(Seurat)
+# BiocManager::install(&quot;SpatialExperiment&quot;)
+library(dplyr)
+# BiocManager::install(&quot;SPIAT&quot;)
+library(SPIAT)
+
+
+## Function
+seurat_to_spe &lt;- function(seu, sample_id, img_id) {
+    ## Convert to SCE
+    sce &lt;- Seurat::as.SingleCellExperiment(seu)
+    
+    ## Extract spatial coordinates
+    spatialCoords &lt;- as.matrix(
+        seu@images[[img_id]]@boundaries$centroids@coords[, c(&quot;x&quot;, &quot;y&quot;)])
+    
+    # the column names are specific for SPAIT
+    colnames(spatialCoords)&lt;- c(&quot;Cell.X.Position&quot;, &quot;Cell.Y.Position&quot;)
+    
+    ## Extract and process image data
+    #img &lt;- SpatialExperiment::SpatialImage(
+    #    x = as.raster(seu@images[[img_id]]@image))
+    
+    #imgData &lt;- DataFrame(
+    #    sample_id = sample_id,
+    #    image_id = img_id,
+    #    data = I(list(img)),
+    #    scaleFactor = seu@images[[img_id]]@scale.factors$lowres)
+    
+    # Convert to SpatialExperiment
+    spe &lt;- SpatialExperiment(
+        assays = assays(sce),
+        rowData = rowData(sce),
+        colData = colData(sce),
+        metadata = metadata(sce),
+        reducedDims = reducedDims(sce),
+        altExps = altExps(sce),
+        sample_id = sample_id,
+        spatialCoords = spatialCoords,
+        #imgData = imgData
+    )
+    # indicate all spots are on the tissue
+    spe$in_tissue &lt;- 1
+    spe$sample_id &lt;- sample_id
+    # Return Spatial Experiment object
+    spe
+}
+
+
+spe&lt;- seurat_to_spe(seu = xenium.obj, sample_id = &quot;1&quot;, img_id = 1)</code></pre>
+<p>inspect the data</p>
+<pre class="r"><code># what&#39;s the gene and cell number
+dim(spe)</code></pre>
+<pre><code>#&gt; [1]    392 530893</code></pre>
+<pre class="r"><code>assay(spe)[1:5, 1:5]</code></pre>
+<pre><code>#&gt; 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+#&gt;        aaaaaacg-1 aaaaafen-1 aaaaanfe-1 aaaabekh-1 aaaacacf-1
+#&gt; ACE             .          .          .          .          .
+#&gt; ACE2            .          .          .          .          .
+#&gt; ACKR1           .          .          .          .          .
+#&gt; ACTR3           1          3          .          .          .
+#&gt; ADAM17          .          .          .          .          .</code></pre>
+<pre class="r"><code>colData(spe)</code></pre>
+<pre><code>#&gt; DataFrame with 530893 rows and 18 columns
+#&gt;               orig.ident nCount_Xenium nFeature_Xenium
+#&gt;                 &lt;factor&gt;     &lt;numeric&gt;       &lt;integer&gt;
+#&gt; aaaaaacg-1 SeuratProject           147              80
+#&gt; aaaaafen-1 SeuratProject           104              60
+#&gt; aaaaanfe-1 SeuratProject            78              56
+#&gt; aaaabekh-1 SeuratProject            51              36
+#&gt; aaaacacf-1 SeuratProject            46              36
+#&gt; ...                  ...           ...             ...
+#&gt; oilgiagl-1 SeuratProject           174              82
+#&gt; oilgidkk-1 SeuratProject           178              93
+#&gt; oilgkofb-1 SeuratProject           109              53
+#&gt; oilglapp-1 SeuratProject           183              87
+#&gt; oilhbjia-1 SeuratProject            50              39
+#&gt;            nCount_NegativeControlCodeword nFeature_NegativeControlCodeword
+#&gt;                                 &lt;numeric&gt;                        &lt;integer&gt;
+#&gt; aaaaaacg-1                              0                                0
+#&gt; aaaaafen-1                              0                                0
+#&gt; aaaaanfe-1                              0                                0
+#&gt; aaaabekh-1                              0                                0
+#&gt; aaaacacf-1                              0                                0
+#&gt; ...                                   ...                              ...
+#&gt; oilgiagl-1                              0                                0
+#&gt; oilgidkk-1                              0                                0
+#&gt; oilgkofb-1                              0                                0
+#&gt; oilglapp-1                              0                                0
+#&gt; oilhbjia-1                              0                                0
+#&gt;            nCount_NegativeControlProbe nFeature_NegativeControlProbe nCount_SCT
+#&gt;                              &lt;numeric&gt;                     &lt;integer&gt;  &lt;numeric&gt;
+#&gt; aaaaaacg-1                           0                             0        125
+#&gt; aaaaafen-1                           0                             0        104
+#&gt; aaaaanfe-1                           0                             0         86
+#&gt; aaaabekh-1                           0                             0         89
+#&gt; aaaacacf-1                           0                             0         89
+#&gt; ...                                ...                           ...        ...
+#&gt; oilgiagl-1                           0                             0        121
+#&gt; oilgidkk-1                           0                             0        127
+#&gt; oilgkofb-1                           0                             0        109
+#&gt; oilglapp-1                           0                             0        123
+#&gt; oilhbjia-1                           0                             0         89
+#&gt;            nFeature_SCT SCT_snn_res.0.3 seurat_clusters            annotations
+#&gt;               &lt;integer&gt;        &lt;factor&gt;        &lt;factor&gt;            &lt;character&gt;
+#&gt; aaaaaacg-1           80               3              15           plasma cells
+#&gt; aaaaafen-1           60               3              3    M2-like macrophage-2
+#&gt; aaaaanfe-1           56               3              8  alveolar epithelial ..
+#&gt; aaaabekh-1           36               3              6               mast cell
+#&gt; aaaacacf-1           37               3              6               mast cell
+#&gt; ...                 ...             ...             ...                    ...
+#&gt; oilgiagl-1           77               0               2 ciliated epithelial ..
+#&gt; oilgidkk-1           90               0               2 ciliated epithelial ..
+#&gt; oilgkofb-1           53               2               1   M2-like macrophage-1
+#&gt; oilglapp-1           83               2               1   M2-like macrophage-1
+#&gt; oilhbjia-1           39               2               1   M2-like macrophage-1
+#&gt;            sub.cluster     cell_id kmeans_cluster    ident   sample_id
+#&gt;            &lt;character&gt; &lt;character&gt;      &lt;integer&gt; &lt;factor&gt; &lt;character&gt;
+#&gt; aaaaaacg-1          15  aaaaaacg-1             11       15           1
+#&gt; aaaaafen-1           3  aaaaafen-1             11       3            1
+#&gt; aaaaanfe-1           8  aaaaanfe-1             11       8            1
+#&gt; aaaabekh-1           6  aaaabekh-1             11       6            1
+#&gt; aaaacacf-1           6  aaaacacf-1             11       6            1
+#&gt; ...                ...         ...            ...      ...         ...
+#&gt; oilgiagl-1           2  oilgiagl-1              3        2           1
+#&gt; oilgidkk-1           2  oilgidkk-1              3        2           1
+#&gt; oilgkofb-1           1  oilgkofb-1              4        1           1
+#&gt; oilglapp-1           1  oilglapp-1              4        1           1
+#&gt; oilhbjia-1           1  oilhbjia-1              4        1           1
+#&gt;            in_tissue
+#&gt;            &lt;numeric&gt;
+#&gt; aaaaaacg-1         1
+#&gt; aaaaafen-1         1
+#&gt; aaaaanfe-1         1
+#&gt; aaaabekh-1         1
+#&gt; aaaacacf-1         1
+#&gt; ...              ...
+#&gt; oilgiagl-1         1
+#&gt; oilgidkk-1         1
+#&gt; oilgkofb-1         1
+#&gt; oilglapp-1         1
+#&gt; oilhbjia-1         1</code></pre>
+<pre class="r"><code>spe$seurat_clusters %&gt;% head()</code></pre>
+<pre><code>#&gt; [1] 15 3  8  6  6  6 
+#&gt; Levels: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</code></pre>
+<pre class="r"><code>spatialCoords(spe)[1:5, ]</code></pre>
+<pre><code>#&gt;      Cell.X.Position Cell.Y.Position
+#&gt; [1,]        366.5239        849.1828
+#&gt; [2,]        364.5222        863.8438
+#&gt; [3,]        381.3140        863.7556
+#&gt; [4,]        388.0256        864.1576
+#&gt; [5,]        394.2588        869.2458</code></pre>
+<pre class="r"><code>average_minimum_distance(spe)</code></pre>
+<pre><code>#&gt; [1] 10.12947</code></pre>
+<pre class="r"><code>tic()
+spe &lt;- identify_neighborhoods(
+  spe, method = &quot;dbscan&quot;, min_neighborhood_size = 100,
+  cell_types_of_interest = annotations, radius = 50, 
+  feature_colname = &quot;annotations&quot;)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-32-1.png" width="1152" /></p>
+<pre class="r"><code>toc()</code></pre>
+<pre><code>#&gt; 18.81 sec elapsed</code></pre>
+<p>It adds a new column of the niche ID in the <code>colData</code>:</p>
+<pre class="r"><code>colData(spe) %&gt;% head(n = 3)</code></pre>
+<pre><code>#&gt; DataFrame with 3 rows and 20 columns
+#&gt;       Cell.ID    orig.ident nCount_Xenium nFeature_Xenium
+#&gt;   &lt;character&gt;      &lt;factor&gt;     &lt;numeric&gt;       &lt;integer&gt;
+#&gt; 1  aaaaaacg-1 SeuratProject           147              80
+#&gt; 2  aaaaafen-1 SeuratProject           104              60
+#&gt; 3  aaaaanfe-1 SeuratProject            78              56
+#&gt;   nCount_NegativeControlCodeword nFeature_NegativeControlCodeword
+#&gt;                        &lt;numeric&gt;                        &lt;integer&gt;
+#&gt; 1                              0                                0
+#&gt; 2                              0                                0
+#&gt; 3                              0                                0
+#&gt;   nCount_NegativeControlProbe nFeature_NegativeControlProbe nCount_SCT
+#&gt;                     &lt;numeric&gt;                     &lt;integer&gt;  &lt;numeric&gt;
+#&gt; 1                           0                             0        125
+#&gt; 2                           0                             0        104
+#&gt; 3                           0                             0         86
+#&gt;   nFeature_SCT SCT_snn_res.0.3 seurat_clusters            annotations
+#&gt;      &lt;integer&gt;        &lt;factor&gt;        &lt;factor&gt;            &lt;character&gt;
+#&gt; 1           80               3              15           plasma cells
+#&gt; 2           60               3              3    M2-like macrophage-2
+#&gt; 3           56               3              8  alveolar epithelial ..
+#&gt;   sub.cluster     cell_id kmeans_cluster    ident   sample_id in_tissue
+#&gt;   &lt;character&gt; &lt;character&gt;      &lt;integer&gt; &lt;factor&gt; &lt;character&gt; &lt;numeric&gt;
+#&gt; 1          15  aaaaaacg-1             11       15           1         1
+#&gt; 2           3  aaaaafen-1             11       3            1         1
+#&gt; 3           8  aaaaanfe-1             11       8            1         1
+#&gt;   Neighborhood
+#&gt;    &lt;character&gt;
+#&gt; 1    Cluster_1
+#&gt; 2    Cluster_1
+#&gt; 3    Cluster_1</code></pre>
+<p>plot the cell type composition:</p>
+<pre class="r"><code>neighorhoods_vis &lt;- 
+  composition_of_neighborhoods(spe, feature_colname = &quot;annotations&quot;)
+
+neighorhoods_vis &lt;- 
+  neighorhoods_vis[neighorhoods_vis$Total_number_of_cells &gt;=5,]
+
+plot_composition_heatmap(neighorhoods_vis,
+                         feature_colname=&quot;annotations&quot;)</code></pre>
+<p><img src="/post/2023-08-08-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor_files/figure-html/unnamed-chunk-34-1.png" width="1152" /></p>
+<p>There is no parameters exposed to fine-tune the number of neighborhoods with <code>dbscan</code> in the <code>identify_neighborhoods</code> function.</p>
+<p>There are many other functions you can use from the <code>SPAIT</code> package. Make sure you go through the tutorial.</p>
+<p>That’s it for today! Happy Learning.</p>
+</div>
