@@ -34,7 +34,7 @@ weight = 5
 
 # About me
 
-I am now the Director of Computational Biology at [Immunitas Therapeutics](https://www.immunitastx.com/). At Immunitas, we employ a single cell sequencing platform to dissect the biology of immune cells in human tumors. Our focus on human samples allows us to start with and stay closer to the most relevant and translatable biology for patients and accelerates the pace of our research. My new north star is "bringing drugs to patients".
+I am now the Director of Computational Biology at [Immunitas Therapeutics](https://www.immunitastx.com/) and serving as the scientific advisory board member for [Pythia Biosciences](https://www.pythiabio.com/about-1), a bioinformatics software company focusing on multi-omics data analysis. At Immunitas, we employ a single cell sequencing platform to dissect the biology of immune cells in human tumors. Our focus on human samples allows us to start with and stay closer to the most relevant and translatable biology for patients and accelerates the pace of our research. My new north star is "bringing drugs to patients".
 
 ![](/img/bookcover.png)
 
