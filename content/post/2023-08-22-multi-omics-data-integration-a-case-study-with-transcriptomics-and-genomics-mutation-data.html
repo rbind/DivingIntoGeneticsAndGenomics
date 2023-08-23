@@ -1,0 +1,472 @@
+---
+title: 'multi-omics data integration: a case study with transcriptomics and genomics
+  mutation data'
+author: Ming Tang
+date: '2023-08-22'
+slug: multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data
+categories:
+  - bioinformatics
+  - multiomics
+  - R
+tags:
+  - bioinformatics
+  - R
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Multi-omics data analysis is a cutting-edge approach in biology that involves studying and integrating information from multiple biological “omics” sources. These omics sources include genomics (genes and their variations), transcriptomics (gene expression and RNA data), proteomics (proteins and their interactions), metabolomics (small molecules and metabolites), epigenomics (epigenetic modifications), and more. By analyzing data from various omics levels together, we can gain a more comprehensive and detailed understanding of biological systems and their complexities.</p>
+<p>The idea behind multi-omics analysis is that biological systems are incredibly intricate, with different levels of molecules interacting and influencing each other. Traditional single-omics approaches provide valuable insights into specific aspects of these systems, but they often miss out on the bigger picture. Multi-omics analysis, on the other hand, enables scientists to uncover connections and relationships that might not be apparent when looking at individual omics data in isolation.</p>
+<p>In this blog post, I am going to show you how to integrate transcriptomics (RNA-seq) data and the genomics (DNA-seq) data using cancer cell line data from <a href="https://depmap.org">Depmap</a>.</p>
+<div id="download-data" class="section level3">
+<h3>Download data</h3>
+<p>Download the gene expression and the gene mutation data from <a href="https://depmap.org/portal/download/custom/" class="uri">https://depmap.org/portal/download/custom/</a></p>
+<p>In this post, let’s try to predict cancer type from the CCLE cell lines by integrating both gene expression data and the mutation data.</p>
+<pre class="bash"><code>ls -1 *csv
+Copy_Number_Public_23Q2.csv
+Damaging_Mutations.csv
+Expression_Public_23Q2.csv
+</code></pre>
+</div>
+<div id="read-in-to-r" class="section level3">
+<h3>Read in to R</h3>
+<p>read in the expression data:</p>
+<pre class="r"><code>library(tidyverse)
+expression&lt;- read_csv(&quot;~/blog_data/Expression_Public_23Q2.csv&quot;)
+
+colnames(expression) %&gt;% head(n = 15)</code></pre>
+<pre><code>#&gt;  [1] &quot;depmap_id&quot;              &quot;cell_line_display_name&quot; &quot;lineage_1&quot;             
+#&gt;  [4] &quot;lineage_2&quot;              &quot;lineage_3&quot;              &quot;lineage_5&quot;             
+#&gt;  [7] &quot;lineage_6&quot;              &quot;lineage_4&quot;              &quot;TSPAN6&quot;                
+#&gt; [10] &quot;TNMD&quot;                   &quot;DPM1&quot;                   &quot;SCYL3&quot;                 
+#&gt; [13] &quot;C1orf112&quot;               &quot;FGR&quot;                    &quot;CFH&quot;</code></pre>
+<pre class="r"><code>colnames(expression) %&gt;% tail()</code></pre>
+<pre><code>#&gt; [1] &quot;C8orf44-SGK3&quot; &quot;ELOA3B&quot;       &quot;NPBWR1&quot;       &quot;ELOA3D&quot;       &quot;ELOA3&quot;       
+#&gt; [6] &quot;CDR1&quot;</code></pre>
+<pre class="r"><code>dim(expression)</code></pre>
+<pre><code>#&gt; [1]  1450 19152</code></pre>
+<p>read in the mutation data</p>
+<pre class="r"><code>mutation&lt;- read_csv(&quot;~/blog_data/Damaging_Mutations.csv&quot;)
+
+head(mutation)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 16,971
+#&gt;   depmap_id  cell_line_displa… lineage_1 lineage_2 lineage_3 lineage_5 lineage_6
+#&gt;   &lt;chr&gt;      &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;    
+#&gt; 1 ACH-001270 127399            Soft Tis… Synovial… Synovial… &lt;NA&gt;      &lt;NA&gt;     
+#&gt; 2 ACH-002680 170MGBA           CNS/Brain Diffuse … Glioblas… Glioblas… &lt;NA&gt;     
+#&gt; 3 ACH-002089 201T              Lung      Non-Smal… Lung Ade… NSCLC Ad… &lt;NA&gt;     
+#&gt; 4 ACH-002399 21NT              Breast    Invasive… Breast I… &lt;NA&gt;      &lt;NA&gt;     
+#&gt; 5 ACH-001002 451LU             Skin      Melanoma  Cutaneou… &lt;NA&gt;      &lt;NA&gt;     
+#&gt; 6 ACH-000520 59M               Ovary/Fa… Ovarian … High-Gra… High Gra… &lt;NA&gt;     
+#&gt; # … with 16,964 more variables: lineage_4 &lt;lgl&gt;, A1BG &lt;dbl&gt;, A1CF &lt;dbl&gt;,
+#&gt; #   A2M &lt;dbl&gt;, A2ML1 &lt;dbl&gt;, A3GALT2 &lt;dbl&gt;, A4GALT &lt;dbl&gt;, A4GNT &lt;dbl&gt;,
+#&gt; #   AAAS &lt;dbl&gt;, AACS &lt;dbl&gt;, AADAC &lt;dbl&gt;, AADACL2 &lt;dbl&gt;, AADACL3 &lt;dbl&gt;,
+#&gt; #   AADACL4 &lt;dbl&gt;, AADAT &lt;dbl&gt;, AAGAB &lt;dbl&gt;, AAK1 &lt;dbl&gt;, AAMDC &lt;dbl&gt;,
+#&gt; #   AAMP &lt;dbl&gt;, AAR2 &lt;dbl&gt;, AARS1 &lt;dbl&gt;, AARS2 &lt;dbl&gt;, AASDH &lt;dbl&gt;,
+#&gt; #   AASDHPPT &lt;dbl&gt;, AASS &lt;dbl&gt;, AATF &lt;dbl&gt;, AATK &lt;dbl&gt;, ABAT &lt;dbl&gt;,
+#&gt; #   ABCA1 &lt;dbl&gt;, ABCA10 &lt;dbl&gt;, ABCA12 &lt;dbl&gt;, ABCA13 &lt;dbl&gt;, ABCA2 &lt;dbl&gt;, …</code></pre>
+<pre class="r"><code>View(mutation)
+
+dim(mutation)</code></pre>
+<pre><code>#&gt; [1]  1738 16971</code></pre>
+<p>Not all cell lines have both mutation and expression data</p>
+<pre class="r"><code>setdiff(expression$depmap_id, mutation$depmap_id)</code></pre>
+<pre><code>#&gt;  [1] &quot;ACH-002981&quot; &quot;ACH-000742&quot; &quot;ACH-002475&quot; &quot;ACH-000578&quot; &quot;ACH-000731&quot;
+#&gt;  [6] &quot;ACH-000690&quot; &quot;ACH-000575&quot; &quot;ACH-000049&quot; &quot;ACH-000642&quot; &quot;ACH-000299&quot;
+#&gt; [11] &quot;ACH-000088&quot; &quot;ACH-000539&quot; &quot;ACH-000413&quot; &quot;ACH-000229&quot; &quot;ACH-001712&quot;
+#&gt; [16] &quot;ACH-000194&quot; &quot;ACH-000629&quot; &quot;ACH-000216&quot; &quot;ACH-001109&quot; &quot;ACH-000282&quot;
+#&gt; [21] &quot;ACH-000033&quot; &quot;ACH-000904&quot; &quot;ACH-000710&quot; &quot;ACH-001142&quot; &quot;ACH-000116&quot;
+#&gt; [26] &quot;ACH-000854&quot; &quot;ACH-000494&quot; &quot;ACH-000057&quot; &quot;ACH-000034&quot; &quot;ACH-000170&quot;
+#&gt; [31] &quot;ACH-001743&quot; &quot;ACH-000064&quot; &quot;ACH-000016&quot; &quot;ACH-000300&quot; &quot;ACH-000600&quot;
+#&gt; [36] &quot;ACH-001207&quot; &quot;ACH-000314&quot; &quot;ACH-000084&quot; &quot;ACH-000580&quot; &quot;ACH-000923&quot;
+#&gt; [41] &quot;ACH-000737&quot; &quot;ACH-000306&quot; &quot;ACH-000850&quot; &quot;ACH-000071&quot; &quot;ACH-000185&quot;
+#&gt; [46] &quot;ACH-000230&quot; &quot;ACH-000526&quot; &quot;ACH-000931&quot; &quot;ACH-000014&quot; &quot;ACH-000003&quot;
+#&gt; [51] &quot;ACH-000333&quot;</code></pre>
+<pre class="r"><code>setdiff(mutation$depmap_id, expression$depmap_id) %&gt;%
+        head()</code></pre>
+<pre><code>#&gt; [1] &quot;ACH-002089&quot; &quot;ACH-002399&quot; &quot;ACH-001002&quot; &quot;ACH-002389&quot; &quot;ACH-002209&quot;
+#&gt; [6] &quot;ACH-002210&quot;</code></pre>
+<pre class="r"><code>common_cell_lines&lt;- intersect(mutation$depmap_id, expression$depmap_id)
+
+length(common_cell_lines)</code></pre>
+<pre><code>#&gt; [1] 1399</code></pre>
+<pre class="r"><code>expression_sub&lt;- expression %&gt;%
+  filter(depmap_id %in% common_cell_lines)
+
+
+mutation_sub&lt;- mutation %&gt;%
+  filter(depmap_id %in% common_cell_lines)
+
+dim(expression_sub)</code></pre>
+<pre><code>#&gt; [1]  1399 19152</code></pre>
+<pre class="r"><code>dim(mutation_sub)</code></pre>
+<pre><code>#&gt; [1]  1399 16971</code></pre>
+<p>There are total 1399 cell lines with both mutation and expression data.</p>
+<p>There are different levels of lineages annotations</p>
+<pre class="r"><code>table(mutation_sub$lineage_1, useNA = &quot;always&quot;)</code></pre>
+<pre><code>#&gt; 
+#&gt;             Adrenal Gland          Ampulla of Vater             Biliary Tract 
+#&gt;                         1                         4                        38 
+#&gt;     Bladder/Urinary Tract                      Bone                     Bowel 
+#&gt;                        37                        39                        74 
+#&gt;                    Breast                    Cervix                 CNS/Brain 
+#&gt;                        67                        20                        95 
+#&gt;         Esophagus/Stomach                       Eye                Fibroblast 
+#&gt;                        82                        18                        25 
+#&gt;             Head and Neck                    Kidney                     Liver 
+#&gt;                        60                        38                        26 
+#&gt;                      Lung                  Lymphoid                   Myeloid 
+#&gt;                       181                       154                        58 
+#&gt;      Ovary/Fallopian Tube                  Pancreas Peripheral Nervous System 
+#&gt;                        63                        58                        39 
+#&gt;                    Pleura                  Prostate                      Skin 
+#&gt;                        21                        11                        86 
+#&gt;               Soft Tissue                    Testis                   Thyroid 
+#&gt;                        43                         3                        16 
+#&gt;                    Uterus              Vulva/Vagina                      &lt;NA&gt; 
+#&gt;                        40                         2                         0</code></pre>
+<pre class="r"><code># deeper lineages, but some NAs
+table(mutation_sub$lineage_5, useNA = &quot;always&quot;)</code></pre>
+<pre><code>#&gt; 
+#&gt;                         Acral                       Adrenal 
+#&gt;                             4                             1 
+#&gt;                      Alveolar                    Amelanotic 
+#&gt;                             6                             3 
+#&gt;                    Anaplastic                   Astrocytoma 
+#&gt;                             3                            14 
+#&gt;                        B-cell                B-cell Burkitt 
+#&gt;                            40                            13 
+#&gt;            B-cell Mantle Cell                      Basaloid 
+#&gt;                             6                             1 
+#&gt;              Bladder Squamous     Bladder Transitional Cell 
+#&gt;                             2                            24 
+#&gt;                  Blast Crisis                 Buccal Mucosa 
+#&gt;                            12                             3 
+#&gt;                    Clear Cell                         DDLPS 
+#&gt;                            20                             3 
+#&gt;               Diffuse Gastric                         DLBCL 
+#&gt;                             6                            20 
+#&gt;                     Embryonal                  Endocervical 
+#&gt;                             5                             2 
+#&gt;                  Endometrioid        Epithelial-Endometroid 
+#&gt;                             6                             1 
+#&gt;                 ERneg HER2neg                 ERneg HER2pos 
+#&gt;                            33                             9 
+#&gt;                 ERpos HER2neg                 ERpos HER2pos 
+#&gt;                            12                             8 
+#&gt;       Exocrine Adenocarcinoma        Exocrine Adenosquamous 
+#&gt;                            54                             2 
+#&gt;                  Extrahepatic                    Follicular 
+#&gt;                            10                             4 
+#&gt;                    Giant Cell                      Gingival 
+#&gt;                             1                             1 
+#&gt;                  Glioblastoma           HBs Antigen Carrier 
+#&gt;                            48                             1 
+#&gt;             High Grade Serous                Hypopharyngeal 
+#&gt;                            21                             1 
+#&gt;                  Intrahepatic               Keratoacanthoma 
+#&gt;                            25                             1 
+#&gt;                     Laryngeal              Low Grade Serous 
+#&gt;                             5                             1 
+#&gt;                            M2                            M3 
+#&gt;                             3                             3 
+#&gt;                            M4                            M5 
+#&gt;                             3                             8 
+#&gt;                            M6                            M7 
+#&gt;                             4                             2 
+#&gt;                   Med Group 3 Mixed Endometrioid Clear Cell 
+#&gt;                             4                             1 
+#&gt;       Mixed Serous Clear Cell                      Mucinous 
+#&gt;                             1                             6 
+#&gt;                       Mucosal          NSCLC Adenocarcinoma 
+#&gt;                             1                            71 
+#&gt;           NSCLC Adenosquamous              NSCLC Large Cell 
+#&gt;                             4                            16 
+#&gt;          NSCLC Mucoepidermoid                NSCLC Squamous 
+#&gt;                             1                            25 
+#&gt;             Oligodendroglioma                          Oral 
+#&gt;                             3                            17 
+#&gt;                     Papillary                Papillotubular 
+#&gt;                             3                             1 
+#&gt;                       Pharynx                  Plasmacytoma 
+#&gt;                             1                             4 
+#&gt;     Renal Medullary Carcinoma                Salivary Gland 
+#&gt;                             1                             1 
+#&gt;                        Serous              Signet Ring Cell 
+#&gt;                             5                             2 
+#&gt;                         Sinus               Somatostatinoma 
+#&gt;                             1                             1 
+#&gt;              Splenic Lymphoma                        T-cell 
+#&gt;                             1                            26 
+#&gt;                   T-cell ALCL              T-cell Cutaneous 
+#&gt;                             6                             3 
+#&gt;                    Testicular                        Tongue 
+#&gt;                             1                             5 
+#&gt;             Transitional Cell                       Tubular 
+#&gt;                             1                             5 
+#&gt;                         Uveal                      WD/DDPLS 
+#&gt;                             1                             1 
+#&gt;                         WDLPS                          &lt;NA&gt; 
+#&gt;                             3                           721</code></pre>
+<p>let’s focus on level 1. To make the analysis more robust, let’s pick some cancer types with at least 20 cell lines</p>
+<pre class="r"><code>lineages&lt;- c(&quot;Bone&quot;, &quot;Bowel&quot;, &quot;Breast&quot;, &quot;Cervix&quot;, &quot;Head and Neck&quot;, &quot;CNS/Brain&quot;)
+  
+expression_sub&lt;- expression_sub %&gt;%
+  filter(lineage_1 %in% lineages)
+
+mutation_sub&lt;- mutation_sub %&gt;%
+  filter(lineage_1 %in% lineages)
+
+dim(expression_sub)</code></pre>
+<pre><code>#&gt; [1]   355 19152</code></pre>
+<pre class="r"><code>dim(mutation_sub)</code></pre>
+<pre><code>#&gt; [1]   355 16971</code></pre>
+</div>
+<div id="clustering-by-gene-expression-only" class="section level3">
+<h3>Clustering by gene expression only</h3>
+<pre class="r"><code>cancer_types&lt;- factor(expression_sub$lineage_1)
+expression_sub&lt;- expression_sub %&gt;%
+  select(-(2:8))%&gt;%
+  tibble::column_to_rownames(var=&quot;depmap_id&quot;)
+
+
+expression_sub[1:6, 1:6]</code></pre>
+<pre><code>#&gt;              TSPAN6      TNMD     DPM1    SCYL3 C1orf112        FGR
+#&gt; ACH-002680 4.155425 0.1243281 6.681730 2.430285 2.799087 0.81557543
+#&gt; ACH-000283 3.618239 0.0000000 7.209941 1.922198 3.918386 0.00000000
+#&gt; ACH-001016 2.456806 0.0000000 7.383877 2.776104 3.578939 0.00000000
+#&gt; ACH-000160 2.835924 0.0000000 6.361944 1.550901 3.257011 0.00000000
+#&gt; ACH-001020 4.846995 0.0000000 6.911212 2.114367 4.040016 0.00000000
+#&gt; ACH-000818 3.531069 0.0000000 6.585864 3.726831 3.237258 0.07038933</code></pre>
+<pre class="r"><code>library(ComplexHeatmap)
+
+expression_mat&lt;- as.matrix(expression_sub)
+
+# transpose it to gene by sample
+expression_mat&lt;- t(expression_mat)
+dim(expression_mat)</code></pre>
+<pre><code>#&gt; [1] 19144   355</code></pre>
+<pre class="r"><code>## filter only the most variable genes
+library(genefilter)
+
+top_genes&lt;- genefilter::rowVars(expression_mat) %&gt;% 
+  sort(decreasing = TRUE) %&gt;%
+  names() %&gt;%
+  head(200)
+
+expression_mat_sub&lt;- expression_mat[top_genes, ]</code></pre>
+<pre class="r"><code>library(RColorBrewer)
+#RColorBrewer::display.brewer.all()
+
+cols&lt;- RColorBrewer::brewer.pal(n = 6, name = &quot;Set1&quot;)
+unique(cancer_types)</code></pre>
+<pre><code>#&gt; [1] CNS/Brain     Breast        Bowel         Bone          Cervix       
+#&gt; [6] Head and Neck
+#&gt; Levels: Bone Bowel Breast Cervix CNS/Brain Head and Neck</code></pre>
+<pre class="r"><code>ha&lt;- HeatmapAnnotation(cancer_type = factor(cancer_types),
+                       col=list(cancer_type = setNames(cols, unique(cancer_types) %&gt;% sort())))
+
+Heatmap(t(scale(t(expression_mat_sub))), top_annotation = ha,
+         show_row_names = FALSE, show_column_names = FALSE,
+         show_row_dend = FALSE,
+        name = &quot;scaled\nexpression&quot;,
+        column_dend_reorder = TRUE)</code></pre>
+<p><img src="/post/2023-08-22-multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data_files/figure-html/unnamed-chunk-9-1.png" width="576" /></p>
+<p>Principal component analysis (PCA)</p>
+<pre class="r"><code>pca&lt;- prcomp(t(expression_mat_sub),center = TRUE, scale. = TRUE) 
+
+# check the order of the samples are the same.
+all.equal(rownames(pca$x), colnames(expression_mat_sub))</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>PC1_and_PC2&lt;- data.frame(PC1=pca$x[,1], PC2= pca$x[,2], type = cancer_types)
+
+## plot PCA plot
+library(ggplot2)
+ggplot(PC1_and_PC2, aes(x=PC1, y=PC2)) + 
+        geom_point(aes(color = type)) +
+        scale_color_manual(values = cols) +
+        theme_bw(base_size = 14)</code></pre>
+<p><img src="/post/2023-08-22-multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data_files/figure-html/unnamed-chunk-10-1.png" width="576" />
+You can see gene expression data only do a pretty good job separating the cancer types for most of the cell lines although we do see some mis-classified cell lines.</p>
+<p>Since different cancer types have different mutation profiles, let’s see if we can add the mutation information and better stratify the cancer cell lines.</p>
+</div>
+<div id="clustering-the-mutation-data" class="section level3">
+<h3>clustering the mutation data</h3>
+<pre class="r"><code>mutation_sub&lt;- mutation_sub %&gt;%
+  select(-(2:8))%&gt;%
+  tibble::column_to_rownames(var=&quot;depmap_id&quot;)
+
+mutation_sub[1:5, 1:5]</code></pre>
+<pre><code>#&gt;            A1BG A1CF A2M A2ML1 A3GALT2
+#&gt; ACH-002680    0    0   0     0       0
+#&gt; ACH-000283    0    0   0     0       0
+#&gt; ACH-001016    0    0   0     0       0
+#&gt; ACH-000160    0    0   0     0       0
+#&gt; ACH-001020    0    0   0     0       0</code></pre>
+<pre class="r"><code>mutation_mat&lt;- as.matrix(mutation_sub)
+
+# transpose it to gene by sample
+mutation_mat&lt;- t(mutation_mat)
+dim(mutation_mat)</code></pre>
+<pre><code>#&gt; [1] 16963   355</code></pre>
+<pre class="r"><code>## order the columns the same as the expression
+
+mutation_mat&lt;- mutation_mat[, colnames(expression_mat)]
+
+top_genes2&lt;- genefilter::rowVars(mutation_mat) %&gt;% 
+  sort(decreasing = TRUE) %&gt;%
+  names() %&gt;%
+  head(200)
+
+# binarize the matrix
+
+mutation_mat[mutation_mat &gt;0]&lt;- 1
+
+colors = structure(c(&quot;blue&quot;, &quot;red&quot;), names = c(0, 1))
+
+mutation_mat_sub&lt;- mutation_mat[rowSums(mutation_mat) &gt; 15 ,]
+Heatmap(mutation_mat_sub, top_annotation = ha,
+        col = colors,
+        show_row_names = TRUE, show_column_names = FALSE,
+        show_row_dend = FALSE,
+        name = &quot;mutation&quot;,
+        row_names_gp = gpar(fontsize = 5),
+        column_dend_reorder = TRUE)</code></pre>
+<p><img src="/post/2023-08-22-multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data_files/figure-html/unnamed-chunk-11-1.png" width="576" />
+Mutation is not as good to separate cancer types.</p>
+<p>We can use Rand index or adjusted rand index to measure how well the clustering matches the ground truth using only the expression data. See this <a href="https://davetang.org/muse/2017/09/21/adjusted-rand-index/">blog post</a> by <code>Dave Tang</code>.</p>
+<pre class="r"><code>set.seed(1234)
+kmeans1&lt;- kmeans(t(expression_mat_sub), centers = 6)
+kmeans1$cluster %&gt;%
+        head()</code></pre>
+<pre><code>#&gt; ACH-002680 ACH-000283 ACH-001016 ACH-000160 ACH-001020 ACH-000818 
+#&gt;          2          1          1          4          4          5</code></pre>
+<pre class="r"><code>#install.packages(&quot;fossil&quot;)
+fossil::rand.index(as.numeric(cancer_types), kmeans1$cluster)</code></pre>
+<pre><code>#&gt; [1] 0.8142437</code></pre>
+<pre class="r"><code>fossil::adj.rand.index(as.numeric(cancer_types), kmeans1$cluster)</code></pre>
+<pre><code>#&gt; [1] 0.3787002</code></pre>
+<p>Alternatively, we can use <a href="https://github.com/pkimes/sigclust2"><code>sigclust2</code></a> to determine the best clustering using hierarchical clustering which was used in the heatmap and then calculate the rand index.</p>
+</div>
+<div id="multiple-factor-analysis-mfa" class="section level3">
+<h3>Multiple Factor Analysis (MFA)</h3>
+<p>For any data matrix, it can be (approximately) decomposed into two matrices. Read this review <a href="https://www.sciencedirect.com/science/article/pii/S0168952518301240">Enter the Matrix: Factorization Uncovers Knowledge from Omics</a> and my previous <a href="https://divingintogeneticsandgenomics.com/post/matrix-factorization-for-single-cell-rnaseq-data/">blog post</a>.</p>
+<p><img src="/img/posts_img/matrix_factorization.png" /></p>
+<p>For multiple matrices, there are three strategies for the integration as shown below:</p>
+<p><img src="/img/multiomics1.png" /></p>
+<ul>
+<li><p>For early integration, you can simply concatenate the matrices together (Note, in this figure, the rows are samples, columns are features, you use <code>cbind</code> to concatenate the matrices. In the code below, the columns are samples, so I used <code>rbind</code> to concatenate and then <code>t</code> to transpose it to sample x features).
+However, different omics data may have very different range of values, you may want to normalize the features within each omic dataset first (e.g., a z-score) and then concatenate.</p></li>
+<li><p>The middle integration, we can use methods such as Multiple Factor Analysis (MFA), joint NMF, or even deep-learning (e.g., autoEncoder) to get a lower dimension embedding of the samples and use that as input for any downstream analysis.</p></li>
+<li><p>The later integration is the most simple and straightforward method. We analyze each omic data independently and then integrate at a higher level. (e.g, if the up-regulated pathways are common from proteomics data and the transcriptomics data)</p></li>
+</ul>
+<p>Let’s try Multiple Factor Analysis (MFA). MFA is a statistical technique that takes root in PCA (or MCA if dealing with qualitative data).</p>
+<p><img src="/img/mfa.png" />
+Formally, we have:</p>
+<p><span class="math display">\[X = \begin{bmatrix}
+           X_{1} \\
+           X_{2} \\
+           \vdots \\
+           X_{L}
+         \end{bmatrix} = WH\]</span></p>
+<blockquote>
+<p>a joint decomposition of the different data matrices <span class="math inline">\(X_i\)</span> into the factor matrix<br />
+<code>W</code> and the latent variable matrix <code>H</code>. This way, we can leverage the ability of PCA to find the highest variance decomposition of the data, when the data consists of different omics types.</p>
+</blockquote>
+<blockquote>
+<p>But because measurements from different experiments have different scales, they will also have variance (and co-variance) at different scales.</p>
+</blockquote>
+<blockquote>
+<p>Multiple Factor Analysis addresses this issue and achieves balance among the data types by normalizing each of the data types, before stacking them and passing them on to PCA. Formally, MFA is given by</p>
+</blockquote>
+<p><span class="math display">\[X_n = \begin{bmatrix}
+           X_{1} / \lambda^{(1)}_1 \\
+           X_{2} / \lambda^{(2)}_1 \\
+           \vdots \\
+           X_{L} / \lambda^{(L)}_1
+         \end{bmatrix} = WH\]</span></p>
+<p>where <span class="math inline">\(\lambda^{(i)}_1\)</span>is the first eigenvalue of the principal component decomposition of <span class="math inline">\(X_i\)</span></p>
+<p>Following this normalization step, we apply PCA to <span class="math inline">\(X_n\)</span>. From there on, MFA analysis is the same as PCA analysis.</p>
+<pre class="r"><code>library(tictoc)
+all.equal(colnames(expression_mat_sub), colnames(mutation_mat_sub))</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>tic()
+# run the MFA function from the FactoMineR package
+r.mfa &lt;- FactoMineR::MFA(
+  t(rbind(expression_mat_sub, mutation_mat_sub)), 
+  # binding the omics types together, the colnames are the same 
+  c(dim(expression_mat_sub)[1], dim(mutation_mat_sub)[1]), 
+  ncp = 30,
+  # specifying the dimensions of each
+  graph=FALSE)
+toc()</code></pre>
+<pre><code>#&gt; 0.583 sec elapsed</code></pre>
+<pre class="r"><code>mfa.h &lt;- r.mfa$global.pca$ind$coord
+mfa.w &lt;- r.mfa$quanti.var$coord
+
+# create a dataframe with the H matrix and the cancer type label
+mfa_df &lt;- as.data.frame(mfa.h)
+mfa_df$subtype &lt;- factor(cancer_types)
+
+# create the plot
+ggplot(mfa_df, ggplot2::aes(x=Dim.1, y=Dim.2, color=subtype)) +
+  geom_point() + 
+  scale_color_manual(values = cols) +
+  ggplot2::ggtitle(&quot;Scatter plot of MFA&quot;) +
+  theme_bw(base_size = 14)</code></pre>
+<p><img src="/post/2023-08-22-multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(mfa_df, ggplot2::aes(x=Dim.2, y=Dim.3, color=subtype)) +
+  geom_point() + 
+  scale_color_manual(values = cols) +
+  ggplot2::ggtitle(&quot;Scatter plot of MFA&quot;) +
+  theme_bw(base_size = 14)</code></pre>
+<p><img src="/post/2023-08-22-multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data_files/figure-html/unnamed-chunk-14-2.png" width="576" /></p>
+<pre class="r"><code>Heatmap(t(mfa.h)[1:30,], top_annotation = ha,
+                  name=&quot;MFA multi-omics\nintegration&quot;,
+        show_column_names = FALSE,
+        show_row_dend = FALSE)</code></pre>
+<p><img src="/post/2023-08-22-multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data_files/figure-html/unnamed-chunk-15-1.png" width="576" />
+Each row is a different feature that we can use to do clustering or as a feature for a machine learning prediction (e.g., drug response).</p>
+<p>Let’s quantify if the adjusted rand index improved or not.</p>
+<pre class="r"><code>set.seed(1234)
+kmeans2&lt;- kmeans(mfa.h, centers = 6)
+
+fossil::rand.index(as.numeric(cancer_types), kmeans2$cluster)</code></pre>
+<pre><code>#&gt; [1] 0.8212143</code></pre>
+<pre class="r"><code>fossil::adj.rand.index(as.numeric(cancer_types), kmeans2$cluster)</code></pre>
+<pre><code>#&gt; [1] 0.423766</code></pre>
+<p>The rand index improved from <code>0.814</code> to <code>0.821</code> after we include the mutation data.</p>
+<p>You can also use <a href="https://compgenomr.github.io/book/matrix-factorization-methods-for-unsupervised-multi-omics-data-integration.html">joint <code>NMF</code></a> to do the integration.</p>
+</div>
+<div id="conclusions" class="section level3">
+<h3>Conclusions</h3>
+<ul>
+<li><p>You can add more omics data such as copy-number variation, proteomics, metabolomics data etc just by concatenating more matrices.</p></li>
+<li><p>However, Not necessary the more the better. Whether additional omic layer contribute to additional information to separate the samples is a question.</p></li>
+<li><p>Related to above, the quality of the omics data matters. Garbage in Garbage out just like machine learning.</p></li>
+<li><p>K-means can give different results based on the initiation. If you change the seed, you may get different clusters and so for the rand index too.</p></li>
+<li><p>The above methods works for samples have every type of omic data. However, in real life, there could be some samples missing some types of data. <a href="https://biofam.github.io/MOFA2/"><code>MOFA+</code></a> seems to be able to deal with it. Other methods such as <a href="https://www.nature.com/articles/s41587-022-01284-4">GLUE</a> even works on the un-paired data.</p></li>
+</ul>
+<p><img src="/img/glue.png" /></p>
+</div>
+<div id="references-and-further-readings" class="section level3">
+<h3>References and further readings</h3>
+<ul>
+<li><p><a href="https://compgenomr.github.io/book/matrix-factorization-methods-for-unsupervised-multi-omics-data-integration.html" class="uri">https://compgenomr.github.io/book/matrix-factorization-methods-for-unsupervised-multi-omics-data-integration.html</a></p></li>
+<li><p><a href="https://www.biorxiv.org/content/10.1101/2023.07.21.549899v1">ChromatinHD connects single-cell DNA accessibility and conformation to gene expression through scale-adaptive machine learning</a></p></li>
+<li><p><a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02015-1">MOFA+: a statistical framework for comprehensive integration of multi-modal single-cell data | Genome Biology</a></p></li>
+<li><p><a href="https://www.nature.com/articles/s41576-023-00618-5">Gene regulatory network inference in the era of single-cell multi-omics | Nature Reviews Genetics</a></p></li>
+<li><p><a href="https://www.cell.com/cell-genomics/fulltext/S2666-979X(23)00142-8">Multiset correlation and factor analysis enables exploration of multi-omics data: Cell Genomics</a></p></li>
+<li><p><a href="https://github.com/KChen-lab/bindSC">GitHub - KChen-lab/bindSC: Bi-order integration (in silico multi-omics data) of single cell RNA sequencing, single cell ATAC sequencing, spatial transcriptomics and CyTOF data</a></p></li>
+<li><p><a href="https://github.com/cantinilab/HuMMuS">GitHub - cantinilab/HuMMuS: Molecular interactions inference from single-cell multi-omics data</a></p></li>
+<li><p><a href="https://www.nature.com/articles/s41467-020-20430-7">Benchmarking joint multi-omics dimensionality reduction approaches for the study of cancer | Nature Communications</a></p></li>
+<li><p><a href="https://www.nature.com/articles/s41587-022-01284-4">Multi-omics single-cell data integration and regulatory inference with graph-linked embedding | Nature Biotechnology</a></p></li>
+<li><p><a href="https://pubmed.ncbi.nlm.nih.gov/35169688/">Machine learning for multi-omics data integration in cancer</a></p></li>
+<li><p><a href="https://www.nature.com/articles/s41581-021-00463-x">Multi-omics integration in the age of million single-cell data | Nature Reviews Nephrology</a></p></li>
+<li><p><a href="https://academic.oup.com/bioinformatics/article/38/20/4727/6677225">Integration of networks</a></p></li>
+</ul>
+</div>
