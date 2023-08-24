@@ -37,6 +37,10 @@ In this blog post, I am going to show you how to integrate transcriptomics (RNA-
 ### Download data 
 Download the gene expression and the gene mutation data from https://depmap.org/portal/download/custom/
 
+Make sure you check the box "Add cell line metadata to download".
+
+![](/img/depmap.png)
+
 In this post, let's try to predict cancer type from the CCLE cell lines by integrating both gene expression data and the mutation data.
 
 ```{bash eval=FALSE}
