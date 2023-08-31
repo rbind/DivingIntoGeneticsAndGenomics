@@ -1,0 +1,304 @@
+---
+title: Understand word embedding and use deep learning to classify movie reviews
+author: Ming Tang
+date: '2023-08-31'
+slug: understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews
+categories:
+  - deeplearning
+tags:
+  - deeplearning
+header:
+  caption: ''
+  image: ''
+---
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 6)  # Set the desired width and height
+
+```
+
+Picture this: a computer that can actually grasp the emotions hidden in movie reviews – sensing whether they're shouting with joy or grumbling in disappointment. This mind-bending capability comes from two incredible technologies: deep learning and word embedding. But don't worry if these sound like jargon; I am here to unravel the mystery.
+
+Think of deep learning as a supercharged brain for computers. Just like we learn from experience, computers learn from data. Word embedding, on the other hand, is like converting words into a language computers understand – numbers! It's like teaching your dog to respond to hand signals instead of just words.
+
+In this blog post, I am your guides on this adventure. I will show you how deep learning and word embedding join forces to train computers in deciphering the tones of movie reviews. We're talking about those moments when the computer understands that a review saying "This movie was a rollercoaster of emotions" is positive, not about a literal amusement park.
+
+So, fasten your seatbelts. We're about to journey into the realms of AI, exploring how machines learn, adapt, and finally crack the code of sentiments tucked within movie reviews.
+
+Load the libraries.
+```{r}
+library(keras)
+library(reticulate)
+library(ggplot2)
+use_condaenv("r-reticulate")
+```
+
+Computers do not understand text. Let's turn it into numeric vectors
+```{r}
+samples<- c("The cat sat on the mat.", "The dog ate my homework.")
+
+tokenizer<- text_tokenizer(num_words = 1000) %>%
+  fit_text_tokenizer(samples)
+
+sequences<- texts_to_sequences(tokenizer, samples)
+
+one_hot_results<- texts_to_matrix(tokenizer, samples, mode= "binary")
+
+one_hot_results[1:2, 1:20]
+word_index<- tokenizer$word_index
+
+```
+
+Let's use the `IMDB` movie-review sentiment-prediction dataset for demonstration.
+
+Dataset of 25,000 movies reviews from IMDB, labeled by sentiment (positive/negative). Reviews have been preprocessed, and each review is encoded as a sequence of word indexes (integers). For convenience, words are indexed by overall frequency in the dataset, so that for instance the integer "3" encodes the 3rd most frequent word in the data.
+
+
+
+Download the data from http://mng.bz/0tIo and unzip it.
+
+read the reviews (text files) into R for the training set.
+```{r}
+imdb_dir<- "~/blog_data/aclImdb"
+train_dir<- file.path(imdb_dir, "train")
+labels<- c()
+texts<- c()
+
+for (label_type in c("neg", "pos")){
+  label<- switch(label_type, neg = 0, pos = 1)
+  dir_name<- file.path(train_dir, label_type)
+  for (fname in list.files(dir_name, pattern = glob2rx("*txt"),
+                           full.names = TRUE)){
+    texts<- c(texts, readChar(fname, file.info(fname)$size))
+    labels<- c(labels, label)
+  }
+}
+
+
+length(labels)
+length(texts)
+# the first review 
+texts[1]
+```
+
+Tokenize the data
+
+```{r}
+maxlen<- 100
+max_words<- 10000
+
+tokenizer<- text_tokenizer(num_words = max_words) %>%
+  fit_text_tokenizer(texts)
+
+tokenizer$num_words
+tokenizer$word_index[1:5]
+word_index<- tokenizer$word_index
+
+sequences<- texts_to_sequences(tokenizer, texts)
+
+## first review turned into integers
+sequences[[1]]
+
+x_train<- pad_sequences(sequences, maxlen = maxlen)
+
+## it becomes a 2D matrix of samples x max_words
+dim(x_train)
+
+y_train<- as.array(labels)
+
+```
+
+Do the same thing for the test dataset
+
+```{r}
+test_dir<- file.path(imdb_dir, "test")
+labels<- c()
+texts<- c()
+
+for (label_type in c("neg", "pos")){
+  label<- switch(label_type, neg = 0, pos = 1)
+  dir_name<- file.path(test_dir, label_type)
+  for (fname in list.files(dir_name, pattern = glob2rx("*.txt"), 
+                           full.names = TRUE)){
+    texts<- c(texts, readChar(fname, file.info(fname)$size))
+    labels<- c(labels, label)
+  }
+}
+
+sequences<- texts_to_sequences(tokenizer, texts)
+x_test<- pad_sequences(sequences, maxlen = maxlen)
+y_test<- as.array(labels)
+
+```
+
+
+build the model
+```{r}
+embedding_dim<- 100
+
+# for the embedding weights matrix, index 1 is not suppose to be any word or token, it is a placeholder. that's why we use tokenizer$num_words (10000) + 1 as input_dim
+
+model<- keras_model_sequential() %>%
+  layer_embedding(input_dim = tokenizer$num_words + 1, output_dim = embedding_dim, 
+                  input_length = maxlen) %>%
+  layer_flatten() %>%
+  layer_dense(units = 32, activation = "relu") %>%
+  layer_dense(units = 1, activation = "sigmoid") # for the binary classification
+```
+
+compile the model
+
+```{r}
+model %>%
+  compile(
+    optimizer = "rmsprop",
+    loss = "binary_crossentropy",
+    metric = c("acc")
+  ) 
+  
+summary(model)
+```
+
+The input is a tensor of 25000 (sample) x 100 (maxlen) dimension, the embedding layer is a 3D tensor of 25000(sample) x 100 (sequence_length) x 100 (embedding_dim) dimension;
+
+it then flatten to a vector of length 100 x100 = 10000, and then connect to a dense layer of 32 units, and then connected with a dense layer of unit 1 with sigmoid activation function for prediction.
+
+
+train the model 
+```{r}
+history<- model %>%
+  fit(
+    x_train, y_train,
+    epochs = 10,
+    batch_size = 32,
+    validation_split = 0.2
+  )
+
+plot(history)
+```
+
+Final train 
+```{r}
+model %>%
+        fit(x_train, y_train, epochs = 5, batch_size = 32)
+
+```
+
+
+accuracy 
+```{r}
+metrics<- model %>% 
+  evaluate(x_test, y_test)
+
+metrics
+```
+
+~80% accuracy! not bad.
+
+### Understand the embedding
+
+We can get the weights of the embedding layer:
+
+```{r}
+# Get the weights of the embedding layer
+embedding_layer <- model$layers[[1]]  # Assuming the embedding layer is the first layer
+embedding_weights <- embedding_layer$get_weights()[[1]]
+
+dim(embedding_weights)
+
+embedding_weights[1:5, 1:20]
+
+```
+The embedding weights matrix dimension is 10001 (1000 max_words + 1 placeholder) x100(embedding_dim).
+
+add the words as the rownames to the embedding matrix.
+
+```{r}
+words <- data.frame(
+  word = names(tokenizer$word_index), 
+  id = as.integer(unlist(tokenizer$word_index))
+)
+
+words <- words %>%
+  dplyr::filter(id <= tokenizer$num_words) %>%
+  dplyr::arrange(id)
+
+rownames(embedding_weights)<- c("UNKNOWN", words$word)
+```
+
+We can now find words that are close to each other in the embedding. We will use the cosine similarity:
+
+```{r}
+library(text2vec)
+
+find_similar_words <- function(word, embedding_matrix, n = 5) {
+  similarities <- embedding_matrix[word, , drop = FALSE] %>%
+    sim2(embedding_matrix, y = ., method = "cosine")
+  
+  similarities[,1] %>% sort(decreasing = TRUE) %>% head(n)
+}
+
+
+find_similar_words("bad", embedding_weights)
+find_similar_words("wonderful", embedding_weights)
+```
+
+We can plot the embeddings in a 2-D plot after TSNE or UMAP (just like in single-cell data analysis):
+
+```{r}
+# Perform t-SNE dimensionality reduction
+set.seed(123)
+tsne_embeddings <- Rtsne::Rtsne(embedding_weights)
+
+# Create a data frame for visualization
+tsne_df <- data.frame(
+  x = tsne_embeddings$Y[, 1],
+  y = tsne_embeddings$Y[, 2],
+  word = rownames(embedding_weights)
+)
+
+```
+
+Plot the t-SNE visualization
+
+```{r}
+
+words_to_plot<- c("good", "fantastic", "cool", "wonderful", "nice", "best", "brilliant", "amazing", "bad", "horrible","nasty", "poor", "awful")
+
+ggplot(tsne_df, aes(x, y)) +
+  geom_point(size = 0.2, alpha = 0.5) +
+  geom_point(data = tsne_df %>% 
+               dplyr::filter(word %in% words_to_plot), 
+             color = "red") +
+  ggrepel::geom_label_repel(data = tsne_df %>% 
+                              dplyr::filter(word %in% words_to_plot), 
+                            aes(label = word ), max.overlaps = 1000) +
+  theme_minimal(base_size = 13) +
+  labs(title = "t-SNE Visualization of Word Embeddings") 
+```
+
+We do see those positive words and negative words are clustered in the same area, respectively. That's cool!!
+
+
+We can also use a pre-trained word embedding weights matrix (`word2vec` or `GloVe`) when the training data is very small(we have 25000 data points for training, which is a lot),
+e.g., if we only had 200 samples to train, using a pre-trained model can be beneficial.
+
+In my next blog post, I will try to implement the Long short-term Recurrent Neural Network (RNN) to take into the context of the word to better classify the reviews.
+
+
+### References
+
+* Most of the codes are adapted from [Deep Learning with R](https://www.manning.com/books/deep-learning-with-r)
+
+* https://rpubs.com/nabiilahardini/word2vec
+
+* https://blogs.rstudio.com/ai/posts/2017-12-22-word-embeddings-with-keras/
+
+* [Supervised Machine Learning for Text Analysis in R](https://smltar.com/)
+
+
