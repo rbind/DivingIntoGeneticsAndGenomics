@@ -1,0 +1,186 @@
+---
+title: 'Long Short-term memory (LSTM) Recurrent Neural Network (RNN) to classify movie
+  reviews '
+author: Ming Tang
+date: '2023-09-03'
+slug: long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews
+categories:
+  - deeplearning
+tags:
+  - deeplearning
+  - RNN
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<p>A major characteristic of all neural networks I have used so far, such as densely connected networks and convnets (CNN) (see my previous <a href="https://divingintogeneticsandgenomics.com/post/how-to-classify-mnist-images-with-convolutional-neural-network/">post</a>), is that they have no memory. Each input shown to them is processed independently, with no state kept in between inputs. In other words, they do not take into the context of the words (the words around the word).</p>
+<p>Imagine you’re reading a book, and you want to understand the story by keeping track of what’s happening in the plot. Your brain naturally remembers information from the beginning of the book even as you read through new chapters. It’s like having a special memory that can remember important details from the past.</p>
+<p>Long short-term memory (LSTM) is like that special memory for computers when they’re working with text or sequences of data. In regular computer programs, information can easily get lost as the program processes new data. But LSTM is designed to remember important stuff from the past, just like your brain when reading a book.</p>
+<p>I highly recommend Josh Starmer’s video on Long short-term memory to understand the math behind it.</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/YCzL96nL7j0" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<p>Load the libraries.</p>
+<pre class="r"><code>library(keras)
+library(reticulate)
+library(ggplot2)
+use_condaenv(&quot;r-reticulate&quot;)
+
+# Set a random seed in R to make it more reproducible 
+set.seed(123)
+
+# Set the seed for Keras/TensorFlow
+tensorflow::set_random_seed(123)</code></pre>
+<p>Let’s use the <code>IMDB</code> movie-review sentiment-prediction dataset for demonstration again.</p>
+<p>It is a dataset of 25,000 movies reviews from IMDB, labeled by sentiment (positive/negative). Reviews need to be preprocessed, and each review is encoded as a sequence of word indexes (integers). For convenience, words are indexed by overall frequency in the dataset, so that for instance the integer “3” encodes the 3rd most frequent word in the data. Read my previous <a href="https://divingintogeneticsandgenomics.com/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/">post on word embedding</a>.</p>
+<p>Download the data from <a href="http://mng.bz/0tIo" class="uri">http://mng.bz/0tIo</a> and unzip it.</p>
+<p>read the reviews (text files) into R for the training set.</p>
+<pre class="r"><code>imdb_dir&lt;- &quot;~/blog_data/aclImdb&quot;
+train_dir&lt;- file.path(imdb_dir, &quot;train&quot;)
+labels&lt;- c()
+texts&lt;- c()
+
+for (label_type in c(&quot;neg&quot;, &quot;pos&quot;)){
+  label&lt;- switch(label_type, neg = 0, pos = 1)
+  dir_name&lt;- file.path(train_dir, label_type)
+  for (fname in list.files(dir_name, pattern = glob2rx(&quot;*txt&quot;),
+                           full.names = TRUE)){
+    texts&lt;- c(texts, readChar(fname, file.info(fname)$size))
+    labels&lt;- c(labels, label)
+  }
+}
+
+
+length(labels)</code></pre>
+<pre><code>#&gt; [1] 25000</code></pre>
+<pre class="r"><code>length(texts)</code></pre>
+<pre><code>#&gt; [1] 25000</code></pre>
+<pre class="r"><code># the first review 
+texts[1]</code></pre>
+<pre><code>#&gt; [1] &quot;Story of a man who has unnatural feelings for a pig. Starts out with a opening scene that is a terrific example of absurd comedy. A formal orchestra audience is turned into an insane, violent mob by the crazy chantings of it&#39;s singers. Unfortunately it stays absurd the WHOLE time with no general narrative eventually making it just too off putting. Even those from the era should be turned off. The cryptic dialogue would make Shakespeare seem easy to a third grader. On a technical level it&#39;s better than you might think with some good cinematography by future great Vilmos Zsigmond. Future stars Sally Kirkland and Frederic Forrest can be seen briefly.&quot;</code></pre>
+<p>Tokenize the data</p>
+<pre class="r"><code>maxlen&lt;- 100
+max_words&lt;- 10000
+
+tokenizer&lt;- text_tokenizer(num_words = max_words) %&gt;%
+  fit_text_tokenizer(texts)
+
+tokenizer$num_words</code></pre>
+<pre><code>#&gt; [1] 10000</code></pre>
+<pre class="r"><code>tokenizer$word_index[1:5]</code></pre>
+<pre><code>#&gt; $the
+#&gt; [1] 1
+#&gt; 
+#&gt; $and
+#&gt; [1] 2
+#&gt; 
+#&gt; $a
+#&gt; [1] 3
+#&gt; 
+#&gt; $of
+#&gt; [1] 4
+#&gt; 
+#&gt; $to
+#&gt; [1] 5</code></pre>
+<pre class="r"><code>word_index&lt;- tokenizer$word_index
+
+sequences&lt;- texts_to_sequences(tokenizer, texts)
+
+## first review turned into integers
+sequences[[1]]</code></pre>
+<pre><code>#&gt;   [1]   62    4    3  129   34   44 7576 1414   15    3 4252  514   43   16    3
+#&gt;  [16]  633  133   12    6    3 1301  459    4 1751  209    3 7693  308    6  676
+#&gt;  [31]   80   32 2137 1110 3008   31    1  929    4   42 5120  469    9 2665 1751
+#&gt;  [46]    1  223   55   16   54  828 1318  847  228    9   40   96  122 1484   57
+#&gt;  [61]  145   36    1  996  141   27  676  122    1  411   59   94 2278  303  772
+#&gt;  [76]    5    3  837   20    3 1755  646   42  125   71   22  235  101   16   46
+#&gt;  [91]   49  624   31  702   84  702  378 3493    2 8422   67   27  107 3348</code></pre>
+<pre class="r"><code>x_train&lt;- pad_sequences(sequences, maxlen = maxlen)
+
+## it becomes a 2D matrix of samples x max_words
+dim(x_train)</code></pre>
+<pre><code>#&gt; [1] 25000   100</code></pre>
+<pre class="r"><code>y_train&lt;- as.array(labels)</code></pre>
+<p>Do the same thing for the test dataset</p>
+<pre class="r"><code>test_dir&lt;- file.path(imdb_dir, &quot;test&quot;)
+labels&lt;- c()
+texts&lt;- c()
+
+for (label_type in c(&quot;neg&quot;, &quot;pos&quot;)){
+  label&lt;- switch(label_type, neg = 0, pos = 1)
+  dir_name&lt;- file.path(test_dir, label_type)
+  for (fname in list.files(dir_name, pattern = glob2rx(&quot;*.txt&quot;), 
+                           full.names = TRUE)){
+    texts&lt;- c(texts, readChar(fname, file.info(fname)$size))
+    labels&lt;- c(labels, label)
+  }
+}
+
+sequences&lt;- texts_to_sequences(tokenizer, texts)
+x_test&lt;- pad_sequences(sequences, maxlen = maxlen)
+y_test&lt;- as.array(labels)</code></pre>
+<p>Let’s consider adding a LSTM layer. The underlying Long Short-Term Memory (LSTM) algorithm was developed by Hochreiter and Schmidhuber in 1997; it was the culmination of their research on the <a href="https://en.wikipedia.org/wiki/Vanishing_gradient_problem">vanishing gradient problem</a>.</p>
+<pre class="r"><code>model &lt;- keras_model_sequential() %&gt;%
+  layer_embedding(input_dim = max_words + 1, output_dim = 32) %&gt;%
+  layer_lstm(units = 32) %&gt;%
+  layer_dense(units = 1, activation = &quot;sigmoid&quot;)
+
+model %&gt;% compile(
+  optimizer = &quot;rmsprop&quot;,
+  loss = &quot;binary_crossentropy&quot;,
+  metrics = c(&quot;acc&quot;)
+)
+
+summary(model)</code></pre>
+<pre><code>#&gt; Model: &quot;sequential&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; embedding (Embedding)               (None, None, 32)                320032      
+#&gt; ________________________________________________________________________________
+#&gt; lstm (LSTM)                         (None, 32)                      8320        
+#&gt; ________________________________________________________________________________
+#&gt; dense (Dense)                       (None, 1)                       33          
+#&gt; ================================================================================
+#&gt; Total params: 328,385
+#&gt; Trainable params: 328,385
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<pre class="r"><code>history &lt;- model %&gt;% fit(
+  x_train, y_train,
+  epochs = 10,
+  batch_size = 128,
+  validation_split = 0.2
+)
+
+plot(history)</code></pre>
+<p><img src="/post/2023-09-03-long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<pre class="r"><code># train on the full dataset
+model %&gt;%
+        fit(x_train, y_train, epochs = 5, batch_size = 32)</code></pre>
+<p>evaluate the model on the testing data</p>
+<pre class="r"><code>metrics&lt;- model %&gt;% 
+  evaluate(x_test, y_test)
+
+metrics</code></pre>
+<pre><code>#&gt;      loss       acc 
+#&gt; 0.4301989 0.8415600</code></pre>
+<p>~84% accuracy. It is a little better than the fully connected approach in <a href="https://divingintogeneticsandgenomics.com/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/">my last post</a>.</p>
+<div id="take-home-messages" class="section level3">
+<h3>Take-home messages</h3>
+<p>I was expecting the accuracy to be even higher with such a computation intensive LSTM.</p>
+<ul>
+<li><p><strong>We didn’t fine-tune some settings</strong>: One reason our approach didn’t work extremely well could be that we didn’t adjust certain settings like how we represent words or the complexity of our model.</p></li>
+<li><p><strong>We didn’t use some techniques to prevent overfitting</strong>: Another reason could be that we didn’t use methods to prevent our model from memorizing the data it saw, which can lead to poor generalization.</p></li>
+<li><p><strong>The main reason</strong>: But honestly, the biggest reason is that for this specific task of figuring out if a review is positive or negative, we don’t really need to look at the big picture of the entire review. We can do a good job just by counting how often certain words appear in the review. That’s what our previous approach did.</p></li>
+<li><p><strong>LSTM shines in tougher tasks</strong>: However, there are more challenging tasks in language processing where LSTM, a type of neural network, shows its strengths. For example, when answering complex questions or translating languages, LSTM can be a valuable tool because it’s good at understanding the context and relationships between words in long pieces of text. So, while it might not be necessary for simple sentiment analysis, it becomes really useful in more complicated language tasks.</p></li>
+</ul>
+<p><strong>Bottom line</strong> : choosing the right method for the right problem is more important than the complexity of the method. In fact, I always prefer simpler method first (e.g, regression, random forest etc) because they are more intepretable.</p>
+</div>
