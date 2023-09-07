@@ -164,14 +164,14 @@ plot(history)</code></pre>
 <p><img src="/post/2023-09-03-long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
 <pre class="r"><code># train on the full dataset
 model %&gt;%
-        fit(x_train, y_train, epochs = 5, batch_size = 32)</code></pre>
+        fit(x_train, y_train, epochs = 6, batch_size = 32)</code></pre>
 <p>evaluate the model on the testing data</p>
 <pre class="r"><code>metrics&lt;- model %&gt;% 
   evaluate(x_test, y_test)
 
 metrics</code></pre>
 <pre><code>#&gt;      loss       acc 
-#&gt; 0.4301989 0.8415600</code></pre>
+#&gt; 0.3776855 0.8480000</code></pre>
 <p>~84% accuracy. It is a little better than the fully connected approach in <a href="https://divingintogeneticsandgenomics.com/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/">my last post</a>.</p>
 <div id="take-home-messages" class="section level3">
 <h3>Take-home messages</h3>
