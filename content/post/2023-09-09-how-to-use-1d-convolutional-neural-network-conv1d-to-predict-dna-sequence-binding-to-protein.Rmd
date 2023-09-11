@@ -39,6 +39,10 @@ https://github.com/abidlabs/deep-learning-genomics-primer/tree/master
 
 >We will use simulated data that consists of DNA sequences of length 50 bases (chosen to be artificially short so that the data is easy to play around with), and is labeled with 0 or 1 depending on the result of the assay. Our goal is to build a classifier that can predict whether a particular sequence will bind to the protein and discover the short motif that is the binding site in the sequences that are bound to the protein.
 
+We will follow it from the paper:
+
+![](/img/primer_dl.png)
+
 ```{r}
 library(keras)
 library(reticulate)

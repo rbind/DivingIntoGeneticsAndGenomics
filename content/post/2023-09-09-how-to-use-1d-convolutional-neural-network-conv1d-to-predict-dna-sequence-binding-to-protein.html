@@ -28,6 +28,8 @@ editor_options:
 <blockquote>
 <p>We will use simulated data that consists of DNA sequences of length 50 bases (chosen to be artificially short so that the data is easy to play around with), and is labeled with 0 or 1 depending on the result of the assay. Our goal is to build a classifier that can predict whether a particular sequence will bind to the protein and discover the short motif that is the binding site in the sequences that are bound to the protein.</p>
 </blockquote>
+<p>We will follow it from the paper:</p>
+<p><img src="/img/primer_dl.png" /></p>
 <pre class="r"><code>library(keras)
 library(reticulate)
 library(ggplot2)
@@ -388,7 +390,7 @@ rf_workflow &lt;- workflow() %&gt;%
         bind_cols(data_test %&gt;% select(label)) 
 
 toc()</code></pre>
-<pre><code>#&gt; 24.569 sec elapsed</code></pre>
+<pre><code>#&gt; 24.129 sec elapsed</code></pre>
 <p>what’s the accuracy?</p>
 <pre class="r"><code>accuracy(res, truth = label, estimate = .pred_class)</code></pre>
 <pre><code>#&gt; # A tibble: 1 × 3
