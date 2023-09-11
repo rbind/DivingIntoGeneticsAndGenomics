@@ -1,0 +1,405 @@
+---
+title: How to use 1d convolutional neural network (conv1d) to predict DNA sequence
+  binding to protein
+author: Ming Tang
+date: '2023-09-09'
+slug: how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein
+categories:
+  - deeplearning
+  - bioinformatics
+tags:
+  - deeplearning
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>In the mysterious world of DNA, where the secrets of life are encoded, scientists are harnessing the power of cutting-edge technology to decipher the language of genes. One of the remarkable tools they’re using is the 1D Convolutionary Neural Network, or 1D CNN, which might sound like jargon from a sci-fi movie, but it’s actually a game-changer in DNA sequence analysis.</p>
+<p>Imagine DNA as a long, intricate string of letters, like a never-ending alphabet book. Each letter holds a unique piece of information that dictates our traits and characteristics. Understanding this code is crucial for unraveling genetic mysteries, detecting diseases, and even designing personalized medicine.</p>
+<p>In this blog post, I will walk you through an example to predict DNA sequences binding to proteins using 1D CNN.</p>
+<p>The original dataset is described in this paper <a href="https://www.nature.com/articles/s41588-018-0295-5">A primer on deep learning in genomics</a> and the python implementation can be found at:</p>
+<p><a href="https://github.com/abidlabs/deep-learning-genomics-primer/tree/master" class="uri">https://github.com/abidlabs/deep-learning-genomics-primer/tree/master</a></p>
+<blockquote>
+<p>We will use simulated data that consists of DNA sequences of length 50 bases (chosen to be artificially short so that the data is easy to play around with), and is labeled with 0 or 1 depending on the result of the assay. Our goal is to build a classifier that can predict whether a particular sequence will bind to the protein and discover the short motif that is the binding site in the sequences that are bound to the protein.</p>
+</blockquote>
+<pre class="r"><code>library(keras)
+library(reticulate)
+library(ggplot2)
+use_condaenv(&quot;r-reticulate&quot;)
+library(readr)
+library(tictoc) #monitoring the time
+
+# Set a random seed in R to make it more reproducible 
+set.seed(123)
+
+# Set the seed for Keras/TensorFlow
+tensorflow::set_random_seed(123)</code></pre>
+<pre class="r"><code>SEQUENCES_URL&lt;-  &#39;https://raw.githubusercontent.com/abidlabs/deep-learning-genomics-primer/master/sequences.txt&#39;
+
+LABELS_URL&lt;-  &#39;https://raw.githubusercontent.com/abidlabs/deep-learning-genomics-primer/master/labels.txt&#39;
+
+sequences&lt;- read_tsv(SEQUENCES_URL, col_names = FALSE)
+labels&lt;- read_tsv(LABELS_URL, col_names = FALSE)
+
+head(sequences)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 1
+#&gt;   X1                                                
+#&gt;   &lt;chr&gt;                                             
+#&gt; 1 CCGAGGGCTATGGTTTGGAAGTTAGAACCCTGGGGCTTCTCGCGGACACC
+#&gt; 2 GAGTTTATATGGCGCGAGCCTAGTGGTTTTTGTACTTGTTTGTCGCGTCG
+#&gt; 3 GATCAGTAGGGAAACAAACAGAGGGCCCAGCCACATCTAGCAGGTAGCCT
+#&gt; 4 GTCCACGACCGAACTCCCACCTTGACCGCAGAGGTACCACCAGAGCCCTG
+#&gt; 5 GGCGACCGAACTCCAACTAGAACCTGCATAACTGGCCTGGGAGATATGGT
+#&gt; 6 AGACATTGTCAGAACTTAGTGTGCGCCGCACTGAGCGACCGAACTCCGAC</code></pre>
+<pre class="r"><code>head(labels)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 1
+#&gt;      X1
+#&gt;   &lt;dbl&gt;
+#&gt; 1     0
+#&gt; 2     0
+#&gt; 3     0
+#&gt; 4     1
+#&gt; 5     1
+#&gt; 6     1</code></pre>
+<pre class="r"><code>nrow(sequences)</code></pre>
+<pre><code>#&gt; [1] 2000</code></pre>
+<pre class="r"><code>sequences&lt;- sequences$X1
+labels&lt;- labels$X1</code></pre>
+<p>One-hot encoding for the DNA sequences.</p>
+<pre class="r"><code>one_hot_encode_dna &lt;- function(sequence) {
+  # Define a dictionary for mapping nucleotides to one-hot encoding
+  # no dictionary/hash in R, use list 
+  nucleotide_dict &lt;- list(A = c(1, 0, 0, 0),
+                       T = c(0, 1, 0, 0),
+                       C = c(0, 0, 1, 0),
+                       G = c(0, 0, 0, 1))
+  
+  # Split the sequence into individual nucleotides
+  nucleotides &lt;- unlist(strsplit(sequence, &quot;&quot;))
+  
+  # Initialize an empty matrix to store the one-hot encoding
+  one_hot_matrix &lt;- matrix(0, nrow = length(nucleotides), ncol = 4)
+  
+  # Fill the one-hot matrix based on the sequence
+  for (i in 1:length(nucleotides)) {
+    one_hot_matrix[i,] &lt;- nucleotide_dict[[nucleotides[i]]]
+  }
+  
+  return(one_hot_matrix)
+}
+
+
+
+# Perform one-hot encoding
+one_hot_matrix &lt;- one_hot_encode_dna(sequences[1])
+
+# Print the one-hot encoded matrix
+print(one_hot_matrix)</code></pre>
+<pre><code>#&gt;       [,1] [,2] [,3] [,4]
+#&gt;  [1,]    0    0    1    0
+#&gt;  [2,]    0    0    1    0
+#&gt;  [3,]    0    0    0    1
+#&gt;  [4,]    1    0    0    0
+#&gt;  [5,]    0    0    0    1
+#&gt;  [6,]    0    0    0    1
+#&gt;  [7,]    0    0    0    1
+#&gt;  [8,]    0    0    1    0
+#&gt;  [9,]    0    1    0    0
+#&gt; [10,]    1    0    0    0
+#&gt; [11,]    0    1    0    0
+#&gt; [12,]    0    0    0    1
+#&gt; [13,]    0    0    0    1
+#&gt; [14,]    0    1    0    0
+#&gt; [15,]    0    1    0    0
+#&gt; [16,]    0    1    0    0
+#&gt; [17,]    0    0    0    1
+#&gt; [18,]    0    0    0    1
+#&gt; [19,]    1    0    0    0
+#&gt; [20,]    1    0    0    0
+#&gt; [21,]    0    0    0    1
+#&gt; [22,]    0    1    0    0
+#&gt; [23,]    0    1    0    0
+#&gt; [24,]    1    0    0    0
+#&gt; [25,]    0    0    0    1
+#&gt; [26,]    1    0    0    0
+#&gt; [27,]    1    0    0    0
+#&gt; [28,]    0    0    1    0
+#&gt; [29,]    0    0    1    0
+#&gt; [30,]    0    0    1    0
+#&gt; [31,]    0    1    0    0
+#&gt; [32,]    0    0    0    1
+#&gt; [33,]    0    0    0    1
+#&gt; [34,]    0    0    0    1
+#&gt; [35,]    0    0    0    1
+#&gt; [36,]    0    0    1    0
+#&gt; [37,]    0    1    0    0
+#&gt; [38,]    0    1    0    0
+#&gt; [39,]    0    0    1    0
+#&gt; [40,]    0    1    0    0
+#&gt; [41,]    0    0    1    0
+#&gt; [42,]    0    0    0    1
+#&gt; [43,]    0    0    1    0
+#&gt; [44,]    0    0    0    1
+#&gt; [45,]    0    0    0    1
+#&gt; [46,]    1    0    0    0
+#&gt; [47,]    0    0    1    0
+#&gt; [48,]    1    0    0    0
+#&gt; [49,]    0    0    1    0
+#&gt; [50,]    0    0    1    0</code></pre>
+<p>Do it for all the sequences</p>
+<pre class="r"><code>dna_data&lt;- purrr::map(sequences, one_hot_encode_dna)</code></pre>
+<p><code>dna_data</code> is a list of matrix, each entry is one DNA sequence</p>
+<pre class="r"><code>dna_data[[1]]</code></pre>
+<pre><code>#&gt;       [,1] [,2] [,3] [,4]
+#&gt;  [1,]    0    0    1    0
+#&gt;  [2,]    0    0    1    0
+#&gt;  [3,]    0    0    0    1
+#&gt;  [4,]    1    0    0    0
+#&gt;  [5,]    0    0    0    1
+#&gt;  [6,]    0    0    0    1
+#&gt;  [7,]    0    0    0    1
+#&gt;  [8,]    0    0    1    0
+#&gt;  [9,]    0    1    0    0
+#&gt; [10,]    1    0    0    0
+#&gt; [11,]    0    1    0    0
+#&gt; [12,]    0    0    0    1
+#&gt; [13,]    0    0    0    1
+#&gt; [14,]    0    1    0    0
+#&gt; [15,]    0    1    0    0
+#&gt; [16,]    0    1    0    0
+#&gt; [17,]    0    0    0    1
+#&gt; [18,]    0    0    0    1
+#&gt; [19,]    1    0    0    0
+#&gt; [20,]    1    0    0    0
+#&gt; [21,]    0    0    0    1
+#&gt; [22,]    0    1    0    0
+#&gt; [23,]    0    1    0    0
+#&gt; [24,]    1    0    0    0
+#&gt; [25,]    0    0    0    1
+#&gt; [26,]    1    0    0    0
+#&gt; [27,]    1    0    0    0
+#&gt; [28,]    0    0    1    0
+#&gt; [29,]    0    0    1    0
+#&gt; [30,]    0    0    1    0
+#&gt; [31,]    0    1    0    0
+#&gt; [32,]    0    0    0    1
+#&gt; [33,]    0    0    0    1
+#&gt; [34,]    0    0    0    1
+#&gt; [35,]    0    0    0    1
+#&gt; [36,]    0    0    1    0
+#&gt; [37,]    0    1    0    0
+#&gt; [38,]    0    1    0    0
+#&gt; [39,]    0    0    1    0
+#&gt; [40,]    0    1    0    0
+#&gt; [41,]    0    0    1    0
+#&gt; [42,]    0    0    0    1
+#&gt; [43,]    0    0    1    0
+#&gt; [44,]    0    0    0    1
+#&gt; [45,]    0    0    0    1
+#&gt; [46,]    1    0    0    0
+#&gt; [47,]    0    0    1    0
+#&gt; [48,]    1    0    0    0
+#&gt; [49,]    0    0    1    0
+#&gt; [50,]    0    0    1    0</code></pre>
+<p>The input of the 1D convolutionary neural network is a 3D tensor (sample, time, feature).
+In this case, it will be (sample, position_in_DNA_sequence, 4_DNA_bases/A,T,C,G).</p>
+<p>It can be confusing because R and python fill in the matrix in column-wise and row-wise manner, respectively.</p>
+<p>read my previous blog post on tensor reshaping in <code>R</code>: <a href="https://divingintogeneticsandgenomics.com/post/basic-tensor-array-manipulations-in-r/" class="uri">https://divingintogeneticsandgenomics.com/post/basic-tensor-array-manipulations-in-r/</a></p>
+<pre class="r"><code>dna_data_tensor&lt;- array_reshape(lapply(dna_data, 
+                                       function(x) x %&gt;%t() %&gt;% c()) %&gt;% unlist(),
+                                dim = c(2000, 50, 4))
+
+# the first entry
+# dna_data_tensor[1,,]
+
+all.equal(dna_data[[1]], dna_data_tensor[1,,])</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<p>Split training set and testing set.</p>
+<pre class="r"><code># save 25% for testing
+testing_len&lt;- length(dna_data)*0.25
+
+test_index&lt;- sample(1:length(dna_data), testing_len)
+
+train_x&lt;- dna_data_tensor[-test_index,,]
+train_y&lt;- labels[-test_index]
+
+test_x&lt;- dna_data_tensor[test_index,, ]
+test_y&lt;- labels[test_index]
+
+dim(train_x)</code></pre>
+<pre><code>#&gt; [1] 1500   50    4</code></pre>
+<pre class="r"><code>dim(test_x)</code></pre>
+<pre><code>#&gt; [1] 500  50   4</code></pre>
+<div id="d-convolutionary-neural-network" class="section level3">
+<h3>1D convolutionary neural network</h3>
+<p>2D convolutions, which involved extracting 2D patches from image tensors and applying the same transformation to each patch. Similarly, you can employ 1D convolutions to extract local 1D patches or subsequences from sequences, as illustrated below.</p>
+<p><img src="/img/conv1d.png" /></p>
+<p>Image from <a href="https://www.manning.com/books/deep-learning-with-r">Deep Learning with R</a>.</p>
+<p>These 1D convolution layers excel at recognizing local patterns within a sequence. Since they apply the same transformation to every patch, a pattern learned at one position in a sequence can subsequently be identified at a different location. This property enables 1D convolutional networks with DNA motif recognition.</p>
+<p>For example, when processing sequences of DNA using 1D convolutions with a window size of 5, the network should be capable of learning motifs or DNA fragments of up to 5 characters in length. Moreover, it can recognize these words in any context within an input sequence.</p>
+<p>Spoiler alert: the true regulatory motif is <code>CGACCGAACTCC</code> which is 12 bases in length in the dataset.</p>
+<p>That’s why we choose the <code>kernal_size</code> to 12. Again, understanding the biology is key. If you know the motifs that you are trying to find, you can feed the conv1D the right parameters.</p>
+<p>If you want to understand more on the 2D convolutionary neural network on <code>filters</code> and <code>max pooling</code>, read my previous <a href="https://divingintogeneticsandgenomics.com/post/how-to-classify-mnist-images-with-convolutional-neural-network/">blog post</a>.</p>
+<pre class="r"><code>model&lt;- keras_model_sequential() %&gt;%
+  layer_conv_1d(filters = 32, kernel_size = 12, activation = &quot;relu&quot;,
+                input_shape = c(50, 4)) %&gt;%
+  layer_max_pooling_1d(pool_size = 4) %&gt;%
+  layer_flatten() %&gt;%
+  layer_dense(units = 16, activation = &quot;relu&quot;) %&gt;%
+  layer_dense(units = 1, activation= &quot;sigmoid&quot;)
+
+summary(model)</code></pre>
+<pre><code>#&gt; Model: &quot;sequential&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; conv1d (Conv1D)                     (None, 39, 32)                  1568        
+#&gt; ________________________________________________________________________________
+#&gt; max_pooling1d (MaxPooling1D)        (None, 9, 32)                   0           
+#&gt; ________________________________________________________________________________
+#&gt; flatten (Flatten)                   (None, 288)                     0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_1 (Dense)                     (None, 16)                      4624        
+#&gt; ________________________________________________________________________________
+#&gt; dense (Dense)                       (None, 1)                       17          
+#&gt; ================================================================================
+#&gt; Total params: 6,209
+#&gt; Trainable params: 6,209
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<p>Compile the model.</p>
+<pre class="r"><code>model %&gt;% compile(
+        optimizer = &quot;rmsprop&quot;,
+        loss = &quot;binary_crossentropy&quot;,
+        metrics = c(&quot;accuracy&quot;)
+)</code></pre>
+<p>training</p>
+<pre class="r"><code>history&lt;- model %&gt;%
+  fit(
+    train_x, train_y,
+    epochs = 10,
+    batch_size = 32,
+    validation_split = 0.2
+  )
+
+plot(history)</code></pre>
+<p><img src="/post/2023-09-09-how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein_files/figure-html/unnamed-chunk-11-1.png" width="576" /></p>
+<p>train on full dataset</p>
+<pre class="r"><code>model %&gt;%
+        fit(train_x, train_y, epochs = 10, batch_size = 32)</code></pre>
+<p>validation on testing data</p>
+<pre class="r"><code>metrics&lt;- model %&gt;% 
+  evaluate(test_x, test_y)
+
+metrics</code></pre>
+<pre><code>#&gt;       loss   accuracy 
+#&gt; 0.01939072 0.99199998</code></pre>
+<pre class="r"><code>res&lt;- predict(model, test_x) %&gt;%
+        dplyr::bind_cols(test_y)
+
+colnames(res)&lt;- c(&quot;prob&quot;, &quot;label&quot;)
+
+threshold &lt;- 0.5
+res&lt;- res %&gt;%
+  dplyr::mutate(.pred_class = ifelse(prob &gt;= threshold, 1, 0)) %&gt;%
+  dplyr::mutate(.pred_class = factor(.pred_class)) %&gt;%
+  dplyr::mutate(label = factor(label))
+
+library(tidymodels)
+accuracy(res, truth = label, estimate = .pred_class)</code></pre>
+<pre><code>#&gt; # A tibble: 1 × 3
+#&gt;   .metric  .estimator .estimate
+#&gt;   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+#&gt; 1 accuracy binary         0.992</code></pre>
+<pre class="r"><code>res %&gt;% conf_mat(truth = label, estimate = .pred_class)</code></pre>
+<pre><code>#&gt;           Truth
+#&gt; Prediction   0   1
+#&gt;          0 260   2
+#&gt;          1   2 236</code></pre>
+<p>In this simple example, the <code>conv_1d</code> only made 4 mistakes among the 500 testing DNA sequences with an accuracy of ~99%. That’s pretty impressive.</p>
+<p>We can also add another layer of <code>conv_1d</code> and <code>max_pool</code> again. The architecture of a deep neural network is an art.</p>
+</div>
+<div id="random-forest" class="section level3">
+<h3>random forest</h3>
+<p>In this paper <a href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009803">Ten quick tips for deep learning in biology</a></p>
+<ul>
+<li>Tip 1: Decide whether deep learning is appropriate for your problem</li>
+<li>Tip 2: Use traditional methods to establish performance baselines</li>
+<li>Tip 3: Understand the complexities of training deep neural networks</li>
+<li>Tip 4: Know your data and your question</li>
+<li>Tip 5: Choose an appropriate data representation and neural network architecture</li>
+<li>Tip 6: Tune your hyperparameters extensively and systematically</li>
+<li>Tip 7: Address deep neural networks’ increased tendency to overfit the dataset</li>
+<li>Tip 8: Deep learning models can be made more transparent</li>
+<li>Tip 9: Don’t over interpret predictions</li>
+<li>Tip 10: Actively consider the ethical implications of your work</li>
+</ul>
+<p>Regression based methods and random forest are always my go-to baseline machine learning approach.
+Let’s see how random forest perform for this problem.</p>
+<pre class="r"><code>library(tidymodels)
+
+dim(train_x)</code></pre>
+<pre><code>#&gt; [1] 1500   50    4</code></pre>
+<pre class="r"><code># flatten the 50x4 matrix to a single vector
+data_train&lt;- array_reshape(train_x, dim = c(1500, 50*4))
+
+dim(data_train)</code></pre>
+<pre><code>#&gt; [1] 1500  200</code></pre>
+<pre class="r"><code>colnames(data_train)&lt;- paste0(&quot;feature&quot;, 1:200)
+
+data_train[1:5, 1:5]</code></pre>
+<pre><code>#&gt;      feature1 feature2 feature3 feature4 feature5
+#&gt; [1,]        0        0        1        0        0
+#&gt; [2,]        0        0        0        1        1
+#&gt; [3,]        0        0        0        1        1
+#&gt; [4,]        0        0        0        1        0
+#&gt; [5,]        0        0        0        1        0</code></pre>
+<pre class="r"><code># turn the label to a factor so tidymodel knows it is a classification problem
+data_train&lt;- bind_cols(as.data.frame(data_train), label = train_y %&gt;%
+        as.factor())</code></pre>
+<p>do the same for the testing data</p>
+<pre class="r"><code>data_test&lt;- array_reshape(test_x, dim = c(500, 50*4))
+colnames(data_test)&lt;- paste0(&quot;feature&quot;, 1:200)
+data_test&lt;- bind_cols(as.data.frame(data_test), label = test_y %&gt;%
+        as.factor())</code></pre>
+<p>build the model using <code>tidymodels</code>. PS, read <a href="https://www.tmwr.org/">Tidy Modeling with R</a> for FREE.</p>
+<pre class="r"><code>tic()
+rf_recipe &lt;- 
+  recipe(formula = label ~ ., data = data_train)
+
+## feature importance sore to TRUE, one can tune the trees and mtry 
+rf_spec &lt;- rand_forest() %&gt;%
+  set_engine(&quot;randomForest&quot;, importance = TRUE) %&gt;%
+  set_mode(&quot;classification&quot;)
+
+rf_workflow &lt;- workflow() %&gt;% 
+  add_recipe(rf_recipe) %&gt;% 
+  add_model(rf_spec)</code></pre>
+<p>train the model</p>
+<pre class="r"><code>rf_fit &lt;- fit(rf_workflow, data = data_train)</code></pre>
+<p>test the model</p>
+<pre class="r"><code>res&lt;- predict(rf_fit, new_data = data_test) %&gt;%
+        bind_cols(data_test %&gt;% select(label)) 
+
+toc()</code></pre>
+<pre><code>#&gt; 24.569 sec elapsed</code></pre>
+<p>what’s the accuracy?</p>
+<pre class="r"><code>accuracy(res, truth = label, estimate = .pred_class)</code></pre>
+<pre><code>#&gt; # A tibble: 1 × 3
+#&gt;   .metric  .estimator .estimate
+#&gt;   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+#&gt; 1 accuracy binary         0.826</code></pre>
+<pre class="r"><code>## confusion matrix,
+res %&gt;% conf_mat(truth = label, estimate = .pred_class)</code></pre>
+<pre><code>#&gt;           Truth
+#&gt; Prediction   0   1
+#&gt;          0 207  32
+#&gt;          1  55 206</code></pre>
+<p>An accuracy of this un-tuned random forest model gives ~82% accuracy. This is much worse than the <code>conv1d</code> model and is slower. This demonstrate where the deep learning models shine in sequence analysis.</p>
+</div>

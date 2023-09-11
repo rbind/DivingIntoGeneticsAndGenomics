@@ -159,7 +159,7 @@ plot(history)
 
 # train on the full dataset
 model %>%
-        fit(x_train, y_train, epochs = 6, batch_size = 32)
+        fit(x_train, y_train, epochs = 7, batch_size = 32)
 
 ```
 
