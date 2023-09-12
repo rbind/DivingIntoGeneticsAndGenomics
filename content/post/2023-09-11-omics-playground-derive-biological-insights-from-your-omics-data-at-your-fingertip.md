@@ -45,7 +45,7 @@ The feature that appeals to me the most about this platform is the interactive f
 
 Another noteworthy aspect of the platform is its ability to compare many comparisons simultaneously. Additionally, the Weighted Gene Co-expression Network Analysis (WGCNA) module's integration with drug connectivity analysis is tremendously beneficial since it quickly identifies new drug candidates and interesting gene modules. Those features make it an essential tool for thorough data exploration and analysis.
 
-
+![](/img/wgcna.png)
 
 ### What can be improved?
 
