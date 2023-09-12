@@ -15,7 +15,7 @@ header:
   image: ''
 ---
 
-**Disclaimer: This post is sponsored by [Watershed Omics Bench platform](https://www.watershed.ai/). I have personally tested the platform.**
+**Disclaimer: This post is sponsored by [Watershed Omics Bench platform](https://www.watershed.ai/). I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer**
 
 As an experienced bioinformatician who understands the needs of biotech startups, I know the challenges that arise when analyzing genomics data. The first solution that comes to mind is cloud computing. Unsurprisingly, AWS and Google Cloud Platform (GCP) are commonly used options. Cloud computing avoids large upfront costs and can scale more effectively compared to building an on-premise solution. Setting up an on-premise solution is cumbersome, requiring meticulous organization and robust security measures.
 

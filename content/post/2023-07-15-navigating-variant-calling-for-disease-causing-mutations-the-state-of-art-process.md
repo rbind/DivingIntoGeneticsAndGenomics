@@ -15,7 +15,7 @@ header:
   image: ''
 ---
 
-**Disclaimer: This post is sponsored by [Watershed Omics Bench platform](https://www.watershed.ai/). I have personally tested the platform.**
+**Disclaimer: This post is sponsored by [Watershed Omics Bench platform](https://www.watershed.ai/). I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer**
 
 Variant calling is the process of identifying and categorizing genetic variants in sequencing data. It is a critical step in the analysis of whole-genome sequencing (WGS) and whole-exome sequencing (WES) data, as it allows researchers to identify potential disease-causing mutations.
 
