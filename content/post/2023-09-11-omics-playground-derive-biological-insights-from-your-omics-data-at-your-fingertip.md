@@ -39,9 +39,13 @@ For Biotech: Because Omics Playground makes it possible to quickly and effective
 
 ### What are the capabilities and strengths of the platform? What do I like the most?
 
-The feature that appeals to me the most about this platform is the interactive features of many plots generated. For example, it is easy to upload customized gene sets and highlight them in the volcano plot; the heatmaps are interactive (see the figure below), and one can zoom in and out or hover over the mouse to get the gene information. Another noteworthy aspect of the platform is its ability to compare many comparisons simultaneously. Additionally, the Weighted Gene Co-expression Network Analysis (WGCNA) module's integration with drug connectivity analysis is tremendously beneficial since it quickly identifies new drug candidates and interesting gene modules. Those features make it an essential tool for thorough data exploration and analysis.
+The feature that appeals to me the most about this platform is the interactive features of many plots generated. For example, it is easy to upload customized gene sets and highlight them in the volcano plot; the heatmaps are interactive (**see the figure below**), and one can zoom in and out or hover over the mouse to get the gene information. 
 
 ![](/img/bigomics.png)
+
+Another noteworthy aspect of the platform is its ability to compare many comparisons simultaneously. Additionally, the Weighted Gene Co-expression Network Analysis (WGCNA) module's integration with drug connectivity analysis is tremendously beneficial since it quickly identifies new drug candidates and interesting gene modules. Those features make it an essential tool for thorough data exploration and analysis.
+
+
 
 ### What can be improved?
 
