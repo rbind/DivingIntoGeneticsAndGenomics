@@ -1,0 +1,225 @@
+---
+title: 'Generative AI: Text generation using Long short-term memory (LSTM) model'
+author: Ming Tang
+date: '2023-09-24'
+slug: generative-ai-text-generation-using-long-short-term-memory-lstm-model
+categories:
+  - bioinformatics
+  - deeplearning
+tags:
+  - deeplearning
+  - rstats
+  - keras
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>In the world of deep learning, generating sequence data is a fundamental task. Typically, this involves training a network, often an RNN (Recurrent Neural Network) or a convnet (Convolutional Neural Network), to <strong>predict the next token or a sequence of tokens in a given sequence, using the preceding tokens as input</strong>. For example, when provided with the input “the cat is on the ma,” the network’s objective is to predict the next character, such as ‘t.’ When working with textual data, tokens typically represent words or characters.</p>
+<p>Any network capable of estimating the likelihood of the next token based on the previous ones is known as a <strong>language model</strong>, which effectively captures the underlying statistical structure of language.</p>
+<p>You may have used ChatGPT. ChatGPT is a specialized version of the GPT (Generative Pre-trained Transformer) model created by OpenAI. Its primary purpose is to generate human-like text and engage in natural language conversations.</p>
+<p>A <strong>large language model(LLM)</strong>, on the other hand, refers to models with significantly more parameters than earlier versions. These models, such as GPT-3 and its successors, are trained on extensive datasets and possess a high capacity for understanding and generating human language</p>
+<p>Once you’ve trained such a language model, you can employ it to generate new sequences. To do this, you provide it with an initial text string, often referred to as conditioning data. You then ask the model to predict the subsequent character or word, and you can even request several tokens at once. The generated output is appended to the input data, and this process repeats iteratively, allowing you to generate sequences of varying lengths that mimic the structure of the data on which the model was trained, resembling human-authored sentences.</p>
+<p>In the example we’ll use an LSTM (Long Short-Term Memory) layer. This layer will be fed with strings of N words taken from a text corpus (news headlines) and trained to predict the N + 1 word. The model’s output will be a softmax distribution encompassing all potential words, essentially representing the probability distribution for the forthcoming word.</p>
+<p>Load the libraries.</p>
+<pre class="r"><code>library(keras)
+library(reticulate)
+library(ggplot2)
+library(dplyr)
+library(readr)
+use_condaenv(&quot;r-reticulate&quot;)
+
+# Set a random seed in R to make it more reproducible 
+set.seed(123)
+
+# Set the seed for Keras/TensorFlow
+tensorflow::set_random_seed(123)</code></pre>
+<p>The dataset can be downloaded from my github <a href="https://github.com/crazyhottommy/machine_learning_datasets/tree/main/news_headlines" class="uri">https://github.com/crazyhottommy/machine_learning_datasets/tree/main/news_headlines</a></p>
+<pre class="r"><code>file_dir&lt;- &quot;~/blog_data/news_headlines&quot;
+
+files&lt;- list.files(file_dir, full.names = TRUE, pattern = &quot;Articles&quot;)</code></pre>
+<p>clean the dataset</p>
+<pre class="r"><code>dfs&lt;- purrr::map(files, read_csv)
+df&lt;- dplyr::bind_rows(dfs)
+headlines&lt;- df %&gt;%
+        filter(headline != &quot;Unknown&quot;) %&gt;%
+        pull(headline)
+
+headlines[1]</code></pre>
+<pre><code>#&gt; [1] &quot;Finding an Expansive View  of a Forgotten People in Niger&quot;</code></pre>
+<pre class="r"><code>headlines[2]</code></pre>
+<pre><code>#&gt; [1] &quot;And Now,  the Dreaded Trump Curse&quot;</code></pre>
+<pre class="r"><code>length(headlines)</code></pre>
+<pre><code>#&gt; [1] 8603</code></pre>
+<p>Tokenize the words</p>
+<pre class="r"><code>headlines&lt;- stringr::str_to_lower(headlines)
+
+max_words&lt;- 10000
+tokenizer&lt;- text_tokenizer(num_words = max_words) %&gt;%
+  fit_text_tokenizer(headlines)
+
+
+word_index&lt;- tokenizer$word_index
+
+#total_words &lt;- length(tokenizer$word_index) + 1
+total_words&lt;- max_words + 1
+
+sequences&lt;- texts_to_sequences(tokenizer, headlines)
+
+## first review turned into integers
+sequences[[1]]</code></pre>
+<pre><code>#&gt;  [1]  403   17 5242  543    4    2 1616  151    5 1992</code></pre>
+<pre class="r"><code>sequences[[2]]</code></pre>
+<pre><code>#&gt; [1]    7   76    1 5243   10 5244</code></pre>
+<p>Create input sequences and output sequences. Given the words seen, the model predicts the next word/token.</p>
+<pre class="r"><code>input_sequences &lt;- list()
+output_sequences &lt;- list()
+
+for (sentence_seq in sequences) {
+        # at least 3 words in the headline
+        seq_length&lt;- 2
+          if (length(sentence_seq) &lt; seq_length + 1) {
+    next
+  }
+
+  for (i in 1:(length(sentence_seq) - seq_length)) {
+    seq_in &lt;- sentence_seq[i:(i + seq_length - 1)]
+    seq_out &lt;- sentence_seq[i + seq_length]
+    
+    input_sequences[[length(input_sequences) + 1]] &lt;- seq_in
+    output_sequences[[length(output_sequences) + 1]] &lt;- seq_out
+  }
+}
+
+range(purrr::map(sequences, length))</code></pre>
+<pre><code>#&gt; [1]  0 28</code></pre>
+<p>The longest headline is 28 words.</p>
+<p>pad the sequence to the same length.</p>
+<pre class="r"><code>maxlen&lt;- 20 #you may change it to 28 for example
+
+input_sequences &lt;- pad_sequences(input_sequences, maxlen = maxlen, padding = &#39;pre&#39;)
+output_sequences &lt;- to_categorical(output_sequences, num_classes = total_words )
+
+
+## it becomes a 2D matrix of samples x seq_length
+dim(input_sequences) </code></pre>
+<pre><code>#&gt; [1] 43073    20</code></pre>
+<pre class="r"><code>dim(output_sequences)</code></pre>
+<pre><code>#&gt; [1] 43073 10001</code></pre>
+<p>construct the model. First a layer_embedding layer. Read my previous blog to understand word embeddings.</p>
+<pre class="r"><code>model &lt;- keras_model_sequential() %&gt;%
+  layer_embedding(input_dim = max_words + 1, output_dim = 10) %&gt;%
+  layer_lstm(units = 100) %&gt;%
+        layer_dropout(rate = 0.1) %&gt;%
+  layer_dense(units = max_words + 1, activation = &#39;softmax&#39;)
+
+
+# you could try a different architecture. The results are not that different...
+# model &lt;- keras_model_sequential() %&gt;%
+#         layer_embedding(input_dim = max_words + 1, output_dim = 100) %&gt;%
+#         layer_lstm(units = 128, return_sequences = TRUE) %&gt;%
+#         layer_dropout(rate = 0.4) %&gt;%
+#         layer_lstm(units = 128) %&gt;%
+#         layer_dropout(rate = 0.4) %&gt;%
+#         layer_dense(units = max_words + 1, activation = &#39;softmax&#39;)</code></pre>
+<p>Compile the model</p>
+<pre class="r"><code>model %&gt;% compile(
+  loss = &#39;categorical_crossentropy&#39;,
+  optimizer = optimizer_adam(),
+  metrics = c(&#39;accuracy&#39;)
+)
+
+summary(model)</code></pre>
+<pre><code>#&gt; Model: &quot;sequential&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; embedding (Embedding)               (None, None, 10)                100010      
+#&gt; ________________________________________________________________________________
+#&gt; lstm (LSTM)                         (None, 100)                     44400       
+#&gt; ________________________________________________________________________________
+#&gt; dropout (Dropout)                   (None, 100)                     0           
+#&gt; ________________________________________________________________________________
+#&gt; dense (Dense)                       (None, 10001)                   1010101     
+#&gt; ================================================================================
+#&gt; Total params: 1,154,511
+#&gt; Trainable params: 1,154,511
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<p>Train the model</p>
+<pre class="r"><code># Training the model
+history&lt;- model %&gt;% fit(
+  input_sequences,
+  output_sequences,
+  batch_size = 64,
+  epochs = 100,
+  validation_split = 0.2
+)
+
+
+plot(history)</code></pre>
+<p><img src="/post/2023-09-24-generative-ai-text-generation-using-long-short-term-memory-lstm-model_files/figure-html/unnamed-chunk-10-1.png" width="576" /></p>
+<p>It gets overfit quickly as you can see the validation accuracy is saturated in about 10 epoch with an accuracy of little over 0.1! It is such a small dataset. The <code>layer_embedding</code> may not as good, and we may improve the accuracy by using some pre-built word embeddings.</p>
+<p>read my previous blog to <a href="https://divingintogeneticsandgenomics.com/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/">understand word embeddings</a> and <a href="https://divingintogeneticsandgenomics.com/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/">Long short-term memory (LSTM)</a>.</p>
+<div id="generate-new-headlines" class="section level3">
+<h3>Generate new headlines</h3>
+<p>Now that we have trained the model, we can feed the model some seed words and ask the model to generate new text.</p>
+<p>To manage the level of randomness during the sampling process, we will introduce a parameter known as the softmax temperature. This parameter defines the degree of uncertainty within the probability distribution utilized for sampling, essentially describing how unexpected or foreseeable the selection of the next character will be. When provided with a temperature value, it results in the calculation of a fresh probability distribution derived from the original one.</p>
+<p>The temperature is to re-normalize the probability of the next words so some new random words can be picked up. The higher the temperature, the more random the words will be picked.</p>
+<pre class="r"><code># Generate text using the trained model
+generate_text &lt;- function(seed_text, length, temperature = 0.5) {
+        cat(seed_text, &quot; &quot;)
+  for (i in 1:length) {
+    encoded_sequence &lt;- texts_to_sequences(tokenizer, seed_text)[[1]]
+    encoded_sequence &lt;- pad_sequences(list(encoded_sequence), maxlen = maxlen, padding = &#39;pre&#39;)
+    
+    next_word_prob&lt;- model %&gt;% predict(encoded_sequence)
+    # Apply temperature to the softmax probabilities
+    scaled_probs &lt;- log(next_word_prob) / temperature
+    exp_probs &lt;- exp(scaled_probs)
+    adjusted_probs &lt;- exp_probs / sum(exp_probs)
+    
+    predicted_word_index &lt;- sample(1:(max_words+1), size = 1, prob = adjusted_probs)
+    predicted_word &lt;- names(tokenizer$word_index)[predicted_word_index]
+    
+    cat(predicted_word, &quot; &quot;)
+    seed_text &lt;- c(seed_text, predicted_word)[-1]
+  }
+  cat(&quot;\n&quot;)
+}
+
+
+# Generate text starting from a seed text
+
+generate_text(&quot;india and china&quot;, length = 5, temperature = 0.1)</code></pre>
+<pre><code>#&gt; india and china  green  dedicated  of  a  paradise</code></pre>
+<pre class="r"><code>generate_text(&quot;science and technology&quot;, length = 8, temperature = 0.3)</code></pre>
+<pre><code>#&gt; science and technology  long  to  we  plan  for  better  of  a</code></pre>
+<pre class="r"><code>generate_text(&quot;science and technology&quot;, length = 15, temperature = 1)</code></pre>
+<pre><code>#&gt; science and technology  justice  to  tells  a  paradise  provocateur  in  empathy  for  glare  details  and  variety  ado  but</code></pre>
+<pre class="r"><code>generate_text(&quot;new york is&quot;, length = 15, temperature = 0.5)</code></pre>
+<pre><code>#&gt; new york is  eat  to  news  trump’s  king  congress  to  judge  finding  to  ditch  and  to  to  to</code></pre>
+<pre class="r"><code>generate_text(&quot;new york is&quot;, length = 5, temperature = 0.5)</code></pre>
+<pre><code>#&gt; new york is  eat  to  hypocrisy  and  to</code></pre>
+<p>In this dummy example, the output from the model is not that accurate and interesting. With a larger training datasets and a better model, we can generate the text better.</p>
+</div>
+<div id="further-readings" class="section level3">
+<h3>Further readings</h3>
+<p>If you want to know more on the language model</p>
+<ul>
+<li><p><a href="https://www.borealisai.com/research-blogs/a-high-level-overview-of-large-language-models/">A High-level Overview of Large Language Models</a></p></li>
+<li><p><a href="https://www.borealisai.com/research-blogs/training-and-fine-tuning-large-language-models/">Training and fine-tuning large language models</a></p></li>
+<li><p><a href="https://www.youtube.com/watch?v=jkrNMKz9pWU">A Hackers’ Guide to Language Models</a></p></li>
+</ul>
+</div>
+<div id="references" class="section level3">
+<h3>References</h3>
+<ul>
+<li><p><a href="https://medium.com/@annikabrundyn1/the-beginners-guide-to-recurrent-neural-networks-and-text-generation-44a70c34067f" class="uri">https://medium.com/@annikabrundyn1/the-beginners-guide-to-recurrent-neural-networks-and-text-generation-44a70c34067f</a></p></li>
+<li><p><a href="https://www.kaggle.com/code/shivamb/beginners-guide-to-text-generation-using-lstms" class="uri">https://www.kaggle.com/code/shivamb/beginners-guide-to-text-generation-using-lstms</a></p></li>
+<li><p><a href="https://www.manning.com/books/deep-learning-with-r">Deep learning with R</a></p></li>
+</ul>
+</div>
