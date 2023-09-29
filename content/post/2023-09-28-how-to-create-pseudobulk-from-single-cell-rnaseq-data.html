@@ -1,0 +1,538 @@
+---
+title: 'How to create pseudobulk from single-cell RNAseq data '
+author: Ming Tang
+date: '2023-09-28'
+slug: how-to-create-pseudobulk-from-single-cell-rnaseq-data
+categories:
+  - bioinformatics
+  - single-cell
+  - R
+tags:
+  - bioinformatics
+  - single-cell
+  - Bioconductor
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<div id="what-is-pseduobulk" class="section level3">
+<h3>What is pseduobulk?</h3>
+<p>Many of you have heard about bulk-RNAseq data. What is pseduobulk?</p>
+<p>Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper <a href="https://www.nature.com/articles/s41467-020-19894-4">muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data</a>). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.</p>
+<p>In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments. By the end, you’ll have the skills to transform complex single-cell data into manageable, meaningful results, and learn skills to explore and make sense of the results.</p>
+</div>
+<div id="download-the-data" class="section level3">
+<h3>Download the data</h3>
+<p>The data are from this paper <a href="https://www.sciencedirect.com/science/article/pii/S0092867421000106">A pan-cancer single-cell transcriptional atlas of tumor infiltrating myeloid cells</a></p>
+<p>GEO accession:
+<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763" class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763</a></p>
+<p>Get the data from ftp <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/" class="uri">https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/</a></p>
+</div>
+<div id="on-command-line" class="section level3">
+<h3>On command line</h3>
+<pre class="bash"><code>
+wget -nH --cut-dirs=5  --no-clobber --convert-links --random-wait -r -p -E -e robots=off https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/
+
+ls *gz | xargs gunzip</code></pre>
+<p>use <a href="https://github.com/immunitastx/recover-counts" class="uri">https://github.com/immunitastx/recover-counts</a> to convert the log normalized the counts back to raw counts.</p>
+<pre class="bash"><code>## for one file
+ ./recover_counts_from_log_normalized_data.py -m 10000 -d CSV GSE154763_ESCA_normalized_expression.csv -o GSE154763_ESCA_raw_counts.txt
+ 
+## for all files
+# mamba install parallel 
+# regular expression to remove the normalized_expression.csv and rename the output to _raw_counts.txt
+ls *expression.csv | parallel --rpl &#39;{%(.+?)} s/$$1$//;&#39; ./recover_counts_from_log_normalized_data.py -m 10000 -d CSV {} -o {%_normalized_expression.csv}_raw_count.txt
+ </code></pre>
+</div>
+<div id="switch-to-r" class="section level3">
+<h3>Switch to R</h3>
+<p>load libraries</p>
+<pre class="r"><code>library(here)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(Seurat)
+library(purrr)
+library(readr)
+library(harmony)
+library(scCustomize)
+library(SeuratDisk)
+library(ggpointdensity)
+library(viridis)
+library(grid)</code></pre>
+</div>
+<div id="read-in-counts-files" class="section level2">
+<h2>read in counts files</h2>
+<pre class="r"><code>## the count matrix is cell x gene
+read_counts&lt;- function(file){
+  x&lt;- read_csv(file)
+  x&lt;- as.data.frame(x)
+  cells&lt;- x$index
+  
+  mat&lt;- as.matrix(x[,-1])
+  
+  rownames(mat)&lt;- cells
+  mat&lt;- t(mat)
+  return(mat)
+}
+
+
+counts_files&lt;- list.files(&quot;~/blog_data/GSE154763&quot;, full.names = TRUE, pattern = &quot;*raw_count.txt&quot;)
+counts_files</code></pre>
+<pre><code>#&gt; [1] &quot;/Users/tommytang/blog_data/GSE154763/GSE154763_cDC2_raw_count.txt&quot;  
+#&gt; [2] &quot;/Users/tommytang/blog_data/GSE154763/GSE154763_ESCA_raw_count.txt&quot;  
+#&gt; [3] &quot;/Users/tommytang/blog_data/GSE154763/GSE154763_KIDNEY_raw_count.txt&quot;
+#&gt; [4] &quot;/Users/tommytang/blog_data/GSE154763/GSE154763_LYM_raw_count.txt&quot;   
+#&gt; [5] &quot;/Users/tommytang/blog_data/GSE154763/GSE154763_MYE_raw_count.txt&quot;   
+#&gt; [6] &quot;/Users/tommytang/blog_data/GSE154763/GSE154763_OV-FTC_raw_count.txt&quot;
+#&gt; [7] &quot;/Users/tommytang/blog_data/GSE154763/GSE154763_PAAD_raw_count.txt&quot;  
+#&gt; [8] &quot;/Users/tommytang/blog_data/GSE154763/GSE154763_THCA_raw_count.txt&quot;  
+#&gt; [9] &quot;/Users/tommytang/blog_data/GSE154763/GSE154763_UCEC_raw_count.txt&quot;</code></pre>
+<pre class="r"><code># only use the last 3 cancer types to demonstrate, as the data are too big. 
+counts_files&lt;- counts_files %&gt;%
+        tail(n=3)
+
+samples&lt;- map_chr(counts_files, basename) 
+samples&lt;- str_replace(samples, &quot;(GSE[0-9]+)_(.+)_raw_count.txt&quot;, &quot;\\2&quot;)
+names(counts_files)&lt;- samples
+counts&lt;- purrr::map(counts_files, read_counts)</code></pre>
+<p>read in metadata for each cancer</p>
+<pre class="r"><code>## the tissue column contain some non-tumor cells
+read_meta&lt;- function(file){
+  y&lt;- read_csv(file, guess_max = 100000, 
+               col_types = cols(tissue = col_character()))
+  y&lt;- as.data.frame(y)
+  cells&lt;- y$index
+  y&lt;- y[,-1]
+  rownames(y)&lt;- cells
+  return(y)
+}
+
+
+meta_files&lt;- list.files(&quot;~/blog_data/GSE154763&quot;, full.names = TRUE, pattern = &quot;metadata.csv&quot;)
+# take only 3 cancer types
+meta_files&lt;- meta_files %&gt;% tail(n=3)
+meta_names&lt;- map_chr(meta_files, basename)
+meta_names&lt;- str_replace(meta_names, &quot;(GSE[0-9]+)_(.+)_metadata.csv&quot;, &quot;\\2&quot;)
+names(meta_files)&lt;- meta_names
+
+meta&lt;- purrr::map(meta_files, read_meta)</code></pre>
+<p>Different cancer types have different number of genes.</p>
+<pre class="r"><code>map(counts, nrow)</code></pre>
+<pre><code>#&gt; $PAAD
+#&gt; [1] 14140
+#&gt; 
+#&gt; $THCA
+#&gt; [1] 15211
+#&gt; 
+#&gt; $UCEC
+#&gt; [1] 15849</code></pre>
+<p>How many genes are in common among the 3 datasets?</p>
+<pre class="r"><code>map(counts, ~rownames(.x)) %&gt;%
+  purrr::reduce( function(x,y) {intersect(x,y)}) %&gt;%
+  length()</code></pre>
+<pre><code>#&gt; [1] 13762</code></pre>
+<div id="make-seurat-objects" class="section level3">
+<h3>make Seurat objects</h3>
+<pre class="r"><code>objs&lt;- purrr::map2(counts, meta,  
+                   ~ CreateSeuratObject(counts = as(.x, &quot;sparseMatrix&quot;), 
+                                                      meta.data = .y))
+
+## remain only the tumor samples with tissue == T
+#subset(objs$ESCA, subset = tissue == &quot;T&quot;)
+
+objs&lt;- purrr::map(objs, ~ subset(.x, subset = tissue == &quot;T&quot;))
+
+objs</code></pre>
+<pre><code>#&gt; $PAAD
+#&gt; An object of class Seurat 
+#&gt; 14140 features across 2628 samples within 1 assay 
+#&gt; Active assay: RNA (14140 features, 0 variable features)
+#&gt; 
+#&gt; $THCA
+#&gt; An object of class Seurat 
+#&gt; 15211 features across 4171 samples within 1 assay 
+#&gt; Active assay: RNA (15211 features, 0 variable features)
+#&gt; 
+#&gt; $UCEC
+#&gt; An object of class Seurat 
+#&gt; 15849 features across 4724 samples within 1 assay 
+#&gt; Active assay: RNA (15849 features, 0 variable features)</code></pre>
+<p>It is a list of 3 seurat objects.</p>
+<pre class="r"><code>preprocessSeurat&lt;- function(obj){
+  obj&lt;-
+    NormalizeData(obj, normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+    FindVariableFeatures( selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+    ScaleData() %&gt;%
+    RunPCA() %&gt;%
+    RunHarmony(group.by.vars = &quot;patient&quot;, dims.use = 1:30) %&gt;%
+    RunUMAP(reduction = &quot;harmony&quot;, dims = 1:30) %&gt;%
+    FindNeighbors(reduction = &quot;harmony&quot;, dims = 1:30) %&gt;% 
+    FindClusters(resolution = 0.6)
+  
+  return(obj)
+}
+
+
+objs&lt;- purrr::map(objs, preprocessSeurat)</code></pre>
+<pre><code>#&gt; Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+#&gt; 
+#&gt; Number of nodes: 2628
+#&gt; Number of edges: 99201
+#&gt; 
+#&gt; Running Louvain algorithm...
+#&gt; Maximum modularity in 10 random starts: 0.8476
+#&gt; Number of communities: 10
+#&gt; Elapsed time: 0 seconds
+#&gt; Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+#&gt; 
+#&gt; Number of nodes: 4171
+#&gt; Number of edges: 167212
+#&gt; 
+#&gt; Running Louvain algorithm...
+#&gt; Maximum modularity in 10 random starts: 0.9003
+#&gt; Number of communities: 17
+#&gt; Elapsed time: 0 seconds
+#&gt; Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+#&gt; 
+#&gt; Number of nodes: 4724
+#&gt; Number of edges: 172629
+#&gt; 
+#&gt; Running Louvain algorithm...
+#&gt; Maximum modularity in 10 random starts: 0.8709
+#&gt; Number of communities: 15
+#&gt; Elapsed time: 0 seconds</code></pre>
+<pre class="r"><code>p1&lt;- scCustomize::DimPlot_scCustom(objs$UCEC)
+
+p2&lt;- scCustomize::DimPlot_scCustom(objs$UCEC, group.by = &quot;MajorCluster&quot;)
+
+p1</code></pre>
+<p><img src="/post/2023-09-28-how-to-create-pseudobulk-from-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-10-1.png" width="576" /></p>
+<pre class="r"><code>p2</code></pre>
+<p><img src="/post/2023-09-28-how-to-create-pseudobulk-from-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-10-2.png" width="576" /></p>
+</div>
+<div id="create-psedobulk-for-the-single-cell-data" class="section level3">
+<h3>Create psedobulk for the single cell data</h3>
+<p>Clean up the cell type annotation so it is consistent across cancer types.</p>
+<pre class="r"><code>purrr::map(objs, ~.x$MajorCluster %&gt;% unique() %&gt;% sort())</code></pre>
+<pre><code>#&gt; $PAAD
+#&gt; [1] &quot;M01_Mast_KIT&quot;    &quot;M03_cDC1_CLEC9A&quot; &quot;M04_cDC2_CD1C&quot;   &quot;M05_cDC3_LAMP3&quot; 
+#&gt; [5] &quot;M06_Mono_CD14&quot;   &quot;M07_Mono_CD16&quot;   &quot;M08_Macro_SPP1&quot;  &quot;M09_Macro_C1QC&quot; 
+#&gt; 
+#&gt; $THCA
+#&gt;  [1] &quot;M01_Mast_KIT&quot;    &quot;M02_pDC_LILRA4&quot;  &quot;M03_cDC1_CLEC9A&quot; &quot;M04_cDC2_CD1C&quot;  
+#&gt;  [5] &quot;M05_cDC3_LAMP3&quot;  &quot;M06_Mono_CD14&quot;   &quot;M07_Mono_CD16&quot;   &quot;M08_Macro_NLRP3&quot;
+#&gt;  [9] &quot;M09_Macro_SPP1&quot;  &quot;M10_Macro_C1QC&quot;  &quot;M11_Macro_ISG15&quot; &quot;M12_Macro_LYVE1&quot;
+#&gt; [13] &quot;M13_Macro_INHBA&quot;
+#&gt; 
+#&gt; $UCEC
+#&gt;  [1] &quot;M01_Mast_KIT&quot;    &quot;M02_pDC_LILRA4&quot;  &quot;M03_cDC1_CLEC9A&quot; &quot;M04_cDC2_CD1C&quot;  
+#&gt;  [5] &quot;M05_cDC3_LAMP3&quot;  &quot;M06_Mono_CD14&quot;   &quot;M07_Mono_CD16&quot;   &quot;M08_Macro_NLRP3&quot;
+#&gt;  [9] &quot;M09_Macro_ISG15&quot; &quot;M10_Macro_SPP1&quot;  &quot;M11_Macro_C1QC&quot;  &quot;M12_Macro_LYVE1&quot;</code></pre>
+<pre class="r"><code>clean_cluster_name&lt;- function(obj){
+  annotation&lt;- obj@meta.data %&gt;%
+     mutate(annotation = str_replace(MajorCluster, &quot;^M[0-9]{2}_&quot;, &quot;&quot;)) %&gt;%
+    pull(annotation)
+  obj$annotation&lt;- annotation
+  return(obj)
+}
+
+
+objs&lt;- purrr::map(objs, clean_cluster_name)
+
+purrr::map(objs, ~.x$annotation %&gt;% unique() %&gt;% sort())</code></pre>
+<pre><code>#&gt; $PAAD
+#&gt; [1] &quot;cDC1_CLEC9A&quot; &quot;cDC2_CD1C&quot;   &quot;cDC3_LAMP3&quot;  &quot;Macro_C1QC&quot;  &quot;Macro_SPP1&quot; 
+#&gt; [6] &quot;Mast_KIT&quot;    &quot;Mono_CD14&quot;   &quot;Mono_CD16&quot;  
+#&gt; 
+#&gt; $THCA
+#&gt;  [1] &quot;cDC1_CLEC9A&quot; &quot;cDC2_CD1C&quot;   &quot;cDC3_LAMP3&quot;  &quot;Macro_C1QC&quot;  &quot;Macro_INHBA&quot;
+#&gt;  [6] &quot;Macro_ISG15&quot; &quot;Macro_LYVE1&quot; &quot;Macro_NLRP3&quot; &quot;Macro_SPP1&quot;  &quot;Mast_KIT&quot;   
+#&gt; [11] &quot;Mono_CD14&quot;   &quot;Mono_CD16&quot;   &quot;pDC_LILRA4&quot; 
+#&gt; 
+#&gt; $UCEC
+#&gt;  [1] &quot;cDC1_CLEC9A&quot; &quot;cDC2_CD1C&quot;   &quot;cDC3_LAMP3&quot;  &quot;Macro_C1QC&quot;  &quot;Macro_ISG15&quot;
+#&gt;  [6] &quot;Macro_LYVE1&quot; &quot;Macro_NLRP3&quot; &quot;Macro_SPP1&quot;  &quot;Mast_KIT&quot;    &quot;Mono_CD14&quot;  
+#&gt; [11] &quot;Mono_CD16&quot;   &quot;pDC_LILRA4&quot;</code></pre>
+</div>
+<div id="create-psedobulk" class="section level3">
+<h3>Create Psedobulk</h3>
+<p>There are many ways to do it.</p>
+<p>Let’s use <a href="https://github.com/immunogenomics/presto">presto</a> for more low-level analysis instead of using the wrapper functions in <code>muscat</code>. To use <code>muscat</code>, you will need to convert the Seurat object to a <code>SingleCellExperiment</code> object.</p>
+<pre class="r"><code>library(presto)
+
+objs$PAAD@meta.data %&gt;% 
+        head()</code></pre>
+<pre><code>#&gt;                        orig.ident nCount_RNA nFeature_RNA percent_mito n_counts
+#&gt; AAACGGGGTGTGCCTG-35 SeuratProject       7626         2353   0.03575639     7635
+#&gt; AAAGATGAGCGATTCT-35 SeuratProject       9953         2396   0.02630258     9961
+#&gt; AAAGATGCAATTGCTG-35 SeuratProject      11091         2930   0.04469274    11098
+#&gt; AAAGATGCATGGTCTA-35 SeuratProject       9739         2551   0.03981121     9746
+#&gt; AAAGTAGCAAACGCGA-35 SeuratProject       6959         1145   0.02802030     9850
+#&gt; AAATGCCTCCACGACG-35 SeuratProject       2404         1031   0.03742204     2405
+#&gt;                     percent_hsp          barcode batch       library_id cancer
+#&gt; AAACGGGGTGTGCCTG-35 0.020563196 AAACGGGGTGTGCCTG    35 PACA-P20181121-T   PAAD
+#&gt; AAAGATGAGCGATTCT-35 0.003312921 AAAGATGAGCGATTCT    35 PACA-P20181121-T   PAAD
+#&gt; AAAGATGCAATTGCTG-35 0.004234997 AAAGATGCAATTGCTG    35 PACA-P20181121-T   PAAD
+#&gt; AAAGATGCATGGTCTA-35 0.031089678 AAAGATGCATGGTCTA    35 PACA-P20181121-T   PAAD
+#&gt; AAAGTAGCAAACGCGA-35 0.015837563 AAAGTAGCAAACGCGA    35 PACA-P20181121-T   PAAD
+#&gt; AAATGCCTCCACGACG-35 0.007484408 AAATGCCTCCACGACG    35 PACA-P20181121-T   PAAD
+#&gt;                       patient tissue n_genes   MajorCluster   source tech
+#&gt; AAACGGGGTGTGCCTG-35 P20181121      T    2362   M01_Mast_KIT ZhangLab 10X5
+#&gt; AAAGATGAGCGATTCT-35 P20181121      T    2404  M06_Mono_CD14 ZhangLab 10X5
+#&gt; AAAGATGCAATTGCTG-35 P20181121      T    2937 M08_Macro_SPP1 ZhangLab 10X5
+#&gt; AAAGATGCATGGTCTA-35 P20181121      T    2558  M07_Mono_CD16 ZhangLab 10X5
+#&gt; AAAGTAGCAAACGCGA-35 P20181121      T    2891   M01_Mast_KIT ZhangLab 10X5
+#&gt; AAATGCCTCCACGACG-35 P20181121      T    1032   M01_Mast_KIT ZhangLab 10X5
+#&gt;                         UMAP1      UMAP2 RNA_snn_res.0.6 seurat_clusters
+#&gt; AAACGGGGTGTGCCTG-35  7.324396 -0.6997318               4               4
+#&gt; AAAGATGAGCGATTCT-35 -5.009157 -0.8700839               2               2
+#&gt; AAAGATGCAATTGCTG-35 -5.944770  1.9433328               7               7
+#&gt; AAAGATGCATGGTCTA-35 -3.173428 -2.7142875               2               2
+#&gt; AAAGTAGCAAACGCGA-35  7.285788 -0.4640464               4               4
+#&gt; AAATGCCTCCACGACG-35  4.864260 -0.9610466               4               4
+#&gt;                     annotation
+#&gt; AAACGGGGTGTGCCTG-35   Mast_KIT
+#&gt; AAAGATGAGCGATTCT-35  Mono_CD14
+#&gt; AAAGATGCAATTGCTG-35 Macro_SPP1
+#&gt; AAAGATGCATGGTCTA-35  Mono_CD16
+#&gt; AAAGTAGCAAACGCGA-35   Mast_KIT
+#&gt; AAATGCCTCCACGACG-35   Mast_KIT</code></pre>
+<p>We will need to create a pseduobulk per cancer type, per sample, and per cell type.
+those are in the metadata column: ‘annotation’, ‘patient’, ‘cancer’.</p>
+<pre class="r"><code>create_pseduo_bulk&lt;- function(obj){
+  data_collapsed &lt;- presto::collapse_counts(obj@assays$RNA@counts, 
+                                  obj@meta.data, 
+                                  c(&#39;annotation&#39;, &#39;patient&#39;, &#39;cancer&#39;))
+  meta_data&lt;- data_collapsed$meta_data 
+
+  mat&lt;- data_collapsed$counts_mat
+
+  colnames(mat)&lt;- paste(meta_data$cancer, colnames(mat), sep=&quot;_&quot;)
+  return(list(mat = mat, meta_data = meta_data))
+}
+
+pseduo_bulk_objs&lt;- purrr::map(objs, create_pseduo_bulk)
+
+### different number of genes per dataset 
+purrr::map(pseduo_bulk_objs, ~nrow(.x$mat)) </code></pre>
+<pre><code>#&gt; $PAAD
+#&gt; [1] 14140
+#&gt; 
+#&gt; $THCA
+#&gt; [1] 15211
+#&gt; 
+#&gt; $UCEC
+#&gt; [1] 15849</code></pre>
+<pre class="r"><code>genes_per_data&lt;- purrr::map(pseduo_bulk_objs, ~rownames(.x$mat)) 
+
+## common number of genes
+common_genes&lt;- purrr::reduce(genes_per_data, intersect)
+
+length(common_genes)</code></pre>
+<pre><code>#&gt; [1] 13762</code></pre>
+<pre class="r"><code>subset_common_mat&lt;- function(mat){
+  mat&lt;- mat[common_genes, ]
+  return(mat)
+}
+
+
+mats&lt;- map(pseduo_bulk_objs, ~subset_common_mat(.x$mat))
+map(mats, dim)</code></pre>
+<pre><code>#&gt; $PAAD
+#&gt; [1] 13762    42
+#&gt; 
+#&gt; $THCA
+#&gt; [1] 13762   120
+#&gt; 
+#&gt; $UCEC
+#&gt; [1] 13762    93</code></pre>
+<pre class="r"><code>meta_data&lt;- map(pseduo_bulk_objs, ~.x$meta_data)
+
+meta_data$PAAD %&gt;% head()</code></pre>
+<pre><code>#&gt;   annotation   patient cancer
+#&gt; 1   Mast_KIT P20181121   PAAD
+#&gt; 2  Mono_CD14 P20181121   PAAD
+#&gt; 3 Macro_SPP1 P20181121   PAAD
+#&gt; 4  Mono_CD16 P20181121   PAAD
+#&gt; 5  cDC2_CD1C P20181121   PAAD
+#&gt; 6 Macro_C1QC P20181121   PAAD</code></pre>
+<pre class="r"><code>mats$PAAD[1:5, 1:6]</code></pre>
+<pre><code>#&gt;               PAAD_sample_5 PAAD_sample_6 PAAD_sample_4 PAAD_sample_7
+#&gt; FO538757.2               69            19            50             5
+#&gt; AP006222.2                0             1             0             0
+#&gt; RP4-669L17.10             0             1             0             0
+#&gt; RP11-206L10.9             0             0             2             0
+#&gt; LINC00115                 2             5             6             1
+#&gt;               PAAD_sample_1 PAAD_sample_3
+#&gt; FO538757.2                2            17
+#&gt; AP006222.2                0             0
+#&gt; RP4-669L17.10             0             0
+#&gt; RP11-206L10.9             0             1
+#&gt; LINC00115                 0             3</code></pre>
+</div>
+<div id="pca-analysis" class="section level3">
+<h3>PCA analysis</h3>
+<p>merge all the count table into a big one (I am going to do PCA!)</p>
+<pre class="r"><code>mats&lt;- purrr::reduce(mats, cbind)
+meta_data&lt;- purrr::reduce(meta_data, rbind)
+dim(mats)</code></pre>
+<pre><code>#&gt; [1] 13762   255</code></pre>
+<pre class="r"><code>final_meta&lt;- meta_data
+
+## log normalize the count matrix 
+total_reads&lt;- colSums(mats)
+
+final_mat&lt;- t(t(mats)/total_reads)
+final_mat&lt;- log2(final_mat + 1)</code></pre>
+<pre class="r"><code>library(genefilter)
+
+# choose the top 1000 most variabel genes 
+top_genes&lt;- genefilter::rowVars(final_mat) %&gt;% 
+  sort(decreasing = TRUE) %&gt;%
+  names() %&gt;%
+  head(1000)
+
+# subset only the top 1000 genes
+expression_mat_sub&lt;- final_mat[top_genes, ]</code></pre>
+<p>PCA analysis. If you are new to it, read my old blog post: <a href="https://divingintogeneticsandgenomics.com/post/pca-in-action/">PCA in action</a>.</p>
+<pre class="r"><code># calculate the PCA
+pca&lt;- prcomp(t(expression_mat_sub),center = TRUE, scale. = TRUE) 
+
+# check the order of the samples are the same.
+all.equal(rownames(pca$x), colnames(expression_mat_sub))</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>PC1_and_PC2&lt;- data.frame(PC1=pca$x[,1], PC2= pca$x[,2])
+
+PC1_and_PC2&lt;- cbind(PC1_and_PC2, final_meta)
+
+head(PC1_and_PC2)</code></pre>
+<pre><code>#&gt;                      PC1       PC2 annotation   patient cancer
+#&gt; PAAD_sample_5 -10.131179 28.929632   Mast_KIT P20181121   PAAD
+#&gt; PAAD_sample_6  16.801059  6.981512  Mono_CD14 P20181121   PAAD
+#&gt; PAAD_sample_4  18.822229  9.311594 Macro_SPP1 P20181121   PAAD
+#&gt; PAAD_sample_7  13.646380  4.989768  Mono_CD16 P20181121   PAAD
+#&gt; PAAD_sample_1  -4.800154  2.925677  cDC2_CD1C P20181121   PAAD
+#&gt; PAAD_sample_3  13.641424  7.164102 Macro_C1QC P20181121   PAAD</code></pre>
+<p>plot PCA plot</p>
+<pre class="r"><code>library(ggplot2)
+
+p1&lt;- ggplot(PC1_and_PC2, aes(x=PC1, y=PC2)) + 
+        geom_point(aes(color = cancer)) +
+        theme_bw(base_size = 14) </code></pre>
+<p>Let’s color it by cell type</p>
+<pre class="r"><code>library(Polychrome)
+set.seed(123)
+
+length(unique(PC1_and_PC2$annotation))</code></pre>
+<pre><code>#&gt; [1] 13</code></pre>
+<pre class="r"><code>mypal &lt;- kelly.colors(14)[-1]
+
+p2&lt;- ggplot(PC1_and_PC2, aes(x=PC1, y=PC2)) + 
+        geom_point(aes(color = annotation)) +
+        theme_bw(base_size = 14) +
+        scale_color_manual(values = mypal %&gt;% unname()) 
+
+p1</code></pre>
+<p><img src="/post/2023-09-28-how-to-create-pseudobulk-from-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-18-1.png" width="576" /></p>
+<pre class="r"><code>p2</code></pre>
+<p><img src="/post/2023-09-28-how-to-create-pseudobulk-from-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-18-2.png" width="576" /></p>
+<p>We see the psedobulk of the same myeloid cell types of different cancer types tend to cluster together which makes sense!</p>
+<p>Visualize in heatmap.</p>
+<pre class="r"><code>library(RColorBrewer)
+library(ComplexHeatmap)
+#RColorBrewer::display.brewer.all()
+set.seed(123)
+cols&lt;- RColorBrewer::brewer.pal(n = 3, name = &quot;Set1&quot;)
+unique(final_meta$cancer)</code></pre>
+<pre><code>#&gt; [1] &quot;PAAD&quot; &quot;THCA&quot; &quot;UCEC&quot;</code></pre>
+<pre class="r"><code>rownames(final_meta)&lt;- colnames(expression_mat_sub)
+
+ha&lt;- HeatmapAnnotation(df = final_meta[, -2],
+                       col=list(cancer = setNames(cols, unique(final_meta$cancer) %&gt;% sort()),
+                       annotation= setNames(unname(mypal), unique(final_meta$annotation) %&gt;% sort())),
+                       show_annotation_name = TRUE)
+
+col_fun&lt;- circlize::colorRamp2(c(-2,0, 2), colors = c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;))
+
+Heatmap(t(scale(t(expression_mat_sub))), top_annotation = ha,
+         show_row_names = FALSE, show_column_names = FALSE,
+         show_row_dend = FALSE,
+        col = col_fun,
+        name = &quot;expression&quot;,
+        column_dend_reorder = TRUE,
+        raster_quality = 3,
+        use_raster = FALSE,
+        )</code></pre>
+<p><img src="/post/2023-09-28-how-to-create-pseudobulk-from-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-19-1.png" width="576" /></p>
+<p>Let’s run Harmony to correct the batches of different cancer type and patients.</p>
+<pre class="r"><code>set.seed(123)
+harmony_embeddings &lt;- harmony::HarmonyMatrix(
+    expression_mat_sub, final_meta, c(&#39;cancer&#39;, &#39;patient&#39;), do_pca = TRUE, verbose= TRUE
+)
+
+rownames(harmony_embeddings)&lt;- rownames(final_meta)
+harmony_pc&lt;- data.frame(harmony1=harmony_embeddings[,1], harmony2= harmony_embeddings[,2])
+
+harmony_pc&lt;- cbind(harmony_pc, final_meta)
+
+## plot PCA plot
+library(ggplot2)
+
+p1&lt;- ggplot(harmony_pc, aes(x=harmony1, y=harmony2)) + 
+        geom_point(aes(color = cancer)) +
+        theme_bw(base_size = 14) +
+  scale_color_manual(values = cols)
+
+p2&lt;- ggplot(harmony_pc, aes(x=harmony1, y=harmony2)) + 
+        geom_point(aes(color = annotation)) +
+        theme_bw(base_size = 14) +
+        scale_color_manual(values = mypal %&gt;% unname())
+
+p1</code></pre>
+<p><img src="/post/2023-09-28-how-to-create-pseudobulk-from-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-20-1.png" width="576" /></p>
+<pre class="r"><code>p2</code></pre>
+<p><img src="/post/2023-09-28-how-to-create-pseudobulk-from-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-20-2.png" width="576" /></p>
+<p>It looks like the samples are clustered a little better (which is expected as harmony artifically mixes the samples from different batches).</p>
+<p>Read this paper <a href="https://www.biorxiv.org/content/10.1101/2023.05.05.539614v3">Signal recovery in single cell batch integration</a> as harmony or any single-cell integration method may erase biological differences.</p>
+<blockquote class="twitter-tweet">
+<p lang="en" dir="ltr">
+What gets erased when you integrate <a href="https://twitter.com/hashtag/singlecell?src=hash&amp;ref_src=twsrc%5Etfw">#singlecell</a> data across samples/studies, and can you get it back? When samples are from e.g. healthy &amp; disease, should you simply massage cells together? FINALLY, I feel we can answer this question: <a href="https://t.co/0PrkIZDyDp">https://t.co/0PrkIZDyDp</a> <a href="https://t.co/l8FbHgGrrA">pic.twitter.com/l8FbHgGrrA</a>
+</p>
+— Nancy Zhang (<span class="citation">@NancyZh60672287</span>) <a href="https://twitter.com/NancyZh60672287/status/1705655738578653640?ref_src=twsrc%5Etfw">September 23, 2023</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>Let’s visulize the heatmap by the sample correlations in the harmony space.</p>
+<pre class="r"><code>Heatmap(cor(t(harmony_embeddings)), top_annotation = ha, show_row_names = FALSE,
+        show_column_names = FALSE, column_dend_reorder = TRUE, 
+        name=&quot;harmony space\ncorrelation&quot;,
+        raster_quality = 3,
+        use_raster = TRUE)</code></pre>
+<p><img src="/post/2023-09-28-how-to-create-pseudobulk-from-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-21-1.png" width="576" />
+You see the annotation bar looks much cleaner.</p>
+<p>That’s a wrap! I hope you learned how to construct pseduobulk for single cell data.</p>
+</div>
+<div id="further-reading" class="section level3">
+<h3>Further reading</h3>
+<ol style="list-style-type: decimal">
+<li><p>A blog post by Jean Fan: <a href="https://jef.works/blog/2020/04/06/quickly-creating-pseudobulks/">Create psedobulk by linear algebra</a></p></li>
+<li><p><code>presto::collapse_counts()</code> followed by DESeq2 workflow: <a href="https://github.com/immunogenomics/presto/blob/master/vignettes/pseudobulk.ipynb" class="uri">https://github.com/immunogenomics/presto/blob/master/vignettes/pseudobulk.ipynb</a></p></li>
+<li><p><a href="https://rdrr.io/bioc/scran/man/pseudoBulkDGE.html">scran::pseudoBulkDGE</a></p></li>
+<li><p><a href="https://www.bioconductor.org/packages/release/bioc/html/muscat.html">muscat</a></p></li>
+</ol>
+<p>I have used <code>muscat</code> before and it wraps <code>DESeq2</code>, <code>EdgeR</code> etc for mutli-sample, multi-condition differential analysis. I recommend you to use it.</p>
+<p>You can watch the video for this tutorial too:</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/nt_fOIkNS0s" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+</div>
+</div>
