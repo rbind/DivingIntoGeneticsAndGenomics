@@ -233,6 +233,7 @@ library(presto)
 
 objs$PAAD@meta.data %>% 
         head()
+
 ```
 
 We will need to create a pseduobulk per cancer type, per sample, and per cell type.
