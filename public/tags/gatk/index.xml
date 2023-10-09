@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GATK on DNA confesses Data speak</title>
+    <link>/tags/gatk/</link>
+    <description>Recent content in GATK on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Sat, 15 Jul 2023 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/gatk/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Navigating Variant Calling for Disease-Causing Mutations: The state-of-art process</title>
+      <link>/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</link>
+      <pubDate>Sat, 15 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</guid>
+      <description>Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
+Variant calling is the process of identifying and categorizing genetic variants in sequencing data. It is a critical step in the analysis of whole-genome sequencing (WGS) and whole-exome sequencing (WES) data, as it allows researchers to identify potential disease-causing mutations.</description>
+    </item>
+    
+  </channel>
+</rss>

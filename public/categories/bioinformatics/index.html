@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2023-07-13T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2023-10-03T00:00:00&#43;00:00">
   
 
   
@@ -284,112 +284,105 @@
   
   
   <div>
-    <h2><a href="/post/ten-single-cell-data-benchmarking-papers/">Ten single-cell data benchmarking papers</a></h2>
+    <h2><a href="/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/">Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</a></h2>
     <div class="article-style">
-      
-      I tweeted it at <a href="https://twitter.com/tangming2005/status/1679120948140572672" target="_blank">https://twitter.com/tangming2005/status/1679120948140572672</a>
-I got asked to put all my posts in a central place and I think it is a good idea.  Benchmarking integration of single-cell differential expression
- Benchmarking atlas-level data integration in single-cell genomics
- A review of computational strategies for denoising and imputation of single-cell transcriptomic data
- Benchmarking spatial and single-cell transcriptomics integration methods for transcript distribution prediction and cell type deconvolution
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/">How to add boxplots or density plots side-by-side a scatterplot: a single cell case study</a></h2>
+    <h2><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></h2>
     <div class="article-style">
       
-      introduce ggside using single cell data The ggside R package provides a new way to visualize data by combining the flexibility of ggplot2 with the power of side-by-side plots.
-We will use a single cell dataset to demonstrate its usage.
-ggside allows users to create side-by-side plots of multiple variables, such as gene expression, cell type, and experimental conditions. This can be helpful for identifying patterns and trends in scRNA-seq data that would be difficult to see in individual plots.
+      What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
+Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
+In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/">Unlock the Power of Genomics Data Analysis: Watershed&#39;s Seamless Cloud Computing Solution</a></h2>
+    <h2><a href="/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/">Generative AI: Text generation using Long short-term memory (LSTM) model</a></h2>
     <div class="article-style">
       
-      Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform.
-As an experienced bioinformatician who understands the needs of biotech startups, I know the challenges that arise when analyzing genomics data. The first solution that comes to mind is cloud computing. Unsurprisingly, AWS and Google Cloud Platform (GCP) are commonly used options. Cloud computing avoids large upfront costs and can scale more effectively compared to building an on-premise solution.
+      In the world of deep learning, generating sequence data is a fundamental task. Typically, this involves training a network, often an RNN (Recurrent Neural Network) or a convnet (Convolutional Neural Network), to predict the next token or a sequence of tokens in a given sequence, using the preceding tokens as input. For example, when provided with the input “the cat is on the ma,” the network’s objective is to predict the next character, such as ‘t.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/">How to do neighborhood/cellular niches analysis with spatial transcriptome data </a></h2>
+    <h2><a href="/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/">Omics Playground: Derive biological insights from your omics data at your fingertip</a></h2>
     <div class="article-style">
       
-      Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
-In a previous blog post, I showed you how to make a Seurat spatial object from Vizgen spatial transcriptome data. In this post, I am going to show you how to identify clusters of neighborhood or cellular niches where specific cell types tend to co-localize.
- read in the data and pre-process library(Seurat) library(here) library(ggplot2) library(dplyr) # the LoadVizgen function requires the raw segmentation files which is too big.
+      Disclaimer: This post is sponsored by BigOmics platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer.
+A brief description of the platform. What challenges could the platform solve? The BigOmics platform - Omics Playground- provides a simplified approach for the effective processing of bulk RNA-seq data and proteomics data, resolving many issues experienced by scientists in the field.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/how-to-classify-mnist-images-with-convolutional-neural-network/">How to classify MNIST images with convolutional neural network</a></h2>
+    <h2><a href="/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/">How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</a></h2>
     <div class="article-style">
       
-      Introduction An artificial intelligence system called a convolutional neural network (CNN) has gained a lot of popularity recently. For jobs like image recognition, where we want to teach a computer to recognize things in a picture, they are especially well suited.
-CNNs operate by dissecting an image into increasingly minute components, or “features.” The network then examines each feature and searches for patterns shared by various objects. For instance, a CNN might come to understand that some pixel patterns are frequently linked to faces, while others are linked to vehicles or trees.
+      In the mysterious world of DNA, where the secrets of life are encoded, scientists are harnessing the power of cutting-edge technology to decipher the language of genes. One of the remarkable tools they’re using is the 1D Convolutionary Neural Network, or 1D CNN, which might sound like jargon from a sci-fi movie, but it’s actually a game-changer in DNA sequence analysis.
+Imagine DNA as a long, intricate string of letters, like a never-ending alphabet book.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/how-to-construct-a-spatial-object-in-seurat/">How to construct a spatial object in Seurat</a></h2>
+    <h2><a href="/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/">multi-omics data integration: a case study with transcriptomics and genomics mutation data</a></h2>
     <div class="article-style">
       
-      Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
-Single-cell spatial transcriptome data is a new and advanced technology that combines the study of individual cells’ genes and their location in a tissue to understand the complex cellular and molecular differences within it. This allows scientists to investigate how genes are expressed and how cells interact with each other with much greater detail than before.
+      Multi-omics data analysis is a cutting-edge approach in biology that involves studying and integrating information from multiple biological “omics” sources. These omics sources include genomics (genes and their variations), transcriptomics (gene expression and RNA data), proteomics (proteins and their interactions), metabolomics (small molecules and metabolites), epigenomics (epigenetic modifications), and more. By analyzing data from various omics levels together, we can gain a more comprehensive and detailed understanding of biological systems and their complexities.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/">Deep learning to predict cancer from healthy controls using TCRseq data</a></h2>
+    <h2><a href="/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/">neighborhood/cellular niches analysis with spatial transcriptome data in Seurat and Bioconductor</a></h2>
     <div class="article-style">
       
-      Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
-The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
-The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock.
+      Spatial transcriptome cellular niche analysis using 10x xenium data go to <a href="https://www.10xgenomics.com/resources/datasets" target="_blank">https://www.10xgenomics.com/resources/datasets</a>
+There is a lung cancer and a breast cancer dataset. Let’s work on the lung cancer one.
+<a href="https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard" target="_blank">https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard</a>
+37G zipped file!
+wget <a href="https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/1.3.0/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip" target="_blank">https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/1.3.0/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip</a> unzip Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip sudo tar xvzf cell_feature_matrix.tar.gz cell_feature_matrix/ cell_feature_matrix/barcodes.tsv.gz cell_feature_matrix/features.tsv.gz cell_feature_matrix/matrix.mtx.gz
+ read in the data with Seurat We really only care about the cell by gene count matrix which is inside the cell_feature_matrix folder, and the cell location x,y coordinates: cells.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/deep-learning-with-keras-using-mnst-dataset/">Deep learning with Keras using MNIST dataset </a></h2>
+    <h2><a href="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">scRNAseq clustering significance test: an unsolvable problem?</a></h2>
     <div class="article-style">
       
-      Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
- Introduction Are you a machine learning practitioner or data analyst looking to broaden your skill set? Look nowhere else! This blog post will offer an introduction to deep learning, which is currently the hottest topic in machine learning. Using the well-known MNIST dataset) and the Keras package, we will investigate the potential of deep learning.
+      Introductioon In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights.
+The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the resolution parameter. However, whether the newly generated clusters are meaningful or not is a question.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/how-to-deal-with-overplotting-without-being-fooled/">How to deal with overplotting without being fooled </a></h2>
+    <h2><a href="/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/">Navigating Variant Calling for Disease-Causing Mutations: The state-of-art process</a></h2>
     <div class="article-style">
       
-      Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
- The problem Let me be clear, when you have gazillions of data points in a scatter plot, you want to deal with the overplotting to avoid drawing misleading conclusions.
-Let’s start with a single-cell example.
-Load the libraries:
-library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) set.seed(1234) prepare the data
-data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 features across 2700 samples within 1 assay #&gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&lt;- pbmc3k %&gt;% NormalizeData(normalization.
+      Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
+Variant calling is the process of identifying and categorizing genetic variants in sequencing data. It is a critical step in the analysis of whole-genome sequencing (WGS) and whole-exome sequencing (WES) data, as it allows researchers to identify potential disease-causing mutations.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/how-to-commit-changes-to-a-docker-image/">How to commit changes to a docker image</a></h2>
+    <h2><a href="/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/">Reuse the single cell data! How to create a seurat object from GEO datasets</a></h2>
     <div class="article-style">
       
-      Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
-Start here Docker is a great tool to ensure reproducibility of your computing work. I was using the bioconductor image on google cloud, but the image does not have the gsutil command.
-You can install once in the container, but once you exit the container, the gsutil command will be gone. You will need to modify the docker image if you want to keep using it.
+      Download the data <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256" target="_blank">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256</a>
+cd data/GSE116256 wget <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar" target="_blank">https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar</a> tar xvf GSE116256_RAW.tar rm GSE116256_RAW.tar Depending on how the authors upload their data.
+Some authors may just upload the merged count matrix file. This is the easiest situation.
+In this dataset, each sample has a separate set of matrix (*dem.txt.gz), features and barcodes.
+Total, there are 43 samples. For each sample, it has an associated metadata file (*anno.txt.gz) too.
+You can inspect the files in command line:
       
     </div>
   </div>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Disclaimer: This post is sponsored by BigOmics platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer.
+A brief description of the platform. What challenges could the platform solve? The BigOmics platform - Omics Playground- provides a simplified approach for the effective processing of bulk RNA-seq data and proteomics data, resolving many issues experienced by scientists in the field.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/">
+  <meta property="og:title" content="Omics Playground: Derive biological insights from your omics data at your fingertip | DNA confesses Data speak">
+  <meta property="og:description" content="Disclaimer: This post is sponsored by BigOmics platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer.
+A brief description of the platform. What challenges could the platform solve? The BigOmics platform - Omics Playground- provides a simplified approach for the effective processing of bulk RNA-seq data and proteomics data, resolving many issues experienced by scientists in the field.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-09-11T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-09-11T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Omics Playground: Derive biological insights from your omics data at your fingertip | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Omics Playground: Derive biological insights from your omics data at your fingertip</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-09-11 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Sep 11, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/gui/">GUI</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Omics%20Playground%3a%20Derive%20biological%20insights%20from%20your%20omics%20data%20at%20your%20fingertip&amp;url=%2fpost%2fomics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fomics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fomics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip%2f&amp;title=Omics%20Playground%3a%20Derive%20biological%20insights%20from%20your%20omics%20data%20at%20your%20fingertip"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fomics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip%2f&amp;title=Omics%20Playground%3a%20Derive%20biological%20insights%20from%20your%20omics%20data%20at%20your%20fingertip"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Omics%20Playground%3a%20Derive%20biological%20insights%20from%20your%20omics%20data%20at%20your%20fingertip&amp;body=%2fpost%2fomics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<p><strong>Disclaimer: This post is sponsored by <a href="https://bigomics.ch/" target="_blank">BigOmics platform</a>. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer</strong>.</p>
+
+<h3 id="a-brief-description-of-the-platform-what-challenges-could-the-platform-solve">A brief description of the platform. What challenges could the platform solve?</h3>
+
+<p>The BigOmics platform - <a href="https://playground.bigomics.ch/" target="_blank">Omics Playground</a>- provides a simplified approach for the effective processing of bulk RNA-seq data and proteomics data, resolving many issues experienced by scientists in the field.</p>
+
+<p>This platform has an intuitive user interface that makes analysis more straightforward. It incorporates crucial elements like sample quality control and a gene-centric view to ensure users can easily browse their data. A count/expression data file (counts.csv), a sample information file (samples.csv), and an optional file defining statistical comparisons (comparisons.csv) are among the necessary input files.</p>
+
+<p>When these files are uploaded, the platform quickly creates a Principal Component Analysis (PCA) graphic. Once the analysis is configured, it gives quick insights into the data structure. The analytical workflow is streamlined by creating comparative contrasts by dragging and dropping objects.</p>
+
+<p>Omics Playground&rsquo;s noteworthy benefit is its ability to automatically perform various downstream RNA-seq analyses. It conducts differential expression analysis, produces MA and volcano plots, and builds heatmaps. It also carries out gene-gene correlation analysis, gene set enrichment analysis (<a href="https://www.gsea-msigdb.org/gsea/index.jsp" target="_blank">GSEA</a>), possible biomarker identification, and weighted gene co-expression network analysis (<a href="https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/" target="_blank">WGCNA</a>) for gene module analysis.</p>
+
+<p>With sophisticated experimental designs that require several varied comparisons, this platform successfully tackles the issue of labor-intensive and time-consuming bespoke analyses. Researchers may now rely upon Omics Playground to speed up the processing of their RNA-seq data, giving them more time for crucial interpretation and scientific breakthroughs.</p>
+
+<h3 id="what-could-be-the-value-proposition-for-i-biologists-ii-bioinformaticians-and-iii-biotech-companies">What could be the value proposition for i) biologists, ii) bioinformaticians and iii) biotech companies?</h3>
+
+<p>For biologists: Omics Playground serves as a user-friendly data analysis dashboard, offering a range of visualizations that facilitate quick data understanding and insight extraction. Notably, the platform automatically converts ENSEMBL IDs for genes in the count table into official gene symbols, making it easier to analyze the data. The platform also provides a gene overview that shows the levels of gene expression in distinct <a href="https://www.gtexportal.org/home/" target="_blank">GTEX</a> tissues, enhancing our understanding of biology. Using feature importances produced by six machine learning algorithms, including XGBoost and Random Forest, biologists may also quickly find new biomarkers. This feature enables scientists to extract important biological insights easily.</p>
+
+<p>For bioinformaticians: Omics Playground is a valuable tool since it eliminates the need for considerable custom code creation, saving them time. It speeds up the data analysis, enabling bioinformaticians to conduct studies quickly and work efficiently with wet lab scientists. The platform&rsquo;s capacity to promptly discover prospective biomarkers is quite helpful since it speeds the identification of essential targets and genes of interest.</p>
+
+<p>For Biotech: Because Omics Playground makes it possible to quickly and effectively analyze large amounts of RNA-seq data, biotech businesses stand to benefit significantly from it. Due to its efficiency, Research and Development (R&amp;D) activities move more quickly, and decision-making processes accelerate. Biotech businesses may maximize resource allocation and strengthen their competitive edge in the dynamic and quick-moving biotechnology industry by utilizing Omics Playground.</p>
+
+<h3 id="what-are-the-capabilities-and-strengths-of-the-platform-what-do-i-like-the-most">What are the capabilities and strengths of the platform? What do I like the most?</h3>
+
+<p>The feature that appeals to me the most about this platform is the interactive features of many plots generated. For example, it is easy to upload customized gene sets and highlight them in the volcano plot; the heatmaps are interactive (<strong>see the figure below</strong>), and one can zoom in and out or hover over the mouse to get the gene information.</p>
+
+<p><img src="/img/bigomics.png" alt="" /></p>
+
+<p>Another noteworthy aspect of the platform is its ability to compare many comparisons simultaneously. Additionally, the Weighted Gene Co-expression Network Analysis (WGCNA) module&rsquo;s integration with drug connectivity analysis is tremendously beneficial since it quickly identifies new drug candidates and interesting gene modules. Those features make it an essential tool for thorough data exploration and analysis.</p>
+
+<p><img src="/img/wgcna.png" alt="" /></p>
+
+<h3 id="what-can-be-improved">What can be improved?</h3>
+
+<p>A more interactive visualization option for the pathway analysis module would be great. For example, it will be nice for the users to click a gene in the pathway that is identified and get more information. It would also be beneficial to give users a wider variety of choices for editing and configuring figures so they are easily suited for publishing.</p>
+
+<p>The efficiency and synergy of research teams might be significantly improved by enhancing the platform&rsquo;s collaboration capabilities by enabling bioinformaticians to easily share their projects with wet lab scientists, allowing them to view and study the same dataset together. These suggested changes will improve user experience and promote seamless scientific cooperation.</p>
+
+<p>In conclusion, biotech businesses without dedicated bioinformatics will benefit from using <a href="https://bigomics.ch/" target="_blank">Omics Playground</a>. Omics Playground may also successfully free up the valuable time of bioinformaticians, allowing them to focus on more critical exploratory work for businesses with limited bioinformatics resources. In turn, wet biologists are thus free to explore data in more depth, eventually increasing the speed and effectiveness of data processing procedures.</p>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/gui/">GUI</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/">How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</a></li>
+        
+        <li><a href="/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/">multi-omics data integration: a case study with transcriptomics and genomics mutation data</a></li>
+        
+        <li><a href="/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/">neighborhood/cellular niches analysis with spatial transcriptome data in Seurat and Bioconductor</a></li>
+        
+        <li><a href="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">scRNAseq clustering significance test: an unsolvable problem?</a></li>
+        
+        <li><a href="/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/">Navigating Variant Calling for Disease-Causing Mutations: The state-of-art process</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/" rel="next">Generative AI: Text generation using Long short-term memory (LSTM) model</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/" rel="prev">How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Thu, 13 Jul 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 03 Oct 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>Bioinformatics</title>
       <link>/categories/bioinformatics/</link>
-      <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/bioinformatics/</guid>
       <description></description>
@@ -24,7 +24,7 @@
     <item>
       <title>Cloud computing</title>
       <link>/categories/cloud-computing/</link>
-      <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 15 Jul 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/cloud-computing/</guid>
       <description></description>
@@ -51,7 +51,7 @@
     <item>
       <title>Deeplearning</title>
       <link>/categories/deeplearning/</link>
-      <pubDate>Sun, 09 Apr 2023 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/deeplearning/</guid>
       <description></description>
@@ -76,6 +76,15 @@
     </item>
     
     <item>
+      <title>GUI</title>
+      <link>/categories/gui/</link>
+      <pubDate>Mon, 11 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/gui/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Genomics</title>
       <link>/categories/genomics/</link>
       <pubDate>Sun, 05 Feb 2023 00:00:00 +0000</pubDate>
@@ -96,9 +105,18 @@
     <item>
       <title>Machine learning</title>
       <link>/categories/machine-learning/</link>
-      <pubDate>Thu, 15 Jun 2023 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 23 Jul 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/machine-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Multiomics</title>
+      <link>/categories/multiomics/</link>
+      <pubDate>Tue, 22 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/multiomics/</guid>
       <description></description>
     </item>
     
@@ -123,7 +141,7 @@
     <item>
       <title>R</title>
       <link>/categories/r/</link>
-      <pubDate>Fri, 14 Apr 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/r/</guid>
       <description></description>
@@ -159,7 +177,7 @@
     <item>
       <title>ScRNAseq</title>
       <link>/categories/scrnaseq/</link>
-      <pubDate>Mon, 23 Jan 2023 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 08 Aug 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/scrnaseq/</guid>
       <description></description>
@@ -168,7 +186,7 @@
     <item>
       <title>Single-cell</title>
       <link>/categories/single-cell/</link>
-      <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/single-cell/</guid>
       <description></description>
@@ -186,7 +204,7 @@
     <item>
       <title>Spatial</title>
       <link>/categories/spatial/</link>
-      <pubDate>Fri, 14 Apr 2023 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 08 Aug 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/spatial/</guid>
       <description></description>

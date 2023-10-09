@@ -7,19 +7,117 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Thu, 13 Jul 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 03 Oct 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/bioinformatics/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Ten single-cell data benchmarking papers</title>
+      <title>Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</title>
+      <link>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</link>
+      <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</guid>
+      <description> </description>
+    </item>
+    
+    <item>
+      <title>How to create pseudobulk from single-cell RNAseq data </title>
+      <link>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</link>
+      <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</guid>
+      <description>What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
+Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
+In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.</description>
+    </item>
+    
+    <item>
+      <title>Omics Playground: Derive biological insights from your omics data at your fingertip</title>
+      <link>/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/</link>
+      <pubDate>Mon, 11 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/</guid>
+      <description>Disclaimer: This post is sponsored by BigOmics platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer.
+A brief description of the platform. What challenges could the platform solve? The BigOmics platform - Omics Playground- provides a simplified approach for the effective processing of bulk RNA-seq data and proteomics data, resolving many issues experienced by scientists in the field.</description>
+    </item>
+    
+    <item>
+      <title>How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</title>
+      <link>/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</link>
+      <pubDate>Sat, 09 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</guid>
+      <description>In the mysterious world of DNA, where the secrets of life are encoded, scientists are harnessing the power of cutting-edge technology to decipher the language of genes. One of the remarkable tools they’re using is the 1D Convolutionary Neural Network, or 1D CNN, which might sound like jargon from a sci-fi movie, but it’s actually a game-changer in DNA sequence analysis.
+Imagine DNA as a long, intricate string of letters, like a never-ending alphabet book.</description>
+    </item>
+    
+    <item>
+      <title>multi-omics data integration: a case study with transcriptomics and genomics mutation data</title>
+      <link>/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/</link>
+      <pubDate>Tue, 22 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/</guid>
+      <description>Multi-omics data analysis is a cutting-edge approach in biology that involves studying and integrating information from multiple biological “omics” sources. These omics sources include genomics (genes and their variations), transcriptomics (gene expression and RNA data), proteomics (proteins and their interactions), metabolomics (small molecules and metabolites), epigenomics (epigenetic modifications), and more. By analyzing data from various omics levels together, we can gain a more comprehensive and detailed understanding of biological systems and their complexities.</description>
+    </item>
+    
+    <item>
+      <title>neighborhood/cellular niches analysis with spatial transcriptome data in Seurat and Bioconductor</title>
+      <link>/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</link>
+      <pubDate>Tue, 08 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</guid>
+      <description>Spatial transcriptome cellular niche analysis using 10x xenium data go to https://www.10xgenomics.com/resources/datasets
+There is a lung cancer and a breast cancer dataset. Let’s work on the lung cancer one.
+https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard
+37G zipped file!
+wget https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/1.3.0/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip unzip Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip sudo tar xvzf cell_feature_matrix.tar.gz cell_feature_matrix/ cell_feature_matrix/barcodes.tsv.gz cell_feature_matrix/features.tsv.gz cell_feature_matrix/matrix.mtx.gz
+ read in the data with Seurat We really only care about the cell by gene count matrix which is inside the cell_feature_matrix folder, and the cell location x,y coordinates: cells.</description>
+    </item>
+    
+    <item>
+      <title>scRNAseq clustering significance test: an unsolvable problem?</title>
+      <link>/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</link>
+      <pubDate>Sun, 23 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</guid>
+      <description>Introductioon In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights.
+The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the resolution parameter. However, whether the newly generated clusters are meaningful or not is a question.</description>
+    </item>
+    
+    <item>
+      <title>Navigating Variant Calling for Disease-Causing Mutations: The state-of-art process</title>
+      <link>/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</link>
+      <pubDate>Sat, 15 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</guid>
+      <description>Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
+Variant calling is the process of identifying and categorizing genetic variants in sequencing data. It is a critical step in the analysis of whole-genome sequencing (WGS) and whole-exome sequencing (WES) data, as it allows researchers to identify potential disease-causing mutations.</description>
+    </item>
+    
+    <item>
+      <title>Reuse the single cell data! How to create a seurat object from GEO datasets</title>
+      <link>/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</link>
+      <pubDate>Fri, 14 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</guid>
+      <description>Download the data https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256
+cd data/GSE116256 wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar tar xvf GSE116256_RAW.tar rm GSE116256_RAW.tar Depending on how the authors upload their data.
+Some authors may just upload the merged count matrix file. This is the easiest situation.
+In this dataset, each sample has a separate set of matrix (*dem.txt.gz), features and barcodes.
+Total, there are 43 samples. For each sample, it has an associated metadata file (*anno.txt.gz) too.
+You can inspect the files in command line:</description>
+    </item>
+    
+    <item>
+      <title>10 single-cell data benchmarking papers</title>
       <link>/post/ten-single-cell-data-benchmarking-papers/</link>
       <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>
       
       <guid>/post/ten-single-cell-data-benchmarking-papers/</guid>
       <description>I tweeted it at https://twitter.com/tangming2005/status/1679120948140572672
-I got asked to put all my posts in a central place and I think it is a good idea.  Benchmarking integration of single-cell differential expression
+I got asked to put all my posts in a central place and I think it is a good idea. And here it is!
+ Benchmarking integration of single-cell differential expression
  Benchmarking atlas-level data integration in single-cell genomics
  A review of computational strategies for denoising and imputation of single-cell transcriptomic data
  Benchmarking spatial and single-cell transcriptomics integration methods for transcript distribution prediction and cell type deconvolution</description>
@@ -53,8 +151,8 @@ ggside allows users to create side-by-side plots of multiple variables, such as 
       <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
       
       <guid>/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</guid>
-      <description>Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform.
-As an experienced bioinformatician who understands the needs of biotech startups, I know the challenges that arise when analyzing genomics data. The first solution that comes to mind is cloud computing. Unsurprisingly, AWS and Google Cloud Platform (GCP) are commonly used options. Cloud computing avoids large upfront costs and can scale more effectively compared to building an on-premise solution.</description>
+      <description>Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
+As an experienced bioinformatician who understands the needs of biotech startups, I know the challenges that arise when analyzing genomics data. The first solution that comes to mind is cloud computing. Unsurprisingly, AWS and Google Cloud Platform (GCP) are commonly used options.</description>
     </item>
     
     <item>

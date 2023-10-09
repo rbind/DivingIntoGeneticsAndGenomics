@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Introductioon In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights.
+The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the resolution parameter. However, whether the newly generated clusters are meaningful or not is a question.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">
+  <meta property="og:title" content="scRNAseq clustering significance test: an unsolvable problem? | DNA confesses Data speak">
+  <meta property="og:description" content="Introductioon In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights.
+The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the resolution parameter. However, whether the newly generated clusters are meaningful or not is a question.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-07-23T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-07-23T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>scRNAseq clustering significance test: an unsolvable problem? | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">scRNAseq clustering significance test: an unsolvable problem?</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-07-23 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Jul 23, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    9 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/scrnaseq/">scRNAseq</a
+    >, 
+    
+    <a href="/categories/machine-learning/">machine learning</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=scRNAseq%20clustering%20significance%20test%3a%20an%20unsolvable%20problem%3f&amp;url=%2fpost%2fscrnaseq-clustering-significant-test-an-unsolvable-problem%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fscrnaseq-clustering-significant-test-an-unsolvable-problem%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fscrnaseq-clustering-significant-test-an-unsolvable-problem%2f&amp;title=scRNAseq%20clustering%20significance%20test%3a%20an%20unsolvable%20problem%3f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fscrnaseq-clustering-significant-test-an-unsolvable-problem%2f&amp;title=scRNAseq%20clustering%20significance%20test%3a%20an%20unsolvable%20problem%3f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=scRNAseq%20clustering%20significance%20test%3a%20an%20unsolvable%20problem%3f&amp;body=%2fpost%2fscrnaseq-clustering-significant-test-an-unsolvable-problem%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="introductioon" class="section level3">
+<h3>Introductioon</h3>
+<p>In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights.</p>
+<p>The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the <code>resolution</code> parameter. However, whether the newly generated clusters are meaningful or not is a question.</p>
+<p>I previously published a tool <a href="https://github.com/crazyhottommy/scclusteval">scclusteval</a> trying to help with this problem.</p>
+</div>
+<div id="testing-scrnaseq-clustering-significance" class="section level3">
+<h3>Testing scRNAseq clustering significance</h3>
+<p>Several days ago, I saw this paper came out <a href="https://pubmed.ncbi.nlm.nih.gov/37429993/">Significance analysis for clustering with single-cell RNA-sequencing data</a> in <em>Nature Methods</em>. I am eager to give it a try.</p>
+<p>The biorxiv version can be found at <a href="https://www.biorxiv.org/content/10.1101/2022.08.01.502383v1" class="uri">https://www.biorxiv.org/content/10.1101/2022.08.01.502383v1</a></p>
+<p>The idea is based on the <a href="https://github.com/pkimes/sigclust2" class="uri">https://github.com/pkimes/sigclust2</a> which test significant clusters in hierarchical clustering.</p>
+<blockquote>
+<p>However, it assumes an underlying parametric distribution for the data, specifically Gaussian distributions, where distinct populations have different centers. A given set of clusters can then be assessed in a formal and statistically rigorous manner by asking whether or not these clusters could have plausibly arisen under data from a single Gaussian distribution. If so, then the set of clusters likely indicates over-clustering.</p>
+</blockquote>
+<blockquote>
+<p>Significance of Hierarchical Clustering (SHC) addresses this limitation by incorporating hypothesis testing within the hierarchical procedure. However, SHC is not directly applicable to scRNA-seq data due to the Gaussian distributional assumption, which is inappropriate for these sparse count data.</p>
+</blockquote>
+<p><a href="https://github.com/igrabski/sc-SHC"><code>scSHC</code></a> implements the significance testing extending to single cell data which is sparse. It models the counts with poisson distribution and use a permutation test to test the significance for the testing statistics: <code>Silhouette width</code>.</p>
+<p>To calculate a Silhouette width score for a member of a cluster, you first calculate the average within cluster distances <code>C(i)</code> and the average closest neighbor distance <code>N(i)</code> and use the formula shown in Figure 1 to calculate <code>S(i)</code>.</p>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-2"></span>
+<img src="/img/sihouette1.png" alt="Silhouette width" width="100%" /><img src="/img/silhouette2.png" alt="Silhouette width" width="100%" />
+<p class="caption">
+Figure 1: Silhouette width
+</p>
+</div>
+<p><code>Silhouette width</code> ranges from -1 to 1. 1 means that member is perfectly match to the cluster it was assigned to. -1 means that member should be placed in the neighboring cluster.</p>
+<p>Then, one does hypothesis testing by first stating the null hypothesis:</p>
+<ul>
+<li>H0: there is only one cluster</li>
+<li>H1: there are two clusters</li>
+</ul>
+The figure below shows two scenarios:
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-3"></span>
+<img src="/img/scHSC.png" alt="significance test by permutation" width="100%" />
+<p class="caption">
+Figure 2: significance test by permutation
+</p>
+</div>
+<p>The first scenario is that the truth is 2 clusters and we identified two clusters by clustering algorithms. The second scenario is that the truth is only 1 cluster but we also identified two clusters by clustering algorithms.</p>
+<p>Under the null hypothesis, one can estimate the distribution parameters and simulate the same distribution by e.g., 100 times and for each time, calculate the Silhouette width for all cells. we plot the simulated average silhouette width (for all cells) as a histogram and then compare the observed silhouette width in the data.</p>
+<p>For the two scenarios, we choose a significance level alpha = 0.05.</p>
+<p>In the first scenario, the observed silhouette width is greater than all the simulated silhouette width, so we reject the null and accept the alternative: there are two clusters.</p>
+<p>In the second scenario, out of 100 permutations, 33 times of the permutation based silhouette score is greater than observed one, so the p-value is <code>33/100 = 0.33</code>.</p>
+<p>It is greater than <code>0.05</code>, so we fail to reject the null and accept that there is only one cluster in the data.</p>
+<p><code>scSHC</code> tests the clustering significance at every splitting point hierarchically.</p>
+</div>
+<div id="install-the-package" class="section level3">
+<h3>install the package</h3>
+<pre class="r"><code># dependency
+BiocManager::install(&quot;scry&quot;)
+devtools::install_github(&quot;igrabski/sc-SHC&quot;)</code></pre>
+<p>Load the libraries</p>
+<pre class="r"><code>library(scSHC)
+library(dplyr)
+library(Seurat)
+library(scCustomize)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+library(SeuratData)
+set.seed(1234)</code></pre>
+<pre class="r"><code>data(&quot;pbmc3k&quot;)
+
+pbmc3k</code></pre>
+<pre><code>#&gt; An object of class Seurat 
+#&gt; 13714 features across 2700 samples within 1 assay 
+#&gt; Active assay: RNA (13714 features, 0 variable features)</code></pre>
+</div>
+<div id="routine-processing" class="section level2">
+<h2>routine processing</h2>
+<pre class="r"><code>pbmc3k&lt;- pbmc3k %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+pbmc3k&lt;- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]
+
+p1&lt;- DimPlot_scCustom(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, group.by = 
+                        &quot;RNA_snn_res.0.5&quot;)
+
+p2&lt;- DimPlot_scCustom(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, group.by = &quot;seurat_annotations&quot;, label.size = 3)
+
+p1 + p2</code></pre>
+<p><img src="/post/2023-07-23-scrnaseq-clustering-significant-test-an-unsolvable-problem_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>janitor::tabyl(pbmc3k@meta.data, seurat_annotations, RNA_snn_res.0.5)</code></pre>
+<pre><code>#&gt;  seurat_annotations   0   1   2   3   4   5   6  7  8
+#&gt;         Naive CD4 T 608   0  66   0  23   0   0  0  0
+#&gt;        Memory CD4 T  69   0 396   0  16   0   2  0  0
+#&gt;          CD14+ Mono   0 472   0   0   0   3   0  4  1
+#&gt;                   B   0   0   0 343   1   0   0  0  0
+#&gt;               CD8 T   2   0   3   0 265   0   1  0  0
+#&gt;        FCGR3A+ Mono   0   7   0   0   0 155   0  0  0
+#&gt;                  NK   0   0   0   0  16   0 139  0  0
+#&gt;                  DC   0   0   0   0   0   0   0 32  0
+#&gt;            Platelet   0   0   0   0   0   0   0  0 14</code></pre>
+<p>Let’s artificially increase the resolution (to 1) to over-cluster it.</p>
+<pre class="r"><code>## artificially increase the resolution
+pbmc3k&lt;- pbmc3k %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 1, verbose = FALSE) 
+
+
+p3&lt;- DimPlot_scCustom(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, group.by = &quot;RNA_snn_res.1&quot;)
+
+(p1 + p3) / p2</code></pre>
+<p><img src="/post/2023-07-23-scrnaseq-clustering-significant-test-an-unsolvable-problem_files/figure-html/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>CD4 naive cell cluster is split to 2 clusters (0 -&gt; 0, 5)
+the CD14+ monocyte cluster is split into 2 clusters (1 -&gt; 4, 6)</p>
+<pre class="r"><code>janitor::tabyl(pbmc3k@meta.data, RNA_snn_res.1, RNA_snn_res.0.5)</code></pre>
+<pre><code>#&gt;  RNA_snn_res.1   0   1   2   3   4   5   6  7  8
+#&gt;              0 470   0  49   0   0   0   0  0  0
+#&gt;              1   3   0 413   0   1   0   0  0  0
+#&gt;              2   0   0   0 343   0   0   0  0  0
+#&gt;              3   0   0   0   0 279   0   0  0  0
+#&gt;              4   0 262   0   0   0   1   0  0  0
+#&gt;              5 206   0   3   0  41   0   0  0  0
+#&gt;              6   0 217   0   0   0   0   0  0  1
+#&gt;              7   0   0   0   0   0 157   0  0  0
+#&gt;              8   0   0   0   0   0   0 142  0  0
+#&gt;              9   0   0   0   0   0   0   0 36  0
+#&gt;             10   0   0   0   0   0   0   0  0 14</code></pre>
+<div id="use-scshc-to-do-the-clustering" class="section level3">
+<h3>use scSHC to do the clustering</h3>
+<pre class="r"><code>library(tictoc)
+
+tic()
+clusters&lt;- scSHC(pbmc3k@assays$RNA@counts, cores = 6,
+                 num_PCs = 30,
+                 num_features = 2000)
+toc()</code></pre>
+<pre><code>#&gt; 162.082 sec elapsed</code></pre>
+</div>
+<div id="visualize-the-data" class="section level3">
+<h3>visualize the data</h3>
+<p>The <code>scSHC</code> output is a list of 2 elements, the first element contains the cluster id for each cell and the second element contains</p>
+<pre class="r"><code>table(clusters[[1]])</code></pre>
+<pre><code>#&gt; 
+#&gt;   1   2   3   4   5   6   7   8 
+#&gt; 448 105 130 154 521 334 426 520</code></pre>
+<pre class="r"><code># the second 
+clusters[[2]]</code></pre>
+<pre><code>#&gt;                       levelName
+#&gt; 1  Node 0: 0                   
+#&gt; 2   ¦--Node 1: 0               
+#&gt; 3   ¦   ¦--Node 3: 0           
+#&gt; 4   ¦   ¦   ¦--Cluster 2: 1    
+#&gt; 5   ¦   ¦   °--Cluster 3: 1    
+#&gt; 6   ¦   °--Cluster 1: 1        
+#&gt; 7   °--Node 2: 0               
+#&gt; 8       ¦--Node 4: 0           
+#&gt; 9       ¦   ¦--Cluster 4: 1    
+#&gt; 10      ¦   °--Cluster 5: 1    
+#&gt; 11      °--Node 5: 0           
+#&gt; 12          ¦--Cluster 6: 1    
+#&gt; 13          °--Node 6: 0.01    
+#&gt; 14              ¦--Cluster 7: 1
+#&gt; 15              °--Cluster 8: 1</code></pre>
+<pre class="r"><code>clusters[[1]] %&gt;%
+  tibble::enframe() %&gt;%
+  head()</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 2
+#&gt;   name           value
+#&gt;   &lt;chr&gt;          &lt;dbl&gt;
+#&gt; 1 AAACATACAACCAC     5
+#&gt; 2 AAACATTGAGCTAC     6
+#&gt; 3 AAACATTGATCAGC     5
+#&gt; 4 AAACCGTGCTTCCG     3
+#&gt; 5 AAACCGTGTATGCG     4
+#&gt; 6 AAACGCACTGGTAC     5</code></pre>
+<pre class="r"><code>scSHC_clusters&lt;- clusters[[1]] %&gt;%
+  tibble::enframe(name = &quot;barcode&quot;, value = &quot;scSHC_clusters&quot;)
+
+scSHC_clusters&lt;- as.data.frame(scSHC_clusters)
+rownames(scSHC_clusters)&lt;- scSHC_clusters$barcode
+head(scSHC_clusters)</code></pre>
+<pre><code>#&gt;                       barcode scSHC_clusters
+#&gt; AAACATACAACCAC AAACATACAACCAC              5
+#&gt; AAACATTGAGCTAC AAACATTGAGCTAC              6
+#&gt; AAACATTGATCAGC AAACATTGATCAGC              5
+#&gt; AAACCGTGCTTCCG AAACCGTGCTTCCG              3
+#&gt; AAACCGTGTATGCG AAACCGTGTATGCG              4
+#&gt; AAACGCACTGGTAC AAACGCACTGGTAC              5</code></pre>
+<p>add the scSHC cluster to the seurat metadata slot</p>
+<pre class="r"><code>pbmc3k&lt;- AddMetaData(pbmc3k, metadata = scSHC_clusters)
+pbmc3k@meta.data %&gt;% head()</code></pre>
+<pre><code>#&gt;                orig.ident nCount_RNA nFeature_RNA seurat_annotations
+#&gt; AAACATACAACCAC     pbmc3k       2419          779       Memory CD4 T
+#&gt; AAACATTGAGCTAC     pbmc3k       4903         1352                  B
+#&gt; AAACATTGATCAGC     pbmc3k       3147         1129       Memory CD4 T
+#&gt; AAACCGTGCTTCCG     pbmc3k       2639          960         CD14+ Mono
+#&gt; AAACCGTGTATGCG     pbmc3k        980          521                 NK
+#&gt; AAACGCACTGGTAC     pbmc3k       2163          781       Memory CD4 T
+#&gt;                RNA_snn_res.0.5 seurat_clusters RNA_snn_res.1        barcode
+#&gt; AAACATACAACCAC               0               5             5 AAACATACAACCAC
+#&gt; AAACATTGAGCTAC               3               2             2 AAACATTGAGCTAC
+#&gt; AAACATTGATCAGC               2               1             1 AAACATTGATCAGC
+#&gt; AAACCGTGCTTCCG               5               7             7 AAACCGTGCTTCCG
+#&gt; AAACCGTGTATGCG               6               8             8 AAACCGTGTATGCG
+#&gt; AAACGCACTGGTAC               2               1             1 AAACGCACTGGTAC
+#&gt;                scSHC_clusters
+#&gt; AAACATACAACCAC              5
+#&gt; AAACATTGAGCTAC              6
+#&gt; AAACATTGATCAGC              5
+#&gt; AAACCGTGCTTCCG              3
+#&gt; AAACCGTGTATGCG              4
+#&gt; AAACGCACTGGTAC              5</code></pre>
+<pre class="r"><code>all.equal(rownames(pbmc3k@meta.data), unname(pbmc3k$barcode))</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<p>plotting</p>
+<pre class="r"><code>p4&lt;- DimPlot_scCustom(pbmc3k, group.by = &quot;scSHC_clusters&quot;)
+
+(p2 + p4) / (p1 + p3)</code></pre>
+<p><img src="/post/2023-07-23-scrnaseq-clustering-significant-test-an-unsolvable-problem_files/figure-html/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>janitor::tabyl(pbmc3k@meta.data, seurat_annotations, scSHC_clusters)</code></pre>
+<pre><code>#&gt;  seurat_annotations   1   2  3   4   5   6   7   8
+#&gt;         Naive CD4 T   0   0  0   0  80   0 150 467
+#&gt;        Memory CD4 T   0   0  0   0 161   0 274  48
+#&gt;          CD14+ Mono 398   1 81   0   0   0   0   0
+#&gt;                   B   0   0  0   0   8 334   1   1
+#&gt;               CD8 T   0   0  0  11 255   0   1   4
+#&gt;        FCGR3A+ Mono   9 104 49   0   0   0   0   0
+#&gt;                  NK   0   0  0 143  12   0   0   0
+#&gt;                  DC  29   0  0   0   3   0   0   0
+#&gt;            Platelet  12   0  0   0   2   0   0   0</code></pre>
+<p>What surprises me is that <code>scSHC</code> does not separate the CD14+ monocytes and the dendritic cells. (cluster 1 is a mix of CD14+ monocytes, DCs and platelet)</p>
+</div>
+<div id="conclusions" class="section level3">
+<h3>conclusions</h3>
+<ul>
+<li><p>One may fine tune <code>num_features</code> and <code>num_PCs</code> to get a better results. My conclusion is that although it seems statistically attractive, significance testing for scRNAseq clustering is still an unsolved problem. Cell type or cell state is inherently complicated and sometimes in a continuum.</p></li>
+<li><p>Also, we do not have a ground truth here. The Seurat cell annotations provided by the developers may not be 100% correct.</p></li>
+<li><p>It took ~3mins using 6 CPUs for 3000 cells. It can take long time if you have a lot of cells and many clusters as <code>scSHC</code> test the cluster significance at every splitting node.</p></li>
+</ul>
+</div>
+<div id="further-reading" class="section level3">
+<h3>Further reading</h3>
+<p>what is a cell type? <a href="https://twitter.com/tangming2005/status/1680932947619201025" class="uri">https://twitter.com/tangming2005/status/1680932947619201025</a></p>
+<ol style="list-style-type: decimal">
+<li><p><a href="https://www.sciencedirect.com/science/article/pii/S0092867422007838">A reference cell tree will serve science better than a reference cell atlas</a></p></li>
+<li><p><a href="https://www.sciencedirect.com/science/article/pii/S0092867422007838">What is a cell type, and how to define it?</a></p></li>
+<li><p><a href="https://journals.biologists.com/dev/article/146/12/dev169748/19444/The-evolving-concept-of-cell-identity-in-the">The evolving concept of cell identity in the single cell era</a></p></li>
+<li><p><a href="https://journals.biologists.com/dev/article/146/12/dev169854/19451/A-periodic-table-of-cell-types">A periodic table of cell types</a></p></li>
+<li><p>Bonus, a blog post by <a href="https://twitter.com/Matthew_N_B">Matthew Bernstein</a>
+On cell types and cell states <a href="https://mbernste.github.io/posts/cell_types_cell_states/" class="uri">https://mbernste.github.io/posts/cell_types_cell_states/</a></p></li>
+</ol>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/seurat/">Seurat</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/machine-learning/">machine learning</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/">Reuse the single cell data! How to create a seurat object from GEO datasets</a></li>
+        
+        <li><a href="/post/has-ai-changed-the-course-of-drug-development/">Has AI changed the course of Drug Development?</a></li>
+        
+        <li><a href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">use random forest and boost trees to find marker genes in scRNAseq data</a></li>
+        
+        <li><a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></li>
+        
+        <li><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/" rel="next">neighborhood/cellular niches analysis with spatial transcriptome data in Seurat and Bioconductor</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/" rel="prev">Navigating Variant Calling for Disease-Causing Mutations: The state-of-art process</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

@@ -7,10 +7,30 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Fri, 14 Apr 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 28 Sep 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to create pseudobulk from single-cell RNAseq data </title>
+      <link>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</link>
+      <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</guid>
+      <description>What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
+Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
+In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.</description>
+    </item>
+    
+    <item>
+      <title>multi-omics data integration: a case study with transcriptomics and genomics mutation data</title>
+      <link>/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/</link>
+      <pubDate>Tue, 22 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/</guid>
+      <description>Multi-omics data analysis is a cutting-edge approach in biology that involves studying and integrating information from multiple biological “omics” sources. These omics sources include genomics (genes and their variations), transcriptomics (gene expression and RNA data), proteomics (proteins and their interactions), metabolomics (small molecules and metabolites), epigenomics (epigenetic modifications), and more. By analyzing data from various omics levels together, we can gain a more comprehensive and detailed understanding of biological systems and their complexities.</description>
+    </item>
     
     <item>
       <title>How to do neighborhood/cellular niches analysis with spatial transcriptome data </title>

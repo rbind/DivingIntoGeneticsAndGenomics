@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2023-04-14T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2023-09-28T00:00:00&#43;00:00">
   
 
   
@@ -284,6 +284,26 @@
   
   
   <div>
+    <h2><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></h2>
+    <div class="article-style">
+      
+      What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
+Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
+In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/">multi-omics data integration: a case study with transcriptomics and genomics mutation data</a></h2>
+    <div class="article-style">
+      
+      Multi-omics data analysis is a cutting-edge approach in biology that involves studying and integrating information from multiple biological “omics” sources. These omics sources include genomics (genes and their variations), transcriptomics (gene expression and RNA data), proteomics (proteins and their interactions), metabolomics (small molecules and metabolites), epigenomics (epigenetic modifications), and more. By analyzing data from various omics levels together, we can gain a more comprehensive and detailed understanding of biological systems and their complexities.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/">How to do neighborhood/cellular niches analysis with spatial transcriptome data </a></h2>
     <div class="article-style">
       
@@ -364,30 +384,6 @@ People usually go to GEO or ENA to download public data. I asked this question o
       
       This is going to be a really short blog post. I recently found that if I join two tables with one of the tables having duplicated rows, the final joined table also contains the duplicated rows. It could be the expected behavior for others but I want to make a note here for myself.
 library(tidyverse) df1&lt;- tibble(key = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;), value = 1:5) df1 ## # A tibble: 5 x 2 ## key value ## &lt;chr&gt; &lt;int&gt; ## 1 A 1 ## 2 B 2 ## 3 C 3 ## 4 D 4 ## 5 E 5 dataframe 2 has two identical rows for B.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/">Enhancement of scRNAseq heatmap using complexheatmap</a></h2>
-    <div class="article-style">
-      
-      When it comes to make a heatmap, ComplexHeatmap by Zuguang Gu is my favorite. Check it out! You will be amazed on how flexible it is and the documentation is in top niche.
-For Single-cell RNAseq, Seurat provides a DoHeatmap function using ggplot2. There are two limitations:
- when your genes are not in the top variable gene list, the scale.data will not have that gene and DoHeatmap will drop those genes.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/">stacked violin plot for visualizing single-cell data in Seurat</a></h2>
-    <div class="article-style">
-      
-      In scanpy, there is a function to create a stacked violin plot.
-There is no such function in Seurat, and many people were asking for this feature. e.g. <a href="https://github.com/satijalab/seurat/issues/300" target="_blank">https://github.com/satijalab/seurat/issues/300</a>
-<a href="https://github.com/satijalab/seurat/issues/463" target="_blank">https://github.com/satijalab/seurat/issues/463</a>
-The developers have not implemented this feature yet. In this post, I am trying to make a stacked violin plot in Seurat.
-The idea is to create a violin plot per gene using the VlnPlot in Seurat, then customize the axis text/tick and reduce the margin for each plot and finally concatenate by cowplot::plot_grid or patchwork::wrap_plots.
       
     </div>
   </div>

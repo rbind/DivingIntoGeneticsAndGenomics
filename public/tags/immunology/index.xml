@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Immunology on DNA confesses Data speak</title>
+    <link>/tags/immunology/</link>
+    <description>Recent content in Immunology on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Tue, 03 Oct 2023 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/immunology/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</title>
+      <link>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</link>
+      <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</guid>
+      <description> </description>
+    </item>
+    
+  </channel>
+</rss>

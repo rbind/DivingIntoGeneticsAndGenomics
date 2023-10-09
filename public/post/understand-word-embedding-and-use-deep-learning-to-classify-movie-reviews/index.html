@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Picture this: a computer that can actually grasp the emotions hidden in movie reviews – sensing whether they’re shouting with joy or grumbling in disappointment. This mind-bending capability comes from two incredible technologies: deep learning and word embedding. But don’t worry if these sound like jargon; I am here to unravel the mystery.
+Think of deep learning as a supercharged brain for computers. Just like we learn from experience, computers learn from data.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/">
+  <meta property="og:title" content="Understand word embedding and use deep learning to classify movie reviews | DNA confesses Data speak">
+  <meta property="og:description" content="Picture this: a computer that can actually grasp the emotions hidden in movie reviews – sensing whether they’re shouting with joy or grumbling in disappointment. This mind-bending capability comes from two incredible technologies: deep learning and word embedding. But don’t worry if these sound like jargon; I am here to unravel the mystery.
+Think of deep learning as a supercharged brain for computers. Just like we learn from experience, computers learn from data.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-08-31T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-08-31T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Understand word embedding and use deep learning to classify movie reviews | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Understand word embedding and use deep learning to classify movie reviews</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-08-31 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Aug 31, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    8 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/deeplearning/">deeplearning</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Understand%20word%20embedding%20and%20use%20deep%20learning%20to%20classify%20movie%20reviews&amp;url=%2fpost%2funderstand-word-embedding-and-use-deep-learning-to-classify-movie-reviews%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2funderstand-word-embedding-and-use-deep-learning-to-classify-movie-reviews%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2funderstand-word-embedding-and-use-deep-learning-to-classify-movie-reviews%2f&amp;title=Understand%20word%20embedding%20and%20use%20deep%20learning%20to%20classify%20movie%20reviews"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2funderstand-word-embedding-and-use-deep-learning-to-classify-movie-reviews%2f&amp;title=Understand%20word%20embedding%20and%20use%20deep%20learning%20to%20classify%20movie%20reviews"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Understand%20word%20embedding%20and%20use%20deep%20learning%20to%20classify%20movie%20reviews&amp;body=%2fpost%2funderstand-word-embedding-and-use-deep-learning-to-classify-movie-reviews%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Picture this: a computer that can actually grasp the emotions hidden in movie reviews – sensing whether they’re shouting with joy or grumbling in disappointment. This mind-bending capability comes from two incredible technologies: deep learning and word embedding. But don’t worry if these sound like jargon; I am here to unravel the mystery.</p>
+<p>Think of deep learning as a supercharged brain for computers. Just like we learn from experience, computers learn from data. Word embedding, on the other hand, is like converting words into a language computers understand – numbers! It’s like teaching your dog to respond to hand signals instead of just words.</p>
+<p>In this blog post, I am your guides on this adventure. I will show you how deep learning and word embedding join forces to train computers in deciphering the tones of movie reviews. We’re talking about those moments when the computer understands that a review saying “This movie was a rollercoaster of emotions” is positive, not about a literal amusement park.</p>
+<p>So, fasten your seatbelts. We’re about to journey into the realms of AI, exploring how machines learn, adapt, and finally crack the code of sentiments tucked within movie reviews.</p>
+<p>Load the libraries.</p>
+<pre class="r"><code>library(keras)
+library(reticulate)
+library(ggplot2)
+use_condaenv(&quot;r-reticulate&quot;)</code></pre>
+<p>Computers do not understand text. Let’s turn it into numeric vectors</p>
+<pre class="r"><code>samples&lt;- c(&quot;The cat sat on the mat.&quot;, &quot;The dog ate my homework.&quot;)
+
+tokenizer&lt;- text_tokenizer(num_words = 1000) %&gt;%
+  fit_text_tokenizer(samples)
+
+sequences&lt;- texts_to_sequences(tokenizer, samples)
+
+one_hot_results&lt;- texts_to_matrix(tokenizer, samples, mode= &quot;binary&quot;)
+
+one_hot_results[1:2, 1:20]</code></pre>
+<pre><code>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13] [,14]
+#&gt; [1,]    0    1    1    1    1    1    0    0    0     0     0     0     0     0
+#&gt; [2,]    0    1    0    0    0    0    1    1    1     1     0     0     0     0
+#&gt;      [,15] [,16] [,17] [,18] [,19] [,20]
+#&gt; [1,]     0     0     0     0     0     0
+#&gt; [2,]     0     0     0     0     0     0</code></pre>
+<pre class="r"><code>word_index&lt;- tokenizer$word_index</code></pre>
+<p>Let’s use the <code>IMDB</code> movie-review sentiment-prediction dataset for demonstration.</p>
+<p>Dataset of 25,000 movies reviews from IMDB, labeled by sentiment (positive/negative). Reviews have been preprocessed, and each review is encoded as a sequence of word indexes (integers). For convenience, words are indexed by overall frequency in the dataset, so that for instance the integer “3” encodes the 3rd most frequent word in the data.</p>
+<p>Download the data from <a href="http://mng.bz/0tIo" class="uri">http://mng.bz/0tIo</a> and unzip it.</p>
+<p>read the reviews (text files) into R for the training set.</p>
+<pre class="r"><code>imdb_dir&lt;- &quot;~/blog_data/aclImdb&quot;
+train_dir&lt;- file.path(imdb_dir, &quot;train&quot;)
+labels&lt;- c()
+texts&lt;- c()
+
+for (label_type in c(&quot;neg&quot;, &quot;pos&quot;)){
+  label&lt;- switch(label_type, neg = 0, pos = 1)
+  dir_name&lt;- file.path(train_dir, label_type)
+  for (fname in list.files(dir_name, pattern = glob2rx(&quot;*txt&quot;),
+                           full.names = TRUE)){
+    texts&lt;- c(texts, readChar(fname, file.info(fname)$size))
+    labels&lt;- c(labels, label)
+  }
+}
+
+
+length(labels)</code></pre>
+<pre><code>#&gt; [1] 25000</code></pre>
+<pre class="r"><code>length(texts)</code></pre>
+<pre><code>#&gt; [1] 25000</code></pre>
+<pre class="r"><code># the first review 
+texts[1]</code></pre>
+<pre><code>#&gt; [1] &quot;Story of a man who has unnatural feelings for a pig. Starts out with a opening scene that is a terrific example of absurd comedy. A formal orchestra audience is turned into an insane, violent mob by the crazy chantings of it&#39;s singers. Unfortunately it stays absurd the WHOLE time with no general narrative eventually making it just too off putting. Even those from the era should be turned off. The cryptic dialogue would make Shakespeare seem easy to a third grader. On a technical level it&#39;s better than you might think with some good cinematography by future great Vilmos Zsigmond. Future stars Sally Kirkland and Frederic Forrest can be seen briefly.&quot;</code></pre>
+<p>Tokenize the data</p>
+<pre class="r"><code>maxlen&lt;- 100
+max_words&lt;- 10000
+
+tokenizer&lt;- text_tokenizer(num_words = max_words) %&gt;%
+  fit_text_tokenizer(texts)
+
+tokenizer$num_words</code></pre>
+<pre><code>#&gt; [1] 10000</code></pre>
+<pre class="r"><code>tokenizer$word_index[1:5]</code></pre>
+<pre><code>#&gt; $the
+#&gt; [1] 1
+#&gt; 
+#&gt; $and
+#&gt; [1] 2
+#&gt; 
+#&gt; $a
+#&gt; [1] 3
+#&gt; 
+#&gt; $of
+#&gt; [1] 4
+#&gt; 
+#&gt; $to
+#&gt; [1] 5</code></pre>
+<pre class="r"><code>word_index&lt;- tokenizer$word_index
+
+sequences&lt;- texts_to_sequences(tokenizer, texts)
+
+## first review turned into integers
+sequences[[1]]</code></pre>
+<pre><code>#&gt;   [1]   62    4    3  129   34   44 7576 1414   15    3 4252  514   43   16    3
+#&gt;  [16]  633  133   12    6    3 1301  459    4 1751  209    3 7693  308    6  676
+#&gt;  [31]   80   32 2137 1110 3008   31    1  929    4   42 5120  469    9 2665 1751
+#&gt;  [46]    1  223   55   16   54  828 1318  847  228    9   40   96  122 1484   57
+#&gt;  [61]  145   36    1  996  141   27  676  122    1  411   59   94 2278  303  772
+#&gt;  [76]    5    3  837   20    3 1755  646   42  125   71   22  235  101   16   46
+#&gt;  [91]   49  624   31  702   84  702  378 3493    2 8422   67   27  107 3348</code></pre>
+<pre class="r"><code>x_train&lt;- pad_sequences(sequences, maxlen = maxlen)
+
+## it becomes a 2D matrix of samples x max_words
+dim(x_train)</code></pre>
+<pre><code>#&gt; [1] 25000   100</code></pre>
+<pre class="r"><code>y_train&lt;- as.array(labels)</code></pre>
+<p>Do the same thing for the test dataset</p>
+<pre class="r"><code>test_dir&lt;- file.path(imdb_dir, &quot;test&quot;)
+labels&lt;- c()
+texts&lt;- c()
+
+for (label_type in c(&quot;neg&quot;, &quot;pos&quot;)){
+  label&lt;- switch(label_type, neg = 0, pos = 1)
+  dir_name&lt;- file.path(test_dir, label_type)
+  for (fname in list.files(dir_name, pattern = glob2rx(&quot;*.txt&quot;), 
+                           full.names = TRUE)){
+    texts&lt;- c(texts, readChar(fname, file.info(fname)$size))
+    labels&lt;- c(labels, label)
+  }
+}
+
+sequences&lt;- texts_to_sequences(tokenizer, texts)
+x_test&lt;- pad_sequences(sequences, maxlen = maxlen)
+y_test&lt;- as.array(labels)</code></pre>
+<p>build the model</p>
+<pre class="r"><code>embedding_dim&lt;- 100
+
+# for the embedding weights matrix, index 1 is not suppose to be any word or token, it is a placeholder. that&#39;s why we use tokenizer$num_words (10000) + 1 as input_dim
+
+model&lt;- keras_model_sequential() %&gt;%
+  layer_embedding(input_dim = tokenizer$num_words + 1, output_dim = embedding_dim, 
+                  input_length = maxlen) %&gt;%
+  layer_flatten() %&gt;%
+  layer_dense(units = 32, activation = &quot;relu&quot;) %&gt;%
+  layer_dense(units = 1, activation = &quot;sigmoid&quot;) # for the binary classification</code></pre>
+<p>compile the model</p>
+<pre class="r"><code>model %&gt;%
+  compile(
+    optimizer = &quot;rmsprop&quot;,
+    loss = &quot;binary_crossentropy&quot;,
+    metric = c(&quot;acc&quot;)
+  ) 
+  
+summary(model)</code></pre>
+<pre><code>#&gt; Model: &quot;sequential&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; embedding (Embedding)               (None, 100, 100)                1000100     
+#&gt; ________________________________________________________________________________
+#&gt; flatten (Flatten)                   (None, 10000)                   0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_1 (Dense)                     (None, 32)                      320032      
+#&gt; ________________________________________________________________________________
+#&gt; dense (Dense)                       (None, 1)                       33          
+#&gt; ================================================================================
+#&gt; Total params: 1,320,165
+#&gt; Trainable params: 1,320,165
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<p>The input is a tensor of 25000 (sample) x 100 (maxlen) dimension, the embedding layer is a 3D tensor of 25000(sample) x 100 (sequence_length) x 100 (embedding_dim) dimension;</p>
+<p>it then flatten to a vector of length 100 x100 = 10000, and then connect to a dense layer of 32 units, and then connected with a dense layer of unit 1 with sigmoid activation function for prediction.</p>
+<p>train the model</p>
+<pre class="r"><code>history&lt;- model %&gt;%
+  fit(
+    x_train, y_train,
+    epochs = 10,
+    batch_size = 32,
+    validation_split = 0.2
+  )
+
+plot(history)</code></pre>
+<p><img src="/post/2023-08-31-understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews_files/figure-html/unnamed-chunk-9-1.png" width="576" /></p>
+<p>Final train</p>
+<pre class="r"><code>model %&gt;%
+        fit(x_train, y_train, epochs = 5, batch_size = 32)</code></pre>
+<p>accuracy</p>
+<pre class="r"><code>metrics&lt;- model %&gt;% 
+  evaluate(x_test, y_test)
+
+metrics</code></pre>
+<pre><code>#&gt;     loss      acc 
+#&gt; 2.314948 0.790920</code></pre>
+<p>~80% accuracy! not bad.</p>
+<div id="understand-the-embedding" class="section level3">
+<h3>Understand the embedding</h3>
+<p>We can get the weights of the embedding layer:</p>
+<pre class="r"><code># Get the weights of the embedding layer
+embedding_layer &lt;- model$layers[[1]]  # Assuming the embedding layer is the first layer
+embedding_weights &lt;- embedding_layer$get_weights()[[1]]
+
+dim(embedding_weights)</code></pre>
+<pre><code>#&gt; [1] 10001   100</code></pre>
+<pre class="r"><code>embedding_weights[1:5, 1:20]</code></pre>
+<pre><code>#&gt;              [,1]         [,2]         [,3]        [,4]         [,5]
+#&gt; [1,] -0.038108733  0.034164231 -0.010926410 -0.01945905  0.006259503
+#&gt; [2,]  0.006445600 -0.005163373  0.077650383  0.02167805 -0.063152276
+#&gt; [3,]  0.054408096 -0.025189560  0.059026342  0.05764490 -0.099164285
+#&gt; [4,]  0.043150455  0.041099135  0.004985804  0.01686079 -0.062039867
+#&gt; [5,] -0.004684128  0.046648771 -0.008564522  0.04492320 -0.034164682
+#&gt;              [,6]         [,7]         [,8]        [,9]        [,10]
+#&gt; [1,] -0.007477300  0.008997128  0.022076523  0.01617429 -0.011652625
+#&gt; [2,] -0.017004006 -0.060964763 -0.006172073 -0.04898103  0.008079287
+#&gt; [3,] -0.002061349 -0.079386219  0.038137231 -0.05804368  0.037487414
+#&gt; [4,] -0.041052923 -0.008180849 -0.002805086 -0.01827856  0.018388636
+#&gt; [5,]  0.016365541 -0.076942243 -0.059156016 -0.07605161  0.004471917
+#&gt;             [,11]        [,12]        [,13]       [,14]       [,15]       [,16]
+#&gt; [1,]  0.006929873 -0.001043276 -0.007549608 -0.01186891  0.00502130 0.002877086
+#&gt; [2,]  0.006907295  0.058686450 -0.020892052 -0.02132107 -0.01123977 0.040830452
+#&gt; [3,] -0.007843471 -0.038126167  0.003755015  0.02115629  0.03360209 0.039373539
+#&gt; [4,] -0.047682714 -0.017012399 -0.029800395  0.01147485  0.02615152 0.106722914
+#&gt; [5,] -0.054134578  0.002277025  0.015656594 -0.02716585  0.01887219 0.063780047
+#&gt;            [,17]       [,18]        [,19]       [,20]
+#&gt; [1,] -0.01611450  0.03136891 0.0213537812  0.01389796
+#&gt; [2,] -0.01134415 -0.01135702 0.0154857207  0.03979484
+#&gt; [3,] -0.01122028 -0.04163784 0.0848641545  0.06389144
+#&gt; [4,] -0.08052496 -0.06622744 0.0001179522 -0.02714739
+#&gt; [5,]  0.04176097  0.04005887 0.0083893426  0.04704465</code></pre>
+<p>The embedding weights matrix dimension is 10001 (1000 max_words + 1 placeholder) x100(embedding_dim).</p>
+<p>add the words as the rownames to the embedding matrix.</p>
+<pre class="r"><code>words &lt;- data.frame(
+  word = names(tokenizer$word_index), 
+  id = as.integer(unlist(tokenizer$word_index))
+)
+
+words &lt;- words %&gt;%
+  dplyr::filter(id &lt;= tokenizer$num_words) %&gt;%
+  dplyr::arrange(id)
+
+rownames(embedding_weights)&lt;- c(&quot;UNKNOWN&quot;, words$word)</code></pre>
+<p>We can now find words that are close to each other in the embedding. We will use the cosine similarity:</p>
+<pre class="r"><code>library(text2vec)
+
+find_similar_words &lt;- function(word, embedding_matrix, n = 5) {
+  similarities &lt;- embedding_matrix[word, , drop = FALSE] %&gt;%
+    sim2(embedding_matrix, y = ., method = &quot;cosine&quot;)
+  
+  similarities[,1] %&gt;% sort(decreasing = TRUE) %&gt;% head(n)
+}
+
+
+find_similar_words(&quot;bad&quot;, embedding_weights)</code></pre>
+<pre><code>#&gt;       bad     worst     awful     waste    sucked 
+#&gt; 1.0000000 0.8764589 0.8717442 0.8703569 0.8615548</code></pre>
+<pre class="r"><code>find_similar_words(&quot;wonderful&quot;, embedding_weights)</code></pre>
+<pre><code>#&gt;   wonderful   excellent        rare     perfect excellently 
+#&gt;   1.0000000   0.7535562   0.7349462   0.7308548   0.7235736</code></pre>
+<p>We can plot the embeddings in a 2-D plot after TSNE or UMAP (just like in single-cell data analysis):</p>
+<pre class="r"><code># Perform t-SNE dimensionality reduction
+set.seed(123)
+tsne_embeddings &lt;- Rtsne::Rtsne(embedding_weights)
+
+# Create a data frame for visualization
+tsne_df &lt;- data.frame(
+  x = tsne_embeddings$Y[, 1],
+  y = tsne_embeddings$Y[, 2],
+  word = rownames(embedding_weights)
+)</code></pre>
+<p>Plot the t-SNE visualization</p>
+<pre class="r"><code>words_to_plot&lt;- c(&quot;good&quot;, &quot;fantastic&quot;, &quot;cool&quot;, &quot;wonderful&quot;, &quot;nice&quot;, &quot;best&quot;, &quot;brilliant&quot;, &quot;amazing&quot;, &quot;bad&quot;, &quot;horrible&quot;,&quot;nasty&quot;, &quot;poor&quot;, &quot;awful&quot;)
+
+ggplot(tsne_df, aes(x, y)) +
+  geom_point(size = 0.2, alpha = 0.5) +
+  geom_point(data = tsne_df %&gt;% 
+               dplyr::filter(word %in% words_to_plot), 
+             color = &quot;red&quot;) +
+  ggrepel::geom_label_repel(data = tsne_df %&gt;% 
+                              dplyr::filter(word %in% words_to_plot), 
+                            aes(label = word ), max.overlaps = 1000) +
+  theme_minimal(base_size = 13) +
+  labs(title = &quot;t-SNE Visualization of Word Embeddings&quot;) </code></pre>
+<p><img src="/post/2023-08-31-understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews_files/figure-html/unnamed-chunk-16-1.png" width="576" /></p>
+<p>We do see those positive words and negative words are clustered in the same area, respectively. That’s cool!!</p>
+<p>We can also use a pre-trained word embedding weights matrix (<code>word2vec</code> or <code>GloVe</code>) when the training data is very small(we have 25000 data points for training, which is a lot),
+e.g., if we only had 200 samples to train, using a pre-trained model can be beneficial.</p>
+<p>In my next blog post, I will try to implement the Long short-term Recurrent Neural Network (RNN) to take into the context of the word to better classify the reviews.</p>
+</div>
+<div id="references" class="section level3">
+<h3>References</h3>
+<ul>
+<li><p>Most of the codes are adapted from <a href="https://www.manning.com/books/deep-learning-with-r">Deep Learning with R</a></p></li>
+<li><p><a href="https://rpubs.com/nabiilahardini/word2vec" class="uri">https://rpubs.com/nabiilahardini/word2vec</a></p></li>
+<li><p><a href="https://blogs.rstudio.com/ai/posts/2017-12-22-word-embeddings-with-keras/" class="uri">https://blogs.rstudio.com/ai/posts/2017-12-22-word-embeddings-with-keras/</a></p></li>
+<li><p><a href="https://smltar.com/">Supervised Machine Learning for Text Analysis in R</a></p></li>
+</ul>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/deeplearning/">deeplearning</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/how-to-classify-mnist-images-with-convolutional-neural-network/">How to classify MNIST images with convolutional neural network</a></li>
+        
+        <li><a href="/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/">Deep learning to predict cancer from healthy controls using TCRseq data</a></li>
+        
+        <li><a href="/post/basic-tensor-array-manipulations-in-r/">Basic tensor/array manipulations in R</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/" rel="next">Long Short-term memory (LSTM) Recurrent Neural Network (RNN) to classify movie reviews </a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/" rel="prev">multi-omics data integration: a case study with transcriptomics and genomics mutation data</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

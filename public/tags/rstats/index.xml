@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sun, 03 Jul 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 24 Sep 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/rstats/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Generative AI: Text generation using Long short-term memory (LSTM) model</title>
+      <link>/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</link>
+      <pubDate>Sun, 24 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</guid>
+      <description>In the world of deep learning, generating sequence data is a fundamental task. Typically, this involves training a network, often an RNN (Recurrent Neural Network) or a convnet (Convolutional Neural Network), to predict the next token or a sequence of tokens in a given sequence, using the preceding tokens as input. For example, when provided with the input “the cat is on the ma,” the network’s objective is to predict the next character, such as ‘t.</description>
+    </item>
     
     <item>
       <title>use random forest and boost trees to find marker genes in scRNAseq data</title>

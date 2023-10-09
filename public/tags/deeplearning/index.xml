@@ -7,10 +7,58 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sun, 09 Apr 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 03 Oct 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/deeplearning/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</title>
+      <link>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</link>
+      <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</guid>
+      <description> </description>
+    </item>
+    
+    <item>
+      <title>Generative AI: Text generation using Long short-term memory (LSTM) model</title>
+      <link>/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</link>
+      <pubDate>Sun, 24 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</guid>
+      <description>In the world of deep learning, generating sequence data is a fundamental task. Typically, this involves training a network, often an RNN (Recurrent Neural Network) or a convnet (Convolutional Neural Network), to predict the next token or a sequence of tokens in a given sequence, using the preceding tokens as input. For example, when provided with the input “the cat is on the ma,” the network’s objective is to predict the next character, such as ‘t.</description>
+    </item>
+    
+    <item>
+      <title>How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</title>
+      <link>/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</link>
+      <pubDate>Sat, 09 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</guid>
+      <description>In the mysterious world of DNA, where the secrets of life are encoded, scientists are harnessing the power of cutting-edge technology to decipher the language of genes. One of the remarkable tools they’re using is the 1D Convolutionary Neural Network, or 1D CNN, which might sound like jargon from a sci-fi movie, but it’s actually a game-changer in DNA sequence analysis.
+Imagine DNA as a long, intricate string of letters, like a never-ending alphabet book.</description>
+    </item>
+    
+    <item>
+      <title>Long Short-term memory (LSTM) Recurrent Neural Network (RNN) to classify movie reviews </title>
+      <link>/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/</link>
+      <pubDate>Sun, 03 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/</guid>
+      <description>A major characteristic of all neural networks I have used so far, such as densely connected networks and convnets (CNN) (see my previous post), is that they have no memory. Each input shown to them is processed independently, with no state kept in between inputs. In other words, they do not take into the context of the words (the words around the word).
+Imagine you’re reading a book, and you want to understand the story by keeping track of what’s happening in the plot.</description>
+    </item>
+    
+    <item>
+      <title>Understand word embedding and use deep learning to classify movie reviews</title>
+      <link>/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/</link>
+      <pubDate>Thu, 31 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/</guid>
+      <description>Picture this: a computer that can actually grasp the emotions hidden in movie reviews – sensing whether they’re shouting with joy or grumbling in disappointment. This mind-bending capability comes from two incredible technologies: deep learning and word embedding. But don’t worry if these sound like jargon; I am here to unravel the mystery.
+Think of deep learning as a supercharged brain for computers. Just like we learn from experience, computers learn from data.</description>
+    </item>
     
     <item>
       <title>How to classify MNIST images with convolutional neural network</title>

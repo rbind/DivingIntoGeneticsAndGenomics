@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2022-07-03T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2023-07-23T00:00:00&#43;00:00">
   
 
   
@@ -282,6 +282,30 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">scRNAseq clustering significance test: an unsolvable problem?</a></h2>
+    <div class="article-style">
+      
+      Introductioon In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights.
+The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the resolution parameter. However, whether the newly generated clusters are meaningful or not is a question.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/">Reuse the single cell data! How to create a seurat object from GEO datasets</a></h2>
+    <div class="article-style">
+      
+      Download the data <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256" target="_blank">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256</a>
+cd data/GSE116256 wget <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar" target="_blank">https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar</a> tar xvf GSE116256_RAW.tar rm GSE116256_RAW.tar Depending on how the authors upload their data.
+Some authors may just upload the merged count matrix file. This is the easiest situation.
+In this dataset, each sample has a separate set of matrix (*dem.txt.gz), features and barcodes.
+Total, there are 43 samples. For each sample, it has an associated metadata file (*anno.txt.gz) too.
+You can inspect the files in command line:
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">use random forest and boost trees to find marker genes in scRNAseq data</a></h2>

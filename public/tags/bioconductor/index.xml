@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sun, 05 Feb 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 28 Sep 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/bioconductor/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to create pseudobulk from single-cell RNAseq data </title>
+      <link>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</link>
+      <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</guid>
+      <description>What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
+Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
+In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.</description>
+    </item>
     
     <item>
       <title>How to make a triangle correlation heatmap with p-values labeled </title>

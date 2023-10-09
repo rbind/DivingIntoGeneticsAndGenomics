@@ -7,19 +7,45 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Thu, 13 Jul 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 28 Sep 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/single-cell/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Ten single-cell data benchmarking papers</title>
+      <title>How to create pseudobulk from single-cell RNAseq data </title>
+      <link>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</link>
+      <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</guid>
+      <description>What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
+Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
+In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.</description>
+    </item>
+    
+    <item>
+      <title>Reuse the single cell data! How to create a seurat object from GEO datasets</title>
+      <link>/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</link>
+      <pubDate>Fri, 14 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</guid>
+      <description>Download the data https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256
+cd data/GSE116256 wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar tar xvf GSE116256_RAW.tar rm GSE116256_RAW.tar Depending on how the authors upload their data.
+Some authors may just upload the merged count matrix file. This is the easiest situation.
+In this dataset, each sample has a separate set of matrix (*dem.txt.gz), features and barcodes.
+Total, there are 43 samples. For each sample, it has an associated metadata file (*anno.txt.gz) too.
+You can inspect the files in command line:</description>
+    </item>
+    
+    <item>
+      <title>10 single-cell data benchmarking papers</title>
       <link>/post/ten-single-cell-data-benchmarking-papers/</link>
       <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>
       
       <guid>/post/ten-single-cell-data-benchmarking-papers/</guid>
       <description>I tweeted it at https://twitter.com/tangming2005/status/1679120948140572672
-I got asked to put all my posts in a central place and I think it is a good idea.  Benchmarking integration of single-cell differential expression
+I got asked to put all my posts in a central place and I think it is a good idea. And here it is!
+ Benchmarking integration of single-cell differential expression
  Benchmarking atlas-level data integration in single-cell genomics
  A review of computational strategies for denoising and imputation of single-cell transcriptomic data
  Benchmarking spatial and single-cell transcriptomics integration methods for transcript distribution prediction and cell type deconvolution</description>

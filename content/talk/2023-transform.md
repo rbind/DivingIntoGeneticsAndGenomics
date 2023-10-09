@@ -39,6 +39,8 @@ image = "headers/bubbles-wide.jpg"
 caption = "My caption :smile:"
 
 +++
+
+![](/img/singlecellworld.png)
 This episode isn't about methods or technology; it's about inspiring scientists around the #singlecell world.
 Listen to 🎯 Ming "Tommy" Tang's story and let it inspire you.
 It might just sparkle ✨ a transformation in your own scientific journey!

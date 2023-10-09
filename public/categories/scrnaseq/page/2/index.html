@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2020-02-18T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2020-03-17T00:00:00&#43;00:00">
   
 
   
@@ -282,6 +282,29 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/">stacked violin plot for visualizing single-cell data in Seurat</a></h2>
+    <div class="article-style">
+      
+      In scanpy, there is a function to create a stacked violin plot.
+There is no such function in Seurat, and many people were asking for this feature. e.g. <a href="https://github.com/satijalab/seurat/issues/300" target="_blank">https://github.com/satijalab/seurat/issues/300</a>
+<a href="https://github.com/satijalab/seurat/issues/463" target="_blank">https://github.com/satijalab/seurat/issues/463</a>
+The developers have not implemented this feature yet. In this post, I am trying to make a stacked violin plot in Seurat.
+The idea is to create a violin plot per gene using the VlnPlot in Seurat, then customize the axis text/tick and reduce the margin for each plot and finally concatenate by cowplot::plot_grid or patchwork::wrap_plots.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
+    <div class="article-style">
+      
+      In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
+My next thought is: maybe the STAR aligner is doing something weird that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/post/cellranger-mk-reference-with-transgenes/">cellranger mk reference with transgenes</a></h2>

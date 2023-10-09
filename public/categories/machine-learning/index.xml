@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Thu, 15 Jun 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 23 Jul 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/machine-learning/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>scRNAseq clustering significance test: an unsolvable problem?</title>
+      <link>/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</link>
+      <pubDate>Sun, 23 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</guid>
+      <description>Introductioon In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights.
+The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the resolution parameter. However, whether the newly generated clusters are meaningful or not is a question.</description>
+    </item>
     
     <item>
       <title>Has AI changed the course of Drug Development?</title>

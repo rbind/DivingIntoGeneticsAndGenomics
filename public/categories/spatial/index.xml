@@ -7,10 +7,24 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Fri, 14 Apr 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 08 Aug 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/spatial/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>neighborhood/cellular niches analysis with spatial transcriptome data in Seurat and Bioconductor</title>
+      <link>/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</link>
+      <pubDate>Tue, 08 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</guid>
+      <description>Spatial transcriptome cellular niche analysis using 10x xenium data go to https://www.10xgenomics.com/resources/datasets
+There is a lung cancer and a breast cancer dataset. Let’s work on the lung cancer one.
+https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard
+37G zipped file!
+wget https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/1.3.0/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip unzip Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip sudo tar xvzf cell_feature_matrix.tar.gz cell_feature_matrix/ cell_feature_matrix/barcodes.tsv.gz cell_feature_matrix/features.tsv.gz cell_feature_matrix/matrix.mtx.gz
+ read in the data with Seurat We really only care about the cell by gene count matrix which is inside the cell_feature_matrix folder, and the cell location x,y coordinates: cells.</description>
+    </item>
     
     <item>
       <title>How to do neighborhood/cellular niches analysis with spatial transcriptome data </title>

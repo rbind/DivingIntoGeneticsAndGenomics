@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="A major characteristic of all neural networks I have used so far, such as densely connected networks and convnets (CNN) (see my previous post), is that they have no memory. Each input shown to them is processed independently, with no state kept in between inputs. In other words, they do not take into the context of the words (the words around the word).
+Imagine you’re reading a book, and you want to understand the story by keeping track of what’s happening in the plot.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/">
+  <meta property="og:title" content="Long Short-term memory (LSTM) Recurrent Neural Network (RNN) to classify movie reviews  | DNA confesses Data speak">
+  <meta property="og:description" content="A major characteristic of all neural networks I have used so far, such as densely connected networks and convnets (CNN) (see my previous post), is that they have no memory. Each input shown to them is processed independently, with no state kept in between inputs. In other words, they do not take into the context of the words (the words around the word).
+Imagine you’re reading a book, and you want to understand the story by keeping track of what’s happening in the plot.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-09-03T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-09-03T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Long Short-term memory (LSTM) Recurrent Neural Network (RNN) to classify movie reviews  | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>CV</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Long Short-term memory (LSTM) Recurrent Neural Network (RNN) to classify movie reviews </h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-09-03 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Sep 3, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/deeplearning/">deeplearning</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Long%20Short-term%20memory%20%28LSTM%29%20Recurrent%20Neural%20Network%20%28RNN%29%20to%20classify%20movie%20reviews%20&amp;url=%2fpost%2flong-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2flong-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2flong-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews%2f&amp;title=Long%20Short-term%20memory%20%28LSTM%29%20Recurrent%20Neural%20Network%20%28RNN%29%20to%20classify%20movie%20reviews%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2flong-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews%2f&amp;title=Long%20Short-term%20memory%20%28LSTM%29%20Recurrent%20Neural%20Network%20%28RNN%29%20to%20classify%20movie%20reviews%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Long%20Short-term%20memory%20%28LSTM%29%20Recurrent%20Neural%20Network%20%28RNN%29%20to%20classify%20movie%20reviews%20&amp;body=%2fpost%2flong-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<p>A major characteristic of all neural networks I have used so far, such as densely connected networks and convnets (CNN) (see my previous <a href="https://divingintogeneticsandgenomics.com/post/how-to-classify-mnist-images-with-convolutional-neural-network/">post</a>), is that they have no memory. Each input shown to them is processed independently, with no state kept in between inputs. In other words, they do not take into the context of the words (the words around the word).</p>
+<p>Imagine you’re reading a book, and you want to understand the story by keeping track of what’s happening in the plot. Your brain naturally remembers information from the beginning of the book even as you read through new chapters. It’s like having a special memory that can remember important details from the past.</p>
+<p>Long short-term memory (LSTM) is like that special memory for computers when they’re working with text or sequences of data. In regular computer programs, information can easily get lost as the program processes new data. But LSTM is designed to remember important stuff from the past, just like your brain when reading a book.</p>
+<p>I highly recommend Josh Starmer’s video on Long short-term memory to understand the math behind it.</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/YCzL96nL7j0" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<p>Load the libraries.</p>
+<pre class="r"><code>library(keras)
+library(reticulate)
+library(ggplot2)
+use_condaenv(&quot;r-reticulate&quot;)
+
+# Set a random seed in R to make it more reproducible 
+set.seed(123)
+
+# Set the seed for Keras/TensorFlow
+tensorflow::set_random_seed(123)</code></pre>
+<p>Let’s use the <code>IMDB</code> movie-review sentiment-prediction dataset for demonstration again.</p>
+<p>It is a dataset of 25,000 movies reviews from IMDB, labeled by sentiment (positive/negative). Reviews need to be preprocessed, and each review is encoded as a sequence of word indexes (integers). For convenience, words are indexed by overall frequency in the dataset, so that for instance the integer “3” encodes the 3rd most frequent word in the data. Read my previous <a href="https://divingintogeneticsandgenomics.com/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/">post on word embedding</a>.</p>
+<p>Download the data from <a href="http://mng.bz/0tIo" class="uri">http://mng.bz/0tIo</a> and unzip it.</p>
+<p>read the reviews (text files) into R for the training set.</p>
+<pre class="r"><code>imdb_dir&lt;- &quot;~/blog_data/aclImdb&quot;
+train_dir&lt;- file.path(imdb_dir, &quot;train&quot;)
+labels&lt;- c()
+texts&lt;- c()
+
+for (label_type in c(&quot;neg&quot;, &quot;pos&quot;)){
+  label&lt;- switch(label_type, neg = 0, pos = 1)
+  dir_name&lt;- file.path(train_dir, label_type)
+  for (fname in list.files(dir_name, pattern = glob2rx(&quot;*txt&quot;),
+                           full.names = TRUE)){
+    texts&lt;- c(texts, readChar(fname, file.info(fname)$size))
+    labels&lt;- c(labels, label)
+  }
+}
+
+
+length(labels)</code></pre>
+<pre><code>#&gt; [1] 25000</code></pre>
+<pre class="r"><code>length(texts)</code></pre>
+<pre><code>#&gt; [1] 25000</code></pre>
+<pre class="r"><code># the first review 
+texts[1]</code></pre>
+<pre><code>#&gt; [1] &quot;Story of a man who has unnatural feelings for a pig. Starts out with a opening scene that is a terrific example of absurd comedy. A formal orchestra audience is turned into an insane, violent mob by the crazy chantings of it&#39;s singers. Unfortunately it stays absurd the WHOLE time with no general narrative eventually making it just too off putting. Even those from the era should be turned off. The cryptic dialogue would make Shakespeare seem easy to a third grader. On a technical level it&#39;s better than you might think with some good cinematography by future great Vilmos Zsigmond. Future stars Sally Kirkland and Frederic Forrest can be seen briefly.&quot;</code></pre>
+<p>Tokenize the data</p>
+<pre class="r"><code>maxlen&lt;- 100
+max_words&lt;- 10000
+
+tokenizer&lt;- text_tokenizer(num_words = max_words) %&gt;%
+  fit_text_tokenizer(texts)
+
+tokenizer$num_words</code></pre>
+<pre><code>#&gt; [1] 10000</code></pre>
+<pre class="r"><code>tokenizer$word_index[1:5]</code></pre>
+<pre><code>#&gt; $the
+#&gt; [1] 1
+#&gt; 
+#&gt; $and
+#&gt; [1] 2
+#&gt; 
+#&gt; $a
+#&gt; [1] 3
+#&gt; 
+#&gt; $of
+#&gt; [1] 4
+#&gt; 
+#&gt; $to
+#&gt; [1] 5</code></pre>
+<pre class="r"><code>word_index&lt;- tokenizer$word_index
+
+sequences&lt;- texts_to_sequences(tokenizer, texts)
+
+## first review turned into integers
+sequences[[1]]</code></pre>
+<pre><code>#&gt;   [1]   62    4    3  129   34   44 7576 1414   15    3 4252  514   43   16    3
+#&gt;  [16]  633  133   12    6    3 1301  459    4 1751  209    3 7693  308    6  676
+#&gt;  [31]   80   32 2137 1110 3008   31    1  929    4   42 5120  469    9 2665 1751
+#&gt;  [46]    1  223   55   16   54  828 1318  847  228    9   40   96  122 1484   57
+#&gt;  [61]  145   36    1  996  141   27  676  122    1  411   59   94 2278  303  772
+#&gt;  [76]    5    3  837   20    3 1755  646   42  125   71   22  235  101   16   46
+#&gt;  [91]   49  624   31  702   84  702  378 3493    2 8422   67   27  107 3348</code></pre>
+<pre class="r"><code>x_train&lt;- pad_sequences(sequences, maxlen = maxlen)
+
+## it becomes a 2D matrix of samples x max_words
+dim(x_train)</code></pre>
+<pre><code>#&gt; [1] 25000   100</code></pre>
+<pre class="r"><code>y_train&lt;- as.array(labels)</code></pre>
+<p>Do the same thing for the test dataset</p>
+<pre class="r"><code>test_dir&lt;- file.path(imdb_dir, &quot;test&quot;)
+labels&lt;- c()
+texts&lt;- c()
+
+for (label_type in c(&quot;neg&quot;, &quot;pos&quot;)){
+  label&lt;- switch(label_type, neg = 0, pos = 1)
+  dir_name&lt;- file.path(test_dir, label_type)
+  for (fname in list.files(dir_name, pattern = glob2rx(&quot;*.txt&quot;), 
+                           full.names = TRUE)){
+    texts&lt;- c(texts, readChar(fname, file.info(fname)$size))
+    labels&lt;- c(labels, label)
+  }
+}
+
+sequences&lt;- texts_to_sequences(tokenizer, texts)
+x_test&lt;- pad_sequences(sequences, maxlen = maxlen)
+y_test&lt;- as.array(labels)</code></pre>
+<p>Let’s consider adding a LSTM layer. The underlying Long Short-Term Memory (LSTM) algorithm was developed by Hochreiter and Schmidhuber in 1997; it was the culmination of their research on the <a href="https://en.wikipedia.org/wiki/Vanishing_gradient_problem">vanishing gradient problem</a>.</p>
+<pre class="r"><code>model &lt;- keras_model_sequential() %&gt;%
+  layer_embedding(input_dim = max_words + 1, output_dim = 32) %&gt;%
+  layer_lstm(units = 32) %&gt;%
+  layer_dense(units = 1, activation = &quot;sigmoid&quot;)
+
+model %&gt;% compile(
+  optimizer = &quot;rmsprop&quot;,
+  loss = &quot;binary_crossentropy&quot;,
+  metrics = c(&quot;acc&quot;)
+)
+
+summary(model)</code></pre>
+<pre><code>#&gt; Model: &quot;sequential&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; embedding (Embedding)               (None, None, 32)                320032      
+#&gt; ________________________________________________________________________________
+#&gt; lstm (LSTM)                         (None, 32)                      8320        
+#&gt; ________________________________________________________________________________
+#&gt; dense (Dense)                       (None, 1)                       33          
+#&gt; ================================================================================
+#&gt; Total params: 328,385
+#&gt; Trainable params: 328,385
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<pre class="r"><code>history &lt;- model %&gt;% fit(
+  x_train, y_train,
+  epochs = 10,
+  batch_size = 128,
+  validation_split = 0.2
+)
+
+plot(history)</code></pre>
+<p><img src="/post/2023-09-03-long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<pre class="r"><code># train on the full dataset
+model %&gt;%
+        fit(x_train, y_train, epochs = 7, batch_size = 32)</code></pre>
+<p>evaluate the model on the testing data</p>
+<pre class="r"><code>metrics&lt;- model %&gt;% 
+  evaluate(x_test, y_test)
+
+metrics</code></pre>
+<pre><code>#&gt;      loss       acc 
+#&gt; 0.4781031 0.8294800</code></pre>
+<p>~84% accuracy. It is a little better than the fully connected approach in <a href="https://divingintogeneticsandgenomics.com/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/">my last post</a>.</p>
+<div id="take-home-messages" class="section level3">
+<h3>Take-home messages</h3>
+<p>I was expecting the accuracy to be even higher with such a computation intensive LSTM.</p>
+<ul>
+<li><p><strong>We didn’t fine-tune some settings</strong>: One reason our approach didn’t work extremely well could be that we didn’t adjust certain settings like how we represent words or the complexity of our model.</p></li>
+<li><p><strong>We didn’t use some techniques to prevent overfitting</strong>: Another reason could be that we didn’t use methods to prevent our model from memorizing the data it saw, which can lead to poor generalization.</p></li>
+<li><p><strong>The main reason</strong>: But honestly, the biggest reason is that for this specific task of figuring out if a review is positive or negative, we don’t really need to look at the big picture of the entire review. We can do a good job just by counting how often certain words appear in the review. That’s what our previous approach did.</p></li>
+<li><p><strong>LSTM shines in tougher tasks</strong>: However, there are more challenging tasks in language processing where LSTM, a type of neural network, shows its strengths. For example, when answering complex questions or translating languages, LSTM can be a valuable tool because it’s good at understanding the context and relationships between words in long pieces of text. So, while it might not be necessary for simple sentiment analysis, it becomes really useful in more complicated language tasks.</p></li>
+</ul>
+<p><strong>Bottom line</strong> : choosing the right method for the right problem is more important than the complexity of the method. In fact, I always prefer simpler method first (e.g, regression, random forest etc) because they are more intepretable.</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/deeplearning/">deeplearning</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/rnn/">RNN</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/">Understand word embedding and use deep learning to classify movie reviews</a></li>
+        
+        <li><a href="/post/how-to-classify-mnist-images-with-convolutional-neural-network/">How to classify MNIST images with convolutional neural network</a></li>
+        
+        <li><a href="/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/">Deep learning to predict cancer from healthy controls using TCRseq data</a></li>
+        
+        <li><a href="/post/basic-tensor-array-manipulations-in-r/">Basic tensor/array manipulations in R</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/" rel="next">How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/" rel="prev">Understand word embedding and use deep learning to classify movie reviews</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

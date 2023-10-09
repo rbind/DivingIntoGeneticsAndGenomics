@@ -7,10 +7,37 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Fri, 01 Jul 2022 00:00:00 -0400</lastBuildDate>
+    <lastBuildDate>Fri, 15 Sep 2023 00:00:00 -0400</lastBuildDate>
     
 	<atom:link href="/publication_types/2/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Monkeybread: A Python toolkit for the analysis of cellular niches in single-cell resolution spatial transcriptomics data</title>
+      <link>/publication/2023-09-15-monkeybread/</link>
+      <pubDate>Fri, 15 Sep 2023 00:00:00 -0400</pubDate>
+      
+      <guid>/publication/2023-09-15-monkeybread/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>The tidyomics ecosystem: Enhancing omic data analyses</title>
+      <link>/publication/2023-09-13-tidyomics/</link>
+      <pubDate>Wed, 13 Sep 2023 00:00:00 -0400</pubDate>
+      
+      <guid>/publication/2023-09-13-tidyomics/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>Tutorial: integrative computational analysis of bulk RNA-sequencing data to characterize tumor immunity using RIMA</title>
+      <link>/publication/2023-06-30-rima/</link>
+      <pubDate>Fri, 30 Jun 2023 00:00:00 -0400</pubDate>
+      
+      <guid>/publication/2023-06-30-rima/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
     
     <item>
       <title>Comprehensive Characterizations of Immune Receptor Repertoire in Tumors and Cancer Immunotherapy Studies</title>
