@@ -1,0 +1,392 @@
+---
+title: How to code a variational autoencoder (VAE) in R using the MNIST dataset
+author: Ming Tang
+date: '2023-10-18'
+slug: how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset
+categories:
+  - deeplearning
+  - neural network
+tags:
+  - deeplearning
+  - neural network
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Imagine you have a bunch of pictures of cats, and you want to find a way to generate new cat pictures that look similar to the ones you have. A <code>variation autoencoder</code> (VAE) is like a magical tool for creating these new cat pictures.</p>
+<p>Here’s how it works:</p>
+<p><strong>Encoder</strong>: The VAE first takes your cat pictures and passes them through an encoder. This encoder is like a detective that tries to capture the important features of the cats, such as their fur color, size, and shape. It summarizes all these features into a smaller set of numbers (a “latent space” or “code”) that represents each cat picture.</p>
+<p><strong>Variation</strong>: Now comes the interesting part. The VAE doesn’t just encode each cat picture into one set of numbers; it encodes it into a range of possible sets of numbers. It’s like saying, “This cat could have slightly different fur, whiskers, or ear shapes.” This variation is crucial because it allows the VAE to generate diverse cat pictures later.</p>
+<p><strong>Decoder</strong>: Next, the VAE takes these variable sets of numbers and uses a decoder to turn them back into cat pictures. The decoder is like an artist who takes the coded information and creates a new cat image based on it.</p>
+<p><strong>Reconstruction</strong>: The key is that the VAE’s encoder and decoder work together in a way that ensures the decoded cat pictures look like the original ones, but not exactly the same. They have some small variations, which make them different but still cat-like.</p>
+<p><strong>Generation</strong>: Since the VAE can generate different sets of numbers in the latent space, it can create many new cat pictures by using the decoder. These pictures will all be similar to the original cats but have subtle differences, like cats with various fur patterns or poses.</p>
+<p>In a nutshell, a variation autoencoder is a clever tool that learns to represent complex data, like cat pictures, in a way that allows it to generate new, similar data with some interesting variations. It’s like a cat picture creator with a touch of randomness, making each generated cat unique but still unmistakably a cat.</p>
+<p>There are tons of python examples implementing the variation autoEncoder in <code>python</code>, but very few in <code>R</code>. In this blog post. Let me walk you through coding a VAE in R with the MNIST dataset.</p>
+<pre class="r"><code>library(keras)
+use_implementation(&quot;tensorflow&quot;)
+library(tensorflow)
+library(reticulate)
+library(ggplot2)
+library(dplyr)
+library(readr)
+
+use_condaenv(&quot;r-reticulate&quot;)
+
+# Set a random seed in R to make it more reproducible 
+set.seed(123)
+
+# Set the seed for Keras/TensorFlow
+tensorflow::set_random_seed(123)</code></pre>
+<p>load the data</p>
+<pre class="r"><code>mnist&lt;- dataset_mnist()
+
+## normalize so the range is (0,1)
+x_train &lt;- mnist$train$x/255
+x_test &lt;- mnist$test$x/255
+
+
+range(x_train)</code></pre>
+<pre><code>#&gt; [1] 0 1</code></pre>
+<p>the training data is a 3D tensor with 60000 entries of 28 x 28 pixel image</p>
+<pre class="r"><code>dim(x_train)</code></pre>
+<pre><code>#&gt; [1] 60000    28    28</code></pre>
+<pre class="r"><code>## the 5th digits 
+x_train[5,,]</code></pre>
+<pre><code>#&gt;       [,1] [,2] [,3] [,4] [,5] [,6]       [,7]      [,8]      [,9]      [,10]
+#&gt;  [1,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt;  [2,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt;  [3,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt;  [4,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt;  [5,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt;  [6,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt;  [7,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt;  [8,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt;  [9,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt; [10,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.01568627
+#&gt; [11,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.37647059
+#&gt; [12,]    0    0    0    0    0    0 0.00000000 0.0000000 0.5176471 0.99215686
+#&gt; [13,]    0    0    0    0    0    0 0.00000000 0.4941176 0.9921569 0.96862745
+#&gt; [14,]    0    0    0    0    0    0 0.06274510 0.9098039 0.9882353 0.69019608
+#&gt; [15,]    0    0    0    0    0    0 0.08627451 0.9882353 0.9882353 0.11764706
+#&gt; [16,]    0    0    0    0    0    0 0.06274510 0.9058824 0.9882353 0.99215686
+#&gt; [17,]    0    0    0    0    0    0 0.00000000 0.2156863 0.9215686 0.99215686
+#&gt; [18,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt; [19,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt; [20,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt; [21,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt; [22,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt; [23,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt; [24,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt; [25,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt; [26,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt; [27,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt; [28,]    0    0    0    0    0    0 0.00000000 0.0000000 0.0000000 0.00000000
+#&gt;            [,11]      [,12]      [,13]      [,14]      [,15]      [,16]
+#&gt;  [1,] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+#&gt;  [2,] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+#&gt;  [3,] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+#&gt;  [4,] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+#&gt;  [5,] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+#&gt;  [6,] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+#&gt;  [7,] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+#&gt;  [8,] 0.00000000 0.00000000 0.21568627 0.58039216 0.82352941 0.99215686
+#&gt;  [9,] 0.00000000 0.34117647 0.90980392 0.98823529 0.99215686 0.74117647
+#&gt; [10,] 0.22352941 0.94901961 0.98823529 0.74509804 0.25490196 0.01960784
+#&gt; [11,] 0.98823529 0.98823529 0.71764706 0.05490196 0.00000000 0.00000000
+#&gt; [12,] 0.98823529 0.57254902 0.05490196 0.00000000 0.00000000 0.00000000
+#&gt; [13,] 0.69019608 0.03529412 0.00000000 0.00000000 0.03137255 0.30588235
+#&gt; [14,] 0.00000000 0.00000000 0.00000000 0.14117647 0.78823529 0.98823529
+#&gt; [15,] 0.08627451 0.46666667 0.77254902 0.94509804 0.99215686 0.98823529
+#&gt; [16,] 0.98823529 0.98823529 0.98823529 0.88627451 0.89019608 0.98823529
+#&gt; [17,] 0.85098039 0.54117647 0.16470588 0.09411765 0.75294118 0.98823529
+#&gt; [18,] 0.00000000 0.00000000 0.00000000 0.24313725 1.00000000 0.99215686
+#&gt; [19,] 0.00000000 0.00000000 0.00000000 0.27843137 0.99215686 0.98823529
+#&gt; [20,] 0.00000000 0.00000000 0.00000000 0.00000000 0.99215686 0.98823529
+#&gt; [21,] 0.00000000 0.00000000 0.00000000 0.27843137 0.99215686 0.98823529
+#&gt; [22,] 0.00000000 0.00000000 0.00000000 0.41568627 0.99215686 0.98823529
+#&gt; [23,] 0.00000000 0.00000000 0.00000000 0.17647059 1.00000000 0.99215686
+#&gt; [24,] 0.00000000 0.00000000 0.00000000 0.00000000 0.85490196 0.98823529
+#&gt; [25,] 0.00000000 0.00000000 0.00000000 0.00000000 0.37647059 0.98823529
+#&gt; [26,] 0.00000000 0.00000000 0.00000000 0.00000000 0.05490196 0.72156863
+#&gt; [27,] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.05490196
+#&gt; [28,] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+#&gt;            [,17]     [,18]      [,19]     [,20]      [,21] [,22] [,23] [,24]
+#&gt;  [1,] 0.00000000 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt;  [2,] 0.00000000 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt;  [3,] 0.00000000 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt;  [4,] 0.00000000 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt;  [5,] 0.00000000 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt;  [6,] 0.00000000 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt;  [7,] 0.00000000 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt;  [8,] 0.99215686 0.4431373 0.34117647 0.5803922 0.21568627     0     0     0
+#&gt;  [9,] 0.82352941 0.9882353 0.98823529 0.9921569 0.65882353     0     0     0
+#&gt; [10,] 0.04705882 0.7137255 0.98823529 0.9921569 0.45490196     0     0     0
+#&gt; [11,] 0.36078431 0.9882353 0.98823529 0.8823529 0.08235294     0     0     0
+#&gt; [12,] 0.84313725 0.9882353 0.98823529 0.3098039 0.00000000     0     0     0
+#&gt; [13,] 0.96078431 0.9921569 0.50588235 0.0000000 0.00000000     0     0     0
+#&gt; [14,] 0.98823529 0.6627451 0.04313725 0.0000000 0.00000000     0     0     0
+#&gt; [15,] 0.98431373 0.3019608 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt; [16,] 0.90588235 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt; [17,] 0.56078431 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt; [18,] 0.42745098 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt; [19,] 0.08235294 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt; [20,] 0.08235294 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt; [21,] 0.08235294 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt; [22,] 0.08235294 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt; [23,] 0.08235294 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt; [24,] 0.21960784 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt; [25,] 0.74117647 0.1647059 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt; [26,] 0.98823529 0.6666667 0.04313725 0.0000000 0.00000000     0     0     0
+#&gt; [27,] 0.57647059 0.9882353 0.16470588 0.0000000 0.00000000     0     0     0
+#&gt; [28,] 0.00000000 0.0000000 0.00000000 0.0000000 0.00000000     0     0     0
+#&gt;       [,25] [,26] [,27] [,28]
+#&gt;  [1,]     0     0     0     0
+#&gt;  [2,]     0     0     0     0
+#&gt;  [3,]     0     0     0     0
+#&gt;  [4,]     0     0     0     0
+#&gt;  [5,]     0     0     0     0
+#&gt;  [6,]     0     0     0     0
+#&gt;  [7,]     0     0     0     0
+#&gt;  [8,]     0     0     0     0
+#&gt;  [9,]     0     0     0     0
+#&gt; [10,]     0     0     0     0
+#&gt; [11,]     0     0     0     0
+#&gt; [12,]     0     0     0     0
+#&gt; [13,]     0     0     0     0
+#&gt; [14,]     0     0     0     0
+#&gt; [15,]     0     0     0     0
+#&gt; [16,]     0     0     0     0
+#&gt; [17,]     0     0     0     0
+#&gt; [18,]     0     0     0     0
+#&gt; [19,]     0     0     0     0
+#&gt; [20,]     0     0     0     0
+#&gt; [21,]     0     0     0     0
+#&gt; [22,]     0     0     0     0
+#&gt; [23,]     0     0     0     0
+#&gt; [24,]     0     0     0     0
+#&gt; [25,]     0     0     0     0
+#&gt; [26,]     0     0     0     0
+#&gt; [27,]     0     0     0     0
+#&gt; [28,]     0     0     0     0</code></pre>
+<pre class="r"><code>plot(as.raster(x_train[5,,], max = 1))</code></pre>
+<p><img src="/post/2023-10-18-how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset_files/figure-html/unnamed-chunk-4-1.png" width="576" /></p>
+<p>Let’s reshape the tensor in to 2D tensor. order = “F” means elements should be read column-wise manner. if order = “C”, that means elements should be read in row-wise manner.</p>
+<pre class="r"><code>x_train &lt;- array_reshape(x_train, c(nrow(x_train), 28*28), order = &quot;F&quot;)
+x_test &lt;- array_reshape(x_test, c(nrow(x_test), 28*28), order = &quot;F&quot;)</code></pre>
+<p>Note, you can reshape the tensor into a 4D tensor for 2D convolutional neural network.</p>
+<p><strong>NOT RUN</strong></p>
+<pre class="r"><code>x_train &lt;- x_train %&gt;%
+  `/`(255) %&gt;%
+  k_reshape(c(60000, 28, 28, 1))</code></pre>
+<div id="vae-in-action" class="section level3">
+<h3>VAE in action</h3>
+<p>The model really is two models: the encoder and the decoder. As we’ll see shortly, in the standard version of the VAE there is a third component in between, performing the so-called reparameterization trick.</p>
+<p>The encoder is a custom model, comprised of two densely connected layers. It returns the output of the dense layer split into two parts, one storing the mean of the latent variables, the other their variance.</p>
+<pre class="r"><code>original_dim &lt;- 784L
+latent_dim &lt;- 2L
+intermediate_dim &lt;- 256L
+batch_size&lt;- 128</code></pre>
+<p>encoder</p>
+<pre class="r"><code>encoder_inputs &lt;- layer_input(shape = 28 * 28)
+
+x &lt;- encoder_inputs %&gt;%
+        layer_dense(intermediate_dim, activation = &quot;relu&quot;)
+
+z_mean    &lt;- x %&gt;% layer_dense(latent_dim, name = &quot;z_mean&quot;)
+z_log_var &lt;- x %&gt;% layer_dense(latent_dim, name = &quot;z_log_var&quot;)
+encoder &lt;- keras_model(encoder_inputs, list(z_mean, z_log_var),
+                       name = &quot;encoder&quot;)
+
+encoder</code></pre>
+<pre><code>#&gt; Model: &quot;encoder&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)              Output Shape      Param #  Connected to               
+#&gt; ================================================================================
+#&gt; input_1 (InputLayer)      [(None, 784)]     0                                   
+#&gt; ________________________________________________________________________________
+#&gt; dense (Dense)             (None, 256)       200960   input_1[0][0]              
+#&gt; ________________________________________________________________________________
+#&gt; z_mean (Dense)            (None, 2)         514      dense[0][0]                
+#&gt; ________________________________________________________________________________
+#&gt; z_log_var (Dense)         (None, 2)         514      dense[0][0]                
+#&gt; ================================================================================
+#&gt; Total params: 201,988
+#&gt; Trainable params: 201,988
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<p>So the encoder compresses real data into estimates of mean and variance of the latent space. We then “indirectly” sample from this distribution (the so-called reparameterization trick):</p>
+<pre class="r"><code>layer_sampler &lt;- new_layer_class(
+  classname = &quot;Sampler&quot;,
+  call = function(z_mean, z_log_var) {
+          epsilon &lt;- tf$random$normal(shape = tf$shape(z_mean))
+          z_mean + exp(0.5 * z_log_var) * epsilon }
+)</code></pre>
+<p>decoder</p>
+<pre class="r"><code>latent_inputs &lt;- layer_input(shape = c(latent_dim))
+
+decoder_outputs &lt;- latent_inputs %&gt;%
+    layer_dense(intermediate_dim, activation = &quot;relu&quot;) %&gt;%
+    layer_dense(original_dim, activation = &quot;sigmoid&quot;)
+
+decoder &lt;- keras_model(latent_inputs, decoder_outputs,
+                       name = &quot;decoder&quot;)
+
+decoder</code></pre>
+<pre><code>#&gt; Model: &quot;decoder&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; input_2 (InputLayer)                [(None, 2)]                     0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_2 (Dense)                     (None, 256)                     768         
+#&gt; ________________________________________________________________________________
+#&gt; dense_1 (Dense)                     (None, 784)                     201488      
+#&gt; ================================================================================
+#&gt; Total params: 202,256
+#&gt; Trainable params: 202,256
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<p>Implement the <code>VAE</code> class. In technical terms, here’s how a VAE works:</p>
+<p><img src="/img/vae.png" /></p>
+<ol style="list-style-type: decimal">
+<li><p>An encoder module turns the input sample, input_img, into two parameters in a latent space of representations, z_mean and z_log_variance.</p></li>
+<li><p>You randomly sample a point z from the latent normal distribution that’s assumed to generate the input image, via <code>z=z_mean+exp(z_log_variance)* epsilon</code>, where epsilon is a random tensor of small values.</p></li>
+<li><p>A decoder module maps this point in the latent space back to the original input image.</p></li>
+</ol>
+<p>In standard VAEs (Kingma and Welling 2013), the objective is to maximize the evidence lower bound (ELBO):</p>
+<p><span class="math display">\[ELBO = E[log p(x|z)] − KL(q(z)||p(z))\]</span></p>
+<blockquote>
+<p>In plain words and expressed in terms of how we use it in practice, the first component is the reconstruction loss we also see in plain (non-variational) autoencoders. The second is the Kullback-Leibler divergence between a prior imposed on the latent space (typically, a standard normal distribution) and the representation of latent space as learned from the data.</p>
+</blockquote>
+<pre class="r"><code>model_vae &lt;- new_model_class(
+  classname = &quot;VAE&quot;,
+
+  initialize = function(encoder, decoder, ...) {
+    super$initialize(...)
+    self$encoder &lt;- encoder
+    self$decoder &lt;- decoder
+    self$sampler &lt;- layer_sampler()
+    self$total_loss_tracker &lt;-
+      metric_mean(name = &quot;total_loss&quot;)
+    self$reconstruction_loss_tracker &lt;-
+      metric_mean(name = &quot;reconstruction_loss&quot;)
+    self$kl_loss_tracker &lt;-
+      metric_mean(name = &quot;kl_loss&quot;)
+  },
+  
+  metrics = mark_active(function() {
+    list(
+      self$total_loss_tracker,
+      self$reconstruction_loss_tracker,
+      self$kl_loss_tracker
+    )
+  }),
+
+  train_step = function(data) {
+    with(tf$GradientTape() %as% tape, {
+
+      c(z_mean, z_log_var) %&lt;-% self$encoder(data)
+      z &lt;- self$sampler(z_mean, z_log_var)
+
+      reconstruction &lt;- decoder(z)
+      reconstruction_loss &lt;-
+        loss_binary_crossentropy(data, reconstruction) %&gt;%
+          sum(axis = c(1)) %&gt;%
+          mean()
+
+      kl_loss &lt;- -0.5 * (1 + z_log_var - z_mean^2 - exp(z_log_var))
+      total_loss &lt;- reconstruction_loss + mean(kl_loss)
+    })
+
+    grads &lt;- tape$gradient(total_loss, self$trainable_weights)
+    self$optimizer$apply_gradients(zip_lists(grads, self$trainable_weights))
+
+    self$total_loss_tracker$update_state(total_loss)
+    self$reconstruction_loss_tracker$update_state(reconstruction_loss)
+    self$kl_loss_tracker$update_state(kl_loss)
+
+    list(total_loss = self$total_loss_tracker$result(),
+         reconstruction_loss = self$reconstruction_loss_tracker$result(),
+         kl_loss = self$kl_loss_tracker$result())
+  }
+)</code></pre>
+<p>Initiate the model, compile and train it.</p>
+<pre class="r"><code>vae &lt;- model_vae(encoder, decoder)
+vae %&gt;% compile(optimizer = optimizer_adam())
+vae %&gt;% fit(x_train, epochs = 20,
+            shuffle = TRUE)</code></pre>
+</div>
+<div id="visualization-of-the-low-dimension-space." class="section level3">
+<h3>Visualization of the low dimension space.</h3>
+<pre class="r"><code>library(ggplot2)
+x_test_encoded &lt;- predict(encoder, x_train, batch_size = batch_size)
+
+x_test_encoded[[1]] %&gt;%
+  as.data.frame() %&gt;% 
+  mutate(class = as.factor(mnist$train$y)) %&gt;%
+  ggplot(aes(x = V1, y = V2, colour = class)) + 
+        scattermore::geom_scattermore()+
+        theme_classic(base_size = 14)</code></pre>
+<p><img src="/post/2023-10-18-how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset_files/figure-html/unnamed-chunk-13-1.png" width="576" /></p>
+<p>Let’s compare it with PCA. See more in my previous post <a href="https://divingintogeneticsandgenomics.com/post/deep-learning-with-keras-using-mnst-dataset/" class="uri">https://divingintogeneticsandgenomics.com/post/deep-learning-with-keras-using-mnst-dataset/</a></p>
+<pre class="r"><code>library(irlba)
+pca.results &lt;- irlba(A = x_train, nv = 30)
+
+image_pc_loadings&lt;- pca.results$u
+
+colnames(image_pc_loadings)&lt;- paste0(&quot;PC_&quot;, 1:30)
+
+
+labels_vector&lt;- apply(mnist$train$y, 1, max) %&gt;%
+        as.character()
+
+image_pc_df&lt;- image_pc_loadings %&gt;%
+        as.data.frame() %&gt;%
+        dplyr::bind_cols(label = labels_vector)
+
+
+ggplot(image_pc_df, aes(x=PC_1, y = PC_2)) +
+        scattermore::geom_scattermore(aes(color = label)) +
+        theme_classic(base_size = 14)</code></pre>
+<p><img src="/post/2023-10-18-how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
+</div>
+<div id="generate-new-digits" class="section level3">
+<h3>Generate new digits</h3>
+<p>VAE is a generative model, let’s use it to generate some digits</p>
+<pre class="r"><code>n &lt;- 15  # figure with 15x15 digits
+digit_size &lt;- 28
+
+# we will sample n points within [-4, 4] standard deviations
+grid_x &lt;- seq(-4, 4, length.out = n)
+grid_y &lt;- seq(-4, 4, length.out = n)
+
+rows &lt;- NULL
+for(i in 1:length(grid_x)){
+  column &lt;- NULL
+  for(j in 1:length(grid_y)){
+    z_sample &lt;- matrix(c(grid_x[i], grid_y[j]), ncol = 2)
+    #generate new digits using the predict function with the decoder
+    column &lt;- rbind(column, predict(vae$decoder, z_sample) %&gt;% matrix(ncol = 28) )
+  }
+  rows &lt;- cbind(rows, column)
+}
+
+rows %&gt;% as.raster() %&gt;% plot()</code></pre>
+<p><img src="/post/2023-10-18-how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset_files/figure-html/unnamed-chunk-15-1.png" width="576" /></p>
+</div>
+<div id="references" class="section level3">
+<h3>References</h3>
+<ul>
+<li><p>Deep learning with R, code adapted from <a href="https://github.com/t-kalinowski/deep-learning-with-R-2nd-edition-code/blob/main/ch12.R" class="uri">https://github.com/t-kalinowski/deep-learning-with-R-2nd-edition-code/blob/main/ch12.R</a>. The original example uses convolutionary neural network.</p></li>
+<li><p>A blog post by Matthew Bernstein <a href="https://mbernste.github.io/posts/vae/" class="uri">https://mbernste.github.io/posts/vae/</a></p></li>
+<li><p>many nice tutorials <a href="https://tensorflow.rstudio.com/tutorials/" class="uri">https://tensorflow.rstudio.com/tutorials/</a></p></li>
+<li><p><a href="https://github.com/rstudio/keras/blob/main/vignettes/examples/variational_autoencoder.R" class="uri">https://github.com/rstudio/keras/blob/main/vignettes/examples/variational_autoencoder.R</a></p></li>
+<li><p><a href="https://github.com/rstudio/keras/blob/main/vignettes/examples/eager_cvae.R" class="uri">https://github.com/rstudio/keras/blob/main/vignettes/examples/eager_cvae.R</a></p></li>
+<li><p><a href="https://blogs.rstudio.com/ai/posts/2018-10-22-mmd-vae/" class="uri">https://blogs.rstudio.com/ai/posts/2018-10-22-mmd-vae/</a></p></li>
+<li><p><a href="https://blogs.rstudio.com/ai/posts/2018-08-26-eager-dcgan/">Generating images with Keras and TensorFlow eager execution</a></p></li>
+</ul>
+</div>
