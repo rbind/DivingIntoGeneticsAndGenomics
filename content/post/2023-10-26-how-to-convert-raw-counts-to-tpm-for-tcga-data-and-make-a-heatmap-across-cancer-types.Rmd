@@ -1,0 +1,373 @@
+---
+title: How to convert raw counts to TPM for TCGA data and make a heatmap across cancer
+  types
+author: Ming Tang
+date: '2023-10-26'
+slug: how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types
+categories:
+  - bioinformatics
+  - bioconductor
+  - RNAseq
+tags:
+  - Bioconductor
+  - bioinformatics
+  - RNAseq
+  - TCGA
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+**Sign up for my newsletter to not miss a post like this**
+https://divingintogeneticsandgenomics.ck.page/newsletter
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = TRUE, cache.lazy= FALSE
+)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 6)  # Set the desired width and height
+```
+
+
+[The Cancer Genome Atlas (TCGA)](https://www.cancer.gov/ccg/research/genome-sequencing/tcga/using-tcga-data/types) project is probably one of the most well-known large-scale cancer sequencing project. It sequenced ~10,000 treatment-naive tumors across 33 cancer types. Different data including whole-exome, whole-genome, copy-number (SNP array), bulk RNAseq, protein expression (Reverse-Phase Protein Array), DNA methylation are available. 
+
+TCGA is a very successful large sequencing project. I highly recommend learning from the organization of it. Read [Collaborative Genomics Projects: A Comprehensive Guide](https://www.sciencedirect.com/book/9780128021439/collaborative-genomics-projects-a-comprehensive-guide).
+
+In this blog post, I am going to show you how to download the raw RNA-seq counts for 33 cancer types, convert them to TPM (transcript per million) and plot them in a heatmap and boxplot.
+
+Let's dive in!
+
+### Use recount3 
+
+[recount3](https://rna.recount.bio/) is an online resource consisting of RNA-seq gene, exon, and exon-exon junction counts as well as coverage bigWig files for 8,679 and 10,088 different studies for human and mouse respectively. It is the third generation of the ReCount project
+
+```{r}
+#BiocManager::install("recount3")
+library(recount3)
+library(purrr)
+library(dplyr)
+library(ggplot2)
+human_projects <- available_projects()
+
+tcga_info = subset(
+    human_projects,
+    file_source == "tcga" & project_type == "data_sources"
+)
+
+head(tcga_info)
+
+proj_info <- map(seq(nrow(tcga_info)), ~tcga_info[.x, ])
+
+## create the RangedSummarizedExperiment. the create_rse function works on 
+## one row a time 
+
+rse_tcga <- map(proj_info, ~create_rse(.x))
+```
+
+The first time you use recount3, it will ask:
+
+>/Users/tommytang/Library/Caches/org.R-project.R/R/recount3
+  does not exist, create directory? (yes/no): yes
+  
+  
+`rse_tcga` is a list of rse object, let's take a look at one of them
+```{r}
+rse_tcga[[1]]
+
+## get raw counts from one rse object
+rse_tcga[[1]]@assays@data$raw_counts[1:5, 1:5]
+
+## get the gene information
+rse_tcga[[1]]@rowRanges
+```
+The `bp_length` column is the gene length we will use.
+
+```{r}
+## metadata info
+rse_tcga[[1]]@colData@listData %>% as.data.frame() %>% 
+        `[`(1:5, 1:5)
+```
+each row/sample corresponds to the each column/sample of the count matrix.
+
+Now, let's write a function to convert the raw counts to TPM (transcript per million).
+Read this blog post by Matthew Bernstein https://mbernste.github.io/posts/rna_seq_basics/ to get a better understanding of the math.
+
+Put in plain words: given a raw count matrix of gene x sample, first divide each gene (row) by its (effective) gene length, then get the sum of each column (total), divide each entry for the same column by the column sum then times 1e6. 
+
+To understand the `effective gene length`, read my old blog post https://crazyhottommy.blogspot.com/2016/07/comparing-salmon-kalliso-and-star-htseq.html
+
+In our example, we will just use the gene length. 
+
+```{r}
+# some cancer associated genes
+genes_of_interest<- c("MSLN", "EGFR", "ERBB2", "CEACAM5", "NECTIN4", "EPCAM", "MUC16", "MUC1", "CD276", "FOLH1", "DLL3", "VTCN1", "PROM1", "PVR", "CLDN6", "MET", "FOLR1", "TNFRSF10B", "TACSTD2", "CD24")
+
+#### Creating TPM
+count2tpm<- function(rse){
+        count_matrix <- rse@assays@data$raw_counts
+        gene_length <- rse@rowRanges$bp_length
+        reads_per_rpk <- count_matrix/gene_length
+        per_mil_scale <- colSums(reads_per_rpk)/1000000
+        tpm_matrix <- t(t(reads_per_rpk)/per_mil_scale)
+         ## Make sure they match the ENSG and gene order
+        gene_ind<-  rse@rowRanges$gene_name %in% genes_of_interest 
+        tpm_submatrix <- tpm_matrix[gene_ind,]
+        rownames(tpm_submatrix)<- rse@rowRanges[gene_ind, ]$gene_name
+        return(tpm_submatrix)
+}
+
+## convert raw count matrix per cancer type to TPM and subset to only the genes of interest 
+tpm_data<- map(rse_tcga, count2tpm)
+
+## get the metadata column 
+metadata<- map(rse_tcga, ~.x@colData@listData %>% as.data.frame())
+
+# bind the data matrix across cancer types together 
+tpm_data2<- reduce(tpm_data, cbind)
+
+## bind the metadata across cancer types together
+metadata2<- reduce(metadata, rbind)
+dim(tpm_data2)
+dim(metadata2)
+```
+ 
+Total, we have 20 genes x 11348 samples in the combined count matrix and 
+937 metadata columns. 
+ 
+```{r}
+## rename the some columns 
+metadata2<- metadata2 %>%
+        select(tcga.tcga_barcode, tcga.cgc_sample_sample_type, study) %>%
+        mutate(sample_type = case_when(
+                tcga.cgc_sample_sample_type == "Additional - New Primary" ~ "cancer",
+                tcga.cgc_sample_sample_type == "Additional Metastatic" ~ "metastatic",
+                tcga.cgc_sample_sample_type == "Metastatic" ~ "metastatic",
+                tcga.cgc_sample_sample_type == "Primary Blood Derived Cancer - Peripheral Blood " ~ "cancer",
+                tcga.cgc_sample_sample_type == "Primary Tumor" ~ "cancer",
+                tcga.cgc_sample_sample_type == "Recurrent Tumor" ~ "cancer",
+                tcga.cgc_sample_sample_type == "Solid Tissue Normal" ~ "normal"
+    ))
+```
+
+combine the metadata and count matrix into a single dataframe
+
+```{r}
+final_df<- cbind(t(tpm_data2), metadata2)
+
+head(final_df)
+```
+
+With everything in a single dataframe, we are ready to do anything you want:)
+
+For each gene, let's take a median of all samples within the same cancer type and 
+make a heatmap for all genes.
+
+Make a boxplot for one gene across all cancer types
+```{r fig.width = 8, fig.height = 6}
+final_df %>%
+        filter(sample_type == "cancer") %>%
+        ggplot(aes(x = study, y = EPCAM )) +
+        geom_boxplot() +
+        scale_y_continuous(trans=scales::pseudo_log_trans(base = 2),
+                           breaks = c(0, 2, 4, 8, 16, 32, 128, 1024)) +
+        theme_bw(base_size = 14) +
+        xlab("") +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+Rearrange the boxes by the median level:
+```{r fig.width = 8,  fig.height = 6}
+final_df %>%
+        filter(sample_type == "cancer") %>%
+        ggplot(aes(x = study %>%
+                           forcats::fct_reorder(EPCAM, median), y = EPCAM )) +
+        geom_boxplot() +
+        scale_y_continuous(trans=scales::pseudo_log_trans(base = 2),
+                           breaks = c(0, 2, 4, 8, 16, 32, 128, 1024)) +
+        theme_bw(base_size = 14) +
+        xlab("") +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+This looks really nice!
+
+Let's make a heatmap by taking the median 
+```{r}
+library(ComplexHeatmap)
+tcga_df<- final_df %>%
+        filter(sample_type == "cancer") %>%
+        group_by(sample_type, study) %>%
+        summarise(across(1:20, ~log2(.x+1))) %>%
+        summarise(across(1:20, median)) %>%
+        arrange(study) %>%
+        filter(!is.na(sample_type))
+
+tcga_mat<- tcga_df[, -c(1,2)] %>% as.matrix()
+rownames(tcga_mat)<- tcga_df %>% pull(study)
+
+cell_fun = function(j, i, x, y, w, h, fill) {
+    grid.rect(x = x, y = y, width = w, height = h, 
+              gp = gpar(col = "black", fill = NA))
+}
+
+Heatmap(tcga_mat, cluster_columns = TRUE, cell_fun = cell_fun,
+        name = "log2TPM")
+```
+
+Always do a sanity check to see if the results make any biological sense or not. 
+We see `MSLN` is high in MESO, `FOLH1` is high in prostate cancer (PRAD). We are probably on the 
+right track!
+
+You can also scale the expression for each gene across the cancer types.
+
+```{r}
+Heatmap(scale(tcga_mat), cluster_columns = TRUE, cell_fun = cell_fun,
+        name = "scaled\nlog2TPM")
+```
+
+### Let's try a different data resource using ExperimentHub
+
+```{r}
+#BiocManager::install("ExperimentHub")
+library(ExperimentHub)
+eh<- ExperimentHub()
+query(eh , "GSE62944")
+
+tcga_data<- eh[["EH1043"]]
+
+colData(tcga_data)[1:5, 1:5]
+
+count_mat<- assay(tcga_data)
+
+count_mat[1:5, 1:5]
+
+```
+
+### Get the gene length from `TxDb.Hsapiens.UCSC.hg19.knownGene` package:
+
+```{r}
+#BiocManager::install("TxDb.Hsapiens.UCSC.hg19.knownGene")
+#BiocManager::install("org.Hs.eg.db")
+
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(org.Hs.eg.db)
+
+txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
+
+hg19_exons<- exonsBy(txdb, "gene")
+```
+
+`hg19_exons` is a GRangesList object, each element is a gene of multiple exons.
+
+```{r}
+# the first gene has 15 exons.
+hg19_exons[[1]]
+
+# get the width of each exon
+exon_length<- width(hg19_exons)
+exon_length
+
+exon_length[[1]] %>% sum()
+
+# sum it up for each gene, in R, everything is vectorized :)
+sum(exon_length) %>% head()
+
+# turn it to a dataframe
+
+hg19_gene_length<- sum(exon_length) %>% 
+        tibble::enframe(name = "gene_id", value = "exon_length")
+
+head(hg19_gene_length)
+
+# map the Entrez ID to gene symbol
+gene_symbol<- AnnotationDbi::select(org.Hs.eg.db, keys=hg19_gene_length$gene_id, 
+                                    columns="SYMBOL", keytype="ENTREZID")
+
+all.equal(hg19_gene_length$gene_id, gene_symbol$ENTREZID)
+
+hg19_gene_length$symbol<- gene_symbol$SYMBOL
+
+hg19_gene_length
+```
+
+
+```{r}
+table(rownames(count_mat) %in% hg19_gene_length$symbol)
+
+#setdiff(rownames(count_mat), hg19_gene_length$symbol)
+#setdiff(hg19_gene_length$symbol, rownames(count_mat))
+# it seems to be microRNAs, LINC RNAs that are not matching...
+```
+
+3499 genes in the count table are not in the dataframe. gene symbols can change constantly and are given new names or aliases. Use `HGNChelper` if needed: https://cran.r-project.org/web/packages/HGNChelper/index.html
+
+I will just remove those genes 
+```{r}
+indx<- intersect(rownames(count_mat), hg19_gene_length$symbol)
+
+count_mat<- count_mat[indx, ]
+
+gene_df<- hg19_gene_length %>%
+  slice(match(indx, symbol))
+
+dim(gene_df)
+dim(count_mat)
+
+```
+
+### convert counts to TPM
+```{r}
+count_to_tpm<- function(mat, gene_length){
+  mat<- mat/gene_length
+  total_per_sample<- colSums(mat)
+  mat<- t(t(mat)/total_per_sample)
+  return(mat*1000000)
+}
+
+tpm_mat<- count_to_tpm(count_mat, gene_df$exon_length)
+
+# can not find "NECTIN4", it might be a different name 
+
+genes_of_interest
+genes_of_interest[!genes_of_interest %in% rownames(tpm_mat)]
+```
+
+other names for NECTIN4: LNIR; PRR4; EDSS1; PVRL4; nectin-4
+
+I tried all of them, and it seems that in the data matrix, it was named `PRR4`.
+Welcome to the everyday work of Bioinforamtics: converting gene ids...
+
+```{r}
+"PRR4" %in% rownames(tpm_mat)
+```
+
+Make a heatmap:
+```{r}
+genes_of_interest2<- c("MSLN", "EGFR", "ERBB2", "CEACAM5", "PRR4", "EPCAM", "MUC16", "MUC1", "CD276", "FOLH1", "DLL3", "VTCN1", "PROM1", "PVR", "CLDN6", "MET", "FOLR1", "TNFRSF10B", "TACSTD2", "CD24")
+
+tpm_sub<- tpm_mat[genes_of_interest2, ]
+
+tpm_median<- cbind(t(tpm_sub), CancerType = as.character(colData(tcga_data)$CancerType)) %>%
+  as.data.frame() %>%
+  mutate(across(1:20, as.numeric)) %>%
+  group_by(CancerType) %>%
+  summarise(across(1:20, median)) 
+
+tpm_sub_mat<- as.matrix(tpm_median[,-1])
+rownames(tpm_sub_mat)<- tpm_median$CancerType
+
+Heatmap(log2(tpm_sub_mat +1), cluster_columns = TRUE, cell_fun = cell_fun,
+        name = "log2TPM")
+```
+
+There are fewer cancer types in the `ExperimentHub` than the `recount3`, but in general, the patterns of gene expression are similar.
+
+You may look into [`TCGAbiolinks`](https://bioconductor.org/packages/release/bioc/html/TCGAbiolinks.html) and [`cBioPortalData`](https://bioconductor.org/packages/release/bioc/html/cBioPortalData.html) too.
+
+Happy Learning! 
+
+
+
