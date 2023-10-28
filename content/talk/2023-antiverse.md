@@ -22,7 +22,7 @@ selected = true
 # Links (optional).
 #url_pdf = "files/slides/2022-06-09_single-cell-unsolved_problems.pdf"
 url_slides = ""
-#url_video = "https://open.spotify.com/episode/1vQdgYdTNbO1OXg8WhLBmO"
+url_video = "https://podcasters.spotify.com/pod/show/fodd/episodes/FODD-13---Ming-Tommy-Tang---Unleashing-the-Power-of-Computational-Biology-e2amitj"
 url_code = ""
 
 
