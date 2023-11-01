@@ -1,0 +1,123 @@
+---
+title: How I am learning deep learning for genomics
+author: Ming Tang
+date: '2023-10-31'
+slug: how-i-am-learning-deep-learning
+categories:
+  - deeplearning
+  - bioinformatics
+tags:
+  - deeplearning
+  - neural network
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<div id="step-1-get-a-high-level-understanding" class="section level3">
+<h3>Step 1, get a high-level understanding</h3>
+<ul>
+<li>Watch <a href="https://statquest.org/">statquest</a> by Josh Starmer.</li>
+</ul>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/CqOfi41LfDw" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<ul>
+<li>1blue3brown deep learning playlist</li>
+</ul>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/aircAruvnKk" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+</div>
+<div id="step2-code-it-out" class="section level3">
+<h3>Step2, code it out!</h3>
+<p>If you are into <code>python</code>, watch “The spelled-out intro to neural networks and backpropagation: building micrograd”:</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/VMj-3S1tku0" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<p>I still code in <code>R</code> for most of the time, so I walk through the R code in the <a href="https://www.manning.com/books/deep-learning-with-r">deep learning with R</a> book. It is pretty accessible. I then go through the examples and write blog posts on it.</p>
+<p>See my posts:</p>
+<ul>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/basic-tensor-array-manipulations-in-r/">Basic tensor/array manipulations in R</a></p></li>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/deep-learning-with-keras-using-mnst-dataset/">Deep learning with Keras using MNIST dataset</a></p></li>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/how-to-classify-mnist-images-with-convolutional-neural-network/">How to classify MNIST images with convolutional neural network</a></p></li>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/">Understand word embedding and use deep learning to classify movie reviews</a></p></li>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/">Long Short-term memory (LSTM) Recurrent Neural Network (RNN) to classify movie reviews</a></p></li>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/">Generative AI: Text generation using Long short-term memory (LSTM) model</a></p></li>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/">How to code a variational autoencoder (VAE) in R using the MNIST dataset</a></p></li>
+</ul>
+</div>
+<div id="step-3-apply-it-to-real-biological-examples" class="section level3">
+<h3>Step 3, apply it to real biological examples</h3>
+<p>The examples in the books are usually not biological data, either it is movie review or MNIST image classification etc. To understand how deep learning is applied to biological data, read</p>
+<p>Books:</p>
+<ul>
+<li><p><a href="https://www.amazon.com/Deep-Learning-Genomics-applications-biotechnology/dp/1804615447/">deep learning for genomics</a></p></li>
+<li><p><a href="https://www.amazon.com/Deep-Learning-Life-Sciences-Microscopy/dp/1492039837/">deep learning for the life sciences</a></p></li>
+</ul>
+<p>Blog posts:</p>
+<ul>
+<li><p><a href="https://liambai.com/protein-representation/">How to represent a protein sequence</a></p></li>
+<li><p><a href="https://medium.com/@leowossnig/where-is-generative-design-in-drug-discovery-today-7234945177cf">Where is generative design in drug discovery today?</a></p></li>
+</ul>
+<p>More papers I collected can be found at <a href="https://github.com/crazyhottommy/Machine_learning_drug_discovery" class="uri">https://github.com/crazyhottommy/Machine_learning_drug_discovery</a></p>
+<p>I then apply it to a biological problem using biological datasets.</p>
+<p>See my blog posts:</p>
+<ul>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/">Deep learning to predict cancer from healthy controls using TCRseq data</a></p></li>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/">How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</a></p></li>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/">Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</a></p></li>
+</ul>
+</div>
+<div id="step-4-apply-the-learning-to-a-real-project" class="section level3">
+<h3>Step 4, apply the learning to a real project</h3>
+<p>At immunitas, we are really interested in the TCR-seq data. Matthew Bernstein and I are working on a deep learning project. More to come!</p>
+</div>
+<div id="large-language-models" class="section level3">
+<h3>Large language models</h3>
+<ul>
+<li><p><a href="https://www.youtube.com/watch?v=jkrNMKz9pWU">A Hackers’ Guide to Language Model</a></p></li>
+<li><p><a href="https://www.borealisai.com/research-blogs/a-high-level-overview-of-large-language-models/">A High-level Overview of Large Language Models</a></p></li>
+<li><p><a href="https://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer</a></p></li>
+<li><p><a href="https://www.borealisai.com/research-blogs/training-and-fine-tuning-large-language-models/">Training and fine-tuning large language models</a></p></li>
+<li><p><a href="https://learn.deeplearning.ai/finetuning-large-language-models/lesson/3/where-finetuning-fits-in">Finetuning Large Language Models</a> by deeplearning.ai</p></li>
+</ul>
+</div>
+<div id="other-learning-resources" class="section level3">
+<h3>Other learning resources</h3>
+<ul>
+<li><p><a href="https://www.deeplearning.ai/short-courses/" class="uri">https://www.deeplearning.ai/short-courses/</a> by Andrew Ng</p></li>
+<li><p>Practical deep learning <a href="https://course.fast.ai/" class="uri">https://course.fast.ai/</a></p></li>
+<li><p><a href="https://distill.pub/2021/gnn-intro/">A Gentle Introduction to Graph Neural Networks</a></p></li>
+<li><p><a href="https://mbernste.github.io/posts/gcn/">Graph Neural Net works</a> a blog post by Matt B.</p></li>
+<li><p>More papers and resources that I curated <a href="https://github.com/crazyhottommy/machine-learning-resource" class="uri">https://github.com/crazyhottommy/machine-learning-resource</a></p></li>
+</ul>
+</div>
+<div id="conclusions" class="section level3">
+<h3>Conclusions</h3>
+<ul>
+<li>Deep learning can be daunting if you just started. For me, it is good enough to understand at a high level, what hyperparameters can be tuned, understand when to use which model, and aware of its strength and limitations.</li>
+</ul>
+<p><img src="/img/ML_meme.jpeg" /></p>
+<p>Read my blog post: <a href="https://divingintogeneticsandgenomics.com/post/has-ai-changed-the-course-of-drug-development/">Has AI changed the course of Drug Development?</a></p>
+<ul>
+<li>Learn meta-learning skills: the skills of how to learn new things. With determination and a framework, you can learn anything!</li>
+</ul>
+<p>Watch my youtube video: 6-step framework to learn computational biology</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/JYauh4GZExo" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<p>and get a free PDF with all my curated links to start learning computational biology! From Zero to Hero <a href="https://divingintogeneticsandgenomics.ck.page/6steps" class="uri">https://divingintogeneticsandgenomics.ck.page/6steps</a></p>
+</div>

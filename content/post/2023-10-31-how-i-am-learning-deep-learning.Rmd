@@ -1,0 +1,143 @@
+---
+title: How I am learning deep learning for genomics
+author: Ming Tang
+date: '2023-10-31'
+slug: how-i-am-learning-deep-learning
+categories:
+  - deeplearning
+  - bioinformatics
+tags:
+  - deeplearning
+  - neural network
+header:
+  caption: ''
+  image: ''
+---
+
+### Step 1, get a high-level understanding 
+
+* Watch [statquest](https://statquest.org/) by Josh Starmer.
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=CqOfi41LfDw")
+```
+
+
+* 1blue3brown deep learning playlist
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=aircAruvnKk")
+```
+
+### Step2, code it out!
+
+If you are into `python`, watch "The spelled-out intro to neural networks and backpropagation: building micrograd":
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=VMj-3S1tku0")
+```
+
+I still code in `R` for most of the time, so I walk through the R code in the [deep learning with R](https://www.manning.com/books/deep-learning-with-r) book. It is pretty accessible. I then go through the examples and write blog posts on it.
+
+See my posts:
+
+* [Basic tensor/array manipulations in R](https://divingintogeneticsandgenomics.com/post/basic-tensor-array-manipulations-in-r/)
+
+* [Deep learning with Keras using MNIST dataset](https://divingintogeneticsandgenomics.com/post/deep-learning-with-keras-using-mnst-dataset/)
+
+* [How to classify MNIST images with convolutional neural network](https://divingintogeneticsandgenomics.com/post/how-to-classify-mnist-images-with-convolutional-neural-network/)
+
+* [Understand word embedding and use deep learning to classify movie reviews](https://divingintogeneticsandgenomics.com/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/)
+
+* [Long Short-term memory (LSTM) Recurrent Neural Network (RNN) to classify movie reviews](https://divingintogeneticsandgenomics.com/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/)
+
+* [Generative AI: Text generation using Long short-term memory (LSTM) model](https://divingintogeneticsandgenomics.com/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/)
+
+* [How to code a variational autoencoder (VAE) in R using the MNIST dataset](https://divingintogeneticsandgenomics.com/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/)
+
+
+### Step 3, apply it to real biological examples 
+
+The examples in the books are usually not biological data, either it is movie review or MNIST image classification etc. To understand how deep learning is applied to biological data, read
+
+Books: 
+
+* [deep learning for genomics](https://www.amazon.com/Deep-Learning-Genomics-applications-biotechnology/dp/1804615447/) 
+
+* [deep learning for the life sciences](https://www.amazon.com/Deep-Learning-Life-Sciences-Microscopy/dp/1492039837/)
+
+Blog posts:
+
+* [How to represent a protein sequence](https://liambai.com/protein-representation/)
+
+* [Where is generative design in drug discovery today?](https://medium.com/@leowossnig/where-is-generative-design-in-drug-discovery-today-7234945177cf)
+
+More papers I collected can be found at https://github.com/crazyhottommy/Machine_learning_drug_discovery
+
+I then apply it to a biological problem using biological datasets.
+ 
+See my blog posts:
+
+* [Deep learning to predict cancer from healthy controls using TCRseq data](https://divingintogeneticsandgenomics.com/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/)
+
+* [How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein](https://divingintogeneticsandgenomics.com/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/)
+
+* [Predict TCR cancer specificity using 1d convolutional and LSTM neural networks](https://divingintogeneticsandgenomics.com/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/)
+
+### Step 4, apply the learning to a real project
+
+At immunitas, we are really interested in the TCR-seq data. Matthew Bernstein and I are working on a deep learning project. More to come!
+ 
+### Large language models 
+
+* [A Hackers' Guide to Language Model](https://www.youtube.com/watch?v=jkrNMKz9pWU)
+
+* [A High-level Overview of Large Language Models](https://www.borealisai.com/research-blogs/a-high-level-overview-of-large-language-models/)
+
+* [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
+ 
+* [Training and fine-tuning large language models](https://www.borealisai.com/research-blogs/training-and-fine-tuning-large-language-models/)
+
+* [Finetuning Large Language Models](https://learn.deeplearning.ai/finetuning-large-language-models/lesson/3/where-finetuning-fits-in) by deeplearning.ai
+
+### Other learning resources  
+
+* https://www.deeplearning.ai/short-courses/ by Andrew Ng
+ 
+* Practical deep learning https://course.fast.ai/
+
+* [A Gentle Introduction to Graph Neural Networks](https://distill.pub/2021/gnn-intro/)
+
+* [Graph Neural Net works](https://mbernste.github.io/posts/gcn/) a blog post by Matt B.
+
+* More papers and resources that I curated https://github.com/crazyhottommy/machine-learning-resource
+ 
+### Conclusions
+
+* Deep learning can be daunting if you just started. For me, it is good enough to understand at a high level, what hyperparameters can be tuned, understand when to use which model, and aware of its strength and limitations.
+
+![](/img/ML_meme.jpeg)
+
+Read my blog post: [Has AI changed the course of Drug Development?](https://divingintogeneticsandgenomics.com/post/has-ai-changed-the-course-of-drug-development/)
+
+* Learn meta-learning skills: the skills of how to learn new things. With determination and a framework, you can learn anything!
+
+Watch my youtube video: 6-step framework to learn computational biology
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=JYauh4GZExo&")
+```
+
+and get a free PDF with all my curated links to start learning computational biology! From Zero to Hero https://divingintogeneticsandgenomics.ck.page/6steps
+
+
+
+
