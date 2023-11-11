@@ -36,10 +36,6 @@ weight = 5
 
 I am now the Director of Computational Biology at [Immunitas Therapeutics](https://www.immunitastx.com/) and serving as the scientific advisory board member for [Pythia Biosciences](https://www.pythiabio.com/about-1), a bioinformatics software company focusing on multi-omics data analysis. At Immunitas, we employ a single cell sequencing platform to dissect the biology of immune cells in human tumors. Our focus on human samples allows us to start with and stay closer to the most relevant and translatable biology for patients and accelerates the pace of our research. My new north star is "bringing drugs to patients".
 
-![](/img/bookcover.png)
-
-[Grab my book](https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line) to start transforming yourself to a computational biologist.
-
 I am a computational biologist working on genomics, epigenomics and transcriptomics. I use R primary for data wrangling and visualization in the [tidyverse](https://www.tidyverse.org/) ecosystem; I use python for writing [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflows and reformatting data; I am a unix geek learning shell tricks almost every month; I care about reproducible research and open science.
 
 I also have a great interest in promoting open science and reforming bioinformatics education. I frequently share my thoughts on [twitter](https://twitter.com/tangming2005) and tips in my [blog post](http://crazyhottommy.blogspot.com/). I am a certified instructor for the [carpentries](https://carpentries.org/).
