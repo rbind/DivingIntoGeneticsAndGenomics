@@ -23,6 +23,12 @@ editor_options:
 
 
 <p>If you ask me: what’s your favorite machine learning algorithm? I would answer logistic regression (with regularization: Lasso, Ridge and Elastic) followed by random forest. In fact, that’s how we try those methods in order. Deep learning can perform well for tabular data with complicated architecture while random forest or boost tree based method usually work well out of the box. Regression and random forest are more interpretable too.</p>
+<p>Youtube video for this post:</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/vO9ww5VCLfk" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
 <p>Read: <a href="https://arxiv.org/abs/2207.08815">Why do tree-based models still outperform deep learning on tabular data?</a></p>
 <p>We all know we can use random forest to do classification or regression (supervised machine learning), but do you know you can use random forest for clustering too (unsupervised machine learning)?</p>
 <p>When you have a mixed numeric and categorical dataset where it’s not straightforward to define a distance between observations, random forest can be trained in an unsupervised manner and generate the proximity matrix.</p>
@@ -94,12 +100,12 @@ predict(rf_fit, new_data = data_test) %&gt;%
 
 pca_prcomp&lt;- prcomp(proximity_mat, center = TRUE, scale. = FALSE)
 plot(pca_prcomp)</code></pre>
-<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-8-1.png" width="576" /></p>
 <pre class="r"><code>pca_df&lt;- data.frame(pca_prcomp$x[,1:2], Species = data_train$Species)
 
 ggplot(pca_df, aes(x= PC1, y = PC2)) +
         geom_point(aes(color = Species))</code></pre>
-<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-7-2.png" width="576" /></p>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-8-2.png" width="576" /></p>
 <p>of course, we can use the original matrix for PCA too because they are all numeric values for the variables.</p>
 <pre class="r"><code>head(data_train)</code></pre>
 <pre><code>#&gt;   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
@@ -112,12 +118,12 @@ ggplot(pca_df, aes(x= PC1, y = PC2)) +
 <pre class="r"><code>pca_prcomp2&lt;- prcomp(as.matrix(data_train[, -5]), center = TRUE, scale. = FALSE)
 
 plot(pca_prcomp2)</code></pre>
-<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-8-1.png" width="576" /></p>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-9-1.png" width="576" /></p>
 <pre class="r"><code>pca_df2&lt;- data.frame(pca_prcomp2$x[,1:2], Species = data_train$Species)
 
 ggplot(pca_df2, aes(x= PC1, y = PC2)) +
         geom_point(aes(color = Species))</code></pre>
-<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-8-2.png" width="576" /></p>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-9-2.png" width="576" /></p>
 <p>However, imagine that not all the variables are numeric, and we can not easily plot a PCA plot using the raw data. We can use random forest to get a proximity matrix and use that matrix for PCA as shown above.</p>
 </div>
 <div id="clustering-using-the-proximity-matrix" class="section level3">
@@ -147,7 +153,7 @@ library(Polychrome)
 
 mypal &lt;- kelly.colors(4)[-1]
 swatch(mypal)</code></pre>
-<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-10-1.png" width="576" /></p>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-11-1.png" width="576" /></p>
 <pre class="r"><code>plot_dend&lt;- function(dend,...){
   dend_labels&lt;- dend %&gt;% labels()
   
@@ -160,12 +166,12 @@ swatch(mypal)</code></pre>
 <pre class="r"><code># no sorting on dendrogram
 as.dendrogram(hc) %&gt;%
         plot_dend()</code></pre>
-<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-11-1.png" width="576" /></p>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-12-1.png" width="576" /></p>
 <pre class="r"><code># sort the dendrogram
 as.dendrogram(hc) %&gt;%
         dendsort() %&gt;%
         plot_dend()</code></pre>
-<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-11-2.png" width="576" /></p>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-12-2.png" width="576" /></p>
 <p>visualize the clusters in the PCA plot using the proximity matrix.
 We see there are some miss-classifications between versicolor and virginica.</p>
 <pre class="r"><code>pca_df&lt;- data.frame(pca_prcomp$x[,1:2], 
@@ -175,7 +181,7 @@ We see there are some miss-classifications between versicolor and virginica.</p>
 ggplot(pca_df, aes(x= PC1, y = PC2)) +
         geom_point(aes(color = Species, shape = clusters)) +
         theme_bw(base_size = 14)</code></pre>
-<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-12-1.png" width="576" /></p>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-13-1.png" width="576" /></p>
 <p>visualize the clusters in the PCA plot using the raw data.</p>
 <pre class="r"><code>pca_df2&lt;- data.frame(pca_prcomp2$x[,1:2], 
                     Species = data_train$Species,
@@ -184,6 +190,6 @@ ggplot(pca_df, aes(x= PC1, y = PC2)) +
 ggplot(pca_df2, aes(x= PC1, y = PC2)) +
         geom_point(aes(color = Species, shape = clusters)) +
         theme_bw(base_size = 14)</code></pre>
-<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-13-1.png" width="576" /></p>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
 <p>PS. If you want to learn more about clustering, heatmap and PCA, my book have full chapters devoted to those topics. Grab a copy to become a data master at <a href="https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line">here</a>!</p>
 </div>
