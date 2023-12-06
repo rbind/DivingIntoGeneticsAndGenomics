@@ -1,0 +1,374 @@
+---
+title: 'CITE-seq downstream analysis: From Alevin output to Seurat visualization'
+author: Ming Tang aka crazyhottommy
+date: '2023-12-05'
+slug: cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization
+categories:
+  - bioconductor
+  - bioinformatics
+  - CITE-seq
+tags:
+  - Bioconductor
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<p>In my <a href="https://divingintogeneticsandgenomics.com/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/">last post</a>, I showed you how to get the protein and RNA counts from a CITE-seq experiment using
+<code>Simpleaf</code>.</p>
+<p>Now that we have the raw count matrices, we are ready to explore them within <code>R</code>.</p>
+<p>To follow the tutorial, you can download the associated data from <a href="https://osf.io/43v5a/">here</a>.</p>
+<div id="load-the-data" class="section level3">
+<h3>Load the data</h3>
+<pre class="r"><code>suppressPackageStartupMessages({
+    library(fishpond)
+    library(ggplot2)
+    library(dplyr)
+    library(SingleCellExperiment)
+    library(Seurat)
+    library(DropletUtils)
+})
+
+# set the seed 
+set.seed(123)
+
+#gex_q &lt;- loadFry(&#39;~/blog_data/CITEseq/alevin_rna/af_quant&#39;)
+#fb_q &lt;- loadFry( &#39;~/blog_data/CITEseq/alevin_adt/af_quant&#39;)
+
+# I saved the above objs first to rds files, now just read them back
+fb_q&lt;- readRDS(&quot;~/blog_data/CITEseq/fb_q.rds&quot;)
+gex_q&lt;-readRDS(&quot;~/blog_data/CITEseq/gex_q.rds&quot;)</code></pre>
+<p>note, it seems you need the the right bioconductor version to make adt count importing to work. Or you may get this error:</p>
+<blockquote>
+<p>locating quant file
+Reading meta data
+USA mode: FALSE
+Processing 17 genes and 64016 barcodes
+Not in USA mode, ignore argument outputFormat
+Constructing output SingleCellExperiment object
+Error in h(simpleError(msg, call)) :
+error in evaluating the argument ‘j’ in selecting a method for function ‘[’: error in evaluating the argument ‘x’ in selecting a method for function ‘colSums’: unable to find an inherited method for function ‘assay’ for signature ’“SingleCellExperiment”, “logical”</p>
+</blockquote>
+<pre class="r"><code>gex_q&lt;- counts(gex_q)
+fb_q&lt;- counts(fb_q)
+
+length(intersect(colnames(gex_q), colnames(fb_q)))</code></pre>
+<pre><code>#&gt; [1] 244</code></pre>
+<p>only 244 barcode are the same, not right!!</p>
+</div>
+<div id="translate-the-barcodes" class="section level3">
+<h3>Translate the barcodes</h3>
+<p><strong>NOTE</strong></p>
+<blockquote>
+<p>If the feature barcoding protocol use TotalSeq B or C, as mentioned by 10x Genomics, the cellular barcodes of RNA and the feature barcode library would not be exactly the same. To match the cellular barcodes across technologies the cellular barcodes needs to be transformed based on a mapping file. The code to perform the mapping is here and more information from 10x Genomic is at <a href="https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-" class="uri">https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-</a>.</p>
+</blockquote>
+<p>go to <a href="https://www.10xgenomics.com/support/software/cell-ranger/downloads" class="uri">https://www.10xgenomics.com/support/software/cell-ranger/downloads</a> to download cellranger and the whitelist mapping file.</p>
+<pre class="bash"><code>wget -O cellranger-7.2.0.tar.gz &quot;https://cf.10xgenomics.com/releases/cell-exp/cellranger-7.2.0.tar.gz?Expires=1701410020&amp;Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&amp;Signature=mbC6h9L-9ZFYYD5jHPqY1CNMl1y2y~v~t2mUtrEvxtsY6GMGphKzibsRvVEdtQi8Pktx-lJvfECeqLLnSTw9A5Mm66f~LrLnWI3Ds~Xo1NBJvRqVXS7Q~G1pBT3a9S4l1CWeyIKqGwIQYwnniWYCgdfmSA0GQyczpsl9ao5JP~JFcR6KmI9dfUibVghUjgyjUCpUtOxETJgoce94-PBFOxX9i1idL-dLDPFvzkbukziKcKl7BFPk5Xhupr0bxO869lZJb1NxBHFzRnFpoXiLOZjT4nrtxjjs79w2~fnjGfiehbbAsY9toGrZ-pNknTEL16xZr8shFltKCrgV1csYGg__&quot;
+
+tar xvzf cellranger-7.2.0.tar.gz
+
+cp cellranger-7.2.0/lib/python/cellranger/barcodes/translation/3M-february-2018.txt.gz .</code></pre>
+<p>read <a href="https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-" class="uri">https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-</a></p>
+<pre class="r"><code>library(readr)
+# the mapping file 
+map &lt;- read_tsv(&#39;~/blog_data/CITEseq/3M-february-2018.txt.gz&#39;, col_names = FALSE)
+head(map)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 2
+#&gt;   X1               X2              
+#&gt;   &lt;chr&gt;            &lt;chr&gt;           
+#&gt; 1 AAACCCAAGAAACACT AAACCCATCAAACACT
+#&gt; 2 AAACCCAAGAAACCAT AAACCCATCAAACCAT
+#&gt; 3 AAACCCAAGAAACCCA AAACCCATCAAACCCA
+#&gt; 4 AAACCCAAGAAACCCG AAACCCATCAAACCCG
+#&gt; 5 AAACCCAAGAAACCTG AAACCCATCAAACCTG
+#&gt; 6 AAACCCAAGAAACGAA AAACCCATCAAACGAA</code></pre>
+<pre class="r"><code>rnaToADT &lt;- map$X1
+names(rnaToADT) &lt;- map$X2
+
+colnames(gex_q) &lt;- rnaToADT[colnames(gex_q)]
+
+dim(gex_q)</code></pre>
+<pre><code>#&gt; [1] 36601 83480</code></pre>
+<pre class="r"><code>dim(fb_q)</code></pre>
+<pre><code>#&gt; [1]    17 64016</code></pre>
+<pre class="r"><code>length(intersect(colnames(gex_q), colnames(fb_q)))</code></pre>
+<pre><code>#&gt; [1] 60985</code></pre>
+<p>60985 cell barcodes are common. Now, it makes sense!</p>
+</div>
+<div id="identify-empty-droplets" class="section level3">
+<h3>Identify empty droplets</h3>
+<p>Use <code>DropletUtils</code> to identify empty cells.</p>
+<pre class="r"><code>e.out &lt;- emptyDrops(gex_q)
+is.cell = e.out$FDR &lt;= 0.01
+is.cell[is.na(is.cell)] = FALSE
+
+gex_q.filt = gex_q[, is.cell]
+
+dim(gex_q.filt)</code></pre>
+<pre><code>#&gt; [1] 36601   720</code></pre>
+<p>Knee plot</p>
+<pre class="r"><code>tot_counts &lt;- colSums(gex_q)
+
+df &lt;- tibble(total = tot_counts,
+             rank = row_number(dplyr::desc(total))) %&gt;%
+      distinct() %&gt;%
+      arrange(rank)
+
+ggplot(df, aes(rank, total)) +
+  geom_path() +
+  scale_x_log10() + 
+  scale_y_log10() + 
+  annotation_logticks() +
+  labs(x = &quot;Barcode rank&quot;, y = &quot;Total UMI count&quot;) +
+  geom_vline(xintercept = 720, linetype = 2, color = &quot;red&quot;) +
+  annotate(&quot;text&quot;, x=720, y=1000, label=&quot;720 cells&quot;, angle= 0, size= 5, color=&quot;blue&quot;)+
+  theme_bw(base_size = 14)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<p><code>DropletUtils</code> identified 720 cells and it looks right on the knee plot.</p>
+<p>filter the adt count matrix:</p>
+<pre class="r"><code>common_barcode&lt;- intersect(colnames(gex_q.filt), colnames(fb_q))
+
+gex_q.filt&lt;- gex_q.filt[, common_barcode]
+fb_q.filt&lt;- fb_q[, common_barcode]
+
+dim(gex_q.filt)</code></pre>
+<pre><code>#&gt; [1] 36601   713</code></pre>
+<pre class="r"><code>dim(fb_q.filt)</code></pre>
+<pre><code>#&gt; [1]  17 713</code></pre>
+<pre class="r"><code>fb_q.filt[1:5, 1:5]</code></pre>
+<pre><code>#&gt; 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+#&gt;      CCGAACGTCAAGTATC ACTCCCAAGCGACAGC GCATCTCCACACTGAT CTCAGAATCGTAGATT
+#&gt; CD3                 4                2                8               10
+#&gt; CD4               483              192              185              316
+#&gt; CD8a               16                9                3                9
+#&gt; CD14             1148              662               13              850
+#&gt; CD15               36               32               17               38
+#&gt;      GCCATTCAGAATCGGT
+#&gt; CD3                 3
+#&gt; CD4                20
+#&gt; CD8a                1
+#&gt; CD14               73
+#&gt; CD15                3</code></pre>
+</div>
+<div id="convert-gene-ids" class="section level3">
+<h3>Convert gene IDs</h3>
+<p>There is one more problem. the ids in the gene expression matrix are ENSEBML IDs.
+Let’s convert ENSEMBLE ID to gene symbol.</p>
+<p>You will need a <code>gtf</code> file that we used when building the salmon index.
+PS: watch my video on where to get the genome reference files.</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/eIVlSG11umQ" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<pre class="bash"><code>wget  https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz
+tar xvzf refdata-gex-GRCh38-2020-A.tar.gz
+mv refdata-gex-GRCh38-2020-A/genes/genes.gtf .</code></pre>
+<pre class="r"><code>gene_dat&lt;- rownames(gex_q.filt) %&gt;%
+  tibble::enframe(value = &quot;gene_id&quot;) 
+
+head(gene_dat)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 2
+#&gt;    name gene_id        
+#&gt;   &lt;int&gt; &lt;chr&gt;          
+#&gt; 1     1 ENSG00000235146
+#&gt; 2     2 ENSG00000237491
+#&gt; 3     3 ENSG00000228794
+#&gt; 4     4 ENSG00000272438
+#&gt; 5     5 ENSG00000230699
+#&gt; 6     6 ENSG00000187961</code></pre>
+<pre class="r"><code># read in the gtf file
+gtf &lt;- rtracklayer::import(&#39;~/blog_data/CITEseq/genes.gtf&#39;)
+
+gtf_df&lt;- as.data.frame(gtf)
+
+filter_gene_names &lt;- gtf_df %&gt;% 
+  dplyr::filter(type == &quot;gene&quot;) %&gt;% 
+  dplyr::select(gene_id, gene_name) #%&gt;%  some version of gtf has version number in the ENSEMBL id, you can
+  # remove it 
+  #mutate(gene_id = stringr::str_replace(gene_id, &quot;(ENSG.+)\\.[0-9]+&quot;, &quot;\\1&quot;))
+
+head(filter_gene_names)</code></pre>
+<pre><code>#&gt;           gene_id   gene_name
+#&gt; 1 ENSG00000243485 MIR1302-2HG
+#&gt; 2 ENSG00000237613     FAM138A
+#&gt; 3 ENSG00000186092       OR4F5
+#&gt; 4 ENSG00000238009  AL627309.1
+#&gt; 5 ENSG00000239945  AL627309.3
+#&gt; 6 ENSG00000239906  AL627309.2</code></pre>
+<pre class="r"><code>gene_dat &lt;- left_join(gene_dat, filter_gene_names)
+
+head(gene_dat)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 3
+#&gt;    name gene_id         gene_name 
+#&gt;   &lt;int&gt; &lt;chr&gt;           &lt;chr&gt;     
+#&gt; 1     1 ENSG00000235146 AC114498.1
+#&gt; 2     2 ENSG00000237491 LINC01409 
+#&gt; 3     3 ENSG00000228794 LINC01128 
+#&gt; 4     4 ENSG00000272438 AL645608.6
+#&gt; 5     5 ENSG00000230699 AL645608.2
+#&gt; 6     6 ENSG00000187961 KLHL17</code></pre>
+<pre class="r"><code># there are some duplicates for gene_name 
+gene_dat %&gt;%
+        dplyr::count(gene_name) %&gt;%
+        dplyr::filter(n &gt; 1)</code></pre>
+<pre><code>#&gt; # A tibble: 10 × 2
+#&gt;    gene_name          n
+#&gt;    &lt;chr&gt;          &lt;int&gt;
+#&gt;  1 ARMCX5-GPRASP2     2
+#&gt;  2 CYB561D2           2
+#&gt;  3 GGT1               2
+#&gt;  4 GOLGA8M            2
+#&gt;  5 HSPA14             2
+#&gt;  6 LINC01238          2
+#&gt;  7 LINC01505          2
+#&gt;  8 MATR3              2
+#&gt;  9 TBCE               2
+#&gt; 10 TMSB15B            2</code></pre>
+<pre class="r"><code>all.equal(rownames(gex_q.filt), gene_dat$gene_id)</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code># use make.names to make it unique. Note, MT- is converted to MT.
+rownames(gex_q.filt)&lt;- make.names(gene_dat$gene_name, unique=TRUE)
+
+gex_q.filt[1:5, 1:5]</code></pre>
+<pre><code>#&gt; 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+#&gt;            CCGAACGTCAAGTATC ACTCCCAAGCGACAGC GCATCTCCACACTGAT CTCAGAATCGTAGATT
+#&gt; AC114498.1                .                .                .                .
+#&gt; LINC01409                 .                .                .                .
+#&gt; LINC01128                 .                .                .                .
+#&gt; AL645608.6                .                .                .                .
+#&gt; AL645608.2                .                .                .                .
+#&gt;            GCCATTCAGAATCGGT
+#&gt; AC114498.1                .
+#&gt; LINC01409                 2
+#&gt; LINC01128                 .
+#&gt; AL645608.6                .
+#&gt; AL645608.2                .</code></pre>
+</div>
+<div id="analyze-in-seurat" class="section level3">
+<h3>Analyze in Seurat</h3>
+<p>Now, both matrices are filtered and the gene ids are both gene symbols.</p>
+<pre class="r"><code>pbmc &lt;- CreateSeuratObject(counts = gex_q.filt)
+
+adt_assay &lt;- CreateAssayObject(counts = fb_q.filt)
+
+# add this assay to the previously created Seurat object
+pbmc[[&quot;ADT&quot;]] &lt;- adt_assay
+
+library(RColorBrewer)
+my_cols = brewer.pal(8,&quot;Dark2&quot;)
+
+DefaultAssay(pbmc) &lt;- &quot;RNA&quot;
+
+pbmc[[&quot;percent.mt&quot;]] &lt;- PercentageFeatureSet(pbmc, pattern = &quot;^MT.&quot;)
+VlnPlot(pbmc, features = c(&quot;nFeature_RNA&quot;, &quot;nCount_RNA&quot;, &quot;percent.mt&quot;), ncol = 3)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-12-1.png" width="576" /></p>
+<pre class="r"><code>pbmc &lt;- subset(pbmc, subset = nFeature_RNA &gt; 200 &amp; nFeature_RNA &lt; 4500 &amp; percent.mt &lt; 20)
+
+pbmc</code></pre>
+<pre><code>#&gt; An object of class Seurat 
+#&gt; 36618 features across 550 samples within 2 assays 
+#&gt; Active assay: RNA (36601 features, 0 variable features)
+#&gt;  1 other assay present: ADT</code></pre>
+<p>Routine processing:</p>
+<pre class="r"><code>pbmc &lt;- NormalizeData(pbmc)
+pbmc &lt;- FindVariableFeatures(pbmc)
+pbmc &lt;- ScaleData(pbmc)
+pbmc &lt;- RunPCA(pbmc, verbose = FALSE)
+pbmc &lt;- FindNeighbors(pbmc, dims = 1:30)
+pbmc &lt;- FindClusters(pbmc, resolution = 0.6, verbose = FALSE)
+pbmc &lt;- RunUMAP(pbmc, dims = 1:30)
+
+DimPlot(pbmc, label = TRUE,cols=alpha(my_cols,0.66))</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-13-1.png" width="576" /></p>
+<p>marker genes</p>
+<pre class="r"><code>markers&lt;- presto::wilcoxauc(pbmc)
+presto::top_markers(markers, n = 20)</code></pre>
+<pre><code>#&gt; # A tibble: 20 × 6
+#&gt;     rank `0`        `1`    `2`       `3`   `4`     
+#&gt;    &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;   
+#&gt;  1     1 LYZ        BCL11B CD74      NKG7  LST1    
+#&gt;  2     2 S100A9     LDHB   CD79A     CTSW  CDKN1C  
+#&gt;  3     3 S100A8     RPS27A MS4A1     GZMA  FCGR3A  
+#&gt;  4     4 VCAN       RPS12  CD37      CST7  AIF1    
+#&gt;  5     5 FCN1       RPS18  IGHM      GZMM  SMIM25  
+#&gt;  6     6 MNDA       RPS15A HLA.DPB1  HCST  HES4    
+#&gt;  7     7 S100A12    IL7R   CD79B     PRF1  MS4A7   
+#&gt;  8     8 CTSS       RPL36  BANK1     CCL5  TCF7L2  
+#&gt;  9     9 S100A6     RPS29  IGHD      MATK  FCER1G  
+#&gt; 10    10 FGL2       TPT1   HLA.DQA1  KLRB1 SIGLEC10
+#&gt; 11    11 CD14       RPS6   HLA.DRB1  CD7   RHOC    
+#&gt; 12    12 MS4A6A     RPS3   HLA.DRA   KLRG1 CSF1R   
+#&gt; 13    13 KLF4       RPS25  RALGPS2   HOPX  SAT1    
+#&gt; 14    14 GRN        EEF1A1 HLA.DPA1  CD247 LYN     
+#&gt; 15    15 AC020656.1 RPS16  IGKC      B2M   COTL1   
+#&gt; 16    16 MPEG1      RPS3A  HLA.DQB1  ARL4C VASP    
+#&gt; 17    17 APLP2      RPL10  LINC00926 KLRD1 RRAS    
+#&gt; 18    18 SRGN       CD3D   TNFRSF13C HLA.C NAP1L1  
+#&gt; 19    19 TSPO       RPL32  HVCN1     CALM1 TMSB4X  
+#&gt; 20    20 CEBPD      RPL34  BCL11A    KLRK1 BID</code></pre>
+<ul>
+<li>cluster 0 is CD14 monocytes</li>
+<li>cluster 4 is CD16 monocytes</li>
+<li>cluster 1 is T cells</li>
+<li>cluster 3 is NK cells</li>
+<li>cluster 2 is B cells</li>
+</ul>
+<p>clustered dot plot:</p>
+<pre class="r"><code>celltypes&lt;- pbmc@meta.data %&gt;%
+        mutate(annotation = case_when(
+                seurat_clusters == 0 ~ &quot;CD14 mono&quot;,
+                seurat_clusters == 4 ~ &quot;CD16 mono&quot;,
+                seurat_clusters == 1 ~ &quot;T cells&quot;,
+                seurat_clusters == 3 ~ &quot;NK cells&quot;,
+                seurat_clusters == 2 ~ &quot;B cells&quot;)) %&gt;%
+        pull(annotation)
+
+pbmc$celltypes&lt;- celltypes
+
+genes_to_plot&lt;- c(&quot;CD14&quot;, &quot;FCGR3A&quot;, &quot;SIGLEC10&quot;, &quot;FCER1G&quot;, &quot;CD3D&quot;, &quot;CD3E&quot;, &quot;CD4&quot;, &quot;CD8A&quot;, &quot;NKG7&quot;, &quot;KLRB1&quot;, &quot;CD79A&quot;, &quot;MS4A1&quot;)
+
+scCustomize::Clustered_DotPlot(pbmc, features = genes_to_plot,
+                               group.by=&quot;celltypes&quot;,
+                               plot_km_elbow = FALSE)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-15-1.png" width="576" /></p>
+</div>
+<div id="plot-the-protein-count-and-gene-count-side-by-side" class="section level3">
+<h3>Plot the protein count and gene count side by side</h3>
+<pre class="r"><code>fb_q.filt[&quot;CD4&quot;, ] %&gt;%
+        tibble::enframe() %&gt;%
+        ggplot(aes(x=value)) +
+        geom_histogram(color = &quot;white&quot;, bins = 40)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-16-1.png" width="576" /></p>
+<p>You see the bimodal distribution of the CD4 protein across all cells.</p>
+<pre class="r"><code>pbmc &lt;- NormalizeData(pbmc, normalization.method = &quot;CLR&quot;, margin = 2, assay = &quot;ADT&quot;)
+
+# Now, we will visualize CD14 levels for RNA and protein By setting the default assay, we can
+# visualize one or the other
+DefaultAssay(pbmc) &lt;- &quot;ADT&quot;
+p1 &lt;- FeaturePlot(pbmc, &quot;CD19&quot;, cols = c(&quot;lightgrey&quot;, &quot;darkgreen&quot;)) + ggtitle(&quot;CD19 protein&quot;)
+DefaultAssay(pbmc) &lt;- &quot;RNA&quot;
+p2 &lt;- FeaturePlot(pbmc, &quot;CD19&quot;, order = TRUE) + ggtitle(&quot;CD19 RNA&quot;)
+
+DimPlot(pbmc, label = TRUE,cols=alpha(my_cols,0.66), group.by = &quot;celltypes&quot;)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-17-1.png" width="576" /></p>
+<pre class="r"><code># place plots side-by-side
+p1 | p2</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-17-2.png" width="576" /></p>
+<p>We see B cells have high CD19 mRNA and protein expression!</p>
+<p>Use Ridgeplot to visualize the data:</p>
+<pre class="r"><code>DefaultAssay(pbmc) &lt;- &quot;ADT&quot;
+rownames(pbmc@assays$ADT)</code></pre>
+<pre><code>#&gt;  [1] &quot;CD3&quot;    &quot;CD4&quot;    &quot;CD8a&quot;   &quot;CD14&quot;   &quot;CD15&quot;   &quot;CD16&quot;   &quot;CD56&quot;   &quot;CD19&quot;  
+#&gt;  [9] &quot;CD25&quot;   &quot;CD45RA&quot; &quot;CD45RO&quot; &quot;PD-1&quot;   &quot;TIGIT&quot;  &quot;CD127&quot;  &quot;IgG2a&quot;  &quot;IgG1&quot;  
+#&gt; [17] &quot;IgG2b&quot;</code></pre>
+<pre class="r"><code>RidgePlot(pbmc, features = c(&quot;CD4&quot;, &quot;CD3&quot;), ncol = 2, group.by = &quot;celltypes&quot;)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-18-1.png" width="576" /></p>
+<p>Note, CD4 is high in CD4 T cells, and monocytes have moderate expression of CD4 as well.</p>
+<p>In my next blog post, I will dive into the normalization for the ADT count data. There are many nuances of the <code>CLR</code> implementation in the Seurat package.</p>
+</div>

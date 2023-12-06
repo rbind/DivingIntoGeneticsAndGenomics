@@ -1,0 +1,334 @@
+---
+title: 'CITE-seq downstream analysis: From Alevin output to Seurat visualization'
+author: Ming Tang aka crazyhottommy
+date: '2023-12-05'
+slug: cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization
+categories:
+  - bioconductor
+  - bioinformatics
+  - CITE-seq
+tags:
+  - Bioconductor
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+In my [last post](https://divingintogeneticsandgenomics.com/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/), I showed you how to get the protein and RNA counts from a CITE-seq experiment using
+`Simpleaf`.
+
+Now that we have the raw count matrices, we are ready to explore them within `R`.
+
+To follow the tutorial, you can download the associated data from [here](https://osf.io/43v5a/).
+
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 4)  # Set the desired width and height
+```
+
+### Load the data
+```{r}
+suppressPackageStartupMessages({
+    library(fishpond)
+    library(ggplot2)
+    library(dplyr)
+    library(SingleCellExperiment)
+    library(Seurat)
+    library(DropletUtils)
+})
+
+# set the seed 
+set.seed(123)
+
+#gex_q <- loadFry('~/blog_data/CITEseq/alevin_rna/af_quant')
+#fb_q <- loadFry( '~/blog_data/CITEseq/alevin_adt/af_quant')
+
+# I saved the above objs first to rds files, now just read them back
+fb_q<- readRDS("~/blog_data/CITEseq/fb_q.rds")
+gex_q<-readRDS("~/blog_data/CITEseq/gex_q.rds")
+```
+
+note, it seems you need the the right bioconductor version to make adt count importing to work. Or you may get this error:
+
+>locating quant file
+Reading meta data
+USA mode: FALSE
+Processing 17 genes and 64016 barcodes
+Not in USA mode, ignore argument outputFormat
+Constructing output SingleCellExperiment object
+Error in h(simpleError(msg, call)) : 
+  error in evaluating the argument 'j' in selecting a method for function '[': error in evaluating the argument 'x' in selecting a method for function 'colSums': unable to find an inherited method for function ‘assay’ for signature ‘"SingleCellExperiment", "logical"
+
+```{r}
+gex_q<- counts(gex_q)
+fb_q<- counts(fb_q)
+
+length(intersect(colnames(gex_q), colnames(fb_q)))
+```
+only 244 barcode are the same, not right!!
+
+
+### Translate the barcodes
+
+**NOTE**
+
+>If the feature barcoding protocol use TotalSeq B or C, as mentioned by 10x Genomics, the cellular barcodes of RNA and the feature barcode library would not be exactly the same. To match the cellular barcodes across technologies the cellular barcodes needs to be transformed based on a mapping file. The code to perform the mapping is  here  and more information from 10x Genomic is at  https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-.
+
+
+go to https://www.10xgenomics.com/support/software/cell-ranger/downloads to download cellranger and the whitelist mapping file.
+
+```{bash eval=FALSE}
+wget -O cellranger-7.2.0.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-7.2.0.tar.gz?Expires=1701410020&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&Signature=mbC6h9L-9ZFYYD5jHPqY1CNMl1y2y~v~t2mUtrEvxtsY6GMGphKzibsRvVEdtQi8Pktx-lJvfECeqLLnSTw9A5Mm66f~LrLnWI3Ds~Xo1NBJvRqVXS7Q~G1pBT3a9S4l1CWeyIKqGwIQYwnniWYCgdfmSA0GQyczpsl9ao5JP~JFcR6KmI9dfUibVghUjgyjUCpUtOxETJgoce94-PBFOxX9i1idL-dLDPFvzkbukziKcKl7BFPk5Xhupr0bxO869lZJb1NxBHFzRnFpoXiLOZjT4nrtxjjs79w2~fnjGfiehbbAsY9toGrZ-pNknTEL16xZr8shFltKCrgV1csYGg__"
+
+tar xvzf cellranger-7.2.0.tar.gz
+
+cp cellranger-7.2.0/lib/python/cellranger/barcodes/translation/3M-february-2018.txt.gz .
+```
+
+read https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-
+
+```{r}
+library(readr)
+# the mapping file 
+map <- read_tsv('~/blog_data/CITEseq/3M-february-2018.txt.gz', col_names = FALSE)
+head(map)
+
+rnaToADT <- map$X1
+names(rnaToADT) <- map$X2
+
+colnames(gex_q) <- rnaToADT[colnames(gex_q)]
+
+dim(gex_q)
+dim(fb_q)
+
+length(intersect(colnames(gex_q), colnames(fb_q)))
+```
+60985 cell barcodes are common. Now, it makes sense!
+
+### Identify empty droplets
+
+Use `DropletUtils` to identify empty cells.
+
+```{r}
+e.out <- emptyDrops(gex_q)
+is.cell = e.out$FDR <= 0.01
+is.cell[is.na(is.cell)] = FALSE
+
+gex_q.filt = gex_q[, is.cell]
+
+dim(gex_q.filt)
+```
+
+Knee plot 
+```{r}
+tot_counts <- colSums(gex_q)
+
+df <- tibble(total = tot_counts,
+             rank = row_number(dplyr::desc(total))) %>%
+      distinct() %>%
+      arrange(rank)
+
+ggplot(df, aes(rank, total)) +
+  geom_path() +
+  scale_x_log10() + 
+  scale_y_log10() + 
+  annotation_logticks() +
+  labs(x = "Barcode rank", y = "Total UMI count") +
+  geom_vline(xintercept = 720, linetype = 2, color = "red") +
+  annotate("text", x=720, y=1000, label="720 cells", angle= 0, size= 5, color="blue")+
+  theme_bw(base_size = 14)
+```
+
+`DropletUtils` identified 720 cells and it looks right on the knee plot.
+
+filter the adt count matrix:
+
+```{r}
+common_barcode<- intersect(colnames(gex_q.filt), colnames(fb_q))
+
+gex_q.filt<- gex_q.filt[, common_barcode]
+fb_q.filt<- fb_q[, common_barcode]
+
+dim(gex_q.filt)
+dim(fb_q.filt)
+
+fb_q.filt[1:5, 1:5]
+```
+
+### Convert gene IDs
+
+There is one more problem. the ids in the gene expression matrix are ENSEBML IDs.
+Let's convert ENSEMBLE ID to gene symbol.
+
+You will need a `gtf` file that we used when building the salmon index.
+PS: watch my video on where to get the genome reference files.
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=eIVlSG11umQ&")
+```
+
+```{bash eval=FALSE}
+wget  https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz
+tar xvzf refdata-gex-GRCh38-2020-A.tar.gz
+mv refdata-gex-GRCh38-2020-A/genes/genes.gtf .
+```
+
+
+```{r}
+gene_dat<- rownames(gex_q.filt) %>%
+  tibble::enframe(value = "gene_id") 
+
+head(gene_dat)
+
+# read in the gtf file
+gtf <- rtracklayer::import('~/blog_data/CITEseq/genes.gtf')
+
+gtf_df<- as.data.frame(gtf)
+
+filter_gene_names <- gtf_df %>% 
+  dplyr::filter(type == "gene") %>% 
+  dplyr::select(gene_id, gene_name) #%>%  some version of gtf has version number in the ENSEMBL id, you can
+  # remove it 
+  #mutate(gene_id = stringr::str_replace(gene_id, "(ENSG.+)\\.[0-9]+", "\\1"))
+
+head(filter_gene_names)
+gene_dat <- left_join(gene_dat, filter_gene_names)
+
+head(gene_dat)
+
+# there are some duplicates for gene_name 
+gene_dat %>%
+        dplyr::count(gene_name) %>%
+        dplyr::filter(n > 1)
+
+all.equal(rownames(gex_q.filt), gene_dat$gene_id)
+
+# use make.names to make it unique. Note, MT- is converted to MT.
+rownames(gex_q.filt)<- make.names(gene_dat$gene_name, unique=TRUE)
+
+gex_q.filt[1:5, 1:5]
+```
+
+
+### Analyze in Seurat
+
+Now, both matrices are filtered and the gene ids are both gene symbols.
+
+```{r}
+pbmc <- CreateSeuratObject(counts = gex_q.filt)
+
+adt_assay <- CreateAssayObject(counts = fb_q.filt)
+
+# add this assay to the previously created Seurat object
+pbmc[["ADT"]] <- adt_assay
+
+library(RColorBrewer)
+my_cols = brewer.pal(8,"Dark2")
+
+DefaultAssay(pbmc) <- "RNA"
+
+pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT.")
+VlnPlot(pbmc, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+pbmc <- subset(pbmc, subset = nFeature_RNA > 200 & nFeature_RNA < 4500 & percent.mt < 20)
+
+pbmc
+```
+
+Routine processing:
+
+```{r}
+pbmc <- NormalizeData(pbmc)
+pbmc <- FindVariableFeatures(pbmc)
+pbmc <- ScaleData(pbmc)
+pbmc <- RunPCA(pbmc, verbose = FALSE)
+pbmc <- FindNeighbors(pbmc, dims = 1:30)
+pbmc <- FindClusters(pbmc, resolution = 0.6, verbose = FALSE)
+pbmc <- RunUMAP(pbmc, dims = 1:30)
+
+DimPlot(pbmc, label = TRUE,cols=alpha(my_cols,0.66))
+```
+
+marker genes
+
+```{r}
+markers<- presto::wilcoxauc(pbmc)
+presto::top_markers(markers, n = 20)
+```
+
+* cluster 0 is CD14 monocytes
+* cluster 4 is CD16 monocytes
+* cluster 1 is T cells 
+* cluster 3 is NK cells
+* cluster 2 is B cells
+
+
+clustered dot plot:
+```{r}
+celltypes<- pbmc@meta.data %>%
+        mutate(annotation = case_when(
+                seurat_clusters == 0 ~ "CD14 mono",
+                seurat_clusters == 4 ~ "CD16 mono",
+                seurat_clusters == 1 ~ "T cells",
+                seurat_clusters == 3 ~ "NK cells",
+                seurat_clusters == 2 ~ "B cells")) %>%
+        pull(annotation)
+
+pbmc$celltypes<- celltypes
+
+genes_to_plot<- c("CD14", "FCGR3A", "SIGLEC10", "FCER1G", "CD3D", "CD3E", "CD4", "CD8A", "NKG7", "KLRB1", "CD79A", "MS4A1")
+
+scCustomize::Clustered_DotPlot(pbmc, features = genes_to_plot,
+                               group.by="celltypes",
+                               plot_km_elbow = FALSE)
+
+```
+
+### Plot the protein count and gene count side by side 
+
+```{r}
+fb_q.filt["CD4", ] %>%
+        tibble::enframe() %>%
+        ggplot(aes(x=value)) +
+        geom_histogram(color = "white", bins = 40)
+```
+
+You see the bimodal distribution of the CD4 protein across all cells. 
+
+```{r}
+pbmc <- NormalizeData(pbmc, normalization.method = "CLR", margin = 2, assay = "ADT")
+
+# Now, we will visualize CD14 levels for RNA and protein By setting the default assay, we can
+# visualize one or the other
+DefaultAssay(pbmc) <- "ADT"
+p1 <- FeaturePlot(pbmc, "CD19", cols = c("lightgrey", "darkgreen")) + ggtitle("CD19 protein")
+DefaultAssay(pbmc) <- "RNA"
+p2 <- FeaturePlot(pbmc, "CD19", order = TRUE) + ggtitle("CD19 RNA")
+
+DimPlot(pbmc, label = TRUE,cols=alpha(my_cols,0.66), group.by = "celltypes")
+# place plots side-by-side
+p1 | p2
+
+```
+
+We see B cells have high CD19 mRNA and protein expression!
+
+Use Ridgeplot to visualize the data:
+
+```{r}
+DefaultAssay(pbmc) <- "ADT"
+rownames(pbmc@assays$ADT)
+RidgePlot(pbmc, features = c("CD4", "CD3"), ncol = 2, group.by = "celltypes")
+```
+
+Note, CD4 is high in CD4 T cells, and monocytes have moderate expression of CD4 as well.
+
+
+In my next blog post, I will dive into the normalization for the ADT count data. There are many nuances of the `CLR` implementation in the Seurat package.
+
+
