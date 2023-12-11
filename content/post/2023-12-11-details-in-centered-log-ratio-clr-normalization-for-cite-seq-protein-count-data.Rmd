@@ -1,0 +1,232 @@
+---
+title: Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data
+author: Ming Tang
+date: '2023-12-11'
+slug: details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data
+categories:
+  - CITE-seq
+  - bioinformatics
+tags:
+  - bioinformatics
+  - Seurat
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 4)  # Set the desired width and height
+```
+
+Following my [last blog post](https://divingintogeneticsandgenomics.com/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/), download the CITE-seq protein and RNA count data at [here](https://osf.io/43v5a/).
+
+```{r}
+library(Seurat)
+library(ggplot2)
+library(dplyr)
+
+pbmc<- readRDS("~/blog_data/CITEseq/pbmc1k_adt.rds")
+
+```
+
+### How to normalize protein ADT count data?
+
+Seurat uses the centered log ratio (CLR) to normalize protein count data.
+
+In the Seurat github page:
+
+```{r}
+# https://github.com/satijalab/seurat/blob/fc4a4f5203227832477a576bfe01bc6efeb23f51/R/preprocessing.R#L1768-L1769
+clr_function <- function(x) {
+          return(log1p(x = x / (exp(x = sum(log1p(x = x[x > 0]), na.rm = TRUE) / length(x = x)))))
+}
+
+```
+
+log1p(x) computes log(1+x) accurately also for |x| << 1.
+
+It addes a pseduo-count in the last step by using `log1p` and it effectively makes the transformed values >=0. 
+
+
+Let's see it in action.
+
+```{r}
+pbmc <- NormalizeData(pbmc, normalization.method = "CLR", margin = 2, assay = "ADT")
+
+# Now, we will visualize CD14 levels for RNA and protein By setting the default assay, we can
+# visualize one or the other
+DefaultAssay(pbmc) <- "ADT"
+FeaturePlot(pbmc, "CD19", cols = c("lightgrey", "darkgreen")) + ggtitle("CD19 protein")
+RidgePlot(pbmc, features = c("CD19", "CD3"))
+```
+We do see the minimal value is 0.
+
+Second, what does`margin = 2` mean?
+
+* margin=1 means "perform CLR normalization for each feature independently"
+* margin=2 means "perform CLR normalization within a cell"
+
+
+Let's verify it.
+
+```{r}
+# raw counts
+adt_count<- pbmc@assays$ADT@counts
+
+# first cell 
+adt_count[,1]
+#normalized data
+adt_norm<- pbmc@assays$ADT@data
+
+# first cell 
+adt_norm[,1]
+
+all.equal(clr_function(adt_count[,1]), adt_norm[,1])
+```
+
+The result shows that when specifying "margin = 2", seurat is normalizing all the features within a cell.
+
+However, the help page of the normalization is a little bit confusing.
+
+>margin	
+If performing CLR normalization, normalize across features (1) or cells (2)
+
+and when you invoke the function, if you specify marigin =1
+it will message: "Normalizing across features"; if you specify margin = 2, it will
+message "Normalizing across cells".
+
+This is oppostite to what seurat is doing internally. Read this issue and someone else had the same intepretation https://github.com/satijalab/seurat/issues/3605.
+
+### CLR normalization in detail
+
+Now, let's take a closer look at centered log-ratio (CLR) normalization. CLR was initially used in this paper [Simultaneous epitope and transcriptome measurement in single cells](https://sci-hub.ru/https://www.nature.com/articles/nmeth.4380) on compositional data.
+
+![](/img/clr_norm.png)
+
+The first function below is what the orginal paper uses.
+```{r}
+
+## the usual CLR adding pseduo-count for each protein first
+clr_original <- function(x) {
+  return(log((x + 1) / mean(x + 1, na.rm = TRUE)))
+}
+
+
+## clr from seurat 
+clr_function <- function(x) {
+  return(log1p(x = x / (exp(x = sum(log1p(x = x[x > 0]), na.rm = TRUE) / length(x = x)))))
+}
+
+```
+
+Seurat CLR removes 0 counts first by `x[x>0]` and then `log1p` transform the raw counts, sum them up, calculate the average of the log counts, `exp` it back, and then divided the raw counts by this average and finally `log1p` again...
+
+
+Seurat CLR normalization.
+```{r}
+clr_norm<- apply(adt_count, MARGIN = 2,  FUN= clr_function)
+
+# indeed, it is the same with the normalized ADT data in the seurat object
+all.equal(clr_norm, pbmc@assays$ADT@data)
+
+range(clr_norm)
+hist(clr_norm)
+```
+We do not see negative values.
+
+
+The original CLR
+```{r}
+clr_original_norm<- apply(adt_count, MARGIN = 2, clr_original)
+
+range(clr_original_norm)
+hist(clr_original_norm)
+```
+We do see negative values.
+
+Visualize in Ridge plots:
+```{r fig.width= 10, fig.height= 6}
+get_expression_meta<- function(obj, mat){
+  meta<- obj@meta.data %>%
+  tibble::rownames_to_column(var = "cell")
+  
+  df<- t(mat) %>%
+    as.data.frame() %>% 
+    tibble::rownames_to_column(var = "cell") %>%
+    left_join(meta)
+  
+  return(df)
+}
+
+
+p1<- get_expression_meta(pbmc, clr_norm ) %>% 
+  ggplot(aes(x = CD19, y = celltypes)) +
+  ggridges::geom_density_ridges(aes(fill = celltypes)) + 
+  theme_bw(base_size = 14) +
+  xlab("") +
+  ylab("") +
+  ggtitle("Seurat CLR")
+
+
+p2<- get_expression_meta(pbmc, clr_original_norm ) %>% 
+  ggplot(aes(x = CD19, y = celltypes)) +
+  ggridges::geom_density_ridges(aes(fill = celltypes)) + 
+  theme_bw(base_size = 14) +
+  xlab("") +
+  ylab("") +
+  ggtitle("original CLR")
+
+p1 + p2 + patchwork::plot_layout(guides = "collect")
+```
+
+
+### visualize in Heatmap
+
+```{r}
+library(ComplexHeatmap)
+hp1<- Heatmap(clr_norm, 
+              show_column_names = FALSE,
+              name = "Seurat CLR")
+
+row_index<- row_order(hp1)
+col_index<- column_order(hp1)
+
+
+hp2<- Heatmap(clr_original_norm, 
+              show_column_names = FALSE,
+              row_order = row_index,
+              column_order = col_index,
+              name = "original CLR")
+hp1 + hp2 
+```
+
+They both look similar in terms of patterns. The Seurat CLR makes it 0 bound and the authors argue it is better for visualization.
+
+
+### Take home messages
+
+1. Details matter. If you blindly uses the functions in a package, you may get the wrong interpretation of your results.
+
+2. Documentation matters. If the documentation is confusing, it may lead to unintended usages of the options.
+
+### References
+
+https://github.com/satijalab/seurat/issues/2624
+https://github.com/satijalab/seurat/issues/1268
+https://github.com/scverse/muon/pull/28
+
+
+
+
+
+
+
+
+
+
