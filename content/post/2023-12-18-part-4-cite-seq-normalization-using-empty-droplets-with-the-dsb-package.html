@@ -1,0 +1,464 @@
+---
+title: Part 4 CITE-seq normalization using empty droplets with the dsb package
+author: Ming Tang
+date: '2023-12-18'
+slug: part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package
+categories:
+  - CITE-seq
+  - bioinformatics
+  - rstats
+tags:
+  - rstats
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>In this post, we are going to try a CITE-seq normalization method called <code>dsb</code> published in
+<a href="https://www.nature.com/articles/s41467-022-29356-8">Normalizing and denoising protein expression data from droplet-based single cell profiling</a></p>
+<blockquote>
+<p>two major components of protein expression noise in droplet-based single cell experiments: (1) protein-specific noise originating from ambient, unbound antibody encapsulated in droplets that can be accurately estimated via the level of “ambient” ADT counts in empty droplets,</p>
+</blockquote>
+<blockquote>
+<p>and (2) droplet/cell-specific noise revealed via the shared variance component associated with isotype antibody controls and background protein counts in each cell. We develop an R software package, “dsb” (denoised and scaled by background), the first dedicated low-level normalization method developed for protein ADT data, to correct for both of these noise sources without experimental modifications</p>
+</blockquote>
+<p>Another interesting blog post from the same author: <a href="https://mattpm.net/posts/cd4_2.html">CD4 protein vs CD4 mRNA in CITE-seq data</a></p>
+<p>This is Part 4 of a series of posts on CITE-seq data analysis. You can find the previous posts:</p>
+<ul>
+<li><a href="https://divingintogeneticsandgenomics.com/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/">Part 1 How to use Salmon/Alevin to preprocess CITE-seq data</a></li>
+<li><a href="https://divingintogeneticsandgenomics.com/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/">Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</a></li>
+<li><a href="https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data</a></li>
+</ul>
+<p>To follow the tutorial, you can download the associated data from <a href="https://osf.io/43v5a/">here</a>.</p>
+<pre class="r"><code>library(here)
+library(dplyr)
+suppressPackageStartupMessages({
+    library(fishpond)
+    library(ggplot2)
+    library(SingleCellExperiment)
+    library(Seurat)
+    library(DropletUtils)
+})
+
+# set the seed 
+set.seed(123)
+
+#gex_q &lt;- loadFry(here(&#39;data/NLS088_OV/CITE-seq/alevin_rna/af_quant&#39;))
+#fb_q &lt;- loadFry(here(&#39;data/NLS088_OV/CITE-seq/alevin_adt/af_quant&#39;))
+
+# I saved the above objs first to rds files, now just read them back
+fb_q&lt;- readRDS(&quot;~/blog_data/CITEseq/fb_q.rds&quot;)
+gex_q&lt;-readRDS(&quot;~/blog_data/CITEseq/gex_q.rds&quot;)
+
+gex_q&lt;- counts(gex_q)
+fb_q&lt;- counts(fb_q)
+
+# only 244 barcode are the same, not right
+length(intersect(colnames(gex_q), colnames(fb_q)))</code></pre>
+<pre><code>#&gt; [1] 244</code></pre>
+<div id="translate-barcode" class="section level3">
+<h3>translate barcode</h3>
+<blockquote>
+<p>If the feature barcoding protocol use TotalSeq B or C, as mentioned by 10x Genomics, the cellular barcodes of RNA and the feature barcode library would not be exactly the same. To match the cellular barcodes across technologies the cellular barcodes needs to be transformed based on a mapping file. The code to perform the mapping is here and more information from 10x Genomic is at <a href="https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-" class="uri">https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-</a>.</p>
+</blockquote>
+<pre class="r"><code>library(readr)
+# the mapping file 
+map &lt;- read_tsv(&#39;~/blog_data/CITEseq/3M-february-2018.txt.gz&#39;, col_names = FALSE)
+head(map)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 2
+#&gt;   X1               X2              
+#&gt;   &lt;chr&gt;            &lt;chr&gt;           
+#&gt; 1 AAACCCAAGAAACACT AAACCCATCAAACACT
+#&gt; 2 AAACCCAAGAAACCAT AAACCCATCAAACCAT
+#&gt; 3 AAACCCAAGAAACCCA AAACCCATCAAACCCA
+#&gt; 4 AAACCCAAGAAACCCG AAACCCATCAAACCCG
+#&gt; 5 AAACCCAAGAAACCTG AAACCCATCAAACCTG
+#&gt; 6 AAACCCAAGAAACGAA AAACCCATCAAACGAA</code></pre>
+<pre class="r"><code>rnaToADT &lt;- map$X1
+names(rnaToADT) &lt;- map$X2
+
+colnames(gex_q) &lt;- rnaToADT[colnames(gex_q)]
+
+dim(gex_q)</code></pre>
+<pre><code>#&gt; [1] 36601 83480</code></pre>
+<pre class="r"><code>dim(fb_q)</code></pre>
+<pre><code>#&gt; [1]    17 64016</code></pre>
+<pre class="r"><code>length(intersect(colnames(gex_q), colnames(fb_q)))</code></pre>
+<pre><code>#&gt; [1] 60985</code></pre>
+<pre class="r"><code># 60985
+
+
+common_barcode&lt;- intersect(colnames(gex_q), colnames(fb_q))</code></pre>
+<p>subset only the common cell barcodes for the protein and RNA.</p>
+<pre class="r"><code>gex_q&lt;- gex_q[, common_barcode]
+fb_q&lt;- fb_q[, common_barcode]
+
+dim(gex_q)</code></pre>
+<pre><code>#&gt; [1] 36601 60985</code></pre>
+<pre class="r"><code>dim(fb_q)</code></pre>
+<pre><code>#&gt; [1]    17 60985</code></pre>
+</div>
+<div id="identify-empty-cells" class="section level3">
+<h3>identify empty cells</h3>
+<p>use <code>DropletUtils</code> to remove empty cells</p>
+<pre class="r"><code>e.out &lt;- emptyDrops(gex_q)
+is.cell&lt;- e.out$FDR &lt;= 0.01
+is.cell[is.na(is.cell)]&lt;-  FALSE
+
+gex_q.filt&lt;-  gex_q[, is.cell]
+
+dim(gex_q.filt)</code></pre>
+<pre><code>#&gt; [1] 36601   713</code></pre>
+<p>Knee plot</p>
+<pre class="r"><code>tot_counts &lt;- colSums(gex_q)
+
+df &lt;- tibble(total = tot_counts,
+             rank = row_number(dplyr::desc(total))) %&gt;%
+      distinct() %&gt;%
+      dplyr::arrange(rank)
+
+ggplot(df, aes(rank, total)) +
+  geom_path() +
+  scale_x_log10() + 
+  scale_y_log10() + 
+  annotation_logticks() +
+  labs(x = &quot;Barcode rank&quot;, y = &quot;Total UMI count&quot;) +
+  geom_vline(xintercept = 720, linetype = 2, color = &quot;red&quot;) +
+  annotate(&quot;text&quot;, x=720, y=1000, label=&quot;720 cells&quot;, angle= 0, size= 5, color=&quot;blue&quot;)+
+  theme_bw(base_size = 14)</code></pre>
+<p><img src="/post/2023-12-18-part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package_files/figure-html/unnamed-chunk-6-1.png" width="576" /></p>
+<p>use the empty droplet as controls for ADT background removing</p>
+<pre class="r"><code>stained_cells&lt;- colnames(gex_q.filt)
+background&lt;- setdiff(colnames(gex_q), stained_cells)
+
+length(stained_cells)</code></pre>
+<pre><code>#&gt; [1] 713</code></pre>
+<pre class="r"><code>length(background)</code></pre>
+<pre><code>#&gt; [1] 60272</code></pre>
+</div>
+<div id="convert-ensemble-id-to-gene-symobol-for-the-gene-expression-matrix" class="section level3">
+<h3>convert ENSEMBLE ID to gene symobol for the gene expression matrix</h3>
+<p>There is one more problem. the ids in the gene expression matrix are ENSEBML IDs.
+Let’s convert ENSEMBLE ID to gene symbol.</p>
+<pre class="r"><code>#convert ENSEMBLE ID to gene symobol 
+gex_q.filt[1:5, 1:5]</code></pre>
+<pre><code>#&gt; 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+#&gt;                 CCGAACGTCAAGTATC ACTCCCAAGCGACAGC GCATCTCCACACTGAT
+#&gt; ENSG00000235146                .                .                .
+#&gt; ENSG00000237491                .                .                .
+#&gt; ENSG00000228794                .                .                .
+#&gt; ENSG00000272438                .                .                .
+#&gt; ENSG00000230699                .                .                .
+#&gt;                 CTCAGAATCGTAGATT GCCATTCAGAATCGGT
+#&gt; ENSG00000235146                .                .
+#&gt; ENSG00000237491                .                2
+#&gt; ENSG00000228794                .                .
+#&gt; ENSG00000272438                .                .
+#&gt; ENSG00000230699                .                .</code></pre>
+<pre class="r"><code>gene_dat&lt;- rownames(gex_q.filt) %&gt;%
+  tibble::enframe(value = &quot;gene_id&quot;) 
+
+# read in the gtf file
+gtf &lt;- rtracklayer::import(&#39;~/blog_data/CITEseq/genes.gtf&#39;)
+
+gtf_df&lt;- as.data.frame(gtf)
+
+filter_gene_names &lt;- gtf_df %&gt;% 
+  dplyr::filter(type == &quot;gene&quot;) %&gt;% 
+  dplyr::select(gene_id, gene_name) #%&gt;%  some version of gtf has version number in the ENSEMBL id, you can
+  # remove it 
+  #mutate(gene_id = stringr::str_replace(gene_id, &quot;(ENSG.+)\\.[0-9]+&quot;, &quot;\\1&quot;))
+
+
+gene_dat &lt;- left_join(gene_dat, filter_gene_names)
+
+# there are some duplicated 
+head(gene_dat)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 3
+#&gt;    name gene_id         gene_name 
+#&gt;   &lt;int&gt; &lt;chr&gt;           &lt;chr&gt;     
+#&gt; 1     1 ENSG00000235146 AC114498.1
+#&gt; 2     2 ENSG00000237491 LINC01409 
+#&gt; 3     3 ENSG00000228794 LINC01128 
+#&gt; 4     4 ENSG00000272438 AL645608.6
+#&gt; 5     5 ENSG00000230699 AL645608.2
+#&gt; 6     6 ENSG00000187961 KLHL17</code></pre>
+<pre class="r"><code>all.equal(rownames(gex_q.filt), gene_dat$gene_id)</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>all.equal(rownames(gex_q), gene_dat$gene_id)</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code># make.name will convert MT- to MT.
+rownames(gex_q)&lt;- make.names(gene_dat$gene_name, unique=TRUE)
+rownames(gex_q.filt)&lt;- make.names(gene_dat$gene_name, unique=TRUE)
+
+gex_q.filt[1:5, 1:5]</code></pre>
+<pre><code>#&gt; 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+#&gt;            CCGAACGTCAAGTATC ACTCCCAAGCGACAGC GCATCTCCACACTGAT CTCAGAATCGTAGATT
+#&gt; AC114498.1                .                .                .                .
+#&gt; LINC01409                 .                .                .                .
+#&gt; LINC01128                 .                .                .                .
+#&gt; AL645608.6                .                .                .                .
+#&gt; AL645608.2                .                .                .                .
+#&gt;            GCCATTCAGAATCGGT
+#&gt; AC114498.1                .
+#&gt; LINC01409                 2
+#&gt; LINC01128                 .
+#&gt; AL645608.6                .
+#&gt; AL645608.2                .</code></pre>
+</div>
+<div id="quality-control-cells-and-background-droplets" class="section level3">
+<h3>Quality control cells and background droplets</h3>
+<p>Follow <a href="https://cran.r-project.org/web/packages/dsb/vignettes/end_to_end_workflow.html" class="uri">https://cran.r-project.org/web/packages/dsb/vignettes/end_to_end_workflow.html</a>
+for more quality control</p>
+<pre class="r"><code># create metadata of droplet QC stats used in standard scRNAseq processing
+mtgene&lt;- grep(pattern = &quot;^MT\\.&quot;, rownames(gex_q), value = TRUE) # used below
+
+md&lt;- data.frame(
+  rna.size = log10(Matrix::colSums(gex_q)), 
+  prot.size = log10(Matrix::colSums(fb_q)), 
+  n.gene = Matrix::colSums(gex_q &gt; 0), 
+  mt.prop = Matrix::colSums(gex_q[mtgene, ]) / Matrix::colSums(gex_q)
+)
+# add indicator for barcodes Cell Ranger called as cells
+md$drop.class&lt;-  ifelse(rownames(md) %in% stained_cells, &#39;cell&#39;, &#39;background&#39;)
+
+# remove barcodes with no evidence of capture in the experiment, this is log scale
+# so &gt; 1 count
+md&lt;- md[md$rna.size &gt; 0 &amp; md$prot.size &gt; 0, ]</code></pre>
+<pre class="r"><code># install.packages(&quot;ggside&quot;)
+library(ggside)
+ggplot(md, aes(x= prot.size)) +
+  geom_histogram(aes(fill = drop.class), bins = 50, color = &quot;black&quot;) +
+  ggside::geom_xsidedensity(aes(y = after_stat(density), color = drop.class, fill = drop.class), 
+                    position = &quot;stack&quot;, alpha = 0.4) +
+  scale_xsidey_continuous(minor_breaks = NULL)+
+  theme_bw() </code></pre>
+<p><img src="/post/2023-12-18-part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package_files/figure-html/unnamed-chunk-10-1.png" width="576" /></p>
+</div>
+<div id="quality-control-for-the-background-cells" class="section level3">
+<h3>Quality control for the background cells:</h3>
+<p><code>prot.size</code> is the log10 of total number of ADT counts in each cell.</p>
+<pre class="r"><code>ggplot(md, aes(x = log10(n.gene), y = prot.size )) +
+   theme_bw() + 
+   geom_bin2d(bins = 100) + 
+   scale_fill_viridis_c(option = &quot;C&quot;) + 
+   facet_wrap(~drop.class) +
+        geom_hline(yintercept = 2, color = &quot;red&quot;, linetype = 2) +
+        geom_vline(xintercept = 2, color = &quot;red&quot;, linetype = 2)</code></pre>
+<p><img src="/post/2023-12-18-part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package_files/figure-html/unnamed-chunk-11-1.png" width="576" /></p>
+<p>subset the high-quality empty droplets</p>
+<pre class="r"><code>background_drops&lt;- rownames(
+  md[ md$prot.size &gt; 0.5 &amp; 
+      md$prot.size &lt; 2 &amp; 
+      md$rna.size &lt; 2, ]
+  ) 
+background.adt.mtx = as.matrix(fb_q[ , background_drops])
+dim(background.adt.mtx)</code></pre>
+<pre><code>#&gt; [1]    17 59732</code></pre>
+<p>~60,000 empty droplets are included after QC. Normalized values are robust to background thresholds used, so long as one does not omit the major background population.</p>
+<p>filter the adt count matrix</p>
+<pre class="r"><code>fb_q.filt&lt;- fb_q[, stained_cells]
+
+dim(gex_q.filt)</code></pre>
+<pre><code>#&gt; [1] 36601   713</code></pre>
+<pre class="r"><code>dim(fb_q.filt)</code></pre>
+<pre><code>#&gt; [1]  17 713</code></pre>
+<pre class="r"><code>fb_q.filt[1:5, 1:5]</code></pre>
+<pre><code>#&gt; 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+#&gt;      CCGAACGTCAAGTATC ACTCCCAAGCGACAGC GCATCTCCACACTGAT CTCAGAATCGTAGATT
+#&gt; CD3                 4                2                8               10
+#&gt; CD4               483              192              185              316
+#&gt; CD8a               16                9                3                9
+#&gt; CD14             1148              662               13              850
+#&gt; CD15               36               32               17               38
+#&gt;      GCCATTCAGAATCGGT
+#&gt; CD3                 3
+#&gt; CD4                20
+#&gt; CD8a                1
+#&gt; CD14               73
+#&gt; CD15                3</code></pre>
+</div>
+<div id="normalize-protein-data-with-the-dsbnormalizeprotein-function" class="section level3">
+<h3>Normalize protein data with the DSBNormalizeProtein Function</h3>
+<pre class="r"><code># install.packages(&quot;dsb&quot;)
+library(dsb)
+rownames(fb_q.filt)</code></pre>
+<pre><code>#&gt;  [1] &quot;CD3&quot;    &quot;CD4&quot;    &quot;CD8a&quot;   &quot;CD14&quot;   &quot;CD15&quot;   &quot;CD16&quot;   &quot;CD56&quot;   &quot;CD19&quot;  
+#&gt;  [9] &quot;CD25&quot;   &quot;CD45RA&quot; &quot;CD45RO&quot; &quot;PD-1&quot;   &quot;TIGIT&quot;  &quot;CD127&quot;  &quot;IgG2a&quot;  &quot;IgG1&quot;  
+#&gt; [17] &quot;IgG2b&quot;</code></pre>
+<pre class="r"><code># define isotype controls 
+isotype.controls&lt;- c(&quot;IgG2a&quot;, &quot;IgG1&quot;, 
+                     &quot;IgG2b&quot;)
+
+# normalize and denoise with dsb with 
+cells.dsb.norm&lt;- DSBNormalizeProtein(
+  cell_protein_matrix = fb_q.filt, 
+  empty_drop_matrix = background.adt.mtx, 
+  denoise.counts = TRUE, 
+  use.isotype.control = TRUE, 
+  isotype.control.name.vec = isotype.controls)</code></pre>
+<pre><code>#&gt; [1] &quot;correcting ambient protein background noise&quot;
+#&gt; [1] &quot;some proteins with low background variance detected check raw and normalized distributions.  protein stats can be returned with return.stats = TRUE&quot;
+#&gt; [1] &quot;IgG2b&quot;
+#&gt; [1] &quot;fitting models to each cell for dsb technical component and removing cell to cell technical noise&quot;</code></pre>
+<p>The function returns a matrix of normalized protein values which can be integrated with Seurat.</p>
+<pre class="r"><code>cells.dsb.norm[1:5, 1:5]</code></pre>
+<pre><code>#&gt;      CCGAACGTCAAGTATC ACTCCCAAGCGACAGC GCATCTCCACACTGAT CTCAGAATCGTAGATT
+#&gt; CD3         0.4066237       -0.3896268       -0.1050716         5.067701
+#&gt; CD4        26.1671731       19.9957852       17.6891651        25.105814
+#&gt; CD8a        6.9744573        4.3026643       -2.7203584         7.086775
+#&gt; CD14       34.3506644       30.3298611        2.7421026        33.577690
+#&gt; CD15        8.1007843        7.6738079        2.7043322        10.192798
+#&gt;      GCCATTCAGAATCGGT
+#&gt; CD3          4.713502
+#&gt; CD4         10.199216
+#&gt; CD8a         5.370481
+#&gt; CD14        17.313187
+#&gt; CD15         3.314175</code></pre>
+</div>
+<div id="analyze-in-seurat" class="section level3">
+<h3>analyze in Seurat</h3>
+<pre class="r"><code>pbmc &lt;- CreateSeuratObject(counts = gex_q.filt)
+
+# add dsb normalized matrix &quot;cell.adt.dsb&quot; to the &quot;ADT&quot; data (not counts!) slot
+adt_assay &lt;- CreateAssayObject(data = cells.dsb.norm)
+
+#adt_assay &lt;- CreateAssayObject(counts = fb_q.filt)
+
+# add this assay to the previously created Seurat object
+pbmc[[&quot;ADT&quot;]] &lt;- adt_assay
+
+library(RColorBrewer)
+my_cols = brewer.pal(8,&quot;Dark2&quot;)
+
+DefaultAssay(pbmc) &lt;- &quot;RNA&quot;
+
+pbmc[[&quot;percent.mt&quot;]] &lt;- PercentageFeatureSet(pbmc, pattern = &quot;^MT.&quot;)
+VlnPlot(pbmc, features = c(&quot;nFeature_RNA&quot;, &quot;nCount_RNA&quot;, &quot;percent.mt&quot;), ncol = 3)</code></pre>
+<p><img src="/post/2023-12-18-part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package_files/figure-html/unnamed-chunk-16-1.png" width="576" /></p>
+<pre class="r"><code>pbmc &lt;- subset(pbmc, subset = nFeature_RNA &gt; 200 &amp; nFeature_RNA &lt; 4500 &amp; percent.mt &lt; 20)</code></pre>
+<p>Routine processing for the RNA data.</p>
+<pre class="r"><code>pbmc &lt;- NormalizeData(pbmc)
+pbmc &lt;- FindVariableFeatures(pbmc)
+pbmc &lt;- ScaleData(pbmc)
+pbmc &lt;- RunPCA(pbmc, verbose = FALSE)
+pbmc &lt;- FindNeighbors(pbmc, dims = 1:30)
+pbmc &lt;- FindClusters(pbmc, resolution = 0.6, verbose = FALSE)
+pbmc &lt;- RunUMAP(pbmc, dims = 1:30)
+
+DimPlot(pbmc, label = TRUE,cols=alpha(my_cols,0.66))</code></pre>
+<p><img src="/post/2023-12-18-part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package_files/figure-html/unnamed-chunk-17-1.png" width="576" /></p>
+<p>marker genes</p>
+<pre class="r"><code>markers&lt;- presto::wilcoxauc(pbmc)
+presto::top_markers(markers, n = 20)</code></pre>
+<pre><code>#&gt; # A tibble: 20 × 6
+#&gt;     rank `0`        `1`    `2`       `3`   `4`     
+#&gt;    &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;   
+#&gt;  1     1 LYZ        BCL11B CD74      NKG7  LST1    
+#&gt;  2     2 S100A9     LDHB   CD79A     CTSW  CDKN1C  
+#&gt;  3     3 S100A8     RPS27A MS4A1     GZMA  FCGR3A  
+#&gt;  4     4 VCAN       RPS12  CD37      CST7  AIF1    
+#&gt;  5     5 FCN1       RPS18  IGHM      GZMM  SMIM25  
+#&gt;  6     6 MNDA       RPS15A HLA.DPB1  HCST  HES4    
+#&gt;  7     7 S100A12    IL7R   CD79B     PRF1  MS4A7   
+#&gt;  8     8 CTSS       RPL36  BANK1     CCL5  TCF7L2  
+#&gt;  9     9 S100A6     RPS29  IGHD      MATK  FCER1G  
+#&gt; 10    10 FGL2       TPT1   HLA.DQA1  KLRB1 SIGLEC10
+#&gt; 11    11 CD14       RPS6   HLA.DRB1  CD7   RHOC    
+#&gt; 12    12 MS4A6A     RPS3   HLA.DRA   KLRG1 CSF1R   
+#&gt; 13    13 KLF4       RPS25  RALGPS2   HOPX  SAT1    
+#&gt; 14    14 GRN        EEF1A1 HLA.DPA1  CD247 LYN     
+#&gt; 15    15 AC020656.1 RPS16  IGKC      B2M   COTL1   
+#&gt; 16    16 MPEG1      RPS3A  HLA.DQB1  ARL4C VASP    
+#&gt; 17    17 APLP2      RPL10  LINC00926 KLRD1 RRAS    
+#&gt; 18    18 SRGN       CD3D   TNFRSF13C HLA.C NAP1L1  
+#&gt; 19    19 TSPO       RPL32  HVCN1     CALM1 TMSB4X  
+#&gt; 20    20 CEBPD      RPL34  BCL11A    KLRK1 BID</code></pre>
+<ul>
+<li>cluster 0 is CD14 monocytes</li>
+<li>cluster 4 is CD16 monocytes</li>
+<li>cluster 1 is T cells</li>
+<li>cluster 3 is NK cells</li>
+<li>cluster 2 is B cells</li>
+</ul>
+<p>clustered dot plot</p>
+<pre class="r"><code>celltypes&lt;- pbmc@meta.data %&gt;%
+        mutate(annotation = case_when(
+                seurat_clusters == 0 ~ &quot;CD14 mono&quot;,
+                seurat_clusters == 4 ~ &quot;CD16 mono&quot;,
+                seurat_clusters == 1 ~ &quot;T cells&quot;,
+                seurat_clusters == 3 ~ &quot;NK cells&quot;,
+                seurat_clusters == 2 ~ &quot;B cells&quot;)) %&gt;%
+        pull(annotation)
+
+pbmc$celltypes&lt;- celltypes
+
+genes_to_plot&lt;- c(&quot;CD14&quot;, &quot;FCGR3A&quot;, &quot;SIGLEC10&quot;, &quot;FCER1G&quot;, &quot;CD3D&quot;, &quot;CD4&quot;, &quot;CD8A&quot;, &quot;NKG7&quot;, &quot;KLRB1&quot;, &quot;CD79A&quot;, &quot;MS4A1&quot;)
+
+scCustomize::Clustered_DotPlot(pbmc, features = genes_to_plot,
+                               group.by=&quot;celltypes&quot;,
+                               plot_km_elbow = FALSE)</code></pre>
+<p><img src="/post/2023-12-18-part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package_files/figure-html/unnamed-chunk-19-1.png" width="576" /></p>
+<pre class="r"><code>DefaultAssay(pbmc) &lt;- &quot;ADT&quot;
+p1 &lt;- FeaturePlot(pbmc, &quot;CD19&quot;, cols = c(&quot;lightgrey&quot;, &quot;darkgreen&quot;)) + ggtitle(&quot;CD19 protein&quot;)
+DefaultAssay(pbmc) &lt;- &quot;RNA&quot;
+p2 &lt;- FeaturePlot(pbmc, &quot;CD19&quot;, order = TRUE) + ggtitle(&quot;CD19 RNA&quot;)
+
+# place plots side-by-side
+p1 | p2</code></pre>
+<p><img src="/post/2023-12-18-part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package_files/figure-html/unnamed-chunk-20-1.png" width="576" /></p>
+</div>
+<div id="compare-it-to-the-seurat-clr-normalization" class="section level3">
+<h3>compare it to the Seurat CLR normalization</h3>
+<pre class="r"><code>## clr from seurat 
+clr_function &lt;- function(x) {
+  return(log1p(x = x / (exp(x = sum(log1p(x = x[x &gt; 0]), na.rm = TRUE) / length(x = x)))))
+}
+
+# use the raw adt counts
+clr_norm&lt;- apply(fb_q.filt, MARGIN = 2,  FUN= clr_function)</code></pre>
+<p>Visualize in Ridge plots:</p>
+<pre class="r"><code>get_expression_meta&lt;- function(obj, mat){
+  meta&lt;- obj@meta.data %&gt;%
+  tibble::rownames_to_column(var = &quot;cell&quot;)
+  
+  df&lt;- t(mat) %&gt;%
+    as.data.frame() %&gt;% 
+    tibble::rownames_to_column(var = &quot;cell&quot;) %&gt;%
+    inner_join(meta)
+  
+  return(df)
+}
+
+
+# Seurat CLR normalized 
+p1&lt;- get_expression_meta(pbmc, clr_norm ) %&gt;% 
+  ggplot(aes(x = CD19, y = celltypes)) +
+  ggridges::geom_density_ridges(aes(fill = celltypes)) + 
+  theme_bw(base_size = 14) +
+  xlab(&quot;&quot;) +
+  ylab(&quot;&quot;) +
+  ggtitle(&quot;Seurat CLR&quot;)
+
+
+# dsb normalized 
+p2&lt;- get_expression_meta(pbmc, cells.dsb.norm) %&gt;% 
+  ggplot(aes(x = CD19, y = celltypes)) +
+  ggridges::geom_density_ridges(aes(fill = celltypes)) + 
+  theme_bw(base_size = 14) +
+  xlab(&quot;&quot;) +
+  ylab(&quot;&quot;) +
+  ggtitle(&quot;dsb normalized&quot;)
+
+p1 + p2 + patchwork::plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="/post/2023-12-18-part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package_files/figure-html/unnamed-chunk-22-1.png" width="960" /></p>
+<p>In the paper describing the <code>dsb</code> method, the authors showed that it performs better than the <code>CLR</code> normalization method. You can read the paper for more details.</p>
+<p>Happy Learning!</p>
+<p>Crazyhottommy</p>
+</div>

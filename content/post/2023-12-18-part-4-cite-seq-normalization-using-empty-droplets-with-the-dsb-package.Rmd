@@ -1,0 +1,430 @@
+---
+title: Part 4 CITE-seq normalization using empty droplets with the dsb package
+author: Ming Tang
+date: '2023-12-18'
+slug: part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package
+categories:
+  - CITE-seq
+  - bioinformatics
+  - rstats
+tags:
+  - rstats
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+In this post, we are going to try a CITE-seq normalization method called `dsb` published in 
+[Normalizing and denoising protein expression data from droplet-based single cell profiling](https://www.nature.com/articles/s41467-022-29356-8)
+
+>two major components of protein expression noise in droplet-based single cell experiments: (1) protein-specific noise originating from ambient, unbound antibody encapsulated in droplets that can be accurately estimated via the level of “ambient” ADT counts in empty droplets, 
+
+>and (2) droplet/cell-specific noise revealed via the shared variance component associated with isotype antibody controls and background protein counts in each cell. We develop an R software package, “dsb” (denoised and scaled by background), the first dedicated low-level normalization method developed for protein ADT data, to correct for both of these noise sources without experimental modifications
+
+Another interesting blog post from the same author: [CD4 protein vs CD4 mRNA in CITE-seq data](https://mattpm.net/posts/cd4_2.html)
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 4)  # Set the desired width and height
+```
+
+This is Part 4 of a series of posts on CITE-seq data analysis. You can find the previous posts:
+
+* [Part 1 How to use Salmon/Alevin to preprocess CITE-seq data](https://divingintogeneticsandgenomics.com/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/)
+* [Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization](https://divingintogeneticsandgenomics.com/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/)
+* [Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data](https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/)
+
+To follow the tutorial, you can download the associated data from [here](https://osf.io/43v5a/).
+
+```{r}
+library(here)
+library(dplyr)
+suppressPackageStartupMessages({
+    library(fishpond)
+    library(ggplot2)
+    library(SingleCellExperiment)
+    library(Seurat)
+    library(DropletUtils)
+})
+
+# set the seed 
+set.seed(123)
+
+#gex_q <- loadFry(here('data/NLS088_OV/CITE-seq/alevin_rna/af_quant'))
+#fb_q <- loadFry(here('data/NLS088_OV/CITE-seq/alevin_adt/af_quant'))
+
+# I saved the above objs first to rds files, now just read them back
+fb_q<- readRDS("~/blog_data/CITEseq/fb_q.rds")
+gex_q<-readRDS("~/blog_data/CITEseq/gex_q.rds")
+
+gex_q<- counts(gex_q)
+fb_q<- counts(fb_q)
+
+# only 244 barcode are the same, not right
+length(intersect(colnames(gex_q), colnames(fb_q)))
+```
+
+
+### translate barcode
+
+>If the feature barcoding protocol use TotalSeq B or C, as mentioned by 10x Genomics, the cellular barcodes of RNA and the feature barcode library would not be exactly the same. To match the cellular barcodes across technologies the cellular barcodes needs to be transformed based on a mapping file. The code to perform the mapping is  here  and more information from 10x Genomic is at  https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-.
+
+```{r}
+library(readr)
+# the mapping file 
+map <- read_tsv('~/blog_data/CITEseq/3M-february-2018.txt.gz', col_names = FALSE)
+head(map)
+
+rnaToADT <- map$X1
+names(rnaToADT) <- map$X2
+
+colnames(gex_q) <- rnaToADT[colnames(gex_q)]
+
+dim(gex_q)
+dim(fb_q)
+
+length(intersect(colnames(gex_q), colnames(fb_q)))
+# 60985
+
+
+common_barcode<- intersect(colnames(gex_q), colnames(fb_q))
+```
+
+
+subset only the common cell barcodes for the protein and RNA.
+```{r}
+gex_q<- gex_q[, common_barcode]
+fb_q<- fb_q[, common_barcode]
+
+dim(gex_q)
+dim(fb_q)
+```
+
+
+### identify empty cells
+
+use `DropletUtils` to remove empty cells
+
+```{r}
+e.out <- emptyDrops(gex_q)
+is.cell<- e.out$FDR <= 0.01
+is.cell[is.na(is.cell)]<-  FALSE
+
+gex_q.filt<-  gex_q[, is.cell]
+
+dim(gex_q.filt)
+```
+
+Knee plot 
+```{r}
+
+tot_counts <- colSums(gex_q)
+
+df <- tibble(total = tot_counts,
+             rank = row_number(dplyr::desc(total))) %>%
+      distinct() %>%
+      dplyr::arrange(rank)
+
+ggplot(df, aes(rank, total)) +
+  geom_path() +
+  scale_x_log10() + 
+  scale_y_log10() + 
+  annotation_logticks() +
+  labs(x = "Barcode rank", y = "Total UMI count") +
+  geom_vline(xintercept = 720, linetype = 2, color = "red") +
+  annotate("text", x=720, y=1000, label="720 cells", angle= 0, size= 5, color="blue")+
+  theme_bw(base_size = 14)
+```
+
+use the empty droplet as controls for ADT background removing
+```{r}
+stained_cells<- colnames(gex_q.filt)
+background<- setdiff(colnames(gex_q), stained_cells)
+
+length(stained_cells)
+length(background)
+```
+
+### convert ENSEMBLE ID to gene symobol for the gene expression matrix
+
+There is one more problem. the ids in the gene expression matrix are ENSEBML IDs.
+Let's convert ENSEMBLE ID to gene symbol.
+
+```{r}
+#convert ENSEMBLE ID to gene symobol 
+gex_q.filt[1:5, 1:5]
+
+gene_dat<- rownames(gex_q.filt) %>%
+  tibble::enframe(value = "gene_id") 
+
+# read in the gtf file
+gtf <- rtracklayer::import('~/blog_data/CITEseq/genes.gtf')
+
+gtf_df<- as.data.frame(gtf)
+
+filter_gene_names <- gtf_df %>% 
+  dplyr::filter(type == "gene") %>% 
+  dplyr::select(gene_id, gene_name) #%>%  some version of gtf has version number in the ENSEMBL id, you can
+  # remove it 
+  #mutate(gene_id = stringr::str_replace(gene_id, "(ENSG.+)\\.[0-9]+", "\\1"))
+
+
+gene_dat <- left_join(gene_dat, filter_gene_names)
+
+# there are some duplicated 
+head(gene_dat)
+
+all.equal(rownames(gex_q.filt), gene_dat$gene_id)
+all.equal(rownames(gex_q), gene_dat$gene_id)
+# make.name will convert MT- to MT.
+rownames(gex_q)<- make.names(gene_dat$gene_name, unique=TRUE)
+rownames(gex_q.filt)<- make.names(gene_dat$gene_name, unique=TRUE)
+
+gex_q.filt[1:5, 1:5]
+```
+
+### Quality control cells and background droplets
+
+Follow https://cran.r-project.org/web/packages/dsb/vignettes/end_to_end_workflow.html
+for more quality control
+
+```{r}
+# create metadata of droplet QC stats used in standard scRNAseq processing
+mtgene<- grep(pattern = "^MT\\.", rownames(gex_q), value = TRUE) # used below
+
+md<- data.frame(
+  rna.size = log10(Matrix::colSums(gex_q)), 
+  prot.size = log10(Matrix::colSums(fb_q)), 
+  n.gene = Matrix::colSums(gex_q > 0), 
+  mt.prop = Matrix::colSums(gex_q[mtgene, ]) / Matrix::colSums(gex_q)
+)
+# add indicator for barcodes Cell Ranger called as cells
+md$drop.class<-  ifelse(rownames(md) %in% stained_cells, 'cell', 'background')
+
+# remove barcodes with no evidence of capture in the experiment, this is log scale
+# so > 1 count
+md<- md[md$rna.size > 0 & md$prot.size > 0, ]
+```
+
+
+```{r}
+# install.packages("ggside")
+library(ggside)
+ggplot(md, aes(x= prot.size)) +
+  geom_histogram(aes(fill = drop.class), bins = 50, color = "black") +
+  ggside::geom_xsidedensity(aes(y = after_stat(density), color = drop.class, fill = drop.class), 
+                    position = "stack", alpha = 0.4) +
+  scale_xsidey_continuous(minor_breaks = NULL)+
+  theme_bw() 
+```
+
+### Quality control for the background cells:
+
+`prot.size` is the log10 of total number of ADT counts in each cell.
+
+```{r}
+ggplot(md, aes(x = log10(n.gene), y = prot.size )) +
+   theme_bw() + 
+   geom_bin2d(bins = 100) + 
+   scale_fill_viridis_c(option = "C") + 
+   facet_wrap(~drop.class) +
+        geom_hline(yintercept = 2, color = "red", linetype = 2) +
+        geom_vline(xintercept = 2, color = "red", linetype = 2)
+```
+
+subset the high-quality empty droplets
+```{r}
+background_drops<- rownames(
+  md[ md$prot.size > 0.5 & 
+      md$prot.size < 2 & 
+      md$rna.size < 2, ]
+  ) 
+background.adt.mtx = as.matrix(fb_q[ , background_drops])
+dim(background.adt.mtx)
+```
+
+~60,000 empty droplets are included after QC. Normalized values are robust to background thresholds used, so long as one does not omit the major background population.
+
+
+filter the adt count matrix 
+
+```{r}
+fb_q.filt<- fb_q[, stained_cells]
+
+dim(gex_q.filt)
+dim(fb_q.filt)
+
+fb_q.filt[1:5, 1:5]
+```
+
+### Normalize protein data with the DSBNormalizeProtein Function
+
+```{r}
+# install.packages("dsb")
+library(dsb)
+rownames(fb_q.filt)
+# define isotype controls 
+isotype.controls<- c("IgG2a", "IgG1", 
+                     "IgG2b")
+
+# normalize and denoise with dsb with 
+cells.dsb.norm<- DSBNormalizeProtein(
+  cell_protein_matrix = fb_q.filt, 
+  empty_drop_matrix = background.adt.mtx, 
+  denoise.counts = TRUE, 
+  use.isotype.control = TRUE, 
+  isotype.control.name.vec = isotype.controls)
+```
+
+The function returns a matrix of normalized protein values which can be integrated with Seurat.
+
+```{r}
+cells.dsb.norm[1:5, 1:5]
+```
+
+### analyze in Seurat
+
+```{r}
+pbmc <- CreateSeuratObject(counts = gex_q.filt)
+
+# add dsb normalized matrix "cell.adt.dsb" to the "ADT" data (not counts!) slot
+adt_assay <- CreateAssayObject(data = cells.dsb.norm)
+
+#adt_assay <- CreateAssayObject(counts = fb_q.filt)
+
+# add this assay to the previously created Seurat object
+pbmc[["ADT"]] <- adt_assay
+
+library(RColorBrewer)
+my_cols = brewer.pal(8,"Dark2")
+
+DefaultAssay(pbmc) <- "RNA"
+
+pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT.")
+VlnPlot(pbmc, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+pbmc <- subset(pbmc, subset = nFeature_RNA > 200 & nFeature_RNA < 4500 & percent.mt < 20)
+```
+
+Routine processing for the RNA data.
+```{r}
+pbmc <- NormalizeData(pbmc)
+pbmc <- FindVariableFeatures(pbmc)
+pbmc <- ScaleData(pbmc)
+pbmc <- RunPCA(pbmc, verbose = FALSE)
+pbmc <- FindNeighbors(pbmc, dims = 1:30)
+pbmc <- FindClusters(pbmc, resolution = 0.6, verbose = FALSE)
+pbmc <- RunUMAP(pbmc, dims = 1:30)
+
+DimPlot(pbmc, label = TRUE,cols=alpha(my_cols,0.66))
+
+```
+
+marker genes
+
+```{r}
+markers<- presto::wilcoxauc(pbmc)
+presto::top_markers(markers, n = 20)
+```
+
+* cluster 0 is CD14 monocytes
+* cluster 4 is CD16 monocytes
+* cluster 1 is T cells 
+* cluster 3 is NK cells
+* cluster 2 is B cells
+
+
+clustered dot plot
+```{r}
+celltypes<- pbmc@meta.data %>%
+        mutate(annotation = case_when(
+                seurat_clusters == 0 ~ "CD14 mono",
+                seurat_clusters == 4 ~ "CD16 mono",
+                seurat_clusters == 1 ~ "T cells",
+                seurat_clusters == 3 ~ "NK cells",
+                seurat_clusters == 2 ~ "B cells")) %>%
+        pull(annotation)
+
+pbmc$celltypes<- celltypes
+
+genes_to_plot<- c("CD14", "FCGR3A", "SIGLEC10", "FCER1G", "CD3D", "CD4", "CD8A", "NKG7", "KLRB1", "CD79A", "MS4A1")
+
+scCustomize::Clustered_DotPlot(pbmc, features = genes_to_plot,
+                               group.by="celltypes",
+                               plot_km_elbow = FALSE)
+
+```
+
+
+```{r}
+DefaultAssay(pbmc) <- "ADT"
+p1 <- FeaturePlot(pbmc, "CD19", cols = c("lightgrey", "darkgreen")) + ggtitle("CD19 protein")
+DefaultAssay(pbmc) <- "RNA"
+p2 <- FeaturePlot(pbmc, "CD19", order = TRUE) + ggtitle("CD19 RNA")
+
+# place plots side-by-side
+p1 | p2
+
+```
+
+### compare it to the Seurat CLR normalization
+
+```{r}
+## clr from seurat 
+clr_function <- function(x) {
+  return(log1p(x = x / (exp(x = sum(log1p(x = x[x > 0]), na.rm = TRUE) / length(x = x)))))
+}
+
+# use the raw adt counts
+clr_norm<- apply(fb_q.filt, MARGIN = 2,  FUN= clr_function)
+
+```
+
+Visualize in Ridge plots:
+
+```{r fig.width= 10, fig.height= 6}
+
+get_expression_meta<- function(obj, mat){
+  meta<- obj@meta.data %>%
+  tibble::rownames_to_column(var = "cell")
+  
+  df<- t(mat) %>%
+    as.data.frame() %>% 
+    tibble::rownames_to_column(var = "cell") %>%
+    inner_join(meta)
+  
+  return(df)
+}
+
+
+# Seurat CLR normalized 
+p1<- get_expression_meta(pbmc, clr_norm ) %>% 
+  ggplot(aes(x = CD19, y = celltypes)) +
+  ggridges::geom_density_ridges(aes(fill = celltypes)) + 
+  theme_bw(base_size = 14) +
+  xlab("") +
+  ylab("") +
+  ggtitle("Seurat CLR")
+
+
+# dsb normalized 
+p2<- get_expression_meta(pbmc, cells.dsb.norm) %>% 
+  ggplot(aes(x = CD19, y = celltypes)) +
+  ggridges::geom_density_ridges(aes(fill = celltypes)) + 
+  theme_bw(base_size = 14) +
+  xlab("") +
+  ylab("") +
+  ggtitle("dsb normalized")
+
+p1 + p2 + patchwork::plot_layout(guides = "collect")
+```
+
+In the paper describing the `dsb` method, the authors showed that it performs better than the `CLR` normalization method. You can read the paper for more details.
+
+Happy Learning!
+
+Crazyhottommy
