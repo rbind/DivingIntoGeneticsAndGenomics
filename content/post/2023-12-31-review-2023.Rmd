@@ -1,0 +1,129 @@
+---
+title: Review 2023
+author: Ming Tang
+date: '2023-12-31'
+slug: review-2023
+categories:
+  - reflection
+  - new year resolution
+tags:
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+By the end of every year, I write a review of the past year. It is a great time
+to reflect on the Losses and Wins and plan for the new year. I can not believe 2024
+is right at the corner. My review of 2022 can be found at https://divingintogeneticsandgenomics.com/post/review-2022/.
+
+
+### Goals reached for 2023
+
+This is in the same order of the goals of 2023 in my last year's [review](https://divingintogeneticsandgenomics.com/post/review-2022/).
+
+1. Although we had some rough time at Immunitas as the leadership team changes 
+the strategy and downsize the company to focus on the clinical trial, we are 
+now back with strong team spirit. The computational team is supporting multiple
+biomarker data from the clinical trial and it is gratifying to see the drug can
+potentially impact patients' lives in our first hands. 
+
+2. I wanted to foster a learning environment within the computational team and
+prepared some time slots for learning deep learning together. We could not do
+it because of the downsizing. However, I stuck with the plan and finished reading
+[Deep Learning with R](https://www.manning.com/books/deep-learning-with-r). 
+Read my post [My 4-steps to learn deep learning for genomics](https://divingintogeneticsandgenomics.com/post/how-i-am-learning-deep-learning/).
+
+3. I took a week off and went to visit DC with my parents in law and the whole family.
+It was the first travel for a long time, and I am glad I took some vacations. 
+It has been 8 years since I went back to China last time, and I plan to go home
+in 2024.
+
+4. We have our [Monkeybread spatial transcriptomics paper](https://www.biorxiv.org/content/10.1101/2023.09.14.557736v1) on Biorxiv! 
+It was rejected by a journal, but who cares :) I am happy as long as it is on Biorxiv.
+This is one of the benefits of being in industry. Kudos to Matt Bernstein in the 
+group for publishing it.
+
+5. I published in *Nature*! Not in a way that I thought :) [Embracing the command line: my unexpected career in computational biology](https://divingintogeneticsandgenomics.com/publication/2023-10-04-nature-career/). I hope my story can inspire many others who want to learn computational biology without prior experience.
+
+
+### Other Wins
+
+1.  I joined [Pythia Bioscience](https://www.linkedin.com/posts/pythia-bio_a-new-addition-to-our-scientific-advisory-activity-7100129598994071552-4Ihz/) as their 
+scientific advisory board member. Pythia's [CDIAM Multi-Omics Software](https://www.pythiabio.com/multiomics-analysis-software) Platform empowers biotech/pharma companies to derive biological insights from multi-omics data.
+
+2.  I started my [chatomics youtube channel](https://www.youtube.com/@chatomics/videos) in April. I published 50 videos on learning bioinformatics. When I started in April, I committed to making at least one video every week. I usually do it after the kids sleep or when my wife takes care of them.
+
+Sometimes, I felt so tired and fell asleep with them. When I woke up, it was 10 or 11 pm. I told myself, I had not made one for this week, let me make one now. Eight months later, my channel now has over 3700 subscribers and over 35,000 views.
+
+3.  I wrote 37 blog posts in https://divingintogeneticsandgenomics.com/
+
+4.  I gave 3 talks and was on 6 podcasts! This is something new and I really love 
+the experience. 
+
+- Future of Drug Discovery podcast, [Unleashing the power of computational biology](https://podcasters.spotify.com/pod/show/fodd/episodes/FODD-13---Ming-Tommy-Tang---Unleashing-the-Power-of-Computational-Biology-e2amitj)
+
+- Single cell world podcast, [How To Switch From Wet-Lab To Dry-Lab? Tips for single cell scientists](https://www.spreaker.com/user/16881494/ep-27-how-to-switch-from-wet-lab-to-dry-)
+
+- PathFinder podcast by Purdue University, https://www.youtube.com/watch?v=1Xl5q830LaY
+
+- Data in Biotech podcast, [How has computational biology impacted the field of immuno-oncology](https://podcasts.apple.com/gb/podcast/tommy-tang-on-building-a-dry-lab-team-selecting/id1708993594?i=1000632547739)
+
+- Interview by Bigomics, [Navigating Omics Data Analysis Challenges in Biotech](https://www.linkedin.com/events/7123312378913419264/comments/)
+
+- The last podcast, I recorded it with the almighty [Josh Stamer](https://statquest.org/about/)! 
+I am sure many of you have watched his youtube videos on machine learning! I learned so much from
+his videos. It was like a dream come true for me. The episode will be out in 2024.
+
+5. I consistently posted 3 posts on Linkedin every day for the past 8 months or so.
+Education is always my passion, I love to share my experience and tips on bioinformatics.
+I use https://buffer.com/ to pre-schedule all my tweets and Linkedin posts between 9-11 am. 
+
+6. I consumed hundreds of episodes of podcasts during my commute to work. It is usually
+a 45-60 min commute depending on traffic. Without traffic, it only takes me 35 mins.
+You may complain about your commute. For me, it is the best time to absorb new
+information and learn new stuff. I always spend several mins to write down the key takeaways 
+when I get to the office.
+
+7. I've read 12 non-fiction books spanning from leadership, self-helping, biography to business.
+
+### Losses 
+
+1. I am still over-weighted. I need to loss 10-15 ponds and take care of my health.
+My back hurts if I sit for too long in front of the computer.
+
+2. My wife takes care of the kids most of the time, I need to spend more time with them.
+Kids grow fast!
+
+3. I need to be more organized with my time to be more productive. I will establish my own
+system/framework for my work and life.
+
+### Goals for 2024
+
+*  Lose 10 ponds. 
+*  Top priorities is to support the clinical trial to identify biomarkers for 
+potential responders to our drug. Help with indication selection for the second and third program.
+*  Go to one conference that is not local. (I am spoiled to attend many conferences in Boston last year)
+*  Host another AI for drug discovery conference in 2024. I co-organized [this one](https://divingintogeneticsandgenomics.com/talk/2023-ai-conference/) in 2023.
+*  Finish this deep learning course https://course.fast.ai/ 
+*  Take one more leadership training session.
+*  Make at least one video a week; one blog post/tutorial every two weeks.
+*  Post every day on Linkedin pre-scheduled with http://buffer.com
+*  Write 500 words every day. (either my learning from podcasts on my commute or any reading)
+*  Read at least 12 books again!
+* I took the holidays making this course. yes, I was working in the nights although I 
+have been sick for the last 7 days :) 
+
+        - Master real-world bioinformatics in R: a crash course for absolute beginners.
+I plan to make this one in the 2024:
+
+        - Wet biologists’ bioinformatics guide to Linux commands
+
+Stay tuned when they are out!
+
+I only need to make sure I show up every day for the work. Be consistent and persistent. 
+Time will pay the dividends. I understand great things take great effort. Read my article at https://www.linkedin.com/pulse/power-delayed-gratification-achieving-great-things-through-tang.
+
+
+
+
