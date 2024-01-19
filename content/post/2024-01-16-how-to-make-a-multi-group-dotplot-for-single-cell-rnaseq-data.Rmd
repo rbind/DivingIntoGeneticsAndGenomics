@@ -1,0 +1,420 @@
+---
+title: How to make a multi-group dotplot for single-cell RNAseq data
+author: Ming Tang
+date: '2024-01-16'
+slug: how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data
+categories:
+  - bioinformatics
+  - bioconductor
+  - single-cell
+tags:
+  - heatmap
+  - single-cell
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+```
+
+
+Dotplots are very popular for visualizing single-cell RNAseq data. In essence,
+the dot size represents the percentage of cells that are positive for that gene;
+the color intensity represents the average gene expression of that gene in a 
+cell type.
+
+It is easy to plot one using `Seurat::dotplot` or `Sccustomize::clustered_dotplot`.
+However, when you have multiple groups/conditions in your data and you want to 
+visualize it by groups, it is not that straightforward.
+
+However, if you understand that the underlying data are just the percentages of
+positive cells and the average expression values and the dotplot is essentially
+just a heatmap, you can write R code to visualize the data in anyway you want.
+
+Let's use this data from https://satijalab.org/seurat/articles/integration_introduction
+
+>The object contains data from human PBMC from two conditions, interferon-stimulated and control cells (stored in the stim column in the object metadata). We will aim to integrate the two conditions together, so that we can jointly identify cell subpopulations across datasets, and then explore how each group differs across conditions
+
+```{r}
+library(Seurat)
+library(SeuratData)
+library(patchwork)
+library(harmony)
+library(dplyr)
+# install dataset
+InstallData("ifnb")
+```
+
+```{r}
+# load dataset
+ifnb <- LoadData("ifnb")
+ifnb<- UpdateSeuratObject(ifnb)
+
+ifnb
+```
+
+Two conditions: control and stimulated.
+
+```{r}
+table(ifnb$stim)
+```
+
+
+routine processing
+
+```{r cache=TRUE}
+ifnb<- ifnb %>%
+  NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000) %>%
+  FindVariableFeatures( selection.method = "vst", nfeatures = 2000) %>%
+  ScaleData() %>%
+  RunPCA() %>%
+  RunHarmony(group.by.vars = "stim", dims.use = 1:30) %>%
+  RunUMAP(reduction = "harmony", dims = 1:30) %>%
+  FindNeighbors(reduction = "harmony", dims = 1:30) %>% 
+  FindClusters(resolution = 0.6)
+```
+
+
+Let's take a look at the UMAP:
+
+```{r}
+# Visualization
+DimPlot(ifnb, reduction = "umap", group.by = c("stim", "seurat_annotations"))
+```
+
+Let's make a dotplot using `Seurat`
+
+```{r fig.width= 10, fig.height= 8, fig.fullwidth=TRUE}
+Idents(ifnb)<- ifnb$seurat_annotations
+# NEEDS TO BE FIXED AND SET ORDER CORRECTLY
+Idents(ifnb) <- factor(Idents(ifnb), 
+                       levels = c("pDC", "Eryth", "Mk", "DC", 
+                                                "CD14 Mono", "CD16 Mono","B Activated", 
+                                                "B", "CD8 T", "NK", "T activated", 
+                                                "CD4 Naive T", "CD4 Memory T"))
+
+markers.to.plot <- c("CD3D", "CREM", "HSPH1", "SELL", "GIMAP5", "CACYBP", "GNLY", 
+                     "NKG7", "CCL5", "CD8A", "MS4A1", "CD79A", "MIR155HG", "NME1", 
+                     "FCGR3A", "VMO1", "CCL2", "S100A9", "HLA-DQA1", "GPR183", 
+                     "PPBP", "GNG11", "HBA2", "HBB", "TSPAN13", "IL3RA", "IGJ", 
+                     "PRSS57")
+
+DotPlot(ifnb, features = markers.to.plot, cols = c("blue", "red"), 
+        dot.scale = 8, split.by = "stim") +
+        RotatedAxis()
+```
+
+We can also use [`scCusstomize`](https://samuel-marsh.github.io/scCustomize/articles/Gene_Expression_Plotting.html) to cluster the dotplots, but you can not split by condition.
+```{r}
+scCustomize::Clustered_DotPlot(ifnb, features = markers.to.plot,
+                               plot_km_elbow = FALSE)
+```
+
+You can rotate the x and y axis:
+```{r fig.width= 10, fig.height= 4, fig.fullwidth=TRUE}
+scCustomize::Clustered_DotPlot(ifnb, features = markers.to.plot,
+                               plot_km_elbow = FALSE, flip = TRUE)
+```
+
+What if I want to split the dotplot by the condition?
+
+### Customized multi-group dotplot
+
+We need to get the percentage of positive cells and average expression by group.
+
+For a single gene, put the groups into multiple rows, and each column is a 
+cell type.
+
+```{r}
+# group1 is the cell type/cluster annotation 
+# group2 is any condition you want to further group, in this case, the stim 
+
+GetMatrixFromSeuratByGroupSingle<- function(obj, feature, group1, group2){
+  if (length(feature) != 1){
+          stop("please only provide only one gene name")
+  }
+  exp_mat<- obj@assays$RNA@data[feature, ,drop=FALSE]
+  count_mat<- obj@assays$RNA@counts[feature,,drop=FALSE ]
+  
+  meta<- obj@meta.data %>%
+  tibble::rownames_to_column(var = "cell")
+        
+  # get the average expression matrix
+  exp_df<- as.matrix(exp_mat) %>% 
+    as.data.frame() %>% 
+    tibble::rownames_to_column(var="gene") %>%
+    tidyr::pivot_longer(!gene, names_to = "cell", values_to = "expression") %>%
+    left_join(meta) %>%
+    group_by(gene,{{group1}}, {{group2}}) %>%
+    summarise(average_expression = mean(expression)) %>%
+    tidyr::pivot_wider(names_from = {{group1}}, 
+                       values_from= average_expression) 
+  
+  exp_mat<- exp_df[, -c(1,2)] %>% as.matrix()
+  rownames(exp_mat)<- exp_df %>% pull({{group2}})
+  
+  # get the percentage positive cell matrix
+  count_df<- as.matrix(count_mat) %>% 
+    as.data.frame() %>% 
+    tibble::rownames_to_column(var="gene") %>%
+    tidyr::pivot_longer(!gene, names_to = "cell", values_to = "count") %>%
+    left_join(meta) %>%
+    group_by(gene, {{group1}}, {{group2}}) %>%
+    summarise(percentage = mean(count >0)) %>%
+    tidyr::pivot_wider(names_from = {{group1}}, 
+                       values_from= percentage) 
+
+  percent_mat<- count_df[, -c(1,2)] %>% as.matrix()
+  rownames(percent_mat)<- count_df %>% pull({{group2}})
+  
+  if (!identical(dim(exp_mat), dim(percent_mat))) {
+    stop("the dimension of the two matrice should be the same!")
+  }
+  
+  if(! all.equal(colnames(exp_mat), colnames(percent_mat))) {
+    stop("column names of the two matrice should be the same!")
+  }
+  
+  if(! all.equal(rownames(exp_mat), rownames(percent_mat))) {
+    stop("column names of the two matrice should be the same!")
+  }
+  return(list(exp_mat = exp_mat, percent_mat = percent_mat))
+}
+```
+
+Let's get the matrices for one gene 
+```{r}
+mat<- GetMatrixFromSeuratByGroupSingle(obj= ifnb, 
+                                 feature = "ISG15", 
+                                 seurat_annotations,
+                                 stim)
+
+# take a look at the matrices
+mat$exp_mat
+
+mat$percent_mat
+
+```
+Two matrices:
+
+1. the average expression for each cell type per condition
+2. the percentage of ISG15 positive cells for each cell type per condition
+
+Now, Let's visualize it using `ComplexHeatmap`. See my [previous post](https://divingintogeneticsandgenomics.com/post/clustered-dotplot-for-single-cell-rnaseq/) too.
+
+Always explore the data range before you decide how to map the data values to
+colors.
+
+```{r}
+library(ComplexHeatmap)
+
+quantile(mat$exp_mat, c(0.1, 0.5, 0.8, 0.9))
+
+col_fun<-  circlize::colorRamp2(c(0, 2, 5), c("#FDE725FF", "#238A8DFF", "#440154FF"))
+```
+
+`0` will be mapped to `#FDE725FF`, `2` will be mapped to `#238A8DFF` and 
+`5` will be mapped to `#440154FF`. The value in-between will be linearlly 
+interpolated to get corresponding colors
+
+
+Use the `layer_fun` to decide the size of the dots. Within the `grid.circle`,
+we specify the radius `r= sqrt(pindex(mat$percent_mat, i, j))` of the circle to 
+be the square root of the percentage, so the area size of the dots correspond to 
+the percentage.
+
+```{r}
+layer_fun = function(j, i, x, y, w, h, fill){
+    grid.rect(x = x, y = y, width = w, height = h, 
+              gp = gpar(col = "gray", fill = NA))
+    grid.circle(x=x,y=y,r= sqrt(pindex(mat$percent_mat, i, j)) * unit(4, "mm"),
+                gp = gpar(fill = col_fun(pindex(mat$exp_mat, i, j)), col = NA))}
+  
+hp<- Heatmap(mat$exp_mat,
+             heatmap_legend_param=list(title= "expression"),
+             column_title = "ISG15", 
+             col=col_fun,
+             rect_gp = gpar(type = "none"),
+             layer_fun = layer_fun,
+             row_names_gp = gpar(fontsize = 8),
+             border = "black",
+             cluster_rows = FALSE, 
+             cluster_columns = FALSE,
+             row_names_side  = "left")
+```
+
+make the legend for the dot size. Make sure the size is the same as the in the
+`layer_fun` which is `unit(4, "mm")`. You can change the size as you want. 
+
+```{r}
+lgd_list = list(
+    Legend( labels = c(0, 10, 25, 50, 75), title = "percentage",
+            graphics = list(
+              function(x, y, w, h) grid.circle(x = x, y = y, r = 0  * unit(4, "mm"),
+                                               gp = gpar(fill = "black")),
+              function(x, y, w, h) grid.circle(x = x, y = y, r = sqrt(0.1)  * unit(4, "mm"),
+                                               gp = gpar(fill = "black")),
+              function(x, y, w, h) grid.circle(x = x, y = y, r = sqrt(0.25) * unit(4, "mm"),
+                                               gp = gpar(fill = "black")),
+              function(x, y, w, h) grid.circle(x = x, y = y, r = sqrt(0.5) * unit(4, "mm"),
+                                               gp = gpar(fill = "black")),
+              function(x, y, w, h) grid.circle(x = x, y = y, r = sqrt(0.75) * unit(4, "mm"),
+                                               gp = gpar(fill = "black"))),
+            row_gap = unit(2.5, "mm")
+            ))
+
+draw(hp, annotation_legend_list = lgd_list, ht_gap = unit(1, "cm"),
+     annotation_legend_side = "right")
+
+```
+
+
+### plot Multiple genes across multiple groups/conditions 
+
+Let's change the function a little. The major difference is this line:
+`tidyr::pivot_wider(names_from = c({{group1}}, {{group2}}), 
+                       values_from= average_expression,
+                       names_sep="|")`
+                       
+So the data will be wrangled as:
+rows are genes, columns are `cell_type|condition`
+                  
+```{r}
+GetMatrixFromSeuratByGroupMulti<- function(obj, features, group1, group2){
+  exp_mat<- obj@assays$RNA@data[features, ,drop=FALSE]
+  count_mat<- obj@assays$RNA@counts[features,,drop=FALSE ]
+  
+  meta<- obj@meta.data %>%
+  tibble::rownames_to_column(var = "cell")
+  
+  # get the average expression matrix        
+  exp_df<- as.matrix(exp_mat) %>% 
+    as.data.frame() %>% 
+    tibble::rownames_to_column(var="gene") %>%
+    tidyr::pivot_longer(!gene, names_to = "cell", values_to = "expression") %>%
+    left_join(meta) %>%
+    group_by(gene,{{group1}}, {{group2}}) %>%
+    summarise(average_expression = mean(expression)) %>%
+    # the trick is to make the data wider in columns: cell_type|group
+    tidyr::pivot_wider(names_from = c({{group1}}, {{group2}}), 
+                       values_from= average_expression,
+                       names_sep="|") 
+  
+  # convert to a matrix
+  exp_mat<- exp_df[, -1] %>% as.matrix()
+  rownames(exp_mat)<- exp_df$gene
+  
+  # get percentage of positive cells matrix
+  count_df<- as.matrix(count_mat) %>% 
+    as.data.frame() %>% 
+    tibble::rownames_to_column(var="gene") %>%
+    tidyr::pivot_longer(!gene, names_to = "cell", values_to = "count") %>%
+    left_join(meta) %>%
+    group_by(gene, {{group1}}, {{group2}}) %>%
+    summarise(percentage = mean(count >0)) %>%
+    tidyr::pivot_wider(names_from = c({{group1}}, {{group2}}), 
+                       values_from= percentage,
+                       names_sep="|")
+
+  percent_mat<- count_df[, -1] %>% as.matrix()
+  rownames(percent_mat)<- count_df$gene
+  
+  if (!identical(dim(exp_mat), dim(percent_mat))) {
+    stop("the dimension of the two matrice should be the same!")
+  }
+  
+  if(! all.equal(colnames(exp_mat), colnames(percent_mat))) {
+    stop("column names of the two matrice should be the same!")
+  }
+  
+  if(! all.equal(rownames(exp_mat), rownames(percent_mat))) {
+    stop("column names of the two matrice should be the same!")
+  }
+  return(list(exp_mat = exp_mat, percent_mat = percent_mat))
+}
+
+```
+
+Let's take a look at the matrices:
+```{r}
+mat2<- GetMatrixFromSeuratByGroupMulti(obj= ifnb, 
+                                       features = c("ISG15", "CXCL10", "LYZ", "CXCL9"),
+                                       seurat_annotations, stim)
+
+mat2$exp_mat
+
+mat2$percent_mat
+
+```
+
+Once you have the matrices, you can plot the dotplot as you want.
+
+```{r fig.width= 10, fig.height= 4, fig.fullwidth=TRUE}
+# change the layer function, because you need mat2$percent_mat for the percentages
+layer_fun2 = function(j, i, x, y, w, h, fill){
+    grid.rect(x = x, y = y, width = w, height = h, 
+              gp = gpar(col = "gray", fill = NA))
+    grid.circle(x=x,y=y,
+                r= sqrt(pindex(mat2$percent_mat, i, j)) * unit(4, "mm"),
+                gp = gpar(fill = col_fun(pindex(mat2$exp_mat, i, j)), col = NA))}
+
+hp2<- Heatmap(mat2$exp_mat,
+             heatmap_legend_param=list(title= "expression"),
+             column_title = "genes", 
+             col=col_fun,
+             rect_gp = gpar(type = "none"),
+             layer_fun = layer_fun2,
+             row_names_gp = gpar(fontsize = 8),
+             border = "black",
+             cluster_rows = FALSE, 
+             cluster_columns = FALSE,
+             row_names_side  = "left")
+
+
+draw(hp2, annotation_legend_list = lgd_list, ht_gap = unit(1, "cm"),
+     annotation_legend_side = "right")
+
+```
+
+If you do want to cluster the columns and rows
+```{r fig.width= 10, fig.height= 4}
+hp3<- Heatmap(mat2$exp_mat,
+             heatmap_legend_param=list(title= "expression"),
+             column_title = "genes", 
+             col=col_fun,
+             rect_gp = gpar(type = "none"),
+             layer_fun = layer_fun2,
+             row_names_gp = gpar(fontsize = 8),
+             border = "black",
+             cluster_rows = TRUE, 
+             cluster_columns = TRUE,
+             row_names_side  = "left")
+
+
+draw(hp3, annotation_legend_list = lgd_list, ht_gap = unit(1, "cm"),
+     annotation_legend_side = "right")
+```
+
+With the matrices available, you can do subsetting of the matrices, arrange the 
+rows and columns as you want and even add annotation bars. As you see, once you
+master the basics, you can plot anything as you want without relying on pre-built
+packages. 
+
+We can wrap the above code into a function for easier usage, but I will leave it
+as a homework for the readers. 
+
+Of course, you do not want to re-invent the wheels, use a well-maintained package
+when possible, build your own wheel when necessary.
+
+### Further reading
+
+[`plot1cell`](https://github.com/TheHumphreysLab/plot1cell/tree/master) is trying 
+to solve the similar problem, but it is not that flexible.
+
+

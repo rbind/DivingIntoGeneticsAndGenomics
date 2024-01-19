@@ -1,0 +1,429 @@
+---
+title: How to make a multi-group dotplot for single-cell RNAseq data
+author: Ming Tang
+date: '2024-01-16'
+slug: how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data
+categories:
+  - bioinformatics
+  - bioconductor
+  - single-cell
+tags:
+  - heatmap
+  - single-cell
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Dotplots are very popular for visualizing single-cell RNAseq data. In essence,
+the dot size represents the percentage of cells that are positive for that gene;
+the color intensity represents the average gene expression of that gene in a
+cell type.</p>
+<p>It is easy to plot one using <code>Seurat::dotplot</code> or <code>Sccustomize::clustered_dotplot</code>.
+However, when you have multiple groups/conditions in your data and you want to
+visualize it by groups, it is not that straightforward.</p>
+<p>However, if you understand that the underlying data are just the percentages of
+positive cells and the average expression values and the dotplot is essentially
+just a heatmap, you can write R code to visualize the data in anyway you want.</p>
+<p>Let’s use this data from <a href="https://satijalab.org/seurat/articles/integration_introduction" class="uri">https://satijalab.org/seurat/articles/integration_introduction</a></p>
+<blockquote>
+<p>The object contains data from human PBMC from two conditions, interferon-stimulated and control cells (stored in the stim column in the object metadata). We will aim to integrate the two conditions together, so that we can jointly identify cell subpopulations across datasets, and then explore how each group differs across conditions</p>
+</blockquote>
+<pre class="r"><code>library(Seurat)
+library(SeuratData)
+library(patchwork)
+library(harmony)
+library(dplyr)
+# install dataset
+InstallData(&quot;ifnb&quot;)</code></pre>
+<pre class="r"><code># load dataset
+ifnb &lt;- LoadData(&quot;ifnb&quot;)
+ifnb&lt;- UpdateSeuratObject(ifnb)
+
+ifnb</code></pre>
+<pre><code>#&gt; An object of class Seurat 
+#&gt; 14053 features across 13999 samples within 1 assay 
+#&gt; Active assay: RNA (14053 features, 0 variable features)
+#&gt;  2 layers present: counts, data</code></pre>
+<p>Two conditions: control and stimulated.</p>
+<pre class="r"><code>table(ifnb$stim)</code></pre>
+<pre><code>#&gt; 
+#&gt; CTRL STIM 
+#&gt; 6548 7451</code></pre>
+<p>routine processing</p>
+<pre class="r"><code>ifnb&lt;- ifnb %&gt;%
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures( selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA() %&gt;%
+  RunHarmony(group.by.vars = &quot;stim&quot;, dims.use = 1:30) %&gt;%
+  RunUMAP(reduction = &quot;harmony&quot;, dims = 1:30) %&gt;%
+  FindNeighbors(reduction = &quot;harmony&quot;, dims = 1:30) %&gt;% 
+  FindClusters(resolution = 0.6)</code></pre>
+<pre><code>#&gt; Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+#&gt; 
+#&gt; Number of nodes: 13999
+#&gt; Number of edges: 519190
+#&gt; 
+#&gt; Running Louvain algorithm...
+#&gt; Maximum modularity in 10 random starts: 0.8855
+#&gt; Number of communities: 14
+#&gt; Elapsed time: 2 seconds</code></pre>
+<p>Let’s take a look at the UMAP:</p>
+<pre class="r"><code># Visualization
+DimPlot(ifnb, reduction = &quot;umap&quot;, group.by = c(&quot;stim&quot;, &quot;seurat_annotations&quot;))</code></pre>
+<p><img src="/post/2024-01-16-how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Let’s make a dotplot using <code>Seurat</code></p>
+<pre class="r"><code>Idents(ifnb)&lt;- ifnb$seurat_annotations
+# NEEDS TO BE FIXED AND SET ORDER CORRECTLY
+Idents(ifnb) &lt;- factor(Idents(ifnb), 
+                       levels = c(&quot;pDC&quot;, &quot;Eryth&quot;, &quot;Mk&quot;, &quot;DC&quot;, 
+                                                &quot;CD14 Mono&quot;, &quot;CD16 Mono&quot;,&quot;B Activated&quot;, 
+                                                &quot;B&quot;, &quot;CD8 T&quot;, &quot;NK&quot;, &quot;T activated&quot;, 
+                                                &quot;CD4 Naive T&quot;, &quot;CD4 Memory T&quot;))
+
+markers.to.plot &lt;- c(&quot;CD3D&quot;, &quot;CREM&quot;, &quot;HSPH1&quot;, &quot;SELL&quot;, &quot;GIMAP5&quot;, &quot;CACYBP&quot;, &quot;GNLY&quot;, 
+                     &quot;NKG7&quot;, &quot;CCL5&quot;, &quot;CD8A&quot;, &quot;MS4A1&quot;, &quot;CD79A&quot;, &quot;MIR155HG&quot;, &quot;NME1&quot;, 
+                     &quot;FCGR3A&quot;, &quot;VMO1&quot;, &quot;CCL2&quot;, &quot;S100A9&quot;, &quot;HLA-DQA1&quot;, &quot;GPR183&quot;, 
+                     &quot;PPBP&quot;, &quot;GNG11&quot;, &quot;HBA2&quot;, &quot;HBB&quot;, &quot;TSPAN13&quot;, &quot;IL3RA&quot;, &quot;IGJ&quot;, 
+                     &quot;PRSS57&quot;)
+
+DotPlot(ifnb, features = markers.to.plot, cols = c(&quot;blue&quot;, &quot;red&quot;), 
+        dot.scale = 8, split.by = &quot;stim&quot;) +
+        RotatedAxis()</code></pre>
+<p><img src="/post/2024-01-16-how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-7-1.png" width="960" /></p>
+<p>We can also use <a href="https://samuel-marsh.github.io/scCustomize/articles/Gene_Expression_Plotting.html"><code>scCusstomize</code></a> to cluster the dotplots, but you can not split by condition.</p>
+<pre class="r"><code>scCustomize::Clustered_DotPlot(ifnb, features = markers.to.plot,
+                               plot_km_elbow = FALSE)</code></pre>
+<p><img src="/post/2024-01-16-how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>You can rotate the x and y axis:</p>
+<pre class="r"><code>scCustomize::Clustered_DotPlot(ifnb, features = markers.to.plot,
+                               plot_km_elbow = FALSE, flip = TRUE)</code></pre>
+<p><img src="/post/2024-01-16-how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-9-1.png" width="960" /></p>
+<p>What if I want to split the dotplot by the condition?</p>
+<div id="customized-multi-group-dotplot" class="section level3">
+<h3>Customized multi-group dotplot</h3>
+<p>We need to get the percentage of positive cells and average expression by group.</p>
+<p>For a single gene, put the groups into multiple rows, and each column is a
+cell type.</p>
+<pre class="r"><code># group1 is the cell type/cluster annotation 
+# group2 is any condition you want to further group, in this case, the stim 
+
+GetMatrixFromSeuratByGroupSingle&lt;- function(obj, feature, group1, group2){
+  if (length(feature) != 1){
+          stop(&quot;please only provide only one gene name&quot;)
+  }
+  exp_mat&lt;- obj@assays$RNA@data[feature, ,drop=FALSE]
+  count_mat&lt;- obj@assays$RNA@counts[feature,,drop=FALSE ]
+  
+  meta&lt;- obj@meta.data %&gt;%
+  tibble::rownames_to_column(var = &quot;cell&quot;)
+        
+  # get the average expression matrix
+  exp_df&lt;- as.matrix(exp_mat) %&gt;% 
+    as.data.frame() %&gt;% 
+    tibble::rownames_to_column(var=&quot;gene&quot;) %&gt;%
+    tidyr::pivot_longer(!gene, names_to = &quot;cell&quot;, values_to = &quot;expression&quot;) %&gt;%
+    left_join(meta) %&gt;%
+    group_by(gene,{{group1}}, {{group2}}) %&gt;%
+    summarise(average_expression = mean(expression)) %&gt;%
+    tidyr::pivot_wider(names_from = {{group1}}, 
+                       values_from= average_expression) 
+  
+  exp_mat&lt;- exp_df[, -c(1,2)] %&gt;% as.matrix()
+  rownames(exp_mat)&lt;- exp_df %&gt;% pull({{group2}})
+  
+  # get the percentage positive cell matrix
+  count_df&lt;- as.matrix(count_mat) %&gt;% 
+    as.data.frame() %&gt;% 
+    tibble::rownames_to_column(var=&quot;gene&quot;) %&gt;%
+    tidyr::pivot_longer(!gene, names_to = &quot;cell&quot;, values_to = &quot;count&quot;) %&gt;%
+    left_join(meta) %&gt;%
+    group_by(gene, {{group1}}, {{group2}}) %&gt;%
+    summarise(percentage = mean(count &gt;0)) %&gt;%
+    tidyr::pivot_wider(names_from = {{group1}}, 
+                       values_from= percentage) 
+
+  percent_mat&lt;- count_df[, -c(1,2)] %&gt;% as.matrix()
+  rownames(percent_mat)&lt;- count_df %&gt;% pull({{group2}})
+  
+  if (!identical(dim(exp_mat), dim(percent_mat))) {
+    stop(&quot;the dimension of the two matrice should be the same!&quot;)
+  }
+  
+  if(! all.equal(colnames(exp_mat), colnames(percent_mat))) {
+    stop(&quot;column names of the two matrice should be the same!&quot;)
+  }
+  
+  if(! all.equal(rownames(exp_mat), rownames(percent_mat))) {
+    stop(&quot;column names of the two matrice should be the same!&quot;)
+  }
+  return(list(exp_mat = exp_mat, percent_mat = percent_mat))
+}</code></pre>
+<p>Let’s get the matrices for one gene</p>
+<pre class="r"><code>mat&lt;- GetMatrixFromSeuratByGroupSingle(obj= ifnb, 
+                                 feature = &quot;ISG15&quot;, 
+                                 seurat_annotations,
+                                 stim)
+
+# take a look at the matrices
+mat$exp_mat</code></pre>
+<pre><code>#&gt;      CD14 Mono CD4 Naive T CD4 Memory T CD16 Mono         B     CD8 T
+#&gt; CTRL 0.7261719   0.3808203    0.4733928  1.117586 0.5495651 0.7284956
+#&gt; STIM 6.0702937   3.8087751    4.0137093  5.712665 4.3502870 4.0260494
+#&gt;      T activated        NK        DC B Activated        Mk       pDC     Eryth
+#&gt; CTRL   0.8074327 0.7889602 0.6561191   0.3800281 0.5941432 0.4085024 0.2929348
+#&gt; STIM   4.1129324 4.5385409 5.7027258   4.0121762 4.0114610 4.5247511 3.9331893</code></pre>
+<pre class="r"><code>mat$percent_mat</code></pre>
+<pre><code>#&gt;      CD14 Mono CD4 Naive T CD4 Memory T CD16 Mono         B     CD8 T
+#&gt; CTRL  0.323702   0.1666667    0.2072177  0.495069 0.2334152 0.3011364
+#&gt; STIM  1.000000   0.9927916    0.9900332  1.000000 0.9982487 0.9891775
+#&gt;      T activated        NK        DC B Activated        Mk       pDC    Eryth
+#&gt; CTRL   0.3233333 0.3154362 0.3527132   0.1891892 0.2608696 0.2156863 0.173913
+#&gt; STIM   0.9759760 0.9875389 1.0000000   1.0000000 0.9752066 1.0000000 1.000000</code></pre>
+<p>Two matrices:</p>
+<ol style="list-style-type: decimal">
+<li>the average expression for each cell type per condition</li>
+<li>the percentage of ISG15 positive cells for each cell type per condition</li>
+</ol>
+<p>Now, Let’s visualize it using <code>ComplexHeatmap</code>. See my <a href="https://divingintogeneticsandgenomics.com/post/clustered-dotplot-for-single-cell-rnaseq/">previous post</a> too.</p>
+<p>Always explore the data range before you decide how to map the data values to
+colors.</p>
+<pre class="r"><code>library(ComplexHeatmap)
+
+quantile(mat$exp_mat, c(0.1, 0.5, 0.8, 0.9))</code></pre>
+<pre><code>#&gt;       10%       50%       80%       90% 
+#&gt; 0.3946614 2.4631808 4.3502870 5.1206334</code></pre>
+<pre class="r"><code>col_fun&lt;-  circlize::colorRamp2(c(0, 2, 5), c(&quot;#FDE725FF&quot;, &quot;#238A8DFF&quot;, &quot;#440154FF&quot;))</code></pre>
+<p><code>0</code> will be mapped to <code>#FDE725FF</code>, <code>2</code> will be mapped to <code>#238A8DFF</code> and
+<code>5</code> will be mapped to <code>#440154FF</code>. The value in-between will be linearlly
+interpolated to get corresponding colors</p>
+<p>Use the <code>layer_fun</code> to decide the size of the dots. Within the <code>grid.circle</code>,
+we specify the radius <code>r= sqrt(pindex(mat$percent_mat, i, j))</code> of the circle to
+be the square root of the percentage, so the area size of the dots correspond to
+the percentage.</p>
+<pre class="r"><code>layer_fun = function(j, i, x, y, w, h, fill){
+    grid.rect(x = x, y = y, width = w, height = h, 
+              gp = gpar(col = &quot;gray&quot;, fill = NA))
+    grid.circle(x=x,y=y,r= sqrt(pindex(mat$percent_mat, i, j)) * unit(4, &quot;mm&quot;),
+                gp = gpar(fill = col_fun(pindex(mat$exp_mat, i, j)), col = NA))}
+  
+hp&lt;- Heatmap(mat$exp_mat,
+             heatmap_legend_param=list(title= &quot;expression&quot;),
+             column_title = &quot;ISG15&quot;, 
+             col=col_fun,
+             rect_gp = gpar(type = &quot;none&quot;),
+             layer_fun = layer_fun,
+             row_names_gp = gpar(fontsize = 8),
+             border = &quot;black&quot;,
+             cluster_rows = FALSE, 
+             cluster_columns = FALSE,
+             row_names_side  = &quot;left&quot;)</code></pre>
+<p>make the legend for the dot size. Make sure the size is the same as the in the
+<code>layer_fun</code> which is <code>unit(4, "mm")</code>. You can change the size as you want.</p>
+<pre class="r"><code>lgd_list = list(
+    Legend( labels = c(0, 10, 25, 50, 75), title = &quot;percentage&quot;,
+            graphics = list(
+              function(x, y, w, h) grid.circle(x = x, y = y, r = 0  * unit(4, &quot;mm&quot;),
+                                               gp = gpar(fill = &quot;black&quot;)),
+              function(x, y, w, h) grid.circle(x = x, y = y, r = sqrt(0.1)  * unit(4, &quot;mm&quot;),
+                                               gp = gpar(fill = &quot;black&quot;)),
+              function(x, y, w, h) grid.circle(x = x, y = y, r = sqrt(0.25) * unit(4, &quot;mm&quot;),
+                                               gp = gpar(fill = &quot;black&quot;)),
+              function(x, y, w, h) grid.circle(x = x, y = y, r = sqrt(0.5) * unit(4, &quot;mm&quot;),
+                                               gp = gpar(fill = &quot;black&quot;)),
+              function(x, y, w, h) grid.circle(x = x, y = y, r = sqrt(0.75) * unit(4, &quot;mm&quot;),
+                                               gp = gpar(fill = &quot;black&quot;))),
+            row_gap = unit(2.5, &quot;mm&quot;)
+            ))
+
+draw(hp, annotation_legend_list = lgd_list, ht_gap = unit(1, &quot;cm&quot;),
+     annotation_legend_side = &quot;right&quot;)</code></pre>
+<p><img src="/post/2024-01-16-how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+</div>
+<div id="plot-multiple-genes-across-multiple-groupsconditions" class="section level3">
+<h3>plot Multiple genes across multiple groups/conditions</h3>
+<p>Let’s change the function a little. The major difference is this line:
+<code>tidyr::pivot_wider(names_from = c({{group1}}, {{group2}}),                         values_from= average_expression,                        names_sep="|")</code></p>
+<p>So the data will be wrangled as:
+rows are genes, columns are <code>cell_type|condition</code></p>
+<pre class="r"><code>GetMatrixFromSeuratByGroupMulti&lt;- function(obj, features, group1, group2){
+  exp_mat&lt;- obj@assays$RNA@data[features, ,drop=FALSE]
+  count_mat&lt;- obj@assays$RNA@counts[features,,drop=FALSE ]
+  
+  meta&lt;- obj@meta.data %&gt;%
+  tibble::rownames_to_column(var = &quot;cell&quot;)
+  
+  # get the average expression matrix        
+  exp_df&lt;- as.matrix(exp_mat) %&gt;% 
+    as.data.frame() %&gt;% 
+    tibble::rownames_to_column(var=&quot;gene&quot;) %&gt;%
+    tidyr::pivot_longer(!gene, names_to = &quot;cell&quot;, values_to = &quot;expression&quot;) %&gt;%
+    left_join(meta) %&gt;%
+    group_by(gene,{{group1}}, {{group2}}) %&gt;%
+    summarise(average_expression = mean(expression)) %&gt;%
+    # the trick is to make the data wider in columns: cell_type|group
+    tidyr::pivot_wider(names_from = c({{group1}}, {{group2}}), 
+                       values_from= average_expression,
+                       names_sep=&quot;|&quot;) 
+  
+  # convert to a matrix
+  exp_mat&lt;- exp_df[, -1] %&gt;% as.matrix()
+  rownames(exp_mat)&lt;- exp_df$gene
+  
+  # get percentage of positive cells matrix
+  count_df&lt;- as.matrix(count_mat) %&gt;% 
+    as.data.frame() %&gt;% 
+    tibble::rownames_to_column(var=&quot;gene&quot;) %&gt;%
+    tidyr::pivot_longer(!gene, names_to = &quot;cell&quot;, values_to = &quot;count&quot;) %&gt;%
+    left_join(meta) %&gt;%
+    group_by(gene, {{group1}}, {{group2}}) %&gt;%
+    summarise(percentage = mean(count &gt;0)) %&gt;%
+    tidyr::pivot_wider(names_from = c({{group1}}, {{group2}}), 
+                       values_from= percentage,
+                       names_sep=&quot;|&quot;)
+
+  percent_mat&lt;- count_df[, -1] %&gt;% as.matrix()
+  rownames(percent_mat)&lt;- count_df$gene
+  
+  if (!identical(dim(exp_mat), dim(percent_mat))) {
+    stop(&quot;the dimension of the two matrice should be the same!&quot;)
+  }
+  
+  if(! all.equal(colnames(exp_mat), colnames(percent_mat))) {
+    stop(&quot;column names of the two matrice should be the same!&quot;)
+  }
+  
+  if(! all.equal(rownames(exp_mat), rownames(percent_mat))) {
+    stop(&quot;column names of the two matrice should be the same!&quot;)
+  }
+  return(list(exp_mat = exp_mat, percent_mat = percent_mat))
+}</code></pre>
+<p>Let’s take a look at the matrices:</p>
+<pre class="r"><code>mat2&lt;- GetMatrixFromSeuratByGroupMulti(obj= ifnb, 
+                                       features = c(&quot;ISG15&quot;, &quot;CXCL10&quot;, &quot;LYZ&quot;, &quot;CXCL9&quot;),
+                                       seurat_annotations, stim)
+
+mat2$exp_mat</code></pre>
+<pre><code>#&gt;        CD14 Mono|CTRL CD14 Mono|STIM CD4 Naive T|CTRL CD4 Naive T|STIM
+#&gt; CXCL10    0.087345121      5.0736492      0.002201396       0.61035184
+#&gt; CXCL9     0.003388209      0.1206664      0.000000000       0.00000000
+#&gt; ISG15     0.726171852      6.0702937      0.380820344       3.80877512
+#&gt; LYZ       2.414988107      2.6774910      0.041199264       0.04494943
+#&gt;        CD4 Memory T|CTRL CD4 Memory T|STIM CD16 Mono|CTRL CD16 Mono|STIM
+#&gt; CXCL10       0.004476775       0.668992851      0.7766469     5.00934744
+#&gt; CXCL9        0.000000000       0.002439572      0.0000000     0.02062243
+#&gt; ISG15        0.473392848       4.013709315      1.1175865     5.71266540
+#&gt; LYZ          0.033556360       0.064249244      1.3894338     0.98728252
+#&gt;            B|CTRL     B|STIM CD8 T|CTRL  CD8 T|STIM T activated|CTRL
+#&gt; CXCL10 0.02465307 2.40598430 0.00000000 0.509013005       0.00657299
+#&gt; CXCL9  0.00000000 0.01577367 0.00000000 0.004820181       0.00000000
+#&gt; ISG15  0.54956508 4.35028697 0.72849556 4.026049357       0.80743267
+#&gt; LYZ    0.04108924 0.04744420 0.03553156 0.041455107       0.04261386
+#&gt;        T activated|STIM    NK|CTRL   NK|STIM     DC|CTRL   DC|STIM
+#&gt; CXCL10       1.16903785 0.00000000 0.4221097 0.028490195 4.7406904
+#&gt; CXCL9        0.00000000 0.00000000 0.0000000 0.006332865 0.4458563
+#&gt; ISG15        4.11293242 0.78896021 4.5385409 0.656119064 5.7027258
+#&gt; LYZ          0.01990898 0.01638341 0.0857032 3.773146881 3.2401631
+#&gt;        B Activated|CTRL B Activated|STIM    Mk|CTRL    Mk|STIM   pDC|CTRL
+#&gt; CXCL10       0.01261649       2.26825925 0.07612572 1.31048801 0.04369413
+#&gt; CXCL9        0.00000000       0.02436157 0.00000000 0.01622667 0.00000000
+#&gt; ISG15        0.38002811       4.01217616 0.59414320 4.01146096 0.40850237
+#&gt; LYZ          0.06561868       0.07417401 0.72371186 0.32235497 0.24321177
+#&gt;          pDC|STIM Eryth|CTRL Eryth|STIM
+#&gt; CXCL10 2.25108405  0.0000000  1.6256344
+#&gt; CXCL9  0.06612518  0.0000000  0.0000000
+#&gt; ISG15  4.52475112  0.2929348  3.9331893
+#&gt; LYZ    0.02124968  0.6171084  0.3471586</code></pre>
+<pre class="r"><code>mat2$percent_mat</code></pre>
+<pre><code>#&gt;        CD14 Mono|CTRL CD14 Mono|STIM CD4 Naive T|CTRL CD4 Naive T|STIM
+#&gt; CXCL10    0.035214447     0.98369818      0.001022495       0.25557012
+#&gt; CXCL9     0.001805869     0.07033069      0.000000000       0.00000000
+#&gt; ISG15     0.323702032     1.00000000      0.166666667       0.99279161
+#&gt; LYZ       0.817155756     0.88868188      0.019427403       0.02162516
+#&gt;        CD4 Memory T|CTRL CD4 Memory T|STIM CD16 Mono|CTRL CD16 Mono|STIM
+#&gt; CXCL10       0.002328289        0.27574751      0.2761341     0.98510242
+#&gt; CXCL9        0.000000000        0.00110742      0.0000000     0.01489758
+#&gt; ISG15        0.207217695        0.99003322      0.4950690     1.00000000
+#&gt; LYZ          0.016298021        0.02990033      0.6114398     0.47858473
+#&gt;            B|CTRL      B|STIM CD8 T|CTRL  CD8 T|STIM T activated|CTRL
+#&gt; CXCL10 0.00982801 0.651488616 0.00000000 0.225108225      0.003333333
+#&gt; CXCL9  0.00000000 0.007005254 0.00000000 0.002164502      0.000000000
+#&gt; ISG15  0.23341523 0.998248687 0.30113636 0.989177489      0.323333333
+#&gt; LYZ    0.01965602 0.022767075 0.01704545 0.019480519      0.020000000
+#&gt;        T activated|STIM     NK|CTRL    NK|STIM     DC|CTRL   DC|STIM
+#&gt; CXCL10      0.396396396 0.000000000 0.17445483 0.011627907 0.9766355
+#&gt; CXCL9       0.000000000 0.000000000 0.00000000 0.003875969 0.2570093
+#&gt; ISG15       0.975975976 0.315436242 0.98753894 0.352713178 1.0000000
+#&gt; LYZ         0.009009009 0.006711409 0.03738318 0.968992248 0.9626168
+#&gt;        B Activated|CTRL B Activated|STIM    Mk|CTRL     Mk|STIM   pDC|CTRL
+#&gt; CXCL10      0.005405405       0.60591133 0.02608696 0.371900826 0.01960784
+#&gt; CXCL9       0.000000000       0.01477833 0.00000000 0.008264463 0.00000000
+#&gt; ISG15       0.189189189       1.00000000 0.26086957 0.975206612 0.21568627
+#&gt; LYZ         0.037837838       0.03940887 0.26956522 0.123966942 0.11764706
+#&gt;          pDC|STIM Eryth|CTRL Eryth|STIM
+#&gt; CXCL10 0.70370370  0.0000000     0.4375
+#&gt; CXCL9  0.03703704  0.0000000     0.0000
+#&gt; ISG15  1.00000000  0.1739130     1.0000
+#&gt; LYZ    0.01234568  0.2608696     0.1875</code></pre>
+<p>Once you have the matrices, you can plot the dotplot as you want.</p>
+<pre class="r"><code># change the layer function, because you need mat2$percent_mat for the percentages
+layer_fun2 = function(j, i, x, y, w, h, fill){
+    grid.rect(x = x, y = y, width = w, height = h, 
+              gp = gpar(col = &quot;gray&quot;, fill = NA))
+    grid.circle(x=x,y=y,
+                r= sqrt(pindex(mat2$percent_mat, i, j)) * unit(4, &quot;mm&quot;),
+                gp = gpar(fill = col_fun(pindex(mat2$exp_mat, i, j)), col = NA))}
+
+hp2&lt;- Heatmap(mat2$exp_mat,
+             heatmap_legend_param=list(title= &quot;expression&quot;),
+             column_title = &quot;genes&quot;, 
+             col=col_fun,
+             rect_gp = gpar(type = &quot;none&quot;),
+             layer_fun = layer_fun2,
+             row_names_gp = gpar(fontsize = 8),
+             border = &quot;black&quot;,
+             cluster_rows = FALSE, 
+             cluster_columns = FALSE,
+             row_names_side  = &quot;left&quot;)
+
+
+draw(hp2, annotation_legend_list = lgd_list, ht_gap = unit(1, &quot;cm&quot;),
+     annotation_legend_side = &quot;right&quot;)</code></pre>
+<p><img src="/post/2024-01-16-how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-17-1.png" width="960" /></p>
+<p>If you do want to cluster the columns and rows</p>
+<pre class="r"><code>hp3&lt;- Heatmap(mat2$exp_mat,
+             heatmap_legend_param=list(title= &quot;expression&quot;),
+             column_title = &quot;genes&quot;, 
+             col=col_fun,
+             rect_gp = gpar(type = &quot;none&quot;),
+             layer_fun = layer_fun2,
+             row_names_gp = gpar(fontsize = 8),
+             border = &quot;black&quot;,
+             cluster_rows = TRUE, 
+             cluster_columns = TRUE,
+             row_names_side  = &quot;left&quot;)
+
+
+draw(hp3, annotation_legend_list = lgd_list, ht_gap = unit(1, &quot;cm&quot;),
+     annotation_legend_side = &quot;right&quot;)</code></pre>
+<p><img src="/post/2024-01-16-how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-18-1.png" width="960" /></p>
+<p>With the matrices available, you can do subsetting of the matrices, arrange the
+rows and columns as you want and even add annotation bars. As you see, once you
+master the basics, you can plot anything as you want without relying on pre-built
+packages.</p>
+<p>We can wrap the above code into a function for easier usage, but I will leave it
+as a homework for the readers.</p>
+<p>Of course, you do not want to re-invent the wheels, use a well-maintained package
+when possible, build your own wheel when necessary.</p>
+</div>
+<div id="further-reading" class="section level3">
+<h3>Further reading</h3>
+<p><a href="https://github.com/TheHumphreysLab/plot1cell/tree/master"><code>plot1cell</code></a> is trying
+to solve the similar problem, but it is not that flexible.</p>
+</div>
