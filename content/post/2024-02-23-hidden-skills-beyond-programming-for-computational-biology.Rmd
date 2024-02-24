@@ -1,0 +1,37 @@
+---
+title: Hidden skills beyond programming for computational biology
+author: Ming Tang
+date: '2024-02-23'
+slug: hidden-skills-beyond-programming-for-computational-biology
+categories:
+  - bioinformatics
+tags:
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+There are some hidden gems beyond the typical programming skills that have been instrumental in my journey. These are the often-overlooked yet crucial practices that have empowered me to tackle challenges and make sense of data in meaningful ways.
+
+Firstly, let's talk about patience. It's not as glamorous as diving straight into analysis, but taking the time for thorough quality control is invaluable. Before you get carried away, understand the experimental design. If you're working with published data, don't just import it and run – delve into the paper, grasp the nuances. This initial investment sets you up for a much smoother, more productive ride later.
+
+Next, let's embrace the power of exploration data analysis or (EDA). Don't just trust the data blindly. Look at it with a curious eye, searching for patterns and potential issues. Print it out the lines and see them with you eyes, check for missing values, utilize principal component analysis – whatever helps you identify anomalies and get a feel for the data's story.
+
+Sanity checks are your guardians against errors and inconsistencies. They're like detective work for your data. Be vigilant for outliers, missing values, and patterns that seem out of place. Compare your results to positive and negative controls (like wet experimentalists), and most importantly, ensure they align with what you know about biology. Remember, data analysis is not just about crunching numbers; it's about drawing meaningful biological insights.
+
+Finally, independent thinking is your secret weapon. Don't be afraid to step outside the script of tutorials. Ask yourself if the method you're using truly aligns with your question and data. Be prepared to adapt, modify, and even invent new approaches as needed. Remember, the tools are just that – tools. It's your critical thinking and ability to approach data creatively that will set you apart.
+
+By incorporating these hidden skills into your bioinformatics toolbox, you'll be well on your way to not only wielding the latest techniques but also wielding them thoughtfully and effectively.
+
+Remember, it's not just about the how, but also about the why and the how else. So, stay curious, question assumptions, and above all, have fun exploring the fascinating world of bioinformatics!
+
+Watch the full video here:
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=1TajTK2VViI")
+```
+
+
