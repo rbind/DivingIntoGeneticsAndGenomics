@@ -94,7 +94,7 @@ Three things to note.
 cluster, the p-values will be very small. The p-value in statistical tests, including the Wilcoxon rank-sum test (also known as the Mann-Whitney U test), is influenced by both the sample size and the variability. As the sample size increases, the p-value tends to decrease, assuming there is a non-zero effect size.
 
 2. The p-values are inflated, as we cluster the cells first then use the cluster label 
-to calculate the p-values. We are double-dipping the data. See this twitter thread for
+to calculate the p-values. We are double-dipping the data. See this [twitter thread](https://twitter.com/lucylgao/status/1299763664644313089?lang=en) for
 more details, and this paper [Valid post-clustering differential analysis for single-cell RNA-Seq](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7202736/)
 
 3. There are nuances in how the log2 Fold change is calculated. `Scanpy` and `Seurat`have different implementations.
@@ -305,7 +305,13 @@ p1 + p2
 
 The figure on the left recapitulates the discrepancy showed in the figure in the 
 beginning of the post. The updated calculation in `Seurat` on the right is now 
-very similar to `scanpy's` calculation. 
+very similar to `scanpy's` calculation.
+
+The updated Seurat formula:
+
+$R_{g}=\log_{2}(\frac{1}{n_{1}}\sum_{i\in G_{1}}(exp(Y_{ig})-1)+\epsilon)-log_{2}(\frac{1}{n_{2}}\sum_{i\in G_{2}}(exp(Y_{ig})-1)+\epsilon),$
+
+where $\epsilon=10^{-9}$.
 
 ### Conclusions
 
