@@ -1,0 +1,267 @@
+---
+title: Do you really understand log2Fold change in single-cell RNAseq data?
+author: Ming Tang
+date: '2024-03-05'
+slug: do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data
+categories:
+  - bioinformatics
+  - single-cell
+tags:
+  - bioinformatics
+  - single-cell
+  - Seurat
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>In Single-cell RNAseq analysis, there is a step to find the marker genes for
+each cluster. The output from <code>Seurat</code> <code>FindAllMarkers</code> has a column called <code>avg_log2FC</code>.
+It is the gene expression log2 fold change between cluster x and all other clusters.</p>
+<p>How is that calculated? In this <a href="https://twitter.com/lpachter/status/1694387749967847874">tweet thread</a> by Lior Pachter,
+he said that there was a discrepancy for the logFC changes between <code>Seurat</code> and
+<code>Scanpy</code>:
+<img src="/img/logFC_singlecell.jpeg" /></p>
+<p>Actually, both <code>Scanpy</code> and <code>Seurat</code> calculate it wrong. Let’s dive in.</p>
+<pre class="r"><code>library(Seurat)
+library(SeuratData)
+library(dplyr)
+library(scCustomize)
+
+data(&quot;pbmc3k&quot;)
+
+# some error, need to update the object
+pbmc3k&lt;- UpdateSeuratObject(pbmc3k)
+
+pbmc3k</code></pre>
+<pre><code>#&gt; An object of class Seurat 
+#&gt; 13714 features across 2700 samples within 1 assay 
+#&gt; Active assay: RNA (13714 features, 0 variable features)
+#&gt;  2 layers present: counts, data</code></pre>
+<p>Some routine processing</p>
+<pre class="r"><code>pbmc3k&lt;- pbmc3k %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+pbmc3k&lt;- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]
+
+p1&lt;- DimPlot_scCustom(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, group.by = 
+                        &quot;RNA_snn_res.0.5&quot;)
+
+p2&lt;- DimPlot_scCustom(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, group.by = &quot;seurat_annotations&quot;, label.size = 3)
+
+p1 + p2</code></pre>
+<p><img src="/post/2024-03-05-do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code># use Seurat&#39;s FindAllMarkers function
+markers_seurat&lt;- FindAllMarkers(pbmc3k)
+
+head(markers_seurat)</code></pre>
+<pre><code>#&gt;               p_val avg_log2FC pct.1 pct.2     p_val_adj cluster  gene
+#&gt; RPS6  5.467436e-142  0.6963639 1.000 0.995 7.498042e-138       0  RPS6
+#&gt; RPS12 1.026837e-138  0.7323892 1.000 0.991 1.408204e-134       0 RPS12
+#&gt; RPS27 9.369933e-132  0.7125597 0.999 0.992 1.284993e-127       0 RPS27
+#&gt; RPL32 1.289946e-131  0.6221148 0.999 0.995 1.769031e-127       0 RPL32
+#&gt; RPS14 9.504872e-124  0.6261648 1.000 0.994 1.303498e-119       0 RPS14
+#&gt; CYBA  1.875899e-123 -1.7566153 0.658 0.913 2.572608e-119       0  CYBA</code></pre>
+<p>Let’s take a look at CD19 which is a B cell marker. cluster 3 is the B cell cluster.</p>
+<pre class="r"><code>markers_seurat %&gt;%
+        filter(cluster == 3) %&gt;%
+        filter(gene == &quot;CD19&quot;)</code></pre>
+<pre><code>#&gt;               p_val avg_log2FC pct.1 pct.2    p_val_adj cluster gene
+#&gt; CD19.3 3.322761e-87    5.62015 0.216 0.007 4.556834e-83       3 CD19</code></pre>
+<p>By default, <code>FindAllMarkers</code> uses Wilcoxon Rank Sum test. use <code>?FindAllMarkers</code>
+to see the details of other tests.</p>
+<p>Three things to note.</p>
+<ol style="list-style-type: decimal">
+<li><p>the p-values are very small. When you have hundreds or thousands of cells per
+cluster, the p-values will be very small. The p-value in statistical tests, including the Wilcoxon rank-sum test (also known as the Mann-Whitney U test), is influenced by both the sample size and the variability. As the sample size increases, the p-value tends to decrease, assuming there is a non-zero effect size.</p></li>
+<li><p>The p-values are inflated, as we cluster the cells first then use the cluster label
+to calculate the p-values. We are double-dipping the data. See this twitter thread for
+more details, and this paper <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7202736/">Valid post-clustering differential analysis for single-cell RNA-Seq</a></p></li>
+<li><p>There are nuances in how the log2 Fold change is calculated. <code>Scanpy</code> and <code>Seurat</code>have different implementations.</p></li>
+</ol>
+<p><strong>Seurat formula:</strong></p>
+<p><span class="math inline">\(R_{g}=\log_{2}(\frac{1}{n_{1}}\sum_{i\in G_{1}}(exp(Y_{ig})-1)+1)-log_{2}(\frac{1}{n_{2}}\sum_{i\in G_{2}}(exp(Y_{ig})-1)+1),\)</span></p>
+<p><strong>Scanpy formula:</strong></p>
+<p><span class="math inline">\(P_{g}=\log_{2}(exp(\frac{1}{n_{1}}\sum_{i\in G_{1}}Y_{ig})-1+\epsilon)-log_{2}(exp(\frac{1}{n_{2}}\sum_{i\in G_{2}}Y_{ig})-1+\epsilon),\)</span></p>
+<p>where <span class="math inline">\(\epsilon=10^{-9}\)</span>.</p>
+<p>where <span class="math inline">\(Y_{ig}\)</span> are the log-transformed expression values for cell <span class="math inline">\(i\)</span> and gene <span class="math inline">\(g\)</span>, <span class="math inline">\(G_{1}\)</span> and <span class="math inline">\(G_{2}\)</span> are the indices for two groups of cells, and <span class="math inline">\(n_{1}\)</span> and <span class="math inline">\(n_{2}\)</span> are the numbers of cells in the respective groups.</p>
+<div id="lets-calculate-the-fold-change-manually" class="section level3">
+<h3>Let’s calculate the fold change manually</h3>
+<p><code>NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000)</code> this
+step divide the raw gene counts with the total counts of that cell (library size)
+and then natural log it and times the scaling factor of 10000.</p>
+<pre class="r"><code># CD19 natural log library size normalized expression
+log_normalized_data&lt;- pbmc3k@assays$RNA@data[&quot;CD19&quot;, ]
+
+# a logical vector indicating the cells from cluster 3
+cluster_B_index&lt;- pbmc3k$seurat_clusters == 3
+
+# negate it to get the cells from all other clusters
+other_clusters_index&lt;- !cluster_B_index
+
+# the natural log normalized counts for gene x from cluster 0
+cluster_B_norm_data&lt;- log_normalized_data[cluster_B_index]
+        
+# the natural log normalized counts for gene x from all other clusters
+other_cluster_norm_data&lt;- log_normalized_data[other_clusters_index]</code></pre>
+<p>Now, let’s <code>exp</code> it back and minus 1 to get the lib normalized counts without
+log transformation; take the mean across cells plus a tiny number, then log2
+transform:</p>
+<pre class="r"><code># cells from B cell cluster
+log2_mean_clusterB&lt;- log2(mean(exp(cluster_B_norm_data)-1) + 10^-9)
+
+log2_mean_clusterB</code></pre>
+<pre><code>#&gt; [1] 0.5181239</code></pre>
+<pre class="r"><code># cells from all other clusters 
+log2_mean_other_cluster&lt;- log2(mean(exp(other_cluster_norm_data)-1) +10^-9)
+
+log2_mean_other_cluster</code></pre>
+<pre><code>#&gt; [1] -5.1208</code></pre>
+<p>Now, let’s calculate the log2 fold change:</p>
+<pre class="r"><code>log2_mean_clusterB - log2_mean_other_cluster</code></pre>
+<pre><code>#&gt; [1] 5.638924</code></pre>
+<p>So, it seems <code>Seurat</code> updated their calculation method to add a small value
+of <code>10^-9</code> rather than 1. This is almost the same as the <code>FindAllMarkers</code> results…</p>
+<p>percentage of cells that are positive of CD19 in B cells and other cells:</p>
+<pre class="r"><code>pct.in&lt;- mean(cluster_B_norm_data != 0)
+pct.in</code></pre>
+<pre><code>#&gt; [1] 0.2157434</code></pre>
+<pre class="r"><code>pct.out&lt;- mean(other_cluster_norm_data !=0)
+pct.out</code></pre>
+<pre><code>#&gt; [1] 0.007407407</code></pre>
+<p>The percentages are exactly the same as the <code>FindAllMarkers</code> output</p>
+<p>If we use the the old formula which add 1 rather than a small value <code>1e^-9</code>:</p>
+<pre class="r"><code>log2(mean(exp(cluster_B_norm_data)-1) + 1) -
+        log2(mean(exp(other_cluster_norm_data)-1) + 1)</code></pre>
+<pre><code>#&gt; [1] 1.241319</code></pre>
+<p>The logFC is very different. The pseudo-count can have a large effect when the
+counts are small.</p>
+</div>
+<div id="if-we-calculate-the-scanpy-way" class="section level3">
+<h3>If we calculate the Scanpy way</h3>
+<pre class="r"><code># the natural log normalized counts for gene x from cluster 0
+cluster_B_norm_data&lt;- log_normalized_data[cluster_B_index]
+        
+# the natural log normalized counts for gene x from all other clusters
+other_cluster_norm_data&lt;- log_normalized_data[other_clusters_index]</code></pre>
+<p>calculate the mean of the natural log normalized counts and then <code>exp</code> it back</p>
+<pre class="r"><code>log2(exp(mean(cluster_B_norm_data)) -1 + 10^-9) -
+        log2(exp(mean(other_cluster_norm_data)) -1 + 10^-9)</code></pre>
+<pre><code>#&gt; [1] 5.508951</code></pre>
+<p>The <code>Scanpy</code> version take the mean of the natural log noramlized the counts first,
+then <code>exp</code> back, minus 1, add a small number, then log2 transform. It does not
+seems correct either</p>
+<p>However, the value is close to the updated Seurat version.</p>
+</div>
+<div id="lets-do-it-for-all-genes-in-the-b-cell-cluster" class="section level3">
+<h3>Let’s do it for all genes in the B cell cluster</h3>
+<pre class="r"><code>seurat_log2FC&lt;- function(method=&quot;old&quot;){
+        # natural log library size normalized expression
+        log_normalized_data&lt;- pbmc3k@assays$RNA@data
+
+        # a logical vector indicating the cells from cluster 0
+        cluster_B_index&lt;- pbmc3k$seurat_clusters == 3
+
+        # negate it to get the cells from all other clusters
+        other_clusters_index&lt;- !cluster_B_index
+
+        # the natural log normalized counts for gene x from cluster 3
+        cluster_B_norm_data&lt;- log_normalized_data[, cluster_B_index]
+        
+        # the natural log normalized counts for gene x from all other clusters
+        other_cluster_norm_data&lt;- log_normalized_data[,other_clusters_index]
+        
+        if (method == &quot;new&quot;){
+               x&lt;-  apply(cluster_B_norm_data, MARGIN =1,
+                          function(x) log2(mean(exp(x)-1) + 10^-9)) 
+               y&lt;-  apply(other_cluster_norm_data, MARGIN =1,
+                          function(x) log2(mean(exp(x)-1) +10^-9))
+               return(x-y)
+             
+        } else if (method == &quot;old&quot;){
+               x&lt;-  apply(cluster_B_norm_data, MARGIN =1,
+                          function(x) log2(mean(exp(x)-1) + 1)) 
+               y&lt;-  apply(other_cluster_norm_data, MARGIN =1,
+                          function(x) log2(mean(exp(x)-1) + 1))
+               return(x-y)
+        }
+}
+
+scanpy_log2FC&lt;- function(){
+        # natural log library size normalized expression
+        log_normalized_data&lt;- pbmc3k@assays$RNA@data
+
+        # a logical vector indicating the cells from cluster 0
+        cluster_B_index&lt;- pbmc3k$seurat_clusters == 3
+
+        # negate it to get the cells from all other clusters
+        other_clusters_index&lt;- !cluster_B_index
+
+        # the natural log normalized counts for gene x from cluster 3
+        cluster_B_norm_data&lt;- log_normalized_data[, cluster_B_index]
+        
+        # the natural log normalized counts for gene x from all other clusters
+        other_cluster_norm_data&lt;- log_normalized_data[,other_clusters_index]
+
+        x&lt;-  apply(cluster_B_norm_data, MARGIN =1,
+                          function(x) log2(exp(mean(x)) -1 + 10^-9))
+        
+        y&lt;-  apply(other_cluster_norm_data, MARGIN =1,
+                          function(x) log2(exp(mean(x)) -1 + 10^-9))
+        return(x-y)       
+}</code></pre>
+<p>Calculate the Fold changes using the functions for all genes comparing cluster 3
+versus all other clusters:</p>
+<pre class="r"><code>seurat_old_fold&lt;- seurat_log2FC(method = &quot;old&quot;)
+
+seurat_new_fold&lt;- seurat_log2FC(method = &quot;new&quot;)
+
+scanpy_fold&lt;- scanpy_log2FC()</code></pre>
+<p>put them into a single dataframe</p>
+<pre class="r"><code>seurat_old_df&lt;- tibble::enframe(seurat_old_fold, name = &quot;gene&quot;, value = &quot;seurat_old&quot;)
+seurat_new_df&lt;- tibble::enframe(seurat_new_fold, name = &quot;gene&quot;, value = &quot;seurat_new&quot;)
+scanpy_df&lt;- tibble::enframe(scanpy_fold, name = &quot;gene&quot;, value = &quot;scanpy&quot;)</code></pre>
+<p>plotting</p>
+<pre class="r"><code>library(ggplot2)
+fold_df&lt;- purrr::reduce(list(seurat_old_df, seurat_new_df, scanpy_df ), inner_join)
+
+p1&lt;- ggplot(fold_df) +
+        geom_point(aes(x=seurat_old, y = scanpy), size = 0.3, alpha = 0.5)+
+        geom_abline(intercept = 0, slope = 1, linetype = 2, color = &quot;red&quot;) +
+        coord_equal()
+
+
+p2&lt;- ggplot(fold_df) +
+        geom_point(aes(x=seurat_new, y = scanpy)) +
+        geom_abline(intercept = 0, slope = 1, linetype = 2, color = &quot;red&quot;) +
+        coord_equal() +
+        theme_bw(base_size = 14)
+
+p1 + p2</code></pre>
+<p><img src="/post/2024-03-05-do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>The figure on the left recapitulates the discrepancy showed in the figure in the
+beginning of the post. The updated calculation in <code>Seurat</code> on the right is now
+very similar to <code>scanpy's</code> calculation.</p>
+</div>
+<div id="conclusions" class="section level3">
+<h3>Conclusions</h3>
+<ol style="list-style-type: decimal">
+<li><p>Details matters. Do not blindly trust packages even they are established ones.</p></li>
+<li><p>Small differences in treating the pseudo-counts can have big differences.</p></li>
+<li><p>Single-cell is a field developing so fast that we do not have consensus on many things.
+The <code>R</code> world is split into <code>Seurat</code> and <code>Bioconductor</code> and the <code>python</code> world is dominated
+by the <code>scverse</code>. We should encourage interactions between different communities to solve
+common challenges.</p></li>
+</ol>
+</div>
