@@ -294,7 +294,7 @@ p1<- ggplot(fold_df) +
 
 
 p2<- ggplot(fold_df) +
-        geom_point(aes(x=seurat_new, y = scanpy)) +
+        geom_point(aes(x=seurat_new, y = scanpy), size = 0.3, alpha = 0.5) +
         geom_abline(intercept = 0, slope = 1, linetype = 2, color = "red") +
         coord_equal() +
         theme_bw(base_size = 14)
