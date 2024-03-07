@@ -328,3 +328,8 @@ common challenges.
 
 [Markers different in BPCells than in Seurat](https://github.com/bnprks/BPCells/issues/45)
 
+
+```{r}
+devtools::session_info()
+```
+
