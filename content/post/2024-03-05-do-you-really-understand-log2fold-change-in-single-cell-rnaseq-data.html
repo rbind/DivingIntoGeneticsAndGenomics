@@ -243,7 +243,7 @@ p1&lt;- ggplot(fold_df) +
 
 
 p2&lt;- ggplot(fold_df) +
-        geom_point(aes(x=seurat_new, y = scanpy)) +
+        geom_point(aes(x=seurat_new, y = scanpy), size = 0.3, alpha = 0.5) +
         geom_abline(intercept = 0, slope = 1, linetype = 2, color = &quot;red&quot;) +
         coord_equal() +
         theme_bw(base_size = 14)
@@ -267,4 +267,8 @@ The <code>R</code> world is split into <code>Seurat</code> and <code>Bioconducto
 by the <code>scverse</code>. We should encourage interactions between different communities to solve
 common challenges.</p></li>
 </ol>
+</div>
+<div id="further-reading" class="section level3">
+<h3>Further reading</h3>
+<p><a href="https://github.com/bnprks/BPCells/issues/45">Markers different in BPCells than in Seurat</a></p>
 </div>

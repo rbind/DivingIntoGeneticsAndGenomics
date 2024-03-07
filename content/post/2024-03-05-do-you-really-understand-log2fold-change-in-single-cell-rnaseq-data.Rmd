@@ -324,3 +324,7 @@ The `R` world is split into `Seurat` and `Bioconductor` and the `python` world i
 by the `scverse`. We should encourage interactions between different communities to solve
 common challenges. 
 
+### Further reading
+
+[Markers different in BPCells than in Seurat](https://github.com/bnprks/BPCells/issues/45)
+
