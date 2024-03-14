@@ -233,3 +233,13 @@ find . -name "salmon_quant.log" | xargs grep "Mapping rate"
 
 we can load it into R and use `DESeq2`for downstream analysis. That's for another post!
 Happy Learning!
+
+
+Watch the video here:
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://youtu.be/_Q8fYokTCTs")
+```
+
