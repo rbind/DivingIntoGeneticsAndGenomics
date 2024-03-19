@@ -271,7 +271,7 @@ enableGitInfo = false
 [[menu.main]]
   name = "Publications"
   url = "#publications"
-  weight = 2
+  weight = 7
 
 [[menu.main]]
   name = "Posts"
@@ -294,9 +294,9 @@ enableGitInfo = false
 #  weight = 6
 
 [[menu.main]]
-  name = "CV"
+  name = "Newsletter"
   url = "#cv"
-  weight = 7
+  weight = 2
   
 [[menu.main]]
   name = "Contact"

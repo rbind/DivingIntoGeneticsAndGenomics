@@ -1,0 +1,202 @@
+---
+title: 'Downstream of bulk RNAseq: read in salmon output using tximport and then DESeq2'
+author: Ming Tommy Tang
+date: '2024-03-18'
+slug: downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2
+categories:
+  - bioconductor
+  - bioinformatics
+tags:
+  - Bioconductor
+  - RNAseq
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+**Join my [newsletter](https://divingintogeneticsandgenomics.ck.page/newsletter) 
+to not miss a post like this**
+
+In the [last blog post](https://divingintogeneticsandgenomics.com/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/), I showed you how to use `salmon` to get counts from 
+fastq files downloaded from GEO. In this post, I am going to show you how to read 
+in the `.sf`  salmon quantification file into R; how to get the `tx2gene.txt` 
+file and do `DESeq2` for differential gene expression analysis. Let's dive in!
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
+)
+#knitr::opts_chunk$set(fig.width = 6, fig.height = 4)  # Set the desired width and height
+```
+
+```{r}
+library(tximport)
+library(dplyr)
+library(ggplot2)
+
+files<- list.files(path = "~/blog_data", pattern = ".sf", full.names = TRUE, 
+                   recursive = TRUE)
+
+names(files)<- stringr::str_split(files, pattern = "/", simplify = TRUE)[,5] %>%
+  stringr::str_replace("_quant", "")
+```
+
+### prepare the tx2gene file
+
+```{r}
+# download it again if you have not
+# wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_45/gencode.v45.basic.annotation.gtf.gz
+
+# use the import function to read in the gtf file
+gtf <- rtracklayer::import("~/blog_data/gencode.v45.basic.annotation.gtf.gz")
+
+head(gtf)
+```
+
+gtf is a `GenomicRanges` object. You can use `plyranges` from tidyomics https://github.com/tidyomics to manipulate it.
+
+I will convert it to a dataframe and use `tidyverse`
+
+```{r}
+gtf_df<- as.data.frame(gtf)
+
+# this file is used to import the salmon output to summarize the counts from 
+# transcript level to gene level
+tx2gene<- gtf_df %>%
+        filter(type == "transcript") %>%
+        select(transcript_id, gene_id)
+
+
+# this file is used to map the ENSEMBL gene id to gene symbols in the DESeq2 results
+gene_name_map<- gtf_df %>% 
+        filter(type == "gene") %>% 
+        select(gene_id, gene_name) 
+```
+
+If you are interested in using Unix commands
+
+```{bash eval=FALSE}
+zcat gencode.v45.basic.annotation.gtf.gz | \
+awk -F "\t" '$3 == "transcript" { print $9 }'| tr -s ";" " "   | \
+cut -d " " -f2,4|  sed 's/\"//g' | awk '{print $1"."$2}' > genes.txt
+
+zcat gencode.v45.basic.annotation.gtf.gz | \
+awk -F "\t" '$3 == "transcript" { print $9 }' | tr -s ";" " "   | \
+cut -d " " -f6,8|  sed 's/\"//g' | awk '{print $1"."$2}' > transcripts.txt
+
+paste transcripts.txt genes.txt > tx2genes.txt
+
+```
+
+### Read in the salmon output 
+
+Use `tx2gene` to summarize to gene level.
+
+```{r}
+txi.salmon <- tximport(files, type = "salmon", tx2gene = tx2gene)
+```
+
+We are ready for `DESeq2`:
+
+```{r}
+library(DESeq2)
+meta<- data.frame(condition = c("normoxia", "normoxia", "hypoxia", "hypoxia"))
+
+rownames(meta)<- colnames(txi.salmon$counts)
+
+meta
+```
+
+routine DESeq2 workflow
+```{r}
+dds <- DESeqDataSetFromTximport(txi.salmon, meta, ~ condition)
+
+dds$condition <- relevel(dds$condition, ref = "normoxia")
+
+dds <- DESeq(dds)
+
+res <- results(dds, contrast = c("condition", "hypoxia", "normoxia"))
+
+res
+```
+
+Let's take a look at the p-value distribution in a histogram
+```{r}
+res %>% as.data.frame() %>%
+  arrange(padj) %>%
+  ggplot(aes(x=pvalue)) +
+  geom_histogram(color = "white", bins = 50)
+```
+
+Did you see a spike around 0.8? that's strange. p-values are random variables
+and under the null, they should follow a uniform distribution which means we 
+should see a spike near p=0 and the rest is flat if there are differentially
+expressed genes due to the treatment effect.
+
+Read:
+* my old post [Understanding p value, multiple comparisons, FDR and q value](https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/)
+
+* and [How to interpret a p-value histogram](http://varianceexplained.org/statistics/interpreting-pvalue-histogram/) by
+David Robinson.
+
+
+Genes with small counts can mess up the p-values.
+Let's compare the counts:
+```{r}
+res %>% as.data.frame() %>%
+        tibble::rownames_to_column(var = "gene_id") %>%
+        filter(!is.na(pvalue)) %>%
+        mutate(pvalue_bin = if_else(pvalue > 0.75, "high", "low")) %>%
+        ggplot(aes(x= pvalue_bin, y = log2(baseMean))) +
+        geom_boxplot()
+```
+genes with high p-values do seem to have lower gene expression.
+
+Let's remove them:
+```{r}
+# counts across 4 samples should be greater than 10, this number is subjective
+dds <- dds[rowSums(counts(dds)) > 10,]
+
+dds <- DESeq(dds)
+
+res <- results(dds, contrast = c("condition", "hypoxia", "normoxia"))
+
+res %>% as.data.frame() %>%
+  arrange(padj) %>%
+  ggplot(aes(x=pvalue)) +
+  geom_histogram(color = "white", bins = 50)
+```
+
+Now, the p-value distribution looks much more normal!
+
+### map the ENSEMBL ID to gene symbols
+
+Now, we have one last task left. The ids for the genes are ENSEMBL IDs, we 
+want to map it to gene symbols.
+
+You can use bioconductor packages such as `AnnotationDbi::select()` or
+`clusterProfiler::bitr()` function to map gene ids.
+
+In this case, we already have the gtf file and `gene_name_map` is what we 
+need.
+
+```{r}
+add_gene_name<- function(res){
+  df<- as.data.frame(res) %>%
+    tibble::rownames_to_column(var = "gene_id") %>%
+    left_join(gene_name_map) %>%
+    arrange(padj, abs(log2FoldChange))
+  return(df)
+}
+
+
+add_gene_name(res) %>%
+        head()
+```
+
+Now, this is perfect! And I instantly spot `PGK1`, `SLC2A3`, `IGFBP3` etc are the top
+differentially expressed genes which I know are hypoxia-inducible :)
+

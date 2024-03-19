@@ -1,0 +1,256 @@
+---
+title: 'Downstream of bulk RNAseq: read in salmon output using tximport and then DESeq2'
+author: Ming Tommy Tang
+date: '2024-03-18'
+slug: downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2
+categories:
+  - bioconductor
+  - bioinformatics
+tags:
+  - Bioconductor
+  - RNAseq
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p><strong>Join my <a href="https://divingintogeneticsandgenomics.ck.page/newsletter">newsletter</a>
+to not miss a post like this</strong></p>
+<p>In the <a href="https://divingintogeneticsandgenomics.com/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/">last blog post</a>, I showed you how to use <code>salmon</code> to get counts from
+fastq files downloaded from GEO. In this post, I am going to show you how to read
+in the <code>.sf</code> salmon quantification file into R; how to get the <code>tx2gene.txt</code>
+file and do <code>DESeq2</code> for differential gene expression analysis. Let’s dive in!</p>
+<pre class="r"><code>library(tximport)
+library(dplyr)
+library(ggplot2)
+
+files&lt;- list.files(path = &quot;~/blog_data&quot;, pattern = &quot;.sf&quot;, full.names = TRUE, 
+                   recursive = TRUE)
+
+names(files)&lt;- stringr::str_split(files, pattern = &quot;/&quot;, simplify = TRUE)[,5] %&gt;%
+  stringr::str_replace(&quot;_quant&quot;, &quot;&quot;)</code></pre>
+<div id="prepare-the-tx2gene-file" class="section level3">
+<h3>prepare the tx2gene file</h3>
+<pre class="r"><code># download it again if you have not
+# wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_45/gencode.v45.basic.annotation.gtf.gz
+
+# use the import function to read in the gtf file
+gtf &lt;- rtracklayer::import(&quot;~/blog_data/gencode.v45.basic.annotation.gtf.gz&quot;)
+
+head(gtf)</code></pre>
+<pre><code>#&gt; GRanges object with 6 ranges and 22 metadata columns:
+#&gt;       seqnames      ranges strand |   source       type     score     phase
+#&gt;          &lt;Rle&gt;   &lt;IRanges&gt;  &lt;Rle&gt; | &lt;factor&gt;   &lt;factor&gt; &lt;numeric&gt; &lt;integer&gt;
+#&gt;   [1]     chr1 11869-14409      + |   HAVANA gene              NA      &lt;NA&gt;
+#&gt;   [2]     chr1 11869-14409      + |   HAVANA transcript        NA      &lt;NA&gt;
+#&gt;   [3]     chr1 11869-12227      + |   HAVANA exon              NA      &lt;NA&gt;
+#&gt;   [4]     chr1 12613-12721      + |   HAVANA exon              NA      &lt;NA&gt;
+#&gt;   [5]     chr1 13221-14409      + |   HAVANA exon              NA      &lt;NA&gt;
+#&gt;   [6]     chr1 12010-13670      + |   HAVANA gene              NA      &lt;NA&gt;
+#&gt;                 gene_id              gene_type   gene_name       level
+#&gt;             &lt;character&gt;            &lt;character&gt; &lt;character&gt; &lt;character&gt;
+#&gt;   [1] ENSG00000290825.1                 lncRNA     DDX11L2           2
+#&gt;   [2] ENSG00000290825.1                 lncRNA     DDX11L2           2
+#&gt;   [3] ENSG00000290825.1                 lncRNA     DDX11L2           2
+#&gt;   [4] ENSG00000290825.1                 lncRNA     DDX11L2           2
+#&gt;   [5] ENSG00000290825.1                 lncRNA     DDX11L2           2
+#&gt;   [6] ENSG00000223972.6 transcribed_unproces..     DDX11L1           2
+#&gt;                       tag     transcript_id transcript_type transcript_name
+#&gt;               &lt;character&gt;       &lt;character&gt;     &lt;character&gt;     &lt;character&gt;
+#&gt;   [1] overlaps_pseudogene              &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;
+#&gt;   [2]   Ensembl_canonical ENST00000456328.2          lncRNA     DDX11L2-202
+#&gt;   [3]   Ensembl_canonical ENST00000456328.2          lncRNA     DDX11L2-202
+#&gt;   [4]   Ensembl_canonical ENST00000456328.2          lncRNA     DDX11L2-202
+#&gt;   [5]   Ensembl_canonical ENST00000456328.2          lncRNA     DDX11L2-202
+#&gt;   [6]                &lt;NA&gt;              &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;
+#&gt;       transcript_support_level    havana_transcript exon_number
+#&gt;                    &lt;character&gt;          &lt;character&gt; &lt;character&gt;
+#&gt;   [1]                     &lt;NA&gt;                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;   [2]                        1 OTTHUMT00000362751.1        &lt;NA&gt;
+#&gt;   [3]                        1 OTTHUMT00000362751.1           1
+#&gt;   [4]                        1 OTTHUMT00000362751.1           2
+#&gt;   [5]                        1 OTTHUMT00000362751.1           3
+#&gt;   [6]                     &lt;NA&gt;                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;                 exon_id     hgnc_id          havana_gene         ont
+#&gt;             &lt;character&gt; &lt;character&gt;          &lt;character&gt; &lt;character&gt;
+#&gt;   [1]              &lt;NA&gt;        &lt;NA&gt;                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;   [2]              &lt;NA&gt;        &lt;NA&gt;                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;   [3] ENSE00002234944.1        &lt;NA&gt;                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;   [4] ENSE00003582793.1        &lt;NA&gt;                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;   [5] ENSE00002312635.1        &lt;NA&gt;                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;   [6]              &lt;NA&gt;  HGNC:37102 OTTHUMG00000000961.2        &lt;NA&gt;
+#&gt;        protein_id      ccdsid  artif_dupl
+#&gt;       &lt;character&gt; &lt;character&gt; &lt;character&gt;
+#&gt;   [1]        &lt;NA&gt;        &lt;NA&gt;        &lt;NA&gt;
+#&gt;   [2]        &lt;NA&gt;        &lt;NA&gt;        &lt;NA&gt;
+#&gt;   [3]        &lt;NA&gt;        &lt;NA&gt;        &lt;NA&gt;
+#&gt;   [4]        &lt;NA&gt;        &lt;NA&gt;        &lt;NA&gt;
+#&gt;   [5]        &lt;NA&gt;        &lt;NA&gt;        &lt;NA&gt;
+#&gt;   [6]        &lt;NA&gt;        &lt;NA&gt;        &lt;NA&gt;
+#&gt;   -------
+#&gt;   seqinfo: 25 sequences from an unspecified genome; no seqlengths</code></pre>
+<p>gtf is a <code>GenomicRanges</code> object. You can use <code>plyranges</code> from tidyomics <a href="https://github.com/tidyomics" class="uri">https://github.com/tidyomics</a> to manipulate it.</p>
+<p>I will convert it to a dataframe and use <code>tidyverse</code></p>
+<pre class="r"><code>gtf_df&lt;- as.data.frame(gtf)
+
+# this file is used to import the salmon output to summarize the counts from 
+# transcript level to gene level
+tx2gene&lt;- gtf_df %&gt;%
+        filter(type == &quot;transcript&quot;) %&gt;%
+        select(transcript_id, gene_id)
+
+
+# this file is used to map the ENSEMBL gene id to gene symbols in the DESeq2 results
+gene_name_map&lt;- gtf_df %&gt;% 
+        filter(type == &quot;gene&quot;) %&gt;% 
+        select(gene_id, gene_name) </code></pre>
+<p>If you are interested in using Unix commands</p>
+<pre class="bash"><code>zcat gencode.v45.basic.annotation.gtf.gz | \
+awk -F &quot;\t&quot; &#39;$3 == &quot;transcript&quot; { print $9 }&#39;| tr -s &quot;;&quot; &quot; &quot;   | \
+cut -d &quot; &quot; -f2,4|  sed &#39;s/\&quot;//g&#39; | awk &#39;{print $1&quot;.&quot;$2}&#39; &gt; genes.txt
+
+zcat gencode.v45.basic.annotation.gtf.gz | \
+awk -F &quot;\t&quot; &#39;$3 == &quot;transcript&quot; { print $9 }&#39; | tr -s &quot;;&quot; &quot; &quot;   | \
+cut -d &quot; &quot; -f6,8|  sed &#39;s/\&quot;//g&#39; | awk &#39;{print $1&quot;.&quot;$2}&#39; &gt; transcripts.txt
+
+paste transcripts.txt genes.txt &gt; tx2genes.txt
+</code></pre>
+</div>
+<div id="read-in-the-salmon-output" class="section level3">
+<h3>Read in the salmon output</h3>
+<p>Use <code>tx2gene</code> to summarize to gene level.</p>
+<pre class="r"><code>txi.salmon &lt;- tximport(files, type = &quot;salmon&quot;, tx2gene = tx2gene)</code></pre>
+<p>We are ready for <code>DESeq2</code>:</p>
+<pre class="r"><code>library(DESeq2)
+meta&lt;- data.frame(condition = c(&quot;normoxia&quot;, &quot;normoxia&quot;, &quot;hypoxia&quot;, &quot;hypoxia&quot;))
+
+rownames(meta)&lt;- colnames(txi.salmon$counts)
+
+meta</code></pre>
+<pre><code>#&gt;             condition
+#&gt; SRX14311105  normoxia
+#&gt; SRX14311106  normoxia
+#&gt; SRX14311111   hypoxia
+#&gt; SRX14311112   hypoxia</code></pre>
+<p>routine DESeq2 workflow</p>
+<pre class="r"><code>dds &lt;- DESeqDataSetFromTximport(txi.salmon, meta, ~ condition)
+
+dds$condition &lt;- relevel(dds$condition, ref = &quot;normoxia&quot;)
+
+dds &lt;- DESeq(dds)
+
+res &lt;- results(dds, contrast = c(&quot;condition&quot;, &quot;hypoxia&quot;, &quot;normoxia&quot;))
+
+res</code></pre>
+<pre><code>#&gt; log2 fold change (MLE): condition hypoxia vs normoxia 
+#&gt; Wald test p-value: condition hypoxia vs normoxia 
+#&gt; DataFrame with 62742 rows and 6 columns
+#&gt;                     baseMean log2FoldChange     lfcSE      stat      pvalue
+#&gt;                    &lt;numeric&gt;      &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;   &lt;numeric&gt;
+#&gt; ENSG00000000003.16   590.875     -0.0375376 0.1823407 -0.205865 8.36896e-01
+#&gt; ENSG00000000005.6      0.000             NA        NA        NA          NA
+#&gt; ENSG00000000419.14  2132.232     -0.4060705 0.0905846 -4.482775 7.36787e-06
+#&gt; ENSG00000000457.14   258.375      0.1292684 0.2548623  0.507209 6.12008e-01
+#&gt; ENSG00000000460.17   424.209     -0.8150114 0.2104556 -3.872606 1.07678e-04
+#&gt; ...                      ...            ...       ...       ...         ...
+#&gt; ENSG00000293556.1   0.224455        1.13592   4.99736  0.227304    0.820187
+#&gt; ENSG00000293557.1   6.144520        0.50388   2.10169  0.239750    0.810524
+#&gt; ENSG00000293558.1   1.184183       -3.83345   4.18101 -0.916871    0.359210
+#&gt; ENSG00000293559.1   0.000000             NA        NA        NA          NA
+#&gt; ENSG00000293560.1   1.574315        3.94434   3.65835  1.078175    0.280955
+#&gt;                           padj
+#&gt;                      &lt;numeric&gt;
+#&gt; ENSG00000000003.16 9.28301e-01
+#&gt; ENSG00000000005.6           NA
+#&gt; ENSG00000000419.14 5.54264e-05
+#&gt; ENSG00000000457.14 7.93342e-01
+#&gt; ENSG00000000460.17 6.55843e-04
+#&gt; ...                        ...
+#&gt; ENSG00000293556.1           NA
+#&gt; ENSG00000293557.1           NA
+#&gt; ENSG00000293558.1           NA
+#&gt; ENSG00000293559.1           NA
+#&gt; ENSG00000293560.1           NA</code></pre>
+<p>Let’s take a look at the p-value distribution in a histogram</p>
+<pre class="r"><code>res %&gt;% as.data.frame() %&gt;%
+  arrange(padj) %&gt;%
+  ggplot(aes(x=pvalue)) +
+  geom_histogram(color = &quot;white&quot;, bins = 50)</code></pre>
+<p><img src="/post/2024-03-18-downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Did you see a spike around 0.8? that’s strange. p-values are random variables
+and under the null, they should follow a uniform distribution which means we
+should see a spike near p=0 and the rest is flat if there are differentially
+expressed genes due to the treatment effect.</p>
+<p>Read:
+* my old post <a href="https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">Understanding p value, multiple comparisons, FDR and q value</a></p>
+<ul>
+<li>and <a href="http://varianceexplained.org/statistics/interpreting-pvalue-histogram/">How to interpret a p-value histogram</a> by
+David Robinson.</li>
+</ul>
+<p>Genes with small counts can mess up the p-values.
+Let’s compare the counts:</p>
+<pre class="r"><code>res %&gt;% as.data.frame() %&gt;%
+        tibble::rownames_to_column(var = &quot;gene_id&quot;) %&gt;%
+        filter(!is.na(pvalue)) %&gt;%
+        mutate(pvalue_bin = if_else(pvalue &gt; 0.75, &quot;high&quot;, &quot;low&quot;)) %&gt;%
+        ggplot(aes(x= pvalue_bin, y = log2(baseMean))) +
+        geom_boxplot()</code></pre>
+<p><img src="/post/2024-03-18-downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+genes with high p-values do seem to have lower gene expression.</p>
+<p>Let’s remove them:</p>
+<pre class="r"><code># counts across 4 samples should be greater than 10, this number is subjective
+dds &lt;- dds[rowSums(counts(dds)) &gt; 10,]
+
+dds &lt;- DESeq(dds)
+
+res &lt;- results(dds, contrast = c(&quot;condition&quot;, &quot;hypoxia&quot;, &quot;normoxia&quot;))
+
+res %&gt;% as.data.frame() %&gt;%
+  arrange(padj) %&gt;%
+  ggplot(aes(x=pvalue)) +
+  geom_histogram(color = &quot;white&quot;, bins = 50)</code></pre>
+<p><img src="/post/2024-03-18-downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Now, the p-value distribution looks much more normal!</p>
+</div>
+<div id="map-the-ensembl-id-to-gene-symbols" class="section level3">
+<h3>map the ENSEMBL ID to gene symbols</h3>
+<p>Now, we have one last task left. The ids for the genes are ENSEMBL IDs, we
+want to map it to gene symbols.</p>
+<p>You can use bioconductor packages such as <code>AnnotationDbi::select()</code> or
+<code>clusterProfiler::bitr()</code> function to map gene ids.</p>
+<p>In this case, we already have the gtf file and <code>gene_name_map</code> is what we
+need.</p>
+<pre class="r"><code>add_gene_name&lt;- function(res){
+  df&lt;- as.data.frame(res) %&gt;%
+    tibble::rownames_to_column(var = &quot;gene_id&quot;) %&gt;%
+    left_join(gene_name_map) %&gt;%
+    arrange(padj, abs(log2FoldChange))
+  return(df)
+}
+
+
+add_gene_name(res) %&gt;%
+        head()</code></pre>
+<pre><code>#&gt;              gene_id  baseMean log2FoldChange      lfcSE      stat
+#&gt; 1 ENSG00000102144.15 18910.289       1.562405 0.03979063  39.26566
+#&gt; 2 ENSG00000059804.17 62423.746       1.824985 0.03108234  58.71453
+#&gt; 3  ENSG00000134107.5  6115.319       2.386547 0.05854293  40.76577
+#&gt; 4 ENSG00000113739.11  8674.164       2.753104 0.06956149  39.57799
+#&gt; 5 ENSG00000146674.16 21865.720       5.333293 0.05964448  89.41804
+#&gt; 6  ENSG00000104371.5  4414.600      -3.778082 0.10725864 -35.22403
+#&gt;          pvalue         padj gene_name
+#&gt; 1  0.000000e+00  0.00000e+00      PGK1
+#&gt; 2  0.000000e+00  0.00000e+00    SLC2A3
+#&gt; 3  0.000000e+00  0.00000e+00   BHLHE40
+#&gt; 4  0.000000e+00  0.00000e+00      STC2
+#&gt; 5  0.000000e+00  0.00000e+00    IGFBP3
+#&gt; 6 8.573205e-272 2.49766e-268      DKK4</code></pre>
+<p>Now, this is perfect! And I instantly spot <code>PGK1</code>, <code>SLC2A3</code>, <code>IGFBP3</code> etc are the top
+differentially expressed genes which I know are hypoxia-inducible :)</p>
+</div>

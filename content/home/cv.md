@@ -7,7 +7,7 @@ active = true
 date = 2016-04-20T00:00:00
 
 # Note: a full width section format can be enabled by commenting out the `title` and `subtitle` with a `#`.
-title = "CV"
+title = "Newsletter"
 subtitle = ""
 
 # Order that this section will appear in.
@@ -15,4 +15,5 @@ weight = 70
 
 +++
 
-Find my CV in PDF [here](cv/Tang_Ming_cv.pdf).
+Join my FREE newsletter [here](https://divingintogeneticsandgenomics.ck.page/newsletter) 
+to learn bioinformatics and computational biology.
