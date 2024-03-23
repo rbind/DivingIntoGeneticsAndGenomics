@@ -201,3 +201,11 @@ add_gene_name(res) %>%
 Now, this is perfect! And I instantly spot `PGK1`, `SLC2A3`, `IGFBP3` etc are the top
 differentially expressed genes which I know are hypoxia-inducible :)
 
+Subscribe to the youtube channel to watch the video!
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=RWpY7EqHOUw")
+```
+

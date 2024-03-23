@@ -167,4 +167,6 @@ them using biology knowledge and manually merge or split the clusters.
 
 what's your take?
 
-
+```{r}
+devtools::session_info()
+```
