@@ -1,0 +1,156 @@
+---
+title: 'Fine tune the best clustering resolution for scRNAseq data: trying out callback'
+author: Ming Tommy Tang
+date: '2024-03-20'
+slug: fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback
+categories:
+  - bioconductor
+  - single-cell
+  - bioinformatics
+tags:
+  - bioinformatics
+  - Seurat
+  - single-cell
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="context-and-problem" class="section level3">
+<h3>Context and Problem</h3>
+<p>In scRNA-seq, each cell is sequenced individually, allowing for the analysis of gene expression at the single-cell level. This provides a wealth of information about the cellular identities and states. However, the high dimensionality of the data (thousands of genes) and the technical noise in the data can lead to challenges in accurately clustering the cells. Over-clustering is one such challenge, where cells that are biologically similar are clustered into distinct clusters.</p>
+<p>In a <a href="https://divingintogeneticsandgenomics.com/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">previous post</a>, I tested <a href="https://github.com/igrabski/sc-SHC"><code>scSHC</code></a> which tries to solve this problem.</p>
+<p>I recently saw this paper <a href="https://www.biorxiv.org/content/10.1101/2024.03.08.584180v1.full">A knockoff calibration method to avoid over-clustering in single-cell RNA-sequencing</a>.</p>
+<p>The paper introduces a “knockoff calibration method” to address the over-clustering problem. The method involves the use of knockoff features, similar to the approach described earlier, but tailored to the specific challenges of scRNA-seq data.</p>
+<ol style="list-style-type: decimal">
+<li><p>Knockoff Features Creation: The algorithm generates knockoff features from the original gene expression data. These knockoff features are designed to mimic the original data but are statistically independent of the cell identities or states.</p></li>
+<li><p>Clustering with Knockoff Features: The algorithm then applies a clustering algorithm to these knockoff features. Since the knockoff features are independent of the cell identities, the clustering should ideally reflect the true structure of the data without being influenced by the biological identities of the cells.</p></li>
+<li><p>Calibration: The algorithm uses the clustering results from the knockoff features to calibrate the clustering of the original data. This calibration process adjusts the clustering of the original data to avoid over-clustering, ensuring that the final clusters reflect the true biological identities of the cells.</p></li>
+<li><p>Improved Clustering: By using knockoff features for calibration, the algorithm aims to improve the accuracy of the clustering, reducing the likelihood of over-clustering. This results in more distinct clusters that better reflect the biological diversity of the single-cell population.</p></li>
+</ol>
+<p>The Knockoff Calibration Method implemented in <a href="https://github.com/lcrawlab/callback"><code>callback</code></a> R package:</p>
+<p>Let’s test it using the same PBMC3k datatset.</p>
+<pre class="r"><code>library(dplyr)
+library(Seurat)
+library(scCustomize)
+library(patchwork)
+library(ggplot2)
+library(ComplexHeatmap)
+library(SeuratData)
+set.seed(1234)</code></pre>
+<pre class="r"><code>data(&quot;pbmc3k&quot;)
+
+pbmc3k&lt;- UpdateSeuratObject(pbmc3k)
+pbmc3k</code></pre>
+<pre><code>#&gt; An object of class Seurat 
+#&gt; 13714 features across 2700 samples within 1 assay 
+#&gt; Active assay: RNA (13714 features, 0 variable features)
+#&gt;  2 layers present: counts, data</code></pre>
+</div>
+<div id="routine-processing" class="section level2">
+<h2>routine processing</h2>
+<pre class="r"><code>pbmc3k&lt;- pbmc3k %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+
+p1&lt;- DimPlot_scCustom(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, group.by = 
+                        &quot;RNA_snn_res.0.5&quot;)
+
+p2&lt;- DimPlot_scCustom(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, group.by = &quot;seurat_annotations&quot;, label.size = 3)
+
+p1 + p2</code></pre>
+<p><img src="/post/2024-03-20-fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>janitor::tabyl(pbmc3k@meta.data, seurat_annotations, RNA_snn_res.0.5)</code></pre>
+<pre><code>#&gt;  seurat_annotations   0   1   2   3   4   5   6  7  8
+#&gt;         Naive CD4 T 608   0  66   0  23   0   0  0  0
+#&gt;        Memory CD4 T  69   0 396   0  16   0   2  0  0
+#&gt;          CD14+ Mono   0 472   0   0   0   3   0  4  1
+#&gt;                   B   0   0   0 343   1   0   0  0  0
+#&gt;               CD8 T   2   0   3   0 265   0   1  0  0
+#&gt;        FCGR3A+ Mono   0   7   0   0   0 155   0  0  0
+#&gt;                  NK   0   0   0   0  16   0 139  0  0
+#&gt;                  DC   0   0   0   0   0   0   0 32  0
+#&gt;            Platelet   0   0   0   0   0   0   0  0 14
+#&gt;                &lt;NA&gt;  17  12   2   6  18   1   6  0  0</code></pre>
+<p>Let’s artificially increase the resolution (to 1) to over-cluster it.</p>
+<pre class="r"><code>## artificially increase the resolution
+pbmc3k&lt;- pbmc3k %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 1, verbose = FALSE) 
+
+
+p3&lt;- DimPlot_scCustom(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, group.by = &quot;RNA_snn_res.1&quot;)
+
+(p1 + p3) / p2</code></pre>
+<p><img src="/post/2024-03-20-fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>CD4 naive cell cluster is split to 2 clusters (0 -&gt; 0, 5)
+the CD14+ monocyte cluster is split into 2 clusters (1 -&gt; 4, 6)</p>
+<pre class="r"><code>janitor::tabyl(pbmc3k@meta.data, RNA_snn_res.1, RNA_snn_res.0.5) </code></pre>
+<pre><code>#&gt;  RNA_snn_res.1   0   1   2   3   4   5   6  7  8
+#&gt;              0 471   0   9   0   0   0   0  0  0
+#&gt;              1   4   0 455   0   0   0   0  0  0
+#&gt;              2   0   0   0 349   0   0   0  0  0
+#&gt;              3   0   0   2   0 303   0   0  0  0
+#&gt;              4   0 268   0   0   0   1   0  0  0
+#&gt;              5 221   0   1   0  36   0   0  0  0
+#&gt;              6   0 223   0   0   0   0   0  0  0
+#&gt;              7   0   0   0   0   0 158   0  0  0
+#&gt;              8   0   0   0   0   0   0 148  0  0
+#&gt;              9   0   0   0   0   0   0   0 36  0
+#&gt;             10   0   0   0   0   0   0   0  0 15</code></pre>
+<p>visualize it using <a href="https://github.com/crazyhottommy/scclusteval" class="uri">https://github.com/crazyhottommy/scclusteval</a></p>
+<pre class="r"><code>library(scclusteval)
+
+PairWiseJaccardSetsHeatmap(pbmc3k$RNA_snn_res.0.5,
+                           pbmc3k$RNA_snn_res.1,
+                           show_row_dend = F, show_column_dend = F,
+                           cluster_row = F, cluster_column =F)</code></pre>
+<p><img src="/post/2024-03-20-fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<div id="test-callback" class="section level3">
+<h3>Test callback</h3>
+<p>Install it here <a href="https://github.com/lcrawlab/callback" class="uri">https://github.com/lcrawlab/callback</a></p>
+<pre class="r"><code>#devtools::install_github(&quot;lcrawlab/callback&quot;)
+library(callback)
+library(tictoc)
+
+tic()
+pbmc3k_callback &lt;- FindClustersCallback(pbmc3k)
+toc()</code></pre>
+<pre><code>#&gt; 54.118 sec elapsed</code></pre>
+<pre class="r"><code>p4&lt;- scCustomize::DimPlot_scCustom(pbmc3k_callback)
+
+(p1 + p4) / p2</code></pre>
+<p><img src="/post/2024-03-20-fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback_files/figure-html/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>PairWiseJaccardSetsHeatmap(pbmc3k$seurat_annotations,
+                           pbmc3k_callback$callback_clusters,
+                           show_row_dend = F, show_column_dend = F,
+                           cluster_row = F, cluster_column =F)</code></pre>
+<p><img src="/post/2024-03-20-fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback_files/figure-html/unnamed-chunk-9-1.png" width="576" /></p>
+<p><code>callback</code> merges the CD8 T and NK cells into cluster 2, and merges the
+naive CD4 T cells and the memory CD4 T cells. Of course, you do not know the
+original seurat cluster annotation is 100% correct or not. Distinguishing naive
+and memory CD4 is harder too. However, merging NK cells with CD8T cells do make me worry :)</p>
+</div>
+<div id="conclusions" class="section level3">
+<h3>conclusions</h3>
+<ol style="list-style-type: decimal">
+<li><p>Similar to <a href="https://github.com/igrabski/sc-SHC"><code>scSHC</code></a>, while statistically attractive, we need to use it with precaution and validate the clusters with biology knowledge.</p></li>
+<li><p>Always use a small dataset that you are familiar with to test a new method.</p></li>
+<li><p>The cluster number will be depending on the parameter <code>dims = 1:10</code> in the <code>FindClustersCallback</code> function too.</p></li>
+<li><p>I may still cluster with a bunch of different resolutions and make sense of
+them using biology knowledge and manually merge or split the clusters.</p></li>
+</ol>
+<p>what’s your take?</p>
+</div>
+</div>
