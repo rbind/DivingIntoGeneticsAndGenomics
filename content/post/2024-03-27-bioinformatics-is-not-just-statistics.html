@@ -1,0 +1,86 @@
+---
+title: 'Bioinformatics is not (just) statistics '
+author: Ming Tommy Tang
+date: '2024-03-27'
+slug: bioinformatics-is-not-just-statistics
+categories:
+  - bioinformatics
+tags:
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>I was asked this question very often: “Tommy, what’s the p-value cutoff should
+I use to determine the differentially expressed genes; what log2 Fold change
+cutoff should I use too?”</p>
+<p>For single-cell RNAseq quality control, what’s the cutoff for mitochondrial
+content?</p>
+<p>My answer is always: it depends. I was joking: determining a cutoff is 90% of the
+work a bioinformatician does.</p>
+<p>Why is that?</p>
+<p>Biology is more than just statistics. Several examples:</p>
+<ol style="list-style-type: decimal">
+<li>when you have gazillions of data points, the p-value will be inherently small.</li>
+</ol>
+<p>This is especially true for single-cell RNAseq marker gene identification. We
+may have thousands of cells in each cluster and the p-value will be inherently small.
+Moreover, we are double-dipping as we cluster first and then test differences in
+the clusters identified which causes the p-values to be even smaller. You probably
+see many marker genes with p values of <code>10^-10</code>.
+We may want to focus on the effect size (the magnitude of changes). e.g. log2 Fold change.</p>
+<p>This applies to any dataset with large sample size.</p>
+<blockquote class="twitter-tweet">
+<p lang="en" dir="ltr">
+Reminder: You will get small p-values when your the number of data points is large <a href="https://t.co/wqx6JxRtGH">https://t.co/wqx6JxRtGH</a>
+</p>
+— Ming "Tommy" Tang (<span class="citation">@tangming2005</span>) <a href="https://twitter.com/tangming2005/status/1489964367336648707?ref_src=twsrc%5Etfw">February 5, 2022</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>and when you calcuate correlations too:</p>
+<blockquote class="twitter-tweet">
+<p lang="en" dir="ltr">
+Question: if you have tens of thousands of data points with a correlation of 0.2 and a p-value 10^-11. Is it meaningful to show that? you always get a tiny p-value when you have a lot of data points. <a href="https://t.co/lVQKOJGnfW">pic.twitter.com/lVQKOJGnfW</a>
+</p>
+— Ming "Tommy" Tang (<span class="citation">@tangming2005</span>) <a href="https://twitter.com/tangming2005/status/1310606786605481985?ref_src=twsrc%5Etfw">September 28, 2020</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>On the other hand, what cutoffs should one use for the log2Fold change? Traditionally,
+people uses log2Fold of 1 which is 2 fold change. Again, I would argue this is
+quite subjective and your dataset may have very few number of genes that pass that cutoff and you want to relax the cutoff. The whole idea of using those cutoffs is
+to narrow down the gene list so one can pick one of them, do experiments to validate them and build a story for a paper.</p>
+<p>Is 50% of increase of 50% of decrease of gene expression important or not? It depends
+on the genes. For example, X chromosome inactivation escaping can cause genes to increase 50% of some gene product in females (XX in female vs XY in male). It causes diseases.</p>
+<blockquote>
+<p>Beta-thalassemia is an autosomal recessive disorder caused by mutations in the HBB (beta-globin) gene. This gene encodes the beta-globin subunit of hemoglobin, the oxygen-carrying protein in red blood cells. Mutations in HBB lead to reduced or absent production of functional beta-globin chains, resulting in ineffective erythropoiesis and hemolytic anemia. A 50% decrease in HBB gene expression can lead to a deficiency of beta-globin chains, causing the clinical manifestations of beta-thalassemia, including anemia, splenomegaly, and skeletal abnormalities.</p>
+</blockquote>
+<ol start="2" style="list-style-type: decimal">
+<li>Mitochondrial and ribosomal genes content are quality control metrics for single-cell RNAseq data.</li>
+</ol>
+<p>As more mitochondrial gene expression indicates dying cells. What’s the cutoff
+one should use? Some use 5%, some use 10%, others may use 20%. It is all heuristic.</p>
+<p>Indeed, there are tools such as <a href="https://www.bioconductor.org/packages/release/bioc/html/miQC.html">miQC</a> which uses the data to determine a cutoff.
+However, some tissues or cells types express high levels of mitochondrial and ribosomal genes because of their biology.</p>
+<blockquote>
+<p>metabolically active tissues (e.g., muscle, kidney) have higher mitochondrial transcript content</p>
+</blockquote>
+<blockquote>
+<p>For example, naive poised T cells are known to have higher ribosomal content,
+as are malignant cells.</p>
+</blockquote>
+<p>So next time, if you ask me again, I will answer: it depends :)</p>
+<div id="references" class="section level3">
+<h3>references</h3>
+<ul>
+<li><p>my old blog post <a href="https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">Understanding p value, multiple comparisons, FDR and q value</a></p></li>
+<li><p><a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-022-02820-w">Biology-inspired data-driven quality control for scientific discovery in single-cell transcriptomics</a></p></li>
+<li><p><a href="https://sci-hub.ru/https://www.nature.com/articles/d41586-019-00857-9">Scientists rise up against statistical significance</a></p></li>
+<li><p><a href="https://www.nepjol.info/index.php/NJE/article/view/14732">Understanding significance and p-values</a></p></li>
+<li><p><a href="https://pubmed.ncbi.nlm.nih.gov/32840568/">Systematic determination of the mitochondrial proportion in human and mice tissues for single-cell RNA-sequencing data quality control</a></p></li>
+<li><p><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4715224/">Characterization of Deletions of the HBA and HBB Loci by Array Comparative Genomic Hybridization</a></p></li>
+</ul>
+</div>
