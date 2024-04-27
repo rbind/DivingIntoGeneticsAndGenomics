@@ -1,5 +1,5 @@
 +++
-date = 2024-04-27T06:30:00  # Schedule page publish date.
+date = 2024-04-26T06:30:00  # Schedule page publish date.
 
 title = "Academia to Industry: Computational Biology Careeer Advice and Tips"
 time_start = 2024-04-27T06:30:00
