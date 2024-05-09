@@ -114,9 +114,9 @@ my_car
 
 Here's what we did:
 
-1. First, we defined the Car class using setClass.
+1. First, we defined the Car class using `setClass`.
 
-2. We then created a generic function called move using setGeneric. The standardGeneric function is a utility function that creates a standard generic function with the specified name.
+2. We then created a generic function called move using `setGeneric`. The `standardGeneric` function is a utility function that creates a standard generic function with the specified name.
 
 3. After defining the generic function, we can now define the method for the Car class using `setMethod`.
 
@@ -128,3 +128,6 @@ Here's what we did:
 
 By defining the generic function first, R knows that "move" is a valid generic function, and you can then define methods for different classes that should be dispatched when calling the move function.
 
+### Further reading 
+
+Advanced R: http://adv-r.had.co.nz/S4.html

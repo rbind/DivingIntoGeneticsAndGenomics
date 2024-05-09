@@ -93,12 +93,16 @@ my_car &lt;- move(my_car, 40)</code></pre>
 ## [1] 40</code></pre>
 <p>Here’s what we did:</p>
 <ol style="list-style-type: decimal">
-<li><p>First, we defined the Car class using setClass.</p></li>
-<li><p>We then created a generic function called move using setGeneric. The standardGeneric function is a utility function that creates a standard generic function with the specified name.</p></li>
+<li><p>First, we defined the Car class using <code>setClass</code>.</p></li>
+<li><p>We then created a generic function called move using <code>setGeneric</code>. The <code>standardGeneric</code> function is a utility function that creates a standard generic function with the specified name.</p></li>
 <li><p>After defining the generic function, we can now define the method for the Car class using <code>setMethod</code>.</p></li>
 <li><p>The <code>setMethod</code> call specifies the generic function name (“move”), the signature (the class or classes the method should be dispatched for), and the function definition for the method.</p></li>
 <li><p>In the method definition, we update the speed slot of the object (the Car instance) and print a message using cat.</p></li>
 <li><p>Finally, we create an instance of the Car class and use the move method on it.</p></li>
 </ol>
 <p>By defining the generic function first, R knows that “move” is a valid generic function, and you can then define methods for different classes that should be dispatched when calling the move function.</p>
+</div>
+<div id="further-reading" class="section level3">
+<h3>Further reading</h3>
+<p>Advanced R: <a href="http://adv-r.had.co.nz/S4.html" class="uri">http://adv-r.had.co.nz/S4.html</a></p>
 </div>
