@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="The original link. https://connect.corrdyn.com/blog/ming-tang-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team
+Guest Profile Tommy Tang&rsquo;s career began when he pursued his Ph.D. in genetics and genomics at the University of Florida. Initially trained in molecular biology in the wet lab, he was driven to explore computational biology after encountering the limitations of traditional analysis methods. Through self-study, Tommy developed skills that enabled him to analyze complex genomic data sets.
+Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to Harvard and the Dana Farber Cancer Institute, where he worked on single-cell RNA sequencing.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/">
+  <meta property="og:title" content="My take on Data Challenges in Immuno-oncology, the Role of the Cloud, and Growing a Computational Biology Team | DNA confesses Data speak">
+  <meta property="og:description" content="The original link. https://connect.corrdyn.com/blog/ming-tang-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team
+Guest Profile Tommy Tang&rsquo;s career began when he pursued his Ph.D. in genetics and genomics at the University of Florida. Initially trained in molecular biology in the wet lab, he was driven to explore computational biology after encountering the limitations of traditional analysis methods. Through self-study, Tommy developed skills that enabled him to analyze complex genomic data sets.
+Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to Harvard and the Dana Farber Cancer Institute, where he worked on single-cell RNA sequencing.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-11-15T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-11-15T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>My take on Data Challenges in Immuno-oncology, the Role of the Cloud, and Growing a Computational Biology Team | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">My take on Data Challenges in Immuno-oncology, the Role of the Cloud, and Growing a Computational Biology Team</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-11-15 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Nov 15, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/cloud-computing/">cloud computing</a
+    >, 
+    
+    <a href="/categories/drug-development/">drug development</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=My%20take%20on%20Data%20Challenges%20in%20Immuno-oncology%2c%20the%20Role%20of%20the%20Cloud%2c%20and%20Growing%20a%20Computational%20Biology%20Team&amp;url=%2fpost%2fmy-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fmy-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fmy-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team%2f&amp;title=My%20take%20on%20Data%20Challenges%20in%20Immuno-oncology%2c%20the%20Role%20of%20the%20Cloud%2c%20and%20Growing%20a%20Computational%20Biology%20Team"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fmy-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team%2f&amp;title=My%20take%20on%20Data%20Challenges%20in%20Immuno-oncology%2c%20the%20Role%20of%20the%20Cloud%2c%20and%20Growing%20a%20Computational%20Biology%20Team"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=My%20take%20on%20Data%20Challenges%20in%20Immuno-oncology%2c%20the%20Role%20of%20the%20Cloud%2c%20and%20Growing%20a%20Computational%20Biology%20Team&amp;body=%2fpost%2fmy-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<p>The original link. <a href="https://connect.corrdyn.com/blog/ming-tang-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team" target="_blank">https://connect.corrdyn.com/blog/ming-tang-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team</a></p>
+
+<h3 id="guest-profile">Guest Profile</h3>
+
+<p>Tommy Tang&rsquo;s career began when he pursued his Ph.D. in genetics and genomics at the University of Florida. Initially trained in molecular biology in the wet lab, he was driven to explore computational biology after encountering the limitations of traditional analysis methods. Through self-study, Tommy developed skills that enabled him to analyze complex genomic data sets.</p>
+
+<p>Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to Harvard and the Dana Farber Cancer Institute, where he worked on single-cell RNA sequencing. Currently, Tommy serves as the Director of Computational Biology at Immunitas Therapeutics, a single-cell genomics company focused on immuno-oncology.</p>
+
+<h3 id="the-highlights">The Highlights</h3>
+
+<p>Throughout the interview, Tommy discusses his career path, computational biology&rsquo;s role in immuno-oncology, the impact of data on research, and the importance of asking the right questions to drive progress. Let&rsquo;s delve into five of the highlights from our interview with Tommy:</p>
+
+<ol>
+<li><p><strong>The challenges of data in immuno-oncology</strong>: While the decreasing cost of sequencing has led to a surge in data availability, effectively utilizing and analyzing these data sets is still a problem. One of the major challenges in immuno-oncology is the quality and quantity of the data. High-quality data is essential for accurate analysis, but generating this data is not easy. Publicly available data can be useful but is typically messy and requires significant effort to clean and homogenize for analysis. Wet lab biologists can generate high-quality data, but getting the scale needed can be a challenge. Constructing a baseline dataset is the starting point for any computational biology practice.</p></li>
+
+<li><p><strong>Building the computational biology function</strong>: We asked Tommy to give us an overview of the process of coming into Immunitas and building the function of computational biology from scratch. He emphasized the importance of not letting perfect be the enemy of the good. The first priority is getting a baseline in place that works and, from there, gradually enhancing the most critical elements. This is particularly true for small biotechs where spending too much time on a “perfect” solution may mean that deadlines are missed.  He also emphasizes that although machine learning models and AI show promise, simple statistical tests, and conventional methods can often provide valuable insights that should not be overlooked.</p></li>
+
+<li><p><strong>Mutual learning process</strong>: By working closely with wet lab biologists, computational biologists gain a deeper understanding of experimental design and biological processes, enabling them to work more effectively. Likewise, wet lab biologists stand to gain useful insight when collaborating with computational biologists. For example, a computational biologist might flag a subset of cells that seemed interesting, and a wet lab technician can add additional context that helps to understand them – it might be a purely technical issue like a change in temperature that has impacted the results. A wet lab technician may ask a question like, ‘why is the gene expression level on the project I am working on so low when my expectation is it should be high?’ Computational biology can dig into the possible causes. Interactions between the two disciplines make both groups perform better.</p></li>
+
+<li><p>The benefits of using the cloud: One of the big benefits of the cloud, from Tommy’s perspective, was its ability to deal with scale. A data set can have millions of cells, which is a difficult volume of data to deal with on a local computer. Cloud computing has played a vital role in advancing computational biology by providing scalable infrastructure and storage that can deal with the large-scale genomic data being analyzed. Tommy also explains how the cloud gives a cost-effective way to store data while automating repeatable processes to ensure data is handled efficiently and is well-organized for future use, but suggests a few areas where cloud services customized for biotech can eliminate a lot of the friction for computational biology teams.</p></li>
+
+<li><p><strong>Growing a team</strong>: We asked Tommy about his approach to growing a computational biology team, and he emphasized the importance of focusing on career development. He points to the saying, “if you want to go fast, go alone, but if you want to go far, go together”. His view is that you can learn much more as a team if you learn together. Therefore, there is a big focus within his team on knowledge sharing with regular learning and collaboration sessions. Fostering a great learning environment benefits the team, and company, as a whole.</p></li>
+</ol>
+
+<p>Further Reading: As we discussed with Tommy on the podcast, one of his aims with his social media channels is to curate and create resources for those breaking into the industry, so rather than give our usual book or paper recommendation, here are links to Tommy’s GitHub repository and website as an invaluable tool for anyone on a computational biology journey.</p>
+
+<p><a href="https://github.com/crazyhottommy" target="_blank">https://github.com/crazyhottommy</a></p>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/genomics/">genomics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/reproducible-research/">reproducible research</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/use-random-forest-as-a-clustering-method/">How to use random forest as a clustering method</a></li>
+        
+        <li><a href="/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/">How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</a></li>
+        
+        <li><a href="/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/">Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</a></li>
+        
+        <li><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></li>
+        
+        <li><a href="/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/">Omics Playground: Derive biological insights from your omics data at your fingertip</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/" rel="next">Part 1 How to use Salmon/Alevin to preprocess CITE-seq data</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/use-random-forest-as-a-clustering-method/" rel="prev">How to use random forest as a clustering method</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

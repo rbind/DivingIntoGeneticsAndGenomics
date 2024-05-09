@@ -33,7 +33,7 @@
     <item>
       <title>Bioconductor</title>
       <link>/tags/bioconductor/</link>
-      <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 18 Mar 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/bioconductor/</guid>
       <description></description>
@@ -42,7 +42,7 @@
     <item>
       <title>Bioinformatics</title>
       <link>/tags/bioinformatics/</link>
-      <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 07 May 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/bioinformatics/</guid>
       <description></description>
@@ -105,7 +105,7 @@
     <item>
       <title>Deeplearning</title>
       <link>/tags/deeplearning/</link>
-      <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 31 Oct 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/deeplearning/</guid>
       <description></description>
@@ -177,7 +177,7 @@
     <item>
       <title>Genomics</title>
       <link>/tags/genomics/</link>
-      <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/genomics/</guid>
       <description></description>
@@ -213,7 +213,7 @@
     <item>
       <title>Heatmap</title>
       <link>/tags/heatmap/</link>
-      <pubDate>Sun, 05 Feb 2023 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 16 Jan 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/heatmap/</guid>
       <description></description>
@@ -267,9 +267,18 @@
     <item>
       <title>Machine learning</title>
       <link>/tags/machine-learning/</link>
-      <pubDate>Sun, 23 Jul 2023 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 06 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/machine-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Neural network</title>
+      <link>/tags/neural-network/</link>
+      <pubDate>Tue, 31 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/neural-network/</guid>
       <description></description>
     </item>
     
@@ -337,6 +346,15 @@
     </item>
     
     <item>
+      <title>RNAseq</title>
+      <link>/tags/rnaseq/</link>
+      <pubDate>Mon, 18 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/rnaseq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>RNN</title>
       <link>/tags/rnn/</link>
       <pubDate>Sun, 03 Sep 2023 00:00:00 +0000</pubDate>
@@ -348,7 +366,7 @@
     <item>
       <title>Reproducible research</title>
       <link>/tags/reproducible-research/</link>
-      <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/reproducible-research/</guid>
       <description></description>
@@ -357,7 +375,7 @@
     <item>
       <title>Rstats</title>
       <link>/tags/rstats/</link>
-      <pubDate>Sun, 24 Sep 2023 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 07 May 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/rstats/</guid>
       <description></description>
@@ -384,7 +402,7 @@
     <item>
       <title>Seurat</title>
       <link>/tags/seurat/</link>
-      <pubDate>Sun, 23 Jul 2023 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 20 Mar 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/seurat/</guid>
       <description></description>
@@ -393,7 +411,7 @@
     <item>
       <title>Single-cell</title>
       <link>/tags/single-cell/</link>
-      <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 20 Mar 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/single-cell/</guid>
       <description></description>
@@ -445,9 +463,27 @@
     </item>
     
     <item>
+      <title>TCGA</title>
+      <link>/tags/tcga/</link>
+      <pubDate>Thu, 26 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/tcga/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tidymodels</title>
+      <link>/tags/tidymodels/</link>
+      <pubDate>Mon, 06 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/tidymodels/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Tidyverse</title>
       <link>/tags/tidyverse/</link>
-      <pubDate>Fri, 13 Jan 2023 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 06 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/tidyverse/</guid>
       <description></description>

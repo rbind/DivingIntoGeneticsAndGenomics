@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2023-09-28T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2024-03-18T00:00:00&#43;00:00">
   
 
   
@@ -156,13 +156,11 @@
         
         
         
-          
-        
 
         <li class="nav-item">
-          <a href="/#publications">
+          <a href="/#cv">
             
-            <span>Publications</span>
+            <span>Newsletter</span>
             
           </a>
         </li>
@@ -232,11 +230,13 @@
         
         
         
+          
+        
 
         <li class="nav-item">
-          <a href="/#cv">
+          <a href="/#publications">
             
-            <span>CV</span>
+            <span>Publications</span>
             
           </a>
         </li>
@@ -282,6 +282,40 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/">Downstream of bulk RNAseq: read in salmon output using tximport and then DESeq2</a></h2>
+    <div class="article-style">
+      
+      Join my newsletter to not miss a post like this
+In the last blog post, I showed you how to use salmon to get counts from fastq files downloaded from GEO. In this post, I am going to show you how to read in the .sf salmon quantification file into R; how to get the tx2gene.txt file and do DESeq2 for differential gene expression analysis. Let’s dive in!
+library(tximport) library(dplyr) library(ggplot2) files&lt;- list.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/">Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</a></h2>
+    <div class="article-style">
+      
+      In my last post, I showed you how to get the protein and RNA counts from a CITE-seq experiment using Simpleaf.
+Now that we have the raw count matrices, we are ready to explore them within R.
+To follow the tutorial, you can download the associated data from here.
+Load the data suppressPackageStartupMessages({ library(fishpond) library(ggplot2) library(dplyr) library(SingleCellExperiment) library(Seurat) library(DropletUtils) }) # set the seed set.seed(123) #gex_q &lt;- loadFry(&#39;~/blog_data/CITEseq/alevin_rna/af_quant&#39;) #fb_q &lt;- loadFry( &#39;~/blog_data/CITEseq/alevin_adt/af_quant&#39;) # I saved the above objs first to rds files, now just read them back fb_q&lt;- readRDS(&quot;~/blog_data/CITEseq/fb_q.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/">How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</a></h2>
+    <div class="article-style">
+      
+      Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
+The Cancer Genome Atlas (TCGA) project is probably one of the most well-known large-scale cancer sequencing project. It sequenced ~10,000 treatment-naive tumors across 33 cancer types. Different data including whole-exome, whole-genome, copy-number (SNP array), bulk RNAseq, protein expression (Reverse-Phase Protein Array), DNA methylation are available.
+TCGA is a very successful large sequencing project. I highly recommend learning from the organization of it.
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></h2>

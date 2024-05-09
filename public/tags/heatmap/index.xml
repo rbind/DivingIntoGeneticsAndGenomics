@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sun, 05 Feb 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 16 Jan 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/heatmap/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to make a multi-group dotplot for single-cell RNAseq data</title>
+      <link>/post/how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data/</link>
+      <pubDate>Tue, 16 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data/</guid>
+      <description>Dotplots are very popular for visualizing single-cell RNAseq data. In essence, the dot size represents the percentage of cells that are positive for that gene; the color intensity represents the average gene expression of that gene in a cell type.
+It is easy to plot one using Seurat::dotplot or Sccustomize::clustered_dotplot. However, when you have multiple groups/conditions in your data and you want to visualize it by groups, it is not that straightforward.</description>
+    </item>
     
     <item>
       <title>How to make a triangle correlation heatmap with p-values labeled </title>

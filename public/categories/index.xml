@@ -7,24 +7,42 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Tue, 03 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 20 Mar 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Bioconductor</title>
+      <link>/categories/bioconductor/</link>
+      <pubDate>Wed, 20 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/bioconductor/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Bioinformatics</title>
       <link>/categories/bioinformatics/</link>
-      <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 27 Mar 2024 00:00:00 +0000</pubDate>
       
       <guid>/categories/bioinformatics/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>CITE-seq</title>
+      <link>/categories/cite-seq/</link>
+      <pubDate>Mon, 18 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/cite-seq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Cloud computing</title>
       <link>/categories/cloud-computing/</link>
-      <pubDate>Sat, 15 Jul 2023 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/cloud-computing/</guid>
       <description></description>
@@ -51,7 +69,7 @@
     <item>
       <title>Deeplearning</title>
       <link>/categories/deeplearning/</link>
-      <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 31 Oct 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/deeplearning/</guid>
       <description></description>
@@ -69,7 +87,7 @@
     <item>
       <title>Drug development</title>
       <link>/categories/drug-development/</link>
-      <pubDate>Thu, 15 Jun 2023 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/drug-development/</guid>
       <description></description>
@@ -105,7 +123,7 @@
     <item>
       <title>Machine learning</title>
       <link>/categories/machine-learning/</link>
-      <pubDate>Sun, 23 Jul 2023 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 06 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/machine-learning/</guid>
       <description></description>
@@ -117,6 +135,24 @@
       <pubDate>Tue, 22 Aug 2023 00:00:00 +0000</pubDate>
       
       <guid>/categories/multiomics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Neural network</title>
+      <link>/categories/neural-network/</link>
+      <pubDate>Wed, 18 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/neural-network/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>New year resolution</title>
+      <link>/categories/new-year-resolution/</link>
+      <pubDate>Sun, 31 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/new-year-resolution/</guid>
       <description></description>
     </item>
     
@@ -148,6 +184,24 @@
     </item>
     
     <item>
+      <title>RNAseq</title>
+      <link>/categories/rnaseq/</link>
+      <pubDate>Wed, 13 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/rnaseq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Reflection</title>
+      <link>/categories/reflection/</link>
+      <pubDate>Sun, 31 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/reflection/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Review</title>
       <link>/categories/review/</link>
       <pubDate>Fri, 30 Dec 2022 00:00:00 +0000</pubDate>
@@ -159,7 +213,7 @@
     <item>
       <title>Rstats</title>
       <link>/categories/rstats/</link>
-      <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 07 May 2024 00:00:00 +0000</pubDate>
       
       <guid>/categories/rstats/</guid>
       <description></description>
@@ -186,7 +240,7 @@
     <item>
       <title>Single-cell</title>
       <link>/categories/single-cell/</link>
-      <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 20 Mar 2024 00:00:00 +0000</pubDate>
       
       <guid>/categories/single-cell/</guid>
       <description></description>

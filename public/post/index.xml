@@ -13,12 +13,214 @@
     
     
     <item>
+      <title>S3 and S4 objects in R explained </title>
+      <link>/post/s3-and-s4-objects-in-r-explained/</link>
+      <pubDate>Tue, 07 May 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/s3-and-s4-objects-in-r-explained/</guid>
+      <description>In R, S3 and S4 objects are related to object-oriented programming (OOP), which allows you to create custom data structures with associated behaviors and methods. Let me explain them using simple language and metaphors, along with practical examples.
+S3 Objects: Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.</description>
+    </item>
+    
+    <item>
+      <title>Bioinformatics is not (just) statistics </title>
+      <link>/post/bioinformatics-is-not-just-statistics/</link>
+      <pubDate>Wed, 27 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/bioinformatics-is-not-just-statistics/</guid>
+      <description>I was asked this question very often: “Tommy, what’s the p-value cutoff should I use to determine the differentially expressed genes; what log2 Fold change cutoff should I use too?”
+For single-cell RNAseq quality control, what’s the cutoff for mitochondrial content?
+My answer is always: it depends. I was joking: determining a cutoff is 90% of the work a bioinformatician does.
+Why is that?
+Biology is more than just statistics.</description>
+    </item>
+    
+    <item>
+      <title>Fine tune the best clustering resolution for scRNAseq data: trying out callback</title>
+      <link>/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</link>
+      <pubDate>Wed, 20 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</guid>
+      <description>Context and Problem In scRNA-seq, each cell is sequenced individually, allowing for the analysis of gene expression at the single-cell level. This provides a wealth of information about the cellular identities and states. However, the high dimensionality of the data (thousands of genes) and the technical noise in the data can lead to challenges in accurately clustering the cells. Over-clustering is one such challenge, where cells that are biologically similar are clustered into distinct clusters.</description>
+    </item>
+    
+    <item>
+      <title>Downstream of bulk RNAseq: read in salmon output using tximport and then DESeq2</title>
+      <link>/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</link>
+      <pubDate>Mon, 18 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</guid>
+      <description>Join my newsletter to not miss a post like this
+In the last blog post, I showed you how to use salmon to get counts from fastq files downloaded from GEO. In this post, I am going to show you how to read in the .sf salmon quantification file into R; how to get the tx2gene.txt file and do DESeq2 for differential gene expression analysis. Let’s dive in!
+library(tximport) library(dplyr) library(ggplot2) files&amp;lt;- list.</description>
+    </item>
+    
+    <item>
+      <title>How to preprocess GEO bulk RNAseq data with salmon </title>
+      <link>/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/</link>
+      <pubDate>Wed, 13 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/</guid>
+      <description>Install fastq-dl To easily download fastq from GEO or ENA, use fastq-dl
+Assume you already have conda installed, do the following:
+conda config --add channels conda-forge conda config --add channels bioconda conda create -n fastq_download -c conda-forge -c bioconda fastq-dl conda activate fastq_download  Tip: use mamba if conda is too slow for you. They are all big snakes!!
+We will use bulk RNAseq data from this GEO accession ID: https://www.</description>
+    </item>
+    
+    <item>
+      <title>Do you really understand log2Fold change in single-cell RNAseq data?</title>
+      <link>/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</link>
+      <pubDate>Tue, 05 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</guid>
+      <description>In Single-cell RNAseq analysis, there is a step to find the marker genes for each cluster. The output from Seurat FindAllMarkers has a column called avg_log2FC. It is the gene expression log2 fold change between cluster x and all other clusters.
+How is that calculated? In this tweet thread by Lior Pachter, he said that there was a discrepancy for the logFC changes between Seurat and Scanpy: Actually, both Scanpy and Seurat calculate it wrong.</description>
+    </item>
+    
+    <item>
+      <title>Hidden skills beyond programming for computational biology</title>
+      <link>/post/hidden-skills-beyond-programming-for-computational-biology/</link>
+      <pubDate>Fri, 23 Feb 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/hidden-skills-beyond-programming-for-computational-biology/</guid>
+      <description>There are some hidden gems beyond the typical programming skills that have been instrumental in my journey. These are the often-overlooked yet crucial practices that have empowered me to tackle challenges and make sense of data in meaningful ways.
+Firstly, let’s talk about patience. It’s not as glamorous as diving straight into analysis, but taking the time for thorough quality control is invaluable. Before you get carried away, understand the experimental design.</description>
+    </item>
+    
+    <item>
+      <title>How to make a multi-group dotplot for single-cell RNAseq data</title>
+      <link>/post/how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data/</link>
+      <pubDate>Tue, 16 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data/</guid>
+      <description>Dotplots are very popular for visualizing single-cell RNAseq data. In essence, the dot size represents the percentage of cells that are positive for that gene; the color intensity represents the average gene expression of that gene in a cell type.
+It is easy to plot one using Seurat::dotplot or Sccustomize::clustered_dotplot. However, when you have multiple groups/conditions in your data and you want to visualize it by groups, it is not that straightforward.</description>
+    </item>
+    
+    <item>
+      <title>Great Things Take Time: How Decades of Effort Led to My Dream Career</title>
+      <link>/post/great-things-take-time-how-decades-of-effort-led-to-my-dream-career/</link>
+      <pubDate>Thu, 04 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/great-things-take-time-how-decades-of-effort-led-to-my-dream-career/</guid>
+      <description>Everyone is unique. Only you can talk about the story about yourself, and I realized that no matter how many times I have told my story, I have to tell it again, again, again, and again. Because no matter how many times I tell it, there is always someone who hear my story the first time. I hope it can inspire more people every time I tell it.
+Fast backward 37 years ago, 1986.</description>
+    </item>
+    
+    <item>
+      <title>Review 2023</title>
+      <link>/post/review-2023/</link>
+      <pubDate>Sun, 31 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/review-2023/</guid>
+      <description>By the end of every year, I write a review of the past year. It is a great time to reflect on the Losses and Wins and plan for the new year. I can not believe 2024 is right at the corner. My review of 2022 can be found at https://divingintogeneticsandgenomics.com/post/review-2022/.
+Goals reached for 2023 This is in the same order of the goals of 2023 in my last year’s review.</description>
+    </item>
+    
+    <item>
+      <title>Part 4 CITE-seq normalization using empty droplets with the dsb package</title>
+      <link>/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/</link>
+      <pubDate>Mon, 18 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/</guid>
+      <description>In this post, we are going to try a CITE-seq normalization method called dsb published in Normalizing and denoising protein expression data from droplet-based single cell profiling
+ two major components of protein expression noise in droplet-based single cell experiments: (1) protein-specific noise originating from ambient, unbound antibody encapsulated in droplets that can be accurately estimated via the level of “ambient” ADT counts in empty droplets,
+  and (2) droplet/cell-specific noise revealed via the shared variance component associated with isotype antibody controls and background protein counts in each cell.</description>
+    </item>
+    
+    <item>
+      <title>Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data</title>
+      <link>/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/</link>
+      <pubDate>Mon, 11 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/</guid>
+      <description>Following my last blog post, download the CITE-seq protein and RNA count data at here.
+library(Seurat) library(ggplot2) library(dplyr) pbmc&amp;lt;- readRDS(&amp;quot;~/blog_data/CITEseq/pbmc1k_adt.rds&amp;quot;) How to normalize protein ADT count data? Seurat uses the centered log ratio (CLR) to normalize protein count data.
+In the Seurat github page:
+# https://github.com/satijalab/seurat/blob/fc4a4f5203227832477a576bfe01bc6efeb23f51/R/preprocessing.R#L1768-L1769 clr_function &amp;lt;- function(x) { return(log1p(x = x / (exp(x = sum(log1p(x = x[x &amp;gt; 0]), na.rm = TRUE) / length(x = x))))) } log1p(x) computes log(1+x) accurately also for |x| &amp;lt;&amp;lt; 1.</description>
+    </item>
+    
+    <item>
+      <title>Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</title>
+      <link>/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/</link>
+      <pubDate>Tue, 05 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/</guid>
+      <description>In my last post, I showed you how to get the protein and RNA counts from a CITE-seq experiment using Simpleaf.
+Now that we have the raw count matrices, we are ready to explore them within R.
+To follow the tutorial, you can download the associated data from here.
+Load the data suppressPackageStartupMessages({ library(fishpond) library(ggplot2) library(dplyr) library(SingleCellExperiment) library(Seurat) library(DropletUtils) }) # set the seed set.seed(123) #gex_q &amp;lt;- loadFry(&amp;#39;~/blog_data/CITEseq/alevin_rna/af_quant&amp;#39;) #fb_q &amp;lt;- loadFry( &amp;#39;~/blog_data/CITEseq/alevin_adt/af_quant&amp;#39;) # I saved the above objs first to rds files, now just read them back fb_q&amp;lt;- readRDS(&amp;quot;~/blog_data/CITEseq/fb_q.</description>
+    </item>
+    
+    <item>
+      <title>Part 1 How to use Salmon/Alevin to preprocess CITE-seq data</title>
+      <link>/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/</link>
+      <pubDate>Sun, 03 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/</guid>
+      <description>Introduction A state-of-the-art method called CITE-seq (Cellular Indexing of Transcriptomes and Epitopes by Sequencing) allows surface protein levels and RNA expression to be measured simultaneously in individual cells. CITE-seq uses traditional single-cell RNA-sequencing to read out both transcriptome and proteomic information from the same cell after labeling it with oligo-conjugated antibodies. This gets over the drawbacks of techniques that just test proteins or RNA separately. CITE-seq reveals coordinated control of gene and protein activity, offering a potent multidimensional perspective of cell states.</description>
+    </item>
+    
+    <item>
+      <title>My take on Data Challenges in Immuno-oncology, the Role of the Cloud, and Growing a Computational Biology Team</title>
+      <link>/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</link>
+      <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</guid>
+      <description>The original link. https://connect.corrdyn.com/blog/ming-tang-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team
+Guest Profile Tommy Tang&amp;rsquo;s career began when he pursued his Ph.D. in genetics and genomics at the University of Florida. Initially trained in molecular biology in the wet lab, he was driven to explore computational biology after encountering the limitations of traditional analysis methods. Through self-study, Tommy developed skills that enabled him to analyze complex genomic data sets.
+Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to Harvard and the Dana Farber Cancer Institute, where he worked on single-cell RNA sequencing.</description>
+    </item>
+    
+    <item>
+      <title>How to use random forest as a clustering method</title>
+      <link>/post/use-random-forest-as-a-clustering-method/</link>
+      <pubDate>Mon, 06 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/use-random-forest-as-a-clustering-method/</guid>
+      <description>If you ask me: what’s your favorite machine learning algorithm? I would answer logistic regression (with regularization: Lasso, Ridge and Elastic) followed by random forest. In fact, that’s how we try those methods in order. Deep learning can perform well for tabular data with complicated architecture while random forest or boost tree based method usually work well out of the box. Regression and random forest are more interpretable too.</description>
+    </item>
+    
+    <item>
+      <title>My 4-steps to learn deep learning for genomics</title>
+      <link>/post/how-i-am-learning-deep-learning/</link>
+      <pubDate>Tue, 31 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-i-am-learning-deep-learning/</guid>
+      <description>Step 1, get a high-level understanding  Watch statquest by Josh Starmer.       1blue3brown deep learning playlist       Step2, code it out! If you are into python, watch “The spelled-out intro to neural networks and backpropagation: building micrograd”:
+    I still code in R for most of the time, so I walk through the R code in the deep learning with R book.</description>
+    </item>
+    
+    <item>
+      <title>How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</title>
+      <link>/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</link>
+      <pubDate>Thu, 26 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</guid>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+The Cancer Genome Atlas (TCGA) project is probably one of the most well-known large-scale cancer sequencing project. It sequenced ~10,000 treatment-naive tumors across 33 cancer types. Different data including whole-exome, whole-genome, copy-number (SNP array), bulk RNAseq, protein expression (Reverse-Phase Protein Array), DNA methylation are available.
+TCGA is a very successful large sequencing project. I highly recommend learning from the organization of it.</description>
+    </item>
+    
+    <item>
+      <title>How to code a variational autoencoder (VAE) in R using the MNIST dataset</title>
+      <link>/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/</link>
+      <pubDate>Wed, 18 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/</guid>
+      <description>Imagine you have a bunch of pictures of cats, and you want to find a way to generate new cat pictures that look similar to the ones you have. A variation autoencoder (VAE) is like a magical tool for creating these new cat pictures.
+Here’s how it works:
+Encoder: The VAE first takes your cat pictures and passes them through an encoder. This encoder is like a detective that tries to capture the important features of the cats, such as their fur color, size, and shape.</description>
+    </item>
+    
+    <item>
       <title>Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</title>
       <link>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</link>
       <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
       
       <guid>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</guid>
-      <description> </description>
+      <description>The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
+The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock. When the TCR encounters a target it recognizes, it sends signals to the T-cell telling it to attack and destroy the invader.</description>
     </item>
     
     <item>

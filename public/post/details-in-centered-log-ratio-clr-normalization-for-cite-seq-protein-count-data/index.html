@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Following my last blog post, download the CITE-seq protein and RNA count data at here.
+library(Seurat) library(ggplot2) library(dplyr) pbmc&lt;- readRDS(&quot;~/blog_data/CITEseq/pbmc1k_adt.rds&quot;) How to normalize protein ADT count data? Seurat uses the centered log ratio (CLR) to normalize protein count data.
+In the Seurat github page:
+# https://github.com/satijalab/seurat/blob/fc4a4f5203227832477a576bfe01bc6efeb23f51/R/preprocessing.R#L1768-L1769 clr_function &lt;- function(x) { return(log1p(x = x / (exp(x = sum(log1p(x = x[x &gt; 0]), na.rm = TRUE) / length(x = x))))) } log1p(x) computes log(1&#43;x) accurately also for |x| &lt;&lt; 1.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">
+  <meta property="og:title" content="Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data | DNA confesses Data speak">
+  <meta property="og:description" content="Following my last blog post, download the CITE-seq protein and RNA count data at here.
+library(Seurat) library(ggplot2) library(dplyr) pbmc&lt;- readRDS(&quot;~/blog_data/CITEseq/pbmc1k_adt.rds&quot;) How to normalize protein ADT count data? Seurat uses the centered log ratio (CLR) to normalize protein count data.
+In the Seurat github page:
+# https://github.com/satijalab/seurat/blob/fc4a4f5203227832477a576bfe01bc6efeb23f51/R/preprocessing.R#L1768-L1769 clr_function &lt;- function(x) { return(log1p(x = x / (exp(x = sum(log1p(x = x[x &gt; 0]), na.rm = TRUE) / length(x = x))))) } log1p(x) computes log(1&#43;x) accurately also for |x| &lt;&lt; 1.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-12-11T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-12-11T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-12-11 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Dec 11, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/cite-seq/">CITE-seq</a
+    >, 
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data&amp;url=%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f&amp;title=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f&amp;title=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data&amp;body=%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Following my <a href="https://divingintogeneticsandgenomics.com/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/">last blog post</a>, download the CITE-seq protein and RNA count data at <a href="https://osf.io/43v5a/">here</a>.</p>
+<pre class="r"><code>library(Seurat)
+library(ggplot2)
+library(dplyr)
+
+pbmc&lt;- readRDS(&quot;~/blog_data/CITEseq/pbmc1k_adt.rds&quot;)</code></pre>
+<div id="how-to-normalize-protein-adt-count-data" class="section level3">
+<h3>How to normalize protein ADT count data?</h3>
+<p>Seurat uses the centered log ratio (CLR) to normalize protein count data.</p>
+<p>In the Seurat github page:</p>
+<pre class="r"><code># https://github.com/satijalab/seurat/blob/fc4a4f5203227832477a576bfe01bc6efeb23f51/R/preprocessing.R#L1768-L1769
+clr_function &lt;- function(x) {
+          return(log1p(x = x / (exp(x = sum(log1p(x = x[x &gt; 0]), na.rm = TRUE) / length(x = x)))))
+}</code></pre>
+<p>log1p(x) computes log(1+x) accurately also for |x| &lt;&lt; 1.</p>
+<p>It addes a pseduo-count in the last step by using <code>log1p</code> and it effectively makes the transformed values &gt;=0.</p>
+<p>Let’s see it in action.</p>
+<pre class="r"><code>pbmc &lt;- NormalizeData(pbmc, normalization.method = &quot;CLR&quot;, margin = 2, assay = &quot;ADT&quot;)
+
+# Now, we will visualize CD14 levels for RNA and protein By setting the default assay, we can
+# visualize one or the other
+DefaultAssay(pbmc) &lt;- &quot;ADT&quot;
+FeaturePlot(pbmc, &quot;CD19&quot;, cols = c(&quot;lightgrey&quot;, &quot;darkgreen&quot;)) + ggtitle(&quot;CD19 protein&quot;)</code></pre>
+<p><img src="/post/2023-12-11-details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data_files/figure-html/unnamed-chunk-4-1.png" width="576" /></p>
+<pre class="r"><code>RidgePlot(pbmc, features = c(&quot;CD19&quot;, &quot;CD3&quot;))</code></pre>
+<p><img src="/post/2023-12-11-details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data_files/figure-html/unnamed-chunk-4-2.png" width="576" />
+We do see the minimal value is 0.</p>
+<p>Second, what does<code>margin = 2</code> mean?</p>
+<ul>
+<li>margin=1 means “perform CLR normalization for each feature independently”</li>
+<li>margin=2 means “perform CLR normalization within a cell”</li>
+</ul>
+<p>Let’s verify it.</p>
+<pre class="r"><code># raw counts
+adt_count&lt;- pbmc@assays$ADT@counts
+
+# first cell 
+adt_count[,1]</code></pre>
+<pre><code>#&gt;    CD3    CD4   CD8a   CD14   CD15   CD16   CD56   CD19   CD25 CD45RA CD45RO 
+#&gt;      4    483     16   1148     36     12     18      1      4    248    290 
+#&gt;   PD-1  TIGIT  CD127  IgG2a   IgG1  IgG2b 
+#&gt;     12      4      5      4      6      2</code></pre>
+<pre class="r"><code>#normalized data
+adt_norm&lt;- pbmc@assays$ADT@data
+
+# first cell 
+adt_norm[,1]</code></pre>
+<pre><code>#&gt;        CD3        CD4       CD8a       CD14       CD15       CD16       CD56 
+#&gt; 0.18254021 3.22611701 0.58836964 4.06860466 1.03046254 0.47049554 0.64247520 
+#&gt;       CD19       CD25     CD45RA     CD45RO       PD-1      TIGIT      CD127 
+#&gt; 0.04885264 0.18254021 2.59646813 2.74206669 0.47049554 0.18254021 0.22340593 
+#&gt;      IgG2a       IgG1      IgG2b 
+#&gt; 0.18254021 0.26266700 0.09542945</code></pre>
+<pre class="r"><code>all.equal(clr_function(adt_count[,1]), adt_norm[,1])</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<p>The result shows that when specifying “margin = 2”, seurat is normalizing all the features within a cell.</p>
+<p>However, the help page of the normalization is a little bit confusing.</p>
+<blockquote>
+<p>margin
+If performing CLR normalization, normalize across features (1) or cells (2)</p>
+</blockquote>
+<p>and when you invoke the function, if you specify marigin =1
+it will message: “Normalizing across features”; if you specify margin = 2, it will
+message “Normalizing across cells”.</p>
+<p>This is oppostite to what seurat is doing internally. Read this issue and someone else had the same intepretation <a href="https://github.com/satijalab/seurat/issues/3605" class="uri">https://github.com/satijalab/seurat/issues/3605</a>.</p>
+</div>
+<div id="clr-normalization-in-detail" class="section level3">
+<h3>CLR normalization in detail</h3>
+<p>Now, let’s take a closer look at centered log-ratio (CLR) normalization. CLR was initially used in this paper <a href="https://sci-hub.ru/https://www.nature.com/articles/nmeth.4380">Simultaneous epitope and transcriptome measurement in single cells</a> on compositional data.</p>
+<p><img src="/img/clr_norm.png" /></p>
+<p>The first function below is what the orginal paper uses.</p>
+<pre class="r"><code>## the usual CLR adding pseduo-count for each protein first
+clr_original &lt;- function(x) {
+  return(log((x + 1) / mean(x + 1, na.rm = TRUE)))
+}
+
+
+## clr from seurat 
+clr_function &lt;- function(x) {
+  return(log1p(x = x / (exp(x = sum(log1p(x = x[x &gt; 0]), na.rm = TRUE) / length(x = x)))))
+}</code></pre>
+<p>Seurat CLR removes 0 counts first by <code>x[x&gt;0]</code> and then <code>log1p</code> transform the raw counts, sum them up, calculate the average of the log counts, <code>exp</code> it back, and then divided the raw counts by this average and finally <code>log1p</code> again…</p>
+<p>Seurat CLR normalization.</p>
+<pre class="r"><code>clr_norm&lt;- apply(adt_count, MARGIN = 2,  FUN= clr_function)
+
+# indeed, it is the same with the normalized ADT data in the seurat object
+all.equal(clr_norm, pbmc@assays$ADT@data)</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>range(clr_norm)</code></pre>
+<pre><code>#&gt; [1] 0.000000 5.754108</code></pre>
+<pre class="r"><code>hist(clr_norm)</code></pre>
+<p><img src="/post/2023-12-11-details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data_files/figure-html/unnamed-chunk-7-1.png" width="576" />
+We do not see negative values.</p>
+<p>The original CLR</p>
+<pre class="r"><code>clr_original_norm&lt;- apply(adt_count, MARGIN = 2, clr_original)
+
+range(clr_original_norm)</code></pre>
+<pre><code>#&gt; [1] -6.363028  2.786000</code></pre>
+<pre class="r"><code>hist(clr_original_norm)</code></pre>
+<p><img src="/post/2023-12-11-details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data_files/figure-html/unnamed-chunk-8-1.png" width="576" />
+We do see negative values.</p>
+<p>Visualize in Ridge plots:</p>
+<pre class="r"><code>get_expression_meta&lt;- function(obj, mat){
+  meta&lt;- obj@meta.data %&gt;%
+  tibble::rownames_to_column(var = &quot;cell&quot;)
+  
+  df&lt;- t(mat) %&gt;%
+    as.data.frame() %&gt;% 
+    tibble::rownames_to_column(var = &quot;cell&quot;) %&gt;%
+    left_join(meta)
+  
+  return(df)
+}
+
+
+p1&lt;- get_expression_meta(pbmc, clr_norm ) %&gt;% 
+  ggplot(aes(x = CD19, y = celltypes)) +
+  ggridges::geom_density_ridges(aes(fill = celltypes)) + 
+  theme_bw(base_size = 14) +
+  xlab(&quot;&quot;) +
+  ylab(&quot;&quot;) +
+  ggtitle(&quot;Seurat CLR&quot;)
+
+
+p2&lt;- get_expression_meta(pbmc, clr_original_norm ) %&gt;% 
+  ggplot(aes(x = CD19, y = celltypes)) +
+  ggridges::geom_density_ridges(aes(fill = celltypes)) + 
+  theme_bw(base_size = 14) +
+  xlab(&quot;&quot;) +
+  ylab(&quot;&quot;) +
+  ggtitle(&quot;original CLR&quot;)
+
+p1 + p2 + patchwork::plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="/post/2023-12-11-details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data_files/figure-html/unnamed-chunk-9-1.png" width="960" /></p>
+</div>
+<div id="visualize-in-heatmap" class="section level3">
+<h3>visualize in Heatmap</h3>
+<pre class="r"><code>library(ComplexHeatmap)
+hp1&lt;- Heatmap(clr_norm, 
+              show_column_names = FALSE,
+              name = &quot;Seurat CLR&quot;)
+
+row_index&lt;- row_order(hp1)
+col_index&lt;- column_order(hp1)
+
+
+hp2&lt;- Heatmap(clr_original_norm, 
+              show_column_names = FALSE,
+              row_order = row_index,
+              column_order = col_index,
+              name = &quot;original CLR&quot;)
+hp1 + hp2 </code></pre>
+<p><img src="/post/2023-12-11-details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data_files/figure-html/unnamed-chunk-10-1.png" width="576" /></p>
+<p>They both look similar in terms of patterns. The Seurat CLR makes it 0 bound and the authors argue it is better for visualization.</p>
+</div>
+<div id="take-home-messages" class="section level3">
+<h3>Take home messages</h3>
+<ol style="list-style-type: decimal">
+<li><p>Details matter. If you blindly uses the functions in a package, you may get the wrong interpretation of your results.</p></li>
+<li><p>Documentation matters. If the documentation is confusing, it may lead to unintended usages of the options.</p></li>
+</ol>
+</div>
+<div id="references" class="section level3">
+<h3>References</h3>
+<p><a href="https://github.com/satijalab/seurat/issues/2624" class="uri">https://github.com/satijalab/seurat/issues/2624</a>
+<a href="https://github.com/satijalab/seurat/issues/1268" class="uri">https://github.com/satijalab/seurat/issues/1268</a>
+<a href="https://github.com/scverse/muon/pull/28" class="uri">https://github.com/scverse/muon/pull/28</a></p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/seurat/">Seurat</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">scRNAseq clustering significance test: an unsolvable problem?</a></li>
+        
+        <li><a href="/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/">Reuse the single cell data! How to create a seurat object from GEO datasets</a></li>
+        
+        <li><a href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">use random forest and boost trees to find marker genes in scRNAseq data</a></li>
+        
+        <li><a href="/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/">Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</a></li>
+        
+        <li><a href="/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/">Part 1 How to use Salmon/Alevin to preprocess CITE-seq data</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/" rel="next">Part 4 CITE-seq normalization using empty droplets with the dsb package</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/" rel="prev">Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

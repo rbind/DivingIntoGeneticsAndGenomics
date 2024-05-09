@@ -1,0 +1,130 @@
+---
+title: 'S3 and S4 objects in R explained '
+author: Ming Tommy Tang
+date: '2024-05-07'
+slug: s3-and-s4-objects-in-r-explained
+categories:
+  - rstats
+tags:
+  - rstats
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+In R, S3 and S4 objects are related to object-oriented programming (OOP), which 
+allows you to create custom data structures with associated behaviors and methods. 
+Let me explain them using simple language and metaphors, along with practical examples.
+
+### S3 Objects
+
+Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.). In R, an S3 object is like a toy with its own properties and behaviors.
+
+For example, let's create an S3 object called "car" with properties like "color" and "speed", and a method to "move":
+
+```{r}
+# Define the car object
+car <- list(color = "red", speed = 0)
+
+# Define a method to move the car
+move_car <- function(car, distance) {
+  car$speed <- distance
+  cat("The", car$color, "car is moving at", car$speed, "mph\n")
+  invisible(car)
+}
+
+# Use the S3 object and method
+car <- move_car(car, 30)
+```
+
+In this example, the car is an S3 object (a list), and `move_car` is a function 
+that operates on the car object, updating its speed and displaying a message.
+
+### S4 Objects
+
+Now, imagine you have a factory that produces toys. Each toy has a specific design, 
+and you want to ensure that all toys follow the same rules and standards. 
+In R, an S4 object is like a toy from a factory, with well-defined properties 
+and behaviors that follow strict rules.
+
+Here's an example of creating an S4 object called "Car":
+
+```{r}
+# Define the Car class
+setClass("Car", slots = list(color = "character", speed = "numeric"))
+```
+This line creates a new class called "Car" with two slots: color (of type character) 
+and speed (of type numeric). These slots represent the properties of the Car object, 
+such as its color and speed.
+
+In S4 objects, `slots` are used to define the properties or attributes of the object. 
+Slots are defined when creating a class using the setClass function.
+
+```{r}
+# Define the generic function "move"
+setGeneric("move", function(object, distance) standardGeneric("move"))
+
+# Now you can define the method for the "Car" class
+setMethod("move", signature("Car", "numeric"),
+          function(object, distance) {
+            object@speed <- distance
+            cat("The", object@color, "car is moving at", object@speed, "mph\n")
+            invisible(object)
+          })
+
+```
+
+The `invisible()` function in R is used to control the output of a function or expression. 
+When you call a function or evaluate an expression in R, the result is automatically 
+printed to the console. However, sometimes you may want to suppress this output or 
+return an object without printing it.
+
+In the context of S4 objects, the invisible() call is often used in methods to return the modified object without printing it. This is considered a good practice because it keeps the console output clean and allows you to capture the returned object for further processing.
+
+The `invisible(car)` line returns the modified car object without printing it to the console. Instead, it prints the message "The [color] car is moving at [speed] mph" using the cat function.
+
+If you didn't use invisible(car), the method would print the object representation to the console, which may not be desirable, especially for more complex objects.
+
+By using invisible(), you can update the object's state (in this case, the speed slot) and return the modified object without cluttering the console output. This makes it easier to work with the object in subsequent operations or assignments.
+
+```{r}
+# Create an instance of the Car class
+my_car <- new("Car", color = "blue", speed = 0)
+```
+
+
+We can access the the slots using `@`:
+
+```{r}
+my_car@color
+my_car@speed
+```
+
+When you create an instance of the Car class using new("Car", color = "blue", speed = 0), 
+you are initializing the color slot with the value "blue" and the speed slot with the value 0.
+Slots provide a way to encapsulate and organize data within an object, making it easier to manage and maintain the object's state.
+
+```{r}
+# Use the S4 object and method
+my_car <- move(my_car, 40)
+
+my_car
+```
+
+Here's what we did:
+
+1. First, we defined the Car class using setClass.
+
+2. We then created a generic function called move using setGeneric. The standardGeneric function is a utility function that creates a standard generic function with the specified name.
+
+3. After defining the generic function, we can now define the method for the Car class using `setMethod`.
+
+4. The `setMethod` call specifies the generic function name ("move"), the signature (the class or classes the method should be dispatched for), and the function definition for the method.
+
+5. In the method definition, we update the speed slot of the object (the Car instance) and print a message using cat.
+
+6. Finally, we create an instance of the Car class and use the move method on it.
+
+By defining the generic function first, R knows that "move" is a valid generic function, and you can then define methods for different classes that should be dispatched when calling the move function.
+

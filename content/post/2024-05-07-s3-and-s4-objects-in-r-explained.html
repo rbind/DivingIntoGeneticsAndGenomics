@@ -1,0 +1,104 @@
+---
+title: 'S3 and S4 objects in R explained '
+author: Ming Tommy Tang
+date: '2024-05-07'
+slug: s3-and-s4-objects-in-r-explained
+categories:
+  - rstats
+tags:
+  - rstats
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>In R, S3 and S4 objects are related to object-oriented programming (OOP), which
+allows you to create custom data structures with associated behaviors and methods.
+Let me explain them using simple language and metaphors, along with practical examples.</p>
+<div id="s3-objects" class="section level3">
+<h3>S3 Objects</h3>
+<p>Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.). In R, an S3 object is like a toy with its own properties and behaviors.</p>
+<p>For example, let’s create an S3 object called “car” with properties like “color” and “speed”, and a method to “move”:</p>
+<pre class="r"><code># Define the car object
+car &lt;- list(color = &quot;red&quot;, speed = 0)
+
+# Define a method to move the car
+move_car &lt;- function(car, distance) {
+  car$speed &lt;- distance
+  cat(&quot;The&quot;, car$color, &quot;car is moving at&quot;, car$speed, &quot;mph\n&quot;)
+  invisible(car)
+}
+
+# Use the S3 object and method
+car &lt;- move_car(car, 30)</code></pre>
+<pre><code>## The red car is moving at 30 mph</code></pre>
+<p>In this example, the car is an S3 object (a list), and <code>move_car</code> is a function
+that operates on the car object, updating its speed and displaying a message.</p>
+</div>
+<div id="s4-objects" class="section level3">
+<h3>S4 Objects</h3>
+<p>Now, imagine you have a factory that produces toys. Each toy has a specific design,
+and you want to ensure that all toys follow the same rules and standards.
+In R, an S4 object is like a toy from a factory, with well-defined properties
+and behaviors that follow strict rules.</p>
+<p>Here’s an example of creating an S4 object called “Car”:</p>
+<pre class="r"><code># Define the Car class
+setClass(&quot;Car&quot;, slots = list(color = &quot;character&quot;, speed = &quot;numeric&quot;))</code></pre>
+<p>This line creates a new class called “Car” with two slots: color (of type character)
+and speed (of type numeric). These slots represent the properties of the Car object,
+such as its color and speed.</p>
+<p>In S4 objects, <code>slots</code> are used to define the properties or attributes of the object.
+Slots are defined when creating a class using the setClass function.</p>
+<pre class="r"><code># Define the generic function &quot;move&quot;
+setGeneric(&quot;move&quot;, function(object, distance) standardGeneric(&quot;move&quot;))</code></pre>
+<pre><code>## [1] &quot;move&quot;</code></pre>
+<pre class="r"><code># Now you can define the method for the &quot;Car&quot; class
+setMethod(&quot;move&quot;, signature(&quot;Car&quot;, &quot;numeric&quot;),
+          function(object, distance) {
+            object@speed &lt;- distance
+            cat(&quot;The&quot;, object@color, &quot;car is moving at&quot;, object@speed, &quot;mph\n&quot;)
+            invisible(object)
+          })</code></pre>
+<p>The <code>invisible()</code> function in R is used to control the output of a function or expression.
+When you call a function or evaluate an expression in R, the result is automatically
+printed to the console. However, sometimes you may want to suppress this output or
+return an object without printing it.</p>
+<p>In the context of S4 objects, the invisible() call is often used in methods to return the modified object without printing it. This is considered a good practice because it keeps the console output clean and allows you to capture the returned object for further processing.</p>
+<p>The <code>invisible(car)</code> line returns the modified car object without printing it to the console. Instead, it prints the message “The [color] car is moving at [speed] mph” using the cat function.</p>
+<p>If you didn’t use invisible(car), the method would print the object representation to the console, which may not be desirable, especially for more complex objects.</p>
+<p>By using invisible(), you can update the object’s state (in this case, the speed slot) and return the modified object without cluttering the console output. This makes it easier to work with the object in subsequent operations or assignments.</p>
+<pre class="r"><code># Create an instance of the Car class
+my_car &lt;- new(&quot;Car&quot;, color = &quot;blue&quot;, speed = 0)</code></pre>
+<p>We can access the the slots using <code>@</code>:</p>
+<pre class="r"><code>my_car@color</code></pre>
+<pre><code>## [1] &quot;blue&quot;</code></pre>
+<pre class="r"><code>my_car@speed</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>When you create an instance of the Car class using new(“Car”, color = “blue”, speed = 0),
+you are initializing the color slot with the value “blue” and the speed slot with the value 0.
+Slots provide a way to encapsulate and organize data within an object, making it easier to manage and maintain the object’s state.</p>
+<pre class="r"><code># Use the S4 object and method
+my_car &lt;- move(my_car, 40)</code></pre>
+<pre><code>## The blue car is moving at 40 mph</code></pre>
+<pre class="r"><code>my_car</code></pre>
+<pre><code>## An object of class &quot;Car&quot;
+## Slot &quot;color&quot;:
+## [1] &quot;blue&quot;
+## 
+## Slot &quot;speed&quot;:
+## [1] 40</code></pre>
+<p>Here’s what we did:</p>
+<ol style="list-style-type: decimal">
+<li><p>First, we defined the Car class using setClass.</p></li>
+<li><p>We then created a generic function called move using setGeneric. The standardGeneric function is a utility function that creates a standard generic function with the specified name.</p></li>
+<li><p>After defining the generic function, we can now define the method for the Car class using <code>setMethod</code>.</p></li>
+<li><p>The <code>setMethod</code> call specifies the generic function name (“move”), the signature (the class or classes the method should be dispatched for), and the function definition for the method.</p></li>
+<li><p>In the method definition, we update the speed slot of the object (the Car instance) and print a message using cat.</p></li>
+<li><p>Finally, we create an instance of the Car class and use the move method on it.</p></li>
+</ol>
+<p>By defining the generic function first, R knows that “move” is a valid generic function, and you can then define methods for different classes that should be dispatched when calling the move function.</p>
+</div>

@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2023-09-28T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2024-03-20T00:00:00&#43;00:00">
   
 
   
@@ -156,13 +156,11 @@
         
         
         
-          
-        
 
         <li class="nav-item">
-          <a href="/#publications">
+          <a href="/#cv">
             
-            <span>Publications</span>
+            <span>Newsletter</span>
             
           </a>
         </li>
@@ -232,11 +230,13 @@
         
         
         
+          
+        
 
         <li class="nav-item">
-          <a href="/#cv">
+          <a href="/#publications">
             
-            <span>CV</span>
+            <span>Publications</span>
             
           </a>
         </li>
@@ -282,6 +282,35 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/">Fine tune the best clustering resolution for scRNAseq data: trying out callback</a></h2>
+    <div class="article-style">
+      
+      Context and Problem In scRNA-seq, each cell is sequenced individually, allowing for the analysis of gene expression at the single-cell level. This provides a wealth of information about the cellular identities and states. However, the high dimensionality of the data (thousands of genes) and the technical noise in the data can lead to challenges in accurately clustering the cells. Over-clustering is one such challenge, where cells that are biologically similar are clustered into distinct clusters.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/">Do you really understand log2Fold change in single-cell RNAseq data?</a></h2>
+    <div class="article-style">
+      
+      In Single-cell RNAseq analysis, there is a step to find the marker genes for each cluster. The output from Seurat FindAllMarkers has a column called avg_log2FC. It is the gene expression log2 fold change between cluster x and all other clusters.
+How is that calculated? In this tweet thread by Lior Pachter, he said that there was a discrepancy for the logFC changes between Seurat and Scanpy: Actually, both Scanpy and Seurat calculate it wrong.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data/">How to make a multi-group dotplot for single-cell RNAseq data</a></h2>
+    <div class="article-style">
+      
+      Dotplots are very popular for visualizing single-cell RNAseq data. In essence, the dot size represents the percentage of cells that are positive for that gene; the color intensity represents the average gene expression of that gene in a cell type.
+It is easy to plot one using Seurat::dotplot or Sccustomize::clustered_dotplot. However, when you have multiple groups/conditions in your data and you want to visualize it by groups, it is not that straightforward.
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></h2>
@@ -364,38 +393,6 @@ library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # fo
 
 <h1 id="load-the-pbmc-dataset-pbmc-data-lt-read10x-data-dir-quot-blog-data-filtered-gene-bc-matrices-hg19-quot-initialize-the-seurat-object-with-the-raw-non-normalized-data-pbmc-lt-createseuratobject-counts-pbmc-data-project-quot-pbmc3k-quot-min">Load the PBMC dataset pbmc.data &lt;- Read10X(data.dir = &quot;~/blog_data/filtered_gene_bc_matrices/hg19/&quot;) # Initialize the Seurat object with the raw (non-normalized data). pbmc &lt;- CreateSeuratObject(counts = pbmc.data, project = &quot;pbmc3k&quot;, min.</h1>
 
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></h2>
-    <div class="article-style">
-      
-      why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
- Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
- I am interested in using logistic regression to find marker genes and want to try fitting the model in the tidymodel ecosystem and using different regularization methods.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/matrix-factorization-for-single-cell-rnaseq-data/">Matrix Factorization for single-cell RNAseq data</a></h2>
-    <div class="article-style">
-      
-      I am interested in learning more on matrix factorization and its application in scRNAseq data. I want to shout out to this paper: Enter the Matrix: Factorization Uncovers Knowledge from Omics by Elana J. Fertig group.
-A matrix is decomposed to two matrices: the amplitude matrix and the pattern matrix. You can then do all sorts of things with the decomposed matrices. Single cell matrix is no special, one can use the matrix factorization techniques to derive interesting biological insights.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
-    <div class="article-style">
-      
-      scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
-I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
-A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.
       
     </div>
   </div>

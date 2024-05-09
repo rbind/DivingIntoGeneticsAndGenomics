@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Neural network on DNA confesses Data speak</title>
+    <link>/categories/neural-network/</link>
+    <description>Recent content in Neural network on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Wed, 18 Oct 2023 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/neural-network/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to code a variational autoencoder (VAE) in R using the MNIST dataset</title>
+      <link>/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/</link>
+      <pubDate>Wed, 18 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/</guid>
+      <description>Imagine you have a bunch of pictures of cats, and you want to find a way to generate new cat pictures that look similar to the ones you have. A variation autoencoder (VAE) is like a magical tool for creating these new cat pictures.
+Here’s how it works:
+Encoder: The VAE first takes your cat pictures and passes them through an encoder. This encoder is like a detective that tries to capture the important features of the cats, such as their fur color, size, and shape.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -7,10 +7,31 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Tue, 03 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 31 Oct 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/deeplearning/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>My 4-steps to learn deep learning for genomics</title>
+      <link>/post/how-i-am-learning-deep-learning/</link>
+      <pubDate>Tue, 31 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-i-am-learning-deep-learning/</guid>
+      <description>Step 1, get a high-level understanding  Watch statquest by Josh Starmer.       1blue3brown deep learning playlist       Step2, code it out! If you are into python, watch “The spelled-out intro to neural networks and backpropagation: building micrograd”:
+    I still code in R for most of the time, so I walk through the R code in the deep learning with R book.</description>
+    </item>
+    
+    <item>
+      <title>How to code a variational autoencoder (VAE) in R using the MNIST dataset</title>
+      <link>/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/</link>
+      <pubDate>Wed, 18 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/</guid>
+      <description>Imagine you have a bunch of pictures of cats, and you want to find a way to generate new cat pictures that look similar to the ones you have. A variation autoencoder (VAE) is like a magical tool for creating these new cat pictures.
+Here’s how it works:
+Encoder: The VAE first takes your cat pictures and passes them through an encoder. This encoder is like a detective that tries to capture the important features of the cats, such as their fur color, size, and shape.</description>
+    </item>
     
     <item>
       <title>Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</title>
@@ -18,7 +39,8 @@
       <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
       
       <guid>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</guid>
-      <description> </description>
+      <description>The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
+The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock. When the TCR encounters a target it recognizes, it sends signals to the T-cell telling it to attack and destroy the invader.</description>
     </item>
     
     <item>

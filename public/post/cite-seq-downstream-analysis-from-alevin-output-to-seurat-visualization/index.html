@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="In my last post, I showed you how to get the protein and RNA counts from a CITE-seq experiment using Simpleaf.
+Now that we have the raw count matrices, we are ready to explore them within R.
+To follow the tutorial, you can download the associated data from here.
+Load the data suppressPackageStartupMessages({ library(fishpond) library(ggplot2) library(dplyr) library(SingleCellExperiment) library(Seurat) library(DropletUtils) }) # set the seed set.seed(123) #gex_q &lt;- loadFry(&#39;~/blog_data/CITEseq/alevin_rna/af_quant&#39;) #fb_q &lt;- loadFry( &#39;~/blog_data/CITEseq/alevin_adt/af_quant&#39;) # I saved the above objs first to rds files, now just read them back fb_q&lt;- readRDS(&quot;~/blog_data/CITEseq/fb_q.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/">
+  <meta property="og:title" content="Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization | DNA confesses Data speak">
+  <meta property="og:description" content="In my last post, I showed you how to get the protein and RNA counts from a CITE-seq experiment using Simpleaf.
+Now that we have the raw count matrices, we are ready to explore them within R.
+To follow the tutorial, you can download the associated data from here.
+Load the data suppressPackageStartupMessages({ library(fishpond) library(ggplot2) library(dplyr) library(SingleCellExperiment) library(Seurat) library(DropletUtils) }) # set the seed set.seed(123) #gex_q &lt;- loadFry(&#39;~/blog_data/CITEseq/alevin_rna/af_quant&#39;) #fb_q &lt;- loadFry( &#39;~/blog_data/CITEseq/alevin_adt/af_quant&#39;) # I saved the above objs first to rds files, now just read them back fb_q&lt;- readRDS(&quot;~/blog_data/CITEseq/fb_q.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-12-05T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-12-05T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-12-05 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Dec 5, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    8 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioconductor/">bioconductor</a
+    >, 
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/cite-seq/">CITE-seq</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Part%202%20CITE-seq%20downstream%20analysis%3a%20From%20Alevin%20output%20to%20Seurat%20visualization&amp;url=%2fpost%2fcite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fcite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fcite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization%2f&amp;title=Part%202%20CITE-seq%20downstream%20analysis%3a%20From%20Alevin%20output%20to%20Seurat%20visualization"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fcite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization%2f&amp;title=Part%202%20CITE-seq%20downstream%20analysis%3a%20From%20Alevin%20output%20to%20Seurat%20visualization"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Part%202%20CITE-seq%20downstream%20analysis%3a%20From%20Alevin%20output%20to%20Seurat%20visualization&amp;body=%2fpost%2fcite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<p>In my <a href="https://divingintogeneticsandgenomics.com/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/">last post</a>, I showed you how to get the protein and RNA counts from a CITE-seq experiment using
+<code>Simpleaf</code>.</p>
+<p>Now that we have the raw count matrices, we are ready to explore them within <code>R</code>.</p>
+<p>To follow the tutorial, you can download the associated data from <a href="https://osf.io/43v5a/">here</a>.</p>
+<div id="load-the-data" class="section level3">
+<h3>Load the data</h3>
+<pre class="r"><code>suppressPackageStartupMessages({
+    library(fishpond)
+    library(ggplot2)
+    library(dplyr)
+    library(SingleCellExperiment)
+    library(Seurat)
+    library(DropletUtils)
+})
+
+# set the seed 
+set.seed(123)
+
+#gex_q &lt;- loadFry(&#39;~/blog_data/CITEseq/alevin_rna/af_quant&#39;)
+#fb_q &lt;- loadFry( &#39;~/blog_data/CITEseq/alevin_adt/af_quant&#39;)
+
+# I saved the above objs first to rds files, now just read them back
+fb_q&lt;- readRDS(&quot;~/blog_data/CITEseq/fb_q.rds&quot;)
+gex_q&lt;-readRDS(&quot;~/blog_data/CITEseq/gex_q.rds&quot;)</code></pre>
+<p>note, it seems you need the the right bioconductor version to make adt count importing to work. Or you may get this error:</p>
+<blockquote>
+<p>locating quant file
+Reading meta data
+USA mode: FALSE
+Processing 17 genes and 64016 barcodes
+Not in USA mode, ignore argument outputFormat
+Constructing output SingleCellExperiment object
+Error in h(simpleError(msg, call)) :
+error in evaluating the argument ‘j’ in selecting a method for function ‘[’: error in evaluating the argument ‘x’ in selecting a method for function ‘colSums’: unable to find an inherited method for function ‘assay’ for signature ’“SingleCellExperiment”, “logical”</p>
+</blockquote>
+<pre class="r"><code>gex_q&lt;- counts(gex_q)
+fb_q&lt;- counts(fb_q)
+
+length(intersect(colnames(gex_q), colnames(fb_q)))</code></pre>
+<pre><code>#&gt; [1] 244</code></pre>
+<p>only 244 barcode are the same, not right!!</p>
+</div>
+<div id="translate-the-barcodes" class="section level3">
+<h3>Translate the barcodes</h3>
+<p><strong>NOTE</strong></p>
+<blockquote>
+<p>If the feature barcoding protocol use TotalSeq B or C, as mentioned by 10x Genomics, the cellular barcodes of RNA and the feature barcode library would not be exactly the same. To match the cellular barcodes across technologies the cellular barcodes needs to be transformed based on a mapping file. The code to perform the mapping is here and more information from 10x Genomic is at <a href="https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-" class="uri">https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-</a>.</p>
+</blockquote>
+<p>go to <a href="https://www.10xgenomics.com/support/software/cell-ranger/downloads" class="uri">https://www.10xgenomics.com/support/software/cell-ranger/downloads</a> to download cellranger and the whitelist mapping file.</p>
+<pre class="bash"><code>wget -O cellranger-7.2.0.tar.gz &quot;https://cf.10xgenomics.com/releases/cell-exp/cellranger-7.2.0.tar.gz?Expires=1701410020&amp;Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&amp;Signature=mbC6h9L-9ZFYYD5jHPqY1CNMl1y2y~v~t2mUtrEvxtsY6GMGphKzibsRvVEdtQi8Pktx-lJvfECeqLLnSTw9A5Mm66f~LrLnWI3Ds~Xo1NBJvRqVXS7Q~G1pBT3a9S4l1CWeyIKqGwIQYwnniWYCgdfmSA0GQyczpsl9ao5JP~JFcR6KmI9dfUibVghUjgyjUCpUtOxETJgoce94-PBFOxX9i1idL-dLDPFvzkbukziKcKl7BFPk5Xhupr0bxO869lZJb1NxBHFzRnFpoXiLOZjT4nrtxjjs79w2~fnjGfiehbbAsY9toGrZ-pNknTEL16xZr8shFltKCrgV1csYGg__&quot;
+
+tar xvzf cellranger-7.2.0.tar.gz
+
+cp cellranger-7.2.0/lib/python/cellranger/barcodes/translation/3M-february-2018.txt.gz .</code></pre>
+<p>read <a href="https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-" class="uri">https://kb.10xgenomics.com/hc/en-us/articles/360031133451-Why-is-there-a-discrepancy-in-the-3M-february-2018-txt-barcode-whitelist-</a></p>
+<pre class="r"><code>library(readr)
+# the mapping file 
+map &lt;- read_tsv(&#39;~/blog_data/CITEseq/3M-february-2018.txt.gz&#39;, col_names = FALSE)
+head(map)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 2
+#&gt;   X1               X2              
+#&gt;   &lt;chr&gt;            &lt;chr&gt;           
+#&gt; 1 AAACCCAAGAAACACT AAACCCATCAAACACT
+#&gt; 2 AAACCCAAGAAACCAT AAACCCATCAAACCAT
+#&gt; 3 AAACCCAAGAAACCCA AAACCCATCAAACCCA
+#&gt; 4 AAACCCAAGAAACCCG AAACCCATCAAACCCG
+#&gt; 5 AAACCCAAGAAACCTG AAACCCATCAAACCTG
+#&gt; 6 AAACCCAAGAAACGAA AAACCCATCAAACGAA</code></pre>
+<pre class="r"><code>rnaToADT &lt;- map$X1
+names(rnaToADT) &lt;- map$X2
+
+colnames(gex_q) &lt;- rnaToADT[colnames(gex_q)]
+
+dim(gex_q)</code></pre>
+<pre><code>#&gt; [1] 36601 83480</code></pre>
+<pre class="r"><code>dim(fb_q)</code></pre>
+<pre><code>#&gt; [1]    17 64016</code></pre>
+<pre class="r"><code>length(intersect(colnames(gex_q), colnames(fb_q)))</code></pre>
+<pre><code>#&gt; [1] 60985</code></pre>
+<p>60985 cell barcodes are common. Now, it makes sense!</p>
+</div>
+<div id="identify-empty-droplets" class="section level3">
+<h3>Identify empty droplets</h3>
+<p>Use <code>DropletUtils</code> to identify empty cells.</p>
+<pre class="r"><code>e.out &lt;- emptyDrops(gex_q)
+is.cell = e.out$FDR &lt;= 0.01
+is.cell[is.na(is.cell)] = FALSE
+
+gex_q.filt = gex_q[, is.cell]
+
+dim(gex_q.filt)</code></pre>
+<pre><code>#&gt; [1] 36601   720</code></pre>
+<p>Knee plot</p>
+<pre class="r"><code>tot_counts &lt;- colSums(gex_q)
+
+df &lt;- tibble(total = tot_counts,
+             rank = row_number(dplyr::desc(total))) %&gt;%
+      distinct() %&gt;%
+      arrange(rank)
+
+ggplot(df, aes(rank, total)) +
+  geom_path() +
+  scale_x_log10() + 
+  scale_y_log10() + 
+  annotation_logticks() +
+  labs(x = &quot;Barcode rank&quot;, y = &quot;Total UMI count&quot;) +
+  geom_vline(xintercept = 720, linetype = 2, color = &quot;red&quot;) +
+  annotate(&quot;text&quot;, x=720, y=1000, label=&quot;720 cells&quot;, angle= 0, size= 5, color=&quot;blue&quot;)+
+  theme_bw(base_size = 14)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<p><code>DropletUtils</code> identified 720 cells and it looks right on the knee plot.</p>
+<p>filter the adt count matrix:</p>
+<pre class="r"><code>common_barcode&lt;- intersect(colnames(gex_q.filt), colnames(fb_q))
+
+gex_q.filt&lt;- gex_q.filt[, common_barcode]
+fb_q.filt&lt;- fb_q[, common_barcode]
+
+dim(gex_q.filt)</code></pre>
+<pre><code>#&gt; [1] 36601   713</code></pre>
+<pre class="r"><code>dim(fb_q.filt)</code></pre>
+<pre><code>#&gt; [1]  17 713</code></pre>
+<pre class="r"><code>fb_q.filt[1:5, 1:5]</code></pre>
+<pre><code>#&gt; 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+#&gt;      CCGAACGTCAAGTATC ACTCCCAAGCGACAGC GCATCTCCACACTGAT CTCAGAATCGTAGATT
+#&gt; CD3                 4                2                8               10
+#&gt; CD4               483              192              185              316
+#&gt; CD8a               16                9                3                9
+#&gt; CD14             1148              662               13              850
+#&gt; CD15               36               32               17               38
+#&gt;      GCCATTCAGAATCGGT
+#&gt; CD3                 3
+#&gt; CD4                20
+#&gt; CD8a                1
+#&gt; CD14               73
+#&gt; CD15                3</code></pre>
+</div>
+<div id="convert-gene-ids" class="section level3">
+<h3>Convert gene IDs</h3>
+<p>There is one more problem. the ids in the gene expression matrix are ENSEBML IDs.
+Let’s convert ENSEMBLE ID to gene symbol.</p>
+<p>You will need a <code>gtf</code> file that we used when building the salmon index.
+PS: watch my video on where to get the genome reference files.</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/eIVlSG11umQ" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<pre class="bash"><code>wget  https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz
+tar xvzf refdata-gex-GRCh38-2020-A.tar.gz
+mv refdata-gex-GRCh38-2020-A/genes/genes.gtf .</code></pre>
+<pre class="r"><code>gene_dat&lt;- rownames(gex_q.filt) %&gt;%
+  tibble::enframe(value = &quot;gene_id&quot;) 
+
+head(gene_dat)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 2
+#&gt;    name gene_id        
+#&gt;   &lt;int&gt; &lt;chr&gt;          
+#&gt; 1     1 ENSG00000235146
+#&gt; 2     2 ENSG00000237491
+#&gt; 3     3 ENSG00000228794
+#&gt; 4     4 ENSG00000272438
+#&gt; 5     5 ENSG00000230699
+#&gt; 6     6 ENSG00000187961</code></pre>
+<pre class="r"><code># read in the gtf file
+gtf &lt;- rtracklayer::import(&#39;~/blog_data/CITEseq/genes.gtf&#39;)
+
+gtf_df&lt;- as.data.frame(gtf)
+
+filter_gene_names &lt;- gtf_df %&gt;% 
+  dplyr::filter(type == &quot;gene&quot;) %&gt;% 
+  dplyr::select(gene_id, gene_name) #%&gt;%  some version of gtf has version number in the ENSEMBL id, you can
+  # remove it 
+  #mutate(gene_id = stringr::str_replace(gene_id, &quot;(ENSG.+)\\.[0-9]+&quot;, &quot;\\1&quot;))
+
+head(filter_gene_names)</code></pre>
+<pre><code>#&gt;           gene_id   gene_name
+#&gt; 1 ENSG00000243485 MIR1302-2HG
+#&gt; 2 ENSG00000237613     FAM138A
+#&gt; 3 ENSG00000186092       OR4F5
+#&gt; 4 ENSG00000238009  AL627309.1
+#&gt; 5 ENSG00000239945  AL627309.3
+#&gt; 6 ENSG00000239906  AL627309.2</code></pre>
+<pre class="r"><code>gene_dat &lt;- left_join(gene_dat, filter_gene_names)
+
+head(gene_dat)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 3
+#&gt;    name gene_id         gene_name 
+#&gt;   &lt;int&gt; &lt;chr&gt;           &lt;chr&gt;     
+#&gt; 1     1 ENSG00000235146 AC114498.1
+#&gt; 2     2 ENSG00000237491 LINC01409 
+#&gt; 3     3 ENSG00000228794 LINC01128 
+#&gt; 4     4 ENSG00000272438 AL645608.6
+#&gt; 5     5 ENSG00000230699 AL645608.2
+#&gt; 6     6 ENSG00000187961 KLHL17</code></pre>
+<pre class="r"><code># there are some duplicates for gene_name 
+gene_dat %&gt;%
+        dplyr::count(gene_name) %&gt;%
+        dplyr::filter(n &gt; 1)</code></pre>
+<pre><code>#&gt; # A tibble: 10 × 2
+#&gt;    gene_name          n
+#&gt;    &lt;chr&gt;          &lt;int&gt;
+#&gt;  1 ARMCX5-GPRASP2     2
+#&gt;  2 CYB561D2           2
+#&gt;  3 GGT1               2
+#&gt;  4 GOLGA8M            2
+#&gt;  5 HSPA14             2
+#&gt;  6 LINC01238          2
+#&gt;  7 LINC01505          2
+#&gt;  8 MATR3              2
+#&gt;  9 TBCE               2
+#&gt; 10 TMSB15B            2</code></pre>
+<pre class="r"><code>all.equal(rownames(gex_q.filt), gene_dat$gene_id)</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code># use make.names to make it unique. Note, MT- is converted to MT.
+rownames(gex_q.filt)&lt;- make.names(gene_dat$gene_name, unique=TRUE)
+
+gex_q.filt[1:5, 1:5]</code></pre>
+<pre><code>#&gt; 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+#&gt;            CCGAACGTCAAGTATC ACTCCCAAGCGACAGC GCATCTCCACACTGAT CTCAGAATCGTAGATT
+#&gt; AC114498.1                .                .                .                .
+#&gt; LINC01409                 .                .                .                .
+#&gt; LINC01128                 .                .                .                .
+#&gt; AL645608.6                .                .                .                .
+#&gt; AL645608.2                .                .                .                .
+#&gt;            GCCATTCAGAATCGGT
+#&gt; AC114498.1                .
+#&gt; LINC01409                 2
+#&gt; LINC01128                 .
+#&gt; AL645608.6                .
+#&gt; AL645608.2                .</code></pre>
+</div>
+<div id="analyze-in-seurat" class="section level3">
+<h3>Analyze in Seurat</h3>
+<p>Now, both matrices are filtered and the gene ids are both gene symbols.</p>
+<pre class="r"><code>pbmc &lt;- CreateSeuratObject(counts = gex_q.filt)
+
+adt_assay &lt;- CreateAssayObject(counts = fb_q.filt)
+
+# add this assay to the previously created Seurat object
+pbmc[[&quot;ADT&quot;]] &lt;- adt_assay
+
+library(RColorBrewer)
+my_cols = brewer.pal(8,&quot;Dark2&quot;)
+
+DefaultAssay(pbmc) &lt;- &quot;RNA&quot;
+
+pbmc[[&quot;percent.mt&quot;]] &lt;- PercentageFeatureSet(pbmc, pattern = &quot;^MT.&quot;)
+VlnPlot(pbmc, features = c(&quot;nFeature_RNA&quot;, &quot;nCount_RNA&quot;, &quot;percent.mt&quot;), ncol = 3)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-12-1.png" width="576" /></p>
+<pre class="r"><code>pbmc &lt;- subset(pbmc, subset = nFeature_RNA &gt; 200 &amp; nFeature_RNA &lt; 4500 &amp; percent.mt &lt; 20)
+
+pbmc</code></pre>
+<pre><code>#&gt; An object of class Seurat 
+#&gt; 36618 features across 550 samples within 2 assays 
+#&gt; Active assay: RNA (36601 features, 0 variable features)
+#&gt;  1 other assay present: ADT</code></pre>
+<p>Routine processing:</p>
+<pre class="r"><code>pbmc &lt;- NormalizeData(pbmc)
+pbmc &lt;- FindVariableFeatures(pbmc)
+pbmc &lt;- ScaleData(pbmc)
+pbmc &lt;- RunPCA(pbmc, verbose = FALSE)
+pbmc &lt;- FindNeighbors(pbmc, dims = 1:30)
+pbmc &lt;- FindClusters(pbmc, resolution = 0.6, verbose = FALSE)
+pbmc &lt;- RunUMAP(pbmc, dims = 1:30)
+
+DimPlot(pbmc, label = TRUE,cols=alpha(my_cols,0.66))</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-13-1.png" width="576" /></p>
+<p>marker genes</p>
+<pre class="r"><code>markers&lt;- presto::wilcoxauc(pbmc)
+presto::top_markers(markers, n = 20)</code></pre>
+<pre><code>#&gt; # A tibble: 20 × 6
+#&gt;     rank `0`        `1`    `2`       `3`   `4`     
+#&gt;    &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;   
+#&gt;  1     1 LYZ        BCL11B CD74      NKG7  LST1    
+#&gt;  2     2 S100A9     LDHB   CD79A     CTSW  CDKN1C  
+#&gt;  3     3 S100A8     RPS27A MS4A1     GZMA  FCGR3A  
+#&gt;  4     4 VCAN       RPS12  CD37      CST7  AIF1    
+#&gt;  5     5 FCN1       RPS18  IGHM      GZMM  SMIM25  
+#&gt;  6     6 MNDA       RPS15A HLA.DPB1  HCST  HES4    
+#&gt;  7     7 S100A12    IL7R   CD79B     PRF1  MS4A7   
+#&gt;  8     8 CTSS       RPL36  BANK1     CCL5  TCF7L2  
+#&gt;  9     9 S100A6     RPS29  IGHD      MATK  FCER1G  
+#&gt; 10    10 FGL2       TPT1   HLA.DQA1  KLRB1 SIGLEC10
+#&gt; 11    11 CD14       RPS6   HLA.DRB1  CD7   RHOC    
+#&gt; 12    12 MS4A6A     RPS3   HLA.DRA   KLRG1 CSF1R   
+#&gt; 13    13 KLF4       RPS25  RALGPS2   HOPX  SAT1    
+#&gt; 14    14 GRN        EEF1A1 HLA.DPA1  CD247 LYN     
+#&gt; 15    15 AC020656.1 RPS16  IGKC      B2M   COTL1   
+#&gt; 16    16 MPEG1      RPS3A  HLA.DQB1  ARL4C VASP    
+#&gt; 17    17 APLP2      RPL10  LINC00926 KLRD1 RRAS    
+#&gt; 18    18 SRGN       CD3D   TNFRSF13C HLA.C NAP1L1  
+#&gt; 19    19 TSPO       RPL32  HVCN1     CALM1 TMSB4X  
+#&gt; 20    20 CEBPD      RPL34  BCL11A    KLRK1 BID</code></pre>
+<ul>
+<li>cluster 0 is CD14 monocytes</li>
+<li>cluster 4 is CD16 monocytes</li>
+<li>cluster 1 is T cells</li>
+<li>cluster 3 is NK cells</li>
+<li>cluster 2 is B cells</li>
+</ul>
+<p>clustered dot plot:</p>
+<pre class="r"><code>celltypes&lt;- pbmc@meta.data %&gt;%
+        mutate(annotation = case_when(
+                seurat_clusters == 0 ~ &quot;CD14 mono&quot;,
+                seurat_clusters == 4 ~ &quot;CD16 mono&quot;,
+                seurat_clusters == 1 ~ &quot;T cells&quot;,
+                seurat_clusters == 3 ~ &quot;NK cells&quot;,
+                seurat_clusters == 2 ~ &quot;B cells&quot;)) %&gt;%
+        pull(annotation)
+
+pbmc$celltypes&lt;- celltypes
+
+genes_to_plot&lt;- c(&quot;CD14&quot;, &quot;FCGR3A&quot;, &quot;SIGLEC10&quot;, &quot;FCER1G&quot;, &quot;CD3D&quot;, &quot;CD3E&quot;, &quot;CD4&quot;, &quot;CD8A&quot;, &quot;NKG7&quot;, &quot;KLRB1&quot;, &quot;CD79A&quot;, &quot;MS4A1&quot;)
+
+scCustomize::Clustered_DotPlot(pbmc, features = genes_to_plot,
+                               group.by=&quot;celltypes&quot;,
+                               plot_km_elbow = FALSE)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-15-1.png" width="576" /></p>
+</div>
+<div id="plot-the-protein-count-and-gene-count-side-by-side" class="section level3">
+<h3>Plot the protein count and gene count side by side</h3>
+<pre class="r"><code>fb_q.filt[&quot;CD4&quot;, ] %&gt;%
+        tibble::enframe() %&gt;%
+        ggplot(aes(x=value)) +
+        geom_histogram(color = &quot;white&quot;, bins = 40)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-16-1.png" width="576" /></p>
+<p>You see the bimodal distribution of the CD4 protein across all cells.</p>
+<pre class="r"><code>pbmc &lt;- NormalizeData(pbmc, normalization.method = &quot;CLR&quot;, margin = 2, assay = &quot;ADT&quot;)
+
+# Now, we will visualize CD14 levels for RNA and protein By setting the default assay, we can
+# visualize one or the other
+DefaultAssay(pbmc) &lt;- &quot;ADT&quot;
+p1 &lt;- FeaturePlot(pbmc, &quot;CD19&quot;, cols = c(&quot;lightgrey&quot;, &quot;darkgreen&quot;)) + ggtitle(&quot;CD19 protein&quot;)
+DefaultAssay(pbmc) &lt;- &quot;RNA&quot;
+p2 &lt;- FeaturePlot(pbmc, &quot;CD19&quot;, order = TRUE) + ggtitle(&quot;CD19 RNA&quot;)
+
+DimPlot(pbmc, label = TRUE,cols=alpha(my_cols,0.66), group.by = &quot;celltypes&quot;)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-17-1.png" width="576" /></p>
+<pre class="r"><code># place plots side-by-side
+p1 | p2</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-17-2.png" width="576" /></p>
+<p>We see B cells have high CD19 mRNA and protein expression!</p>
+<p>Use Ridgeplot to visualize the data:</p>
+<pre class="r"><code>DefaultAssay(pbmc) &lt;- &quot;ADT&quot;
+rownames(pbmc@assays$ADT)</code></pre>
+<pre><code>#&gt;  [1] &quot;CD3&quot;    &quot;CD4&quot;    &quot;CD8a&quot;   &quot;CD14&quot;   &quot;CD15&quot;   &quot;CD16&quot;   &quot;CD56&quot;   &quot;CD19&quot;  
+#&gt;  [9] &quot;CD25&quot;   &quot;CD45RA&quot; &quot;CD45RO&quot; &quot;PD-1&quot;   &quot;TIGIT&quot;  &quot;CD127&quot;  &quot;IgG2a&quot;  &quot;IgG1&quot;  
+#&gt; [17] &quot;IgG2b&quot;</code></pre>
+<pre class="r"><code>RidgePlot(pbmc, features = c(&quot;CD4&quot;, &quot;CD3&quot;), ncol = 2, group.by = &quot;celltypes&quot;)</code></pre>
+<p><img src="/post/2023-12-05-cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization_files/figure-html/unnamed-chunk-18-1.png" width="576" /></p>
+<p>Note, CD4 is high in CD4 T cells, and monocytes have moderate expression of CD4 as well.</p>
+<p>In my next blog post, I will dive into the normalization for the ADT count data. There are many nuances of the <code>CLR</code> implementation in the Seurat package.</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioconductor/">Bioconductor</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/">How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</a></li>
+        
+        <li><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></li>
+        
+        <li><a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></li>
+        
+        <li><a href="/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/">Part 1 How to use Salmon/Alevin to preprocess CITE-seq data</a></li>
+        
+        <li><a href="/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/">My take on Data Challenges in Immuno-oncology, the Role of the Cloud, and Growing a Computational Biology Team</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/" rel="next">Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/" rel="prev">Part 1 How to use Salmon/Alevin to preprocess CITE-seq data</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

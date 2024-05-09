@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+The Cancer Genome Atlas (TCGA) project is probably one of the most well-known large-scale cancer sequencing project. It sequenced ~10,000 treatment-naive tumors across 33 cancer types. Different data including whole-exome, whole-genome, copy-number (SNP array), bulk RNAseq, protein expression (Reverse-Phase Protein Array), DNA methylation are available.
+TCGA is a very successful large sequencing project. I highly recommend learning from the organization of it.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/">
+  <meta property="og:title" content="How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types | DNA confesses Data speak">
+  <meta property="og:description" content="Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+The Cancer Genome Atlas (TCGA) project is probably one of the most well-known large-scale cancer sequencing project. It sequenced ~10,000 treatment-naive tumors across 33 cancer types. Different data including whole-exome, whole-genome, copy-number (SNP array), bulk RNAseq, protein expression (Reverse-Phase Protein Array), DNA methylation are available.
+TCGA is a very successful large sequencing project. I highly recommend learning from the organization of it.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-10-26T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-10-26T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-10-26 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Oct 26, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    13 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/bioconductor/">bioconductor</a
+    >, 
+    
+    <a href="/categories/rnaseq/">RNAseq</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=How%20to%20convert%20raw%20counts%20to%20TPM%20for%20TCGA%20data%20and%20make%20a%20heatmap%20across%20cancer%20types&amp;url=%2fpost%2fhow-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fhow-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fhow-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types%2f&amp;title=How%20to%20convert%20raw%20counts%20to%20TPM%20for%20TCGA%20data%20and%20make%20a%20heatmap%20across%20cancer%20types"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fhow-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types%2f&amp;title=How%20to%20convert%20raw%20counts%20to%20TPM%20for%20TCGA%20data%20and%20make%20a%20heatmap%20across%20cancer%20types"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=How%20to%20convert%20raw%20counts%20to%20TPM%20for%20TCGA%20data%20and%20make%20a%20heatmap%20across%20cancer%20types&amp;body=%2fpost%2fhow-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p><strong>Sign up for my newsletter to not miss a post like this</strong>
+<a href="https://divingintogeneticsandgenomics.ck.page/newsletter" class="uri">https://divingintogeneticsandgenomics.ck.page/newsletter</a></p>
+<p><a href="https://www.cancer.gov/ccg/research/genome-sequencing/tcga/using-tcga-data/types">The Cancer Genome Atlas (TCGA)</a> project is probably one of the most well-known large-scale cancer sequencing project. It sequenced ~10,000 treatment-naive tumors across 33 cancer types. Different data including whole-exome, whole-genome, copy-number (SNP array), bulk RNAseq, protein expression (Reverse-Phase Protein Array), DNA methylation are available.</p>
+<p>TCGA is a very successful large sequencing project. I highly recommend learning from the organization of it. Read <a href="https://www.sciencedirect.com/book/9780128021439/collaborative-genomics-projects-a-comprehensive-guide">Collaborative Genomics Projects: A Comprehensive Guide</a>.</p>
+<p>In this blog post, I am going to show you how to download the raw RNA-seq counts for 33 cancer types, convert them to TPM (transcript per million) and plot them in a heatmap and boxplot.</p>
+<p>Let’s dive in!</p>
+<div id="use-recount3" class="section level3">
+<h3>Use recount3</h3>
+<p><a href="https://rna.recount.bio/">recount3</a> is an online resource consisting of RNA-seq gene, exon, and exon-exon junction counts as well as coverage bigWig files for 8,679 and 10,088 different studies for human and mouse respectively. It is the third generation of the ReCount project</p>
+<pre class="r"><code>#BiocManager::install(&quot;recount3&quot;)
+library(recount3)
+library(purrr)
+library(dplyr)
+library(ggplot2)
+human_projects &lt;- available_projects()
+
+tcga_info = subset(
+    human_projects,
+    file_source == &quot;tcga&quot; &amp; project_type == &quot;data_sources&quot;
+)
+
+head(tcga_info)</code></pre>
+<pre><code>#&gt;      project organism file_source      project_home project_type n_samples
+#&gt; 8710     ACC    human        tcga data_sources/tcga data_sources        79
+#&gt; 8711    BLCA    human        tcga data_sources/tcga data_sources       433
+#&gt; 8712    BRCA    human        tcga data_sources/tcga data_sources      1256
+#&gt; 8713    CESC    human        tcga data_sources/tcga data_sources       309
+#&gt; 8714    CHOL    human        tcga data_sources/tcga data_sources        45
+#&gt; 8715    COAD    human        tcga data_sources/tcga data_sources       546</code></pre>
+<pre class="r"><code>proj_info &lt;- map(seq(nrow(tcga_info)), ~tcga_info[.x, ])
+
+## create the RangedSummarizedExperiment. the create_rse function works on 
+## one row a time 
+
+rse_tcga &lt;- map(proj_info, ~create_rse(.x))</code></pre>
+<p>The first time you use recount3, it will ask:</p>
+<blockquote>
+<p>/Users/tommytang/Library/Caches/org.R-project.R/R/recount3
+does not exist, create directory? (yes/no): yes</p>
+</blockquote>
+<p><code>rse_tcga</code> is a list of rse object, let’s take a look at one of them</p>
+<pre class="r"><code>rse_tcga[[1]]</code></pre>
+<pre><code>#&gt; class: RangedSummarizedExperiment 
+#&gt; dim: 63856 79 
+#&gt; metadata(8): time_created recount3_version ... annotation recount3_url
+#&gt; assays(1): raw_counts
+#&gt; rownames(63856): ENSG00000278704.1 ENSG00000277400.1 ...
+#&gt;   ENSG00000182484.15_PAR_Y ENSG00000227159.8_PAR_Y
+#&gt; rowData names(10): source type ... havana_gene tag
+#&gt; colnames(79): 43e715bf-28d9-4b5e-b762-8cd1b69a430e
+#&gt;   1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872 ...
+#&gt;   a08b85ea-d1e7-4b77-8dec-36294305b9f7
+#&gt;   aa2d53e5-d389-4332-9dd5-a736052e48f8
+#&gt; colData names(937): rail_id external_id ... recount_seq_qc.errq
+#&gt;   BigWigURL</code></pre>
+<pre class="r"><code>## get raw counts from one rse object
+rse_tcga[[1]]@assays@data$raw_counts[1:5, 1:5]</code></pre>
+<pre><code>#&gt;                   43e715bf-28d9-4b5e-b762-8cd1b69a430e
+#&gt; ENSG00000278704.1                                    0
+#&gt; ENSG00000277400.1                                    0
+#&gt; ENSG00000274847.1                                    0
+#&gt; ENSG00000277428.1                                    0
+#&gt; ENSG00000276256.1                                    0
+#&gt;                   1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872
+#&gt; ENSG00000278704.1                                    0
+#&gt; ENSG00000277400.1                                    0
+#&gt; ENSG00000274847.1                                    0
+#&gt; ENSG00000277428.1                                    0
+#&gt; ENSG00000276256.1                                    0
+#&gt;                   93b382e4-9c9a-43f5-bd3b-502cc260b886
+#&gt; ENSG00000278704.1                                    0
+#&gt; ENSG00000277400.1                                    0
+#&gt; ENSG00000274847.1                                    0
+#&gt; ENSG00000277428.1                                    0
+#&gt; ENSG00000276256.1                                    0
+#&gt;                   1f39dadd-3655-474e-ba4c-a5bd32c97a8b
+#&gt; ENSG00000278704.1                                    0
+#&gt; ENSG00000277400.1                                    0
+#&gt; ENSG00000274847.1                                    0
+#&gt; ENSG00000277428.1                                    0
+#&gt; ENSG00000276256.1                                    0
+#&gt;                   8c8c09b9-ec83-45ec-bc4c-0ba92de60acb
+#&gt; ENSG00000278704.1                                    0
+#&gt; ENSG00000277400.1                                    0
+#&gt; ENSG00000274847.1                                    0
+#&gt; ENSG00000277428.1                                    0
+#&gt; ENSG00000276256.1                                    0</code></pre>
+<pre class="r"><code>## get the gene information
+rse_tcga[[1]]@rowRanges</code></pre>
+<pre><code>#&gt; GRanges object with 63856 ranges and 10 metadata columns:
+#&gt;                              seqnames            ranges strand |   source
+#&gt;                                 &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; | &lt;factor&gt;
+#&gt;          ENSG00000278704.1 GL000009.2       56140-58376      - |  ENSEMBL
+#&gt;          ENSG00000277400.1 GL000194.1      53590-115018      - |  ENSEMBL
+#&gt;          ENSG00000274847.1 GL000194.1      53594-115055      - |  ENSEMBL
+#&gt;          ENSG00000277428.1 GL000195.1       37434-37534      - |  ENSEMBL
+#&gt;          ENSG00000276256.1 GL000195.1       42939-49164      - |  ENSEMBL
+#&gt;                        ...        ...               ...    ... .      ...
+#&gt;   ENSG00000124334.17_PAR_Y       chrY 57184101-57197337      + |   HAVANA
+#&gt;   ENSG00000185203.12_PAR_Y       chrY 57201143-57203357      - |   HAVANA
+#&gt;    ENSG00000270726.6_PAR_Y       chrY 57190738-57208756      + |   HAVANA
+#&gt;   ENSG00000182484.15_PAR_Y       chrY 57207346-57212230      + |   HAVANA
+#&gt;    ENSG00000227159.8_PAR_Y       chrY 57212184-57214397      - |   HAVANA
+#&gt;                                type bp_length     phase                gene_id
+#&gt;                            &lt;factor&gt; &lt;numeric&gt; &lt;integer&gt;            &lt;character&gt;
+#&gt;          ENSG00000278704.1     gene      2237      &lt;NA&gt;      ENSG00000278704.1
+#&gt;          ENSG00000277400.1     gene      2179      &lt;NA&gt;      ENSG00000277400.1
+#&gt;          ENSG00000274847.1     gene      1599      &lt;NA&gt;      ENSG00000274847.1
+#&gt;          ENSG00000277428.1     gene       101      &lt;NA&gt;      ENSG00000277428.1
+#&gt;          ENSG00000276256.1     gene      2195      &lt;NA&gt;      ENSG00000276256.1
+#&gt;                        ...      ...       ...       ...                    ...
+#&gt;   ENSG00000124334.17_PAR_Y     gene      2504      &lt;NA&gt; ENSG00000124334.17_P..
+#&gt;   ENSG00000185203.12_PAR_Y     gene      1054      &lt;NA&gt; ENSG00000185203.12_P..
+#&gt;    ENSG00000270726.6_PAR_Y     gene       773      &lt;NA&gt; ENSG00000270726.6_PA..
+#&gt;   ENSG00000182484.15_PAR_Y     gene      4618      &lt;NA&gt; ENSG00000182484.15_P..
+#&gt;    ENSG00000227159.8_PAR_Y     gene      1306      &lt;NA&gt; ENSG00000227159.8_PA..
+#&gt;                                         gene_type   gene_name       level
+#&gt;                                       &lt;character&gt; &lt;character&gt; &lt;character&gt;
+#&gt;          ENSG00000278704.1         protein_coding  BX004987.1           3
+#&gt;          ENSG00000277400.1         protein_coding  AC145212.2           3
+#&gt;          ENSG00000274847.1         protein_coding  AC145212.1           3
+#&gt;          ENSG00000277428.1               misc_RNA       Y_RNA           3
+#&gt;          ENSG00000276256.1         protein_coding  AC011043.1           3
+#&gt;                        ...                    ...         ...         ...
+#&gt;   ENSG00000124334.17_PAR_Y         protein_coding        IL9R           2
+#&gt;   ENSG00000185203.12_PAR_Y              antisense      WASIR1           2
+#&gt;    ENSG00000270726.6_PAR_Y   processed_transcript AJ271736.10           2
+#&gt;   ENSG00000182484.15_PAR_Y transcribed_unproces..      WASH6P           2
+#&gt;    ENSG00000227159.8_PAR_Y unprocessed_pseudogene    DDX11L16           2
+#&gt;                                     havana_gene         tag
+#&gt;                                     &lt;character&gt; &lt;character&gt;
+#&gt;          ENSG00000278704.1                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;          ENSG00000277400.1                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;          ENSG00000274847.1                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;          ENSG00000277428.1                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;          ENSG00000276256.1                 &lt;NA&gt;        &lt;NA&gt;
+#&gt;                        ...                  ...         ...
+#&gt;   ENSG00000124334.17_PAR_Y OTTHUMG00000022720.1         PAR
+#&gt;   ENSG00000185203.12_PAR_Y OTTHUMG00000022676.3         PAR
+#&gt;    ENSG00000270726.6_PAR_Y OTTHUMG00000184987.2         PAR
+#&gt;   ENSG00000182484.15_PAR_Y OTTHUMG00000022677.5         PAR
+#&gt;    ENSG00000227159.8_PAR_Y OTTHUMG00000022678.1         PAR
+#&gt;   -------
+#&gt;   seqinfo: 374 sequences from an unspecified genome; no seqlengths</code></pre>
+<p>The <code>bp_length</code> column is the gene length we will use.</p>
+<pre class="r"><code>## metadata info
+rse_tcga[[1]]@colData@listData %&gt;% as.data.frame() %&gt;% 
+        `[`(1:5, 1:5)</code></pre>
+<pre><code>#&gt;   rail_id                          external_id study
+#&gt; 1  106797 43e715bf-28d9-4b5e-b762-8cd1b69a430e   ACC
+#&gt; 2  110230 1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872   ACC
+#&gt; 3  110773 93b382e4-9c9a-43f5-bd3b-502cc260b886   ACC
+#&gt; 4  110869 1f39dadd-3655-474e-ba4c-a5bd32c97a8b   ACC
+#&gt; 5  116503 8c8c09b9-ec83-45ec-bc4c-0ba92de60acb   ACC
+#&gt;              tcga.tcga_barcode                     tcga.gdc_file_id
+#&gt; 1 TCGA-OR-A5KU-01A-11R-A29S-07 43e715bf-28d9-4b5e-b762-8cd1b69a430e
+#&gt; 2 TCGA-P6-A5OG-01A-22R-A29S-07 1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872
+#&gt; 3 TCGA-OR-A5K5-01A-11R-A29S-07 93b382e4-9c9a-43f5-bd3b-502cc260b886
+#&gt; 4 TCGA-OR-A5K4-01A-11R-A29S-07 1f39dadd-3655-474e-ba4c-a5bd32c97a8b
+#&gt; 5 TCGA-OR-A5LP-01A-11R-A29S-07 8c8c09b9-ec83-45ec-bc4c-0ba92de60acb</code></pre>
+<p>each row/sample corresponds to the each column/sample of the count matrix.</p>
+<p>Now, let’s write a function to convert the raw counts to TPM (transcript per million).
+Read this blog post by Matthew Bernstein <a href="https://mbernste.github.io/posts/rna_seq_basics/" class="uri">https://mbernste.github.io/posts/rna_seq_basics/</a> to get a better understanding of the math.</p>
+<p>Put in plain words: given a raw count matrix of gene x sample, first divide each gene (row) by its (effective) gene length, then get the sum of each column (total), divide each entry for the same column by the column sum then times 1e6.</p>
+<p>To understand the <code>effective gene length</code>, read my old blog post <a href="https://crazyhottommy.blogspot.com/2016/07/comparing-salmon-kalliso-and-star-htseq.html" class="uri">https://crazyhottommy.blogspot.com/2016/07/comparing-salmon-kalliso-and-star-htseq.html</a></p>
+<p>In our example, we will just use the gene length.</p>
+<pre class="r"><code># some cancer associated genes
+genes_of_interest&lt;- c(&quot;MSLN&quot;, &quot;EGFR&quot;, &quot;ERBB2&quot;, &quot;CEACAM5&quot;, &quot;NECTIN4&quot;, &quot;EPCAM&quot;, &quot;MUC16&quot;, &quot;MUC1&quot;, &quot;CD276&quot;, &quot;FOLH1&quot;, &quot;DLL3&quot;, &quot;VTCN1&quot;, &quot;PROM1&quot;, &quot;PVR&quot;, &quot;CLDN6&quot;, &quot;MET&quot;, &quot;FOLR1&quot;, &quot;TNFRSF10B&quot;, &quot;TACSTD2&quot;, &quot;CD24&quot;)
+
+#### Creating TPM
+count2tpm&lt;- function(rse){
+        count_matrix &lt;- rse@assays@data$raw_counts
+        gene_length &lt;- rse@rowRanges$bp_length
+        reads_per_rpk &lt;- count_matrix/gene_length
+        per_mil_scale &lt;- colSums(reads_per_rpk)/1000000
+        tpm_matrix &lt;- t(t(reads_per_rpk)/per_mil_scale)
+         ## Make sure they match the ENSG and gene order
+        gene_ind&lt;-  rse@rowRanges$gene_name %in% genes_of_interest 
+        tpm_submatrix &lt;- tpm_matrix[gene_ind,]
+        rownames(tpm_submatrix)&lt;- rse@rowRanges[gene_ind, ]$gene_name
+        return(tpm_submatrix)
+}
+
+## convert raw count matrix per cancer type to TPM and subset to only the genes of interest 
+tpm_data&lt;- map(rse_tcga, count2tpm)
+
+## get the metadata column 
+metadata&lt;- map(rse_tcga, ~.x@colData@listData %&gt;% as.data.frame())
+
+# bind the data matrix across cancer types together 
+tpm_data2&lt;- reduce(tpm_data, cbind)
+
+## bind the metadata across cancer types together
+metadata2&lt;- reduce(metadata, rbind)
+dim(tpm_data2)</code></pre>
+<pre><code>#&gt; [1]    20 11348</code></pre>
+<pre class="r"><code>dim(metadata2)</code></pre>
+<pre><code>#&gt; [1] 11348   937</code></pre>
+<p>Total, we have 20 genes x 11348 samples in the combined count matrix and
+937 metadata columns.</p>
+<pre class="r"><code>## rename the some columns 
+metadata2&lt;- metadata2 %&gt;%
+        select(tcga.tcga_barcode, tcga.cgc_sample_sample_type, study) %&gt;%
+        mutate(sample_type = case_when(
+                tcga.cgc_sample_sample_type == &quot;Additional - New Primary&quot; ~ &quot;cancer&quot;,
+                tcga.cgc_sample_sample_type == &quot;Additional Metastatic&quot; ~ &quot;metastatic&quot;,
+                tcga.cgc_sample_sample_type == &quot;Metastatic&quot; ~ &quot;metastatic&quot;,
+                tcga.cgc_sample_sample_type == &quot;Primary Blood Derived Cancer - Peripheral Blood &quot; ~ &quot;cancer&quot;,
+                tcga.cgc_sample_sample_type == &quot;Primary Tumor&quot; ~ &quot;cancer&quot;,
+                tcga.cgc_sample_sample_type == &quot;Recurrent Tumor&quot; ~ &quot;cancer&quot;,
+                tcga.cgc_sample_sample_type == &quot;Solid Tissue Normal&quot; ~ &quot;normal&quot;
+    ))</code></pre>
+<p>combine the metadata and count matrix into a single dataframe</p>
+<pre class="r"><code>final_df&lt;- cbind(t(tpm_data2), metadata2)
+
+head(final_df)</code></pre>
+<pre><code>#&gt;                                         TACSTD2      VTCN1       MUC1
+#&gt; 43e715bf-28d9-4b5e-b762-8cd1b69a430e  0.7035937 0.00000000 0.67502205
+#&gt; 1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872 25.4360736 0.00000000 2.01525394
+#&gt; 93b382e4-9c9a-43f5-bd3b-502cc260b886  1.5756197 0.00000000 0.90784666
+#&gt; 1f39dadd-3655-474e-ba4c-a5bd32c97a8b  0.2702156 0.09099681 0.04293345
+#&gt; 8c8c09b9-ec83-45ec-bc4c-0ba92de60acb  0.4122814 0.00000000 0.11484380
+#&gt; 85a86b91-4f24-4e77-ae2d-520f8e205efc  4.5469193 4.85973690 0.04208195
+#&gt;                                         NECTIN4     FOLH1      FOLR1     CD276
+#&gt; 43e715bf-28d9-4b5e-b762-8cd1b69a430e 0.08620727  7.213342 0.00000000  52.75981
+#&gt; 1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872 0.07279804 23.552286 0.12154673  78.78551
+#&gt; 93b382e4-9c9a-43f5-bd3b-502cc260b886 0.69905270  2.853812 1.01000271 145.84399
+#&gt; 1f39dadd-3655-474e-ba4c-a5bd32c97a8b 0.01652257  1.157070 0.27942068  48.45022
+#&gt; 8c8c09b9-ec83-45ec-bc4c-0ba92de60acb 0.03168398  2.408137 0.04922458  42.25592
+#&gt; 85a86b91-4f24-4e77-ae2d-520f8e205efc 0.06828305  1.010411 0.02248965  20.63795
+#&gt;                                            MSLN      CLDN6     ERBB2
+#&gt; 43e715bf-28d9-4b5e-b762-8cd1b69a430e 0.06674445 0.09704962  1.879518
+#&gt; 1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872 0.95554610 0.25458796  7.777976
+#&gt; 93b382e4-9c9a-43f5-bd3b-502cc260b886 0.04563568 0.25701910  2.905926
+#&gt; 1f39dadd-3655-474e-ba4c-a5bd32c97a8b 0.03154912 0.24746913  4.914280
+#&gt; 8c8c09b9-ec83-45ec-bc4c-0ba92de60acb 0.26968788 0.12576720  1.494744
+#&gt; 85a86b91-4f24-4e77-ae2d-520f8e205efc 0.01336404 0.01823883 13.474689
+#&gt;                                             MUC16       DLL3 CEACAM5      PVR
+#&gt; 43e715bf-28d9-4b5e-b762-8cd1b69a430e 0.0011479879 0.49589978       0 52.08113
+#&gt; 1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872 0.0008049670 2.52244014       0 40.87926
+#&gt; 93b382e4-9c9a-43f5-bd3b-502cc260b886 0.0026190288 0.77074712       0 33.26727
+#&gt; 1f39dadd-3655-474e-ba4c-a5bd32c97a8b 0.0051705741 0.10636402       0 28.26457
+#&gt; 8c8c09b9-ec83-45ec-bc4c-0ba92de60acb 0.0004894306 0.04483123       0 41.66776
+#&gt; 85a86b91-4f24-4e77-ae2d-520f8e205efc 0.0000000000 0.01184285       0 30.18711
+#&gt;                                          EPCAM       PROM1       CD24      EGFR
+#&gt; 43e715bf-28d9-4b5e-b762-8cd1b69a430e  4.521984 0.025311008 0.55036003  1.286481
+#&gt; 1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872  9.530414 0.023576862 9.67272890  5.373307
+#&gt; 93b382e4-9c9a-43f5-bd3b-502cc260b886 42.358567 0.000000000 0.06939934  4.600918
+#&gt; 1f39dadd-3655-474e-ba4c-a5bd32c97a8b 16.316524 0.007783431 0.84522244  3.010374
+#&gt; 8c8c09b9-ec83-45ec-bc4c-0ba92de60acb 12.529742 0.019204339 0.21369023 16.476552
+#&gt; 85a86b91-4f24-4e77-ae2d-520f8e205efc  2.430109 0.043719865 4.95506593  2.010338
+#&gt;                                             MET TNFRSF10B
+#&gt; 43e715bf-28d9-4b5e-b762-8cd1b69a430e  0.9320235  12.80547
+#&gt; 1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872  8.0610999  31.46289
+#&gt; 93b382e4-9c9a-43f5-bd3b-502cc260b886  0.1295387  65.57967
+#&gt; 1f39dadd-3655-474e-ba4c-a5bd32c97a8b  2.9728030  24.31636
+#&gt; 8c8c09b9-ec83-45ec-bc4c-0ba92de60acb 19.7360055  21.11014
+#&gt; 85a86b91-4f24-4e77-ae2d-520f8e205efc  8.6087283  37.91574
+#&gt;                                                 tcga.tcga_barcode
+#&gt; 43e715bf-28d9-4b5e-b762-8cd1b69a430e TCGA-OR-A5KU-01A-11R-A29S-07
+#&gt; 1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872 TCGA-P6-A5OG-01A-22R-A29S-07
+#&gt; 93b382e4-9c9a-43f5-bd3b-502cc260b886 TCGA-OR-A5K5-01A-11R-A29S-07
+#&gt; 1f39dadd-3655-474e-ba4c-a5bd32c97a8b TCGA-OR-A5K4-01A-11R-A29S-07
+#&gt; 8c8c09b9-ec83-45ec-bc4c-0ba92de60acb TCGA-OR-A5LP-01A-11R-A29S-07
+#&gt; 85a86b91-4f24-4e77-ae2d-520f8e205efc TCGA-PK-A5H9-01A-11R-A29S-07
+#&gt;                                      tcga.cgc_sample_sample_type study
+#&gt; 43e715bf-28d9-4b5e-b762-8cd1b69a430e               Primary Tumor   ACC
+#&gt; 1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872               Primary Tumor   ACC
+#&gt; 93b382e4-9c9a-43f5-bd3b-502cc260b886               Primary Tumor   ACC
+#&gt; 1f39dadd-3655-474e-ba4c-a5bd32c97a8b               Primary Tumor   ACC
+#&gt; 8c8c09b9-ec83-45ec-bc4c-0ba92de60acb               Primary Tumor   ACC
+#&gt; 85a86b91-4f24-4e77-ae2d-520f8e205efc               Primary Tumor   ACC
+#&gt;                                      sample_type
+#&gt; 43e715bf-28d9-4b5e-b762-8cd1b69a430e      cancer
+#&gt; 1a5db9fc-2abd-4e1b-b5ef-b1cf5e5f3872      cancer
+#&gt; 93b382e4-9c9a-43f5-bd3b-502cc260b886      cancer
+#&gt; 1f39dadd-3655-474e-ba4c-a5bd32c97a8b      cancer
+#&gt; 8c8c09b9-ec83-45ec-bc4c-0ba92de60acb      cancer
+#&gt; 85a86b91-4f24-4e77-ae2d-520f8e205efc      cancer</code></pre>
+<p>With everything in a single dataframe, we are ready to do anything you want:)</p>
+<p>For each gene, let’s take a median of all samples within the same cancer type and
+make a heatmap for all genes.</p>
+<p>Make a boxplot for one gene across all cancer types</p>
+<pre class="r"><code>final_df %&gt;%
+        filter(sample_type == &quot;cancer&quot;) %&gt;%
+        ggplot(aes(x = study, y = EPCAM )) +
+        geom_boxplot() +
+        scale_y_continuous(trans=scales::pseudo_log_trans(base = 2),
+                           breaks = c(0, 2, 4, 8, 16, 32, 128, 1024)) +
+        theme_bw(base_size = 14) +
+        xlab(&quot;&quot;) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))</code></pre>
+<p><img src="/post/2023-10-26-how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types_files/figure-html/unnamed-chunk-8-1.png" width="768" /></p>
+<p>Rearrange the boxes by the median level:</p>
+<pre class="r"><code>final_df %&gt;%
+        filter(sample_type == &quot;cancer&quot;) %&gt;%
+        ggplot(aes(x = study %&gt;%
+                           forcats::fct_reorder(EPCAM, median), y = EPCAM )) +
+        geom_boxplot() +
+        scale_y_continuous(trans=scales::pseudo_log_trans(base = 2),
+                           breaks = c(0, 2, 4, 8, 16, 32, 128, 1024)) +
+        theme_bw(base_size = 14) +
+        xlab(&quot;&quot;) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))</code></pre>
+<p><img src="/post/2023-10-26-how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types_files/figure-html/unnamed-chunk-9-1.png" width="768" />
+This looks really nice!</p>
+<p>Let’s make a heatmap by taking the median</p>
+<pre class="r"><code>library(ComplexHeatmap)
+tcga_df&lt;- final_df %&gt;%
+        filter(sample_type == &quot;cancer&quot;) %&gt;%
+        group_by(sample_type, study) %&gt;%
+        summarise(across(1:20, ~log2(.x+1))) %&gt;%
+        summarise(across(1:20, median)) %&gt;%
+        arrange(study) %&gt;%
+        filter(!is.na(sample_type))
+
+tcga_mat&lt;- tcga_df[, -c(1,2)] %&gt;% as.matrix()
+rownames(tcga_mat)&lt;- tcga_df %&gt;% pull(study)
+
+cell_fun = function(j, i, x, y, w, h, fill) {
+    grid.rect(x = x, y = y, width = w, height = h, 
+              gp = gpar(col = &quot;black&quot;, fill = NA))
+}
+
+Heatmap(tcga_mat, cluster_columns = TRUE, cell_fun = cell_fun,
+        name = &quot;log2TPM&quot;)</code></pre>
+<p><img src="/post/2023-10-26-how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types_files/figure-html/unnamed-chunk-10-1.png" width="576" /></p>
+<p>Always do a sanity check to see if the results make any biological sense or not.
+We see <code>MSLN</code> is high in MESO, <code>FOLH1</code> is high in prostate cancer (PRAD). We are probably on the
+right track!</p>
+<p>You can also scale the expression for each gene across the cancer types.</p>
+<pre class="r"><code>Heatmap(scale(tcga_mat), cluster_columns = TRUE, cell_fun = cell_fun,
+        name = &quot;scaled\nlog2TPM&quot;)</code></pre>
+<p><img src="/post/2023-10-26-how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types_files/figure-html/unnamed-chunk-11-1.png" width="576" /></p>
+</div>
+<div id="lets-try-a-different-data-resource-using-experimenthub" class="section level3">
+<h3>Let’s try a different data resource using ExperimentHub</h3>
+<pre class="r"><code>#BiocManager::install(&quot;ExperimentHub&quot;)
+library(ExperimentHub)
+eh&lt;- ExperimentHub()
+query(eh , &quot;GSE62944&quot;)</code></pre>
+<pre><code>#&gt; ExperimentHub with 3 records
+#&gt; # snapshotDate(): 2021-10-19
+#&gt; # $dataprovider: GEO
+#&gt; # $species: Homo sapiens
+#&gt; # $rdataclass: SummarizedExperiment, ExpressionSet
+#&gt; # additional mcols(): taxonomyid, genome, description,
+#&gt; #   coordinate_1_based, maintainer, rdatadateadded, preparerclass, tags,
+#&gt; #   rdatapath, sourceurl, sourcetype 
+#&gt; # retrieve records with, e.g., &#39;object[[&quot;EH1&quot;]]&#39; 
+#&gt; 
+#&gt;            title                                                              
+#&gt;   EH1    | RNA-Sequencing and clinical data for 7706 tumor samples from The...
+#&gt;   EH1043 | RNA-Sequencing and clinical data for 9246 tumor samples from The...
+#&gt;   EH1044 | RNA-Sequencing and clinical data for 741 normal samples from The...</code></pre>
+<pre class="r"><code>tcga_data&lt;- eh[[&quot;EH1043&quot;]]
+
+colData(tcga_data)[1:5, 1:5]</code></pre>
+<pre><code>#&gt; DataFrame with 5 rows and 5 columns
+#&gt;                                                  bcr_patient_uuid
+#&gt;                                                          &lt;factor&gt;
+#&gt; TCGA-G9-A9S0-01A-11R-A41O-07 084AC674-F4CF-4A4A-A6A2-687C05C272EA
+#&gt; TCGA-E1-5318-01A-01R-1470-07 400b2fa3-baf7-4baa-99b4-88b9f25b5049
+#&gt; TCGA-25-1625-01A-01R-1566-13 88d61634-913c-435a-8d25-e019c8dab7da
+#&gt; TCGA-A2-A0T1-01A-21R-A084-07 02bed00f-bef7-4fb7-b243-540354990e45
+#&gt; TCGA-ER-A19N-06A-11R-A18S-07 9EE83669-D7A4-476E-8857-304600B4917A
+#&gt;                              bcr_patient_barcode form_completion_date
+#&gt;                                         &lt;factor&gt;             &lt;factor&gt;
+#&gt; TCGA-G9-A9S0-01A-11R-A41O-07        TCGA-G9-A9S0           2014-6-17 
+#&gt; TCGA-E1-5318-01A-01R-1470-07        TCGA-E1-5318           2011-1-26 
+#&gt; TCGA-25-1625-01A-01R-1566-13        TCGA-25-1625           2009-6-2  
+#&gt; TCGA-A2-A0T1-01A-21R-A084-07        TCGA-A2-A0T1           2010-11-12
+#&gt; TCGA-ER-A19N-06A-11R-A18S-07        TCGA-ER-A19N           2012-4-20 
+#&gt;                              prospective_collection retrospective_collection
+#&gt;                                            &lt;factor&gt;                 &lt;factor&gt;
+#&gt; TCGA-G9-A9S0-01A-11R-A41O-07        NO                       YES            
+#&gt; TCGA-E1-5318-01A-01R-1470-07        NO                       YES            
+#&gt; TCGA-25-1625-01A-01R-1566-13        [Not Available]          [Not Available]
+#&gt; TCGA-A2-A0T1-01A-21R-A084-07        NO                       YES            
+#&gt; TCGA-ER-A19N-06A-11R-A18S-07        YES                      NO</code></pre>
+<pre class="r"><code>count_mat&lt;- assay(tcga_data)
+
+count_mat[1:5, 1:5]</code></pre>
+<pre><code>#&gt;             TCGA-G9-A9S0-01A-11R-A41O-07 TCGA-E1-5318-01A-01R-1470-07
+#&gt; 1/2-SBSRNA4                           40                          105
+#&gt; A1BG                                  26                           32
+#&gt; A1BG-AS1                               3                            4
+#&gt; A1CF                                   0                            0
+#&gt; A2LD1                                390                           28
+#&gt;             TCGA-25-1625-01A-01R-1566-13 TCGA-A2-A0T1-01A-21R-A084-07
+#&gt; 1/2-SBSRNA4                           38                           23
+#&gt; A1BG                                  83                          157
+#&gt; A1BG-AS1                              15                           60
+#&gt; A1CF                                   2                            2
+#&gt; A2LD1                               1408                          331
+#&gt;             TCGA-ER-A19N-06A-11R-A18S-07
+#&gt; 1/2-SBSRNA4                           28
+#&gt; A1BG                                 889
+#&gt; A1BG-AS1                             139
+#&gt; A1CF                                   0
+#&gt; A2LD1                                368</code></pre>
+</div>
+<div id="get-the-gene-length-from-txdb.hsapiens.ucsc.hg19.knowngene-package" class="section level3">
+<h3>Get the gene length from <code>TxDb.Hsapiens.UCSC.hg19.knownGene</code> package:</h3>
+<pre class="r"><code>#BiocManager::install(&quot;TxDb.Hsapiens.UCSC.hg19.knownGene&quot;)
+#BiocManager::install(&quot;org.Hs.eg.db&quot;)
+
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(org.Hs.eg.db)
+
+txdb &lt;- TxDb.Hsapiens.UCSC.hg19.knownGene
+
+hg19_exons&lt;- exonsBy(txdb, &quot;gene&quot;)</code></pre>
+<p><code>hg19_exons</code> is a GRangesList object, each element is a gene of multiple exons.</p>
+<pre class="r"><code># the first gene has 15 exons.
+hg19_exons[[1]]</code></pre>
+<pre><code>#&gt; GRanges object with 15 ranges and 2 metadata columns:
+#&gt;        seqnames            ranges strand |   exon_id   exon_name
+#&gt;           &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; | &lt;integer&gt; &lt;character&gt;
+#&gt;    [1]    chr19 58858172-58858395      - |    250809        &lt;NA&gt;
+#&gt;    [2]    chr19 58858719-58859006      - |    250810        &lt;NA&gt;
+#&gt;    [3]    chr19 58859832-58860494      - |    250811        &lt;NA&gt;
+#&gt;    [4]    chr19 58860934-58862017      - |    250812        &lt;NA&gt;
+#&gt;    [5]    chr19 58861736-58862017      - |    250813        &lt;NA&gt;
+#&gt;    ...      ...               ...    ... .       ...         ...
+#&gt;   [11]    chr19 58868951-58869015      - |    250821        &lt;NA&gt;
+#&gt;   [12]    chr19 58869318-58869652      - |    250822        &lt;NA&gt;
+#&gt;   [13]    chr19 58869855-58869951      - |    250823        &lt;NA&gt;
+#&gt;   [14]    chr19 58870563-58870689      - |    250824        &lt;NA&gt;
+#&gt;   [15]    chr19 58874043-58874214      - |    250825        &lt;NA&gt;
+#&gt;   -------
+#&gt;   seqinfo: 93 sequences (1 circular) from hg19 genome</code></pre>
+<pre class="r"><code># get the width of each exon
+exon_length&lt;- width(hg19_exons)
+exon_length</code></pre>
+<pre><code>#&gt; IntegerList of length 23459
+#&gt; [[&quot;1&quot;]] 224 288 663 1084 282 297 273 270 36 96 65 335 97 127 172
+#&gt; [[&quot;10&quot;]] 101 1216
+#&gt; [[&quot;100&quot;]] 326 103 130 65 102 72 128 116 144 123 62 161
+#&gt; [[&quot;1000&quot;]] 1394 165 140 234 234 143 254 186 138 173 145 156 147 227 106 112 519
+#&gt; [[&quot;10000&quot;]] 218 68 5616 50 103 88 215 129 123 69 66 132 145 112 126 158 41
+#&gt; [[&quot;100008586&quot;]] 92 121 126 127
+#&gt; [[&quot;100009676&quot;]] 2784
+#&gt; [[&quot;10001&quot;]] 704 28 116 478 801 109 130 83 92 160 52
+#&gt; [[&quot;10002&quot;]] 308 127 104 222 176 201 46 106 918 705
+#&gt; [[&quot;10003&quot;]] 191 112 187 102 126 187 94 1193 99 ... 64 68 92 91 265 82 93 1054
+#&gt; ...
+#&gt; &lt;23449 more elements&gt;</code></pre>
+<pre class="r"><code>exon_length[[1]] %&gt;% sum()</code></pre>
+<pre><code>#&gt; [1] 4309</code></pre>
+<pre class="r"><code># sum it up for each gene, in R, everything is vectorized :)
+sum(exon_length) %&gt;% head()</code></pre>
+<pre><code>#&gt;         1        10       100      1000     10000 100008586 
+#&gt;      4309      1317      1532      4473      7459       466</code></pre>
+<pre class="r"><code># turn it to a dataframe
+
+hg19_gene_length&lt;- sum(exon_length) %&gt;% 
+        tibble::enframe(name = &quot;gene_id&quot;, value = &quot;exon_length&quot;)
+
+head(hg19_gene_length)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 2
+#&gt;   gene_id   exon_length
+#&gt;   &lt;chr&gt;           &lt;int&gt;
+#&gt; 1 1                4309
+#&gt; 2 10               1317
+#&gt; 3 100              1532
+#&gt; 4 1000             4473
+#&gt; 5 10000            7459
+#&gt; 6 100008586         466</code></pre>
+<pre class="r"><code># map the Entrez ID to gene symbol
+gene_symbol&lt;- AnnotationDbi::select(org.Hs.eg.db, keys=hg19_gene_length$gene_id, 
+                                    columns=&quot;SYMBOL&quot;, keytype=&quot;ENTREZID&quot;)
+
+all.equal(hg19_gene_length$gene_id, gene_symbol$ENTREZID)</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>hg19_gene_length$symbol&lt;- gene_symbol$SYMBOL
+
+hg19_gene_length</code></pre>
+<pre><code>#&gt; # A tibble: 23,459 × 3
+#&gt;    gene_id   exon_length symbol    
+#&gt;    &lt;chr&gt;           &lt;int&gt; &lt;chr&gt;     
+#&gt;  1 1                4309 A1BG      
+#&gt;  2 10               1317 NAT2      
+#&gt;  3 100              1532 ADA       
+#&gt;  4 1000             4473 CDH2      
+#&gt;  5 10000            7459 AKT3      
+#&gt;  6 100008586         466 GAGE12F   
+#&gt;  7 100009676        2784 ZBTB11-AS1
+#&gt;  8 10001            2753 MED6      
+#&gt;  9 10002            2913 NR2E3     
+#&gt; 10 10003            5056 NAALAD2   
+#&gt; # … with 23,449 more rows</code></pre>
+<pre class="r"><code>table(rownames(count_mat) %in% hg19_gene_length$symbol)</code></pre>
+<pre><code>#&gt; 
+#&gt; FALSE  TRUE 
+#&gt;  3499 19869</code></pre>
+<pre class="r"><code>#setdiff(rownames(count_mat), hg19_gene_length$symbol)
+#setdiff(hg19_gene_length$symbol, rownames(count_mat))
+# it seems to be microRNAs, LINC RNAs that are not matching...</code></pre>
+<p>3499 genes in the count table are not in the dataframe. gene symbols can change constantly and are given new names or aliases. Use <code>HGNChelper</code> if needed: <a href="https://cran.r-project.org/web/packages/HGNChelper/index.html" class="uri">https://cran.r-project.org/web/packages/HGNChelper/index.html</a></p>
+<p>I will just remove those genes</p>
+<pre class="r"><code>indx&lt;- intersect(rownames(count_mat), hg19_gene_length$symbol)
+
+count_mat&lt;- count_mat[indx, ]
+
+gene_df&lt;- hg19_gene_length %&gt;%
+  slice(match(indx, symbol))
+
+dim(gene_df)</code></pre>
+<pre><code>#&gt; [1] 19869     3</code></pre>
+<pre class="r"><code>dim(count_mat)</code></pre>
+<pre><code>#&gt; [1] 19869  9264</code></pre>
+</div>
+<div id="convert-counts-to-tpm" class="section level3">
+<h3>convert counts to TPM</h3>
+<pre class="r"><code>count_to_tpm&lt;- function(mat, gene_length){
+  mat&lt;- mat/gene_length
+  total_per_sample&lt;- colSums(mat)
+  mat&lt;- t(t(mat)/total_per_sample)
+  return(mat*1000000)
+}
+
+tpm_mat&lt;- count_to_tpm(count_mat, gene_df$exon_length)
+
+# can not find &quot;NECTIN4&quot;, it might be a different name 
+
+genes_of_interest</code></pre>
+<pre><code>#&gt;  [1] &quot;MSLN&quot;      &quot;EGFR&quot;      &quot;ERBB2&quot;     &quot;CEACAM5&quot;   &quot;NECTIN4&quot;   &quot;EPCAM&quot;    
+#&gt;  [7] &quot;MUC16&quot;     &quot;MUC1&quot;      &quot;CD276&quot;     &quot;FOLH1&quot;     &quot;DLL3&quot;      &quot;VTCN1&quot;    
+#&gt; [13] &quot;PROM1&quot;     &quot;PVR&quot;       &quot;CLDN6&quot;     &quot;MET&quot;       &quot;FOLR1&quot;     &quot;TNFRSF10B&quot;
+#&gt; [19] &quot;TACSTD2&quot;   &quot;CD24&quot;</code></pre>
+<pre class="r"><code>genes_of_interest[!genes_of_interest %in% rownames(tpm_mat)]</code></pre>
+<pre><code>#&gt; [1] &quot;NECTIN4&quot;</code></pre>
+<p>other names for NECTIN4: LNIR; PRR4; EDSS1; PVRL4; nectin-4</p>
+<p>I tried all of them, and it seems that in the data matrix, it was named <code>PRR4</code>.
+Welcome to the everyday work of Bioinforamtics: converting gene ids…</p>
+<pre class="r"><code>&quot;PRR4&quot; %in% rownames(tpm_mat)</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<p>Make a heatmap:</p>
+<pre class="r"><code>genes_of_interest2&lt;- c(&quot;MSLN&quot;, &quot;EGFR&quot;, &quot;ERBB2&quot;, &quot;CEACAM5&quot;, &quot;PRR4&quot;, &quot;EPCAM&quot;, &quot;MUC16&quot;, &quot;MUC1&quot;, &quot;CD276&quot;, &quot;FOLH1&quot;, &quot;DLL3&quot;, &quot;VTCN1&quot;, &quot;PROM1&quot;, &quot;PVR&quot;, &quot;CLDN6&quot;, &quot;MET&quot;, &quot;FOLR1&quot;, &quot;TNFRSF10B&quot;, &quot;TACSTD2&quot;, &quot;CD24&quot;)
+
+tpm_sub&lt;- tpm_mat[genes_of_interest2, ]
+
+tpm_median&lt;- cbind(t(tpm_sub), CancerType = as.character(colData(tcga_data)$CancerType)) %&gt;%
+  as.data.frame() %&gt;%
+  mutate(across(1:20, as.numeric)) %&gt;%
+  group_by(CancerType) %&gt;%
+  summarise(across(1:20, median)) 
+
+tpm_sub_mat&lt;- as.matrix(tpm_median[,-1])
+rownames(tpm_sub_mat)&lt;- tpm_median$CancerType
+
+Heatmap(log2(tpm_sub_mat +1), cluster_columns = TRUE, cell_fun = cell_fun,
+        name = &quot;log2TPM&quot;)</code></pre>
+<p><img src="/post/2023-10-26-how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types_files/figure-html/unnamed-chunk-19-1.png" width="576" /></p>
+<p>There are fewer cancer types in the <code>ExperimentHub</code> than the <code>recount3</code>, but in general, the patterns of gene expression are similar.</p>
+<p>You may look into <a href="https://bioconductor.org/packages/release/bioc/html/TCGAbiolinks.html"><code>TCGAbiolinks</code></a> and <a href="https://bioconductor.org/packages/release/bioc/html/cBioPortalData.html"><code>cBioPortalData</code></a> too.</p>
+<p>Happy Learning!</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioconductor/">Bioconductor</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/rnaseq/">RNAseq</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/tcga/">TCGA</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></li>
+        
+        <li><a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></li>
+        
+        <li><a href="/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/">Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</a></li>
+        
+        <li><a href="/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/">Omics Playground: Derive biological insights from your omics data at your fingertip</a></li>
+        
+        <li><a href="/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/">How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/how-i-am-learning-deep-learning/" rel="next">My 4-steps to learn deep learning for genomics</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/" rel="prev">How to code a variational autoencoder (VAE) in R using the MNIST dataset</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>RNAseq on DNA confesses Data speak</title>
+    <link>/tags/rnaseq/</link>
+    <description>Recent content in RNAseq on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Mon, 18 Mar 2024 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/rnaseq/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Downstream of bulk RNAseq: read in salmon output using tximport and then DESeq2</title>
+      <link>/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</link>
+      <pubDate>Mon, 18 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</guid>
+      <description>Join my newsletter to not miss a post like this
+In the last blog post, I showed you how to use salmon to get counts from fastq files downloaded from GEO. In this post, I am going to show you how to read in the .sf salmon quantification file into R; how to get the tx2gene.txt file and do DESeq2 for differential gene expression analysis. Let’s dive in!
+library(tximport) library(dplyr) library(ggplot2) files&amp;lt;- list.</description>
+    </item>
+    
+    <item>
+      <title>How to preprocess GEO bulk RNAseq data with salmon </title>
+      <link>/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/</link>
+      <pubDate>Wed, 13 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/</guid>
+      <description>Install fastq-dl To easily download fastq from GEO or ENA, use fastq-dl
+Assume you already have conda installed, do the following:
+conda config --add channels conda-forge conda config --add channels bioconda conda create -n fastq_download -c conda-forge -c bioconda fastq-dl conda activate fastq_download  Tip: use mamba if conda is too slow for you. They are all big snakes!!
+We will use bulk RNAseq data from this GEO accession ID: https://www.</description>
+    </item>
+    
+    <item>
+      <title>How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</title>
+      <link>/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</link>
+      <pubDate>Thu, 26 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</guid>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+The Cancer Genome Atlas (TCGA) project is probably one of the most well-known large-scale cancer sequencing project. It sequenced ~10,000 treatment-naive tumors across 33 cancer types. Different data including whole-exome, whole-genome, copy-number (SNP array), bulk RNAseq, protein expression (Reverse-Phase Protein Array), DNA methylation are available.
+TCGA is a very successful large sequencing project. I highly recommend learning from the organization of it.</description>
+    </item>
+    
+  </channel>
+</rss>

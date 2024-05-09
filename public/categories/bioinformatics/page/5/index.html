@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2020-07-02T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2022-12-30T00:00:00&#43;00:00">
   
 
   
@@ -156,13 +156,11 @@
         
         
         
-          
-        
 
         <li class="nav-item">
-          <a href="/#publications">
+          <a href="/#cv">
             
-            <span>Publications</span>
+            <span>Newsletter</span>
             
           </a>
         </li>
@@ -232,11 +230,13 @@
         
         
         
+          
+        
 
         <li class="nav-item">
-          <a href="/#cv">
+          <a href="/#publications">
             
-            <span>CV</span>
+            <span>Publications</span>
             
           </a>
         </li>
@@ -284,116 +284,115 @@
   
   
   <div>
-    <h2><a href="/post/build-your-own-singularity-image/">build your own singularity image</a></h2>
+    <h2><a href="/post/review-2022/">Review 2022</a></h2>
     <div class="article-style">
       
-      I was using the tidyverse rocker image on HPC by singularity pull. see my previous post.
-Everything was OK until I encountered problems installing jpeg and Cairo R packages. Later, I also had an error installing scRepertoire dependency gsl.
-It turns out I have to install debian packages inside the container:
-$ apt update &amp;&amp; apt install -y &ndash;no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev \ &amp;&amp; apt install -y &ndash;no-install-recommends libx11-dev libcairo2-dev libxt-dev \ &amp;&amp; apt install -y libgsl-dev  However, singularity file system is read-only.
+      Every year, I write a review for the past 12 months. Find my review for 2021.
+Some top wins:  Anna was born in September! It is a lot of work with three kids, but they are cute!
+ I am grateful for our CSO Thomas Tan, who has confidence in me to lead the team. We built an amazing computational biology team at Immunitas. I am so fortunate to have Matt, Tim and Michelle in the group.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/">customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</a></h2>
+    <h2><a href="/post/how-to-run-dockerized-rstudio-server-on-google-cloud/">How to run dockerized Rstudio server on google cloud</a></h2>
     <div class="article-style">
       
-      Seurat is great for scRNAseq analysis and it provides many easy-to-use ggplot2 wrappers for visualization. However, this brings the cost of flexibility. For example, In FeaturePlot, one can specify multiple genes and also split.by to further split to multiple the conditions in the meta.data. If split.by is not NULL, the ncol is ignored so you can not arrange the grid.
-This is best to understand with an example.
-library(dplyr) library(Seurat) library(patchwork) library(ggplot2) # Load the PBMC dataset pbmc.
+      Create a google VM Follow the process using the console <a href="https://cloud.google.com/compute/docs/instances/create-start-instance#console_1" target="_blank">https://cloud.google.com/compute/docs/instances/create-start-instance#console_1</a>
+Install docker Follow <a href="https://docs.docker.com/engine/install/debian/" target="_blank">https://docs.docker.com/engine/install/debian/</a>
+Note this example for the debian build. If you created your VM using ubuntu as the boot disk, you should follow the ubuntu section <a href="https://docs.docker.com/engine/install/ubuntu/" target="_blank">https://docs.docker.com/engine/install/ubuntu/</a>.
+In the GCP VM:
+sudo apt-get update sudo apt-get install \ ca-certificates \ curl \ gnupg \ lsb-release sudo mkdir -p /etc/apt/keyrings curl -fsSL <a href="https://download.docker.com/linux/debian/gpg" target="_blank">https://download.docker.com/linux/debian/gpg</a> | sudo gpg &ndash;dearmor -o /etc/apt/keyrings/docker.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
+    <h2><a href="/post/are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines/">Are PDL1 RNA and protein levels correlated in cancer cell lines?</a></h2>
     <div class="article-style">
       
-      In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
-My next thought is: maybe the STAR aligner is doing something weird that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.
+      Are protein and RNA levels correlated? This is a big question.
+see replies to this tweet at <a href="https://twitter.com/slavov_n/status/1561844133496512512" target="_blank">https://twitter.com/slavov_n/status/1561844133496512512</a>. In general, RNA and protein abundances should be correlated but there are exceptions of course. Biology is complicated/weird!
+ One of my favorite examples is Hypoxia-inducible factor 1-alpha, HIF-1α. The protein is efficiently degraded in most tissues most of the time unless stabilized by hypoxia.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/cellranger-mk-reference-with-transgenes/">cellranger mk reference with transgenes</a></h2>
+    <h2><a href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">use random forest and boost trees to find marker genes in scRNAseq data</a></h2>
     <div class="article-style">
       
-      The problem I am working on some 10x scRNAseq data from transgenic mouse. The cells express Tdtomato and Cre genes. I need to add those to the cellranger reference to get the counts for those two genes.
-The journey to the solution Following <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#addgene" target="_blank">https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#addgene</a>
-I created a fasta file for the two transgenes: tdTomato and Cre:
-tdtomato_cre.fa:
-&gt;tdtomato dna:chromosome chromosome:GRCm38:tdtomato:1:1431:1 REF ATGGTGAGCAAGGGCGAGGAGGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGGGGCATGGCACCGGCAGCACCGGCAGCGGCAGCTCCGGCACCGCCTCCTCCGAGGACAACAACATGGCCGTCATCAAAGAGTTCATGCGCTTCAAGGTGCGCATGGAGGGCTCCATGAACGGCCACGAGTTCGAGATCGAGGGCGAGGGCGAGGGCCGCCCCTACGAGGGCACCCAGACCGCCAAGCTGAAGGTGACCAAGGGCGGCCCCCTGCCCTTCGCCTGGGACATCCTGTCCCCCCAGTTCATGTACGGCTCCAAGGCGTACGTGAAGCACCCCGCCGACATCCCCGATTACAAGAAGCTGTCCTTCCCCGAGGGCTTCAAGTGGGAGCGCGTGATGAACTTCGAGGACGGCGGTCTGGTGACCGTGACCCAGGACTCCTCCCTGCAGGACGGCACGCTGATCTACAAGGTGAAGATGCGCGGCACCAACTTCCCCCCCGACGGCCCCGTAATGCAGAAGAAGACCATGGGCTGGGAGGCCTCCACCGAGCGCCTGTACCCCCGCGACGGCGTGCTGAAGGGCGAGATCCACCAGGCCCTGAAGCTGAAGGACGGCGGCCACTACCTGGTGGAGTTCAAGACCATCTACATGGCCAAGAAGCCCGTGCAACTGCCCGGCTACTACTACGTGGACACCAAGCTGGACATCACCTCCCACAACGAGGACTACACCATCGTGGAACAGTACGAGCGCTCCGAGGGCCGCCACCACCTGTTCCTGTACGGCATGGACGAGCTGTACAAGTAA &gt;cre dna:chromosome chromosome:GRCm38:cre:1:1032:1 REF ATGGCCAATTTACTGACCGTACACCAAAATTTGCCTGCATTACCGGTCGATGCAACGAGTGATGAGGTTCGCAAGAACCTGATGGACATGTTCAGGGATCGCCAGGCGTTTTCTGAGCATACCTGGAAAATGCTTCTGTCCGTTTGCCGGTCGTGGGCGGCATGGTGCAAGTTGAATAACCGGAAATGGTTTCCCGCAGAACCTGAAGATGTTCGCGATTATCTTCTATATCTTCAGGCGCGCGGTCTGGCAGTAAAAACTATCCAGCAACATTTGGGCCAGCTAAACATGCTTCATCGTCGGTCCGGGCTGCCACGACCAAGTGACAGCAATGCTGTTTCACTGGTTATGCGGCGGATCCGAAAAGAAAACGTTGATGCCGGTGAACGTGCAAAACAGGCTCTAGCGTTCGAACGCACTGATTTCGACCAGGTTCGTTCACTCATGGAAAATAGCGATCGCTGCCAGGATATACGTAATCTGGCATTTCTGGGGATTGCTTATAACACCCTGTTACGTATAGCCGAAATTGCCAGGATCAGGGTTAAAGATATCTCACGTACTGACGGTGGGAGAATGTTAATCCATATTGGCAGAACGAAAACGCTGGTTAGCACCGCAGGTGTAGAGAAGGCACTTAGCCTGGGGGTAACTAAACTGGTCGAGCGATGGATTTCCGTCTCTGGTGTAGCTGATGATCCGAATAACTACCTGTTTTGCCGGGTCAGAAAAAATGGTGTTGCCGCGCCATCTGCCACCAGCCAGCTATCAACTCGCGCCCTGGAAGGGATTTTTGAAGCAACTCATCGATTGATTTACGGCGCTAAGGATGACTCTGGTCAGAGATACCTGGCCTGGTCTGGACACAGTGCCCGTGTCGGAGCCGCGCGAGATATGGCCCGCGCTGGAGTTTCAATACCGGAGATCATGCAAGCTGGTGGCTGGACCAATGTAAATATTGTCATGAACTATATCCGTAACCTGGATAGTGAAACAGGGGCAATGGTGCGCCTGCTGGAAGATGGCGATTAG  edit the genome.
+      This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: logistic regression and partial least square regression.
+This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost). I highly recommend going through <a href="https://app.learney.me/maps/StatQuest" target="_blank">https://app.learney.me/maps/StatQuest</a> for related sections by Josh Starmer. Note, all the tree based methods can be used to do both classification and regression.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/">add pct_in for each cluster for scRNAseq result table using list column</a></h2>
+    <h2><a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></h2>
     <div class="article-style">
       
-      Using nested dataframe and list column has transformed my way of data wrangling in R. For more on this topic, I highly recommend purrr tutorial from Jenney Bryan.
-In this post, I am going to show you how I use this to solve a problem for adding pct_in column from the differential scRNAseq result table.
-I am going to use presto for differential gene expression test. presto performs a fast Wilcoxon rank sum test and auROC analysis.
+      This is an extension of my last blog post marker gene selection using logistic regression and regularization for scRNAseq.
+Let’s use the same PBMC single-cell RNAseq data as an example.
+Load libraries
+library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # for plotting library(patchwork) Preprocess the data</p>
+
+<h1 id="load-the-pbmc-dataset-pbmc-data-lt-read10x-data-dir-quot-blog-data-filtered-gene-bc-matrices-hg19-quot-initialize-the-seurat-object-with-the-raw-non-normalized-data-pbmc-lt-createseuratobject-counts-pbmc-data-project-quot-pbmc3k-quot-min">Load the PBMC dataset pbmc.data &lt;- Read10X(data.dir = &quot;~/blog_data/filtered_gene_bc_matrices/hg19/&quot;) # Initialize the Seurat object with the raw (non-normalized data). pbmc &lt;- CreateSeuratObject(counts = pbmc.data, project = &quot;pbmc3k&quot;, min.</h1>
+
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/the-end-of-2019/">The end of 2019</a></h2>
+    <h2><a href="/post/my-odyssey-of-obtaining-scrnaseq-metadata/">My odyssey of obtaining scRNAseq metadata </a></h2>
     <div class="article-style">
       
-      It is the end of 2019. How time flies! It is a good time to reflect what I have achieved during the past year and what to look forward in 2020. I wrote a post for 2018 here. I am not the only one who has impostor syndrome :) It is important to celebrate your small successes/achievements by writing them down.
- I taught a snakemake and scRNAseq workshop during the FAS informatics 2-week nanocourse.
+      I want to curate a public scRNAseq dataset from this paper Single-cell analyses reveal key immune cell subsets associated with response to PD-L1 blockade in triple-negative breast cancer
+ffq I first tried ffq, but it gave me errors.
+ffq fetches metadata information from the following databases:
+ GEO: Gene Expression Omnibus, SRA: Sequence Read Archive, EMBL-EBI: European Molecular BIology Laboratory’s European BIoinformatics Institute, DDBJ: DNA Data Bank of Japan, NIH Biosample: Biological source materials used in experimental assays, ENCODE: The Encyclopedia of DNA Elements.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/">Mixing mouse and human 10x single cell RNAseq data</a></h2>
+    <h2><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></h2>
     <div class="article-style">
       
-      In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.
-In this paper <a href="https://www.biorxiv.org/content/10.1101/630087v1.full" target="_blank">https://www.biorxiv.org/content/10.1101/630087v1.full</a>
- To deconvolute species, detect doublets and low quality cells, the mixed-species mapped data was used.
+      why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
+ Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
+ I am interested in using logistic regression to find marker genes and want to try fitting the model in the tidymodel ecosystem and using different regularization methods.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/">My opinionated selection of books/urls for bioinformatics/data science curriculum</a></h2>
+    <h2><a href="/post/obtain-metadata-for-public-datasets-in-geo/">Obtain metadata for public datasets in GEO</a></h2>
     <div class="article-style">
       
-      There was a paper on this topic: A New Online Computational Biology Curriculum.
-I am going to provide a biased list below (I have read most of the books if not all). I say it is biased because you will see many books of R are from Hadely Wickham. I now use tidyverse most of the time.
-Unix I suggest people who want to learn bioinformatics starting to learn unix commands first.
+      There are so many public datasets there waiting for us to mine! It is the blessing and cursing as a computational biologist!
+Metadata, or the data describing (e.g., responder or non-responder for the treatment) the data are critical in interpreting the analysis. Without metadata, your data are useless.
+People usually go to GEO or ENA to download public data. I asked this question on twitter, and I will show you how to get the metadata as suggested by all the awesome tweeps.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/develop-bioconductor-packages-with-docker-container/">Develop Bioconductor packages with docker container</a></h2>
+    <h2><a href="/post/be-careful-when-left-join-tables-with-duplicated-rows/">Be careful when left_join tables with duplicated rows</a></h2>
     <div class="article-style">
       
-      Readings links to read:
- <a href="https://www.bioconductor.org/developers/package-guidelines/#rcode" target="_blank">https://www.bioconductor.org/developers/package-guidelines/#rcode</a>
- <a href="https://github.com/Bioconductor/Contributions" target="_blank">https://github.com/Bioconductor/Contributions</a>
- use container <a href="https://github.com/Bioconductor/bioconductor_full" target="_blank">https://github.com/Bioconductor/bioconductor_full</a>
-  I am following the last link.
-pull the container docker pull bioconductor/bioconductor_full:devel docker images REPOSITORY TAG IMAGE ID CREATED SIZE bioconductor/bioconductor_full devel ae3ec2be7376 3 hours ago 5.7GB seuratv3 latest 9b358ab1fd63 2 days ago 2.76GB  It is 5.7G in size.
-start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.
+      This is going to be a really short blog post. I recently found that if I join two tables with one of the tables having duplicated rows, the final joined table also contains the duplicated rows. It could be the expected behavior for others but I want to make a note here for myself.
+library(tidyverse) df1&lt;- tibble(key = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;), value = 1:5) df1 ## # A tibble: 5 x 2 ## key value ## &lt;chr&gt; &lt;int&gt; ## 1 A 1 ## 2 B 2 ## 3 C 3 ## 4 D 4 ## 5 E 5 dataframe 2 has two identical rows for B.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/calculate-scatacseq-tss-enrichment-score/">Calculate scATACseq TSS enrichment score</a></h2>
+    <h2><a href="/post/matrix-factorization-for-single-cell-rnaseq-data/">Matrix Factorization for single-cell RNAseq data</a></h2>
     <div class="article-style">
       
-      TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
-From the Encode page:
- Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).
+      I am interested in learning more on matrix factorization and its application in scRNAseq data. I want to shout out to this paper: Enter the Matrix: Factorization Uncovers Knowledge from Omics by Elana J. Fertig group.
+A matrix is decomposed to two matrices: the amplitude matrix and the pattern matrix. You can then do all sorts of things with the decomposed matrices. Single cell matrix is no special, one can use the matrix factorization techniques to derive interesting biological insights.
       
     </div>
   </div>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>TCGA on DNA confesses Data speak</title>
+    <link>/tags/tcga/</link>
+    <description>Recent content in TCGA on DNA confesses Data speak</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Thu, 26 Oct 2023 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/tcga/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</title>
+      <link>/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</link>
+      <pubDate>Thu, 26 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</guid>
+      <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+The Cancer Genome Atlas (TCGA) project is probably one of the most well-known large-scale cancer sequencing project. It sequenced ~10,000 treatment-naive tumors across 33 cancer types. Different data including whole-exome, whole-genome, copy-number (SNP array), bulk RNAseq, protein expression (Reverse-Phase Protein Array), DNA methylation are available.
+TCGA is a very successful large sequencing project. I highly recommend learning from the organization of it.</description>
+    </item>
+    
+  </channel>
+</rss>

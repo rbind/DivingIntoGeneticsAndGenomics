@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2019-02-06T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2019-05-29T00:00:00&#43;00:00">
   
 
   
@@ -156,13 +156,11 @@
         
         
         
-          
-        
 
         <li class="nav-item">
-          <a href="/#publications">
+          <a href="/#cv">
             
-            <span>Publications</span>
+            <span>Newsletter</span>
             
           </a>
         </li>
@@ -232,11 +230,13 @@
         
         
         
+          
+        
 
         <li class="nav-item">
-          <a href="/#cv">
+          <a href="/#publications">
             
-            <span>CV</span>
+            <span>Publications</span>
             
           </a>
         </li>
@@ -282,6 +282,39 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/calculate-scatacseq-tss-enrichment-score/">Calculate scATACseq TSS enrichment score</a></h2>
+    <div class="article-style">
+      
+      TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
+From the Encode page:
+ Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
+    <div class="article-style">
+      
+      scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
+I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
+A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></h2>
+    <div class="article-style">
+      
+      This post was inspired by Andrew Hill’s recent blog post.
+Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
+&mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/post/understand-10x-scrnaseq-and-scatac-fastqs/">understand 10x scRNAseq and scATAC fastqs</a></h2>

@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2023-10-03T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2024-05-07T00:00:00&#43;00:00">
   
 
   
@@ -156,13 +156,11 @@
         
         
         
-          
-        
 
         <li class="nav-item">
-          <a href="/#publications">
+          <a href="/#cv">
             
-            <span>Publications</span>
+            <span>Newsletter</span>
             
           </a>
         </li>
@@ -232,11 +230,13 @@
         
         
         
+          
+        
 
         <li class="nav-item">
-          <a href="/#cv">
+          <a href="/#publications">
             
-            <span>CV</span>
+            <span>Publications</span>
             
           </a>
         </li>
@@ -284,110 +284,107 @@
   
   
   <div>
-    <h2><a href="/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/">Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</a></h2>
+    <h2><a href="/post/s3-and-s4-objects-in-r-explained/">S3 and S4 objects in R explained </a></h2>
     <div class="article-style">
+      
+      In R, S3 and S4 objects are related to object-oriented programming (OOP), which allows you to create custom data structures with associated behaviors and methods. Let me explain them using simple language and metaphors, along with practical examples.
+S3 Objects: Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></h2>
+    <h2><a href="/post/bioinformatics-is-not-just-statistics/">Bioinformatics is not (just) statistics </a></h2>
     <div class="article-style">
       
-      What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
-Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
-In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.
+      I was asked this question very often: “Tommy, what’s the p-value cutoff should I use to determine the differentially expressed genes; what log2 Fold change cutoff should I use too?”
+For single-cell RNAseq quality control, what’s the cutoff for mitochondrial content?
+My answer is always: it depends. I was joking: determining a cutoff is 90% of the work a bioinformatician does.
+Why is that?
+Biology is more than just statistics.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/">Omics Playground: Derive biological insights from your omics data at your fingertip</a></h2>
+    <h2><a href="/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/">Fine tune the best clustering resolution for scRNAseq data: trying out callback</a></h2>
     <div class="article-style">
       
-      Disclaimer: This post is sponsored by BigOmics platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer.
-A brief description of the platform. What challenges could the platform solve? The BigOmics platform - Omics Playground- provides a simplified approach for the effective processing of bulk RNA-seq data and proteomics data, resolving many issues experienced by scientists in the field.
+      Context and Problem In scRNA-seq, each cell is sequenced individually, allowing for the analysis of gene expression at the single-cell level. This provides a wealth of information about the cellular identities and states. However, the high dimensionality of the data (thousands of genes) and the technical noise in the data can lead to challenges in accurately clustering the cells. Over-clustering is one such challenge, where cells that are biologically similar are clustered into distinct clusters.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/">How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</a></h2>
+    <h2><a href="/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/">Downstream of bulk RNAseq: read in salmon output using tximport and then DESeq2</a></h2>
     <div class="article-style">
       
-      In the mysterious world of DNA, where the secrets of life are encoded, scientists are harnessing the power of cutting-edge technology to decipher the language of genes. One of the remarkable tools they’re using is the 1D Convolutionary Neural Network, or 1D CNN, which might sound like jargon from a sci-fi movie, but it’s actually a game-changer in DNA sequence analysis.
-Imagine DNA as a long, intricate string of letters, like a never-ending alphabet book.
+      Join my newsletter to not miss a post like this
+In the last blog post, I showed you how to use salmon to get counts from fastq files downloaded from GEO. In this post, I am going to show you how to read in the .sf salmon quantification file into R; how to get the tx2gene.txt file and do DESeq2 for differential gene expression analysis. Let’s dive in!
+library(tximport) library(dplyr) library(ggplot2) files&lt;- list.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/">multi-omics data integration: a case study with transcriptomics and genomics mutation data</a></h2>
+    <h2><a href="/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/">How to preprocess GEO bulk RNAseq data with salmon </a></h2>
     <div class="article-style">
       
-      Multi-omics data analysis is a cutting-edge approach in biology that involves studying and integrating information from multiple biological “omics” sources. These omics sources include genomics (genes and their variations), transcriptomics (gene expression and RNA data), proteomics (proteins and their interactions), metabolomics (small molecules and metabolites), epigenomics (epigenetic modifications), and more. By analyzing data from various omics levels together, we can gain a more comprehensive and detailed understanding of biological systems and their complexities.
+      Install fastq-dl To easily download fastq from GEO or ENA, use fastq-dl
+Assume you already have conda installed, do the following:
+conda config &ndash;add channels conda-forge conda config &ndash;add channels bioconda conda create -n fastq_download -c conda-forge -c bioconda fastq-dl conda activate fastq_download  Tip: use mamba if conda is too slow for you. They are all big snakes!!
+We will use bulk RNAseq data from this GEO accession ID: <a href="https://www" target="_blank">https://www</a>.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/">neighborhood/cellular niches analysis with spatial transcriptome data in Seurat and Bioconductor</a></h2>
+    <h2><a href="/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/">Do you really understand log2Fold change in single-cell RNAseq data?</a></h2>
     <div class="article-style">
       
-      Spatial transcriptome cellular niche analysis using 10x xenium data go to <a href="https://www.10xgenomics.com/resources/datasets" target="_blank">https://www.10xgenomics.com/resources/datasets</a>
-There is a lung cancer and a breast cancer dataset. Let’s work on the lung cancer one.
-<a href="https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard" target="_blank">https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard</a>
-37G zipped file!
-wget <a href="https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/1.3.0/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip" target="_blank">https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/1.3.0/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip</a> unzip Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip sudo tar xvzf cell_feature_matrix.tar.gz cell_feature_matrix/ cell_feature_matrix/barcodes.tsv.gz cell_feature_matrix/features.tsv.gz cell_feature_matrix/matrix.mtx.gz
- read in the data with Seurat We really only care about the cell by gene count matrix which is inside the cell_feature_matrix folder, and the cell location x,y coordinates: cells.
+      In Single-cell RNAseq analysis, there is a step to find the marker genes for each cluster. The output from Seurat FindAllMarkers has a column called avg_log2FC. It is the gene expression log2 fold change between cluster x and all other clusters.
+How is that calculated? In this tweet thread by Lior Pachter, he said that there was a discrepancy for the logFC changes between Seurat and Scanpy: Actually, both Scanpy and Seurat calculate it wrong.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">scRNAseq clustering significance test: an unsolvable problem?</a></h2>
+    <h2><a href="/post/hidden-skills-beyond-programming-for-computational-biology/">Hidden skills beyond programming for computational biology</a></h2>
     <div class="article-style">
       
-      Introductioon In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights.
-The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the resolution parameter. However, whether the newly generated clusters are meaningful or not is a question.
+      There are some hidden gems beyond the typical programming skills that have been instrumental in my journey. These are the often-overlooked yet crucial practices that have empowered me to tackle challenges and make sense of data in meaningful ways.
+Firstly, let’s talk about patience. It’s not as glamorous as diving straight into analysis, but taking the time for thorough quality control is invaluable. Before you get carried away, understand the experimental design.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/">Navigating Variant Calling for Disease-Causing Mutations: The state-of-art process</a></h2>
+    <h2><a href="/post/great-things-take-time-how-decades-of-effort-led-to-my-dream-career/">Great Things Take Time: How Decades of Effort Led to My Dream Career</a></h2>
     <div class="article-style">
       
-      Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
-Variant calling is the process of identifying and categorizing genetic variants in sequencing data. It is a critical step in the analysis of whole-genome sequencing (WGS) and whole-exome sequencing (WES) data, as it allows researchers to identify potential disease-causing mutations.
+      Everyone is unique. Only you can talk about the story about yourself, and I realized that no matter how many times I have told my story, I have to tell it again, again, again, and again. Because no matter how many times I tell it, there is always someone who hear my story the first time. I hope it can inspire more people every time I tell it.
+Fast backward 37 years ago, 1986.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/">Reuse the single cell data! How to create a seurat object from GEO datasets</a></h2>
+    <h2><a href="/post/review-2023/">Review 2023</a></h2>
     <div class="article-style">
       
-      Download the data <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256" target="_blank">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256</a>
-cd data/GSE116256 wget <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar" target="_blank">https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar</a> tar xvf GSE116256_RAW.tar rm GSE116256_RAW.tar Depending on how the authors upload their data.
-Some authors may just upload the merged count matrix file. This is the easiest situation.
-In this dataset, each sample has a separate set of matrix (*dem.txt.gz), features and barcodes.
-Total, there are 43 samples. For each sample, it has an associated metadata file (*anno.txt.gz) too.
-You can inspect the files in command line:
+      By the end of every year, I write a review of the past year. It is a great time to reflect on the Losses and Wins and plan for the new year. I can not believe 2024 is right at the corner. My review of 2022 can be found at <a href="https://divingintogeneticsandgenomics.com/post/review-2022/" target="_blank">https://divingintogeneticsandgenomics.com/post/review-2022/</a>.
+Goals reached for 2023 This is in the same order of the goals of 2023 in my last year’s review.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/ten-single-cell-data-benchmarking-papers/">10 single-cell data benchmarking papers</a></h2>
+    <h2><a href="/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/">Part 4 CITE-seq normalization using empty droplets with the dsb package</a></h2>
     <div class="article-style">
       
-      I tweeted it at <a href="https://twitter.com/tangming2005/status/1679120948140572672" target="_blank">https://twitter.com/tangming2005/status/1679120948140572672</a>
-I got asked to put all my posts in a central place and I think it is a good idea. And here it is!
- Benchmarking integration of single-cell differential expression
- Benchmarking atlas-level data integration in single-cell genomics
- A review of computational strategies for denoising and imputation of single-cell transcriptomic data
- Benchmarking spatial and single-cell transcriptomics integration methods for transcript distribution prediction and cell type deconvolution
+      In this post, we are going to try a CITE-seq normalization method called dsb published in Normalizing and denoising protein expression data from droplet-based single cell profiling
+ two major components of protein expression noise in droplet-based single cell experiments: (1) protein-specific noise originating from ambient, unbound antibody encapsulated in droplets that can be accurately estimated via the level of “ambient” ADT counts in empty droplets,
+  and (2) droplet/cell-specific noise revealed via the shared variance component associated with isotype antibody controls and background protein counts in each cell.
       
     </div>
   </div>

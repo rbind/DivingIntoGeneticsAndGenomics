@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="If you ask me: what’s your favorite machine learning algorithm? I would answer logistic regression (with regularization: Lasso, Ridge and Elastic) followed by random forest. In fact, that’s how we try those methods in order. Deep learning can perform well for tabular data with complicated architecture while random forest or boost tree based method usually work well out of the box. Regression and random forest are more interpretable too.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/use-random-forest-as-a-clustering-method/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/use-random-forest-as-a-clustering-method/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/use-random-forest-as-a-clustering-method/">
+  <meta property="og:title" content="How to use random forest as a clustering method | DNA confesses Data speak">
+  <meta property="og:description" content="If you ask me: what’s your favorite machine learning algorithm? I would answer logistic regression (with regularization: Lasso, Ridge and Elastic) followed by random forest. In fact, that’s how we try those methods in order. Deep learning can perform well for tabular data with complicated architecture while random forest or boost tree based method usually work well out of the box. Regression and random forest are more interpretable too.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2023-11-06T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2023-11-06T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>How to use random forest as a clustering method | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">How to use random forest as a clustering method</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2023-11-06 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Nov 6, 2023
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    5 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/use-random-forest-as-a-clustering-method/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/machine-learning/">machine learning</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=How%20to%20use%20random%20forest%20as%20a%20clustering%20method&amp;url=%2fpost%2fuse-random-forest-as-a-clustering-method%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fuse-random-forest-as-a-clustering-method%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fuse-random-forest-as-a-clustering-method%2f&amp;title=How%20to%20use%20random%20forest%20as%20a%20clustering%20method"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fuse-random-forest-as-a-clustering-method%2f&amp;title=How%20to%20use%20random%20forest%20as%20a%20clustering%20method"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=How%20to%20use%20random%20forest%20as%20a%20clustering%20method&amp;body=%2fpost%2fuse-random-forest-as-a-clustering-method%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<p>If you ask me: what’s your favorite machine learning algorithm? I would answer logistic regression (with regularization: Lasso, Ridge and Elastic) followed by random forest. In fact, that’s how we try those methods in order. Deep learning can perform well for tabular data with complicated architecture while random forest or boost tree based method usually work well out of the box. Regression and random forest are more interpretable too.</p>
+<p>Youtube video for this post:</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/vO9ww5VCLfk" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<p>Read: <a href="https://arxiv.org/abs/2207.08815">Why do tree-based models still outperform deep learning on tabular data?</a></p>
+<p>We all know we can use random forest to do classification or regression (supervised machine learning), but do you know you can use random forest for clustering too (unsupervised machine learning)?</p>
+<p>When you have a mixed numeric and categorical dataset where it’s not straightforward to define a distance between observations, random forest can be trained in an unsupervised manner and generate the proximity matrix.</p>
+<blockquote>
+<p>The proximity represents the percentage of trees where the two observations appear in the same leaf node. So the higher the value, the closer the observations.</p>
+</blockquote>
+<p>This is pretty cool! I first got to know it from Josh Starmer’s StatQuest!</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/sQ870aTKqiM" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<p>For datasets that are all numeric, the Random Forest step is not necessary. You can use distance/similarity metrics such as Euclidean, Mahalanobis, and Manhattan (<code>?dist</code> in R).</p>
+<div id="use-random-forest-for-classification" class="section level3">
+<h3>Use random forest for classification</h3>
+<p>Let’s use a real example with the <code>iris</code> dataset.</p>
+<pre class="r"><code>library(tidymodels)
+set.seed(123)
+data&lt;- iris
+head(data)</code></pre>
+<pre><code>#&gt;   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+#&gt; 1          5.1         3.5          1.4         0.2  setosa
+#&gt; 2          4.9         3.0          1.4         0.2  setosa
+#&gt; 3          4.7         3.2          1.3         0.2  setosa
+#&gt; 4          4.6         3.1          1.5         0.2  setosa
+#&gt; 5          5.0         3.6          1.4         0.2  setosa
+#&gt; 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<pre class="r"><code>table(data$Species)</code></pre>
+<pre><code>#&gt; 
+#&gt;     setosa versicolor  virginica 
+#&gt;         50         50         50</code></pre>
+<p>It is a small dataset with 3 species of flowers: setosa, versicolor, virginica. The feaures are the sepal/petal length/width.</p>
+<p>split the dataset to training and testing sets.</p>
+<pre class="r"><code>data_split &lt;- initial_split(data, strata = &quot;Species&quot;)
+data_train &lt;- training(data_split)
+data_test &lt;- testing(data_split)</code></pre>
+<p>build a random forest model using <code>tidymodels</code> to classify the species:</p>
+<pre class="r"><code>rf_recipe &lt;- 
+  recipe(formula = Species ~ ., data = data_train) %&gt;%
+  step_zv(all_predictors())
+
+## feature importance sore to TRUE, and the proximity matrix to TRUE
+rf_spec &lt;- rand_forest() %&gt;%
+  set_engine(&quot;randomForest&quot;, importance = TRUE, proximity = TRUE) %&gt;%
+  set_mode(&quot;classification&quot;)
+
+rf_workflow &lt;- workflow() %&gt;% 
+  add_recipe(rf_recipe) %&gt;% 
+  add_model(rf_spec)
+
+
+rf_fit &lt;- fit(rf_workflow, data = data_train)</code></pre>
+<p>We can use the model to do classification on the testing set:</p>
+<pre class="r"><code>## confusion matrix
+predict(rf_fit, new_data = data_test) %&gt;%
+        bind_cols(data_test %&gt;% select(Species)) %&gt;%
+        conf_mat(truth = Species, estimate = .pred_class)</code></pre>
+<pre><code>#&gt;             Truth
+#&gt; Prediction   setosa versicolor virginica
+#&gt;   setosa         13          0         0
+#&gt;   versicolor      0         13         1
+#&gt;   virginica       0          0        12</code></pre>
+<p>Read my previous <a href="https://divingintogeneticsandgenomics.com/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">blog post</a> on using random forest for scRNAseq marker gene identification.</p>
+</div>
+<div id="use-the-proximity-matrix-for-clustering" class="section level3">
+<h3>Use the proximity matrix for clustering</h3>
+<p>The proximity matrix is hidden deep in the list:</p>
+<pre class="r"><code>proximity_mat&lt;- rf_fit$fit$fit$fit$proximity
+
+pca_prcomp&lt;- prcomp(proximity_mat, center = TRUE, scale. = FALSE)
+plot(pca_prcomp)</code></pre>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-8-1.png" width="576" /></p>
+<pre class="r"><code>pca_df&lt;- data.frame(pca_prcomp$x[,1:2], Species = data_train$Species)
+
+ggplot(pca_df, aes(x= PC1, y = PC2)) +
+        geom_point(aes(color = Species))</code></pre>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-8-2.png" width="576" /></p>
+<p>of course, we can use the original matrix for PCA too because they are all numeric values for the variables.</p>
+<pre class="r"><code>head(data_train)</code></pre>
+<pre><code>#&gt;   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+#&gt; 3          4.7         3.2          1.3         0.2  setosa
+#&gt; 4          4.6         3.1          1.5         0.2  setosa
+#&gt; 5          5.0         3.6          1.4         0.2  setosa
+#&gt; 7          4.6         3.4          1.4         0.3  setosa
+#&gt; 8          5.0         3.4          1.5         0.2  setosa
+#&gt; 9          4.4         2.9          1.4         0.2  setosa</code></pre>
+<pre class="r"><code>pca_prcomp2&lt;- prcomp(as.matrix(data_train[, -5]), center = TRUE, scale. = FALSE)
+
+plot(pca_prcomp2)</code></pre>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-9-1.png" width="576" /></p>
+<pre class="r"><code>pca_df2&lt;- data.frame(pca_prcomp2$x[,1:2], Species = data_train$Species)
+
+ggplot(pca_df2, aes(x= PC1, y = PC2)) +
+        geom_point(aes(color = Species))</code></pre>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-9-2.png" width="576" /></p>
+<p>However, imagine that not all the variables are numeric, and we can not easily plot a PCA plot using the raw data. We can use random forest to get a proximity matrix and use that matrix for PCA as shown above.</p>
+</div>
+<div id="clustering-using-the-proximity-matrix" class="section level3">
+<h3>clustering using the proximity matrix</h3>
+<pre class="r"><code>dim(proximity_mat)</code></pre>
+<pre><code>#&gt; [1] 111 111</code></pre>
+<pre class="r"><code>proximity_mat[1:5, 1:5]</code></pre>
+<pre><code>#&gt;           1         2       3         4        5
+#&gt; 1 1.0000000 0.9857143 1.00000 1.0000000 1.000000
+#&gt; 2 0.9857143 1.0000000 0.96875 0.9848485 0.974026
+#&gt; 3 1.0000000 0.9687500 1.00000 1.0000000 1.000000
+#&gt; 4 1.0000000 0.9848485 1.00000 1.0000000 1.000000
+#&gt; 5 1.0000000 0.9740260 1.00000 1.0000000 1.000000</code></pre>
+<pre class="r"><code>rownames(proximity_mat)&lt;- data_train[, 5]
+colnames(proximity_mat)&lt;- data_train[, 5]
+# turn it to a distance 
+iris_distance&lt;- dist(1-proximity_mat)
+
+# hierarchical clustering
+hc&lt;- hclust(iris_distance)
+
+# cut the tree to 3 clusters
+clusters&lt;- cutree(hc, k = 3)</code></pre>
+<pre class="r"><code>library(dendextend)
+library(dendsort)
+library(Polychrome)
+
+mypal &lt;- kelly.colors(4)[-1]
+swatch(mypal)</code></pre>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-11-1.png" width="576" /></p>
+<pre class="r"><code>plot_dend&lt;- function(dend,...){
+  dend_labels&lt;- dend %&gt;% labels()
+  
+  dend %&gt;% 
+  color_labels(col = mypal[as.numeric(as.factor(dend_labels))]) %&gt;%
+  set(&quot;labels_cex&quot;, 0.7) %&gt;%
+  plot(...)
+}</code></pre>
+<p>plot the dendrogram</p>
+<pre class="r"><code># no sorting on dendrogram
+as.dendrogram(hc) %&gt;%
+        plot_dend()</code></pre>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-12-1.png" width="576" /></p>
+<pre class="r"><code># sort the dendrogram
+as.dendrogram(hc) %&gt;%
+        dendsort() %&gt;%
+        plot_dend()</code></pre>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-12-2.png" width="576" /></p>
+<p>visualize the clusters in the PCA plot using the proximity matrix.
+We see there are some miss-classifications between versicolor and virginica.</p>
+<pre class="r"><code>pca_df&lt;- data.frame(pca_prcomp$x[,1:2], 
+                    Species = data_train$Species,
+                    clusters = as.factor(clusters))
+
+ggplot(pca_df, aes(x= PC1, y = PC2)) +
+        geom_point(aes(color = Species, shape = clusters)) +
+        theme_bw(base_size = 14)</code></pre>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-13-1.png" width="576" /></p>
+<p>visualize the clusters in the PCA plot using the raw data.</p>
+<pre class="r"><code>pca_df2&lt;- data.frame(pca_prcomp2$x[,1:2], 
+                    Species = data_train$Species,
+                    clusters = as.factor(clusters))
+
+ggplot(pca_df2, aes(x= PC1, y = PC2)) +
+        geom_point(aes(color = Species, shape = clusters)) +
+        theme_bw(base_size = 14)</code></pre>
+<p><img src="/post/2023-11-06-use-random-forest-as-a-clustering-method_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
+<p>PS. If you want to learn more about clustering, heatmap and PCA, my book have full chapters devoted to those topics. Grab a copy to become a data master at <a href="https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line">here</a>!</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/machine-learning/">machine learning</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/tidyverse/">tidyverse</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/tidymodels/">tidymodels</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">scRNAseq clustering significance test: an unsolvable problem?</a></li>
+        
+        <li><a href="/post/has-ai-changed-the-course-of-drug-development/">Has AI changed the course of Drug Development?</a></li>
+        
+        <li><a href="/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/">How to do gene correlation for single-cell RNAseq data (part 1)</a></li>
+        
+        <li><a href="/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/">transpose single-cell cell x gene dataframe to gene x cell </a></li>
+        
+        <li><a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/" rel="next">My take on Data Challenges in Immuno-oncology, the Role of the Cloud, and Growing a Computational Biology Team</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/how-i-am-learning-deep-learning/" rel="prev">My 4-steps to learn deep learning for genomics</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

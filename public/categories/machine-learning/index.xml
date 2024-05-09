@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sun, 23 Jul 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 06 Nov 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/machine-learning/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to use random forest as a clustering method</title>
+      <link>/post/use-random-forest-as-a-clustering-method/</link>
+      <pubDate>Mon, 06 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/use-random-forest-as-a-clustering-method/</guid>
+      <description>If you ask me: what’s your favorite machine learning algorithm? I would answer logistic regression (with regularization: Lasso, Ridge and Elastic) followed by random forest. In fact, that’s how we try those methods in order. Deep learning can perform well for tabular data with complicated architecture while random forest or boost tree based method usually work well out of the box. Regression and random forest are more interpretable too.</description>
+    </item>
     
     <item>
       <title>scRNAseq clustering significance test: an unsolvable problem?</title>

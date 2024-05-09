@@ -17,7 +17,8 @@
       
     
   
-  <meta name="description" content=" ">
+  <meta name="description" content="The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
+The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock. When the TCR encounters a target it recognizes, it sends signals to the T-cell telling it to attack and destroy the invader.">
 
   
   <link rel="alternate" hreflang="en-us" href="/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/">
@@ -95,7 +96,8 @@
   <meta property="og:site_name" content="DNA confesses Data speak">
   <meta property="og:url" content="/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/">
   <meta property="og:title" content="Predict TCR cancer specificity using 1d convolutional and LSTM neural networks | DNA confesses Data speak">
-  <meta property="og:description" content=" ">
+  <meta property="og:description" content="The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
+The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock. When the TCR encounters a target it recognizes, it sends signals to the T-cell telling it to attack and destroy the invader.">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2023-10-03T00:00:00&#43;00:00">
@@ -160,13 +162,11 @@
         
         
         
-          
-        
 
         <li class="nav-item">
-          <a href="/#publications">
+          <a href="/#cv">
             
-            <span>Publications</span>
+            <span>Newsletter</span>
             
           </a>
         </li>
@@ -236,11 +236,13 @@
         
         
         
+          
+        
 
         <li class="nav-item">
-          <a href="/#cv">
+          <a href="/#publications">
             
-            <span>CV</span>
+            <span>Publications</span>
             
           </a>
         </li>
@@ -301,7 +303,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    0 min read
+    11 min read
   </span>
   
 
@@ -379,6 +381,385 @@
       <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
+<p>The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.</p>
+<p>The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock. When the TCR encounters a target it recognizes, it sends signals to the T-cell telling it to attack and destroy the invader.</p>
+<p>T-cell receptor (TCR) sequencing data is one type of high-throughput sequencing data that provides valuable insights into the immune system’s response to cancer. We can now even get single-cell TCRseq data. In this blog post, we will discuss a deep learning model developed to predict cancer from healthy control using TCRseq data.</p>
+<p>This blog post is inspired by the publication <a href="https://pubmed.ncbi.nlm.nih.gov/32817363/">De novo prediction of cancer-associated T cell receptors for noninvasive cancer detection</a>. We will use the same training and testing data from <a href="https://github.com/s175573/DeepCAT" class="uri">https://github.com/s175573/DeepCAT</a></p>
+<p>For completeness, we will compare 3 different models:</p>
+<ul>
+<li>fully connected (dense) neural network</li>
+<li>1d convolutional neural network</li>
+<li>Long short term memory (LSTM) neural network</li>
+</ul>
+<pre class="r"><code>library(keras)
+library(readr)
+library(stringr)
+library(ggplot2)
+library(dplyr)
+use_condaenv(&quot;r-reticulate&quot;)
+
+# Set a random seed in R to make it more reproducible 
+set.seed(123)
+
+# Set the seed for Keras/TensorFlow
+tensorflow::set_random_seed(123)</code></pre>
+<p>Prepare the training and testing datasets.</p>
+<pre class="r"><code>normal_CDR3&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/NormalCDR3.txt&quot;,
+                       col_names = FALSE)
+
+cancer_CDR3&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/TumorCDR3.txt&quot;,
+                       col_names = FALSE)
+
+train_CDR3&lt;- rbind(normal_CDR3, cancer_CDR3)
+train_label&lt;- c(rep(0, nrow(normal_CDR3)), rep(1, nrow(cancer_CDR3))) %&gt;% as.numeric()
+
+normal_CDR3_test&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/NormalCDR3_test.txt&quot;,
+                       col_names = FALSE)
+
+cancer_CDR3_test&lt;- read_tsv(&quot;/Users/tommytang/github_repos/DeepCAT/TrainingData/TumorCDR3_test.txt&quot;,
+                       col_names = FALSE)
+
+test_CDR3&lt;- rbind(normal_CDR3_test, cancer_CDR3_test)
+test_label&lt;- c(rep(0, nrow(normal_CDR3_test)), rep(1, nrow(cancer_CDR3_test)))
+
+AAindex&lt;- read.table(&quot;/Users/tommytang/github_repos/DeepCAT/AAidx_PCA.txt&quot;,header = TRUE)
+
+## 20 aa
+total_aa&lt;- rownames(AAindex)
+total_aa</code></pre>
+<pre><code>#&gt;  [1] &quot;A&quot; &quot;R&quot; &quot;N&quot; &quot;D&quot; &quot;C&quot; &quot;E&quot; &quot;Q&quot; &quot;G&quot; &quot;H&quot; &quot;I&quot; &quot;L&quot; &quot;K&quot; &quot;M&quot; &quot;F&quot; &quot;P&quot; &quot;S&quot; &quot;T&quot; &quot;W&quot; &quot;Y&quot;
+#&gt; [20] &quot;V&quot;</code></pre>
+<p>In the paper:</p>
+<blockquote>
+<p>Because CDR3s with different lengths usually form distinct loop structures to interact with the antigens (33, 34), we built five models each for lengths 12 through 16.</p>
+</blockquote>
+<p>We will build a model with a <code>length_cutoff</code> of 12.</p>
+<pre class="r"><code>#one-hot encoding
+encode_one_cdr3&lt;- function(cdr3, length_cutoff){
+        res&lt;- matrix(0, nrow = length(total_aa), ncol = length_cutoff)
+        cdr3&lt;- unlist(str_split(cdr3, pattern = &quot;&quot;))
+        cdr3&lt;- cdr3[1:length_cutoff]
+        row_index&lt;- sapply(cdr3, function(x) which(total_aa==x)[1])
+        col_index&lt;- 1: length_cutoff
+        res[as.matrix(cbind(row_index, col_index))]&lt;- 1
+        return(res)
+
+}
+                        
+cdr3&lt;- &quot;CASSLKPNTEAFF&quot;
+
+encode_one_cdr3(cdr3, length_cutoff = 12)</code></pre>
+<pre><code>#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
+#&gt;  [1,]    0    1    0    0    0    0    0    0    0     0     1     0
+#&gt;  [2,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [3,]    0    0    0    0    0    0    0    1    0     0     0     0
+#&gt;  [4,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [5,]    1    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [6,]    0    0    0    0    0    0    0    0    0     1     0     0
+#&gt;  [7,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [8,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt;  [9,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [10,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [11,]    0    0    0    0    1    0    0    0    0     0     0     0
+#&gt; [12,]    0    0    0    0    0    1    0    0    0     0     0     0
+#&gt; [13,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [14,]    0    0    0    0    0    0    0    0    0     0     0     1
+#&gt; [15,]    0    0    0    0    0    0    1    0    0     0     0     0
+#&gt; [16,]    0    0    1    1    0    0    0    0    0     0     0     0
+#&gt; [17,]    0    0    0    0    0    0    0    0    1     0     0     0
+#&gt; [18,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [19,]    0    0    0    0    0    0    0    0    0     0     0     0
+#&gt; [20,]    0    0    0    0    0    0    0    0    0     0     0     0</code></pre>
+<div id="fully-connected-dense-neural-network" class="section level3">
+<h3>fully connected (dense) neural network</h3>
+<pre class="r"><code>length_cutoff = 12
+
+# encode all the CDR3 sequences 
+train_data&lt;- purrr::map(train_CDR3$X1, 
+                        ~encode_one_cdr3(.x, length_cutoff = length_cutoff))
+
+# reshape the data to a 2D matrix, flatten the 2D aa matrix into a single vector of size 20 * length of the CDR3
+
+train_data&lt;- array_reshape(unlist(train_data), 
+                           dim = c(length(train_data), 20 * length_cutoff))
+
+
+dim(train_data)</code></pre>
+<pre><code>#&gt; [1] 70000   240</code></pre>
+<pre class="r"><code>train_data[1,]</code></pre>
+<pre><code>#&gt;   [1] 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt;  [38] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt;  [75] 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt; [112] 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0
+#&gt; [149] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0
+#&gt; [186] 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt; [223] 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0</code></pre>
+<p>do the same for test data</p>
+<pre class="r"><code>test_data&lt;- purrr::map(test_CDR3$X1,  
+                       ~encode_one_cdr3(.x, length_cutoff = length_cutoff))
+
+test_data&lt;- array_reshape(unlist(test_data), 
+                          dim= c(length(test_data), 20* length_cutoff))</code></pre>
+<p>build the model:</p>
+<pre class="r"><code>y_train &lt;- as.numeric(train_label)
+y_test &lt;- as.numeric(test_label)
+
+
+model &lt;- keras_model_sequential() %&gt;% 
+        layer_dense(units = 32, activation = &quot;relu&quot;, 
+                    input_shape = c(20 * length_cutoff)) %&gt;%
+        layer_dense(units = 32, activation = &quot;relu&quot;) %&gt;%
+        layer_dense(units = 1, activation = &quot;sigmoid&quot;)
+
+summary(model)</code></pre>
+<pre><code>#&gt; Model: &quot;sequential&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; dense_2 (Dense)                     (None, 32)                      7712        
+#&gt; ________________________________________________________________________________
+#&gt; dense_1 (Dense)                     (None, 32)                      1056        
+#&gt; ________________________________________________________________________________
+#&gt; dense (Dense)                       (None, 1)                       33          
+#&gt; ================================================================================
+#&gt; Total params: 8,801
+#&gt; Trainable params: 8,801
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<pre class="r"><code>model %&gt;% compile(
+        optimizer = &quot;rmsprop&quot;,
+        loss = &quot;binary_crossentropy&quot;,
+        metrics = c(&quot;accuracy&quot;)
+)</code></pre>
+<p>If one use big epochs, the model will be over-fitted. Set apart 10000 CDR3 sequences for validation.</p>
+<p>It is critical to shuffle the data using <code>sample</code> function to make the training and validation set random.</p>
+<pre class="r"><code>set.seed(123)
+val_indices &lt;- sample(nrow(train_data), 35000)
+x_val &lt;- train_data[val_indices,]
+partial_x_train &lt;- train_data[-val_indices,]
+
+y_val &lt;- y_train[val_indices]
+partial_y_train &lt;- y_train[-val_indices]
+
+history &lt;- model %&gt;% fit(partial_x_train, 
+                         partial_y_train, 
+                         epochs = 20, 
+                         batch_size = 512, 
+                         validation_data = list(x_val, y_val)
+)
+
+plot(history)</code></pre>
+<p><img src="/post/2023-10-03-predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks_files/figure-html/unnamed-chunk-8-1.png" width="576" /></p>
+<p>Final training</p>
+<pre class="r"><code>model %&gt;% fit(train_data, y_train, epochs = 20, batch_size = 512)
+results &lt;- model %&gt;% evaluate(test_data, y_test)
+results</code></pre>
+<pre><code>#&gt;      loss  accuracy 
+#&gt; 0.4169728 0.8061706</code></pre>
+<p>81% accuracy. Not bad!</p>
+</div>
+<div id="precision-recall" class="section level3">
+<h3>precision-recall</h3>
+<p>Read this blog post by David <a href="https://davemcg.github.io/post/are-you-in-genomics-stop-using-roc-use-pr/">Are you in genomics and building models? Stop using ROC - use PR</a></p>
+<pre class="r"><code>predict(model, test_data[1:20, ])</code></pre>
+<pre><code>#&gt;             [,1]
+#&gt;  [1,] 0.73146832
+#&gt;  [2,] 0.17803338
+#&gt;  [3,] 0.13752139
+#&gt;  [4,] 0.02351084
+#&gt;  [5,] 0.05476111
+#&gt;  [6,] 0.12303543
+#&gt;  [7,] 0.16548795
+#&gt;  [8,] 0.04623273
+#&gt;  [9,] 0.48983151
+#&gt; [10,] 0.66229594
+#&gt; [11,] 0.05498785
+#&gt; [12,] 0.27218163
+#&gt; [13,] 0.31630093
+#&gt; [14,] 0.31763732
+#&gt; [15,] 0.01344728
+#&gt; [16,] 0.04035982
+#&gt; [17,] 0.10508105
+#&gt; [18,] 0.18193811
+#&gt; [19,] 0.15098864
+#&gt; [20,] 0.16778088</code></pre>
+<pre class="r"><code>res&lt;- predict(model, test_data) %&gt;%
+        dplyr::bind_cols(y_test)
+
+colnames(res)&lt;- c(&quot;estimate&quot;, &quot;truth&quot;)
+res$truth&lt;- as.factor(res$truth)</code></pre>
+<blockquote>
+<p>A receiver operating characteristic curve, or ROC curve, is a graphical plot that illustrates the diagnostic ability of a binary classifier system as its discrimination threshold is varied.</p>
+</blockquote>
+<blockquote>
+<p>The ROC curve is the plot of the true positive rate (TPR) against the false positive rate (FPR), at various threshold settings.</p>
+</blockquote>
+<p>ROC AUC is a bit more inflated compared to precision-recall AUC below.</p>
+<pre class="r"><code>yardstick::roc_auc(res, truth, estimate,  event_level = &quot;second&quot;)</code></pre>
+<pre><code>#&gt; # A tibble: 1 × 3
+#&gt;   .metric .estimator .estimate
+#&gt;   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+#&gt; 1 roc_auc binary         0.889</code></pre>
+<pre class="r"><code>yardstick::roc_curve(res, truth, estimate,  event_level = &quot;second&quot;) %&gt;%
+        autoplot() +
+        ggtitle(&quot;ROC AUC&quot;)</code></pre>
+<p><img src="/post/2023-10-03-predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks_files/figure-html/unnamed-chunk-11-1.png" width="576" /></p>
+<p>precision-recall AUC:</p>
+<pre class="r"><code>yardstick::pr_auc(res, truth, estimate, event_level = &quot;second&quot;)</code></pre>
+<pre><code>#&gt; # A tibble: 1 × 3
+#&gt;   .metric .estimator .estimate
+#&gt;   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+#&gt; 1 pr_auc  binary         0.818</code></pre>
+<pre class="r"><code>yardstick::pr_curve(res, truth, estimate, event_level = &quot;second&quot;) %&gt;%
+        autoplot() +
+        ggtitle(&quot;precision-recall AUC&quot;)</code></pre>
+<p><img src="/post/2023-10-03-predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks_files/figure-html/unnamed-chunk-12-1.png" width="576" /></p>
+</div>
+<div id="use-conv1d" class="section level3">
+<h3>use conv1d</h3>
+<p>Note how I transformed the tensor to the right shape.</p>
+<p>For more on tensor reshaping in R, read my previous blog post:
+<a href="https://divingintogeneticsandgenomics.com/post/basic-tensor-array-manipulations-in-r/">Basic tensor/array manipulations in R</a></p>
+<pre class="r"><code>train_data&lt;- purrr::map(train_CDR3$X1, 
+                        ~encode_one_cdr3(.x, length_cutoff = length_cutoff))
+
+train_data2&lt;- array_reshape(lapply(train_data, 
+                                       function(x) x %&gt;%t() %&gt;% c()) %&gt;% unlist(),
+                           dim = c(length(train_data), 20, length_cutoff))
+
+# sanity check to see if the data are the same after reshaping
+all.equal(train_data[[1]], train_data2[1,,])</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>test_data&lt;- purrr::map(test_CDR3$X1, 
+                       ~encode_one_cdr3(.x, length_cutoff = length_cutoff))
+
+test_data2&lt;- array_reshape(lapply(test_data, 
+                                       function(x) x %&gt;%t() %&gt;% c()) %&gt;% unlist(),
+                           dim = c(length(test_data), 20, length_cutoff))</code></pre>
+<pre class="r"><code>y_train &lt;- as.numeric(train_label)
+y_test &lt;- as.numeric(test_label)
+
+
+model&lt;- keras_model_sequential() %&gt;%
+        layer_conv_1d(filters = 32, kernel_size = 4, activation = &quot;relu&quot;,
+                input_shape = c(20, length_cutoff)) %&gt;%
+        layer_max_pooling_1d(pool_size = 4) %&gt;%
+        layer_flatten() %&gt;%
+        layer_dense(units = 16, activation = &quot;relu&quot;) %&gt;%
+        layer_dense(units = 1, activation= &quot;sigmoid&quot;)
+
+model %&gt;% compile(
+        optimizer = &quot;rmsprop&quot;,
+        loss = &quot;binary_crossentropy&quot;,
+        metrics = c(&quot;accuracy&quot;)
+)
+
+summary(model)</code></pre>
+<pre><code>#&gt; Model: &quot;sequential_1&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; conv1d (Conv1D)                     (None, 17, 32)                  1568        
+#&gt; ________________________________________________________________________________
+#&gt; max_pooling1d (MaxPooling1D)        (None, 4, 32)                   0           
+#&gt; ________________________________________________________________________________
+#&gt; flatten (Flatten)                   (None, 128)                     0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_4 (Dense)                     (None, 16)                      2064        
+#&gt; ________________________________________________________________________________
+#&gt; dense_3 (Dense)                     (None, 1)                       17          
+#&gt; ================================================================================
+#&gt; Total params: 3,649
+#&gt; Trainable params: 3,649
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<pre class="r"><code>set.seed(123)
+#sample half for validation set 
+val_indices &lt;- sample(dim(train_data2)[1], 35000)
+
+x_val &lt;- train_data2[val_indices,,] %&gt;% 
+        array_reshape(dim=c(35000, 20, length_cutoff))
+
+partial_x_train &lt;- train_data2[-val_indices,,] %&gt;%
+        array_reshape(dim=c(35000, 20, length_cutoff))
+
+y_val &lt;- y_train[val_indices]
+partial_y_train &lt;- y_train[-val_indices]
+
+history &lt;- model %&gt;% fit(partial_x_train, 
+                         partial_y_train, 
+                         epochs = 20, 
+                         batch_size = 512, 
+                         validation_data = list(x_val, y_val)
+)
+
+plot(history)</code></pre>
+<p><img src="/post/2023-10-03-predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks_files/figure-html/unnamed-chunk-15-1.png" width="576" /></p>
+<pre class="r"><code>model %&gt;% fit(train_data2, y_train, epochs = 20, batch_size = 512)
+results &lt;- model %&gt;% evaluate(test_data2, y_test)
+results</code></pre>
+<pre><code>#&gt;      loss  accuracy 
+#&gt; 0.4576261 0.7857693</code></pre>
+<p>We get a ~78% accuracy. It did not beat the fully connected dense neural network.</p>
+</div>
+<div id="use-long-short-term-memory" class="section level3">
+<h3>use long short-term memory</h3>
+<pre class="r"><code>model_lstm&lt;- keras_model_sequential() %&gt;%
+        layer_lstm(units = 32, input_shape = c(20, length_cutoff)) %&gt;%
+        layer_dense(units = 16, activation = &quot;relu&quot;) %&gt;%
+        layer_dense(units = 1, activation= &quot;sigmoid&quot;)
+
+model_lstm %&gt;% compile(
+        optimizer = &quot;rmsprop&quot;,
+        loss = &quot;binary_crossentropy&quot;,
+        metrics = c(&quot;accuracy&quot;)
+)
+
+summary(model_lstm)</code></pre>
+<pre><code>#&gt; Model: &quot;sequential_2&quot;
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; lstm (LSTM)                         (None, 32)                      5760        
+#&gt; ________________________________________________________________________________
+#&gt; dense_6 (Dense)                     (None, 16)                      528         
+#&gt; ________________________________________________________________________________
+#&gt; dense_5 (Dense)                     (None, 1)                       17          
+#&gt; ================================================================================
+#&gt; Total params: 6,305
+#&gt; Trainable params: 6,305
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________</code></pre>
+<pre class="r"><code>history &lt;- model_lstm %&gt;% fit(partial_x_train, 
+                         partial_y_train, 
+                         epochs = 20, 
+                         batch_size = 512, 
+                         validation_data = list(x_val, y_val)
+)
+
+plot(history)</code></pre>
+<p><img src="/post/2023-10-03-predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks_files/figure-html/unnamed-chunk-17-1.png" width="576" /></p>
+<pre class="r"><code>model_lstm %&gt;% fit(train_data2, y_train, epochs = 19, batch_size = 512)
+results &lt;- model_lstm %&gt;% evaluate(test_data2, y_test)
+results</code></pre>
+<pre><code>#&gt;      loss  accuracy 
+#&gt; 0.5177664 0.7456701</code></pre>
+<p>accuracy of 75%!</p>
+<p>I also tried the CNN model in the original paper, the performance is even worse. Of course, the original model has hyperparameters such as learning rate, drop out rate etc that I did not experiment with.</p>
+</div>
+<div id="conclusions" class="section level3">
+<h3>Conclusions</h3>
+<ol style="list-style-type: decimal">
+<li><p>understanding the biology is important. How to represent the CDR3 sequences? we can use one-hot encoding, we can also use BLOSOM62 matrix to include the amino acid properties. Further read this blog post <a href="https://liambai.com/protein-representation/">How to represent protein sequence</a>.</p></li>
+<li><p>Tensor reshaping is the more difficult part in building a deep learning model.For more on tensor reshaping in R, read my previous blog post:
+<a href="https://divingintogeneticsandgenomics.com/post/basic-tensor-array-manipulations-in-r/">Basic tensor/array manipulations in R</a>.</p></li>
+<li><p>Always use the simple model first. Of course, one can fine tune the hyperparameters to make the complicated model perform as good or better. However, it may take time and more computing.</p></li>
+<li><p>Watch out data leakage. The TCR sequences in the testing sets may have seen by the training sets. Some papers proposed an approach based on the Levenshtein similarities, Hobohm-based redundancy reduction. Further read <a href="https://www.frontiersin.org/articles/10.3389/fimmu.2022.1055151/full">NetTCR-2.1: Lessons and guidance on how to develop models for TCR specificity predictions</a></p></li>
+<li><p>In this example, we only used the most variable region CDR3 region as the input. Including V,D,J gene usage and HLA typing information may further boost the accuracy.</p></li>
+<li><p>Different models are good at different tasks. e.g., LSTM does not outperform full connected approach in sentiment analysis because the frequency of positive words and negative words are good for prediction already. Given enough context (LSTM) does not help much. See my previous post <a href="https://divingintogeneticsandgenomics.com/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/">Long Short-term memory (LSTM) Recurrent Neural Network (RNN) to classify movie reviews</a></p></li>
+<li><p>The architecture of the neural network is an art. How many layers to use? How many neurons in each layer? When the performance is good, we do not think too much about it. When the performance is bad, we then need to fine tune those parameters.</p></li>
+</ol>
+</div>
 
     </div>
 
@@ -422,6 +803,11 @@
     
     <div class="article-widget">
       <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/" rel="next">How to code a variational autoencoder (VAE) in R using the MNIST dataset</a>
+  </div>
   
   
   <div class="post-nav-item">

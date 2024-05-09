@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="In Single-cell RNAseq analysis, there is a step to find the marker genes for each cluster. The output from Seurat FindAllMarkers has a column called avg_log2FC. It is the gene expression log2 fold change between cluster x and all other clusters.
+How is that calculated? In this tweet thread by Lior Pachter, he said that there was a discrepancy for the logFC changes between Seurat and Scanpy: Actually, both Scanpy and Seurat calculate it wrong.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:url" content="/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/">
+  <meta property="og:title" content="Do you really understand log2Fold change in single-cell RNAseq data? | DNA confesses Data speak">
+  <meta property="og:description" content="In Single-cell RNAseq analysis, there is a step to find the marker genes for each cluster. The output from Seurat FindAllMarkers has a column called avg_log2FC. It is the gene expression log2 fold change between cluster x and all other clusters.
+How is that calculated? In this tweet thread by Lior Pachter, he said that there was a discrepancy for the logFC changes between Seurat and Scanpy: Actually, both Scanpy and Seurat calculate it wrong.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2024-03-05T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2024-03-05T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Do you really understand log2Fold change in single-cell RNAseq data? | DNA confesses Data speak</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Do you really understand log2Fold change in single-cell RNAseq data?</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2024-03-05 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Mar 5, 2024
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    13 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/single-cell/">single-cell</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Do%20you%20really%20understand%20log2Fold%20change%20in%20single-cell%20RNAseq%20data%3f&amp;url=%2fpost%2fdo-you-really-understand-log2fold-change-in-single-cell-rnaseq-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fdo-you-really-understand-log2fold-change-in-single-cell-rnaseq-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fdo-you-really-understand-log2fold-change-in-single-cell-rnaseq-data%2f&amp;title=Do%20you%20really%20understand%20log2Fold%20change%20in%20single-cell%20RNAseq%20data%3f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fdo-you-really-understand-log2fold-change-in-single-cell-rnaseq-data%2f&amp;title=Do%20you%20really%20understand%20log2Fold%20change%20in%20single-cell%20RNAseq%20data%3f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Do%20you%20really%20understand%20log2Fold%20change%20in%20single-cell%20RNAseq%20data%3f&amp;body=%2fpost%2fdo-you-really-understand-log2fold-change-in-single-cell-rnaseq-data%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>In Single-cell RNAseq analysis, there is a step to find the marker genes for
+each cluster. The output from <code>Seurat</code> <code>FindAllMarkers</code> has a column called <code>avg_log2FC</code>.
+It is the gene expression log2 fold change between cluster x and all other clusters.</p>
+<p>How is that calculated? In this <a href="https://twitter.com/lpachter/status/1694387749967847874">tweet thread</a> by Lior Pachter,
+he said that there was a discrepancy for the logFC changes between <code>Seurat</code> and
+<code>Scanpy</code>:
+<img src="/img/logFC_singlecell.jpeg" /></p>
+<p>Actually, both <code>Scanpy</code> and <code>Seurat</code> calculate it wrong. Let’s dive in.</p>
+<pre class="r"><code>library(Seurat)
+library(SeuratData)
+library(dplyr)
+library(scCustomize)
+
+data(&quot;pbmc3k&quot;)
+
+# some error, need to update the object
+pbmc3k&lt;- UpdateSeuratObject(pbmc3k)
+
+pbmc3k</code></pre>
+<pre><code>#&gt; An object of class Seurat 
+#&gt; 13714 features across 2700 samples within 1 assay 
+#&gt; Active assay: RNA (13714 features, 0 variable features)
+#&gt;  2 layers present: counts, data</code></pre>
+<p>Some routine processing</p>
+<pre class="r"><code>pbmc3k&lt;- pbmc3k %&gt;% 
+  NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;%
+  FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;%
+  ScaleData() %&gt;%
+  RunPCA(verbose = FALSE) %&gt;%
+  FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;%
+  FindClusters(resolution = 0.5, verbose = FALSE) %&gt;%
+  RunUMAP(dims = 1:10, verbose = FALSE)
+
+pbmc3k&lt;- pbmc3k[, !is.na(pbmc3k$seurat_annotations)]
+
+p1&lt;- DimPlot_scCustom(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, group.by = 
+                        &quot;RNA_snn_res.0.5&quot;)
+
+p2&lt;- DimPlot_scCustom(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, group.by = &quot;seurat_annotations&quot;, label.size = 3)
+
+p1 + p2</code></pre>
+<p><img src="/post/2024-03-05-do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code># use Seurat&#39;s FindAllMarkers function
+markers_seurat&lt;- FindAllMarkers(pbmc3k)
+
+head(markers_seurat)</code></pre>
+<pre><code>#&gt;               p_val avg_log2FC pct.1 pct.2     p_val_adj cluster  gene
+#&gt; RPS6  5.467436e-142  0.6963639 1.000 0.995 7.498042e-138       0  RPS6
+#&gt; RPS12 1.026837e-138  0.7323892 1.000 0.991 1.408204e-134       0 RPS12
+#&gt; RPS27 9.369933e-132  0.7125597 0.999 0.992 1.284993e-127       0 RPS27
+#&gt; RPL32 1.289946e-131  0.6221148 0.999 0.995 1.769031e-127       0 RPL32
+#&gt; RPS14 9.504872e-124  0.6261648 1.000 0.994 1.303498e-119       0 RPS14
+#&gt; CYBA  1.875899e-123 -1.7566153 0.658 0.913 2.572608e-119       0  CYBA</code></pre>
+<p>Let’s take a look at CD19 which is a B cell marker. cluster 3 is the B cell cluster.</p>
+<pre class="r"><code>markers_seurat %&gt;%
+        filter(cluster == 3) %&gt;%
+        filter(gene == &quot;CD19&quot;)</code></pre>
+<pre><code>#&gt;               p_val avg_log2FC pct.1 pct.2    p_val_adj cluster gene
+#&gt; CD19.3 3.322761e-87    5.62015 0.216 0.007 4.556834e-83       3 CD19</code></pre>
+<p>By default, <code>FindAllMarkers</code> uses Wilcoxon Rank Sum test. use <code>?FindAllMarkers</code>
+to see the details of other tests.</p>
+<p>Three things to note.</p>
+<ol style="list-style-type: decimal">
+<li><p>the p-values are very small. When you have hundreds or thousands of cells per
+cluster, the p-values will be very small. The p-value in statistical tests, including the Wilcoxon rank-sum test (also known as the Mann-Whitney U test), is influenced by both the sample size and the variability. As the sample size increases, the p-value tends to decrease, assuming there is a non-zero effect size.</p></li>
+<li><p>The p-values are inflated, as we cluster the cells first then use the cluster label
+to calculate the p-values. We are double-dipping the data. See this <a href="https://twitter.com/lucylgao/status/1299763664644313089?lang=en">twitter thread</a> for
+more details, and this paper <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7202736/">Valid post-clustering differential analysis for single-cell RNA-Seq</a></p></li>
+<li><p>There are nuances in how the log2 Fold change is calculated. <code>Scanpy</code> and <code>Seurat</code>have different implementations.</p></li>
+</ol>
+<p><strong>Seurat formula:</strong></p>
+<p><span class="math inline">\(R_{g}=\log_{2}(\frac{1}{n_{1}}\sum_{i\in G_{1}}(exp(Y_{ig})-1)+1)-log_{2}(\frac{1}{n_{2}}\sum_{i\in G_{2}}(exp(Y_{ig})-1)+1),\)</span></p>
+<p><strong>Scanpy formula:</strong></p>
+<p><span class="math inline">\(P_{g}=\log_{2}(exp(\frac{1}{n_{1}}\sum_{i\in G_{1}}Y_{ig})-1+\epsilon)-log_{2}(exp(\frac{1}{n_{2}}\sum_{i\in G_{2}}Y_{ig})-1+\epsilon),\)</span></p>
+<p>where <span class="math inline">\(\epsilon=10^{-9}\)</span>.</p>
+<p>where <span class="math inline">\(Y_{ig}\)</span> are the log-transformed expression values for cell <span class="math inline">\(i\)</span> and gene <span class="math inline">\(g\)</span>, <span class="math inline">\(G_{1}\)</span> and <span class="math inline">\(G_{2}\)</span> are the indices for two groups of cells, and <span class="math inline">\(n_{1}\)</span> and <span class="math inline">\(n_{2}\)</span> are the numbers of cells in the respective groups.</p>
+<div id="lets-calculate-the-fold-change-manually" class="section level3">
+<h3>Let’s calculate the fold change manually</h3>
+<p><code>NormalizeData(normalization.method = "LogNormalize", scale.factor = 10000)</code> this
+step divide the raw gene counts with the total counts of that cell (library size)
+and then natural log it and times the scaling factor of 10000.</p>
+<pre class="r"><code># CD19 natural log library size normalized expression
+log_normalized_data&lt;- pbmc3k@assays$RNA@data[&quot;CD19&quot;, ]
+
+# a logical vector indicating the cells from cluster 3
+cluster_B_index&lt;- pbmc3k$seurat_clusters == 3
+
+# negate it to get the cells from all other clusters
+other_clusters_index&lt;- !cluster_B_index
+
+# the natural log normalized counts for gene x from cluster 0
+cluster_B_norm_data&lt;- log_normalized_data[cluster_B_index]
+        
+# the natural log normalized counts for gene x from all other clusters
+other_cluster_norm_data&lt;- log_normalized_data[other_clusters_index]</code></pre>
+<p>Now, let’s <code>exp</code> it back and minus 1 to get the lib normalized counts without
+log transformation; take the mean across cells plus a tiny number, then log2
+transform:</p>
+<pre class="r"><code># cells from B cell cluster
+log2_mean_clusterB&lt;- log2(mean(exp(cluster_B_norm_data)-1) + 10^-9)
+
+log2_mean_clusterB</code></pre>
+<pre><code>#&gt; [1] 0.5181239</code></pre>
+<pre class="r"><code># cells from all other clusters 
+log2_mean_other_cluster&lt;- log2(mean(exp(other_cluster_norm_data)-1) +10^-9)
+
+log2_mean_other_cluster</code></pre>
+<pre><code>#&gt; [1] -5.1208</code></pre>
+<p>Now, let’s calculate the log2 fold change:</p>
+<pre class="r"><code>log2_mean_clusterB - log2_mean_other_cluster</code></pre>
+<pre><code>#&gt; [1] 5.638924</code></pre>
+<p>So, it seems <code>Seurat</code> updated their calculation method to add a small value
+of <code>10^-9</code> rather than 1. This is almost the same as the <code>FindAllMarkers</code> results…</p>
+<p>percentage of cells that are positive of CD19 in B cells and other cells:</p>
+<pre class="r"><code>pct.in&lt;- mean(cluster_B_norm_data != 0)
+pct.in</code></pre>
+<pre><code>#&gt; [1] 0.2157434</code></pre>
+<pre class="r"><code>pct.out&lt;- mean(other_cluster_norm_data !=0)
+pct.out</code></pre>
+<pre><code>#&gt; [1] 0.007407407</code></pre>
+<p>The percentages are exactly the same as the <code>FindAllMarkers</code> output</p>
+<p>If we use the the old formula which add 1 rather than a small value <code>1e^-9</code>:</p>
+<pre class="r"><code>log2(mean(exp(cluster_B_norm_data)-1) + 1) -
+        log2(mean(exp(other_cluster_norm_data)-1) + 1)</code></pre>
+<pre><code>#&gt; [1] 1.241319</code></pre>
+<p>The logFC is very different. The pseudo-count can have a large effect when the
+counts are small.</p>
+</div>
+<div id="if-we-calculate-the-scanpy-way" class="section level3">
+<h3>If we calculate the Scanpy way</h3>
+<pre class="r"><code># the natural log normalized counts for gene x from cluster 0
+cluster_B_norm_data&lt;- log_normalized_data[cluster_B_index]
+        
+# the natural log normalized counts for gene x from all other clusters
+other_cluster_norm_data&lt;- log_normalized_data[other_clusters_index]</code></pre>
+<p>calculate the mean of the natural log normalized counts and then <code>exp</code> it back</p>
+<pre class="r"><code>log2(exp(mean(cluster_B_norm_data)) -1 + 10^-9) -
+        log2(exp(mean(other_cluster_norm_data)) -1 + 10^-9)</code></pre>
+<pre><code>#&gt; [1] 5.508951</code></pre>
+<p>The <code>Scanpy</code> version take the mean of the natural log noramlized the counts first,
+then <code>exp</code> back, minus 1, add a small number, then log2 transform. It does not
+seems correct either</p>
+<p>However, the value is close to the updated Seurat version.</p>
+</div>
+<div id="lets-do-it-for-all-genes-in-the-b-cell-cluster" class="section level3">
+<h3>Let’s do it for all genes in the B cell cluster</h3>
+<pre class="r"><code>seurat_log2FC&lt;- function(method=&quot;old&quot;){
+        # natural log library size normalized expression
+        log_normalized_data&lt;- pbmc3k@assays$RNA@data
+
+        # a logical vector indicating the cells from cluster 0
+        cluster_B_index&lt;- pbmc3k$seurat_clusters == 3
+
+        # negate it to get the cells from all other clusters
+        other_clusters_index&lt;- !cluster_B_index
+
+        # the natural log normalized counts for gene x from cluster 3
+        cluster_B_norm_data&lt;- log_normalized_data[, cluster_B_index]
+        
+        # the natural log normalized counts for gene x from all other clusters
+        other_cluster_norm_data&lt;- log_normalized_data[,other_clusters_index]
+        
+        if (method == &quot;new&quot;){
+               x&lt;-  apply(cluster_B_norm_data, MARGIN =1,
+                          function(x) log2(mean(exp(x)-1) + 10^-9)) 
+               y&lt;-  apply(other_cluster_norm_data, MARGIN =1,
+                          function(x) log2(mean(exp(x)-1) +10^-9))
+               return(x-y)
+             
+        } else if (method == &quot;old&quot;){
+               x&lt;-  apply(cluster_B_norm_data, MARGIN =1,
+                          function(x) log2(mean(exp(x)-1) + 1)) 
+               y&lt;-  apply(other_cluster_norm_data, MARGIN =1,
+                          function(x) log2(mean(exp(x)-1) + 1))
+               return(x-y)
+        }
+}
+
+scanpy_log2FC&lt;- function(){
+        # natural log library size normalized expression
+        log_normalized_data&lt;- pbmc3k@assays$RNA@data
+
+        # a logical vector indicating the cells from cluster 0
+        cluster_B_index&lt;- pbmc3k$seurat_clusters == 3
+
+        # negate it to get the cells from all other clusters
+        other_clusters_index&lt;- !cluster_B_index
+
+        # the natural log normalized counts for gene x from cluster 3
+        cluster_B_norm_data&lt;- log_normalized_data[, cluster_B_index]
+        
+        # the natural log normalized counts for gene x from all other clusters
+        other_cluster_norm_data&lt;- log_normalized_data[,other_clusters_index]
+
+        x&lt;-  apply(cluster_B_norm_data, MARGIN =1,
+                          function(x) log2(exp(mean(x)) -1 + 10^-9))
+        
+        y&lt;-  apply(other_cluster_norm_data, MARGIN =1,
+                          function(x) log2(exp(mean(x)) -1 + 10^-9))
+        return(x-y)       
+}</code></pre>
+<p>Calculate the Fold changes using the functions for all genes comparing cluster 3
+versus all other clusters:</p>
+<pre class="r"><code>seurat_old_fold&lt;- seurat_log2FC(method = &quot;old&quot;)
+
+seurat_new_fold&lt;- seurat_log2FC(method = &quot;new&quot;)
+
+scanpy_fold&lt;- scanpy_log2FC()</code></pre>
+<p>put them into a single dataframe</p>
+<pre class="r"><code>seurat_old_df&lt;- tibble::enframe(seurat_old_fold, name = &quot;gene&quot;, value = &quot;seurat_old&quot;)
+seurat_new_df&lt;- tibble::enframe(seurat_new_fold, name = &quot;gene&quot;, value = &quot;seurat_new&quot;)
+scanpy_df&lt;- tibble::enframe(scanpy_fold, name = &quot;gene&quot;, value = &quot;scanpy&quot;)</code></pre>
+<p>plotting</p>
+<pre class="r"><code>library(ggplot2)
+fold_df&lt;- purrr::reduce(list(seurat_old_df, seurat_new_df, scanpy_df ), inner_join)
+
+p1&lt;- ggplot(fold_df) +
+        geom_point(aes(x=seurat_old, y = scanpy), size = 0.3, alpha = 0.5)+
+        geom_abline(intercept = 0, slope = 1, linetype = 2, color = &quot;red&quot;) +
+        coord_equal()
+
+
+p2&lt;- ggplot(fold_df) +
+        geom_point(aes(x=seurat_new, y = scanpy), size = 0.3, alpha = 0.5) +
+        geom_abline(intercept = 0, slope = 1, linetype = 2, color = &quot;red&quot;) +
+        coord_equal() +
+        theme_bw(base_size = 14)
+
+p1 + p2</code></pre>
+<p><img src="/post/2024-03-05-do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>The figure on the left recapitulates the discrepancy showed in the figure in the
+beginning of the post. The updated calculation in <code>Seurat</code> on the right is now
+very similar to <code>scanpy's</code> calculation.</p>
+<p>The updated Seurat formula:</p>
+<p><span class="math inline">\(R_{g}=\log_{2}(\frac{1}{n_{1}}\sum_{i\in G_{1}}(exp(Y_{ig})-1)+\epsilon)-log_{2}(\frac{1}{n_{2}}\sum_{i\in G_{2}}(exp(Y_{ig})-1)+\epsilon),\)</span></p>
+<p>where <span class="math inline">\(\epsilon=10^{-9}\)</span>.</p>
+</div>
+<div id="conclusions" class="section level3">
+<h3>Conclusions</h3>
+<ol style="list-style-type: decimal">
+<li><p>Details matters. Do not blindly trust packages even they are established ones.</p></li>
+<li><p>Small differences in treating the pseudo-counts can have big differences.</p></li>
+<li><p>Single-cell is a field developing so fast that we do not have consensus on many things.
+The <code>R</code> world is split into <code>Seurat</code> and <code>Bioconductor</code> and the <code>python</code> world is dominated
+by the <code>scverse</code>. We should encourage interactions between different communities to solve
+common challenges.</p></li>
+</ol>
+</div>
+<div id="further-reading" class="section level3">
+<h3>Further reading</h3>
+<p><a href="https://github.com/bnprks/BPCells/issues/45">Markers different in BPCells than in Seurat</a></p>
+<pre class="r"><code>devtools::session_info()</code></pre>
+<pre><code>#&gt; ─ Session info  😃  🖍️  🏒   ──────────────────────────────────────────────────
+#&gt;  hash: grinning face with big eyes, crayon, ice hockey
+#&gt; 
+#&gt;  setting  value
+#&gt;  version  R version 4.1.2 (2021-11-01)
+#&gt;  os       macOS Big Sur 10.16
+#&gt;  system   x86_64, darwin17.0
+#&gt;  ui       X11
+#&gt;  language (EN)
+#&gt;  collate  en_US.UTF-8
+#&gt;  ctype    en_US.UTF-8
+#&gt;  tz       America/New_York
+#&gt;  date     2024-03-07
+#&gt;  pandoc   3.1.1 @ /Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/ (via rmarkdown)
+#&gt; 
+#&gt; ─ Packages ───────────────────────────────────────────────────────────────────
+#&gt;  package            * version    date (UTC) lib source
+#&gt;  abind                1.4-5      2016-07-21 [1] CRAN (R 4.1.0)
+#&gt;  beeswarm             0.4.0      2021-06-01 [1] CRAN (R 4.1.0)
+#&gt;  blogdown             1.7        2021-12-19 [1] CRAN (R 4.1.2)
+#&gt;  bookdown             0.24       2021-09-02 [1] CRAN (R 4.1.0)
+#&gt;  bslib                0.3.1      2021-10-06 [1] CRAN (R 4.1.0)
+#&gt;  cachem               1.0.6      2021-08-19 [1] CRAN (R 4.1.0)
+#&gt;  callr                3.7.0      2021-04-20 [1] CRAN (R 4.1.0)
+#&gt;  circlize             0.4.13     2021-06-09 [1] CRAN (R 4.1.0)
+#&gt;  cli                  3.6.1      2023-03-23 [1] CRAN (R 4.1.2)
+#&gt;  cluster              2.1.2      2021-04-17 [1] CRAN (R 4.1.2)
+#&gt;  codetools            0.2-18     2020-11-04 [1] CRAN (R 4.1.2)
+#&gt;  colorspace           2.0-2      2021-06-24 [1] CRAN (R 4.1.0)
+#&gt;  cowplot              1.1.1      2020-12-30 [1] CRAN (R 4.1.0)
+#&gt;  crayon               1.4.2      2021-10-29 [1] CRAN (R 4.1.0)
+#&gt;  data.table           1.14.2     2021-09-27 [1] CRAN (R 4.1.0)
+#&gt;  DBI                  1.1.1      2021-01-15 [1] CRAN (R 4.1.0)
+#&gt;  deldir               1.0-6      2021-10-23 [1] CRAN (R 4.1.0)
+#&gt;  desc                 1.4.0      2021-09-28 [1] CRAN (R 4.1.0)
+#&gt;  devtools             2.4.2      2021-06-07 [1] CRAN (R 4.1.0)
+#&gt;  digest               0.6.28     2021-09-23 [1] CRAN (R 4.1.0)
+#&gt;  dotCall64            1.1-1      2023-11-28 [1] CRAN (R 4.1.2)
+#&gt;  dplyr              * 1.1.2      2023-04-20 [1] CRAN (R 4.1.2)
+#&gt;  ellipsis             0.3.2      2021-04-29 [1] CRAN (R 4.1.0)
+#&gt;  evaluate             0.14       2019-05-28 [1] CRAN (R 4.1.0)
+#&gt;  fansi                0.5.0      2021-05-25 [1] CRAN (R 4.1.0)
+#&gt;  farver               2.1.0      2021-02-28 [1] CRAN (R 4.1.0)
+#&gt;  fastDummies          1.7.3      2023-07-06 [1] CRAN (R 4.1.2)
+#&gt;  fastmap              1.1.0      2021-01-25 [1] CRAN (R 4.1.0)
+#&gt;  fitdistrplus         1.1-6      2021-09-28 [1] CRAN (R 4.1.0)
+#&gt;  forcats              0.5.1      2021-01-27 [1] CRAN (R 4.1.0)
+#&gt;  fs                   1.5.0      2020-07-31 [1] CRAN (R 4.1.0)
+#&gt;  future               1.25.0     2022-04-24 [1] CRAN (R 4.1.2)
+#&gt;  future.apply         1.8.1      2021-08-10 [1] CRAN (R 4.1.0)
+#&gt;  generics             0.1.3      2022-07-05 [1] CRAN (R 4.1.2)
+#&gt;  ggbeeswarm           0.6.0      2017-08-07 [1] CRAN (R 4.1.0)
+#&gt;  ggplot2            * 3.4.4      2023-10-12 [1] CRAN (R 4.1.2)
+#&gt;  ggprism              1.0.3.9000 2021-12-07 [1] Github (csdaw/ggprism@e21c3ee)
+#&gt;  ggrastr              1.0.1      2021-12-08 [1] CRAN (R 4.1.0)
+#&gt;  ggrepel              0.9.3      2023-02-03 [1] CRAN (R 4.1.2)
+#&gt;  ggridges             0.5.4      2022-09-26 [1] CRAN (R 4.1.2)
+#&gt;  GlobalOptions        0.1.2      2020-06-10 [1] CRAN (R 4.1.0)
+#&gt;  globals              0.14.0     2020-11-22 [1] CRAN (R 4.1.0)
+#&gt;  glue                 1.6.2      2022-02-24 [1] CRAN (R 4.1.2)
+#&gt;  goftest              1.2-3      2021-10-07 [1] CRAN (R 4.1.0)
+#&gt;  gridExtra            2.3        2017-09-09 [1] CRAN (R 4.1.0)
+#&gt;  gtable               0.3.0      2019-03-25 [1] CRAN (R 4.1.0)
+#&gt;  highr                0.9        2021-04-16 [1] CRAN (R 4.1.0)
+#&gt;  htmltools            0.5.2      2021-08-25 [1] CRAN (R 4.1.0)
+#&gt;  htmlwidgets          1.5.4      2021-09-08 [1] CRAN (R 4.1.0)
+#&gt;  httpuv               1.6.3      2021-09-09 [1] CRAN (R 4.1.0)
+#&gt;  httr                 1.4.2      2020-07-20 [1] CRAN (R 4.1.0)
+#&gt;  ica                  1.0-2      2018-05-24 [1] CRAN (R 4.1.0)
+#&gt;  ifnb.SeuratData    * 3.1.0      2024-01-17 [1] local
+#&gt;  igraph               1.2.7      2021-10-15 [1] CRAN (R 4.1.0)
+#&gt;  irlba                2.3.5.1    2022-10-03 [1] CRAN (R 4.1.2)
+#&gt;  janitor              2.1.0      2021-01-05 [1] CRAN (R 4.1.0)
+#&gt;  jquerylib            0.1.4      2021-04-26 [1] CRAN (R 4.1.0)
+#&gt;  jsonlite             1.7.2      2020-12-09 [1] CRAN (R 4.1.0)
+#&gt;  KernSmooth           2.23-20    2021-05-03 [1] CRAN (R 4.1.2)
+#&gt;  knitr                1.36       2021-09-29 [1] CRAN (R 4.1.0)
+#&gt;  labeling             0.4.2      2020-10-20 [1] CRAN (R 4.1.0)
+#&gt;  later                1.3.0      2021-08-18 [1] CRAN (R 4.1.0)
+#&gt;  lattice              0.20-45    2021-09-22 [1] CRAN (R 4.1.2)
+#&gt;  lazyeval             0.2.2      2019-03-15 [1] CRAN (R 4.1.0)
+#&gt;  leiden               0.3.9      2021-07-27 [1] CRAN (R 4.1.0)
+#&gt;  lifecycle            1.0.3      2022-10-07 [1] CRAN (R 4.1.2)
+#&gt;  limma                3.50.0     2021-10-26 [1] Bioconductor
+#&gt;  listenv              0.8.0      2019-12-05 [1] CRAN (R 4.1.0)
+#&gt;  lmtest               0.9-39     2021-11-07 [1] CRAN (R 4.1.0)
+#&gt;  lubridate            1.8.0      2021-10-07 [1] CRAN (R 4.1.0)
+#&gt;  magrittr             2.0.1      2020-11-17 [1] CRAN (R 4.1.0)
+#&gt;  MASS                 7.3-54     2021-05-03 [1] CRAN (R 4.1.2)
+#&gt;  Matrix               1.6-3      2023-11-14 [1] CRAN (R 4.1.2)
+#&gt;  matrixStats          0.61.0     2021-09-17 [1] CRAN (R 4.1.0)
+#&gt;  memoise              2.0.0      2021-01-26 [1] CRAN (R 4.1.0)
+#&gt;  mime                 0.12       2021-09-28 [1] CRAN (R 4.1.0)
+#&gt;  miniUI               0.1.1.1    2018-05-18 [1] CRAN (R 4.1.0)
+#&gt;  munsell              0.5.0      2018-06-12 [1] CRAN (R 4.1.0)
+#&gt;  nlme                 3.1-153    2021-09-07 [1] CRAN (R 4.1.2)
+#&gt;  paletteer            1.4.0      2021-07-20 [1] CRAN (R 4.1.0)
+#&gt;  parallelly           1.31.1     2022-04-22 [1] CRAN (R 4.1.2)
+#&gt;  patchwork            1.1.1      2020-12-17 [1] CRAN (R 4.1.0)
+#&gt;  pbapply              1.5-0      2021-09-16 [1] CRAN (R 4.1.0)
+#&gt;  pbmc3k.SeuratData  * 3.1.4      2022-08-03 [1] local
+#&gt;  pbmcref.SeuratData * 1.0.0      2023-09-14 [1] local
+#&gt;  pillar               1.9.0      2023-03-22 [1] CRAN (R 4.1.2)
+#&gt;  pkgbuild             1.2.0      2020-12-15 [1] CRAN (R 4.1.0)
+#&gt;  pkgconfig            2.0.3      2019-09-22 [1] CRAN (R 4.1.0)
+#&gt;  pkgload              1.2.3      2021-10-13 [1] CRAN (R 4.1.0)
+#&gt;  plotly               4.10.0     2021-10-09 [1] CRAN (R 4.1.0)
+#&gt;  plyr                 1.8.6      2020-03-03 [1] CRAN (R 4.1.0)
+#&gt;  png                  0.1-8      2022-11-29 [1] CRAN (R 4.1.2)
+#&gt;  polyclip             1.10-0     2019-03-14 [1] CRAN (R 4.1.0)
+#&gt;  presto               1.0.0      2023-03-30 [1] Github (immunogenomics/presto@045390a)
+#&gt;  prettyunits          1.1.1      2020-01-24 [1] CRAN (R 4.1.0)
+#&gt;  prismatic            1.1.0      2021-10-17 [1] CRAN (R 4.1.0)
+#&gt;  processx             3.5.2      2021-04-30 [1] CRAN (R 4.1.0)
+#&gt;  progressr            0.9.0      2021-09-24 [1] CRAN (R 4.1.0)
+#&gt;  promises             1.2.0.1    2021-02-11 [1] CRAN (R 4.1.0)
+#&gt;  ps                   1.6.0      2021-02-28 [1] CRAN (R 4.1.0)
+#&gt;  purrr                1.0.1      2023-01-10 [1] CRAN (R 4.1.2)
+#&gt;  R6                   2.5.1      2021-08-19 [1] CRAN (R 4.1.0)
+#&gt;  RANN                 2.6.1      2019-01-08 [1] CRAN (R 4.1.0)
+#&gt;  rappdirs             0.3.3      2021-01-31 [1] CRAN (R 4.1.0)
+#&gt;  RColorBrewer         1.1-2      2014-12-07 [1] CRAN (R 4.1.0)
+#&gt;  Rcpp                 1.0.11     2023-07-06 [1] CRAN (R 4.1.2)
+#&gt;  RcppAnnoy            0.0.19     2021-07-30 [1] CRAN (R 4.1.0)
+#&gt;  RcppHNSW             0.3.0      2020-09-06 [1] CRAN (R 4.1.0)
+#&gt;  rematch2             2.1.2      2020-05-01 [1] CRAN (R 4.1.0)
+#&gt;  remotes              2.4.1      2021-09-29 [1] CRAN (R 4.1.0)
+#&gt;  reshape2             1.4.4      2020-04-09 [1] CRAN (R 4.1.0)
+#&gt;  reticulate           1.28       2023-01-27 [1] CRAN (R 4.1.2)
+#&gt;  rlang                1.1.3      2024-01-10 [1] CRAN (R 4.1.2)
+#&gt;  rmarkdown            2.11       2021-09-14 [1] CRAN (R 4.1.0)
+#&gt;  ROCR                 1.0-11     2020-05-02 [1] CRAN (R 4.1.0)
+#&gt;  rprojroot            2.0.2      2020-11-15 [1] CRAN (R 4.1.0)
+#&gt;  RSpectra             0.16-0     2019-12-01 [1] CRAN (R 4.1.0)
+#&gt;  rstudioapi           0.13       2020-11-12 [1] CRAN (R 4.1.0)
+#&gt;  Rtsne                0.15       2018-11-10 [1] CRAN (R 4.1.0)
+#&gt;  sass                 0.4.0      2021-05-12 [1] CRAN (R 4.1.0)
+#&gt;  scales               1.3.0      2023-11-28 [1] CRAN (R 4.1.2)
+#&gt;  scattermore          1.2        2023-06-12 [1] CRAN (R 4.1.2)
+#&gt;  scCustomize        * 2.1.2      2024-02-28 [1] CRAN (R 4.1.2)
+#&gt;  sctransform          0.4.1      2023-10-19 [1] CRAN (R 4.1.2)
+#&gt;  sessioninfo          1.2.1      2021-11-02 [1] CRAN (R 4.1.0)
+#&gt;  Seurat             * 5.0.1      2023-11-17 [1] CRAN (R 4.1.2)
+#&gt;  SeuratData         * 0.2.2      2022-08-03 [1] Github (satijalab/seurat-data@d6a8ce6)
+#&gt;  SeuratObject       * 5.0.1      2023-11-17 [1] CRAN (R 4.1.2)
+#&gt;  shape                1.4.6      2021-05-19 [1] CRAN (R 4.1.0)
+#&gt;  shiny                1.7.1      2021-10-02 [1] CRAN (R 4.1.0)
+#&gt;  snakecase            0.11.0     2019-05-25 [1] CRAN (R 4.1.0)
+#&gt;  sp                 * 1.6-0      2023-01-19 [1] CRAN (R 4.1.2)
+#&gt;  spam                 2.10-0     2023-10-23 [1] CRAN (R 4.1.2)
+#&gt;  spatstat.data        3.0-0      2022-10-21 [1] CRAN (R 4.1.2)
+#&gt;  spatstat.explore     3.0-6      2023-01-26 [1] CRAN (R 4.1.2)
+#&gt;  spatstat.geom        3.0-6      2023-01-30 [1] CRAN (R 4.1.2)
+#&gt;  spatstat.random      3.1-3      2023-01-25 [1] CRAN (R 4.1.2)
+#&gt;  spatstat.sparse      3.0-0      2022-10-21 [1] CRAN (R 4.1.2)
+#&gt;  spatstat.utils       3.0-1      2022-10-19 [1] CRAN (R 4.1.2)
+#&gt;  stringi              1.7.5      2021-10-04 [1] CRAN (R 4.1.0)
+#&gt;  stringr              1.5.1      2023-11-14 [1] CRAN (R 4.1.2)
+#&gt;  survival             3.2-13     2021-08-24 [1] CRAN (R 4.1.2)
+#&gt;  tensor               1.5        2012-05-05 [1] CRAN (R 4.1.0)
+#&gt;  testthat             3.1.0      2021-10-04 [1] CRAN (R 4.1.0)
+#&gt;  tibble               3.2.1      2023-03-20 [1] CRAN (R 4.1.2)
+#&gt;  tidyr                1.3.0      2023-01-24 [1] CRAN (R 4.1.2)
+#&gt;  tidyselect           1.2.0      2022-10-10 [1] CRAN (R 4.1.2)
+#&gt;  usethis              2.1.3      2021-10-27 [1] CRAN (R 4.1.0)
+#&gt;  utf8                 1.2.2      2021-07-24 [1] CRAN (R 4.1.0)
+#&gt;  uwot                 0.1.14     2022-08-22 [1] CRAN (R 4.1.2)
+#&gt;  vctrs                0.6.2      2023-04-19 [1] CRAN (R 4.1.2)
+#&gt;  vipor                0.4.5      2017-03-22 [1] CRAN (R 4.1.0)
+#&gt;  viridisLite          0.4.0      2021-04-13 [1] CRAN (R 4.1.0)
+#&gt;  withr                2.5.0      2022-03-03 [1] CRAN (R 4.1.2)
+#&gt;  xfun                 0.36       2022-12-21 [1] CRAN (R 4.1.2)
+#&gt;  xtable               1.8-4      2019-04-21 [1] CRAN (R 4.1.0)
+#&gt;  yaml                 2.2.1      2020-02-01 [1] CRAN (R 4.1.0)
+#&gt;  zoo                  1.8-9      2021-03-09 [1] CRAN (R 4.1.0)
+#&gt; 
+#&gt;  [1] /Library/Frameworks/R.framework/Versions/4.1/Resources/library
+#&gt; 
+#&gt; ──────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/single-cell/">single-cell</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/seurat/">Seurat</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/">Reuse the single cell data! How to create a seurat object from GEO datasets</a></li>
+        
+        <li><a href="/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data</a></li>
+        
+        <li><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></li>
+        
+        <li><a href="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">scRNAseq clustering significance test: an unsolvable problem?</a></li>
+        
+        <li><a href="/post/ten-single-cell-data-benchmarking-papers/">10 single-cell data benchmarking papers</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/" rel="next">How to preprocess GEO bulk RNAseq data with salmon </a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/hidden-skills-beyond-programming-for-computational-biology/" rel="prev">Hidden skills beyond programming for computational biology</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

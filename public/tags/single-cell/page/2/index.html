@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Computational Biology">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2019-04-29T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2022-05-15T00:00:00&#43;00:00">
   
 
   
@@ -156,13 +156,11 @@
         
         
         
-          
-        
 
         <li class="nav-item">
-          <a href="/#publications">
+          <a href="/#cv">
             
-            <span>Publications</span>
+            <span>Newsletter</span>
             
           </a>
         </li>
@@ -232,11 +230,13 @@
         
         
         
+          
+        
 
         <li class="nav-item">
-          <a href="/#cv">
+          <a href="/#publications">
             
-            <span>CV</span>
+            <span>Publications</span>
             
           </a>
         </li>
@@ -282,6 +282,38 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></h2>
+    <div class="article-style">
+      
+      why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
+ Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
+ I am interested in using logistic regression to find marker genes and want to try fitting the model in the tidymodel ecosystem and using different regularization methods.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/matrix-factorization-for-single-cell-rnaseq-data/">Matrix Factorization for single-cell RNAseq data</a></h2>
+    <div class="article-style">
+      
+      I am interested in learning more on matrix factorization and its application in scRNAseq data. I want to shout out to this paper: Enter the Matrix: Factorization Uncovers Knowledge from Omics by Elana J. Fertig group.
+A matrix is decomposed to two matrices: the amplitude matrix and the pattern matrix. You can then do all sorts of things with the decomposed matrices. Single cell matrix is no special, one can use the matrix factorization techniques to derive interesting biological insights.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
+    <div class="article-style">
+      
+      scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
+I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
+A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></h2>
