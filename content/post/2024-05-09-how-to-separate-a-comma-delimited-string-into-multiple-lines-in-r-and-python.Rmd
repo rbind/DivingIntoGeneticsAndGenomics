@@ -1,0 +1,141 @@
+---
+title: 'How to separate a comma delimited string into multiple lines in R and python '
+author: Ming Tommy Tang
+date: '2024-05-09'
+slug: how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python
+categories:
+  - bioinformatics
+  - rstats
+  - python
+tags:
+  - python
+  - rstats
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+### The problem
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+```
+
+
+```{r}
+df<- data.frame(id = c(1,2,3), value = c('x,y', 'z,w', 'a'))
+df
+```
+
+we want to put x,y in the first row into two rows:
+
+1, x
+
+1, y
+
+and put z,w into two rows too.
+
+### solution with R
+
+There is a neat function `separate_rows` that does exactly this in `tidyr` package:
+```{r}
+library(tidyr)
+library(dplyr)
+
+df %>%
+        tidyr::separate_rows(value, sep=",")
+        
+```
+
+We can also convert it back using some purrr tricks.
+
+```{r}
+library(tidyr)
+library(purrr)
+
+df_nest<- df %>%
+        tidyr::separate_rows(value, sep=",") %>%
+        group_by(id) %>%
+        nest()
+
+df_nest
+
+df_nest$data[[1]]
+
+# convert it back 
+df_nest %>%
+        mutate(new_data = map_chr(data, ~paste(.x$value, collapse = ",")))
+```
+
+### solution with python
+
+Note, how to use python in Rmarkdown, read https://rstudio.github.io/reticulate/articles/versions.html
+
+```{r}
+library(reticulate)
+use_condaenv("r-reticulate")
+```
+
+```{python}
+import pandas as pd
+
+df = pd.DataFrame({'id': [1, 2, 3], 'data': ['x, y', 'z, w', 'a']})
+
+print(df)
+
+# Split text into a list
+df['data'] = df['data'].str.split(',')
+print(df)
+
+# Convert list into multiple rows
+df = df.explode('data')
+print(df)
+```
+we used `explode` function in pandas. Of course, you can do it manually:
+read in the dataframe line by line, split the last column to a list using str.split(',') and open an empty file and write the str.splited entries into new lines.
+
+### use case in bioinformatics?
+
+follow https://yulab-smu.top/biomedical-knowledge-mining-book/clusterprofiler-go.html
+for gene set enrichment analysis.
+
+```{r}
+library(clusterProfiler)
+data(geneList, package="DOSE")
+gene <- names(geneList)[abs(geneList) > 2]
+
+# Entrez gene ID
+head(gene)
+```
+
+Let's do a go-term over-representation analysis
+
+```{r}
+library(org.Hs.eg.db)
+
+ego <- enrichGO(gene          = gene,
+                universe      = names(geneList),
+                OrgDb         = org.Hs.eg.db,
+                ont           = "CC",
+                pAdjustMethod = "BH",
+                pvalueCutoff  = 0.01,
+                qvalueCutoff  = 0.05,
+                readable      = TRUE)
+head(ego)
+```
+
+The last `geneID` column is a list of genes separated by `/`. If I want to 
+get a tidy dataframe, I can do
+
+```{r}
+ego@result %>% 
+        tidyr::separate_rows(geneID, sep="/")
+```
+
+Now each gene has its own row!
