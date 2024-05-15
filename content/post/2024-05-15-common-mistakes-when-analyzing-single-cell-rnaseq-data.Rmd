@@ -1,0 +1,50 @@
+---
+title: 'Common mistakes when analyzing single-cell RNAseq data '
+author: Ming Tommy Tang
+date: '2024-05-15'
+slug: common-mistakes-when-analyzing-single-cell-rnaseq-data
+categories:
+  - bioinformatics
+  - scRNAseq
+tags:
+  - scRNAseq
+header:
+  caption: ''
+  image: ''
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+I recently was interviewed by the [SEQanswers forum](https://www.seqanswers.com/) on single-cell RNAseq analysis.
+
+1. In your opinion, what is the most challenging aspect of single-cell analysis?
+
+Every single-cell dataset is unique in terms of data quality and QC has to be carried out in a dataset specific manner. Cell annotation is still one of the most challenging steps. No matter what automatic tools we use, the immunologists we work with will come up with new cell type labels. 
+
+2. What do you believe are the most common mistakes researchers make during single-cell analysis and why are these mistakes so detrimental? 
+
+Differential gene expression for two different conditions (health vs disease), each condition has multiple samples. People just group all the cells from each condition together and do a differential gene expression at cell level.  The cells from each sample are not independent and when you use so many cells you get inherently small p-values. Instead, use pseudo-bulk. 
+
+
+3. What is a typical situation in which single-cell analysis results might be incorrectly interpreted?
+
+The distance between points on UMAP does not mean much. UMAP is non-linear dimension reduction and one should not read into too much of the points on the UMAP. It is a useful visualization though.
+
+4. What are some of the best practices for validating and confirming the findings from single-cell data? Note: I know this is a broad question, so any advice you might have will be greatly appreciated.
+
+Use multiple data types and sources of data. For example, validate the scRNAseq data with some protein data. If there are public available datasets to answer the same question, see if you have the same conclusion with a different dataset. Of course, doing a wet experiment to validate is the golden standard.
+
+5. What skills or resources would you recommend to researchers who are trying to avoid these common mistakes and wish to deepen their understanding of single-cell analysis?
+
+* R: https://bioconductor.org/books/release/OSCA/
+* Python: https://www.sc-best-practices.org/preamble.html
+* I have a presentation too https://divingintogeneticsandgenomics.com/talk/2023-poland/
+
+
+6. Are there any other issues or recommendations involving single-cell analysis that you would like to mention? 
+
+Batch correction or data integration from different datasets (I mentioned it in my talk above too). All the methods have certain assumptions. Data integration may erase biological signals. 
+See https://www.biorxiv.org/content/10.1101/2024.03.19.585562v1.full
+
+Happy Learning!
