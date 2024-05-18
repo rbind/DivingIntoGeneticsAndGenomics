@@ -38,7 +38,7 @@ we did not get taught how to deal with them.</p>
 <p>In this blog post, I am going to use a real example on how to quantify scRNAseq
 data with <code>salmon</code> to demonstrate how you can level-up your bioinformatics skills in
 real life. Let’s go!</p>
-<p>This is the fastq files you get from sequencing your 10x genomics experiment</p>
+<p>In a folder, it contains all fastq files you get from sequencing your 10x genomics experiment.</p>
 <pre class="bash"><code>ls 
 
 HHYJLDRX3_1_0427789611_RTD362_Condition1_Batch1_5PGEX_NLS156_S1_L001_R1_001.fastq.gz
@@ -77,6 +77,9 @@ HHYJLDRX3_2_0427789611_RTD363_Condition2_Batch1_5PGEX_NLS163_S16_L002_R2_001.fas
 and do:</p>
 <pre class="bash"><code>cat files.txt | xargs touch</code></pre>
 <p>It will create empty fastq.gz files with those names.</p>
+<p>In real life, you generate that file by:</p>
+<pre class="bash"><code>ls -1 *fq.gz | sort &gt; files.txt </code></pre>
+<p><code>ls -1</code> makes the output one file per line.</p>
 <p>Let’s take a moment and understand the fastq files. The RTD362, RTD363 are the donor
 ID, the NLS156, NLS160 etc are the sample ID. each sample has data from two lanes L001 and L002 from the sequencer and forward and reverse read (R1 and R2) for each lane, and the samples are from 4 different conditions.</p>
 <p>You may get the above information from people who did the experiment, but you can
@@ -359,7 +362,18 @@ for ( i in seq_along(1:nrow(fq_meta))){
 tasks are memory intensive, and you can not run it locally or you are not allowed to run it on a
 high performance computing cluster interactively.</p>
 <p>You need to submit the jobs to a scheduler such as <code>slurm</code>.</p>
-<p>You can use this little python package called <code>slurmpy</code> <a href="https://github.com/crazyhottommy/slurmpy" class="uri">https://github.com/crazyhottommy/slurmpy</a></p>
+<p><img src="/img/hpcscheduler.png" />
+Different schedulers use different command to submit jobs:</p>
+<ul>
+<li>PBS uses <code>qsub</code>.</li>
+<li>Slurm uses <code>sbatch</code>.</li>
+<li>LSF uses <code>bsub</code>.</li>
+<li>SGE uses <code>qsub</code>.</li>
+</ul>
+<p>I have used <code>PBS</code>, <code>SLURM</code> and <code>LSF</code> in my old days at the University of Florida,
+MD Anderson Cancer Center, Harvard and Dana-Farber.</p>
+<p>You can use this little python package called <code>slurmpy</code> <a href="https://github.com/crazyhottommy/slurmpy" class="uri">https://github.com/crazyhottommy/slurmpy</a>
+for <code>SLURM</code>.</p>
 <p>Below is python code:</p>
 <pre class="python"><code>from slurmpy import Slurm
 
@@ -430,7 +444,7 @@ with open(&quot;salmon_fastq.tsv&quot;, &quot;r&quot;) as f:
                 --t2g-map {IDX_DIR}/index/t2g_3col.tsv \
                 --output {OUT_DIR}/{sample}_quant
                 &quot;&quot;&quot;.format(FASTQ_DIR = FASTQ_DIR, IDX_DIR = IDX_DIR, OUT_DIR=OUT_DIR, reads1=reads1, reads2=reads2, sample=sample))</code></pre>
-<p>or if you want to stay in R and happens to use <code>bsub</code>, take a look at <a href="https://github.com/jokergoo/bsub" class="uri">https://github.com/jokergoo/bsub</a></p>
+<p>or if you want to stay in R and happens to use <code>LSF</code>, take a look at <a href="https://github.com/jokergoo/bsub" class="uri">https://github.com/jokergoo/bsub</a>.</p>
 </div>
 <div id="level-5-run-it-with-a-workflow-language" class="section level3">
 <h3>Level 5, run it with a workflow language</h3>
@@ -445,4 +459,5 @@ with open(&quot;salmon_fastq.tsv&quot;, &quot;r&quot;) as f:
 <li><p>Note 2, you do not always need a workflow if you are not running it for tens of hundreds of samples.</p></li>
 </ul>
 <p>Happy Learning!</p>
+<p><strong>PS: If you like this post, you may find my book <a href="https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line"><code>From Cell Line to Command Line</code></a> helpful for you.</strong></p>
 </div>
