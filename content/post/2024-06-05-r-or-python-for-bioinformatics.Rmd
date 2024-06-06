@@ -1,0 +1,61 @@
+---
+title: R or Python for Bioinformatics?
+author: Ming Tommy Tang
+date: '2024-06-05'
+slug: r-or-python-for-bioinformatics
+categories:
+  - bioconductor
+  - bioinformatics
+tags:
+  - Bioconductor
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+### R or Python for Bioinformatics?
+
+If you need to pick `Python` or `R` for bioinformatics, which one should you choose?
+This is a decades-old question from many beginners.
+
+This is my story.
+
+I started learning Unix Commands 12 years ago (See [an example](https://www.youtube.com/watch?v=3SW4zo5fDrA) of how powerful Unix commands can be). I then picked up Python using "[Python for absolute beginners](https://www.amazon.com/Python-Programming-Absolute-Beginner-3rd/dp/1435455002)". It was a great book, however...
+
+I did my first `print("hello world")` and learned the syntax of the language.. It is not that practical in terms of solving practical bioinformatics problems that I had. why?
+
+I had a lot of tables/spreadsheets to analyze during that time, and learning pandas in Python was just not that smooth. Then, I found R..
+
+R is perfect for rectangular tables and has built-in support for dataframes. With the more recent [tidyverse](https://www.tidyverse.org/), it is so much easier to do complex data wrangling with a few lines of code. ggplot2 made figures are still better than in Python.
+
+Moreover, R has the [Bioconductor](https://bioconductor.org/) ecosystem which contains thousands of packages for bioinformatics. You can simply search "xxx data analysis, Bioconductor" and find packages.
+
+For example, bulk RNAseq analysis still widely uses the `DESeq2` package.
+
+`Python` is a general programming language and has its strength in deep learning but may have fewer pre-built bioinformatics packages. Some people feel it is more intuitive to learn but some think R is easier. R has other problems too.
+
+You need to load all the data into memory in R (you can read the file line by line and process line by line in Python). so when the data is big, you need a lot of RAM to do the analysis.
+
+For whole genome bisulfite sequencing data , you can have 20 million rows x 50 samples. It is not practical to load it into memory.
+
+There is a more recent [DelayedArray](https://petehaitch.github.io/BioC2020_DelayedArray_workshop/index.html) to solve this problem though.
+
+### Conclusions
+
+`Python` and `R` both have their own pros and cons. If you can, learn both and use one that is suitable for the task at hand.
+
+Knowing well of one language can help you learn other languages a lot easier. The syntax is different but the logics, flow controls are the same.
+
+So if you are a biologist who wants to do a quick analysis with a pre-built package, I think `R` is better. But if you want to be a serious programmer (developing algorithms), learn `Python` too.
+
+PS: Read this blog post on how to solve the same data formatting problem using Python and R:
+
+https://divingintogeneticsandgenomics.com/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/
+
+Happy Learning!
+
+Tommy 
