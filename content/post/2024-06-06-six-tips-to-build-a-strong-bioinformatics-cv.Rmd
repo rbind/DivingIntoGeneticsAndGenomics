@@ -1,0 +1,44 @@
+---
+title: Six tips to build a strong Bioinformatics CV
+author: Ming Tommy Tang
+date: '2024-06-06'
+slug: six-tips-to-build-a-strong-bioinformatics-cv
+categories:
+  - education
+  - bioinformatics
+tags:
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+If you apply for a Bioinformatics position, hundreds of CVs get to sent to the hiring manager.
+How to stand out among all of them? Below are 6 tips from my hiring experience:
+
+
+1. Include a GitHub Link: Ensure your CV has a GitHub link with relevant content like Python or R packages, data analysis projects, or replicated figures from published papers. Regularly commit to demonstrate consistent coding activity. **You will not get into the next round of interview if you
+do not have a github link**. 
+
+2. Organize and Document Projects: Structure your GitHub repositories with consistent folder structures (e.g., data, scripts, results) and comprehensive documentation for readability and future reference. I care about reproducibility and good documentation.
+
+3. Create a Personal Website: Build a personal website to showcase additional materials not typically included in a CV, such as talks, posters, and blog posts that demonstrate your computational skills and problem-solving capabilities.
+
+4. Blogging: Use the blog section of your website to write about problem-solving experiences, demonstrating your expertise in R or Python. This can be more impactful than just listing skills on your CV.
+
+5. Use Tools like 'blogdown': For those using R, the 'blogdown' package can help create a professional-looking website where R or Python code can be rendered into HTML.
+
+6. Start Early: Building a strong GitHub profile and personal website takes time. Begin these efforts as early as possible to gradually develop a robust and impressive online presence. As I awalys say: The best time to start was 10 years ago, the second best time is right now!
+
+Watch the video here:
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=Iv_bD0qsmrM")
+```
+
