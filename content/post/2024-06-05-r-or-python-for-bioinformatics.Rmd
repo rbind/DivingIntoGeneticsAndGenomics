@@ -19,6 +19,14 @@ biology and bioinformatics.**
 
 ### R or Python for Bioinformatics?
 
+Watch the video here:
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=f06rvQJvjxQ")
+```
+
 If you need to pick `Python` or `R` for bioinformatics, which one should you choose?
 This is a decades-old question from many beginners.
 
@@ -59,3 +67,5 @@ https://divingintogeneticsandgenomics.com/post/how-to-separate-a-comma-delimited
 Happy Learning!
 
 Tommy 
+
+
