@@ -185,6 +185,10 @@ simpleaf quant \
 --expected-ori fw --unfiltered-pl \
 --t2g-map $AF_SAMPLE_DIR/data/t2g_adt.tsv \
 --output alevin_adt</code></pre>
+<p>Specify <code>--chemistry 10xv3</code> somehow just works. Just to be clear, if you know where
+the feature barcode sequences are in the reads, specify e.g., <code>--chemistry 1{b[16]u[10]x:}2{x[10]r[15]x:}</code> exactly and provide the path for the whitelist:
+<code>--unfiltered-pl /mnt/disks/tommy/af_test_workdir/737K-august-2016.txt</code>.</p>
+<p>see <a href="https://github.com/COMBINE-lab/alevin-fry/issues/136" class="uri">https://github.com/COMBINE-lab/alevin-fry/issues/136</a></p>
 <p>Hoary! Now we have the count matrix for the RNA and the protein ready for downstream analysis. Stay tuned for my next blog post!</p>
 </div>
 </div>

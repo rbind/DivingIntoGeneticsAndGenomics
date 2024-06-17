@@ -221,4 +221,10 @@ simpleaf quant \
 --output alevin_adt
 ```
 
+Specify `--chemistry 10xv3` somehow just works. Just to be clear, if you know where
+the feature barcode sequences are in the reads, specify e.g., `--chemistry 1{b[16]u[10]x:}2{x[10]r[15]x:}` exactly and provide the path for the whitelist:
+`--unfiltered-pl /mnt/disks/tommy/af_test_workdir/737K-august-2016.txt`.
+
+see https://github.com/COMBINE-lab/alevin-fry/issues/136
+
 Hoary! Now we have the count matrix for the RNA and the protein ready for downstream analysis. Stay tuned for my next blog post!
