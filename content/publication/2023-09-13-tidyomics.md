@@ -1,6 +1,6 @@
 +++
 title = "The tidyomics ecosystem: Enhancing omic data analyses"
-date = 2023-09-13T00:00:00
+date = 2024-06-14T00:00:00
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
 authors = ["WJ Hutchison", "TJ Keyes", "...", "**M Tang** et.al."]
@@ -17,8 +17,8 @@ authors = ["WJ Hutchison", "TJ Keyes", "...", "**M Tang** et.al."]
 publication_types = ["2"]
 
 # Publication name and optional abbreviated version.
-publication = "In *BioRxiv*,BioRxiv."
-publication_short = "In *BioRxiv*"
+publication = "In *Nature Methods*,Nature Methods."
+publication_short = "In *Nature Methods*"
 # Abstract and optional shortened version.
 abstract = "The exponential growth of omic data presents challenges in data manipulation, analysis, and integration. Addressing these challenges, Bioconductor offers an extensive data analysis platform and community, while R tidy programming offers a standard data organisation and manipulation that has revolutionised data science. Bioconductor and tidy R have mostly remained independent; bridging these two ecosystems would streamline omic analysis, ease learning and encourage cross-disciplinary collaborations. Here, we introduce the tidyomics ecosystem—a suite of interoperable software that brings the vast tidy software ecosystem to omic data analysis."
 
@@ -37,6 +37,7 @@ selected = false
 # Links (optional).
 #url_pdf = "files/papers/Melanoma_chromatin_state.pdf"
 url_preprint = "https://www.biorxiv.org/content/10.1101/2023.09.10.557072v1"
+url_paper = "https://www.nature.com/articles/s41592-024-02299-2"
 #url_code = "https://github.com/crazyhottommy/pyflow-ChIPseq"
 # url_dataset = "#"
 # url_project = "#"
