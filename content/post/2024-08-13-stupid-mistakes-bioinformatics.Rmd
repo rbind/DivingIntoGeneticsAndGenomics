@@ -1,0 +1,445 @@
+---
+title: The Most Common Stupid Mistakes In Bioinformatics
+author: Ming Tommy Tang
+date: '2024-08-13'
+slug: stupid-mistakes-for-bioinformatics
+categories:
+  - unix
+  - bioinformatics
+tags:
+  - unix
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+
+This post is inspired by this [popular thread](https://www.biostars.org/p/7126/) in https://www.biostars.org/.
+
+
+### Common mistakes in general 
+
+- **Off-by-One Errors:**
+  - Mistakes occur when switching between different indexing systems. For example, BED files are 0-based while GFF/GTF files are 1-based, leading to potential misinterpretations of genomic coordinates.
+
+This is one of the most common mistakes! I highly recommend you to read this [Tutorial:Cheat Sheet For One-Based Vs Zero-Based Coordinate Systems](https://www.biostars.org/p/84686/)
+
+- **Switching Between Programming Languages:**
+  - Indexing errors happen when a developer switches between languages with different base indexes. Python and most modern languages use 0-based indexing, whereas R and Lua are 1-based.
+  
+  See an example here: [Three gotchas when using R for Genomic data analysis](https://divingintogeneticsandgenomics.com/post/three-gotchas-when-using-r-for-genomic-data-analysis/)
+
+- **Incorrect Chromosome Sorting:**
+  - Assuming alphabetical order instead of natural sort leads to chr10 being listed before chr2. Consider implementing natural sorting to avoid this issue.
+  
+   If you do want to have natural sort
+see https://gist.github.com/crazyhottommy/e778ceb39cebfa20739a
+
+- **Regex Errors:**
+  - Errors arise from constructing regular expressions incorrectly, leading to failure in pattern matching, which can result in missed or incorrect data extraction.
+
+- **Incorrect File Parsing:**
+  - Complex file formats like BLAST or GenBank require precise parsing rules. Errors can occur if the format specifications are misunderstood or files are parsed incorrectly. **Do not reinvent the wheel!**, I have seen people write their own fastq parsers. Use a well-tested library.
+
+- **Strand Orientation and Sequence Reversal:**
+  - Not accounting for the strand direction can result in incorrect data interpretation, such as failing to reverse complement sequences when required.
+
+- **Loop and File End Errors:**
+  - When looping through files, especially if the last line lacks an end-of-line character, logic errors can lead to missing data processing.
+
+- **Operating System Line Breaks:**
+  - Line break conventions vary across operating systems. Failing to handle these differences can cause issues reading or writing files across different platforms. [`dos2unix`](https://dos2unix.sourceforge.io/) is your friend. I have been bitten by it many times!
+
+- **Selecting Incorrect Genomic Assemblies:**
+  - Mistakenly using the wrong assembly, annotation, or release version can lead to inaccurate analysis results. e.g., Double check if the genome build is hg19 or hg38 for human genome. If you aligned your fastq reads to hg19 genome and visualize in hg38 genome build UCSC genome browser or IGV, you should ask yourself why all the coverage is not in the exons! 
+
+- **Managing Multiple File Versions:**
+  - Using outdated or incorrect file versions without clear version tracking may lead to inconsistent data analysis outcomes. This is one of the core problems of reproducible computing. Always version control your files! (using [git lfs](https://git-lfs.com/)?)
+
+- **Handling Nested Genome Annotations:**
+  - Complex annotations, such as nested genes, need careful handling to avoid missing or double-counting features. Some different genes may have overlapping exons or introns. 
+
+- **Data Randomization and Statistical Tests:**
+  - Not properly randomizing data or misusing statistical tests can lead to biased results and incorrect conclusions.
+
+- **Poor Documentation Practices:**
+  - Failing to fully document methods and procedures makes it difficult to review and correct errors, and hinders reproducibility and collaboration.
+
+
+### Some command line mistake examples
+
+Here are some of the common mistakes when using command line tools for bioinformatics tasks.
+
+### Using `rm *` in the wrong directory
+**Mistake:** Running `rm *` without checking the directory.  
+
+- **What you meant to do:** Delete files in a specific subdirectory.  
+
+- **Actual Command:** `rm *` (in the wrong directory).   
+
+- **Correction:** Navigate to the correct directory first:  
+  
+  ```bash
+  cd target_directory
+  rm *
+  ```
+
+### Mistaking `>` for `>>` 
+
+**Mistake:** Using `>` instead of `>>` to append to a file. `>` will overwrite the file.
+
+- **What you meant to do:** Append to a file.  
+
+- **Actual Command:** `command > file`
+
+- **Correction:** Use `>>` for appending:  
+
+  ```bash
+  command >> file
+  ```
+
+### Misspelling file extensions
+
+**Mistake:** Incorrect file extension.
+
+- **What you meant to do:** Delete `.fastq` files.
+
+- **Actual Command:** `rm *.fasq`
+
+- **Correction:** Verify the extension:
+
+  ```bash
+  rm *.fastq
+  ```
+
+### Path misconfiguration
+
+**Mistake:** Executing a command in a misconfigured environment.
+
+- **What you meant to do:** Use a tool installed in a different path.
+
+- **Actual Command:** `myfancytool`
+
+- **Correction:** Update your $PATH variable or use absolute path:
+
+  ```bash
+  /usr/local/bin/myfancytool
+  ```
+
+Watch my chatomics video to understand the PATH 
+variable:
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=nveykWjrFM0")
+```
+
+
+### Incorrect use of file wildcard
+
+**Mistake:** Incorrect wildcard usage.
+
+- **What you meant to do:** Delete only `.txt` files.
+
+- **Actual Command:** `rm *txt`
+
+- **Correction:** Correct the wildcard pattern:
+
+  ```bash
+  rm *.txt
+  ```
+
+### remove fasta with unintentional spaces
+
+**Mistake:** Accidental space.
+
+- **What you meant to do:** remove all fasta file.
+
+- **Actual Command:** `rm -rf * .fasta` removes all files! 
+
+- **Correction:** Ensure no space before .fasta:
+
+  ```bash
+  `rm -rf *.fasta
+  ```
+
+### Forgetting `-r` with `rm`
+
+**Mistake:** Forgetting recursive flag for directories.
+
+- **What you meant to do:** Delete a directory.
+
+- **Actual Command:** `rm directory`
+
+- **Correction:** Use `-r` for directories:
+
+  ```bash
+  rm -r directory
+  ```
+
+### Not escaping special characters
+
+**Mistake:** Forgetting to escape special characters.
+
+- **What you meant to do:** Search for `*` in files.
+
+- **Actual Command:** `grep * file`
+
+- **Correction:** Escape the character:
+
+  ```bash
+  grep \* file
+  ```
+
+### Overwriting important files
+
+**Mistake:** Overwriting important data files.
+
+- **What you meant to do:** Save output to a temporary file.
+
+- **Actual Command:** `command > important_file`
+
+- **Correction:** Use a temporary filename:
+
+  ```bash
+  command > tempfile
+  ```
+
+
+### Using `cat` for large files
+
+**Mistake:** Using `cat` for very large files.
+
+- **What you meant to do:** Preview content of a large file.
+
+- **Actual Command:** `cat largefile`
+
+- **Correction:** Use `less` or `head`/`tail`:
+  ```bash
+  less largefile
+  ```
+
+Tip: I usually use `less -S largefile` so the line will not be wrapped if it is too long.
+
+### Incorrect `find` syntax
+
+**Mistake:** Incorrect parameters with `find`.
+
+- **What you meant to do:** Find `.txt` files.
+
+- **Actual Command:** `find . -name *txt`
+
+- **Correction:** Use quotes properly:
+
+  ```bash
+  find . -name "*.txt"
+  ```
+
+### Misunderstanding `chmod`
+
+**Mistake:** Incorrectly setting file permissions.
+
+- **What you meant to do:** Make a file executable.
+
+- **Actual Command:** `chmod 777 file`
+
+- **Correction:** Use appropriate permissions:
+
+  ```bash
+  chmod +x file
+  ```
+if you only want the owner to have executable permission
+
+  ```bash
+  chomod u+x file
+  ```
+
+Each digit is for: user, group and other.
+
+`chmod 754 myfile`: this means the user has read, write and execute permssion; member in the same group has read and execute permission but no write permission; other people in the world only has read permission.
+
+4 stands for "read",  
+2 stands for "write",  
+1 stands for "execute", and. 
+0 stands for "no permission."
+
+So 7 is the combination of permissions 4+2+1 (read, write, and execute), 5 is 4+0+1 (read, no write, and execute), and 4 is 4+0+0 (read, no write, and no execute).
+
+It is sometimes hard to remember. one can use the letter:The letters u, g, and o stand for "user", "group", and "other"; "r", "w", and "x" stand for "read", "write", and "execute", respectively.
+
+For example: 
+
+* `chmod u+x myfile`
+
+* `chmod g+r myfile`
+  
+### grep ">" without quote
+
+**Mistake:** not using quote for `>` sign.
+
+- **What you meant to do:** search ">" in a fasta file.
+
+- **Actual Command:** `grep > some.fasta`
+
+- **Correction:** Use quote for the > sign:
+
+  ```bash
+  grep '>' some.fasta
+  ```
+
+### Forgetting about hidden files
+
+**Mistake:** Not considering hidden files when deleting.
+
+- **What you meant to do:** Delete all files in a directory.
+
+- **Actual Command:** `rm *`
+
+- **Correction:** Include hidden files:
+
+  ```bash
+  rm * .*
+  ```
+
+hidden files starts with `.`.
+
+
+### Incorrect argument order in `tar`
+
+**Mistake:** Wrong argument order in `tar`.
+
+- **What you meant to do:** Extract a tarball.
+
+- **Actual Command:** `tar -xvf file.tar.gz -C directory`
+
+- **Correction:** Correct argument order:
+
+  ```bash
+  tar -xvzf file.tar.gz -C directory
+  ```
+
+I have to google every time for different compressed files. Use this one below instead:
+
+``` bash
+#!/bin/bash
+# function Extract for common file formats
+
+function extract {
+ if [ -z "$1" ]; then
+    # display usage if no parameters given
+    echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+ else
+    if [ -f "$1" ] ; then
+        NAME=${1%.*}
+        #mkdir $NAME && cd $NAME
+        case "$1" in
+          *.tar.bz2)   tar xvjf ./"$1"    ;;
+          *.tar.gz)    tar xvzf ./"$1"    ;;
+          *.tar.xz)    tar xvJf ./"$1"    ;;
+          *.lzma)      unlzma ./"$1"      ;;
+          *.bz2)       bunzip2 ./"$1"     ;;
+          *.rar)       unrar x -ad ./"$1" ;;
+          *.gz)        gunzip ./"$1"      ;;
+          *.tar)       tar xvf ./"$1"     ;;
+          *.tbz2)      tar xvjf ./"$1"    ;;
+          *.tgz)       tar xvzf ./"$1"    ;;
+          *.zip)       unzip ./"$1"       ;;
+          *.Z)         uncompress ./"$1"  ;;
+          *.7z)        7z x ./"$1"        ;;
+          *.xz)        unxz ./"$1"        ;;
+          *.exe)       cabextract ./"$1"  ;;
+          *)           echo "extract: '$1' - unknown archive method" ;;
+        esac
+    else
+        echo "'$1' - file does not exist"
+    fi
+fi
+}
+```
+
+Save it as `extract` in the `/local/usr/bin` and `chomod u+x extract`.
+you can then use it to extract any files without remembering the syntax.
+
+
+### Misuse of `cut` without delimiter
+
+**Mistake:** Using `cut` without specifying delimiter.
+
+- **What you meant to do:** Extract a column from a CSV.
+
+- **Actual Command:** `cut -f2 file.csv`
+
+- **Correction:** Specify the delimiter:
+
+  ```bash
+  cut -d, -f2 file.csv
+  ```
+default is tab as the delimiter.
+
+###  Overwriting `.bashrc`
+
+**Mistake:** Using `>` to update `.bashrc`.
+
+- **What you meant to do:** Append to `.bashrc`.
+
+- **Actual Command:** `echo "export PATH=$PATH:/new/path" > ~/.bashrc`
+
+- **Correction:** Use `>>` for appending:
+
+  ```bash
+  echo "export PATH=$PATH:/new/path" >> ~/.bashrc
+  ```
+
+### Misinterpreting `awk` syntax
+
+**Mistake:** Incorrect `awk` syntax.
+
+- **What you meant to do:** Print the second column of a file.
+
+- **Actual Command:** `awk {print $2} file`
+
+- **Correction:** Use quoted expressions:
+
+  ```bash
+  awk '{print $2}' file
+  ```
+
+### Forgetting `-p` with `mkdir`
+
+**Mistake:** Not using `-p` with `mkdir`.
+
+- **What you meant to do:** Create nested directories.
+
+- **Actual Command:** `mkdir /path/to/new/directory`
+
+- **Correction:** Use `-p` to create intermediate directories:
+
+  ```bash
+  mkdir -p /path/to/new/directory
+  ```
+
+If the intermediate folders (to, new) does not exist, `mkdir` will error out.
+use `mkdir -p` instead.
+
+
+### Incorrect use of `|` (pipe)
+
+**Mistake:** Misplaced pipe operator.
+
+- **What you meant to do:** Chain commands with a pipe.
+
+- **Actual Command:** `command1 | command2 | > outputfile`
+
+- **Correction:** Remove redundant `>`:
+
+  ```bash
+  command1 | command2 > outputfile
+  ```
+
+ What's your mistakes? Leave a comment!
+

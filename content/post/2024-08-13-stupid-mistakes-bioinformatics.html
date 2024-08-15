@@ -1,0 +1,355 @@
+---
+title: The Most Common Stupid Mistakes In Bioinformatics
+author: Ming Tommy Tang
+date: '2024-08-13'
+slug: stupid-mistakes-for-bioinformatics
+categories:
+  - unix
+  - bioinformatics
+tags:
+  - unix
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+<link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<p>This post is inspired by this <a href="https://www.biostars.org/p/7126/">popular thread</a> in <a href="https://www.biostars.org/" class="uri">https://www.biostars.org/</a>.</p>
+<div id="common-mistakes-in-general" class="section level3">
+<h3>Common mistakes in general</h3>
+<ul>
+<li><strong>Off-by-One Errors:</strong>
+<ul>
+<li>Mistakes occur when switching between different indexing systems. For example, BED files are 0-based while GFF/GTF files are 1-based, leading to potential misinterpretations of genomic coordinates.</li>
+</ul></li>
+</ul>
+<p>This is one of the most common mistakes! I highly recommend you to read this <a href="https://www.biostars.org/p/84686/">Tutorial:Cheat Sheet For One-Based Vs Zero-Based Coordinate Systems</a></p>
+<ul>
+<li><p><strong>Switching Between Programming Languages:</strong></p>
+<ul>
+<li>Indexing errors happen when a developer switches between languages with different base indexes. Python and most modern languages use 0-based indexing, whereas R and Lua are 1-based.</li>
+</ul>
+<p>See an example here: <a href="https://divingintogeneticsandgenomics.com/post/three-gotchas-when-using-r-for-genomic-data-analysis/">Three gotchas when using R for Genomic data analysis</a></p></li>
+<li><p><strong>Incorrect Chromosome Sorting:</strong></p>
+<ul>
+<li>Assuming alphabetical order instead of natural sort leads to chr10 being listed before chr2. Consider implementing natural sorting to avoid this issue.</li>
+</ul>
+<p>If you do want to have natural sort
+see <a href="https://gist.github.com/crazyhottommy/e778ceb39cebfa20739a" class="uri">https://gist.github.com/crazyhottommy/e778ceb39cebfa20739a</a></p></li>
+<li><p><strong>Regex Errors:</strong></p>
+<ul>
+<li>Errors arise from constructing regular expressions incorrectly, leading to failure in pattern matching, which can result in missed or incorrect data extraction.</li>
+</ul></li>
+<li><p><strong>Incorrect File Parsing:</strong></p>
+<ul>
+<li>Complex file formats like BLAST or GenBank require precise parsing rules. Errors can occur if the format specifications are misunderstood or files are parsed incorrectly. <strong>Do not reinvent the wheel!</strong>, I have seen people write their own fastq parsers. Use a well-tested library.</li>
+</ul></li>
+<li><p><strong>Strand Orientation and Sequence Reversal:</strong></p>
+<ul>
+<li>Not accounting for the strand direction can result in incorrect data interpretation, such as failing to reverse complement sequences when required.</li>
+</ul></li>
+<li><p><strong>Loop and File End Errors:</strong></p>
+<ul>
+<li>When looping through files, especially if the last line lacks an end-of-line character, logic errors can lead to missing data processing.</li>
+</ul></li>
+<li><p><strong>Operating System Line Breaks:</strong></p>
+<ul>
+<li>Line break conventions vary across operating systems. Failing to handle these differences can cause issues reading or writing files across different platforms. <a href="https://dos2unix.sourceforge.io/"><code>dos2unix</code></a> is your friend. I have been bitten by it many times!</li>
+</ul></li>
+<li><p><strong>Selecting Incorrect Genomic Assemblies:</strong></p>
+<ul>
+<li>Mistakenly using the wrong assembly, annotation, or release version can lead to inaccurate analysis results. e.g., Double check if the genome build is hg19 or hg38 for human genome. If you aligned your fastq reads to hg19 genome and visualize in hg38 genome build UCSC genome browser or IGV, you should ask yourself why all the coverage is not in the exons!</li>
+</ul></li>
+<li><p><strong>Managing Multiple File Versions:</strong></p>
+<ul>
+<li>Using outdated or incorrect file versions without clear version tracking may lead to inconsistent data analysis outcomes. This is one of the core problems of reproducible computing. Always version control your files! (using <a href="https://git-lfs.com/">git lfs</a>?)</li>
+</ul></li>
+<li><p><strong>Handling Nested Genome Annotations:</strong></p>
+<ul>
+<li>Complex annotations, such as nested genes, need careful handling to avoid missing or double-counting features. Some different genes may have overlapping exons or introns.</li>
+</ul></li>
+<li><p><strong>Data Randomization and Statistical Tests:</strong></p>
+<ul>
+<li>Not properly randomizing data or misusing statistical tests can lead to biased results and incorrect conclusions.</li>
+</ul></li>
+<li><p><strong>Poor Documentation Practices:</strong></p>
+<ul>
+<li>Failing to fully document methods and procedures makes it difficult to review and correct errors, and hinders reproducibility and collaboration.</li>
+</ul></li>
+</ul>
+</div>
+<div id="some-command-line-mistake-examples" class="section level3">
+<h3>Some command line mistake examples</h3>
+<p>Here are some of the common mistakes when using command line tools for bioinformatics tasks.</p>
+</div>
+<div id="using-rm-in-the-wrong-directory" class="section level3">
+<h3>Using <code>rm *</code> in the wrong directory</h3>
+<p><strong>Mistake:</strong> Running <code>rm *</code> without checking the directory.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Delete files in a specific subdirectory.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm *</code> (in the wrong directory).</p></li>
+<li><p><strong>Correction:</strong> Navigate to the correct directory first:</p>
+<pre class="bash"><code>cd target_directory
+rm *</code></pre></li>
+</ul>
+</div>
+<div id="mistaking-for" class="section level3">
+<h3>Mistaking <code>&gt;</code> for <code>&gt;&gt;</code></h3>
+<p><strong>Mistake:</strong> Using <code>&gt;</code> instead of <code>&gt;&gt;</code> to append to a file. <code>&gt;</code> will overwrite the file.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Append to a file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>command &gt; file</code></p></li>
+<li><p><strong>Correction:</strong> Use <code>&gt;&gt;</code> for appending:</p>
+<pre class="bash"><code>command &gt;&gt; file</code></pre></li>
+</ul>
+</div>
+<div id="misspelling-file-extensions" class="section level3">
+<h3>Misspelling file extensions</h3>
+<p><strong>Mistake:</strong> Incorrect file extension.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Delete <code>.fastq</code> files.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm *.fasq</code></p></li>
+<li><p><strong>Correction:</strong> Verify the extension:</p>
+<pre class="bash"><code>rm *.fastq</code></pre></li>
+</ul>
+</div>
+<div id="path-misconfiguration" class="section level3">
+<h3>Path misconfiguration</h3>
+<p><strong>Mistake:</strong> Executing a command in a misconfigured environment.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Use a tool installed in a different path.</p></li>
+<li><p><strong>Actual Command:</strong> <code>myfancytool</code></p></li>
+<li><p><strong>Correction:</strong> Update your $PATH variable or use absolute path:</p>
+<pre class="bash"><code>/usr/local/bin/myfancytool</code></pre></li>
+</ul>
+<p>Watch my chatomics video to understand the PATH
+variable:</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/nveykWjrFM0" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+</div>
+<div id="incorrect-use-of-file-wildcard" class="section level3">
+<h3>Incorrect use of file wildcard</h3>
+<p><strong>Mistake:</strong> Incorrect wildcard usage.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Delete only <code>.txt</code> files.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm *txt</code></p></li>
+<li><p><strong>Correction:</strong> Correct the wildcard pattern:</p>
+<pre class="bash"><code>rm *.txt</code></pre></li>
+</ul>
+</div>
+<div id="remove-fasta-with-unintentional-spaces" class="section level3">
+<h3>remove fasta with unintentional spaces</h3>
+<p><strong>Mistake:</strong> Accidental space.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> remove all fasta file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm -rf * .fasta</code> removes all files!</p></li>
+<li><p><strong>Correction:</strong> Ensure no space before .fasta:</p>
+<pre class="bash"><code>`rm -rf *.fasta</code></pre></li>
+</ul>
+</div>
+<div id="forgetting--r-with-rm" class="section level3">
+<h3>Forgetting <code>-r</code> with <code>rm</code></h3>
+<p><strong>Mistake:</strong> Forgetting recursive flag for directories.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Delete a directory.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm directory</code></p></li>
+<li><p><strong>Correction:</strong> Use <code>-r</code> for directories:</p>
+<pre class="bash"><code>rm -r directory</code></pre></li>
+</ul>
+</div>
+<div id="not-escaping-special-characters" class="section level3">
+<h3>Not escaping special characters</h3>
+<p><strong>Mistake:</strong> Forgetting to escape special characters.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Search for <code>*</code> in files.</p></li>
+<li><p><strong>Actual Command:</strong> <code>grep * file</code></p></li>
+<li><p><strong>Correction:</strong> Escape the character:</p>
+<pre class="bash"><code>grep \* file</code></pre></li>
+</ul>
+</div>
+<div id="overwriting-important-files" class="section level3">
+<h3>Overwriting important files</h3>
+<p><strong>Mistake:</strong> Overwriting important data files.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Save output to a temporary file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>command &gt; important_file</code></p></li>
+<li><p><strong>Correction:</strong> Use a temporary filename:</p>
+<pre class="bash"><code>command &gt; tempfile</code></pre></li>
+</ul>
+</div>
+<div id="using-cat-for-large-files" class="section level3">
+<h3>Using <code>cat</code> for large files</h3>
+<p><strong>Mistake:</strong> Using <code>cat</code> for very large files.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Preview content of a large file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>cat largefile</code></p></li>
+<li><p><strong>Correction:</strong> Use <code>less</code> or <code>head</code>/<code>tail</code>:</p>
+<pre class="bash"><code>less largefile</code></pre></li>
+</ul>
+<p>Tip: I usually use <code>less -S largefile</code> so the line will not be wrapped if it is too long.</p>
+</div>
+<div id="incorrect-find-syntax" class="section level3">
+<h3>Incorrect <code>find</code> syntax</h3>
+<p><strong>Mistake:</strong> Incorrect parameters with <code>find</code>.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Find <code>.txt</code> files.</p></li>
+<li><p><strong>Actual Command:</strong> <code>find . -name *txt</code></p></li>
+<li><p><strong>Correction:</strong> Use quotes properly:</p>
+<pre class="bash"><code>find . -name &quot;*.txt&quot;</code></pre></li>
+</ul>
+</div>
+<div id="misunderstanding-chmod" class="section level3">
+<h3>Misunderstanding <code>chmod</code></h3>
+<p><strong>Mistake:</strong> Incorrectly setting file permissions.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Make a file executable.</p></li>
+<li><p><strong>Actual Command:</strong> <code>chmod 777 file</code></p></li>
+<li><p><strong>Correction:</strong> Use appropriate permissions:</p>
+<pre class="bash"><code>chmod +x file</code></pre>
+<p>if you only want the owner to have executable permission</p>
+<pre class="bash"><code>chomod u+x file</code></pre></li>
+</ul>
+<p>Each digit is for: user, group and other.</p>
+<p><code>chmod 754 myfile</code>: this means the user has read, write and execute permssion; member in the same group has read and execute permission but no write permission; other people in the world only has read permission.</p>
+<p>4 stands for “read”,<br />
+2 stands for “write”,<br />
+1 stands for “execute”, and.
+0 stands for “no permission.”</p>
+<p>So 7 is the combination of permissions 4+2+1 (read, write, and execute), 5 is 4+0+1 (read, no write, and execute), and 4 is 4+0+0 (read, no write, and no execute).</p>
+<p>It is sometimes hard to remember. one can use the letter:The letters u, g, and o stand for “user”, “group”, and “other”; “r”, “w”, and “x” stand for “read”, “write”, and “execute”, respectively.</p>
+<p>For example:</p>
+<ul>
+<li><p><code>chmod u+x myfile</code></p></li>
+<li><p><code>chmod g+r myfile</code></p></li>
+</ul>
+</div>
+<div id="grep-without-quote" class="section level3">
+<h3>grep “&gt;” without quote</h3>
+<p><strong>Mistake:</strong> not using quote for <code>&gt;</code> sign.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> search “&gt;” in a fasta file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>grep &gt; some.fasta</code></p></li>
+<li><p><strong>Correction:</strong> Use quote for the &gt; sign:</p>
+<pre class="bash"><code>grep &#39;&gt;&#39; some.fasta</code></pre></li>
+</ul>
+</div>
+<div id="forgetting-about-hidden-files" class="section level3">
+<h3>Forgetting about hidden files</h3>
+<p><strong>Mistake:</strong> Not considering hidden files when deleting.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Delete all files in a directory.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm *</code></p></li>
+<li><p><strong>Correction:</strong> Include hidden files:</p>
+<pre class="bash"><code>rm * .*</code></pre></li>
+</ul>
+<p>hidden files starts with <code>.</code>.</p>
+</div>
+<div id="incorrect-argument-order-in-tar" class="section level3">
+<h3>Incorrect argument order in <code>tar</code></h3>
+<p><strong>Mistake:</strong> Wrong argument order in <code>tar</code>.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Extract a tarball.</p></li>
+<li><p><strong>Actual Command:</strong> <code>tar -xvf file.tar.gz -C directory</code></p></li>
+<li><p><strong>Correction:</strong> Correct argument order:</p>
+<pre class="bash"><code>tar -xvzf file.tar.gz -C directory</code></pre></li>
+</ul>
+<p>I have to google every time for different compressed files. Use this one below instead:</p>
+<pre class="bash"><code>#!/bin/bash
+# function Extract for common file formats
+
+function extract {
+ if [ -z &quot;$1&quot; ]; then
+    # display usage if no parameters given
+    echo &quot;Usage: extract &lt;path/file_name&gt;.&lt;zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz&gt;&quot;
+ else
+    if [ -f &quot;$1&quot; ] ; then
+        NAME=${1%.*}
+        #mkdir $NAME &amp;&amp; cd $NAME
+        case &quot;$1&quot; in
+          *.tar.bz2)   tar xvjf ./&quot;$1&quot;    ;;
+          *.tar.gz)    tar xvzf ./&quot;$1&quot;    ;;
+          *.tar.xz)    tar xvJf ./&quot;$1&quot;    ;;
+          *.lzma)      unlzma ./&quot;$1&quot;      ;;
+          *.bz2)       bunzip2 ./&quot;$1&quot;     ;;
+          *.rar)       unrar x -ad ./&quot;$1&quot; ;;
+          *.gz)        gunzip ./&quot;$1&quot;      ;;
+          *.tar)       tar xvf ./&quot;$1&quot;     ;;
+          *.tbz2)      tar xvjf ./&quot;$1&quot;    ;;
+          *.tgz)       tar xvzf ./&quot;$1&quot;    ;;
+          *.zip)       unzip ./&quot;$1&quot;       ;;
+          *.Z)         uncompress ./&quot;$1&quot;  ;;
+          *.7z)        7z x ./&quot;$1&quot;        ;;
+          *.xz)        unxz ./&quot;$1&quot;        ;;
+          *.exe)       cabextract ./&quot;$1&quot;  ;;
+          *)           echo &quot;extract: &#39;$1&#39; - unknown archive method&quot; ;;
+        esac
+    else
+        echo &quot;&#39;$1&#39; - file does not exist&quot;
+    fi
+fi
+}</code></pre>
+<p>Save it as <code>extract</code> in the <code>/local/usr/bin</code> and <code>chomod u+x extract</code>.
+you can then use it to extract any files without remembering the syntax.</p>
+</div>
+<div id="misuse-of-cut-without-delimiter" class="section level3">
+<h3>Misuse of <code>cut</code> without delimiter</h3>
+<p><strong>Mistake:</strong> Using <code>cut</code> without specifying delimiter.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Extract a column from a CSV.</p></li>
+<li><p><strong>Actual Command:</strong> <code>cut -f2 file.csv</code></p></li>
+<li><p><strong>Correction:</strong> Specify the delimiter:</p>
+<pre class="bash"><code>cut -d, -f2 file.csv</code></pre>
+<p>default is tab as the delimiter.</p></li>
+</ul>
+</div>
+<div id="overwriting-.bashrc" class="section level3">
+<h3>Overwriting <code>.bashrc</code></h3>
+<p><strong>Mistake:</strong> Using <code>&gt;</code> to update <code>.bashrc</code>.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Append to <code>.bashrc</code>.</p></li>
+<li><p><strong>Actual Command:</strong> <code>echo "export PATH=$PATH:/new/path" &gt; ~/.bashrc</code></p></li>
+<li><p><strong>Correction:</strong> Use <code>&gt;&gt;</code> for appending:</p>
+<pre class="bash"><code>echo &quot;export PATH=$PATH:/new/path&quot; &gt;&gt; ~/.bashrc</code></pre></li>
+</ul>
+</div>
+<div id="misinterpreting-awk-syntax" class="section level3">
+<h3>Misinterpreting <code>awk</code> syntax</h3>
+<p><strong>Mistake:</strong> Incorrect <code>awk</code> syntax.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Print the second column of a file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>awk {print $2} file</code></p></li>
+<li><p><strong>Correction:</strong> Use quoted expressions:</p>
+<pre class="bash"><code>awk &#39;{print $2}&#39; file</code></pre></li>
+</ul>
+</div>
+<div id="forgetting--p-with-mkdir" class="section level3">
+<h3>Forgetting <code>-p</code> with <code>mkdir</code></h3>
+<p><strong>Mistake:</strong> Not using <code>-p</code> with <code>mkdir</code>.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Create nested directories.</p></li>
+<li><p><strong>Actual Command:</strong> <code>mkdir /path/to/new/directory</code></p></li>
+<li><p><strong>Correction:</strong> Use <code>-p</code> to create intermediate directories:</p>
+<pre class="bash"><code>mkdir -p /path/to/new/directory</code></pre></li>
+</ul>
+<p>If the intermediate folders (to, new) does not exist, <code>mkdir</code> will error out.
+use <code>mkdir -p</code> instead.</p>
+</div>
+<div id="incorrect-use-of-pipe" class="section level3">
+<h3>Incorrect use of <code>|</code> (pipe)</h3>
+<p><strong>Mistake:</strong> Misplaced pipe operator.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Chain commands with a pipe.</p></li>
+<li><p><strong>Actual Command:</strong> <code>command1 | command2 | &gt; outputfile</code></p></li>
+<li><p><strong>Correction:</strong> Remove redundant <code>&gt;</code>:</p>
+<pre class="bash"><code>command1 | command2 &gt; outputfile</code></pre></li>
+</ul>
+<p>What’s your mistakes? Leave a comment!</p>
+</div>
