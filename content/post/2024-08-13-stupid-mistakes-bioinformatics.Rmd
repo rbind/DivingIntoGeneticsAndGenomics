@@ -435,11 +435,13 @@ use `mkdir -p` instead.
 
 - **Actual Command:** `command1 | command2 | > outputfile`
 
-- **Correction:** Remove redundant `>`:
+- **Correction:** Remove redundant `|`:
 
   ```bash
   command1 | command2 > outputfile
   ```
+  
+  Fun fact: `|>` is the built-in pipe in `R`.
 
  What's your mistakes? Leave a comment!
 

@@ -348,8 +348,9 @@ use <code>mkdir -p</code> instead.</p>
 <ul>
 <li><p><strong>What you meant to do:</strong> Chain commands with a pipe.</p></li>
 <li><p><strong>Actual Command:</strong> <code>command1 | command2 | &gt; outputfile</code></p></li>
-<li><p><strong>Correction:</strong> Remove redundant <code>&gt;</code>:</p>
-<pre class="bash"><code>command1 | command2 &gt; outputfile</code></pre></li>
+<li><p><strong>Correction:</strong> Remove redundant <code>|</code>:</p>
+<pre class="bash"><code>command1 | command2 &gt; outputfile</code></pre>
+<p>Fun fact: <code>|&gt;</code> is the built-in pipe in <code>R</code>.</p></li>
 </ul>
 <p>What’s your mistakes? Leave a comment!</p>
 </div>
