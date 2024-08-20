@@ -1,0 +1,49 @@
+---
+title: The Most Common Mistake In Bioinformatics, one-off error  
+author: Ming Tommy Tang
+date: '2024-08-19'
+slug: most-common-mistake-for-bioinformatics
+categories:
+  - unix
+  - bioinformatics
+tags:
+  - unix
+  - bioinformatics
+header:
+  caption: ''
+  image: ''
+---
+
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<p>In my <a href="https://divingintogeneticsandgenomics.com/post/stupid-mistakes-for-bioinformatics/">last blog post</a>, I talked about some common bioinformatics mistakes.</p>
+<p>Today, we are going to talk about THE MOST common bioinformatics mistake people make. And I think it deserves a separate post about it. Even some experienced programmers get it wrong and the mistake prevails in many bioinformatics software:</p>
+<p><strong>The one-off mistake!!</strong></p>
+<p>What is that?</p>
+<p>Genomics files such as <code>bed</code>, <code>vcf</code>, <code>gtf</code> etc come with a coordinate system. To describe a region a position in a genome, you specify something like chr3, 4-7. This means the region is on chromosome 3 and from base 4 to 7. But there are more nuances here..</p>
+<p>There are the 0-based and 1-based coordinates systems in genomics:</p>
+<p><img src="/img/coordinates_system.png" /></p>
+<p>The 0-based starts with 0 and the 1-based begins with 1. Why it matters?</p>
+<p>Different file formats (THE bioiFORMATics problem!!) use different systems:</p>
+<p><img src="/img/file_formats.png" /></p>
+<p>So if you are not careful, you will make one-off mistakes.</p>
+<p>I highly recommend you to read this old post on biostars: <a href="https://www.biostars.org/p/84686/" class="uri">https://www.biostars.org/p/84686/</a>​</p>
+<p>To make things worse :) you know R is 1-based and Python is 0-based!!</p>
+<p>If you use different languages to analyze the data, you must also be careful.</p>
+<p>some files such as bed file is 0 based. Two genomic regions:</p>
+<pre class="bash"><code>chr1 0 1000
+
+chr1 1000 2000</code></pre>
+<p>when you import that bed file into R using rtracklayer::import(), it will become</p>
+<pre class="bash"><code>chr1 1 1000
+
+chr1 1001 2000</code></pre>
+<p>The function converts it to 1 based internally (R is 1 based unlike Python).</p>
+<p>When you read the bed file with read.table and use <code>GenomicRanges::makeGRangesFromDataFrame()</code> to convert it to a GRanges object, do not forget to add 1 to the start before doing it.</p>
+<p>Similarly, when you write a GRanges object to disk using <code>rtracklayer::export</code>, you do not need to worry, R will convert it back to 0 based in the file. However, if you make a dataframe out of the GRanges object, and write that dataframe to file, remember to do start -1 before doing it.</p>
+<p>I hope you learned something new!</p>
+<p>Further reading: UCSC coordinate counting system <a href="https://genome-blog.gi.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/" class="uri">https://genome-blog.gi.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/</a></p>
+<p>Happy Learning!</p>
+<p>Tommy</p>
