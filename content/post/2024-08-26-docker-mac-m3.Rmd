@@ -1,0 +1,206 @@
+---
+title: A docker image to keep this site alive
+author: Ming Tommy Tang
+date: '2024-08-26'
+slug: docker-mac-m3
+categories:
+  - education
+  - bioinformatics
+  - docker
+tags:
+  - bioinformatics
+  - docker
+header:
+  caption: ''
+  image: ''
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+I have been writing blog posts for over 10 years. I was using [blogspot](https://crazyhottommy.blogspot.com/) and in 2018,
+I switched to `blogdown` and I love it.
+
+My blogdown website [divingintogeneticsandgenomics.com](divingintogeneticsandgenomics.com) was using `Hugo v0.42` and `blogdown v1.0`. It has been many years and now I have a macbook pro with an M3 chip. I could not install the old versions of the R packages to serve the site. 
+
+Docker comes to rescue!
+
+I have several old blog posts for docker. Read them here if you are interested:
+
+* [Run Rstudio server with singularity on HPC](https://divingintogeneticsandgenomics.com/post/run-rstudio-server-with-singularity-on-hpc/)
+* [How to run dockerized Rstudio server on google cloud](https://divingintogeneticsandgenomics.com/post/how-to-run-dockerized-rstudio-server-on-google-cloud/)
+* [Develop Bioconductor packages with docker container](https://divingintogeneticsandgenomics.com/post/develop-bioconductor-packages-with-docker-container/)
+
+With the help of ChatGPT, I successfully made a docker image to serve my blogdown site! Hopefully, it can run another 10 years.
+
+
+### Step 1: download docker
+
+
+go to https://www.docker.com/products/docker-desktop/
+
+to install docker.
+
+### Step 2 build a docker image 
+
+build a docker image from scratch with the help of chatGPT. Below is the docker file:
+
+```dockerfile
+# Use the Rocker RStudio image
+FROM rocker/rstudio:4
+
+
+# Install system dependencies, including fontconfig and freetype
+RUN apt-get update && apt-get install -y \
+    tzdata \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    libsqlite3-0 \
+    libclang-dev \
+    psmisc \
+    sudo \
+    wget \
+    zlib1g-dev \
+    libgit2-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    pkg-config \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libtiff5-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+
+# Set the timezone to avoid interactive mode
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set the timezone to Boston (EST)
+RUN echo "America/New_York" > /etc/timezone && \
+    ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+
+# Install Hugo (ARM64)
+RUN wget https://github.com/gohugoio/hugo/releases/download/v0.42/hugo_0.42_Linux-ARM64.tar.gz && \
+    tar -xvzf hugo_0.42_Linux-ARM64.tar.gz hugo && \
+    mv hugo /usr/local/bin/ && \
+    rm hugo_0.42_Linux-ARM64.tar.gz
+
+# Install blogdown package
+RUN R -e "install.packages('blogdown', version = '1.0', repos='http://cran.rstudio.com/')" 
+RUN R -e "install.packages('devtools')"
+RUN R -e "install.packages('tidyverse')"
+
+# Expose ports for RStudio Server and Hugo
+EXPOSE 8787 1313
+```
+build the image
+
+```bash
+docker build -t my-rstudio-blogdown .
+```
+use the pre-built rstudio image which contains rstudio server to avoid install it from scratch. 
+
+I tried to install Rstudio server inside the docker image and it gave me errors. common problem is the rstudio server deb file url is not correct. 
+
+Make sure it is ARM architechture compatible since I am using a macbook pro with M3 chip. 
+
+common errors are missing libraries during `apt-get install` for `devtools`. Even it did not error out during the image building process, the `devtools` does not work inside the Rstudio.
+
+`library(devtools)` shows the package is not installed.
+
+so I installed manually inside Rstudio:
+
+`install.packges("devtools")` 
+
+and get error messages for missing libraries. I then gave the error messages to ChatGPT, and it added the libraires:
+
+```dockerfile
+     zlib1g-dev \
+    libgit2-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    pkg-config \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libtiff5-dev \
+```
+
+I then iterate several times until I have devtools installed correctly during the image building process.
+
+### run the docker container 
+```
+docker run -d -p 8787:8787 -p 8080:8080 \
+    -v ~/githup_repo/DivingIntoGeneticsAndGenomics:/home/rstudio/my_blog \
+    -e USER=rstudio \
+    -e PASSWORD=test \
+    --name my-rstudio-hugo-container my-rstudio-blogdown
+```
+
+Go to `localhost:8787` to log in the Rstudio server. User name: rstudio, password: test.
+
+Within Rstudio, you need to specify the port (which we mapped to local 8080) and the host. If you do not specify the host to be `0.0.0.0`, you can not access the website either.
+
+```r
+blogdown::serve_site(port = 8080, host = '0.0.0.0')
+
+```
+
+Now, go to your web browser and type `localhost:8080` you should see the blogdown website!
+
+### additional glitch
+
+My blog uses hugo0.42, and blogdown1.0 can render the website, but the Rstudio add-in for creating a new post does not work. 
+
+Manually create a post inside the `content/post` folder using file name format "2024-08-11-my-test.Rmd" and use the yaml header with a format below: 
+
+```yaml
+
+---
+title: "Your Post Title"
+author: "Your Name"
+date: "2024-08-11"
+output:
+  blogdown::html_page:
+    self_contained: false
+tags: ["tag1", "tag2"]
+categories: ["category1"]
+---
+```
+
+### push the docker image to dockerhub
+
+I pushed the container to dockerhub so I can pull it on another macbook pro.
+
+```bash
+docker login
+
+docker tag my-rstudio-blogdown crazyhottommy/my-rstudio-blogdown:latest
+
+docker push crazyhottommy/my-rstudio-blogdown:latest
+
+```
+
+### Final tips:
+
+remove all containers and images 
+
+```bash
+docker rm -vf $(docker ps -aq)
+docker rmi -f $(docker images -aq)
+```
+
+You can git clone the docker file at https://github.com/crazyhottommy/blogdown1.0_hug0.4_docker
+
+Happy Learning!
+
+Tommy 
+
+
+
