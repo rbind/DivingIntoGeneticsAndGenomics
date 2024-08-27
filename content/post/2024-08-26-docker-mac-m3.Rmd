@@ -21,7 +21,7 @@ biology and bioinformatics.**
 I have been writing blog posts for over 10 years. I was using [blogspot](https://crazyhottommy.blogspot.com/) and in 2018,
 I switched to `blogdown` and I love it.
 
-My blogdown website [divingintogeneticsandgenomics.com](divingintogeneticsandgenomics.com) was using `Hugo v0.42` and `blogdown v1.0`. It has been many years and now I have a macbook pro with an M3 chip. I could not install the old versions of the R packages to serve the site. 
+My blogdown website `divingintogeneticsandgenomics.com` was using `Hugo v0.42` and `blogdown v1.0`. It has been many years and now I have a macbook pro with an M3 chip. I could not install the old versions of the R packages to serve the site. 
 
 Docker comes to rescue!
 
