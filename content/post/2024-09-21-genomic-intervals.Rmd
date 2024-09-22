@@ -121,11 +121,12 @@ Remember, I wrote my script in **2012**, two years after bedtools was published.
 
 As a beginner, ignorance of what's out there is the price to pay. (wink, follow me on X https://x.com/tangming2005, I tweet tools and papers)
 
-My story was not alone. Last Thursday, I had the pleasure to have dinner with [Dr. Ting Wang](https://genetics.wustl.edu/people/ting-wang-phdthe-sanford-and-karen-loewentheil-distinguished-professor-of-medicine-and-head-department-of-genetics/). 
+My story was not alone. Last Thursday, I had the pleasure and honor to have dinner with [Dr. Ting Wang](https://genetics.wustl.edu/people/ting-wang-phdthe-sanford-and-karen-loewentheil-distinguished-professor-of-medicine-and-head-department-of-genetics/). 
 We invited him to give a talk at our company.
 
 He told me that in the early days, he wrote a Perl script to do the intersection of 
-genomic regions and found TP53 binds to Transposable elements(TE). see his paper https://pubmed.ncbi.nlm.nih.gov/18003932/ **in 2007**.
+genomic regions and found TP53 binds to Transposable elements(TE). see his paper https://pubmed.ncbi.nlm.nih.gov/18003932/ **in 2007**. His lab has published 3 papers on 
+Nature Genetics on TE. e.g., [Pan-cancer analysis identifies tumor-specific antigens derived from transposable elements](https://pubmed.ncbi.nlm.nih.gov/36973455/).
 
 Of course, Ting was a formally trained PhD in bioinformatics and I am sure his Perl 
 script is much better than my crappy one.
