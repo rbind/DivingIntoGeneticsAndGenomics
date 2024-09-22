@@ -66,6 +66,7 @@ RUN apt-get update &amp;&amp; apt-get install -y \
     &amp;&amp; apt-get clean \
     &amp;&amp; rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update &amp;&amp; apt-get install -y libbz2-dev
 
 # Set the timezone to avoid interactive mode
 ENV DEBIAN_FRONTEND=noninteractive
@@ -82,10 +83,17 @@ RUN wget https://github.com/gohugoio/hugo/releases/download/v0.42/hugo_0.42_Linu
     mv hugo /usr/local/bin/ &amp;&amp; \
     rm hugo_0.42_Linux-ARM64.tar.gz
 
+#make a directory to be mounted to the host machine for installing R packages
+RUN mkdir /usr/local/lib/R/host-site-library
+
+RUN echo &#39;.libPaths(c(&quot;/usr/local/lib/R/host-site-library&quot;, .libPaths()))&#39; &gt; /home/rstudio/.Rprofile
+
 # Install blogdown package
 RUN R -e &quot;install.packages(&#39;blogdown&#39;, version = &#39;1.0&#39;, repos=&#39;http://cran.rstudio.com/&#39;)&quot; 
 RUN R -e &quot;install.packages(&#39;devtools&#39;)&quot;
 RUN R -e &quot;install.packages(&#39;tidyverse&#39;)&quot;
+
+
 
 # Expose ports for RStudio Server and Hugo
 EXPOSE 8787 1313</code></pre>
@@ -113,11 +121,17 @@ EXPOSE 8787 1313</code></pre>
 </div>
 <div id="run-the-docker-container" class="section level3">
 <h3>run the docker container</h3>
+<p>In your host machine, <code>mkdir ~/R/host-site-library</code>.</p>
 <pre><code>docker run -d -p 8787:8787 -p 8080:8080 \
     -v ~/githup_repo/DivingIntoGeneticsAndGenomics:/home/rstudio/my_blog \
+    -v ~/R/host-site-library:/usr/local/lib/R/host-site-library \
     -e USER=rstudio \
     -e PASSWORD=test \
     --name my-rstudio-hugo-container my-rstudio-blogdown</code></pre>
+<p><code>-v ~/R/host-site-library:/usr/local/lib/R/host-site-library</code> will mount the
+<code>~/R/host-site-library</code> folder to the <code>/usr/local/lib/R/host-site-library</code> inside
+the container. All your newly installed R packages will be stored there so you
+do not need to re-install them.</p>
 <p>Go to <code>localhost:8787</code> to log in the Rstudio server. User name: rstudio, password: test.</p>
 <p>Within Rstudio, you need to specify the port (which we mapped to local 8080) and the host. If you do not specify the host to be <code>0.0.0.0</code>, you can not access the website either.</p>
 <pre class="r"><code>blogdown::serve_site(port = 8080, host = &#39;0.0.0.0&#39;)

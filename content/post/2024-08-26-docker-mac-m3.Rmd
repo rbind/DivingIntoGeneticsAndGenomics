@@ -74,6 +74,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y libbz2-dev
 
 # Set the timezone to avoid interactive mode
 ENV DEBIAN_FRONTEND=noninteractive
@@ -90,10 +91,17 @@ RUN wget https://github.com/gohugoio/hugo/releases/download/v0.42/hugo_0.42_Linu
     mv hugo /usr/local/bin/ && \
     rm hugo_0.42_Linux-ARM64.tar.gz
 
+#make a directory to be mounted to the host machine for installing R packages
+RUN mkdir /usr/local/lib/R/host-site-library
+
+RUN echo '.libPaths(c("/usr/local/lib/R/host-site-library", .libPaths()))' > /home/rstudio/.Rprofile
+
 # Install blogdown package
 RUN R -e "install.packages('blogdown', version = '1.0', repos='http://cran.rstudio.com/')" 
 RUN R -e "install.packages('devtools')"
 RUN R -e "install.packages('tidyverse')"
+
+
 
 # Expose ports for RStudio Server and Hugo
 EXPOSE 8787 1313
@@ -135,13 +143,21 @@ and get error messages for missing libraries. I then gave the error messages to 
 I then iterate several times until I have devtools installed correctly during the image building process.
 
 ### run the docker container 
+
+In your host machine, `mkdir ~/R/host-site-library`.
+
 ```
 docker run -d -p 8787:8787 -p 8080:8080 \
     -v ~/githup_repo/DivingIntoGeneticsAndGenomics:/home/rstudio/my_blog \
+    -v ~/R/host-site-library:/usr/local/lib/R/host-site-library \
     -e USER=rstudio \
     -e PASSWORD=test \
     --name my-rstudio-hugo-container my-rstudio-blogdown
 ```
+`-v ~/R/host-site-library:/usr/local/lib/R/host-site-library` will mount the 
+`~/R/host-site-library` folder to the `/usr/local/lib/R/host-site-library` inside
+the container. All your newly installed R packages will be stored there so you
+do not need to re-install them.
 
 Go to `localhost:8787` to log in the Rstudio server. User name: rstudio, password: test.
 

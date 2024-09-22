@@ -1,0 +1,484 @@
+---
+title: You need to master it if you deal with genomics data 
+author: Ming Tommy Tang
+date: '2024-09-21'
+slug: genomic-interval
+categories:
+  - education
+  - bioinformatics
+  - data
+  - bioconductor
+tags:
+  - bioinformatics
+  - education
+  - bioconductor
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+```
+
+### Motivation 
+
+What's the most common problem you need to solve when dealing with genomics data?
+
+**For me, it is Genomic Intervals!**
+
+The genomics data usually represents linearly: chromosome name, start and end.
+
+We use it to define a region in the genome ( A peak from ChIP-seq data); 
+the location of a gene, a DNA methylation site ( a single point), a mutation call 
+(a single point), and a duplication region in cancer etc.
+
+When I first started to learn programming 12 years ago in a wet lab, my task was 
+to find where a set of peaks (from ChIP-seq) bind to genes. To solve this, we have 
+two files (dummy example below):
+
+a peak file with chr, start, end for each row
+
+```
+chr1 200 300 peak1
+chr2 400 500 peak2
+chr3 456 888 peak3
+.....
+```
+
+A gene file also has chr, start, end, and name for each row denoting the gene's transcription start sites (TSS) + 50 bp upstream and downstream:
+
+```
+chr1 250 350 gene1
+chr2 600 700 gene2
+chr3 700 800 gene3
+....
+```
+
+The task is "easy", find the overlaps of those two files (in fact, you can eyeball 
+this example, peak1 binds to gene1, peak3 binds to gene3)!
+
+As a beginner, I did not know much, so I read in both files with Python, loop over 
+the lines and compare.
+
+For two regions to overlap, chr should be the same and there could be the following 
+4 conditions:
+
+```
+
+                 start1 ------------------end1
+           start2----------------end2
+
+
+
+                start1 ------------------end1
+                           start2----------------end2
+
+
+
+              start1 ---------------------end1
+                     start2---------end2
+
+
+
+                 start1 ---------------end1
+              start2---------------------------end2
+
+```
+
+These are a lot of conditions to compare! Instead, we can find the conditions that the two regions do not overlap:
+
+```
+                                     start1 ------------------end1
+          start2----------------end2
+
+
+            start 1 ------------------end1
+                                           start2----------------end2
+```
+
+The comparison will be: if **NOT** ((start2 > end1) **or** (start1 > end2)): then two regions overlap! 
+My brute force method works! and I felt accomplished as a beginner.
+
+As I become a little more experienced, I get to know the [interval tree](https://en.wikipedia.org/wiki/Interval_tree) data structure 
+which makes those types of comparisons much faster and efficient.
+
+In **2010**, [bedtools](https://bedtools.readthedocs.io/en/latest/index.html) was published! and in a single command (`bedtools intersect`) you 
+can accomplish what I did with my Python script.
+
+Remember, I wrote my script in **2012**, two years after bedtools was published.
+
+**The problem was I did not know this tool even existed!**
+
+As a beginner, ignorance of what's out there is the price to pay. (wink, follow me on X https://x.com/tangming2005, I tweet tools and papers)
+
+My story was not alone. Last Thursday, I had the pleasure to have dinner with [Dr. Ting Wang](https://genetics.wustl.edu/people/ting-wang-phdthe-sanford-and-karen-loewentheil-distinguished-professor-of-medicine-and-head-department-of-genetics/). 
+We invited him to give a talk at our company.
+
+He told me that in the early days, he wrote a Perl script to do the intersection of 
+genomic regions and found TP53 binds to Transposable elements(TE). see his paper https://pubmed.ncbi.nlm.nih.gov/18003932/ **in 2007**.
+
+Of course, Ting was a formally trained PhD in bioinformatics and I am sure his Perl 
+script is much better than my crappy one.
+
+But this tells you how common this type of analysis is, and `bedtools` comes to the rescue in 2010.
+
+**Bouns:** watch [this video](https://www.youtube.com/watch?v=UHnRjGcMp8M&) on how I use conda to install bedtools.
+
+Later, I started to learn more about the Bioconductor ecosystem and learned the 
+`GenomicRanges` package which is the foundation of dealing with genomic intervals
+in `R`.
+
+You can work with bedtools on command line. But if you want to work within R,
+let's use `GenomicRanges`. Before that, we need to know `IRanges` upon which `GenomicRanges` is built.
+
+### Introduction to IRanges
+
+In Biconductor, the [`IRanges`](https://bioconductor.org/packages/release/bioc/html/IRanges.html) implements
+the Interval data structure.
+
+Let's take a look at some examples
+```{r}
+library(IRanges)
+ir <- IRanges(c(1, 8, 14, 15, 19), 
+              width=c(12, 6, 6, 15, 6))
+
+ir2 <- IRanges(c(5, 9, 12, 25, 50), 
+              width=c(3, 6, 6, 15, 6))
+
+ir 
+
+ir2
+```
+
+An IRanges object has start, end and width. 
+
+Let's visualize them.
+
+```{r}
+plotRanges <- function(x, xlim=x, main=deparse(substitute(x)),
+                        col="black", sep=0.5, ...) {
+         height <- 1
+         if (is(xlim, "IntegerRanges"))
+                 xlim <- c(min(start(xlim)), max(end(xlim)))
+         bins <- disjointBins(IRanges(start(x), end(x) + 1))
+        plot.new()
+        plot.window(xlim, c(0, max(bins)*(height + sep)))
+        ybottom <- bins * (sep + height) - height
+        rect(start(x)-0.5, ybottom, end(x)+0.5, ybottom + height, col=col, ...)
+        title(main)
+        axis(1)
+ }
+
+plotRanges(ir)
+
+plotRanges(ir2)
+```
+
+some useful functions from the package. Check the visualization to understand the 
+output of each function.
+
+`intersect`:
+```{r}
+intersect(ir, ir2)
+plotRanges(intersect(ir, ir2))
+```
+
+`reduce`:
+```{r}
+plotRanges(ir2)
+reduce(ir2)
+plotRanges(reduce(ir2))
+```
+
+`union`:
+```{r}
+union(ir, ir2)
+plotRanges(union(ir, ir2))
+```
+
+
+```{r}
+setdiff(ir, ir2)
+plotRanges(setdiff(ir, ir2))
+```
+
+`flank` generates flanking ranges for each range in x. If start is TRUE for a given range, the flanking occurs at the start, otherwise the end. The widths of the flanks are given by the width parameter.
+```{r}
+flank(ir, width = 2)
+plotRanges(flank(ir, width=2))
+```
+
+`shift` shifts all the ranges in x by the amount specified by the shift argument.
+
+```{r}
+shift(ir2, shift=2)
+
+plotRanges(ir2)
+plotRanges(shift(ir2, shift=2))
+```
+
+`resize` resizes the ranges to the specified width where either the start, end, or center is used as an anchor.
+```{r}
+resize(ir, width = 2, fix="start")
+plotRanges(resize(ir, width = 2, fix="start"))
+```
+
+
+`precede(x, subject, select=c("first", "all"))`: For each range in x, precede returns the index of the interval in subject that is directly preceded by the query range. **Overlapping ranges** are excluded. NA is returned when there are no qualifying ranges in subject.
+
+```{r}
+precede(ir, ir2)
+```
+
+`follow(x, subject, select=c("last", "all"))`: The opposite of precede, this function returns the index of the range in subject that a query range in x directly follows. Overlapping ranges are excluded. NA is returned when there are no qualifying ranges in subject
+
+```{r}
+follow(ir, ir2)
+```
+
+
+`gaps` and `disjoin`:
+
+```{r}
+plotRanges(ir2)
+gaps(ir2)
+plotRanges(gaps(ir2))
+
+disjoin(ir2)
+plotRanges(disjoin(ir2))
+```
+
+The most common operation is to find the overlaps.
+
+```{r}
+overlap<- findOverlaps(ir, ir2)
+overlap
+```
+`overlap` is a Hits object.
+
+```{r}
+queryHits(overlap)
+subjectHits(overlap)
+```
+It returns the indices of the query hits and the subject hits.
+
+You can turn it to a matrix:
+```{r}
+as.matrix(overlap)
+```
+
+`distance` returns the pair-wise distance of two GenomicRanges.
+The distance method is symmetric; y cannot be missing. If x and y are not the same length, the shortest will be recycled to match the length of the longest. The select argument is not available for distance because comparisons are made in a pair-wise fashion. The return value is the length of the longest of x and y.
+
+```{r}
+distance(ir, ir2)
+```
+
+`nearest` performs conventional nearest neighbor finding. Returns an integer vector 
+containing the index of the nearest neighbor range in subject for each range in query:
+
+```{r}
+nearest(ir, ir2)
+```
+
+### Introduction to GenomicRanges
+
+`GenomicRanges` is a natural extension of the `IRanges`, adding chromosome name
+and the strand information:
+
+```{r}
+#if (!require("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+# BiocManager::install("GenomicRanges")
+
+library(GenomicRanges)
+
+x <- GRanges("chr1", IRanges(c(2, 9) , c(7, 19)), strand=c("+", "-"))
+y <- GRanges("chr1", IRanges(5, 10), strand="-") 
+
+union(x, y)
+union(x, y, ignore.strand=TRUE)
+
+intersect(x, y)
+intersect(x, y, ignore.strand=TRUE)
+
+setdiff(x, y)
+setdiff(x, y, ignore.strand=TRUE)
+
+```
+
+Other functions behavior similarily with the ones in `IRanges`:
+
+```{r}
+flank(x, width = 2)
+
+promoters(x, upstream = 2, downstream = 2)
+```
+
+Notice that it takes account of the strand information. When the strand is `-`.
+the promoter returns the range around the `end` position.
+
+You can use `resize` to return the transcription start site:
+```{r}
+resize(x, width=1, fix = "start")
+```
+
+
+```{r}
+findOverlaps(x, y)
+```
+
+### A real-world example
+
+Let's see how can we use it for a real-world bioinformatics problem.
+
+Go to [GSE120885](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120885):
+
+Download HIF1a ChIP-seq peaks at  https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM3417778 
+
+Download HIF2a ChIP-seq peaks at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM3417780
+
+You should have two files downloaded 
+
+```
+# HIF1a
+GSM3417778_6h_0.5__PM14_1_peaks.bed.gz 
+
+# HIF2a
+GSM3417780_6h_0.5__PM9_1_peaks.bed.gz
+```
+
+HIF1α (Hypoxia-Inducible Factor 1α) and HIF2α (Hypoxia-Inducible Factor 2α) are transcription factors that help cells respond to low oxygen (hypoxia). HIF1α regulates genes involved in oxygen transport and metabolism, while HIF2α plays a role in more specific processes like stem cell function and vascular development. Both proteins are crucial in cancer biology, as they enable tumors to adapt to low oxygen conditions, promoting growth and survival under stress.
+
+Let's ask simple questions:
+
+* How many HIF1a peaks overlap with HIF2a peaks?
+* How many HIF1a peaks located at the promoter regions? (Note the peaks coordinates are hg19 version)
+* How to get the nearest genes of the HIF1a peaks?
+
+We can use `rtracklayer` to load the bed files.
+```{r}
+# BiocManager::install("rtracklayer")
+library(rtracklayer)
+HIF1_peaks<- import("~/blog_data/GSM3417778_6h_0.5__PM14_1_peaks.bed.gz")
+HIF2_peaks<- import("~/blog_data/GSM3417780_6h_0.5__PM9_1_peaks.bed.gz")
+
+HIF1_peaks
+HIF2_peaks
+```
+
+How many peaks HIF1a overlaps with HIF2a?
+
+```{r}
+length(HIF1_peaks)
+
+length(HIF2_peaks)
+
+subsetByOverlaps(HIF1_peaks, HIF2_peaks)
+```
+93 HIF1a peaks overlap with HIF2a peaks
+
+```{r}
+subsetByOverlaps(HIF2_peaks, HIF1_peaks)
+```
+94 HIF2a peaks overlap with HIF1a peaks.
+
+There must be 2 HIF2a peaks overlap with the same HIF1a peak.
+
+```{r}
+# BiocManager::install("TxDb.Hsapiens.UCSC.hg19.knownGene")
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(org.Hs.eg.db)
+library(AnnotationDbi)
+
+
+library(dplyr)
+txdb<- TxDb.Hsapiens.UCSC.hg19.knownGene
+
+## get the promoters
+hg19_genes<- genes(txdb)
+
+gene_symbols <- AnnotationDbi::select(org.Hs.eg.db, 
+                                      keys = hg19_genes$gene_id, 
+                                      column = "SYMBOL", 
+                                      keytype = "ENTREZID", 
+                                      multiVals = "first")
+
+head(gene_symbols)
+
+# double check the id order is the same
+all.equal(gene_symbols$ENTREZID, hg19_genes$gene_id)
+
+# add the gene symbol to it
+hg19_genes$symbol<- gene_symbols$SYMBOL
+
+hg19_promoters<- promoters(hg19_genes, upstream = 2000, downstream = 2000)
+
+hg19_promoters
+
+```
+
+How many HIF1a peaks overlap with promoters?
+
+```{r}
+subsetByOverlaps(HIF1_peaks, hg19_promoters)
+```
+
+275 peaks are at the promoter region.
+
+what genes are nearby?
+```{r}
+nearby_gene_index<- nearest(HIF1_peaks, hg19_promoters)
+
+# there is NAs in the index. 
+table(is.na(nearby_gene_index))
+HIF1_peaks<- HIF1_peaks[!is.na(nearby_gene_index)]
+
+# remove the NAs
+nearby_gene_index<- nearby_gene_index[!is.na(nearby_gene_index)]
+
+# the nearest genes 
+hg19_promoters[nearby_gene_index]
+
+# distance between the peak and the TSS of the nearest gene
+distance_to_peaks<- distance(HIF1_peaks, 
+                    resize(hg19_genes, width =1, fix="start")[nearby_gene_index])
+```
+
+combine the peaks and the gene information
+
+```{r}
+peak_df<- as.data.frame(HIF1_peaks) 
+
+peak_df$gene_id<- hg19_promoters[nearby_gene_index]$gene_id
+
+peak_df$symbol<- hg19_promoters[nearby_gene_index]$symbol
+
+peak_df$distance<- distance_to_peaks
+
+head(peak_df)
+```
+
+Hoary! We annotated the peaks with the closest genes from scratch!
+
+### Final note
+
+You should use well-tested packages such as [`ChIPseeker`](https://bioconductor.org/packages/release/bioc/html/ChIPseeker.html) to do such analysis, but
+understanding the basics and the low-level functions is super useful!
+
+Happy Learning!
+
+Tommy
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**

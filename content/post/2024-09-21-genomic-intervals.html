@@ -1,0 +1,641 @@
+---
+title: You need to master it if you deal with genomics data 
+author: Ming Tommy Tang
+date: '2024-09-21'
+slug: genomic-interval
+categories:
+  - education
+  - bioinformatics
+  - data
+  - bioconductor
+tags:
+  - bioinformatics
+  - education
+  - bioconductor
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<div id="motivation" class="section level3">
+<h3>Motivation</h3>
+<p>What’s the most common problem you need to solve when dealing with genomics data?</p>
+<p><strong>For me, it is Genomic Intervals!</strong></p>
+<p>The genomics data usually represents linearly: chromosome name, start and end.</p>
+<p>We use it to define a region in the genome ( A peak from ChIP-seq data);
+the location of a gene, a DNA methylation site ( a single point), a mutation call
+(a single point), and a duplication region in cancer etc.</p>
+<p>When I first started to learn programming 12 years ago in a wet lab, my task was
+to find where a set of peaks (from ChIP-seq) bind to genes. To solve this, we have
+two files (dummy example below):</p>
+<p>a peak file with chr, start, end for each row</p>
+<pre><code>chr1 200 300 peak1
+chr2 400 500 peak2
+chr3 456 888 peak3
+.....</code></pre>
+<p>A gene file also has chr, start, end, and name for each row denoting the gene’s transcription start sites (TSS) + 50 bp upstream and downstream:</p>
+<pre><code>chr1 250 350 gene1
+chr2 600 700 gene2
+chr3 700 800 gene3
+....</code></pre>
+<p>The task is “easy”, find the overlaps of those two files (in fact, you can eyeball
+this example, peak1 binds to gene1, peak3 binds to gene3)!</p>
+<p>As a beginner, I did not know much, so I read in both files with Python, loop over
+the lines and compare.</p>
+<p>For two regions to overlap, chr should be the same and there could be the following
+4 conditions:</p>
+<pre><code>
+                 start1 ------------------end1
+           start2----------------end2
+
+
+
+                start1 ------------------end1
+                           start2----------------end2
+
+
+
+              start1 ---------------------end1
+                     start2---------end2
+
+
+
+                 start1 ---------------end1
+              start2---------------------------end2
+</code></pre>
+<p>These are a lot of conditions to compare! Instead, we can find the conditions that the two regions do not overlap:</p>
+<pre><code>                                     start1 ------------------end1
+          start2----------------end2
+
+
+            start 1 ------------------end1
+                                           start2----------------end2</code></pre>
+<p>The comparison will be: if <strong>NOT</strong> ((start2 &gt; end1) <strong>or</strong> (start1 &gt; end2)): then two regions overlap!
+My brute force method works! and I felt accomplished as a beginner.</p>
+<p>As I become a little more experienced, I get to know the <a href="https://en.wikipedia.org/wiki/Interval_tree">interval tree</a> data structure
+which makes those types of comparisons much faster and efficient.</p>
+<p>In <strong>2010</strong>, <a href="https://bedtools.readthedocs.io/en/latest/index.html">bedtools</a> was published! and in a single command (<code>bedtools intersect</code>) you
+can accomplish what I did with my Python script.</p>
+<p>Remember, I wrote my script in <strong>2012</strong>, two years after bedtools was published.</p>
+<p><strong>The problem was I did not know this tool even existed!</strong></p>
+<p>As a beginner, ignorance of what’s out there is the price to pay. (wink, follow me on X <a href="https://x.com/tangming2005" class="uri">https://x.com/tangming2005</a>, I tweet tools and papers)</p>
+<p>My story was not alone. Last Thursday, I had the pleasure to have dinner with <a href="https://genetics.wustl.edu/people/ting-wang-phdthe-sanford-and-karen-loewentheil-distinguished-professor-of-medicine-and-head-department-of-genetics/">Dr. Ting Wang</a>.
+We invited him to give a talk at our company.</p>
+<p>He told me that in the early days, he wrote a Perl script to do the intersection of
+genomic regions and found TP53 binds to Transposable elements(TE). see his paper <a href="https://pubmed.ncbi.nlm.nih.gov/18003932/" class="uri">https://pubmed.ncbi.nlm.nih.gov/18003932/</a> <strong>in 2007</strong>.</p>
+<p>Of course, Ting was a formally trained PhD in bioinformatics and I am sure his Perl
+script is much better than my crappy one.</p>
+<p>But this tells you how common this type of analysis is, and <code>bedtools</code> comes to the rescue in 2010.</p>
+<p><strong>Bouns:</strong> watch <a href="https://www.youtube.com/watch?v=UHnRjGcMp8M&amp;">this video</a> on how I use conda to install bedtools.</p>
+<p>Later, I started to learn more about the Bioconductor ecosystem and learned the
+<code>GenomicRanges</code> package which is the foundation of dealing with genomic intervals
+in <code>R</code>.</p>
+<p>You can work with bedtools on command line. But if you want to work within R,
+let’s use <code>GenomicRanges</code>. Before that, we need to know <code>IRanges</code> upon which <code>GenomicRanges</code> is built.</p>
+</div>
+<div id="introduction-to-iranges" class="section level3">
+<h3>Introduction to IRanges</h3>
+<p>In Biconductor, the <a href="https://bioconductor.org/packages/release/bioc/html/IRanges.html"><code>IRanges</code></a> implements
+the Interval data structure.</p>
+<p>Let’s take a look at some examples</p>
+<pre class="r"><code>library(IRanges)
+ir &lt;- IRanges(c(1, 8, 14, 15, 19), 
+              width=c(12, 6, 6, 15, 6))
+
+ir2 &lt;- IRanges(c(5, 9, 12, 25, 50), 
+              width=c(3, 6, 6, 15, 6))
+
+ir </code></pre>
+<pre><code>#&gt; IRanges object with 5 ranges and 0 metadata columns:
+#&gt;           start       end     width
+#&gt;       &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+#&gt;   [1]         1        12        12
+#&gt;   [2]         8        13         6
+#&gt;   [3]        14        19         6
+#&gt;   [4]        15        29        15
+#&gt;   [5]        19        24         6</code></pre>
+<pre class="r"><code>ir2</code></pre>
+<pre><code>#&gt; IRanges object with 5 ranges and 0 metadata columns:
+#&gt;           start       end     width
+#&gt;       &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+#&gt;   [1]         5         7         3
+#&gt;   [2]         9        14         6
+#&gt;   [3]        12        17         6
+#&gt;   [4]        25        39        15
+#&gt;   [5]        50        55         6</code></pre>
+<p>An IRanges object has start, end and width.</p>
+<p>Let’s visualize them.</p>
+<pre class="r"><code>plotRanges &lt;- function(x, xlim=x, main=deparse(substitute(x)),
+                        col=&quot;black&quot;, sep=0.5, ...) {
+         height &lt;- 1
+         if (is(xlim, &quot;IntegerRanges&quot;))
+                 xlim &lt;- c(min(start(xlim)), max(end(xlim)))
+         bins &lt;- disjointBins(IRanges(start(x), end(x) + 1))
+        plot.new()
+        plot.window(xlim, c(0, max(bins)*(height + sep)))
+        ybottom &lt;- bins * (sep + height) - height
+        rect(start(x)-0.5, ybottom, end(x)+0.5, ybottom + height, col=col, ...)
+        title(main)
+        axis(1)
+ }
+
+plotRanges(ir)</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>plotRanges(ir2)</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<p>some useful functions from the package. Check the visualization to understand the
+output of each function.</p>
+<p><code>intersect</code>:</p>
+<pre class="r"><code>intersect(ir, ir2)</code></pre>
+<pre><code>#&gt; IRanges object with 3 ranges and 0 metadata columns:
+#&gt;           start       end     width
+#&gt;       &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+#&gt;   [1]         5         7         3
+#&gt;   [2]         9        17         9
+#&gt;   [3]        25        29         5</code></pre>
+<pre class="r"><code>plotRanges(intersect(ir, ir2))</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><code>reduce</code>:</p>
+<pre class="r"><code>plotRanges(ir2)</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>reduce(ir2)</code></pre>
+<pre><code>#&gt; IRanges object with 4 ranges and 0 metadata columns:
+#&gt;           start       end     width
+#&gt;       &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+#&gt;   [1]         5         7         3
+#&gt;   [2]         9        17         9
+#&gt;   [3]        25        39        15
+#&gt;   [4]        50        55         6</code></pre>
+<pre class="r"><code>plotRanges(reduce(ir2))</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<p><code>union</code>:</p>
+<pre class="r"><code>union(ir, ir2)</code></pre>
+<pre><code>#&gt; IRanges object with 2 ranges and 0 metadata columns:
+#&gt;           start       end     width
+#&gt;       &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+#&gt;   [1]         1        39        39
+#&gt;   [2]        50        55         6</code></pre>
+<pre class="r"><code>plotRanges(union(ir, ir2))</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>setdiff(ir, ir2)</code></pre>
+<pre><code>#&gt; IRanges object with 3 ranges and 0 metadata columns:
+#&gt;           start       end     width
+#&gt;       &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+#&gt;   [1]         1         4         4
+#&gt;   [2]         8         8         1
+#&gt;   [3]        18        24         7</code></pre>
+<pre class="r"><code>plotRanges(setdiff(ir, ir2))</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><code>flank</code> generates flanking ranges for each range in x. If start is TRUE for a given range, the flanking occurs at the start, otherwise the end. The widths of the flanks are given by the width parameter.</p>
+<pre class="r"><code>flank(ir, width = 2)</code></pre>
+<pre><code>#&gt; IRanges object with 5 ranges and 0 metadata columns:
+#&gt;           start       end     width
+#&gt;       &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+#&gt;   [1]        -1         0         2
+#&gt;   [2]         6         7         2
+#&gt;   [3]        12        13         2
+#&gt;   [4]        13        14         2
+#&gt;   [5]        17        18         2</code></pre>
+<pre class="r"><code>plotRanges(flank(ir, width=2))</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><code>shift</code> shifts all the ranges in x by the amount specified by the shift argument.</p>
+<pre class="r"><code>shift(ir2, shift=2)</code></pre>
+<pre><code>#&gt; IRanges object with 5 ranges and 0 metadata columns:
+#&gt;           start       end     width
+#&gt;       &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+#&gt;   [1]         7         9         3
+#&gt;   [2]        11        16         6
+#&gt;   [3]        14        19         6
+#&gt;   [4]        27        41        15
+#&gt;   [5]        52        57         6</code></pre>
+<pre class="r"><code>plotRanges(ir2)</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>plotRanges(shift(ir2, shift=2))</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<p><code>resize</code> resizes the ranges to the specified width where either the start, end, or center is used as an anchor.</p>
+<pre class="r"><code>resize(ir, width = 2, fix=&quot;start&quot;)</code></pre>
+<pre><code>#&gt; IRanges object with 5 ranges and 0 metadata columns:
+#&gt;           start       end     width
+#&gt;       &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+#&gt;   [1]         1         2         2
+#&gt;   [2]         8         9         2
+#&gt;   [3]        14        15         2
+#&gt;   [4]        15        16         2
+#&gt;   [5]        19        20         2</code></pre>
+<pre class="r"><code>plotRanges(resize(ir, width = 2, fix=&quot;start&quot;))</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><code>precede(x, subject, select=c("first", "all"))</code>: For each range in x, precede returns the index of the interval in subject that is directly preceded by the query range. <strong>Overlapping ranges</strong> are excluded. NA is returned when there are no qualifying ranges in subject.</p>
+<pre class="r"><code>precede(ir, ir2)</code></pre>
+<pre><code>#&gt; [1] 4 4 4 5 4</code></pre>
+<p><code>follow(x, subject, select=c("last", "all"))</code>: The opposite of precede, this function returns the index of the range in subject that a query range in x directly follows. Overlapping ranges are excluded. NA is returned when there are no qualifying ranges in subject</p>
+<pre class="r"><code>follow(ir, ir2)</code></pre>
+<pre><code>#&gt; [1] NA  1  1  2  3</code></pre>
+<p><code>gaps</code> and <code>disjoin</code>:</p>
+<pre class="r"><code>plotRanges(ir2)</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code>gaps(ir2)</code></pre>
+<pre><code>#&gt; IRanges object with 3 ranges and 0 metadata columns:
+#&gt;           start       end     width
+#&gt;       &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+#&gt;   [1]         8         8         1
+#&gt;   [2]        18        24         7
+#&gt;   [3]        40        49        10</code></pre>
+<pre class="r"><code>plotRanges(gaps(ir2))</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
+<pre class="r"><code>disjoin(ir2)</code></pre>
+<pre><code>#&gt; IRanges object with 6 ranges and 0 metadata columns:
+#&gt;           start       end     width
+#&gt;       &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+#&gt;   [1]         5         7         3
+#&gt;   [2]         9        11         3
+#&gt;   [3]        12        14         3
+#&gt;   [4]        15        17         3
+#&gt;   [5]        25        39        15
+#&gt;   [6]        50        55         6</code></pre>
+<pre class="r"><code>plotRanges(disjoin(ir2))</code></pre>
+<p><img src="/post/2024-09-21-genomic-intervals_files/figure-html/unnamed-chunk-13-3.png" width="672" /></p>
+<p>The most common operation is to find the overlaps.</p>
+<pre class="r"><code>overlap&lt;- findOverlaps(ir, ir2)
+overlap</code></pre>
+<pre><code>#&gt; Hits object with 9 hits and 0 metadata columns:
+#&gt;       queryHits subjectHits
+#&gt;       &lt;integer&gt;   &lt;integer&gt;
+#&gt;   [1]         1           1
+#&gt;   [2]         1           2
+#&gt;   [3]         1           3
+#&gt;   [4]         2           2
+#&gt;   [5]         2           3
+#&gt;   [6]         3           2
+#&gt;   [7]         3           3
+#&gt;   [8]         4           3
+#&gt;   [9]         4           4
+#&gt;   -------
+#&gt;   queryLength: 5 / subjectLength: 5</code></pre>
+<p><code>overlap</code> is a Hits object.</p>
+<pre class="r"><code>queryHits(overlap)</code></pre>
+<pre><code>#&gt; [1] 1 1 1 2 2 3 3 4 4</code></pre>
+<pre class="r"><code>subjectHits(overlap)</code></pre>
+<pre><code>#&gt; [1] 1 2 3 2 3 2 3 3 4</code></pre>
+<p>It returns the indices of the query hits and the subject hits.</p>
+<p>You can turn it to a matrix:</p>
+<pre class="r"><code>as.matrix(overlap)</code></pre>
+<pre><code>#&gt;       queryHits subjectHits
+#&gt;  [1,]         1           1
+#&gt;  [2,]         1           2
+#&gt;  [3,]         1           3
+#&gt;  [4,]         2           2
+#&gt;  [5,]         2           3
+#&gt;  [6,]         3           2
+#&gt;  [7,]         3           3
+#&gt;  [8,]         4           3
+#&gt;  [9,]         4           4</code></pre>
+<p><code>distance</code> returns the pair-wise distance of two GenomicRanges.
+The distance method is symmetric; y cannot be missing. If x and y are not the same length, the shortest will be recycled to match the length of the longest. The select argument is not available for distance because comparisons are made in a pair-wise fashion. The return value is the length of the longest of x and y.</p>
+<pre class="r"><code>distance(ir, ir2)</code></pre>
+<pre><code>#&gt; [1]  0  0  0  0 25</code></pre>
+<p><code>nearest</code> performs conventional nearest neighbor finding. Returns an integer vector
+containing the index of the nearest neighbor range in subject for each range in query:</p>
+<pre class="r"><code>nearest(ir, ir2)</code></pre>
+<pre><code>#&gt; [1] 1 1 2 2 4</code></pre>
+</div>
+<div id="introduction-to-genomicranges" class="section level3">
+<h3>Introduction to GenomicRanges</h3>
+<p><code>GenomicRanges</code> is a natural extension of the <code>IRanges</code>, adding chromosome name
+and the strand information:</p>
+<pre class="r"><code>#if (!require(&quot;BiocManager&quot;, quietly = TRUE))
+#    install.packages(&quot;BiocManager&quot;)
+# BiocManager::install(&quot;GenomicRanges&quot;)
+
+library(GenomicRanges)
+
+x &lt;- GRanges(&quot;chr1&quot;, IRanges(c(2, 9) , c(7, 19)), strand=c(&quot;+&quot;, &quot;-&quot;))
+y &lt;- GRanges(&quot;chr1&quot;, IRanges(5, 10), strand=&quot;-&quot;) 
+
+union(x, y)</code></pre>
+<pre><code>#&gt; GRanges object with 2 ranges and 0 metadata columns:
+#&gt;       seqnames    ranges strand
+#&gt;          &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt;
+#&gt;   [1]     chr1       2-7      +
+#&gt;   [2]     chr1      5-19      -
+#&gt;   -------
+#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>union(x, y, ignore.strand=TRUE)</code></pre>
+<pre><code>#&gt; GRanges object with 1 range and 0 metadata columns:
+#&gt;       seqnames    ranges strand
+#&gt;          &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt;
+#&gt;   [1]     chr1      2-19      *
+#&gt;   -------
+#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>intersect(x, y)</code></pre>
+<pre><code>#&gt; GRanges object with 1 range and 0 metadata columns:
+#&gt;       seqnames    ranges strand
+#&gt;          &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt;
+#&gt;   [1]     chr1      9-10      -
+#&gt;   -------
+#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>intersect(x, y, ignore.strand=TRUE)</code></pre>
+<pre><code>#&gt; GRanges object with 2 ranges and 0 metadata columns:
+#&gt;       seqnames    ranges strand
+#&gt;          &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt;
+#&gt;   [1]     chr1       5-7      *
+#&gt;   [2]     chr1      9-10      *
+#&gt;   -------
+#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>setdiff(x, y)</code></pre>
+<pre><code>#&gt; GRanges object with 2 ranges and 0 metadata columns:
+#&gt;       seqnames    ranges strand
+#&gt;          &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt;
+#&gt;   [1]     chr1       2-7      +
+#&gt;   [2]     chr1     11-19      -
+#&gt;   -------
+#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>setdiff(x, y, ignore.strand=TRUE)</code></pre>
+<pre><code>#&gt; GRanges object with 2 ranges and 0 metadata columns:
+#&gt;       seqnames    ranges strand
+#&gt;          &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt;
+#&gt;   [1]     chr1       2-4      *
+#&gt;   [2]     chr1     11-19      *
+#&gt;   -------
+#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</code></pre>
+<p>Other functions behavior similarily with the ones in <code>IRanges</code>:</p>
+<pre class="r"><code>flank(x, width = 2)</code></pre>
+<pre><code>#&gt; GRanges object with 2 ranges and 0 metadata columns:
+#&gt;       seqnames    ranges strand
+#&gt;          &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt;
+#&gt;   [1]     chr1       0-1      +
+#&gt;   [2]     chr1     20-21      -
+#&gt;   -------
+#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>promoters(x, upstream = 2, downstream = 2)</code></pre>
+<pre><code>#&gt; GRanges object with 2 ranges and 0 metadata columns:
+#&gt;       seqnames    ranges strand
+#&gt;          &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt;
+#&gt;   [1]     chr1       0-3      +
+#&gt;   [2]     chr1     18-21      -
+#&gt;   -------
+#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</code></pre>
+<p>Notice that it takes account of the strand information. When the strand is <code>-</code>.
+the promoter returns the range around the <code>end</code> position.</p>
+<p>You can use <code>resize</code> to return the transcription start site:</p>
+<pre class="r"><code>resize(x, width=1, fix = &quot;start&quot;)</code></pre>
+<pre><code>#&gt; GRanges object with 2 ranges and 0 metadata columns:
+#&gt;       seqnames    ranges strand
+#&gt;          &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt;
+#&gt;   [1]     chr1         2      +
+#&gt;   [2]     chr1        19      -
+#&gt;   -------
+#&gt;   seqinfo: 1 sequence from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>findOverlaps(x, y)</code></pre>
+<pre><code>#&gt; Hits object with 1 hit and 0 metadata columns:
+#&gt;       queryHits subjectHits
+#&gt;       &lt;integer&gt;   &lt;integer&gt;
+#&gt;   [1]         2           1
+#&gt;   -------
+#&gt;   queryLength: 2 / subjectLength: 1</code></pre>
+</div>
+<div id="a-real-world-example" class="section level3">
+<h3>A real-world example</h3>
+<p>Let’s see how can we use it for a real-world bioinformatics problem.</p>
+<p>Go to <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120885">GSE120885</a>:</p>
+<p>Download HIF1a ChIP-seq peaks at <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM3417778" class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM3417778</a></p>
+<p>Download HIF2a ChIP-seq peaks at <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM3417780" class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM3417780</a></p>
+<p>You should have two files downloaded</p>
+<pre><code># HIF1a
+GSM3417778_6h_0.5__PM14_1_peaks.bed.gz 
+
+# HIF2a
+GSM3417780_6h_0.5__PM9_1_peaks.bed.gz</code></pre>
+<p>HIF1α (Hypoxia-Inducible Factor 1α) and HIF2α (Hypoxia-Inducible Factor 2α) are transcription factors that help cells respond to low oxygen (hypoxia). HIF1α regulates genes involved in oxygen transport and metabolism, while HIF2α plays a role in more specific processes like stem cell function and vascular development. Both proteins are crucial in cancer biology, as they enable tumors to adapt to low oxygen conditions, promoting growth and survival under stress.</p>
+<p>Let’s ask simple questions:</p>
+<ul>
+<li>How many HIF1a peaks overlap with HIF2a peaks?</li>
+<li>How many HIF1a peaks located at the promoter regions? (Note the peaks coordinates are hg19 version)</li>
+<li>How to get the nearest genes of the HIF1a peaks?</li>
+</ul>
+<p>We can use <code>rtracklayer</code> to load the bed files.</p>
+<pre class="r"><code># BiocManager::install(&quot;rtracklayer&quot;)
+library(rtracklayer)
+HIF1_peaks&lt;- import(&quot;~/blog_data/GSM3417778_6h_0.5__PM14_1_peaks.bed.gz&quot;)
+HIF2_peaks&lt;- import(&quot;~/blog_data/GSM3417780_6h_0.5__PM9_1_peaks.bed.gz&quot;)
+
+HIF1_peaks</code></pre>
+<pre><code>#&gt; GRanges object with 1496 ranges and 2 metadata columns:
+#&gt;          seqnames              ranges strand |           name     score
+#&gt;             &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; |    &lt;character&gt; &lt;numeric&gt;
+#&gt;      [1]     chr1       763060-763168      * |    MACS_peak_1     60.05
+#&gt;      [2]     chr1       954905-955303      * |    MACS_peak_2    106.52
+#&gt;      [3]     chr1     5439920-5440090      * |    MACS_peak_3     51.16
+#&gt;      [4]     chr1     5765488-5765761      * |    MACS_peak_4     57.23
+#&gt;      [5]     chr1     5882033-5882303      * |    MACS_peak_5     50.23
+#&gt;      ...      ...                 ...    ... .            ...       ...
+#&gt;   [1492]     chrX   80823360-80823533      * | MACS_peak_1492     59.37
+#&gt;   [1493]     chrX 133683313-133683581      * | MACS_peak_1493    119.01
+#&gt;   [1494]     chrX 151143115-151143368      * | MACS_peak_1494     93.84
+#&gt;   [1495]     chrX 152582879-152583036      * | MACS_peak_1495     53.76
+#&gt;   [1496]     chrX 153606352-153606601      * | MACS_peak_1496     68.16
+#&gt;   -------
+#&gt;   seqinfo: 29 sequences from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>HIF2_peaks</code></pre>
+<pre><code>#&gt; GRanges object with 1417 ranges and 2 metadata columns:
+#&gt;          seqnames              ranges strand |           name     score
+#&gt;             &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; |    &lt;character&gt; &lt;numeric&gt;
+#&gt;      [1]     chr1     2383154-2383508      * |    MACS_peak_1     82.11
+#&gt;      [2]     chr1     2566751-2567041      * |    MACS_peak_2     51.35
+#&gt;      [3]     chr1     3459508-3460142      * |    MACS_peak_3     96.47
+#&gt;      [4]     chr1     3464750-3465045      * |    MACS_peak_4     51.45
+#&gt;      [5]     chr1     4318344-4318487      * |    MACS_peak_5     61.02
+#&gt;      ...      ...                 ...    ... .            ...       ...
+#&gt;   [1413]     chrX 102862582-102862698      * | MACS_peak_1413     53.25
+#&gt;   [1414]     chrX 116435651-116435799      * | MACS_peak_1414     50.49
+#&gt;   [1415]     chrX 127756374-127756490      * | MACS_peak_1415     54.87
+#&gt;   [1416]     chrX 130129816-130129963      * | MACS_peak_1416     50.70
+#&gt;   [1417]     chrX 142617589-142617695      * | MACS_peak_1417     50.34
+#&gt;   -------
+#&gt;   seqinfo: 26 sequences from an unspecified genome; no seqlengths</code></pre>
+<p>How many peaks HIF1a overlaps with HIF2a?</p>
+<pre class="r"><code>length(HIF1_peaks)</code></pre>
+<pre><code>#&gt; [1] 1496</code></pre>
+<pre class="r"><code>length(HIF2_peaks)</code></pre>
+<pre><code>#&gt; [1] 1417</code></pre>
+<pre class="r"><code>subsetByOverlaps(HIF1_peaks, HIF2_peaks)</code></pre>
+<pre><code>#&gt; GRanges object with 93 ranges and 2 metadata columns:
+#&gt;              seqnames              ranges strand |           name     score
+#&gt;                 &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; |    &lt;character&gt; &lt;numeric&gt;
+#&gt;    [1]           chr1     8938337-8939542      * |    MACS_peak_9   1224.68
+#&gt;    [2]           chr1   21564937-21565326      * |   MACS_peak_23     90.64
+#&gt;    [3]           chr1   23503867-23504391      * |   MACS_peak_24     58.14
+#&gt;    [4]           chr1   65614184-65614750      * |   MACS_peak_45    369.22
+#&gt;    [5]           chr1 142535453-142535612      * |   MACS_peak_58     66.92
+#&gt;    ...            ...                 ...    ... .            ...       ...
+#&gt;   [89]           chr8 134387536-134388301      * | MACS_peak_1411    421.12
+#&gt;   [90]           chr9   93956056-93956397      * | MACS_peak_1448     57.95
+#&gt;   [91]           chr9 121093933-121094280      * | MACS_peak_1468    135.11
+#&gt;   [92]           chr9 136202761-136203184      * | MACS_peak_1483     54.57
+#&gt;   [93] chrUn_gl000220       118399-126340      * | MACS_peak_1487    101.57
+#&gt;   -------
+#&gt;   seqinfo: 29 sequences from an unspecified genome; no seqlengths</code></pre>
+<p>93 HIF1a peaks overlap with HIF2a peaks</p>
+<pre class="r"><code>subsetByOverlaps(HIF2_peaks, HIF1_peaks)</code></pre>
+<pre><code>#&gt; GRanges object with 94 ranges and 2 metadata columns:
+#&gt;              seqnames              ranges strand |           name     score
+#&gt;                 &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; |    &lt;character&gt; &lt;numeric&gt;
+#&gt;    [1]           chr1     8938913-8939522      * |   MACS_peak_11    251.69
+#&gt;    [2]           chr1   21564813-21565350      * |   MACS_peak_33    389.00
+#&gt;    [3]           chr1   23503900-23504222      * |   MACS_peak_36     52.22
+#&gt;    [4]           chr1   65614200-65614665      * |   MACS_peak_69    143.21
+#&gt;    [5]           chr1 142535444-142535599      * |   MACS_peak_93     68.69
+#&gt;    ...            ...                 ...    ... .            ...       ...
+#&gt;   [90]           chr8 134387445-134388247      * | MACS_peak_1329    224.87
+#&gt;   [91]           chr9   93955941-93956494      * | MACS_peak_1369    363.15
+#&gt;   [92]           chr9 121094013-121094130      * | MACS_peak_1391     63.00
+#&gt;   [93]           chr9 136203030-136203291      * | MACS_peak_1402     51.10
+#&gt;   [94] chrUn_gl000220       118416-125420      * | MACS_peak_1410    212.47
+#&gt;   -------
+#&gt;   seqinfo: 26 sequences from an unspecified genome; no seqlengths</code></pre>
+<p>94 HIF2a peaks overlap with HIF1a peaks.</p>
+<p>There must be 2 HIF2a peaks overlap with the same HIF1a peak.</p>
+<pre class="r"><code># BiocManager::install(&quot;TxDb.Hsapiens.UCSC.hg19.knownGene&quot;)
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(org.Hs.eg.db)
+library(AnnotationDbi)
+
+
+library(dplyr)
+txdb&lt;- TxDb.Hsapiens.UCSC.hg19.knownGene
+
+## get the promoters
+hg19_genes&lt;- genes(txdb)
+
+gene_symbols &lt;- AnnotationDbi::select(org.Hs.eg.db, 
+                                      keys = hg19_genes$gene_id, 
+                                      column = &quot;SYMBOL&quot;, 
+                                      keytype = &quot;ENTREZID&quot;, 
+                                      multiVals = &quot;first&quot;)
+
+head(gene_symbols)</code></pre>
+<pre><code>#&gt;    ENTREZID  SYMBOL
+#&gt; 1         1    A1BG
+#&gt; 2        10    NAT2
+#&gt; 3       100     ADA
+#&gt; 4      1000    CDH2
+#&gt; 5     10000    AKT3
+#&gt; 6 100008586 GAGE12F</code></pre>
+<pre class="r"><code># double check the id order is the same
+all.equal(gene_symbols$ENTREZID, hg19_genes$gene_id)</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code># add the gene symbol to it
+hg19_genes$symbol&lt;- gene_symbols$SYMBOL
+
+hg19_promoters&lt;- promoters(hg19_genes, upstream = 2000, downstream = 2000)
+
+hg19_promoters</code></pre>
+<pre><code>#&gt; GRanges object with 23056 ranges and 2 metadata columns:
+#&gt;         seqnames              ranges strand |     gene_id      symbol
+#&gt;            &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt; &lt;character&gt;
+#&gt;       1    chr19   58872215-58876214      - |           1        A1BG
+#&gt;      10     chr8   18246755-18250754      + |          10        NAT2
+#&gt;     100    chr20   43278377-43282376      - |         100         ADA
+#&gt;    1000    chr18   25755446-25759445      - |        1000        CDH2
+#&gt;   10000     chr1 244004887-244008886      - |       10000        AKT3
+#&gt;     ...      ...                 ...    ... .         ...         ...
+#&gt;    9991     chr9 115093945-115097944      - |        9991       PTBP3
+#&gt;    9992    chr21   35734323-35738322      + |        9992       KCNE2
+#&gt;    9993    chr22   19107968-19111967      - |        9993       DGCR2
+#&gt;    9994     chr6   90537619-90541618      + |        9994    CASP8AP2
+#&gt;    9997    chr22   50962906-50966905      - |        9997        SCO2
+#&gt;   -------
+#&gt;   seqinfo: 93 sequences (1 circular) from hg19 genome</code></pre>
+<p>How many HIF1a peaks overlap with promoters?</p>
+<pre class="r"><code>subsetByOverlaps(HIF1_peaks, hg19_promoters)</code></pre>
+<pre><code>#&gt; GRanges object with 275 ranges and 2 metadata columns:
+#&gt;         seqnames              ranges strand |           name     score
+#&gt;            &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; |    &lt;character&gt; &lt;numeric&gt;
+#&gt;     [1]     chr1       763060-763168      * |    MACS_peak_1     60.05
+#&gt;     [2]     chr1       954905-955303      * |    MACS_peak_2    106.52
+#&gt;     [3]     chr1     8938337-8939542      * |    MACS_peak_9   1224.68
+#&gt;     [4]     chr1   12289915-12290246      * |   MACS_peak_13     70.79
+#&gt;     [5]     chr1   14924055-14924254      * |   MACS_peak_17     55.58
+#&gt;     ...      ...                 ...    ... .            ...       ...
+#&gt;   [271]     chrX   49042798-49043142      * | MACS_peak_1490     66.54
+#&gt;   [272]     chrX   77359244-77359848      * | MACS_peak_1491    577.87
+#&gt;   [273]     chrX 133683313-133683581      * | MACS_peak_1493    119.01
+#&gt;   [274]     chrX 151143115-151143368      * | MACS_peak_1494     93.84
+#&gt;   [275]     chrX 153606352-153606601      * | MACS_peak_1496     68.16
+#&gt;   -------
+#&gt;   seqinfo: 29 sequences from an unspecified genome; no seqlengths</code></pre>
+<p>275 peaks are at the promoter region.</p>
+<p>what genes are nearby?</p>
+<pre class="r"><code>nearby_gene_index&lt;- nearest(HIF1_peaks, hg19_promoters)
+
+# there is NAs in the index. 
+table(is.na(nearby_gene_index))</code></pre>
+<pre><code>#&gt; 
+#&gt; FALSE  TRUE 
+#&gt;  1494     2</code></pre>
+<pre class="r"><code>HIF1_peaks&lt;- HIF1_peaks[!is.na(nearby_gene_index)]
+
+# remove the NAs
+nearby_gene_index&lt;- nearby_gene_index[!is.na(nearby_gene_index)]
+
+# the nearest genes 
+hg19_promoters[nearby_gene_index]</code></pre>
+<pre><code>#&gt; GRanges object with 1494 ranges and 2 metadata columns:
+#&gt;             seqnames              ranges strand |     gene_id      symbol
+#&gt;                &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt; &lt;character&gt;
+#&gt;       79854     chr1       760903-764902      - |       79854   LINC00115
+#&gt;      375790     chr1       953503-957502      + |      375790        AGRN
+#&gt;   100616489     chr1     5622131-5626130      + |   100616489        &lt;NA&gt;
+#&gt;   100616489     chr1     5622131-5626130      + |   100616489        &lt;NA&gt;
+#&gt;   100616421     chr1     5920802-5924801      - |   100616421     MIR4689
+#&gt;         ...      ...                 ...    ... .         ...         ...
+#&gt;       79366     chrX   80455442-80459441      - |       79366       HMGN5
+#&gt;   100506757     chrX 133682054-133686053      + |   100506757   LINC00629
+#&gt;        2564     chrX 151141152-151145151      - |        2564       GABRE
+#&gt;       10838     chrX 152597613-152601612      + |       10838      ZNF275
+#&gt;        2010     chrX 153605597-153609596      + |        2010         EMD
+#&gt;   -------
+#&gt;   seqinfo: 93 sequences (1 circular) from hg19 genome</code></pre>
+<pre class="r"><code># distance between the peak and the TSS of the nearest gene
+distance_to_peaks&lt;- distance(HIF1_peaks, 
+                    resize(hg19_genes, width =1, fix=&quot;start&quot;)[nearby_gene_index])</code></pre>
+<p>combine the peaks and the gene information</p>
+<pre class="r"><code>peak_df&lt;- as.data.frame(HIF1_peaks) 
+
+peak_df$gene_id&lt;- hg19_promoters[nearby_gene_index]$gene_id
+
+peak_df$symbol&lt;- hg19_promoters[nearby_gene_index]$symbol
+
+peak_df$distance&lt;- distance_to_peaks
+
+head(peak_df)</code></pre>
+<pre><code>#&gt;   seqnames   start     end width strand        name  score   gene_id    symbol
+#&gt; 1     chr1  763060  763168   109      * MACS_peak_1  60.05     79854 LINC00115
+#&gt; 2     chr1  954905  955303   399      * MACS_peak_2 106.52    375790      AGRN
+#&gt; 3     chr1 5439920 5440090   171      * MACS_peak_3  51.16 100616489      &lt;NA&gt;
+#&gt; 4     chr1 5765488 5765761   274      * MACS_peak_4  57.23 100616489      &lt;NA&gt;
+#&gt; 5     chr1 5882033 5882303   271      * MACS_peak_5  50.23 100616421   MIR4689
+#&gt; 6     chr1 6824756 6824931   176      * MACS_peak_6  57.10     23261    CAMTA1
+#&gt;   distance
+#&gt; 1      157
+#&gt; 2      199
+#&gt; 3   184040
+#&gt; 4   141356
+#&gt; 5    40497
+#&gt; 6    20452</code></pre>
+<p>Hoary! We annotated the peaks with the closest genes from scratch!</p>
+</div>
+<div id="final-note" class="section level3">
+<h3>Final note</h3>
+<p>You should use well-tested packages such as <a href="https://bioconductor.org/packages/release/bioc/html/ChIPseeker.html"><code>ChIPseeker</code></a> to do such analysis, but
+understanding the basics and the low-level functions is super useful!</p>
+<p>Happy Learning!</p>
+<p>Tommy</p>
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+</div>
