@@ -133,7 +133,7 @@ script is much better than my crappy one.
 
 But this tells you how common this type of analysis is, and `bedtools` comes to the rescue in 2010.
 
-**Bouns:** watch [this video](https://www.youtube.com/watch?v=UHnRjGcMp8M&) on how I use conda to install bedtools.
+**Bonus:** watch [this video](https://www.youtube.com/watch?v=UHnRjGcMp8M&) on how I use conda to install bedtools.
 
 Later, I started to learn more about the Bioconductor ecosystem and learned the 
 `GenomicRanges` package which is the foundation of dealing with genomic intervals
