@@ -34,9 +34,13 @@ weight = 5
 
 # About me
 
+![](/img/chatomics.png)
+
 I am a computational biologist working on genomics, epigenomics and transcriptomics. I use R primary for data wrangling and visualization in the [tidyverse](https://www.tidyverse.org/) ecosystem; I use python for writing [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflows and reformatting data; I am a unix geek learning shell tricks almost every month; I care about reproducible research and open science.
 
 I also have a great interest in promoting open science and reforming bioinformatics education. I frequently share my thoughts on [twitter](https://twitter.com/tangming2005) and tips in my [blog post](http://crazyhottommy.blogspot.com/). I am a certified instructor for the [carpentries](https://carpentries.org/).
+
+I also have a youtube channel [chatomics](https://www.youtube.com/@chatomics) where I share bioinformatics tips and tutorials.
 
 **[Grab my book](https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line) to transform yourself into a computational biologist.**
 ![](/img/bookcover.png)
