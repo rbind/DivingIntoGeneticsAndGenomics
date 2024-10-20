@@ -12,6 +12,7 @@ categories:
 tags:
   - bioinformatics
   - education
+  - PCA
 header:
   caption: ''
   image: ''
@@ -212,7 +213,7 @@ colnames(gene_loadings_10k) <- paste0("PC", 1:100)
 # ideally, we should re-run FindVariableFeatures, but I am skipping it
 VariableFeatures(pbmc10k) %>% length()
 
-# Get PCA embeddings/cell embeddings (U matrix) 
+# Get PCA embeddings/cell embeddings (U matrix * D matrix) 
 cell_embeddings_10k <- pca_10k$u %*% diag(pca_10k$d)  # Cell embeddings (10k cells in rows)
 dim(cell_embeddings_10k)
 
@@ -282,7 +283,8 @@ We see the cells roughly split into three major "islands": B cells, myeloid cell
 
 Now that the 3k pbmc cell ebmeddings are projected to the 10k pbmc PCA space. We can find the k nearest neighbors in the 10k dataset to every cell in the 3k dataset.
 
-We are using 
+We are using `AnnoyAngular` which calculates the cosine distance in the PCA space.
+
 ```{r}
 # Use the Annoy algorithm to find nearest neighbors between 3k and 10k datasets
 n_neighbors <- 30  # Number of nearest neighbors to find k =30
@@ -309,7 +311,7 @@ head(nn_indices)
 ### Label transfer based on the nearest neighbors
 
 ```{r}
-labels_10k<- pbmc10k$celltype
+labels_10k<- as.character(pbmc10k$celltype)
 # Transfer labels based on majority vote from nearest neighbors
 transfer_labels <- apply(nn_indices, 1, function(neighbors) {
   # Get labels for the nearest neighbors
@@ -338,7 +340,8 @@ DimPlot(pbmc3k, reduction = "umap", group.by = "predicted", label = TRUE, repel=
 anchors <- FindTransferAnchors(
   reference = pbmc10k,     # The reference dataset
   query = pbmc3k,          # The query dataset
-  dims = 1:100                 # The dimensions to use for anchor finding
+  dims = 1:100,            # The dimensions to use for anchor finding
+  reduction = "pcaproject" # this is the default
 )
 
 # Step 2: Transfer labels
@@ -392,23 +395,6 @@ In PCA projection with  k-nearest neighbors, you project the query dataset into 
 The nearest neighbor relationship is one-sided: for each cell in the query dataset, you only find its nearest neighbors in the reference dataset.
 
 This approach does not check if the reference dataset’s cells also treat the query dataset’s cells as nearest neighbors, which can introduce errors if the datasets are not perfectly aligned or suffer from batch effects.
-
-* Label Transfer for Non-Mutual Nearest Neighbors
-Seurat handles cells that are not mutual nearest neighbors (i.e., cells that do not have a direct anchor) in the following ways:
-
-- Weighting Anchors:
-
-Seurat uses a weighted transfer system. Even if a query cell does not have a direct MNN, the label transfer process still considers the relationship between that query cell and the nearest anchors (the mutual nearest neighbors).
-
-For cells that are not mutual nearest neighbors, their labels are predicted based on the similarity (distance) to the identified anchors. The influence of each anchor is weighted according to its distance from the query cell.
-Extrapolation for Non-MNN Cells:
-
-For cells in the query dataset that don’t have mutual nearest neighbors, the labels can still be inferred based on their position relative to the MNN cells.
-
-Seurat’s `TransferData` function takes into account the proximity of these non-MNN cells to the anchor cells and extrapolates the labels based on the information from the anchor set. The cells closest to the MNN cells will receive a higher weight when transferring labels.
-Prediction Confidence:
-
-Seurat also provides prediction scores that indicate the confidence of the label transfer for each cell. Cells that do not have strong mutual nearest neighbors may receive lower confidence scores.
 
 Now, let's find the nearest neighbors for each dataset separately:
 ```{r}
@@ -505,7 +491,24 @@ for (i in 1:nrow(cell_embeddings_3k)) {
 
 ###  Handling Cells Without MNN:
 
-For cells without MNN, we can still assign labels based on the nearest neighbor from pbmc10k, but their transfer score will be lower (or zero):
+* Label Transfer for Non-Mutual Nearest Neighbors
+Seurat handles cells that are not mutual nearest neighbors (i.e., cells that do not have a direct anchor) in the following ways:
+
+- Weighting Anchors:
+
+Seurat uses a weighted transfer system. Even if a query cell does not have a direct MNN, the label transfer process still considers the relationship between that query cell and the nearest anchors (the mutual nearest neighbors).
+
+For cells that are not mutual nearest neighbors, their labels are predicted based on the similarity (distance) to the identified anchors. The influence of each anchor is weighted according to its distance from the query cell.
+Extrapolation for Non-MNN Cells:
+
+For cells in the query dataset that don’t have mutual nearest neighbors, the labels can still be inferred based on their position relative to the MNN cells.
+
+Seurat’s `TransferData` function takes into account the proximity of these non-MNN cells to the anchor cells and extrapolates the labels based on the information from the anchor set. The cells closest to the MNN cells will receive a higher weight when transferring labels.
+Prediction Confidence:
+
+Seurat also provides prediction scores that indicate the confidence of the label transfer for each cell. Cells that do not have strong mutual nearest neighbors may receive lower confidence scores.
+
+For cells without MNN, we can still assign labels based on the nearest neighbor from pbmc10k, but their transfer score will be lower (or zero). Our implementation just use the nearest neighbor in the 10k even they are not mutally nearest to simplify the demonstration.
 
 ```{r}
 # Fill in missing labels for cells without MNN based on nearest neighbor in 10k
