@@ -82,6 +82,8 @@ p1 + p2
 
 How the pbmc10k data look like:
 ```{r}
+# download it here curl -Lo pbmc_10k_v3.rds https://www.dropbox.com/s/3f3p5nxrn5b3y4y/pbmc_10k_v3.rds?dl=1 
+
 pbmc10k<- readRDS("~/blog_data/pbmc_10k_v3.rds")
 pbmc10k<-UpdateSeuratObject(pbmc10k)
 pbmc10k@meta.data %>% head()
@@ -508,7 +510,7 @@ Prediction Confidence:
 
 Seurat also provides prediction scores that indicate the confidence of the label transfer for each cell. Cells that do not have strong mutual nearest neighbors may receive lower confidence scores.
 
-For cells without MNN, we can still assign labels based on the nearest neighbor from pbmc10k, but their transfer score will be lower (or zero). Our implementation just use the nearest neighbor in the 10k even they are not mutally nearest to simplify the demonstration.
+For cells without MNN, we can still assign labels based on the nearest neighbor from pbmc10k, but their transfer score will be lower (or zero). Our implementation just use the nearest neighbor in the 10k even they are not mutually nearest to simplify the demonstration.
 
 ```{r}
 # Fill in missing labels for cells without MNN based on nearest neighbor in 10k

@@ -67,7 +67,9 @@ p2&lt;- DimPlot(pbmc3k, reduction = &quot;umap&quot;, label = TRUE, group.by = &
 p1 + p2</code></pre>
 <p><img src="/post/2024-10-17-how-seurat-pca-label-transfer_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>How the pbmc10k data look like:</p>
-<pre class="r"><code>pbmc10k&lt;- readRDS(&quot;~/blog_data/pbmc_10k_v3.rds&quot;)
+<pre class="r"><code># download it here curl -Lo pbmc_10k_v3.rds https://www.dropbox.com/s/3f3p5nxrn5b3y4y/pbmc_10k_v3.rds?dl=1 
+
+pbmc10k&lt;- readRDS(&quot;~/blog_data/pbmc_10k_v3.rds&quot;)
 pbmc10k&lt;-UpdateSeuratObject(pbmc10k)
 pbmc10k@meta.data %&gt;% head()</code></pre>
 <pre><code>#&gt;                        orig.ident nCount_RNA nFeature_RNA    observed simulated
@@ -541,7 +543,7 @@ Extrapolation for Non-MNN Cells:</p>
 <p>Seurat’s <code>TransferData</code> function takes into account the proximity of these non-MNN cells to the anchor cells and extrapolates the labels based on the information from the anchor set. The cells closest to the MNN cells will receive a higher weight when transferring labels.
 Prediction Confidence:</p>
 <p>Seurat also provides prediction scores that indicate the confidence of the label transfer for each cell. Cells that do not have strong mutual nearest neighbors may receive lower confidence scores.</p>
-<p>For cells without MNN, we can still assign labels based on the nearest neighbor from pbmc10k, but their transfer score will be lower (or zero). Our implementation just use the nearest neighbor in the 10k even they are not mutally nearest to simplify the demonstration.</p>
+<p>For cells without MNN, we can still assign labels based on the nearest neighbor from pbmc10k, but their transfer score will be lower (or zero). Our implementation just use the nearest neighbor in the 10k even they are not mutually nearest to simplify the demonstration.</p>
 <pre class="r"><code># Fill in missing labels for cells without MNN based on nearest neighbor in 10k
 for (i in 1:length(pbmc3k_transferred_labels)) {
   if (is.na(pbmc3k_transferred_labels[i])) {
