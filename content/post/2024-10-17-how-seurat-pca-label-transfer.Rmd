@@ -545,6 +545,10 @@ table(pbmc3k$pbmc3k_transferred_labels, pbmc3k$predicted.id) %>%
 
 Our native implementation of MNN is not exactly the same as Seurat. Seurat’s MNN implementation includes additional optimization like PC scaling and anchor filtering, but it is very good to see we get reasonable results!
 
+In `Seurat`(Tim Stuart et al 2019), the other way is to use Canonical Correlation Analysis (CCA) and we will leave it to a future post!
+
+![](/img/CCA.png)
+
 ### Final Note
 
 I asked ChatGPT for help a lot, and it gave me a good starting point for the code. I had

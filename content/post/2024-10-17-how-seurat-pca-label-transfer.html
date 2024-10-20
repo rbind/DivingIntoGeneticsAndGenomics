@@ -631,6 +631,8 @@ table(pbmc3k$pbmc3k_transferred_labels, pbmc3k$predicted.id)</code></pre>
         Heatmap(cluster_rows = FALSE, cluster_columns= FALSE, name= &quot;scaled\ncell number&quot;)</code></pre>
 <p><img src="/post/2024-10-17-how-seurat-pca-label-transfer_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>Our native implementation of MNN is not exactly the same as Seurat. Seurat’s MNN implementation includes additional optimization like PC scaling and anchor filtering, but it is very good to see we get reasonable results!</p>
+<p>In <code>Seurat</code>(Tim Stuart et al 2019), the other way is to use Canonical Correlation Analysis (CCA) and we will leave it to a future post!</p>
+<p><img src="/img/CCA.png" /></p>
 </div>
 <div id="final-note" class="section level3">
 <h3>Final Note</h3>
