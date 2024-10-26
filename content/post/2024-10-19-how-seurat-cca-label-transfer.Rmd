@@ -236,7 +236,7 @@ canonical_cors <- cca_svd$d  # Canonical correlations
 range(canonical_cors)
 
 # normalize it so the first CCA dimension has a correlation close to 1 
-canonical_cors<- cca_svd$d / max(cca_svd$d)
+canonical_cors<- cca_svd$d / sum(cca_svd$d)
 
 barplot(canonical_cors, 
         main="Canonical Correlations", 
@@ -245,7 +245,7 @@ barplot(canonical_cors,
         col="lightblue")
 
 ```
-The first CCA dimension should have a corrrelation close to 1. 
+The sum of the first few CCA dimension should have a corrrelation close to 1. 
 
 ### L2 Normalization of Canonical Correlation Vectors
 
