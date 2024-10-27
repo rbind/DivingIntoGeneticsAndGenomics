@@ -1,0 +1,70 @@
+---
+title: I regret not doing so
+author: Ming Tommy Tang
+date: '2024-10-27'
+slug: learn-linear-algebra
+categories:
+  - education
+  - linear algebra
+  - bioinformatics
+  - data
+  - matrix
+tags:
+  - bioinformatics
+  - education
+  - data
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+```
+
+My regret is not learning linear algebra well during college.
+
+I barely passed the exam for it (and calculus, it was a nightmare :) ).
+
+To be fair..
+
+It was not taught well and it sounded too boring. I did not know what the application of matrix multiplication was, not until...
+
+Many years later, I started to learn bioinformatics. I find many data are just data matrices:
+
+- an RNAseq expression matrix is a gene-by-sample matrix, with entries to be read counts for each gene
+- a single-cell expression matrix is a gene-by-cell matrix, with entries to be read counts for each gene
+- a ChIP-seq count matrix is a peak-by-sample matrix, with entries to be the number of reads in each peak
+- a drug response matrix is a drug-by-sample matrix, with entries to be IC50 for example
+
+and many more... in other words,
+
+**Matrix is EVERYWHERE for bioinformatics (and many other data science topics)!**
+
+Read this blog post on [Matrix factorization on single-cell RNAseq data](https://divingintogeneticsandgenomics.com/post/matrix-factorization-for-single-cell-rnaseq-data/) to see how useful it is! 
+
+I have written two [blog posts](https://divingintogeneticsandgenomics.com/post/cca-alignment/) on how Seurat PCA projection/CCA alignment and label transfer work for single-cell RNAseq data in low-level details.
+
+Man, it was hard. I spent 8 hours for each post spanning serveral nights. But I enjoyed it as I also learned the topic deeper. 
+
+During the writing of the posts, I really wished I learned linear algebra better during college:) but it is never too late to learn. You can take MIT1806, which is a great course for linear algebra.
+
+And I am re-watching [eigenvalues and eigenvectors from 3blue1brown](https://www.3blue1brown.com/lessons/eigenvalues).
+
+What's your regret?
+
+Happy Learning!
+
+Tommy 
+
+
+
