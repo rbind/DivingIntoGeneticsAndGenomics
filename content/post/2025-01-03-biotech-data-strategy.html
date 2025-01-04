@@ -1,0 +1,75 @@
+---
+title: "Biotech Data Strategy: Building a Scalable Foundation for Startups"
+author: Ming Tommy Tang
+date: "2025-01-03"
+slug: biotech-data
+categories:
+  - review
+tags:
+  - bioinformatics
+  - biotech
+  - data
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<p>In a biotech startup, an early data strategy is key to ensure public and private data remain useful and valuable. As AI hype reaches new heights, I want to emphasize that a data strategy must precede any AI strategy.</p>
+<p>Data is the oil of the AI engine. Unfortunately, the real-world data are usually messy and not AI-ready. Without a robust data strategy, you are building an AI system on a shaky foundation.</p>
+<p>Below are the notes I collected from <a href="https://www.linkedin.com/posts/daniel-dacey_lifesciences-biotech-pharma-activity-7257457684776472576-6Jpb">an event</a> I participated as a panelist.</p>
+<p><img src="/img/biotech_data.jpeg" /></p>
+<p>I will cover essential strategy components from my personal experience working at a small biotech. I will cover:</p>
+<ul>
+<li>data governance,</li>
+<li>management,</li>
+<li>team collaboration,</li>
+<li>and the balance between custom and standard tools.</li>
+<li>Moreover, practical examples will show how these elements create a strong data foundation.</li>
+</ul>
+<p>Data governance is essential as companies scale and transition data to the cloud. However, for a small startup, establishing good governance practices can feel overwhelming.</p>
+<p>Effective data governance should ensure integrity, compliance, and security from the outset. For example, when data shifts to the cloud, it’s crucial to define access, and set rules for documentation and security.</p>
+<p>Simple actions, like establishing access controls and basic security, can avert future issues. Moreover, ensuring data accuracy and consistency from the start is vital. This prevents problems as more data is added.</p>
+<p>In many startups, the bioinformatics or computational biology team also handles IT tasks. This can be tough. However, training from cloud providers like Google Cloud or AWS can ease the process.</p>
+<p>These vendors offer key training on security, compliance, and cloud management. This helps teams work better without needing IT expertise. Data security is crucial. Thus, vendor support is vital for small teams to meet compliance requirements more easily.</p>
+<p>Data management goes hand-in-hand with governance. Organizing and storing data in scalable ways is essential to avoid chaos as data volumes grow. A consistent folder structure on the cloud storage bucket is essential for scientists to navigate to find the right data efficiently.</p>
+<p>In addition, enforcing consistent metadata practices is as important. Data without metadata is like a library without labels—nearly impossible to navigate.</p>
+<p>Biotech startup data always starts with a spreadsheet until it is not manageable. To build a strong foundation, standardized data entry in spreadsheets is a good starting point.</p>
+<p>For instance, always use “Female” instead of “female” or “F”. Also, avoid spaces and special characters in column names. Educate wet lab scientists on best practices. This ensures consistency and reduces cleanup time later.</p>
+<p>Of course, there is ‘technical debt’ that might be incurred in the early stage. Startups are constantly under the pressure of raising the next round of funding and meeting deadlines.</p>
+<p>The initial data infrastructure can be scrappy. In five years, if some new hire complains about the data infrastructure, congratulations! You survived for five years!</p>
+<p>But it does not give you the excuse to follow some basic best practices.</p>
+<p><strong>EVERYONE needs to read this article: <a href="https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989">Data Organization in Spreadsheets</a>.</strong></p>
+<p>Most biotech data originates from two sources: public datasets and in-house generated data. Public data is easy to access but often messy. It needs cleanup and metadata alignment to be useful. For instance, public datasets may have inconsistent metadata. It requires harmonization to make them useful for meta-analysis.</p>
+<p>In-house data, especially from high-throughput assays, is different. Early integration with a Laboratory Information Management System (LIMS) is beneficial. A LIMS tracks samples, experiments, and metadata as data grows. Starting with a LIMS can streamline workflows. Combining it with metadata alignment makes data ready for AI.</p>
+<p>Making data storage meet <a href="https://www.go-fair.org/fair-principles/">FAIR</a> principles—Findable, Accessible, Interoperable, and Reusable—seems tough for small startups. Yet, adopting “Good-enough” practices can help.</p>
+<p>For instance, using a consistent cloud folder structure is a good start. Create main folders for “Internal Data” and “Public Data.” Then, add subfolders for data types like RNA-seq, WGS, ChIP-seq, and single-cell data.</p>
+<p>Each dataset needs a README file. This file should explain when and how the data was collected and link to preprocessing code. For example, linking to a GitHub repository with scripts helps future team members understand the data’s origins and changes.</p>
+<p>Startups often face challenges in balancing quick data analysis with making it reproducible. They frequently need to quickly answer questions from leaders or investors.</p>
+<p>In such cases, ensuring every analysis is perfectly reproducible isn’t always feasible. For example, a simple answer might suffice for an investor’s quick question, even if it’s not fully reproducible.</p>
+<p>This approach, however, leads to “technical debt.” Startups can address these shortcuts later if they succeed. For big projects, aiming for reproducibility is key. But, it’s okay to be flexible with exploratory work.</p>
+<p>I will talk about reproducibility for computing in a future blog post.</p>
+<p>Startups often face the choice between building custom tools and buying commercial ones. Custom tools offer flexibility but require significant time and resources. Meanwhile, off-the-shelf solutions save time and are often more reliable, provided they meet current needs.</p>
+<p>The decision should align with the startup’s vision, resources, and expected returns. For example, a tool that boosts reproducibility, ensures data consistency and allows the team to focus on complex analysis is a smart investment. It’s crucial to avoid burdening the team with too many platforms. Focus on those that offer clear, scalable benefits.</p>
+<p>As data infrastructure improves, the focus shifts from tools to people. An in-house team boosts collaboration between computational biologists and wet lab scientists. Data scientists, working with wet lab teams, offer quick analysis and feedback.</p>
+<p>I highly recommend bench scientists sit next to the computational scientists so they can communicate quickly.</p>
+<p>This collaboration sparks new insights and innovation. Constant communication helps both teams understand each other’s challenges. This leads to better experiments, deeper analysis, and faster discoveries.</p>
+<p>For instance, computational biologists can conduct initial single-cell analyses. They create Seurat or Scanpy objects for wet lab scientists. This allows wet lab scientists to explore data themselves using a GUI tool (<a href="https://www.pythiabio.com/multiomics-analysis-software">Pythia’s CDIAM platform</a> is a good one, disclaimer, I am on their scientific advisory board) as a bridge to explore the objects.</p>
+<p>Furthermore, giving wet lab scientists access to their data on interactive platforms promotes independence. It allows them to perform basic analyses and generate ideas without always relying on the computational team.</p>
+<p>I firmly believe that giving the wet lab scientist the capability to explore their data helps form hypotheses. Meanwhile, the computational team can tackle more complex analyses.</p>
+<p>Data analysis in biotech aims to inform future research or development. Data scientists play an important role in decision-making.</p>
+<p>Usually, a computational biologist presents the findings in a slide deck. This includes conclusions from the current experiment, new experiment suggestions, and a GitHub link for code access. This approach provides clear guidance to the wet lab team. It also allows them to trace and repeat analyses when needed.</p>
+<p>Biotech startups may struggle to build a data strategy. Yet, focusing on governance, management, reproducibility, and collaboration can speed up R&amp;D. This approach turns data into insights, guiding decisions and ensuring success in a competitive market.</p>
+<div id="references-and-further-reading" class="section level3">
+<h3>References and further reading:</h3>
+<ul>
+<li><a href="https://divingintogeneticsandgenomics.com/post/has-ai-changed-the-course-of-drug-development/">Has AI changed the course of Drug Development?</a></li>
+<li><a href="https://michelebusby.tumblr.com/">So You Want to Start a Biotech: A Bioinformatics Approach That Works</a></li>
+<li><a href="https://medium.com/@jfeala/the-digital-biotech-startup-playbook-398aeafca8a4">The digital biotech startup playbook</a></li>
+<li><a href="https://scalingbiotech.substack.com/p/data-and-metadata-beat-models">Data (and metadata) beat models</a></li>
+<li><a href="http://blog.booleanbiotech.com/biotech-data-infrastructure.html">Modern biotech data infrastructure</a></li>
+</ul>
+</div>
