@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on DNA confesses Data speak</title>
+    <title>Tags on Chatomics</title>
     <link>/tags/</link>
-    <description>Recent content in Tags on DNA confesses Data speak</description>
+    <description>Recent content in Tags on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sun, 01 Jan 2017 00:00:00 -0500</lastBuildDate>
+    <lastBuildDate>Sun, 01 Jan 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>Content tagged as &#39;Academic&#39;</title>
       <link>/tags/academic/</link>
-      <pubDate>Sun, 01 Jan 2017 00:00:00 -0500</pubDate>
+      <pubDate>Sun, 01 Jan 2017 00:00:00 +0000</pubDate>
       
       <guid>/tags/academic/</guid>
       <description>Here is a list of all the content that has been tagged as academic.</description>
@@ -33,7 +33,16 @@
     <item>
       <title>Bioconductor</title>
       <link>/tags/bioconductor/</link>
-      <pubDate>Mon, 18 Mar 2024 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 05 Jun 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/bioconductor/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Bioconductor</title>
+      <link>/tags/bioconductor/</link>
+      <pubDate>Wed, 05 Jun 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/bioconductor/</guid>
       <description></description>
@@ -42,9 +51,18 @@
     <item>
       <title>Bioinformatics</title>
       <link>/tags/bioinformatics/</link>
-      <pubDate>Tue, 07 May 2024 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate>
       
       <guid>/tags/bioinformatics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Biotech</title>
+      <link>/tags/biotech/</link>
+      <pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/biotech/</guid>
       <description></description>
     </item>
     
@@ -58,9 +76,18 @@
     </item>
     
     <item>
+      <title>CCA</title>
+      <link>/tags/cca/</link>
+      <pubDate>Sat, 19 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/cca/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>CIDC</title>
       <link>/tags/cidc/</link>
-      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/cidc/</guid>
       <description></description>
@@ -69,7 +96,7 @@
     <item>
       <title>CIMAC</title>
       <link>/tags/cimac/</link>
-      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/cimac/</guid>
       <description></description>
@@ -78,7 +105,7 @@
     <item>
       <title>Cancer immunology</title>
       <link>/tags/cancer-immunology/</link>
-      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/cancer-immunology/</guid>
       <description></description>
@@ -87,7 +114,7 @@
     <item>
       <title>Cluster</title>
       <link>/tags/cluster/</link>
-      <pubDate>Tue, 05 Feb 2019 00:00:00 -0500</pubDate>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/cluster/</guid>
       <description></description>
@@ -96,7 +123,7 @@
     <item>
       <title>Data</title>
       <link>/tags/data/</link>
-      <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate>
       
       <guid>/tags/data/</guid>
       <description></description>
@@ -114,7 +141,7 @@
     <item>
       <title>Docker</title>
       <link>/tags/docker/</link>
-      <pubDate>Thu, 16 Feb 2023 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 26 Aug 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/docker/</guid>
       <description></description>
@@ -126,6 +153,15 @@
       <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>/tags/dotfile/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Education</title>
+      <link>/tags/education/</link>
+      <pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/education/</guid>
       <description></description>
     </item>
     
@@ -285,7 +321,7 @@
     <item>
       <title>PCA</title>
       <link>/tags/pca/</link>
-      <pubDate>Fri, 04 Jan 2019 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 19 Oct 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/pca/</guid>
       <description></description>
@@ -303,7 +339,7 @@
     <item>
       <title>Pipeline</title>
       <link>/tags/pipeline/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/tags/pipeline/</guid>
       <description></description>
@@ -312,7 +348,7 @@
     <item>
       <title>Pipelines</title>
       <link>/tags/pipelines/</link>
-      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/pipelines/</guid>
       <description></description>
@@ -330,7 +366,7 @@
     <item>
       <title>Python</title>
       <link>/tags/python/</link>
-      <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
+      <pubDate>Thu, 09 May 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/python/</guid>
       <description></description>
@@ -375,7 +411,7 @@
     <item>
       <title>Rstats</title>
       <link>/tags/rstats/</link>
-      <pubDate>Tue, 07 May 2024 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 17 May 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/rstats/</guid>
       <description></description>
@@ -384,7 +420,7 @@
     <item>
       <title>ScATACseq</title>
       <link>/tags/scatacseq/</link>
-      <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/scatacseq/</guid>
       <description></description>
@@ -393,7 +429,7 @@
     <item>
       <title>ScRNAseq</title>
       <link>/tags/scrnaseq/</link>
-      <pubDate>Tue, 08 Aug 2023 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 15 May 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/scrnaseq/</guid>
       <description></description>
@@ -429,7 +465,7 @@
     <item>
       <title>Snakemake</title>
       <link>/tags/snakemake/</link>
-      <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/snakemake/</guid>
       <description></description>
@@ -492,7 +528,7 @@
     <item>
       <title>Unix</title>
       <link>/tags/unix/</link>
-      <pubDate>Mon, 28 Jan 2019 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 19 Aug 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/unix/</guid>
       <description></description>

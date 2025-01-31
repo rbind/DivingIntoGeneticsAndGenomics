@@ -1,21 +1,39 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>2 on DNA confesses Data speak</title>
+    <title>2 on Chatomics</title>
     <link>/publication_types/2/</link>
-    <description>Recent content in 2 on DNA confesses Data speak</description>
+    <description>Recent content in 2 on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Wed, 21 Feb 2024 00:00:00 -0500</lastBuildDate>
+    <lastBuildDate>Mon, 30 Dec 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/publication_types/2/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Cancer-specific innate and adaptive immune rewiring drives resistance to PD-1 blockade in classic Hodgkin lymphoma</title>
+      <link>/publication/2024-12-30-scrnaseq-pd1/</link>
+      <pubDate>Mon, 30 Dec 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/2024-12-30-scrnaseq-pd1/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
+      <title>The tidyomics ecosystem: Enhancing omic data analyses</title>
+      <link>/publication/2023-09-13-tidyomics/</link>
+      <pubDate>Fri, 14 Jun 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/2023-09-13-tidyomics/</guid>
+      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+    </item>
+    
+    <item>
       <title>A community challenge to predict clinical outcomes after immune checkpoint blockade in non-small cell lung cancer</title>
       <link>/publication/2024-02-21-immune-prediction/</link>
-      <pubDate>Wed, 21 Feb 2024 00:00:00 -0500</pubDate>
+      <pubDate>Wed, 21 Feb 2024 00:00:00 +0000</pubDate>
       
       <guid>/publication/2024-02-21-immune-prediction/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -24,7 +42,7 @@
     <item>
       <title>Embracing the command line: my unexpected career in computational biology</title>
       <link>/publication/2023-10-04-nature-career/</link>
-      <pubDate>Thu, 05 Oct 2023 00:00:00 -0400</pubDate>
+      <pubDate>Thu, 05 Oct 2023 00:00:00 +0000</pubDate>
       
       <guid>/publication/2023-10-04-nature-career/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -33,25 +51,16 @@
     <item>
       <title>Monkeybread: A Python toolkit for the analysis of cellular niches in single-cell resolution spatial transcriptomics data</title>
       <link>/publication/2023-09-15-monkeybread/</link>
-      <pubDate>Fri, 15 Sep 2023 00:00:00 -0400</pubDate>
+      <pubDate>Fri, 15 Sep 2023 00:00:00 +0000</pubDate>
       
       <guid>/publication/2023-09-15-monkeybread/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
     </item>
     
     <item>
-      <title>The tidyomics ecosystem: Enhancing omic data analyses</title>
-      <link>/publication/2023-09-13-tidyomics/</link>
-      <pubDate>Wed, 13 Sep 2023 00:00:00 -0400</pubDate>
-      
-      <guid>/publication/2023-09-13-tidyomics/</guid>
-      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
-    </item>
-    
-    <item>
       <title>Tutorial: integrative computational analysis of bulk RNA-sequencing data to characterize tumor immunity using RIMA</title>
       <link>/publication/2023-06-30-rima/</link>
-      <pubDate>Fri, 30 Jun 2023 00:00:00 -0400</pubDate>
+      <pubDate>Fri, 30 Jun 2023 00:00:00 +0000</pubDate>
       
       <guid>/publication/2023-06-30-rima/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -60,7 +69,7 @@
     <item>
       <title>Comprehensive Characterizations of Immune Receptor Repertoire in Tumors and Cancer Immunotherapy Studies</title>
       <link>/publication/2022-07-01-trust4/</link>
-      <pubDate>Fri, 01 Jul 2022 00:00:00 -0400</pubDate>
+      <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
       
       <guid>/publication/2022-07-01-trust4/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -69,7 +78,7 @@
     <item>
       <title>Immunogenomic intertumor heterogeneity across primary and metastatic sites in a patient with lung adenocarcinoma</title>
       <link>/publication/2022-05-11-extensive-mets/</link>
-      <pubDate>Wed, 11 May 2022 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 11 May 2022 00:00:00 +0000</pubDate>
       
       <guid>/publication/2022-05-11-extensive-mets/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -78,7 +87,7 @@
     <item>
       <title>The histologic phenotype of lung cancers may be driven by transcriptomic features rather than genomic characteristics</title>
       <link>/publication/2021-01-05-mixed-histology/</link>
-      <pubDate>Mon, 06 Dec 2021 00:00:00 -0500</pubDate>
+      <pubDate>Mon, 06 Dec 2021 00:00:00 +0000</pubDate>
       
       <guid>/publication/2021-01-05-mixed-histology/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -87,7 +96,7 @@
     <item>
       <title>Fast alignment and preprocessing of chromatin profiles with Chromap</title>
       <link>/publication/2021-11-12-chromap/</link>
-      <pubDate>Fri, 12 Nov 2021 00:00:00 -0500</pubDate>
+      <pubDate>Fri, 12 Nov 2021 00:00:00 +0000</pubDate>
       
       <guid>/publication/2021-11-12-chromap/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -96,7 +105,7 @@
     <item>
       <title>Single-cell multimodal glioma analyses identify epigenetic regulators of cellular plasticity and environmental stress response</title>
       <link>/publication/2021-09-30-glioma-single-cell/</link>
-      <pubDate>Thu, 30 Sep 2021 00:00:00 -0400</pubDate>
+      <pubDate>Thu, 30 Sep 2021 00:00:00 +0000</pubDate>
       
       <guid>/publication/2021-09-30-glioma-single-cell/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -105,7 +114,7 @@
     <item>
       <title>Enhancer reprogramming in PRC2-deficient malignant peripheral nerve sheath tumors induces a targetable de-differentiated state</title>
       <link>/publication/2021-07-21-prc2-nerve-sheath-tumor/</link>
-      <pubDate>Wed, 21 Jul 2021 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 21 Jul 2021 00:00:00 +0000</pubDate>
       
       <guid>/publication/2021-07-21-prc2-nerve-sheath-tumor/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -114,7 +123,7 @@
     <item>
       <title>Reprogramming of bivalent chromatin states in NRAS mutant melanoma suggests PRC2 inhibition as a therapeutic strategy</title>
       <link>/publication/2021-07-20-melanoma-chromatin-state/</link>
-      <pubDate>Tue, 20 Jul 2021 00:00:00 -0400</pubDate>
+      <pubDate>Tue, 20 Jul 2021 00:00:00 +0000</pubDate>
       
       <guid>/publication/2021-07-20-melanoma-chromatin-state/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -123,7 +132,7 @@
     <item>
       <title>HieRFIT: A hierarchical cell type classification tool for projections from complex single-cell atlas datasets </title>
       <link>/publication/2021-07-13-hierfit/</link>
-      <pubDate>Tue, 13 Jul 2021 00:00:00 -0400</pubDate>
+      <pubDate>Tue, 13 Jul 2021 00:00:00 +0000</pubDate>
       
       <guid>/publication/2021-07-13-hierfit/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -132,7 +141,7 @@
     <item>
       <title>Chromatin state dynamics confers specific therapeutic strategies in enhancer subtypes of colorectal cancer</title>
       <link>/publication/2021-05-30-chromatin-state-colorectal-cancer/</link>
-      <pubDate>Sun, 30 May 2021 00:00:00 -0400</pubDate>
+      <pubDate>Sun, 30 May 2021 00:00:00 +0000</pubDate>
       
       <guid>/publication/2021-05-30-chromatin-state-colorectal-cancer/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -141,7 +150,7 @@
     <item>
       <title>CHIPS: A Snakemake pipeline for quality control and reproducible processing of chromatin profiling data</title>
       <link>/publication/2021-03-11-chips-snakemake/</link>
-      <pubDate>Wed, 10 Mar 2021 00:00:00 -0500</pubDate>
+      <pubDate>Wed, 10 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>/publication/2021-03-11-chips-snakemake/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -150,7 +159,7 @@
     <item>
       <title>Evaluating single-cell cluster stability using the Jaccard similarity index</title>
       <link>/publication/2020-05-29-scclusteval/</link>
-      <pubDate>Mon, 09 Nov 2020 00:00:00 -0500</pubDate>
+      <pubDate>Mon, 09 Nov 2020 00:00:00 +0000</pubDate>
       
       <guid>/publication/2020-05-29-scclusteval/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -159,7 +168,7 @@
     <item>
       <title>Enhancer Reprogramming Confers Dependence on Glycolysis and IGF Signaling in KMT2D Mutant Melanoma</title>
       <link>/publication/2020-10-20-kmt2d-melanoma/</link>
-      <pubDate>Tue, 20 Oct 2020 00:00:00 -0400</pubDate>
+      <pubDate>Tue, 20 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>/publication/2020-10-20-kmt2d-melanoma/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -168,7 +177,7 @@
     <item>
       <title>Integrative analyses of single-cell transcriptome and regulome using MAESTRO</title>
       <link>/publication/2020-08-07-maestro/</link>
-      <pubDate>Fri, 07 Aug 2020 00:00:00 -0400</pubDate>
+      <pubDate>Fri, 07 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>/publication/2020-08-07-maestro/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -177,7 +186,7 @@
     <item>
       <title>KMT2D Deficiency Impairs Super-Enhancers to Confer a Glycolytic Vulnerability in Lung Cancer</title>
       <link>/publication/2020-04-03-kmt2d-lung-cancer/</link>
-      <pubDate>Thu, 02 Apr 2020 00:00:00 -0400</pubDate>
+      <pubDate>Thu, 02 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/publication/2020-04-03-kmt2d-lung-cancer/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -186,7 +195,7 @@
     <item>
       <title>Fast analysis of scATAC-seq data using a predefined set of genomic regions</title>
       <link>/publication/2020-03-20-kallisto-scatac/</link>
-      <pubDate>Fri, 20 Mar 2020 00:00:00 -0400</pubDate>
+      <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
       
       <guid>/publication/2020-03-20-kallisto-scatac/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -195,7 +204,7 @@
     <item>
       <title>LATS kinase–mediated CTCF phosphorylation and selective loss of genomic binding</title>
       <link>/publication/2020-02-19-lats-ctcf/</link>
-      <pubDate>Wed, 19 Feb 2020 00:00:00 -0500</pubDate>
+      <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
       
       <guid>/publication/2020-02-19-lats-ctcf/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -204,7 +213,7 @@
     <item>
       <title>KRAS-IRF2 Axis Drives Immune Suppression and Immune Therapy Resistance in Colorectal Cancer</title>
       <link>/publication/2019-03-20-irf2/</link>
-      <pubDate>Wed, 20 Mar 2019 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 20 Mar 2019 00:00:00 +0000</pubDate>
       
       <guid>/publication/2019-03-20-irf2/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -213,7 +222,7 @@
     <item>
       <title>Histone deacetylase inhibitor targets CD123/CD47-positive cells and reverse chemoresistance phenotype in acute myeloid leukemia</title>
       <link>/publication/2018-10-05-hdac-inhibitor/</link>
-      <pubDate>Fri, 05 Oct 2018 00:00:00 -0400</pubDate>
+      <pubDate>Fri, 05 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>/publication/2018-10-05-hdac-inhibitor/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -222,7 +231,7 @@
     <item>
       <title>Landscape of EGFR-Dependent and -Independent Resistance Mechanisms to Osimertinib and Continuation Therapy Beyond Progression in EGFR-Mutant NSCLC</title>
       <link>/publication/2018-09-18-egfr-nsclc/</link>
-      <pubDate>Tue, 18 Sep 2018 00:00:00 -0400</pubDate>
+      <pubDate>Tue, 18 Sep 2018 00:00:00 +0000</pubDate>
       
       <guid>/publication/2018-09-18-egfr-nsclc/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -231,7 +240,7 @@
     <item>
       <title>Positive Regulation of Transcription by Human ZMYND8 through Its Association with P-TEFb Complex</title>
       <link>/publication/2018-08-21-ptefb/</link>
-      <pubDate>Tue, 21 Aug 2018 00:00:00 -0400</pubDate>
+      <pubDate>Tue, 21 Aug 2018 00:00:00 +0000</pubDate>
       
       <guid>/publication/2018-08-21-ptefb/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -240,7 +249,7 @@
     <item>
       <title>The Tandem Duplicator Phenotype Is a Prevalent Genome-Wide Cancer Configuration Driven by Distinct Gene Mutations</title>
       <link>/publication/2018-07-12-tandem-duplicate/</link>
-      <pubDate>Thu, 12 Jul 2018 00:00:00 -0400</pubDate>
+      <pubDate>Thu, 12 Jul 2018 00:00:00 +0000</pubDate>
       
       <guid>/publication/2018-07-12-tandem-duplicate/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -249,7 +258,7 @@
     <item>
       <title>An Integrated Platform for Genome-wide Mapping of Chromatin States Using High-throughput ChIP-sequencing in Tumor Tissues</title>
       <link>/publication/2018-04-05-jove-chipseq/</link>
-      <pubDate>Thu, 05 Apr 2018 00:00:00 -0400</pubDate>
+      <pubDate>Thu, 05 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/publication/2018-04-05-jove-chipseq/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -258,7 +267,7 @@
     <item>
       <title>TumorFusions: an integrative resource for cancer-associated transcript fusions</title>
       <link>/publication/2018-01-04-tumor-fusions/</link>
-      <pubDate>Thu, 04 Jan 2018 00:00:00 -0500</pubDate>
+      <pubDate>Thu, 04 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>/publication/2018-01-04-tumor-fusions/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -267,7 +276,7 @@
     <item>
       <title>Integrative Analysis Identifies Four Molecular and Clinical Subsets in Uveal Melanoma</title>
       <link>/publication/2017-08-14-uveal-melanoma/</link>
-      <pubDate>Mon, 14 Aug 2017 00:00:00 -0400</pubDate>
+      <pubDate>Mon, 14 Aug 2017 00:00:00 +0000</pubDate>
       
       <guid>/publication/2017-08-14-uveal-melanoma/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -276,7 +285,7 @@
     <item>
       <title>MOF Acetylates the Histone Demethylase LSD1 to Suppress Epithelial-to-Mesenchymal Transition</title>
       <link>/publication/2016-06-21-mof-emt/</link>
-      <pubDate>Mon, 14 Aug 2017 00:00:00 -0400</pubDate>
+      <pubDate>Mon, 14 Aug 2017 00:00:00 +0000</pubDate>
       
       <guid>/publication/2016-06-21-mof-emt/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -285,7 +294,7 @@
     <item>
       <title>Functional interrelationship between TFII-I and E2F transcription factors at specific cell cycle gene loci</title>
       <link>/publication/2017-06-28-tfii-i-e2f/</link>
-      <pubDate>Wed, 28 Jun 2017 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 28 Jun 2017 00:00:00 +0000</pubDate>
       
       <guid>/publication/2017-06-28-tfii-i-e2f/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -294,7 +303,7 @@
     <item>
       <title>Systematic analysis of telomere length and somatic alterations in 31 cancer types</title>
       <link>/publication/2017-03-01-telomere-pan-cancer/</link>
-      <pubDate>Wed, 01 Mar 2017 00:00:00 -0500</pubDate>
+      <pubDate>Wed, 01 Mar 2017 00:00:00 +0000</pubDate>
       
       <guid>/publication/2017-03-01-telomere-pan-cancer/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -303,7 +312,7 @@
     <item>
       <title>Synthetic essentiality of chromatin remodelling factor CHD1 in PTEN-deficient cancer</title>
       <link>/publication/2017-02-23-pten-synthetic/</link>
-      <pubDate>Thu, 23 Feb 2017 00:00:00 -0500</pubDate>
+      <pubDate>Thu, 23 Feb 2017 00:00:00 +0000</pubDate>
       
       <guid>/publication/2017-02-23-pten-synthetic/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -312,7 +321,7 @@
     <item>
       <title>Suppression of Type I IFN Signaling in Tumors Mediates Resistance to Anti-PD-1 Treatment That Can Be Overcome by Radiotherapy</title>
       <link>/publication/2017-02-15-ifn-signaling-tumor-pd1-resistance/</link>
-      <pubDate>Wed, 15 Feb 2017 00:00:00 -0500</pubDate>
+      <pubDate>Wed, 15 Feb 2017 00:00:00 +0000</pubDate>
       
       <guid>/publication/2017-02-15-ifn-signaling-tumor-pd1-resistance/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -321,7 +330,7 @@
     <item>
       <title>Epithelial-to-mesenchymal transition confers pericyte properties on cancer cells</title>
       <link>/publication/2016-11-01-emt-pericyte/</link>
-      <pubDate>Tue, 01 Nov 2016 00:00:00 -0400</pubDate>
+      <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
       
       <guid>/publication/2016-11-01-emt-pericyte/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -330,7 +339,7 @@
     <item>
       <title>A Molecular Take on Malignant Rhabdoid Tumors</title>
       <link>/publication/2016-05-31-take-rhabdoid/</link>
-      <pubDate>Tue, 31 May 2016 00:00:00 -0400</pubDate>
+      <pubDate>Tue, 31 May 2016 00:00:00 +0000</pubDate>
       
       <guid>/publication/2016-05-31-take-rhabdoid/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -339,7 +348,7 @@
     <item>
       <title>TRIM29 Suppresses TWIST1 and Invasive Breast Cancer Behavior</title>
       <link>/publication/2014-09-01-trim29-twist1-breast-cancer/</link>
-      <pubDate>Mon, 01 Sep 2014 00:00:00 -0400</pubDate>
+      <pubDate>Mon, 01 Sep 2014 00:00:00 +0000</pubDate>
       
       <guid>/publication/2014-09-01-trim29-twist1-breast-cancer/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -348,7 +357,7 @@
     <item>
       <title>Genomic and proteomic analysis of transcription factor TFII-I reveals insight into the response to cellular stress</title>
       <link>/publication/2014-05-29-tfii-i-genomics/</link>
-      <pubDate>Thu, 29 May 2014 00:00:00 -0400</pubDate>
+      <pubDate>Thu, 29 May 2014 00:00:00 +0000</pubDate>
       
       <guid>/publication/2014-05-29-tfii-i-genomics/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -357,7 +366,7 @@
     <item>
       <title>The malignant brain tumor (MBT) domain protein SFMBT1 is an integral histone reader subunit of the LSD1 demethylase complex for chromatin association and epithelial-to-mesenchymal transition</title>
       <link>/publication/2013-09-20-sfmbt-snail-emt-cancer/</link>
-      <pubDate>Fri, 20 Sep 2013 00:00:00 -0400</pubDate>
+      <pubDate>Fri, 20 Sep 2013 00:00:00 +0000</pubDate>
       
       <guid>/publication/2013-09-20-sfmbt-snail-emt-cancer/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -366,7 +375,7 @@
     <item>
       <title>CTCF-dependent chromatin insulator as a built-in attenuator of angiogenesis</title>
       <link>/publication/2012-03-01-ctcf-angiogenesis/</link>
-      <pubDate>Thu, 01 Mar 2012 00:00:00 -0500</pubDate>
+      <pubDate>Thu, 01 Mar 2012 00:00:00 +0000</pubDate>
       
       <guid>/publication/2012-03-01-ctcf-angiogenesis/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
@@ -375,7 +384,7 @@
     <item>
       <title>Restraint of angiogenesis by zinc finger transcription factor CTCF-dependent chromatin insulation</title>
       <link>/publication/2011-09-13-ctcf-vegf-enhancer-blocking/</link>
-      <pubDate>Tue, 13 Sep 2011 00:00:00 -0400</pubDate>
+      <pubDate>Tue, 13 Sep 2011 00:00:00 +0000</pubDate>
       
       <guid>/publication/2011-09-13-ctcf-vegf-enhancer-blocking/</guid>
       <description></description>

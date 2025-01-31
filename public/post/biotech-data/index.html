@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="In a biotech startup, an early data strategy is key to ensure public and private data remain useful and valuable. As AI hype reaches new heights, I want to emphasize that a data strategy must precede any AI strategy.
+Data is the oil of the AI engine. Unfortunately, the real-world data are usually messy and not AI-ready. Without a robust data strategy, you are building an AI system on a shaky foundation.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/biotech-data/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/biotech-data/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="/post/biotech-data/">
+  <meta property="og:title" content="Biotech Data Strategy: Building a Scalable Foundation for Startups | Chatomics">
+  <meta property="og:description" content="In a biotech startup, an early data strategy is key to ensure public and private data remain useful and valuable. As AI hype reaches new heights, I want to emphasize that a data strategy must precede any AI strategy.
+Data is the oil of the AI engine. Unfortunately, the real-world data are usually messy and not AI-ready. Without a robust data strategy, you are building an AI system on a shaky foundation.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2025-01-03T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2025-01-03T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Biotech Data Strategy: Building a Scalable Foundation for Startups | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Biotech Data Strategy: Building a Scalable Foundation for Startups</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2025-01-03 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Jan 3, 2025
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/biotech-data/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/review/">review</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Biotech%20Data%20Strategy%3a%20Building%20a%20Scalable%20Foundation%20for%20Startups&amp;url=%2fpost%2fbiotech-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fbiotech-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fbiotech-data%2f&amp;title=Biotech%20Data%20Strategy%3a%20Building%20a%20Scalable%20Foundation%20for%20Startups"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fbiotech-data%2f&amp;title=Biotech%20Data%20Strategy%3a%20Building%20a%20Scalable%20Foundation%20for%20Startups"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Biotech%20Data%20Strategy%3a%20Building%20a%20Scalable%20Foundation%20for%20Startups&amp;body=%2fpost%2fbiotech-data%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>In a biotech startup, an early data strategy is key to ensure public and private data remain useful and valuable. As AI hype reaches new heights, I want to emphasize that a data strategy must precede any AI strategy.</p>
+<p>Data is the oil of the AI engine. Unfortunately, the real-world data are usually messy and not AI-ready. Without a robust data strategy, you are building an AI system on a shaky foundation.</p>
+<p>Below are the notes I collected from <a href="https://www.linkedin.com/posts/daniel-dacey_lifesciences-biotech-pharma-activity-7257457684776472576-6Jpb">an event</a> I participated as a panelist.</p>
+<p><img src="/img/biotech_data.jpeg" /></p>
+<p>I will cover essential strategy components from my personal experience working at a small biotech. I will cover:</p>
+<ul>
+<li>data governance,</li>
+<li>management,</li>
+<li>team collaboration,</li>
+<li>and the balance between custom and standard tools.</li>
+<li>Moreover, practical examples will show how these elements create a strong data foundation.</li>
+</ul>
+<p>Data governance is essential as companies scale and transition data to the cloud. However, for a small startup, establishing good governance practices can feel overwhelming.</p>
+<p>Effective data governance should ensure integrity, compliance, and security from the outset. For example, when data shifts to the cloud, it’s crucial to define access, and set rules for documentation and security.</p>
+<p>Simple actions, like establishing access controls and basic security, can avert future issues. Moreover, ensuring data accuracy and consistency from the start is vital. This prevents problems as more data is added.</p>
+<p>In many startups, the bioinformatics or computational biology team also handles IT tasks. This can be tough. However, training from cloud providers like Google Cloud or AWS can ease the process.</p>
+<p>These vendors offer key training on security, compliance, and cloud management. This helps teams work better without needing IT expertise. Data security is crucial. Thus, vendor support is vital for small teams to meet compliance requirements more easily.</p>
+<p>Data management goes hand-in-hand with governance. Organizing and storing data in scalable ways is essential to avoid chaos as data volumes grow. A consistent folder structure on the cloud storage bucket is essential for scientists to navigate to find the right data efficiently.</p>
+<p>In addition, enforcing consistent metadata practices is as important. Data without metadata is like a library without labels—nearly impossible to navigate.</p>
+<p>Biotech startup data always starts with a spreadsheet until it is not manageable. To build a strong foundation, standardized data entry in spreadsheets is a good starting point.</p>
+<p>For instance, always use “Female” instead of “female” or “F”. Also, avoid spaces and special characters in column names. Educate wet lab scientists on best practices. This ensures consistency and reduces cleanup time later.</p>
+<p>Of course, there is ‘technical debt’ that might be incurred in the early stage. Startups are constantly under the pressure of raising the next round of funding and meeting deadlines.</p>
+<p>The initial data infrastructure can be scrappy. In five years, if some new hire complains about the data infrastructure, congratulations! You survived for five years!</p>
+<p>But it does not give you the excuse to follow some basic best practices.</p>
+<p><strong>EVERYONE needs to read this article: <a href="https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989">Data Organization in Spreadsheets</a>.</strong></p>
+<p>Most biotech data originates from two sources: public datasets and in-house generated data. Public data is easy to access but often messy. It needs cleanup and metadata alignment to be useful. For instance, public datasets may have inconsistent metadata. It requires harmonization to make them useful for meta-analysis.</p>
+<p>In-house data, especially from high-throughput assays, is different. Early integration with a Laboratory Information Management System (LIMS) is beneficial. A LIMS tracks samples, experiments, and metadata as data grows. Starting with a LIMS can streamline workflows. Combining it with metadata alignment makes data ready for AI.</p>
+<p>Making data storage meet <a href="https://www.go-fair.org/fair-principles/">FAIR</a> principles—Findable, Accessible, Interoperable, and Reusable—seems tough for small startups. Yet, adopting “Good-enough” practices can help.</p>
+<p>For instance, using a consistent cloud folder structure is a good start. Create main folders for “Internal Data” and “Public Data.” Then, add subfolders for data types like RNA-seq, WGS, ChIP-seq, and single-cell data.</p>
+<p>Each dataset needs a README file. This file should explain when and how the data was collected and link to preprocessing code. For example, linking to a GitHub repository with scripts helps future team members understand the data’s origins and changes.</p>
+<p>Startups often face challenges in balancing quick data analysis with making it reproducible. They frequently need to quickly answer questions from leaders or investors.</p>
+<p>In such cases, ensuring every analysis is perfectly reproducible isn’t always feasible. For example, a simple answer might suffice for an investor’s quick question, even if it’s not fully reproducible.</p>
+<p>This approach, however, leads to “technical debt.” Startups can address these shortcuts later if they succeed. For big projects, aiming for reproducibility is key. But, it’s okay to be flexible with exploratory work.</p>
+<p>I will talk about reproducibility for computing in a future blog post.</p>
+<p>Startups often face the choice between building custom tools and buying commercial ones. Custom tools offer flexibility but require significant time and resources. Meanwhile, off-the-shelf solutions save time and are often more reliable, provided they meet current needs.</p>
+<p>The decision should align with the startup’s vision, resources, and expected returns. For example, a tool that boosts reproducibility, ensures data consistency and allows the team to focus on complex analysis is a smart investment. It’s crucial to avoid burdening the team with too many platforms. Focus on those that offer clear, scalable benefits.</p>
+<p>As data infrastructure improves, the focus shifts from tools to people. An in-house team boosts collaboration between computational biologists and wet lab scientists. Data scientists, working with wet lab teams, offer quick analysis and feedback.</p>
+<p>I highly recommend bench scientists sit next to the computational scientists so they can communicate quickly.</p>
+<p>This collaboration sparks new insights and innovation. Constant communication helps both teams understand each other’s challenges. This leads to better experiments, deeper analysis, and faster discoveries.</p>
+<p>For instance, computational biologists can conduct initial single-cell analyses. They create Seurat or Scanpy objects for wet lab scientists. This allows wet lab scientists to explore data themselves using a GUI tool (<a href="https://www.pythiabio.com/multiomics-analysis-software">Pythia’s CDIAM platform</a> is a good one, disclaimer, I am on their scientific advisory board) as a bridge to explore the objects.</p>
+<p>Furthermore, giving wet lab scientists access to their data on interactive platforms promotes independence. It allows them to perform basic analyses and generate ideas without always relying on the computational team.</p>
+<p>I firmly believe that giving the wet lab scientist the capability to explore their data helps form hypotheses. Meanwhile, the computational team can tackle more complex analyses.</p>
+<p>Data analysis in biotech aims to inform future research or development. Data scientists play an important role in decision-making.</p>
+<p>Usually, a computational biologist presents the findings in a slide deck. This includes conclusions from the current experiment, new experiment suggestions, and a GitHub link for code access. This approach provides clear guidance to the wet lab team. It also allows them to trace and repeat analyses when needed.</p>
+<p>Biotech startups may struggle to build a data strategy. Yet, focusing on governance, management, reproducibility, and collaboration can speed up R&amp;D. This approach turns data into insights, guiding decisions and ensuring success in a competitive market.</p>
+<div id="references-and-further-reading" class="section level3">
+<h3>References and further reading:</h3>
+<ul>
+<li><a href="https://divingintogeneticsandgenomics.com/post/has-ai-changed-the-course-of-drug-development/">Has AI changed the course of Drug Development?</a></li>
+<li><a href="https://michelebusby.tumblr.com/">So You Want to Start a Biotech: A Bioinformatics Approach That Works</a></li>
+<li><a href="https://medium.com/@jfeala/the-digital-biotech-startup-playbook-398aeafca8a4">The digital biotech startup playbook</a></li>
+<li><a href="https://scalingbiotech.substack.com/p/data-and-metadata-beat-models">Data (and metadata) beat models</a></li>
+<li><a href="http://blog.booleanbiotech.com/biotech-data-infrastructure.html">Modern biotech data infrastructure</a></li>
+</ul>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/biotech/">biotech</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/data/">data</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/review-2024/">Review 2024</a></li>
+        
+        <li><a href="/post/learn-linear-algebra/">I regret not doing so</a></li>
+        
+        <li><a href="/post/cca-alignment/">How CCA alignment and cell label transfer work in Seurat</a></li>
+        
+        <li><a href="/post/pca-projection/">How PCA projection and cell label transfer work in Seurat</a></li>
+        
+        <li><a href="/post/genomic-interval/">You need to master it if you deal with genomics data</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/review-2024/" rel="prev">Review 2024</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

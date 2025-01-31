@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+R or Python for Bioinformatics? Watch the video here:
+    If you need to pick Python or R for bioinformatics, which one should you choose? This is a decades-old question from many beginners.
+This is my story.
+I started learning Unix Commands 12 years ago (See an example of how powerful Unix commands can be).">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/r-or-python-for-bioinformatics/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/r-or-python-for-bioinformatics/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="/post/r-or-python-for-bioinformatics/">
+  <meta property="og:title" content="R or Python for Bioinformatics? | Chatomics">
+  <meta property="og:description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+R or Python for Bioinformatics? Watch the video here:
+    If you need to pick Python or R for bioinformatics, which one should you choose? This is a decades-old question from many beginners.
+This is my story.
+I started learning Unix Commands 12 years ago (See an example of how powerful Unix commands can be).">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2024-06-05T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2024-06-05T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>R or Python for Bioinformatics? | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">R or Python for Bioinformatics?</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2024-06-05 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Jun 5, 2024
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    3 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/r-or-python-for-bioinformatics/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioconductor/">bioconductor</a
+    >, 
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=R%20or%20Python%20for%20Bioinformatics%3f&amp;url=%2fpost%2fr-or-python-for-bioinformatics%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fr-or-python-for-bioinformatics%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fr-or-python-for-bioinformatics%2f&amp;title=R%20or%20Python%20for%20Bioinformatics%3f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fr-or-python-for-bioinformatics%2f&amp;title=R%20or%20Python%20for%20Bioinformatics%3f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=R%20or%20Python%20for%20Bioinformatics%3f&amp;body=%2fpost%2fr-or-python-for-bioinformatics%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<div id="r-or-python-for-bioinformatics" class="section level3">
+<h3>R or Python for Bioinformatics?</h3>
+<p>Watch the video here:</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/f06rvQJvjxQ" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<p>If you need to pick <code>Python</code> or <code>R</code> for bioinformatics, which one should you choose?
+This is a decades-old question from many beginners.</p>
+<p>This is my story.</p>
+<p>I started learning Unix Commands 12 years ago (See <a href="https://www.youtube.com/watch?v=3SW4zo5fDrA">an example</a> of how powerful Unix commands can be). I then picked up Python using “<a href="https://www.amazon.com/Python-Programming-Absolute-Beginner-3rd/dp/1435455002">Python for absolute beginners</a>”. It was a great book, however…</p>
+<p>I did my first <code>print("hello world")</code> and learned the syntax of the language.. It is not that practical in terms of solving practical bioinformatics problems that I had. why?</p>
+<p>I had a lot of tables/spreadsheets to analyze during that time, and learning pandas in Python was just not that smooth. Then, I found R..</p>
+<p>R is perfect for rectangular tables and has built-in support for dataframes. With the more recent <a href="https://www.tidyverse.org/">tidyverse</a>, it is so much easier to do complex data wrangling with a few lines of code. ggplot2 made figures are still better than in Python.</p>
+<p>Moreover, R has the <a href="https://bioconductor.org/">Bioconductor</a> ecosystem which contains thousands of packages for bioinformatics. You can simply search “xxx data analysis, Bioconductor” and find packages.</p>
+<p>For example, bulk RNAseq analysis still widely uses the <code>DESeq2</code> package.</p>
+<p><code>Python</code> is a general programming language and has its strength in deep learning but may have fewer pre-built bioinformatics packages. Some people feel it is more intuitive to learn but some think R is easier. R has other problems too.</p>
+<p>You need to load all the data into memory in R (you can read the file line by line and process line by line in Python). so when the data is big, you need a lot of RAM to do the analysis.</p>
+<p>For whole genome bisulfite sequencing data , you can have 20 million rows x 50 samples. It is not practical to load it into memory.</p>
+<p>There is a more recent <a href="https://petehaitch.github.io/BioC2020_DelayedArray_workshop/index.html">DelayedArray</a> to solve this problem though.</p>
+</div>
+<div id="conclusions" class="section level3">
+<h3>Conclusions</h3>
+<p><code>Python</code> and <code>R</code> both have their own pros and cons. If you can, learn both and use one that is suitable for the task at hand.</p>
+<p>Knowing well of one language can help you learn other languages a lot easier. The syntax is different but the logics, flow controls are the same.</p>
+<p>So if you are a biologist who wants to do a quick analysis with a pre-built package, I think <code>R</code> is better. But if you want to be a serious programmer (developing algorithms), learn <code>Python</code> too.</p>
+<p>PS: Read this blog post on how to solve the same data formatting problem using Python and R:</p>
+<p><a href="https://divingintogeneticsandgenomics.com/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/" class="uri">https://divingintogeneticsandgenomics.com/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</a></p>
+<p>Happy Learning!</p>
+<p>Tommy</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioconductor/">Bioconductor</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/">Downstream of bulk RNAseq: read in salmon output using tximport and then DESeq2</a></li>
+        
+        <li><a href="/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/">Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</a></li>
+        
+        <li><a href="/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/">How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</a></li>
+        
+        <li><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></li>
+        
+        <li><a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/six-tips-to-build-a-strong-bioinformatics-cv/" rel="next">Six tips to build a strong Bioinformatics CV</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/" rel="prev">How to level up Real-life bioinformatics skill: from dealing with one sample to a lot of samples</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

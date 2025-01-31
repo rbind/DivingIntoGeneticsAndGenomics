@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Projects on DNA confesses Data speak</title>
+    <title>Projects on Chatomics</title>
     <link>/project/</link>
-    <description>Recent content in Projects on DNA confesses Data speak</description>
+    <description>Recent content in Projects on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sat, 26 Sep 2020 00:00:00 -0400</lastBuildDate>
+    <lastBuildDate>Sat, 26 Sep 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/project/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>CANCER IMMUNOLOGIC DATA COMMONS(CIDC)</title>
       <link>/project/cimac-cidc/</link>
-      <pubDate>Sat, 26 Sep 2020 00:00:00 -0400</pubDate>
+      <pubDate>Sat, 26 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>/project/cimac-cidc/</guid>
       <description>The CIMAC-CIDC Network is an NCI Cancer Moonshot initiative that provides cutting-edge technology and expertise in genomic, proteomic, and functional molecular analysis to enhance clinical trials in cancer immune therapies.
@@ -26,7 +26,7 @@ I am now leading the bioinformatics effort in the Cancer Immunologic Data Common
     <item>
       <title>Snakemake pipeline post-processing scATAC-seq</title>
       <link>/project/single-cell-atacseq/</link>
-      <pubDate>Wed, 17 Jul 2019 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>/project/single-cell-atacseq/</guid>
       <description>What does it do? For single cell ATACseq experiment, one gets a merged bam file for all cells. After going through clustering, one groups similar cells into cell types (cell states). This workflow will split the bam by clusters to create a pseudo bulk bam for each cluster, create bigwig tracks for visulization, call peaks for each cluster and merge the peaks across the clusters. Finally it will count reads per peak per cell from the original bam file on the merged peaks.</description>
@@ -35,7 +35,7 @@ I am now leading the bioinformatics effort in the Cancer Immunologic Data Common
     <item>
       <title>Evaluating single cell RNAseq cluster stability</title>
       <link>/project/evaluating-scrnaseq-cluster/</link>
-      <pubDate>Tue, 05 Feb 2019 00:00:00 -0500</pubDate>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
       
       <guid>/project/evaluating-scrnaseq-cluster/</guid>
       <description>The goal of scclusteval(Single Cell Cluster Evaluation) is to evaluate the single cell clustering stability by boostrapping/subsampling the cells and provide many visualization methods for comparing clusters.
@@ -46,7 +46,7 @@ You can find the package at my github.</description>
     <item>
       <title>Snakemake Pipelines</title>
       <link>/project/snakemake-pipelines/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/project/snakemake-pipelines/</guid>
       <description>Snakemake is a python extension for writing workflows. Genomics data processing usually requires bundling many different tools to reach a stage that is ready for downstream analysis.

@@ -15,7 +15,7 @@
   
   
   
-  <meta name="description" content="Director of Computational Biology">
+  <meta name="description" content="Director of Bioinformatics">
 
   
   <link rel="alternate" hreflang="en-us" href="/tags/scrnaseq/">
@@ -75,8 +75,8 @@
   
 
   
-  <link rel="alternate" href="/tags/scrnaseq/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
-  <link rel="feed" href="/tags/scrnaseq/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="alternate" href="/tags/scrnaseq/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/tags/scrnaseq/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
@@ -90,19 +90,19 @@
   <meta property="twitter:site" content="@https://twitter.com/tangming2005">
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
-  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:site_name" content="Chatomics">
   <meta property="og:url" content="/tags/scrnaseq/">
-  <meta property="og:title" content="ScRNAseq | DNA confesses Data speak">
-  <meta property="og:description" content="Director of Computational Biology">
+  <meta property="og:title" content="ScRNAseq | Chatomics">
+  <meta property="og:description" content="Director of Bioinformatics">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2023-08-08T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2024-05-15T00:00:00&#43;00:00">
   
 
   
   
 
-  <title>ScRNAseq | DNA confesses Data speak</title>
+  <title>ScRNAseq | Chatomics</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -121,7 +121,7 @@
         <span class="icon-bar"></span>
       </button>
       
-      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+      <a class="navbar-brand" href="/">Chatomics</a>
     </div>
 
     
@@ -284,6 +284,17 @@
   
   
   <div>
+    <h2><a href="/post/common-mistakes-when-analyzing-single-cell-rnaseq-data/">Common mistakes when analyzing single-cell RNAseq data </a></h2>
+    <div class="article-style">
+      
+      To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+I recently was interviewed by the SEQanswers forum on single-cell RNAseq analysis.
+In your opinion, what is the most challenging aspect of single-cell analysis?  Every single-cell dataset is unique in terms of data quality and QC has to be carried out in a dataset specific manner. Cell annotation is still one of the most challenging steps.
+      
+    </div>
+  </div>
+  
+  <div>
     <h2><a href="/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/">neighborhood/cellular niches analysis with spatial transcriptome data in Seurat and Bioconductor</a></h2>
     <div class="article-style">
       
@@ -382,16 +393,6 @@ There is no such function in Seurat, and many people were asking for this featur
 <a href="https://github.com/satijalab/seurat/issues/463" target="_blank">https://github.com/satijalab/seurat/issues/463</a>
 The developers have not implemented this feature yet. In this post, I am trying to make a stacked violin plot in Seurat.
 The idea is to create a violin plot per gene using the VlnPlot in Seurat, then customize the axis text/tick and reduce the margin for each plot and finally concatenate by cowplot::plot_grid or patchwork::wrap_plots.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
-    <div class="article-style">
-      
-      In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
-My next thought is: maybe the STAR aligner is doing something weird that excluded those reads? At this point, I want to give kb-python, a python wrapper on kallisto and bustools a try.
       
     </div>
   </div>

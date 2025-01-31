@@ -1,0 +1,327 @@
+---
+title: "PCA analysis on TCGA bulk RNAseq data"
+author: Ming Tommy Tang
+date: "2025-01-29"
+slug: pca-tcga
+categories:
+  - review
+tags:
+  - bioinformatics
+  - TCGA
+  - RNAseq
+  - data
+  - pca
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+```
+
+### what is PCA?
+Principal Component Analysis (PCA) is a mathematical technique used to reduce the dimensionality of large datasets while preserving the most important patterns in the data. 
+
+It transforms the original high-dimensional data into a smaller set of new variables called principal components (PCs), which capture the most variation in the data.
+
+
+### Key Concepts of PCA:
+
+* Dimensionality Reduction – PCA reduces complex datasets with many features (e.g., thousands of genes) into a few key components, making analysis easier.
+
+* Variance Maximization – The first principal component (PC1) captures the most variation in the data, the second (PC2) captures the second most, and so on.
+
+* Orthogonality – Principal components are uncorrelated (perpendicular to each other), ensuring that each captures a unique aspect of the data.
+
+
+Please read my previous posts on PCA:
+
+- [PCA in action](https://divingintogeneticsandgenomics.com/post/pca-in-action/) Step by step guide to calculate PCA with R
+
+- [permutation test for PCA components](https://divingintogeneticsandgenomics.com/post/permute-test-for-pca-components/)
+
+- [How PCA projection and cell label transfer work in Seurat](https://divingintogeneticsandgenomics.com/post/pca-projection/)
+
+### PCA on TCGA data
+
+In this example, we will download TCGA LUAD and LUSC RNAseq counts data, and do a PCA.
+You will see when we do not normalize the counts matrix with total library size.
+The first PC (PC1) is correlated with sequencing depth.
+
+Let's dive in!
+
+### Download TCGA data using TCGAbiolinks
+
+There are many ways to get [TCGA data](https://www.cancer.gov/ccg/research/genome-sequencing/tcga). I like [`TCGAbiolinks`](https://bioconductor.org/packages/release/bioc/html/TCGAbiolinks.html) the best as it is very easy.
+
+
+It takes long time to download the data, so I saved it as and Rdata.
+```{r}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+library(dplyr)
+library(here)
+```
+
+Download TCGA data using `TCGAbiolinks`.
+
+```{r eval=FALSE}
+# Load TCGA data (example for LUAD - Lung Adenocarcinoma)
+LUAD_query <- GDCquery(project = "TCGA-LUAD",
+                  data.category = "Transcriptome Profiling",
+                  data.type = "Gene Expression Quantification",
+                  workflow.type = "STAR - Counts")
+
+GDCdownload(LUAD_query)
+
+# this returns a summarizedExperiment object 
+TCGA_LUAD_data <- GDCprepare(LUAD_query)
+
+saveRDS(TCGA_LUAD_data, "~/blog_data/TCGA_LUAD_SummarizedExperiment.rds"))
+```
+
+Read in the saved RDS file:
+```{r}
+TCGA_LUAD_data<- readRDS("~/blog_data/TCGA_LUAD_SummarizedExperiment.rds")
+
+## there are many metadata for each sample
+colData(TCGA_LUAD_data) %>% 
+        colnames() %>%
+        tail()
+
+
+# CIMP methylation subtypes
+colData(TCGA_LUAD_data) %>%
+  as.data.frame() %>%
+  janitor::tabyl(`paper_CIMP.methylation.signature.`)
+
+# save the raw counts matrix 
+TCGA_LUAD_mat<- assay(TCGA_LUAD_data)
+
+
+TCGA_LUAD_mat[1:5, 1:5]
+
+dim(TCGA_LUAD_mat)
+```
+We have 600 samples.
+
+You noticed that the gene name is in ENSEMBLE ID.
+
+We will download the TCGA LUSC data in the same way.
+```{r eval=FALSE}
+LUSC_query <- GDCquery(project = "TCGA-LUSC",
+                  data.category = "Transcriptome Profiling",
+                  data.type = "Gene Expression Quantification",
+                  workflow.type = "STAR - Counts")
+
+GDCdownload(LUSC_query)
+
+TCGA_LUSC_data <- GDCprepare(LUSC_query)
+
+saveRDS(TCGA_LUSC_data, "~/blog_data/TCGA_LUSC_SummarizedExperiment.rds"))
+```
+
+read in the saved RDS 
+```{r}
+TCGA_LUSC_data<- readRDS("~/blog_data/TCGA_LUSC_SummarizedExperiment.rds")
+
+# different transcription subtypes
+colData(TCGA_LUSC_data) %>%
+  as.data.frame() %>%
+  janitor::tabyl(paper_Expression.Subtype)
+
+TCGA_LUSC_mat<- assay(TCGA_LUSC_data)
+```
+
+
+### convert ENSEMBL id to gene symbols
+
+```{r}
+library(org.Hs.eg.db)
+
+# remove the version number in the end of the ENSEMBL id
+TCGA_LUAD_genes<- rownames(TCGA_LUAD_mat) %>%
+  tibble::enframe() %>%
+  mutate(ENSEMBL =stringr::str_replace(value, "\\.[0-9]+", ""))
+
+head(TCGA_LUAD_genes)
+
+# there are duplicated gene symbols for different ENSEMBL id
+clusterProfiler::bitr(TCGA_LUAD_genes$ENSEMBL, 
+                      fromType = "ENSEMBL",
+                      toType = "SYMBOL",
+                      OrgDb = org.Hs.eg.db) %>%
+        janitor::get_dupes(SYMBOL) %>%
+        head()
+
+# just keep one of them (simple solution)
+TCGA_LUAD_gene_map<- clusterProfiler::bitr(TCGA_LUAD_genes$ENSEMBL,
+                                           fromType = "ENSEMBL",
+                                           toType = "SYMBOL",
+                                           OrgDb = org.Hs.eg.db) %>%
+        distinct(SYMBOL, .keep_all = TRUE) 
+       
+                       
+TCGA_LUAD_gene_map<- TCGA_LUAD_gene_map %>%
+  left_join(TCGA_LUAD_genes)
+
+head(TCGA_LUAD_gene_map)
+```
+
+Subset the gene expression matrices and replace the rownames to gene symbol.
+```{r}
+TCGA_LUSC_mat<- TCGA_LUSC_mat[TCGA_LUAD_gene_map$value, ]
+row.names(TCGA_LUSC_mat)<- TCGA_LUAD_gene_map$SYMBOL
+TCGA_LUSC_mat[1:5, 1:5]
+
+
+TCGA_LUAD_mat<- TCGA_LUAD_mat[TCGA_LUAD_gene_map$value, ]
+row.names(TCGA_LUAD_mat)<- TCGA_LUAD_gene_map$SYMBOL
+TCGA_LUAD_mat[1:5, 1:5]
+
+## check the dimentions 
+dim(TCGA_LUSC_mat)
+dim(TCGA_LUAD_mat)
+```
+
+
+### combine TCGA LUSC and LUAD
+
+PCA plot use top variable genes.
+
+```{r}
+# double check the genes are the same
+all.equal(rownames(TCGA_LUAD_mat), rownames(TCGA_LUSC_mat))
+
+TCGA_lung_mat<- cbind(TCGA_LUSC_mat, TCGA_LUAD_mat)
+
+TCGA_lung_meta<- data.frame(cancer_type = c(rep( "LUSC", ncol(TCGA_LUSC_mat)), 
+                   rep("LUAD", ncol(TCGA_LUAD_mat))))
+
+dim(TCGA_lung_mat)
+```
+
+
+### PCA with the raw counts 
+
+```{r}
+library(ggplot2)
+library(ggfortify)
+# select the top 1000 most variable genes 
+TCGA_gene_idx<- order(rowVars(TCGA_lung_mat), decreasing = TRUE)[1:1000]
+
+TCGA_lung_mat_sub <- TCGA_lung_mat[TCGA_gene_idx, ]
+
+TCGA_pca_res <- prcomp(t(TCGA_lung_mat_sub), scale. = TRUE)
+
+autoplot(TCGA_pca_res, data = TCGA_lung_meta , color ="cancer_type") +
+  scale_color_manual(values = c("blue", "red")) +
+  ggtitle("TCGA NSCLC")
+
+```
+LUAD and LUSC samples are not separated in the first PC.
+
+Let's see how sequencing depth is correlated with first PC
+
+read https://divingintogeneticsandgenomics.com/post/pca-in-action/ for more details for PCA.
+
+```{r}
+# the PCs 
+TCGA_pca_res$x[1:5, 1:5]
+
+seq_depth<- colSums(TCGA_lung_mat)
+
+# calculate the correlation of first PC and the sequencing depth
+# the sign of the PCs are arbitrary, so let's get the absolute number
+cor(TCGA_pca_res$x[, 1], seq_depth) %>%
+        abs()
+```
+
+A correlation of `0.98` for PC1!!
+
+```{r}
+# PC2 correlation with sequencing depth
+cor(TCGA_pca_res$x[, 2], seq_depth) %>%
+        abs()
+```
+PC2 is not correlated with sequencing depth. As we can see PC2 separates the cancer types.
+
+Let's plot it on PCA.
+```{r}
+TCGA_lung_meta$seq_depth<- seq_depth
+
+autoplot(TCGA_pca_res, data = TCGA_lung_meta , color ="seq_depth") +
+        scale_color_viridis_b() +
+  ggtitle("TCGA NSCLC")
+```
+
+You see the sequencing depth is high to low from left to right in PC1.
+
+### PCA after cpm (counts per million) normalization
+
+```{r}
+# convert the raw counts to log2(cpm+1) using edgeR.
+TCGA_lung_cpm<- edgeR::cpm(TCGA_lung_mat, log = TRUE, prior.count = 1)
+
+## top 1000 most variable genes
+TCGA_gene_idx2<- order(rowVars(TCGA_lung_cpm), decreasing = TRUE)[1:1000]
+
+TCGA_lung_cpm_sub <- TCGA_lung_cpm[TCGA_gene_idx2, ]
+
+TCGA_pca_res2 <- prcomp(t(TCGA_lung_cpm_sub), scale. = TRUE)
+
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color ="cancer_type") +
+  scale_color_manual(values = c("blue", "red")) +
+  ggtitle("TCGA NSCLC")
+```
+
+Now we see the first PC separates cancer type: LUSC vs LUAD, which makes sense!
+It is interesting to see some of the LUSC samples mix with the LUAD.
+It will be interesting to further investigate those samples.
+
+### make a heatmap
+
+My favorite package is `ComplexHeatmap`.
+
+```{r}
+set.seed(123)
+library(ComplexHeatmap)
+
+TCGA_ha<- HeatmapAnnotation(df = TCGA_lung_meta,
+    col = list(
+               cancer_type = c("LUSC" = "red", "LUAD" = "blue"))
+    )
+
+Heatmap(t(scale(t(TCGA_lung_cpm_sub))),
+        name = "TCGA lung RNA",
+        show_column_names = FALSE,
+        show_row_names = FALSE,
+        show_row_dend = FALSE,
+        #column_split = TCGA_lung_meta$cancer_type,
+        top_annotation = TCGA_ha,
+        row_names_gp = gpar(fontsize = 3),
+        border = TRUE,
+        row_km = 3
+        )
+
+```
+
+This shows you how useful PCA is. In my next post, I will show you how a similar 
+analysis is done in a single-cell ATACseq dataset. Stay tuned!
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+Happy Learning!
+
+Tommy 

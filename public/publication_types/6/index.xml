@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>6 on DNA confesses Data speak</title>
+    <title>6 on Chatomics</title>
     <link>/publication_types/6/</link>
-    <description>Recent content in 6 on DNA confesses Data speak</description>
+    <description>Recent content in 6 on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Tue, 01 Aug 2017 00:00:00 -0400</lastBuildDate>
+    <lastBuildDate>Tue, 01 Aug 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/publication_types/6/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>ChIP-seq analysis Book chapter for Biostar Handbook</title>
       <link>/publication/2017-08-01-biostarhandbook/</link>
-      <pubDate>Tue, 01 Aug 2017 00:00:00 -0400</pubDate>
+      <pubDate>Tue, 01 Aug 2017 00:00:00 +0000</pubDate>
       
       <guid>/publication/2017-08-01-biostarhandbook/</guid>
       <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>

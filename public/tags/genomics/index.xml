@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Genomics on DNA confesses Data speak</title>
+    <title>Genomics on Chatomics</title>
     <link>/tags/genomics/</link>
-    <description>Recent content in Genomics on DNA confesses Data speak</description>
+    <description>Recent content in Genomics on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
@@ -73,7 +73,7 @@ chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 
     <item>
       <title>Snakemake Pipelines</title>
       <link>/project/snakemake-pipelines/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/project/snakemake-pipelines/</guid>
       <description>Snakemake is a python extension for writing workflows. Genomics data processing usually requires bundling many different tools to reach a stage that is ready for downstream analysis.

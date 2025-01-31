@@ -1,16 +1,51 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Data on DNA confesses Data speak</title>
+    <title>Data on Chatomics</title>
     <link>/tags/data/</link>
-    <description>Recent content in Data on DNA confesses Data speak</description>
+    <description>Recent content in Data on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sun, 17 Oct 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 03 Jan 2025 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/data/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Biotech Data Strategy: Building a Scalable Foundation for Startups</title>
+      <link>/post/biotech-data/</link>
+      <pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/biotech-data/</guid>
+      <description>In a biotech startup, an early data strategy is key to ensure public and private data remain useful and valuable. As AI hype reaches new heights, I want to emphasize that a data strategy must precede any AI strategy.
+Data is the oil of the AI engine. Unfortunately, the real-world data are usually messy and not AI-ready. Without a robust data strategy, you are building an AI system on a shaky foundation.</description>
+    </item>
+    
+    <item>
+      <title>Review 2024</title>
+      <link>/post/review-2024/</link>
+      <pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/review-2024/</guid>
+      <description>As 2024 wraps up, it’s the perfect time to reflect and prepare for the new year. I wrote the review for 2023 here.
+Goals reached ✅ I lost 12 lb in 6 weeks!
+ ✅ Supported the clinical trial to identify bio markers for potential responders to our drug at Immunitas. Helped with indication selection for the second and third program. I moved to Astrazeneca in August. I really appreciate my experience at Immunitas and learned a lot.</description>
+    </item>
+    
+    <item>
+      <title>I regret not doing so</title>
+      <link>/post/learn-linear-algebra/</link>
+      <pubDate>Sun, 27 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/learn-linear-algebra/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+My regret is not learning linear algebra well during college.
+I barely passed the exam for it (and calculus, it was a nightmare :) ).
+To be fair..
+It was not taught well and it sounded too boring. I did not know what the application of matrix multiplication was, not until…
+Many years later, I started to learn bioinformatics.</description>
+    </item>
     
     <item>
       <title>Be careful when left_join tables with duplicated rows</title>

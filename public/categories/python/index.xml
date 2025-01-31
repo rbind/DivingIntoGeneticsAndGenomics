@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Python on DNA confesses Data speak</title>
+    <title>Python on Chatomics</title>
     <link>/categories/python/</link>
-    <description>Recent content in Python on DNA confesses Data speak</description>
+    <description>Recent content in Python on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Thu, 12 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 09 May 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to separate a comma delimited string into multiple lines in R and python </title>
+      <link>/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</link>
+      <pubDate>Thu, 09 May 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+The problem df&amp;lt;- data.frame(id = c(1,2,3), value = c(&amp;#39;x,y&amp;#39;, &amp;#39;z,w&amp;#39;, &amp;#39;a&amp;#39;)) df #&amp;gt; id value #&amp;gt; 1 1 x,y #&amp;gt; 2 2 z,w #&amp;gt; 3 3 a we want to put x,y in the first row into two rows:
+1, x
+1, y
+and put z,w into two rows too.
+ solution with R There is a neat function separate_rows that does exactly this in tidyr package:</description>
+    </item>
     
     <item>
       <title>My opinionated selection of books/urls for bioinformatics/data science curriculum</title>

@@ -15,7 +15,7 @@
   
   
   
-  <meta name="description" content="Director of Computational Biology">
+  <meta name="description" content="Director of Bioinformatics">
 
   
   <link rel="alternate" hreflang="en-us" href="/tags/pca/">
@@ -75,8 +75,8 @@
   
 
   
-  <link rel="alternate" href="/tags/pca/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
-  <link rel="feed" href="/tags/pca/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="alternate" href="/tags/pca/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/tags/pca/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
@@ -90,19 +90,19 @@
   <meta property="twitter:site" content="@https://twitter.com/tangming2005">
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
-  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:site_name" content="Chatomics">
   <meta property="og:url" content="/tags/pca/">
-  <meta property="og:title" content="PCA | DNA confesses Data speak">
-  <meta property="og:description" content="Director of Computational Biology">
+  <meta property="og:title" content="PCA | Chatomics">
+  <meta property="og:description" content="Director of Bioinformatics">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2019-01-04T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2024-10-19T00:00:00&#43;00:00">
   
 
   
   
 
-  <title>PCA | DNA confesses Data speak</title>
+  <title>PCA | Chatomics</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -121,7 +121,7 @@
         <span class="icon-bar"></span>
       </button>
       
-      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+      <a class="navbar-brand" href="/">Chatomics</a>
     </div>
 
     
@@ -282,6 +282,28 @@
   
 
   
+  
+  <div>
+    <h2><a href="/post/cca-alignment/">How CCA alignment and cell label transfer work in Seurat</a></h2>
+    <div class="article-style">
+      
+      To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Understand CCA Following my last blog post on PCA projection and cell label transfer, we are going to talk about CCA.
+In single-cell RNA-seq data integration using Canonical Correlation Analysis (CCA), we typically align two matrices representing different datasets, where both datasets have the same set of genes but different numbers of cells.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/pca-projection/">How PCA projection and cell label transfer work in Seurat</a></h2>
+    <div class="article-style">
+      
+      To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Understand the example datasets We will use PBMC3k and PBMC10k data. We will project the PBMC3k data to the PBMC10k data and get the labels
+library(Seurat) library(Matrix) library(irlba) # For PCA library(RcppAnnoy) # For fast nearest neighbor search library(dplyr) # Assuming the PBMC datasets (3k and 10k) are already normalized # and represented as sparse matrices # devtools::install_github(&#39;satijalab/seurat-data&#39;) library(SeuratData) #AvailableData() #InstallData(&quot;pbmc3k&quot;) pbmc3k&lt;-UpdateSeuratObject(pbmc3k) pbmc3k@meta.
+      
+    </div>
+  </div>
   
   <div>
     <h2><a href="/post/permute-test-for-pca-components/">permutation test for PCA components</a></h2>

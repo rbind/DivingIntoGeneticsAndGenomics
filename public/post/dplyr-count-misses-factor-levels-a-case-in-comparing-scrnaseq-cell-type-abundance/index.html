@@ -79,8 +79,8 @@ library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samp
   
 
   
-  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
-  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
@@ -94,9 +94,9 @@ library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samp
   <meta property="twitter:site" content="@https://twitter.com/tangming2005">
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
-  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:site_name" content="Chatomics">
   <meta property="og:url" content="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">
-  <meta property="og:title" content="dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance  | DNA confesses Data speak">
+  <meta property="og:title" content="dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance  | Chatomics">
   <meta property="og:description" content="It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).
 Let’s create some dummy data.
 library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samples, 3 clusters A,B,C # but in the treatment samples, cluster C is absent (0 cells) in sample7 sample_id&lt;- c(paste0(&quot;sample&quot;, 1:6, &quot;_control&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;,&quot;_C&quot;),each = 6)), paste0(&quot;sample&quot;, 8:12, &quot;_treatment&quot;, rep(c(&quot;_A&quot;,&quot;_B&quot;, &quot;_C&quot;), each = 5))) sample_id&lt;- c(sample_id, &quot;sample7_treatment_A&quot;, &quot;sample7_treatment_B&quot;) cell_id&lt;- paste0(&quot;cell&quot;, 1:20000) cell_df&lt;- tibble::tibble(sample_id = sample(sample_id, size = length(cell_id), replace = TRUE), cell_id = cell_id) %&gt;% tidyr::separate(sample_id, into = c(&quot;sample_id&quot;, &quot;group&quot;, &quot;cluster_id&quot;), sep= &quot;_&quot;) cell_num&lt;- cell_df %&gt;% group_by(group, cluster_id, sample_id)%&gt;% summarize(n=n()) cell_num ## # A tibble: 35 x 4 ## # Groups: group, cluster_id [6] ## group cluster_id sample_id n ## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; ## 1 control A sample1 551 ## 2 control A sample2 546 ## 3 control A sample3 544 ## 4 control A sample4 585 ## 5 control A sample5 588 ## 6 control A sample6 542 ## 7 control B sample1 550 ## 8 control B sample2 562 ## 9 control B sample3 574 ## 10 control B sample4 563 ## # … with 25 more rows total_cells&lt;- cell_df %&gt;% group_by(sample_id) %&gt;% summarise(total = n()) total_cells ## # A tibble: 12 x 2 ## sample_id total ## &lt;chr&gt; &lt;int&gt; ## 1 sample1 1673 ## 2 sample10 1713 ## 3 sample11 1691 ## 4 sample12 1696 ## 5 sample2 1633 ## 6 sample3 1700 ## 7 sample4 1711 ## 8 sample5 1768 ## 9 sample6 1727 ## 10 sample7 1225 ## 11 sample8 1720 ## 12 sample9 1743 join the two dataframe to get percentage of cells per cluster per sample">
@@ -110,7 +110,7 @@ library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samp
   
   
 
-  <title>dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance  | DNA confesses Data speak</title>
+  <title>dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance  | Chatomics</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -129,7 +129,7 @@ library(tidyverse) set.seed(23) # we have 6 treatment samples and 6 control samp
         <span class="icon-bar"></span>
       </button>
       
-      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+      <a class="navbar-brand" href="/">Chatomics</a>
     </div>
 
     

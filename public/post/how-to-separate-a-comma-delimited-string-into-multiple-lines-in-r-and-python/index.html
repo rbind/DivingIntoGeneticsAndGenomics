@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+The problem df&lt;- data.frame(id = c(1,2,3), value = c(&#39;x,y&#39;, &#39;z,w&#39;, &#39;a&#39;)) df #&gt; id value #&gt; 1 1 x,y #&gt; 2 2 z,w #&gt; 3 3 a we want to put x,y in the first row into two rows:
+1, x
+1, y
+and put z,w into two rows too.
+ solution with R There is a neat function separate_rows that does exactly this in tidyr package:">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/">
+  <meta property="og:title" content="How to separate a comma delimited string into multiple lines in R and python  | Chatomics">
+  <meta property="og:description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+The problem df&lt;- data.frame(id = c(1,2,3), value = c(&#39;x,y&#39;, &#39;z,w&#39;, &#39;a&#39;)) df #&gt; id value #&gt; 1 1 x,y #&gt; 2 2 z,w #&gt; 3 3 a we want to put x,y in the first row into two rows:
+1, x
+1, y
+and put z,w into two rows too.
+ solution with R There is a neat function separate_rows that does exactly this in tidyr package:">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2024-05-09T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2024-05-09T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>How to separate a comma delimited string into multiple lines in R and python  | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">How to separate a comma delimited string into multiple lines in R and python </h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2024-05-09 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      May 9, 2024
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="/categories/rstats/">rstats</a
+    >, 
+    
+    <a href="/categories/python/">python</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=How%20to%20separate%20a%20comma%20delimited%20string%20into%20multiple%20lines%20in%20R%20and%20python%20&amp;url=%2fpost%2fhow-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fhow-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fhow-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python%2f&amp;title=How%20to%20separate%20a%20comma%20delimited%20string%20into%20multiple%20lines%20in%20R%20and%20python%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fhow-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python%2f&amp;title=How%20to%20separate%20a%20comma%20delimited%20string%20into%20multiple%20lines%20in%20R%20and%20python%20"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=How%20to%20separate%20a%20comma%20delimited%20string%20into%20multiple%20lines%20in%20R%20and%20python%20&amp;body=%2fpost%2fhow-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<div id="the-problem" class="section level3">
+<h3>The problem</h3>
+<pre class="r"><code>df&lt;- data.frame(id = c(1,2,3), value = c(&#39;x,y&#39;, &#39;z,w&#39;, &#39;a&#39;))
+df</code></pre>
+<pre><code>#&gt;   id value
+#&gt; 1  1   x,y
+#&gt; 2  2   z,w
+#&gt; 3  3     a</code></pre>
+<p>we want to put x,y in the first row into two rows:</p>
+<p>1, x</p>
+<p>1, y</p>
+<p>and put z,w into two rows too.</p>
+</div>
+<div id="solution-with-r" class="section level3">
+<h3>solution with R</h3>
+<p>There is a neat function <code>separate_rows</code> that does exactly this in <code>tidyr</code> package:</p>
+<pre class="r"><code>library(tidyr)
+library(dplyr)
+
+df %&gt;%
+        tidyr::separate_rows(value, sep=&quot;,&quot;)</code></pre>
+<pre><code>#&gt; # A tibble: 5 × 2
+#&gt;      id value
+#&gt;   &lt;dbl&gt; &lt;chr&gt;
+#&gt; 1     1 x    
+#&gt; 2     1 y    
+#&gt; 3     2 z    
+#&gt; 4     2 w    
+#&gt; 5     3 a</code></pre>
+<p>We can also convert it back using some purrr tricks.</p>
+<pre class="r"><code>library(tidyr)
+library(purrr)
+
+df_nest&lt;- df %&gt;%
+        tidyr::separate_rows(value, sep=&quot;,&quot;) %&gt;%
+        group_by(id) %&gt;%
+        nest()
+
+df_nest</code></pre>
+<pre><code>#&gt; # A tibble: 3 × 2
+#&gt; # Groups:   id [3]
+#&gt;      id data            
+#&gt;   &lt;dbl&gt; &lt;list&gt;          
+#&gt; 1     1 &lt;tibble [2 × 1]&gt;
+#&gt; 2     2 &lt;tibble [2 × 1]&gt;
+#&gt; 3     3 &lt;tibble [1 × 1]&gt;</code></pre>
+<pre class="r"><code>df_nest$data[[1]]</code></pre>
+<pre><code>#&gt; # A tibble: 2 × 1
+#&gt;   value
+#&gt;   &lt;chr&gt;
+#&gt; 1 x    
+#&gt; 2 y</code></pre>
+<pre class="r"><code># convert it back 
+df_nest %&gt;%
+        mutate(new_data = map_chr(data, ~paste(.x$value, collapse = &quot;,&quot;)))</code></pre>
+<pre><code>#&gt; # A tibble: 3 × 3
+#&gt; # Groups:   id [3]
+#&gt;      id data             new_data
+#&gt;   &lt;dbl&gt; &lt;list&gt;           &lt;chr&gt;   
+#&gt; 1     1 &lt;tibble [2 × 1]&gt; x,y     
+#&gt; 2     2 &lt;tibble [2 × 1]&gt; z,w     
+#&gt; 3     3 &lt;tibble [1 × 1]&gt; a</code></pre>
+</div>
+<div id="solution-with-python" class="section level3">
+<h3>solution with python</h3>
+<p>Note, how to use python in Rmarkdown, read <a href="https://rstudio.github.io/reticulate/articles/versions.html" class="uri">https://rstudio.github.io/reticulate/articles/versions.html</a></p>
+<pre class="r"><code>library(reticulate)
+use_condaenv(&quot;r-reticulate&quot;)</code></pre>
+<pre class="python"><code>import pandas as pd
+
+df = pd.DataFrame({&#39;id&#39;: [1, 2, 3], &#39;data&#39;: [&#39;x, y&#39;, &#39;z, w&#39;, &#39;a&#39;]})
+
+print(df)
+
+# Split text into a list</code></pre>
+<pre><code>#&gt;    id  data
+#&gt; 0   1  x, y
+#&gt; 1   2  z, w
+#&gt; 2   3     a</code></pre>
+<pre class="python"><code>df[&#39;data&#39;] = df[&#39;data&#39;].str.split(&#39;,&#39;)
+print(df)
+
+# Convert list into multiple rows</code></pre>
+<pre><code>#&gt;    id     data
+#&gt; 0   1  [x,  y]
+#&gt; 1   2  [z,  w]
+#&gt; 2   3      [a]</code></pre>
+<pre class="python"><code>df = df.explode(&#39;data&#39;)
+print(df)</code></pre>
+<pre><code>#&gt;    id data
+#&gt; 0   1    x
+#&gt; 0   1    y
+#&gt; 1   2    z
+#&gt; 1   2    w
+#&gt; 2   3    a</code></pre>
+<p>we used <code>explode</code> function in pandas. Of course, you can do it manually:
+read in the dataframe line by line, split the last column to a list using str.split(‘,’) and open an empty file and write the str.splited entries into new lines.</p>
+</div>
+<div id="use-case-in-bioinformatics" class="section level3">
+<h3>use case in bioinformatics?</h3>
+<p>follow <a href="https://yulab-smu.top/biomedical-knowledge-mining-book/clusterprofiler-go.html" class="uri">https://yulab-smu.top/biomedical-knowledge-mining-book/clusterprofiler-go.html</a>
+for gene set enrichment analysis.</p>
+<pre class="r"><code>library(clusterProfiler)
+data(geneList, package=&quot;DOSE&quot;)
+gene &lt;- names(geneList)[abs(geneList) &gt; 2]
+
+# Entrez gene ID
+head(gene)</code></pre>
+<pre><code>#&gt; [1] &quot;4312&quot;  &quot;8318&quot;  &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot;</code></pre>
+<p>Let’s do a go-term over-representation analysis</p>
+<pre class="r"><code>library(org.Hs.eg.db)
+
+ego &lt;- enrichGO(gene          = gene,
+                universe      = names(geneList),
+                OrgDb         = org.Hs.eg.db,
+                ont           = &quot;CC&quot;,
+                pAdjustMethod = &quot;BH&quot;,
+                pvalueCutoff  = 0.01,
+                qvalueCutoff  = 0.05,
+                readable      = TRUE)
+head(ego)</code></pre>
+<pre><code>#&gt;                    ID                              Description GeneRatio
+#&gt; GO:0005819 GO:0005819                                  spindle    26/201
+#&gt; GO:0000779 GO:0000779 condensed chromosome, centromeric region    16/201
+#&gt; GO:0072686 GO:0072686                          mitotic spindle    17/201
+#&gt; GO:0000775 GO:0000775           chromosome, centromeric region    18/201
+#&gt; GO:0098687 GO:0098687                       chromosomal region    23/201
+#&gt; GO:0000776 GO:0000776                              kinetochore    15/201
+#&gt;              BgRatio       pvalue     p.adjust       qvalue
+#&gt; GO:0005819 306/11853 1.072029e-11 3.151766e-09 2.888837e-09
+#&gt; GO:0000779 114/11853 7.709944e-11 8.659125e-09 7.936756e-09
+#&gt; GO:0072686 133/11853 8.835841e-11 8.659125e-09 7.936756e-09
+#&gt; GO:0000775 158/11853 1.684987e-10 1.179661e-08 1.081250e-08
+#&gt; GO:0098687 272/11853 2.006225e-10 1.179661e-08 1.081250e-08
+#&gt; GO:0000776 106/11853 2.733425e-10 1.339378e-08 1.227644e-08
+#&gt;                                                                                                                                                               geneID
+#&gt; GO:0005819 CDCA8/CDC20/KIF23/CENPE/ASPM/DLGAP5/SKA1/NUSAP1/TPX2/TACC3/NEK2/CDK1/MAD2L1/KIF18A/BIRC5/KIF11/TRAT1/TTK/AURKB/PRC1/KIFC1/KIF18B/KIF20A/AURKA/CCNB1/KIF4A
+#&gt; GO:0000779                                                             CENPE/NDC80/HJURP/SKA1/NEK2/CENPM/CENPN/ERCC6L/MAD2L1/KIF18A/CDT1/BIRC5/TTK/NCAPG/AURKB/CCNB1
+#&gt; GO:0072686                                                      KIF23/CENPE/ASPM/SKA1/NUSAP1/TPX2/TACC3/CDK1/MAD2L1/KIF18A/KIF11/TRAT1/AURKB/PRC1/KIFC1/KIF18B/AURKA
+#&gt; GO:0000775                                                 CDCA8/CENPE/NDC80/TOP2A/HJURP/SKA1/NEK2/CENPM/CENPN/ERCC6L/MAD2L1/KIF18A/CDT1/BIRC5/TTK/NCAPG/AURKB/CCNB1
+#&gt; GO:0098687                   CDCA8/CENPE/NDC80/TOP2A/HJURP/SKA1/NEK2/CENPM/RAD51AP1/CENPN/CDK1/ERCC6L/MAD2L1/KIF18A/CDT1/BIRC5/EZH2/TTK/NCAPG/AURKB/CHEK1/CCNB1/MCM5
+#&gt; GO:0000776                                                                   CENPE/NDC80/HJURP/SKA1/NEK2/CENPM/CENPN/ERCC6L/MAD2L1/KIF18A/CDT1/BIRC5/TTK/AURKB/CCNB1
+#&gt;            Count
+#&gt; GO:0005819    26
+#&gt; GO:0000779    16
+#&gt; GO:0072686    17
+#&gt; GO:0000775    18
+#&gt; GO:0098687    23
+#&gt; GO:0000776    15</code></pre>
+<p>The last <code>geneID</code> column is a list of genes separated by <code>/</code>. If I want to
+get a tidy dataframe, I can do</p>
+<pre class="r"><code>ego@result %&gt;% 
+        tidyr::separate_rows(geneID, sep=&quot;/&quot;)</code></pre>
+<pre><code>#&gt; # A tibble: 918 × 9
+#&gt;    ID       Description GeneRatio BgRatio   pvalue p.adjust  qvalue geneID Count
+#&gt;    &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;
+#&gt;  1 GO:0005… spindle     26/201    306/11… 1.07e-11  3.15e-9 2.89e-9 CDCA8     26
+#&gt;  2 GO:0005… spindle     26/201    306/11… 1.07e-11  3.15e-9 2.89e-9 CDC20     26
+#&gt;  3 GO:0005… spindle     26/201    306/11… 1.07e-11  3.15e-9 2.89e-9 KIF23     26
+#&gt;  4 GO:0005… spindle     26/201    306/11… 1.07e-11  3.15e-9 2.89e-9 CENPE     26
+#&gt;  5 GO:0005… spindle     26/201    306/11… 1.07e-11  3.15e-9 2.89e-9 ASPM      26
+#&gt;  6 GO:0005… spindle     26/201    306/11… 1.07e-11  3.15e-9 2.89e-9 DLGAP5    26
+#&gt;  7 GO:0005… spindle     26/201    306/11… 1.07e-11  3.15e-9 2.89e-9 SKA1      26
+#&gt;  8 GO:0005… spindle     26/201    306/11… 1.07e-11  3.15e-9 2.89e-9 NUSAP1    26
+#&gt;  9 GO:0005… spindle     26/201    306/11… 1.07e-11  3.15e-9 2.89e-9 TPX2      26
+#&gt; 10 GO:0005… spindle     26/201    306/11… 1.07e-11  3.15e-9 2.89e-9 TACC3     26
+#&gt; # ℹ 908 more rows</code></pre>
+<p>Now each gene has its own row!</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/python/">python</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/rstats/">rstats</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/s3-and-s4-objects-in-r-explained/">S3 and S4 objects in R explained </a></li>
+        
+        <li><a href="/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/">Part 4 CITE-seq normalization using empty droplets with the dsb package</a></li>
+        
+        <li><a href="/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/">Generative AI: Text generation using Long short-term memory (LSTM) model</a></li>
+        
+        <li><a href="/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/">use random forest and boost trees to find marker genes in scRNAseq data</a></li>
+        
+        <li><a href="/post/compare-slopes-in-linear-regression/">compare slopes in linear regression</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/common-mistakes-when-analyzing-single-cell-rnaseq-data/" rel="next">Common mistakes when analyzing single-cell RNAseq data </a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/s3-and-s4-objects-in-r-explained/" rel="prev">S3 and S4 objects in R explained </a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

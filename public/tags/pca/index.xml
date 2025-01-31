@@ -1,16 +1,38 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>PCA on DNA confesses Data speak</title>
+    <title>PCA on Chatomics</title>
     <link>/tags/pca/</link>
-    <description>Recent content in PCA on DNA confesses Data speak</description>
+    <description>Recent content in PCA on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Fri, 04 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 19 Oct 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/pca/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How CCA alignment and cell label transfer work in Seurat</title>
+      <link>/post/cca-alignment/</link>
+      <pubDate>Sat, 19 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/cca-alignment/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Understand CCA Following my last blog post on PCA projection and cell label transfer, we are going to talk about CCA.
+In single-cell RNA-seq data integration using Canonical Correlation Analysis (CCA), we typically align two matrices representing different datasets, where both datasets have the same set of genes but different numbers of cells.</description>
+    </item>
+    
+    <item>
+      <title>How PCA projection and cell label transfer work in Seurat</title>
+      <link>/post/pca-projection/</link>
+      <pubDate>Thu, 17 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-projection/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Understand the example datasets We will use PBMC3k and PBMC10k data. We will project the PBMC3k data to the PBMC10k data and get the labels
+library(Seurat) library(Matrix) library(irlba) # For PCA library(RcppAnnoy) # For fast nearest neighbor search library(dplyr) # Assuming the PBMC datasets (3k and 10k) are already normalized # and represented as sparse matrices # devtools::install_github(&amp;#39;satijalab/seurat-data&amp;#39;) library(SeuratData) #AvailableData() #InstallData(&amp;quot;pbmc3k&amp;quot;) pbmc3k&amp;lt;-UpdateSeuratObject(pbmc3k) pbmc3k@meta.</description>
+    </item>
     
     <item>
       <title>permutation test for PCA components</title>

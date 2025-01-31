@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+This post is inspired by this popular thread in https://www.biostars.org/.
+Common mistakes in general  Off-by-One Errors:  Mistakes occur when switching between different indexing systems. For example, BED files are 0-based while GFF/GTF files are 1-based, leading to potential misinterpretations of genomic coordinates.   This is one of the most common mistakes!">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/stupid-mistakes-for-bioinformatics/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/stupid-mistakes-for-bioinformatics/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="/post/stupid-mistakes-for-bioinformatics/">
+  <meta property="og:title" content="The Most Common Stupid Mistakes In Bioinformatics | Chatomics">
+  <meta property="og:description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+This post is inspired by this popular thread in https://www.biostars.org/.
+Common mistakes in general  Off-by-One Errors:  Mistakes occur when switching between different indexing systems. For example, BED files are 0-based while GFF/GTF files are 1-based, leading to potential misinterpretations of genomic coordinates.   This is one of the most common mistakes!">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2024-08-13T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2024-08-13T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>The Most Common Stupid Mistakes In Bioinformatics | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">The Most Common Stupid Mistakes In Bioinformatics</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2024-08-13 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Aug 13, 2024
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    8 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/stupid-mistakes-for-bioinformatics/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/unix/">unix</a
+    >, 
+    
+    <a href="/categories/bioinformatics/">bioinformatics</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=The%20Most%20Common%20Stupid%20Mistakes%20In%20Bioinformatics&amp;url=%2fpost%2fstupid-mistakes-for-bioinformatics%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fstupid-mistakes-for-bioinformatics%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fstupid-mistakes-for-bioinformatics%2f&amp;title=The%20Most%20Common%20Stupid%20Mistakes%20In%20Bioinformatics"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fstupid-mistakes-for-bioinformatics%2f&amp;title=The%20Most%20Common%20Stupid%20Mistakes%20In%20Bioinformatics"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=The%20Most%20Common%20Stupid%20Mistakes%20In%20Bioinformatics&amp;body=%2fpost%2fstupid-mistakes-for-bioinformatics%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<p>This post is inspired by this <a href="https://www.biostars.org/p/7126/">popular thread</a> in <a href="https://www.biostars.org/" class="uri">https://www.biostars.org/</a>.</p>
+<div id="common-mistakes-in-general" class="section level3">
+<h3>Common mistakes in general</h3>
+<ul>
+<li><strong>Off-by-One Errors:</strong>
+<ul>
+<li>Mistakes occur when switching between different indexing systems. For example, BED files are 0-based while GFF/GTF files are 1-based, leading to potential misinterpretations of genomic coordinates.</li>
+</ul></li>
+</ul>
+<p>This is one of the most common mistakes! I highly recommend you to read this <a href="https://www.biostars.org/p/84686/">Tutorial:Cheat Sheet For One-Based Vs Zero-Based Coordinate Systems</a></p>
+<ul>
+<li><p><strong>Switching Between Programming Languages:</strong></p>
+<ul>
+<li>Indexing errors happen when a developer switches between languages with different base indexes. Python and most modern languages use 0-based indexing, whereas R and Lua are 1-based.</li>
+</ul>
+<p>See an example here: <a href="https://divingintogeneticsandgenomics.com/post/three-gotchas-when-using-r-for-genomic-data-analysis/">Three gotchas when using R for Genomic data analysis</a></p></li>
+<li><p><strong>Incorrect Chromosome Sorting:</strong></p>
+<ul>
+<li>Assuming alphabetical order instead of natural sort leads to chr10 being listed before chr2. Consider implementing natural sorting to avoid this issue.</li>
+</ul>
+<p>If you do want to have natural sort
+see <a href="https://gist.github.com/crazyhottommy/e778ceb39cebfa20739a" class="uri">https://gist.github.com/crazyhottommy/e778ceb39cebfa20739a</a></p></li>
+<li><p><strong>Regex Errors:</strong></p>
+<ul>
+<li>Errors arise from constructing regular expressions incorrectly, leading to failure in pattern matching, which can result in missed or incorrect data extraction.</li>
+</ul></li>
+<li><p><strong>Incorrect File Parsing:</strong></p>
+<ul>
+<li>Complex file formats like BLAST or GenBank require precise parsing rules. Errors can occur if the format specifications are misunderstood or files are parsed incorrectly. <strong>Do not reinvent the wheel!</strong>, I have seen people write their own fastq parsers. Use a well-tested library.</li>
+</ul></li>
+<li><p><strong>Strand Orientation and Sequence Reversal:</strong></p>
+<ul>
+<li>Not accounting for the strand direction can result in incorrect data interpretation, such as failing to reverse complement sequences when required.</li>
+</ul></li>
+<li><p><strong>Loop and File End Errors:</strong></p>
+<ul>
+<li>When looping through files, especially if the last line lacks an end-of-line character, logic errors can lead to missing data processing.</li>
+</ul></li>
+<li><p><strong>Operating System Line Breaks:</strong></p>
+<ul>
+<li>Line break conventions vary across operating systems. Failing to handle these differences can cause issues reading or writing files across different platforms. <a href="https://dos2unix.sourceforge.io/"><code>dos2unix</code></a> is your friend. I have been bitten by it many times!</li>
+</ul></li>
+<li><p><strong>Selecting Incorrect Genomic Assemblies:</strong></p>
+<ul>
+<li>Mistakenly using the wrong assembly, annotation, or release version can lead to inaccurate analysis results. e.g., Double check if the genome build is hg19 or hg38 for human genome. If you aligned your fastq reads to hg19 genome and visualize in hg38 genome build UCSC genome browser or IGV, you should ask yourself why all the coverage is not in the exons!</li>
+</ul></li>
+<li><p><strong>Managing Multiple File Versions:</strong></p>
+<ul>
+<li>Using outdated or incorrect file versions without clear version tracking may lead to inconsistent data analysis outcomes. This is one of the core problems of reproducible computing. Always version control your files! (using <a href="https://git-lfs.com/">git lfs</a>?)</li>
+</ul></li>
+<li><p><strong>Handling Nested Genome Annotations:</strong></p>
+<ul>
+<li>Complex annotations, such as nested genes, need careful handling to avoid missing or double-counting features. Some different genes may have overlapping exons or introns.</li>
+</ul></li>
+<li><p><strong>Data Randomization and Statistical Tests:</strong></p>
+<ul>
+<li>Not properly randomizing data or misusing statistical tests can lead to biased results and incorrect conclusions.</li>
+</ul></li>
+<li><p><strong>Poor Documentation Practices:</strong></p>
+<ul>
+<li>Failing to fully document methods and procedures makes it difficult to review and correct errors, and hinders reproducibility and collaboration.</li>
+</ul></li>
+</ul>
+</div>
+<div id="some-command-line-mistake-examples" class="section level3">
+<h3>Some command line mistake examples</h3>
+<p>Here are some of the common mistakes when using command line tools for bioinformatics tasks.</p>
+</div>
+<div id="using-rm-in-the-wrong-directory" class="section level3">
+<h3>Using <code>rm *</code> in the wrong directory</h3>
+<p><strong>Mistake:</strong> Running <code>rm *</code> without checking the directory.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Delete files in a specific subdirectory.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm *</code> (in the wrong directory).</p></li>
+<li><p><strong>Correction:</strong> Navigate to the correct directory first:</p>
+<pre class="bash"><code>cd target_directory
+rm *</code></pre></li>
+</ul>
+</div>
+<div id="mistaking-for" class="section level3">
+<h3>Mistaking <code>&gt;</code> for <code>&gt;&gt;</code></h3>
+<p><strong>Mistake:</strong> Using <code>&gt;</code> instead of <code>&gt;&gt;</code> to append to a file. <code>&gt;</code> will overwrite the file.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Append to a file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>command &gt; file</code></p></li>
+<li><p><strong>Correction:</strong> Use <code>&gt;&gt;</code> for appending:</p>
+<pre class="bash"><code>command &gt;&gt; file</code></pre></li>
+</ul>
+</div>
+<div id="misspelling-file-extensions" class="section level3">
+<h3>Misspelling file extensions</h3>
+<p><strong>Mistake:</strong> Incorrect file extension.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Delete <code>.fastq</code> files.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm *.fasq</code></p></li>
+<li><p><strong>Correction:</strong> Verify the extension:</p>
+<pre class="bash"><code>rm *.fastq</code></pre></li>
+</ul>
+</div>
+<div id="path-misconfiguration" class="section level3">
+<h3>Path misconfiguration</h3>
+<p><strong>Mistake:</strong> Executing a command in a misconfigured environment.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Use a tool installed in a different path.</p></li>
+<li><p><strong>Actual Command:</strong> <code>myfancytool</code></p></li>
+<li><p><strong>Correction:</strong> Update your $PATH variable or use absolute path:</p>
+<pre class="bash"><code>/usr/local/bin/myfancytool</code></pre></li>
+</ul>
+<p>Watch my chatomics video to understand the PATH
+variable:</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/nveykWjrFM0" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+</div>
+<div id="incorrect-use-of-file-wildcard" class="section level3">
+<h3>Incorrect use of file wildcard</h3>
+<p><strong>Mistake:</strong> Incorrect wildcard usage.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Delete only <code>.txt</code> files.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm *txt</code></p></li>
+<li><p><strong>Correction:</strong> Correct the wildcard pattern:</p>
+<pre class="bash"><code>rm *.txt</code></pre></li>
+</ul>
+</div>
+<div id="remove-fasta-with-unintentional-spaces" class="section level3">
+<h3>remove fasta with unintentional spaces</h3>
+<p><strong>Mistake:</strong> Accidental space.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> remove all fasta file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm -rf * .fasta</code> removes all files!</p></li>
+<li><p><strong>Correction:</strong> Ensure no space before .fasta:</p>
+<pre class="bash"><code>`rm -rf *.fasta</code></pre></li>
+</ul>
+</div>
+<div id="forgetting--r-with-rm" class="section level3">
+<h3>Forgetting <code>-r</code> with <code>rm</code></h3>
+<p><strong>Mistake:</strong> Forgetting recursive flag for directories.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Delete a directory.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm directory</code></p></li>
+<li><p><strong>Correction:</strong> Use <code>-r</code> for directories:</p>
+<pre class="bash"><code>rm -r directory</code></pre></li>
+</ul>
+</div>
+<div id="not-escaping-special-characters" class="section level3">
+<h3>Not escaping special characters</h3>
+<p><strong>Mistake:</strong> Forgetting to escape special characters.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Search for <code>*</code> in files.</p></li>
+<li><p><strong>Actual Command:</strong> <code>grep * file</code></p></li>
+<li><p><strong>Correction:</strong> Escape the character:</p>
+<pre class="bash"><code>grep \* file</code></pre></li>
+</ul>
+</div>
+<div id="overwriting-important-files" class="section level3">
+<h3>Overwriting important files</h3>
+<p><strong>Mistake:</strong> Overwriting important data files.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Save output to a temporary file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>command &gt; important_file</code></p></li>
+<li><p><strong>Correction:</strong> Use a temporary filename:</p>
+<pre class="bash"><code>command &gt; tempfile</code></pre></li>
+</ul>
+</div>
+<div id="using-cat-for-large-files" class="section level3">
+<h3>Using <code>cat</code> for large files</h3>
+<p><strong>Mistake:</strong> Using <code>cat</code> for very large files.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Preview content of a large file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>cat largefile</code></p></li>
+<li><p><strong>Correction:</strong> Use <code>less</code> or <code>head</code>/<code>tail</code>:</p>
+<pre class="bash"><code>less largefile</code></pre></li>
+</ul>
+<p>Tip: I usually use <code>less -S largefile</code> so the line will not be wrapped if it is too long.</p>
+</div>
+<div id="incorrect-find-syntax" class="section level3">
+<h3>Incorrect <code>find</code> syntax</h3>
+<p><strong>Mistake:</strong> Incorrect parameters with <code>find</code>.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Find <code>.txt</code> files.</p></li>
+<li><p><strong>Actual Command:</strong> <code>find . -name *txt</code></p></li>
+<li><p><strong>Correction:</strong> Use quotes properly:</p>
+<pre class="bash"><code>find . -name &quot;*.txt&quot;</code></pre></li>
+</ul>
+</div>
+<div id="misunderstanding-chmod" class="section level3">
+<h3>Misunderstanding <code>chmod</code></h3>
+<p><strong>Mistake:</strong> Incorrectly setting file permissions.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Make a file executable.</p></li>
+<li><p><strong>Actual Command:</strong> <code>chmod 777 file</code></p></li>
+<li><p><strong>Correction:</strong> Use appropriate permissions:</p>
+<pre class="bash"><code>chmod +x file</code></pre>
+<p>if you only want the owner to have executable permission</p>
+<pre class="bash"><code>chomod u+x file</code></pre></li>
+</ul>
+<p>Each digit is for: user, group and other.</p>
+<p><code>chmod 754 myfile</code>: this means the user has read, write and execute permssion; member in the same group has read and execute permission but no write permission; other people in the world only has read permission.</p>
+<p>4 stands for “read”,<br />
+2 stands for “write”,<br />
+1 stands for “execute”, and.
+0 stands for “no permission.”</p>
+<p>So 7 is the combination of permissions 4+2+1 (read, write, and execute), 5 is 4+0+1 (read, no write, and execute), and 4 is 4+0+0 (read, no write, and no execute).</p>
+<p>It is sometimes hard to remember. one can use the letter:The letters u, g, and o stand for “user”, “group”, and “other”; “r”, “w”, and “x” stand for “read”, “write”, and “execute”, respectively.</p>
+<p>For example:</p>
+<ul>
+<li><p><code>chmod u+x myfile</code></p></li>
+<li><p><code>chmod g+r myfile</code></p></li>
+</ul>
+</div>
+<div id="grep-without-quote" class="section level3">
+<h3>grep “&gt;” without quote</h3>
+<p><strong>Mistake:</strong> not using quote for <code>&gt;</code> sign.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> search “&gt;” in a fasta file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>grep &gt; some.fasta</code></p></li>
+<li><p><strong>Correction:</strong> Use quote for the &gt; sign:</p>
+<pre class="bash"><code>grep &#39;&gt;&#39; some.fasta</code></pre></li>
+</ul>
+</div>
+<div id="forgetting-about-hidden-files" class="section level3">
+<h3>Forgetting about hidden files</h3>
+<p><strong>Mistake:</strong> Not considering hidden files when deleting.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Delete all files in a directory.</p></li>
+<li><p><strong>Actual Command:</strong> <code>rm *</code></p></li>
+<li><p><strong>Correction:</strong> Include hidden files:</p>
+<pre class="bash"><code>rm * .*</code></pre></li>
+</ul>
+<p>hidden files starts with <code>.</code>.</p>
+</div>
+<div id="incorrect-argument-order-in-tar" class="section level3">
+<h3>Incorrect argument order in <code>tar</code></h3>
+<p><strong>Mistake:</strong> Wrong argument order in <code>tar</code>.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Extract a tarball.</p></li>
+<li><p><strong>Actual Command:</strong> <code>tar -xvf file.tar.gz -C directory</code></p></li>
+<li><p><strong>Correction:</strong> Correct argument order:</p>
+<pre class="bash"><code>tar -xvzf file.tar.gz -C directory</code></pre></li>
+</ul>
+<p>I have to google every time for different compressed files. Use this one below instead:</p>
+<pre class="bash"><code>#!/bin/bash
+# function Extract for common file formats
+
+function extract {
+ if [ -z &quot;$1&quot; ]; then
+    # display usage if no parameters given
+    echo &quot;Usage: extract &lt;path/file_name&gt;.&lt;zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz&gt;&quot;
+ else
+    if [ -f &quot;$1&quot; ] ; then
+        NAME=${1%.*}
+        #mkdir $NAME &amp;&amp; cd $NAME
+        case &quot;$1&quot; in
+          *.tar.bz2)   tar xvjf ./&quot;$1&quot;    ;;
+          *.tar.gz)    tar xvzf ./&quot;$1&quot;    ;;
+          *.tar.xz)    tar xvJf ./&quot;$1&quot;    ;;
+          *.lzma)      unlzma ./&quot;$1&quot;      ;;
+          *.bz2)       bunzip2 ./&quot;$1&quot;     ;;
+          *.rar)       unrar x -ad ./&quot;$1&quot; ;;
+          *.gz)        gunzip ./&quot;$1&quot;      ;;
+          *.tar)       tar xvf ./&quot;$1&quot;     ;;
+          *.tbz2)      tar xvjf ./&quot;$1&quot;    ;;
+          *.tgz)       tar xvzf ./&quot;$1&quot;    ;;
+          *.zip)       unzip ./&quot;$1&quot;       ;;
+          *.Z)         uncompress ./&quot;$1&quot;  ;;
+          *.7z)        7z x ./&quot;$1&quot;        ;;
+          *.xz)        unxz ./&quot;$1&quot;        ;;
+          *.exe)       cabextract ./&quot;$1&quot;  ;;
+          *)           echo &quot;extract: &#39;$1&#39; - unknown archive method&quot; ;;
+        esac
+    else
+        echo &quot;&#39;$1&#39; - file does not exist&quot;
+    fi
+fi
+}</code></pre>
+<p>Save it as <code>extract</code> in the <code>/local/usr/bin</code> and <code>chomod u+x extract</code>.
+you can then use it to extract any files without remembering the syntax.</p>
+</div>
+<div id="misuse-of-cut-without-delimiter" class="section level3">
+<h3>Misuse of <code>cut</code> without delimiter</h3>
+<p><strong>Mistake:</strong> Using <code>cut</code> without specifying delimiter.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Extract a column from a CSV.</p></li>
+<li><p><strong>Actual Command:</strong> <code>cut -f2 file.csv</code></p></li>
+<li><p><strong>Correction:</strong> Specify the delimiter:</p>
+<pre class="bash"><code>cut -d, -f2 file.csv</code></pre>
+<p>default is tab as the delimiter.</p></li>
+</ul>
+</div>
+<div id="overwriting-.bashrc" class="section level3">
+<h3>Overwriting <code>.bashrc</code></h3>
+<p><strong>Mistake:</strong> Using <code>&gt;</code> to update <code>.bashrc</code>.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Append to <code>.bashrc</code>.</p></li>
+<li><p><strong>Actual Command:</strong> <code>echo "export PATH=$PATH:/new/path" &gt; ~/.bashrc</code></p></li>
+<li><p><strong>Correction:</strong> Use <code>&gt;&gt;</code> for appending:</p>
+<pre class="bash"><code>echo &quot;export PATH=$PATH:/new/path&quot; &gt;&gt; ~/.bashrc</code></pre></li>
+</ul>
+</div>
+<div id="misinterpreting-awk-syntax" class="section level3">
+<h3>Misinterpreting <code>awk</code> syntax</h3>
+<p><strong>Mistake:</strong> Incorrect <code>awk</code> syntax.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Print the second column of a file.</p></li>
+<li><p><strong>Actual Command:</strong> <code>awk {print $2} file</code></p></li>
+<li><p><strong>Correction:</strong> Use quoted expressions:</p>
+<pre class="bash"><code>awk &#39;{print $2}&#39; file</code></pre></li>
+</ul>
+</div>
+<div id="forgetting--p-with-mkdir" class="section level3">
+<h3>Forgetting <code>-p</code> with <code>mkdir</code></h3>
+<p><strong>Mistake:</strong> Not using <code>-p</code> with <code>mkdir</code>.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Create nested directories.</p></li>
+<li><p><strong>Actual Command:</strong> <code>mkdir /path/to/new/directory</code></p></li>
+<li><p><strong>Correction:</strong> Use <code>-p</code> to create intermediate directories:</p>
+<pre class="bash"><code>mkdir -p /path/to/new/directory</code></pre></li>
+</ul>
+<p>If the intermediate folders (to, new) does not exist, <code>mkdir</code> will error out.
+use <code>mkdir -p</code> instead.</p>
+</div>
+<div id="incorrect-use-of-pipe" class="section level3">
+<h3>Incorrect use of <code>|</code> (pipe)</h3>
+<p><strong>Mistake:</strong> Misplaced pipe operator.</p>
+<ul>
+<li><p><strong>What you meant to do:</strong> Chain commands with a pipe.</p></li>
+<li><p><strong>Actual Command:</strong> <code>command1 | command2 | &gt; outputfile</code></p></li>
+<li><p><strong>Correction:</strong> Remove redundant <code>|</code>:</p>
+<pre class="bash"><code>command1 | command2 &gt; outputfile</code></pre>
+<p>Fun fact: <code>|&gt;</code> is the built-in pipe in <code>R</code>.</p></li>
+</ul>
+<p>What’s your mistakes? Leave a comment!</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/unix/">unix</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/">How to level up Real-life bioinformatics skill: from dealing with one sample to a lot of samples</a></li>
+        
+        <li><a href="/post/six-tips-to-build-a-strong-bioinformatics-cv/">Six tips to build a strong Bioinformatics CV</a></li>
+        
+        <li><a href="/post/r-or-python-for-bioinformatics/">R or Python for Bioinformatics?</a></li>
+        
+        <li><a href="/post/s3-and-s4-objects-in-r-explained/">S3 and S4 objects in R explained </a></li>
+        
+        <li><a href="/post/bioinformatics-is-not-just-statistics/">Bioinformatics is not (just) statistics </a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/most-common-mistake-for-bioinformatics/" rel="next">The Most Common Mistake In Bioinformatics, one-off error</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/six-tips-to-build-a-strong-bioinformatics-cv/" rel="prev">Six tips to build a strong Bioinformatics CV</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

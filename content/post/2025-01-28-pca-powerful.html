@@ -1,0 +1,365 @@
+---
+title: "PCA analysis on TCGA bulk RNAseq data"
+author: Ming Tommy Tang
+date: "2025-01-29"
+slug: pca-tcga
+categories:
+  - review
+tags:
+  - bioinformatics
+  - TCGA
+  - RNAseq
+  - data
+  - pca
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<div id="what-is-pca" class="section level3">
+<h3>what is PCA?</h3>
+<p>Principal Component Analysis (PCA) is a mathematical technique used to reduce the dimensionality of large datasets while preserving the most important patterns in the data.</p>
+<p>It transforms the original high-dimensional data into a smaller set of new variables called principal components (PCs), which capture the most variation in the data.</p>
+</div>
+<div id="key-concepts-of-pca" class="section level3">
+<h3>Key Concepts of PCA:</h3>
+<ul>
+<li><p>Dimensionality Reduction – PCA reduces complex datasets with many features (e.g., thousands of genes) into a few key components, making analysis easier.</p></li>
+<li><p>Variance Maximization – The first principal component (PC1) captures the most variation in the data, the second (PC2) captures the second most, and so on.</p></li>
+<li><p>Orthogonality – Principal components are uncorrelated (perpendicular to each other), ensuring that each captures a unique aspect of the data.</p></li>
+</ul>
+<p>Please read my previous posts on PCA:</p>
+<ul>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/pca-in-action/">PCA in action</a> Step by step guide to calculate PCA with R</p></li>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/permute-test-for-pca-components/">permutation test for PCA components</a></p></li>
+<li><p><a href="https://divingintogeneticsandgenomics.com/post/pca-projection/">How PCA projection and cell label transfer work in Seurat</a></p></li>
+</ul>
+</div>
+<div id="pca-on-tcga-data" class="section level3">
+<h3>PCA on TCGA data</h3>
+<p>In this example, we will download TCGA LUAD and LUSC RNAseq counts data, and do a PCA.
+You will see when we do not normalize the counts matrix with total library size.
+The first PC (PC1) is correlated with sequencing depth.</p>
+<p>Let’s dive in!</p>
+</div>
+<div id="download-tcga-data-using-tcgabiolinks" class="section level3">
+<h3>Download TCGA data using TCGAbiolinks</h3>
+<p>There are many ways to get <a href="https://www.cancer.gov/ccg/research/genome-sequencing/tcga">TCGA data</a>. I like <a href="https://bioconductor.org/packages/release/bioc/html/TCGAbiolinks.html"><code>TCGAbiolinks</code></a> the best as it is very easy.</p>
+<p>It takes long time to download the data, so I saved it as and Rdata.</p>
+<pre class="r"><code>library(TCGAbiolinks)
+library(SummarizedExperiment)
+library(dplyr)
+library(here)</code></pre>
+<p>Download TCGA data using <code>TCGAbiolinks</code>.</p>
+<pre class="r"><code># Load TCGA data (example for LUAD - Lung Adenocarcinoma)
+LUAD_query &lt;- GDCquery(project = &quot;TCGA-LUAD&quot;,
+                  data.category = &quot;Transcriptome Profiling&quot;,
+                  data.type = &quot;Gene Expression Quantification&quot;,
+                  workflow.type = &quot;STAR - Counts&quot;)
+
+GDCdownload(LUAD_query)
+
+# this returns a summarizedExperiment object 
+TCGA_LUAD_data &lt;- GDCprepare(LUAD_query)
+
+saveRDS(TCGA_LUAD_data, &quot;~/blog_data/TCGA_LUAD_SummarizedExperiment.rds&quot;))</code></pre>
+<p>Read in the saved RDS file:</p>
+<pre class="r"><code>TCGA_LUAD_data&lt;- readRDS(&quot;~/blog_data/TCGA_LUAD_SummarizedExperiment.rds&quot;)
+
+## there are many metadata for each sample
+colData(TCGA_LUAD_data) %&gt;% 
+        colnames() %&gt;%
+        tail()</code></pre>
+<pre><code>#&gt; [1] &quot;paper_chromosome.affected.by.chromothripsis&quot;    
+#&gt; [2] &quot;paper_iCluster.Group&quot;                           
+#&gt; [3] &quot;paper_CIMP.methylation.signature.&quot;              
+#&gt; [4] &quot;paper_MTOR.mechanism.of.mTOR.pathway.activation&quot;
+#&gt; [5] &quot;paper_Ploidy.ABSOLUTE.calls&quot;                    
+#&gt; [6] &quot;paper_Purity.ABSOLUTE.calls&quot;</code></pre>
+<pre class="r"><code># CIMP methylation subtypes
+colData(TCGA_LUAD_data) %&gt;%
+  as.data.frame() %&gt;%
+  janitor::tabyl(`paper_CIMP.methylation.signature.`)</code></pre>
+<pre><code>#&gt;  paper_CIMP.methylation.signature.   n    percent valid_percent
+#&gt;                              high   37 0.06166667     0.1957672
+#&gt;                      intermediate   76 0.12666667     0.4021164
+#&gt;                               low   76 0.12666667     0.4021164
+#&gt;                               &lt;NA&gt; 411 0.68500000            NA</code></pre>
+<pre class="r"><code># save the raw counts matrix 
+TCGA_LUAD_mat&lt;- assay(TCGA_LUAD_data)
+
+
+TCGA_LUAD_mat[1:5, 1:5]</code></pre>
+<pre><code>#&gt;                    TCGA-73-4658-01A-01R-1755-07 TCGA-44-2661-11A-01R-1758-07
+#&gt; ENSG00000000003.15                         3659                         1395
+#&gt; ENSG00000000005.6                           188                            8
+#&gt; ENSG00000000419.13                          981                         1031
+#&gt; ENSG00000000457.14                          456                          541
+#&gt; ENSG00000000460.17                          158                          135
+#&gt;                    TCGA-55-6986-11A-01R-1949-07 TCGA-55-8615-01A-11R-2403-07
+#&gt; ENSG00000000003.15                         6760                         2257
+#&gt; ENSG00000000005.6                             3                            0
+#&gt; ENSG00000000419.13                         2070                          644
+#&gt; ENSG00000000457.14                         1110                          538
+#&gt; ENSG00000000460.17                          202                          212
+#&gt;                    TCGA-97-8177-01A-11R-2287-07
+#&gt; ENSG00000000003.15                         5009
+#&gt; ENSG00000000005.6                            13
+#&gt; ENSG00000000419.13                         2731
+#&gt; ENSG00000000457.14                          919
+#&gt; ENSG00000000460.17                          321</code></pre>
+<pre class="r"><code>dim(TCGA_LUAD_mat)</code></pre>
+<pre><code>#&gt; [1] 60660   600</code></pre>
+<p>We have 600 samples.</p>
+<p>You noticed that the gene name is in ENSEMBLE ID.</p>
+<p>We will download the TCGA LUSC data in the same way.</p>
+<pre class="r"><code>LUSC_query &lt;- GDCquery(project = &quot;TCGA-LUSC&quot;,
+                  data.category = &quot;Transcriptome Profiling&quot;,
+                  data.type = &quot;Gene Expression Quantification&quot;,
+                  workflow.type = &quot;STAR - Counts&quot;)
+
+GDCdownload(LUSC_query)
+
+TCGA_LUSC_data &lt;- GDCprepare(LUSC_query)
+
+saveRDS(TCGA_LUSC_data, &quot;~/blog_data/TCGA_LUSC_SummarizedExperiment.rds&quot;))</code></pre>
+<p>read in the saved RDS</p>
+<pre class="r"><code>TCGA_LUSC_data&lt;- readRDS(&quot;~/blog_data/TCGA_LUSC_SummarizedExperiment.rds&quot;)
+
+# different transcription subtypes
+colData(TCGA_LUSC_data) %&gt;%
+  as.data.frame() %&gt;%
+  janitor::tabyl(paper_Expression.Subtype)</code></pre>
+<pre><code>#&gt;  paper_Expression.Subtype   n    percent valid_percent
+#&gt;                     basal  43 0.07775769     0.2402235
+#&gt;                 classical  65 0.11754069     0.3631285
+#&gt;                 primitive  27 0.04882459     0.1508380
+#&gt;                 secretory  44 0.07956600     0.2458101
+#&gt;                      &lt;NA&gt; 374 0.67631103            NA</code></pre>
+<pre class="r"><code>TCGA_LUSC_mat&lt;- assay(TCGA_LUSC_data)</code></pre>
+</div>
+<div id="convert-ensembl-id-to-gene-symbols" class="section level3">
+<h3>convert ENSEMBL id to gene symbols</h3>
+<pre class="r"><code>library(org.Hs.eg.db)
+
+# remove the version number in the end of the ENSEMBL id
+TCGA_LUAD_genes&lt;- rownames(TCGA_LUAD_mat) %&gt;%
+  tibble::enframe() %&gt;%
+  mutate(ENSEMBL =stringr::str_replace(value, &quot;\\.[0-9]+&quot;, &quot;&quot;))
+
+head(TCGA_LUAD_genes)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 3
+#&gt;    name value              ENSEMBL        
+#&gt;   &lt;int&gt; &lt;chr&gt;              &lt;chr&gt;          
+#&gt; 1     1 ENSG00000000003.15 ENSG00000000003
+#&gt; 2     2 ENSG00000000005.6  ENSG00000000005
+#&gt; 3     3 ENSG00000000419.13 ENSG00000000419
+#&gt; 4     4 ENSG00000000457.14 ENSG00000000457
+#&gt; 5     5 ENSG00000000460.17 ENSG00000000460
+#&gt; 6     6 ENSG00000000938.13 ENSG00000000938</code></pre>
+<pre class="r"><code># there are duplicated gene symbols for different ENSEMBL id
+clusterProfiler::bitr(TCGA_LUAD_genes$ENSEMBL, 
+                      fromType = &quot;ENSEMBL&quot;,
+                      toType = &quot;SYMBOL&quot;,
+                      OrgDb = org.Hs.eg.db) %&gt;%
+        janitor::get_dupes(SYMBOL) %&gt;%
+        head()</code></pre>
+<pre><code>#&gt;         SYMBOL dupe_count         ENSEMBL
+#&gt; 1 LOC124905422         16 ENSG00000199270
+#&gt; 2 LOC124905422         16 ENSG00000199334
+#&gt; 3 LOC124905422         16 ENSG00000199337
+#&gt; 4 LOC124905422         16 ENSG00000199352
+#&gt; 5 LOC124905422         16 ENSG00000199396
+#&gt; 6 LOC124905422         16 ENSG00000199910</code></pre>
+<pre class="r"><code># just keep one of them (simple solution)
+TCGA_LUAD_gene_map&lt;- clusterProfiler::bitr(TCGA_LUAD_genes$ENSEMBL,
+                                           fromType = &quot;ENSEMBL&quot;,
+                                           toType = &quot;SYMBOL&quot;,
+                                           OrgDb = org.Hs.eg.db) %&gt;%
+        distinct(SYMBOL, .keep_all = TRUE) 
+       
+                       
+TCGA_LUAD_gene_map&lt;- TCGA_LUAD_gene_map %&gt;%
+  left_join(TCGA_LUAD_genes)
+
+head(TCGA_LUAD_gene_map)</code></pre>
+<pre><code>#&gt;           ENSEMBL SYMBOL name              value
+#&gt; 1 ENSG00000000003 TSPAN6    1 ENSG00000000003.15
+#&gt; 2 ENSG00000000005   TNMD    2  ENSG00000000005.6
+#&gt; 3 ENSG00000000419   DPM1    3 ENSG00000000419.13
+#&gt; 4 ENSG00000000457  SCYL3    4 ENSG00000000457.14
+#&gt; 5 ENSG00000000460  FIRRM    5 ENSG00000000460.17
+#&gt; 6 ENSG00000000938    FGR    6 ENSG00000000938.13</code></pre>
+<p>Subset the gene expression matrices and replace the rownames to gene symbol.</p>
+<pre class="r"><code>TCGA_LUSC_mat&lt;- TCGA_LUSC_mat[TCGA_LUAD_gene_map$value, ]
+row.names(TCGA_LUSC_mat)&lt;- TCGA_LUAD_gene_map$SYMBOL
+TCGA_LUSC_mat[1:5, 1:5]</code></pre>
+<pre><code>#&gt;        TCGA-43-7657-11A-01R-2125-07 TCGA-43-7657-01A-31R-2125-07
+#&gt; TSPAN6                         2459                         2329
+#&gt; TNMD                              0                            0
+#&gt; DPM1                           1734                         2533
+#&gt; SCYL3                           795                          496
+#&gt; FIRRM                           206                          434
+#&gt;        TCGA-60-2695-01A-01R-0851-07 TCGA-21-1070-01A-01R-0692-07
+#&gt; TSPAN6                         4271                         2955
+#&gt; TNMD                              1                            0
+#&gt; DPM1                           2692                         2865
+#&gt; SCYL3                          2494                          887
+#&gt; FIRRM                          2850                          947
+#&gt;        TCGA-94-7033-01A-11R-1949-07
+#&gt; TSPAN6                         3405
+#&gt; TNMD                              2
+#&gt; DPM1                           1706
+#&gt; SCYL3                           600
+#&gt; FIRRM                           420</code></pre>
+<pre class="r"><code>TCGA_LUAD_mat&lt;- TCGA_LUAD_mat[TCGA_LUAD_gene_map$value, ]
+row.names(TCGA_LUAD_mat)&lt;- TCGA_LUAD_gene_map$SYMBOL
+TCGA_LUAD_mat[1:5, 1:5]</code></pre>
+<pre><code>#&gt;        TCGA-73-4658-01A-01R-1755-07 TCGA-44-2661-11A-01R-1758-07
+#&gt; TSPAN6                         3659                         1395
+#&gt; TNMD                            188                            8
+#&gt; DPM1                            981                         1031
+#&gt; SCYL3                           456                          541
+#&gt; FIRRM                           158                          135
+#&gt;        TCGA-55-6986-11A-01R-1949-07 TCGA-55-8615-01A-11R-2403-07
+#&gt; TSPAN6                         6760                         2257
+#&gt; TNMD                              3                            0
+#&gt; DPM1                           2070                          644
+#&gt; SCYL3                          1110                          538
+#&gt; FIRRM                           202                          212
+#&gt;        TCGA-97-8177-01A-11R-2287-07
+#&gt; TSPAN6                         5009
+#&gt; TNMD                             13
+#&gt; DPM1                           2731
+#&gt; SCYL3                           919
+#&gt; FIRRM                           321</code></pre>
+<pre class="r"><code>## check the dimentions 
+dim(TCGA_LUSC_mat)</code></pre>
+<pre><code>#&gt; [1] 36940   553</code></pre>
+<pre class="r"><code>dim(TCGA_LUAD_mat)</code></pre>
+<pre><code>#&gt; [1] 36940   600</code></pre>
+</div>
+<div id="combine-tcga-lusc-and-luad" class="section level3">
+<h3>combine TCGA LUSC and LUAD</h3>
+<p>PCA plot use top variable genes.</p>
+<pre class="r"><code># double check the genes are the same
+all.equal(rownames(TCGA_LUAD_mat), rownames(TCGA_LUSC_mat))</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>TCGA_lung_mat&lt;- cbind(TCGA_LUSC_mat, TCGA_LUAD_mat)
+
+TCGA_lung_meta&lt;- data.frame(cancer_type = c(rep( &quot;LUSC&quot;, ncol(TCGA_LUSC_mat)), 
+                   rep(&quot;LUAD&quot;, ncol(TCGA_LUAD_mat))))
+
+dim(TCGA_lung_mat)</code></pre>
+<pre><code>#&gt; [1] 36940  1153</code></pre>
+</div>
+<div id="pca-with-the-raw-counts" class="section level3">
+<h3>PCA with the raw counts</h3>
+<pre class="r"><code>library(ggplot2)
+library(ggfortify)
+# select the top 1000 most variable genes 
+TCGA_gene_idx&lt;- order(rowVars(TCGA_lung_mat), decreasing = TRUE)[1:1000]
+
+TCGA_lung_mat_sub &lt;- TCGA_lung_mat[TCGA_gene_idx, ]
+
+TCGA_pca_res &lt;- prcomp(t(TCGA_lung_mat_sub), scale. = TRUE)
+
+autoplot(TCGA_pca_res, data = TCGA_lung_meta , color =&quot;cancer_type&quot;) +
+  scale_color_manual(values = c(&quot;blue&quot;, &quot;red&quot;)) +
+  ggtitle(&quot;TCGA NSCLC&quot;)</code></pre>
+<p><img src="/post/2025-01-28-pca-powerful_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+LUAD and LUSC samples are not separated in the first PC.</p>
+<p>Let’s see how sequencing depth is correlated with first PC</p>
+<p>read <a href="https://divingintogeneticsandgenomics.com/post/pca-in-action/" class="uri">https://divingintogeneticsandgenomics.com/post/pca-in-action/</a> for more details for PCA.</p>
+<pre class="r"><code># the PCs 
+TCGA_pca_res$x[1:5, 1:5]</code></pre>
+<pre><code>#&gt;                                     PC1        PC2       PC3        PC4
+#&gt; TCGA-43-7657-11A-01R-2125-07  -9.143224  22.659680 7.0908829  9.0796187
+#&gt; TCGA-43-7657-01A-31R-2125-07 -13.494142 -14.609673 4.6152805  1.6117986
+#&gt; TCGA-60-2695-01A-01R-0851-07  -8.390102  -5.732319 0.3820473 -3.4361055
+#&gt; TCGA-21-1070-01A-01R-0692-07   4.081536  -4.608280 0.9799216  0.2175983
+#&gt; TCGA-94-7033-01A-11R-1949-07  -1.890497 -11.202800 1.3147853  4.1963502
+#&gt;                                    PC5
+#&gt; TCGA-43-7657-11A-01R-2125-07  2.449763
+#&gt; TCGA-43-7657-01A-31R-2125-07  1.826048
+#&gt; TCGA-60-2695-01A-01R-0851-07 -3.122432
+#&gt; TCGA-21-1070-01A-01R-0692-07  2.610431
+#&gt; TCGA-94-7033-01A-11R-1949-07 -4.869039</code></pre>
+<pre class="r"><code>seq_depth&lt;- colSums(TCGA_lung_mat)
+
+# calculate the correlation of first PC and the sequencing depth
+# the sign of the PCs are arbitrary, so let&#39;s get the absolute number
+cor(TCGA_pca_res$x[, 1], seq_depth) %&gt;%
+        abs()</code></pre>
+<pre><code>#&gt; [1] 0.979129</code></pre>
+<p>A correlation of <code>0.98</code> for PC1!!</p>
+<pre class="r"><code># PC2 correlation with sequencing depth
+cor(TCGA_pca_res$x[, 2], seq_depth) %&gt;%
+        abs()</code></pre>
+<pre><code>#&gt; [1] 0.09609512</code></pre>
+<p>PC2 is not correlated with sequencing depth. As we can see PC2 separates the cancer types.</p>
+<p>Let’s plot it on PCA.</p>
+<pre class="r"><code>TCGA_lung_meta$seq_depth&lt;- seq_depth
+
+autoplot(TCGA_pca_res, data = TCGA_lung_meta , color =&quot;seq_depth&quot;) +
+        scale_color_viridis_b() +
+  ggtitle(&quot;TCGA NSCLC&quot;)</code></pre>
+<p><img src="/post/2025-01-28-pca-powerful_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>You see the sequencing depth is high to low from left to right in PC1.</p>
+</div>
+<div id="pca-after-cpm-counts-per-million-normalization" class="section level3">
+<h3>PCA after cpm (counts per million) normalization</h3>
+<pre class="r"><code># convert the raw counts to log2(cpm+1) using edgeR.
+TCGA_lung_cpm&lt;- edgeR::cpm(TCGA_lung_mat, log = TRUE, prior.count = 1)
+
+## top 1000 most variable genes
+TCGA_gene_idx2&lt;- order(rowVars(TCGA_lung_cpm), decreasing = TRUE)[1:1000]
+
+TCGA_lung_cpm_sub &lt;- TCGA_lung_cpm[TCGA_gene_idx2, ]
+
+TCGA_pca_res2 &lt;- prcomp(t(TCGA_lung_cpm_sub), scale. = TRUE)
+
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color =&quot;cancer_type&quot;) +
+  scale_color_manual(values = c(&quot;blue&quot;, &quot;red&quot;)) +
+  ggtitle(&quot;TCGA NSCLC&quot;)</code></pre>
+<p><img src="/post/2025-01-28-pca-powerful_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>Now we see the first PC separates cancer type: LUSC vs LUAD, which makes sense!
+It is interesting to see some of the LUSC samples mix with the LUAD.
+It will be interesting to further investigate those samples.</p>
+</div>
+<div id="make-a-heatmap" class="section level3">
+<h3>make a heatmap</h3>
+<p>My favorite package is <code>ComplexHeatmap</code>.</p>
+<pre class="r"><code>set.seed(123)
+library(ComplexHeatmap)
+
+TCGA_ha&lt;- HeatmapAnnotation(df = TCGA_lung_meta,
+    col = list(
+               cancer_type = c(&quot;LUSC&quot; = &quot;red&quot;, &quot;LUAD&quot; = &quot;blue&quot;))
+    )
+
+Heatmap(t(scale(t(TCGA_lung_cpm_sub))),
+        name = &quot;TCGA lung RNA&quot;,
+        show_column_names = FALSE,
+        show_row_names = FALSE,
+        show_row_dend = FALSE,
+        #column_split = TCGA_lung_meta$cancer_type,
+        top_annotation = TCGA_ha,
+        row_names_gp = gpar(fontsize = 3),
+        border = TRUE,
+        row_km = 3
+        )</code></pre>
+<p><img src="/post/2025-01-28-pca-powerful_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>This shows you how useful PCA is. In my next post, I will show you how a similar
+analysis is done in a single-cell ATACseq dataset. Stay tuned!</p>
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<p>Happy Learning!</p>
+<p>Tommy</p>
+</div>

@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ScRNAseq on DNA confesses Data speak</title>
+    <title>ScRNAseq on Chatomics</title>
     <link>/categories/scrnaseq/</link>
-    <description>Recent content in ScRNAseq on DNA confesses Data speak</description>
+    <description>Recent content in ScRNAseq on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Tue, 08 Aug 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 15 May 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/scrnaseq/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Common mistakes when analyzing single-cell RNAseq data </title>
+      <link>/post/common-mistakes-when-analyzing-single-cell-rnaseq-data/</link>
+      <pubDate>Wed, 15 May 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/common-mistakes-when-analyzing-single-cell-rnaseq-data/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+I recently was interviewed by the SEQanswers forum on single-cell RNAseq analysis.
+In your opinion, what is the most challenging aspect of single-cell analysis?  Every single-cell dataset is unique in terms of data quality and QC has to be carried out in a dataset specific manner. Cell annotation is still one of the most challenging steps.</description>
+    </item>
     
     <item>
       <title>neighborhood/cellular niches analysis with spatial transcriptome data in Seurat and Bioconductor</title>

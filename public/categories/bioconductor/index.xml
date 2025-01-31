@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Bioconductor on DNA confesses Data speak</title>
+    <title>Bioconductor on Chatomics</title>
     <link>/categories/bioconductor/</link>
-    <description>Recent content in Bioconductor on DNA confesses Data speak</description>
+    <description>Recent content in Bioconductor on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Wed, 20 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 21 Sep 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/bioconductor/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>You need to master it if you deal with genomics data</title>
+      <link>/post/genomic-interval/</link>
+      <pubDate>Sat, 21 Sep 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/genomic-interval/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Motivation What’s the most common problem you need to solve when dealing with genomics data?
+For me, it is Genomic Intervals!
+The genomics data usually represents linearly: chromosome name, start and end.
+We use it to define a region in the genome ( A peak from ChIP-seq data); the location of a gene, a DNA methylation site ( a single point), a mutation call (a single point), and a duplication region in cancer etc.</description>
+    </item>
+    
+    <item>
+      <title>R or Python for Bioinformatics?</title>
+      <link>/post/r-or-python-for-bioinformatics/</link>
+      <pubDate>Wed, 05 Jun 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/r-or-python-for-bioinformatics/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+R or Python for Bioinformatics? Watch the video here:
+    If you need to pick Python or R for bioinformatics, which one should you choose? This is a decades-old question from many beginners.
+This is my story.
+I started learning Unix Commands 12 years ago (See an example of how powerful Unix commands can be).</description>
+    </item>
     
     <item>
       <title>Fine tune the best clustering resolution for scRNAseq data: trying out callback</title>

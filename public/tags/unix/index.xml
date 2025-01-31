@@ -1,16 +1,50 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Unix on DNA confesses Data speak</title>
+    <title>Unix on Chatomics</title>
     <link>/tags/unix/</link>
-    <description>Recent content in Unix on DNA confesses Data speak</description>
+    <description>Recent content in Unix on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Mon, 28 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 19 Aug 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/unix/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>The Most Common Mistake In Bioinformatics, one-off error</title>
+      <link>/post/most-common-mistake-for-bioinformatics/</link>
+      <pubDate>Mon, 19 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/most-common-mistake-for-bioinformatics/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In my last blog post, I talked about some common bioinformatics mistakes.
+Today, we are going to talk about THE MOST common bioinformatics mistake people make. And I think it deserves a separate post about it. Even some experienced programmers get it wrong and the mistake prevails in many bioinformatics software:
+The one-off mistake!</description>
+    </item>
+    
+    <item>
+      <title>The Most Common Stupid Mistakes In Bioinformatics</title>
+      <link>/post/stupid-mistakes-for-bioinformatics/</link>
+      <pubDate>Tue, 13 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/stupid-mistakes-for-bioinformatics/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+This post is inspired by this popular thread in https://www.biostars.org/.
+Common mistakes in general  Off-by-One Errors:  Mistakes occur when switching between different indexing systems. For example, BED files are 0-based while GFF/GTF files are 1-based, leading to potential misinterpretations of genomic coordinates.   This is one of the most common mistakes!</description>
+    </item>
+    
+    <item>
+      <title>How to level up Real-life bioinformatics skill: from dealing with one sample to a lot of samples</title>
+      <link>/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</link>
+      <pubDate>Fri, 17 May 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+The other day, I saw this tweet:
+Machine learning and bioinformatics tutorials these days pic.twitter.com/0FhWWG09TB — Ramon Massoni Badosa (@rmassonix) May 15, 2024   Many of the bioinformatics tutorials are like that. I am not saying the tutorial is not good. For beginners, we need something basic first to understand it.</description>
+    </item>
     
     <item>
       <title>How to make a transcript to gene mapping file</title>

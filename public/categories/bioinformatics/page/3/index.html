@@ -15,7 +15,7 @@
   
   
   
-  <meta name="description" content="Director of Computational Biology">
+  <meta name="description" content="Director of Bioinformatics">
 
   
   <link rel="alternate" hreflang="en-us" href="/categories/bioinformatics/">
@@ -75,8 +75,8 @@
   
 
   
-  <link rel="alternate" href="/categories/bioinformatics/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
-  <link rel="feed" href="/categories/bioinformatics/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="alternate" href="/categories/bioinformatics/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/categories/bioinformatics/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
@@ -90,19 +90,19 @@
   <meta property="twitter:site" content="@https://twitter.com/tangming2005">
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
-  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:site_name" content="Chatomics">
   <meta property="og:url" content="/categories/bioinformatics/">
-  <meta property="og:title" content="Bioinformatics | DNA confesses Data speak">
-  <meta property="og:description" content="Director of Computational Biology">
+  <meta property="og:title" content="Bioinformatics | Chatomics">
+  <meta property="og:description" content="Director of Bioinformatics">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2023-09-09T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2023-12-18T00:00:00&#43;00:00">
   
 
   
   
 
-  <title>Bioinformatics | DNA confesses Data speak</title>
+  <title>Bioinformatics | Chatomics</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -121,7 +121,7 @@
         <span class="icon-bar"></span>
       </button>
       
-      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+      <a class="navbar-brand" href="/">Chatomics</a>
     </div>
 
     
@@ -284,114 +284,109 @@
   
   
   <div>
-    <h2><a href="/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/">How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</a></h2>
+    <h2><a href="/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/">Part 4 CITE-seq normalization using empty droplets with the dsb package</a></h2>
     <div class="article-style">
       
-      In the mysterious world of DNA, where the secrets of life are encoded, scientists are harnessing the power of cutting-edge technology to decipher the language of genes. One of the remarkable tools they’re using is the 1D Convolutionary Neural Network, or 1D CNN, which might sound like jargon from a sci-fi movie, but it’s actually a game-changer in DNA sequence analysis.
-Imagine DNA as a long, intricate string of letters, like a never-ending alphabet book.
+      In this post, we are going to try a CITE-seq normalization method called dsb published in Normalizing and denoising protein expression data from droplet-based single cell profiling
+ two major components of protein expression noise in droplet-based single cell experiments: (1) protein-specific noise originating from ambient, unbound antibody encapsulated in droplets that can be accurately estimated via the level of “ambient” ADT counts in empty droplets,
+  and (2) droplet/cell-specific noise revealed via the shared variance component associated with isotype antibody controls and background protein counts in each cell.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/">multi-omics data integration: a case study with transcriptomics and genomics mutation data</a></h2>
+    <h2><a href="/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data</a></h2>
     <div class="article-style">
       
-      Multi-omics data analysis is a cutting-edge approach in biology that involves studying and integrating information from multiple biological “omics” sources. These omics sources include genomics (genes and their variations), transcriptomics (gene expression and RNA data), proteomics (proteins and their interactions), metabolomics (small molecules and metabolites), epigenomics (epigenetic modifications), and more. By analyzing data from various omics levels together, we can gain a more comprehensive and detailed understanding of biological systems and their complexities.
+      Following my last blog post, download the CITE-seq protein and RNA count data at here.
+library(Seurat) library(ggplot2) library(dplyr) pbmc&lt;- readRDS(&quot;~/blog_data/CITEseq/pbmc1k_adt.rds&quot;) How to normalize protein ADT count data? Seurat uses the centered log ratio (CLR) to normalize protein count data.
+In the Seurat github page:</p>
+
+<h1 id="https-github-com-satijalab-seurat-blob-fc4a4f5203227832477a576bfe01bc6efeb23f51-r-preprocessing-r-l1768-l1769-clr-function-lt-function-x-return-log1p-x-x-exp-x-sum-log1p-x-x-x-gt-0-na-rm-true-length-x-x-log1p-x-computes-log-1-x-accurately-also-for-x-lt-lt-1"><a href="https://github.com/satijalab/seurat/blob/fc4a4f5203227832477a576bfe01bc6efeb23f51/R/preprocessing.R#L1768-L1769" target="_blank">https://github.com/satijalab/seurat/blob/fc4a4f5203227832477a576bfe01bc6efeb23f51/R/preprocessing.R#L1768-L1769</a> clr_function &lt;- function(x) { return(log1p(x = x / (exp(x = sum(log1p(x = x[x &gt; 0]), na.rm = TRUE) / length(x = x))))) } log1p(x) computes log(1+x) accurately also for |x| &lt;&lt; 1.</h1>
+
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/">neighborhood/cellular niches analysis with spatial transcriptome data in Seurat and Bioconductor</a></h2>
+    <h2><a href="/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/">Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</a></h2>
     <div class="article-style">
       
-      Spatial transcriptome cellular niche analysis using 10x xenium data go to <a href="https://www.10xgenomics.com/resources/datasets" target="_blank">https://www.10xgenomics.com/resources/datasets</a>
-There is a lung cancer and a breast cancer dataset. Let’s work on the lung cancer one.
-<a href="https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard" target="_blank">https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard</a>
-37G zipped file!
-wget <a href="https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/1.3.0/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip" target="_blank">https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/1.3.0/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE/Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip</a> unzip Xenium_Preview_Human_Lung_Cancer_With_Add_on_2_FFPE_outs.zip sudo tar xvzf cell_feature_matrix.tar.gz cell_feature_matrix/ cell_feature_matrix/barcodes.tsv.gz cell_feature_matrix/features.tsv.gz cell_feature_matrix/matrix.mtx.gz
- read in the data with Seurat We really only care about the cell by gene count matrix which is inside the cell_feature_matrix folder, and the cell location x,y coordinates: cells.
+      In my last post, I showed you how to get the protein and RNA counts from a CITE-seq experiment using Simpleaf.
+Now that we have the raw count matrices, we are ready to explore them within R.
+To follow the tutorial, you can download the associated data from here.
+Load the data suppressPackageStartupMessages({ library(fishpond) library(ggplot2) library(dplyr) library(SingleCellExperiment) library(Seurat) library(DropletUtils) }) # set the seed set.seed(123) #gex_q &lt;- loadFry(&#39;~/blog_data/CITEseq/alevin_rna/af_quant&#39;) #fb_q &lt;- loadFry( &#39;~/blog_data/CITEseq/alevin_adt/af_quant&#39;) # I saved the above objs first to rds files, now just read them back fb_q&lt;- readRDS(&quot;~/blog_data/CITEseq/fb_q.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/">scRNAseq clustering significance test: an unsolvable problem?</a></h2>
+    <h2><a href="/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/">Part 1 How to use Salmon/Alevin to preprocess CITE-seq data</a></h2>
     <div class="article-style">
       
-      Introductioon In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights.
-The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the resolution parameter. However, whether the newly generated clusters are meaningful or not is a question.
+      Introduction A state-of-the-art method called CITE-seq (Cellular Indexing of Transcriptomes and Epitopes by Sequencing) allows surface protein levels and RNA expression to be measured simultaneously in individual cells. CITE-seq uses traditional single-cell RNA-sequencing to read out both transcriptome and proteomic information from the same cell after labeling it with oligo-conjugated antibodies. This gets over the drawbacks of techniques that just test proteins or RNA separately. CITE-seq reveals coordinated control of gene and protein activity, offering a potent multidimensional perspective of cell states.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/">Navigating Variant Calling for Disease-Causing Mutations: The state-of-art process</a></h2>
+    <h2><a href="/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/">My take on Data Challenges in Immuno-oncology, the Role of the Cloud, and Growing a Computational Biology Team</a></h2>
     <div class="article-style">
       
-      Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
-Variant calling is the process of identifying and categorizing genetic variants in sequencing data. It is a critical step in the analysis of whole-genome sequencing (WGS) and whole-exome sequencing (WES) data, as it allows researchers to identify potential disease-causing mutations.
+      The original link. <a href="https://connect.corrdyn.com/blog/ming-tang-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team" target="_blank">https://connect.corrdyn.com/blog/ming-tang-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team</a>
+Guest Profile Tommy Tang&rsquo;s career began when he pursued his Ph.D. in genetics and genomics at the University of Florida. Initially trained in molecular biology in the wet lab, he was driven to explore computational biology after encountering the limitations of traditional analysis methods. Through self-study, Tommy developed skills that enabled him to analyze complex genomic data sets.
+Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to Harvard and the Dana Farber Cancer Institute, where he worked on single-cell RNA sequencing.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/">Reuse the single cell data! How to create a seurat object from GEO datasets</a></h2>
+    <h2><a href="/post/use-random-forest-as-a-clustering-method/">How to use random forest as a clustering method</a></h2>
     <div class="article-style">
       
-      Download the data <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256" target="_blank">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256</a>
-cd data/GSE116256 wget <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar" target="_blank">https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar</a> tar xvf GSE116256_RAW.tar rm GSE116256_RAW.tar Depending on how the authors upload their data.
-Some authors may just upload the merged count matrix file. This is the easiest situation.
-In this dataset, each sample has a separate set of matrix (*dem.txt.gz), features and barcodes.
-Total, there are 43 samples. For each sample, it has an associated metadata file (*anno.txt.gz) too.
-You can inspect the files in command line:
+      If you ask me: what’s your favorite machine learning algorithm? I would answer logistic regression (with regularization: Lasso, Ridge and Elastic) followed by random forest. In fact, that’s how we try those methods in order. Deep learning can perform well for tabular data with complicated architecture while random forest or boost tree based method usually work well out of the box. Regression and random forest are more interpretable too.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/ten-single-cell-data-benchmarking-papers/">10 single-cell data benchmarking papers</a></h2>
+    <h2><a href="/post/how-i-am-learning-deep-learning/">My 4-steps to learn deep learning for genomics</a></h2>
     <div class="article-style">
       
-      I tweeted it at <a href="https://twitter.com/tangming2005/status/1679120948140572672" target="_blank">https://twitter.com/tangming2005/status/1679120948140572672</a>
-I got asked to put all my posts in a central place and I think it is a good idea. And here it is!
- Benchmarking integration of single-cell differential expression
- Benchmarking atlas-level data integration in single-cell genomics
- A review of computational strategies for denoising and imputation of single-cell transcriptomic data
- Benchmarking spatial and single-cell transcriptomics integration methods for transcript distribution prediction and cell type deconvolution
+      Step 1, get a high-level understanding  Watch statquest by Josh Starmer.       1blue3brown deep learning playlist       Step2, code it out! If you are into python, watch “The spelled-out intro to neural networks and backpropagation: building micrograd”:
+    I still code in R for most of the time, so I walk through the R code in the deep learning with R book.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/">How to add boxplots or density plots side-by-side a scatterplot: a single cell case study</a></h2>
-    <div class="article-style">
-      
-      introduce ggside using single cell data The ggside R package provides a new way to visualize data by combining the flexibility of ggplot2 with the power of side-by-side plots.
-We will use a single cell dataset to demonstrate its usage.
-ggside allows users to create side-by-side plots of multiple variables, such as gene expression, cell type, and experimental conditions. This can be helpful for identifying patterns and trends in scRNA-seq data that would be difficult to see in individual plots.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/">Unlock the Power of Genomics Data Analysis: Watershed&#39;s Seamless Cloud Computing Solution</a></h2>
-    <div class="article-style">
-      
-      Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
-As an experienced bioinformatician who understands the needs of biotech startups, I know the challenges that arise when analyzing genomics data. The first solution that comes to mind is cloud computing. Unsurprisingly, AWS and Google Cloud Platform (GCP) are commonly used options.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/">How to do neighborhood/cellular niches analysis with spatial transcriptome data </a></h2>
+    <h2><a href="/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/">How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</a></h2>
     <div class="article-style">
       
       Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
-In a previous blog post, I showed you how to make a Seurat spatial object from Vizgen spatial transcriptome data. In this post, I am going to show you how to identify clusters of neighborhood or cellular niches where specific cell types tend to co-localize.
- read in the data and pre-process library(Seurat) library(here) library(ggplot2) library(dplyr) # the LoadVizgen function requires the raw segmentation files which is too big.
+The Cancer Genome Atlas (TCGA) project is probably one of the most well-known large-scale cancer sequencing project. It sequenced ~10,000 treatment-naive tumors across 33 cancer types. Different data including whole-exome, whole-genome, copy-number (SNP array), bulk RNAseq, protein expression (Reverse-Phase Protein Array), DNA methylation are available.
+TCGA is a very successful large sequencing project. I highly recommend learning from the organization of it.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/">Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</a></h2>
+    <div class="article-style">
+      
+      The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
+The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock. When the TCR encounters a target it recognizes, it sends signals to the T-cell telling it to attack and destroy the invader.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></h2>
+    <div class="article-style">
+      
+      What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
+Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
+In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.
       
     </div>
   </div>

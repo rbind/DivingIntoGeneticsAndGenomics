@@ -77,8 +77,8 @@
   
 
   
-  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
-  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
@@ -92,9 +92,9 @@
   <meta property="twitter:site" content="@https://twitter.com/tangming2005">
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
-  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:site_name" content="Chatomics">
   <meta property="og:url" content="/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/">
-  <meta property="og:title" content="Part 1 How to use Salmon/Alevin to preprocess CITE-seq data | DNA confesses Data speak">
+  <meta property="og:title" content="Part 1 How to use Salmon/Alevin to preprocess CITE-seq data | Chatomics">
   <meta property="og:description" content="Introduction A state-of-the-art method called CITE-seq (Cellular Indexing of Transcriptomes and Epitopes by Sequencing) allows surface protein levels and RNA expression to be measured simultaneously in individual cells. CITE-seq uses traditional single-cell RNA-sequencing to read out both transcriptome and proteomic information from the same cell after labeling it with oligo-conjugated antibodies. This gets over the drawbacks of techniques that just test proteins or RNA separately. CITE-seq reveals coordinated control of gene and protein activity, offering a potent multidimensional perspective of cell states.">
   <meta property="og:locale" content="en-us">
   
@@ -106,7 +106,7 @@
   
   
 
-  <title>Part 1 How to use Salmon/Alevin to preprocess CITE-seq data | DNA confesses Data speak</title>
+  <title>Part 1 How to use Salmon/Alevin to preprocess CITE-seq data | Chatomics</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -125,7 +125,7 @@
         <span class="icon-bar"></span>
       </button>
       
-      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+      <a class="navbar-brand" href="/">Chatomics</a>
     </div>
 
     
@@ -548,6 +548,10 @@ simpleaf quant \
 --expected-ori fw --unfiltered-pl \
 --t2g-map $AF_SAMPLE_DIR/data/t2g_adt.tsv \
 --output alevin_adt</code></pre>
+<p>Specify <code>--chemistry 10xv3</code> somehow just works. Just to be clear, if you know where
+the feature barcode sequences are in the reads, specify e.g., <code>--chemistry 1{b[16]u[10]x:}2{x[10]r[15]x:}</code> exactly and provide the path for the whitelist:
+<code>--unfiltered-pl /mnt/disks/tommy/af_test_workdir/737K-august-2016.txt</code>.</p>
+<p>see <a href="https://github.com/COMBINE-lab/alevin-fry/issues/136" class="uri">https://github.com/COMBINE-lab/alevin-fry/issues/136</a></p>
 <p>Hoary! Now we have the count matrix for the RNA and the protein ready for downstream analysis. Stay tuned for my next blog post!</p>
 </div>
 </div>

@@ -18,7 +18,7 @@
     
   
   <meta name="description" content="In R, S3 and S4 objects are related to object-oriented programming (OOP), which allows you to create custom data structures with associated behaviors and methods. Let me explain them using simple language and metaphors, along with practical examples.
-S3 Objects: Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.">
+S3 Objects Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.">
 
   
   <link rel="alternate" hreflang="en-us" href="/post/s3-and-s4-objects-in-r-explained/">
@@ -78,8 +78,8 @@ S3 Objects: Imagine you have a collection of toys, like cars, dolls, and action 
   
 
   
-  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
-  <link rel="feed" href="/index.xml" type="application/rss+xml" title="DNA confesses Data speak">
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
@@ -93,11 +93,11 @@ S3 Objects: Imagine you have a collection of toys, like cars, dolls, and action 
   <meta property="twitter:site" content="@https://twitter.com/tangming2005">
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
-  <meta property="og:site_name" content="DNA confesses Data speak">
+  <meta property="og:site_name" content="Chatomics">
   <meta property="og:url" content="/post/s3-and-s4-objects-in-r-explained/">
-  <meta property="og:title" content="S3 and S4 objects in R explained  | DNA confesses Data speak">
+  <meta property="og:title" content="S3 and S4 objects in R explained  | Chatomics">
   <meta property="og:description" content="In R, S3 and S4 objects are related to object-oriented programming (OOP), which allows you to create custom data structures with associated behaviors and methods. Let me explain them using simple language and metaphors, along with practical examples.
-S3 Objects: Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.">
+S3 Objects Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2024-05-07T00:00:00&#43;00:00">
@@ -108,7 +108,7 @@ S3 Objects: Imagine you have a collection of toys, like cars, dolls, and action 
   
   
 
-  <title>S3 and S4 objects in R explained  | DNA confesses Data speak</title>
+  <title>S3 and S4 objects in R explained  | Chatomics</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -127,7 +127,7 @@ S3 Objects: Imagine you have a collection of toys, like cars, dolls, and action 
         <span class="icon-bar"></span>
       </button>
       
-      <a class="navbar-brand" href="/">DNA confesses Data speak</a>
+      <a class="navbar-brand" href="/">Chatomics</a>
     </div>
 
     
@@ -303,7 +303,7 @@ S3 Objects: Imagine you have a collection of toys, like cars, dolls, and action 
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    4 min read
+    5 min read
   </span>
   
 
@@ -381,8 +381,9 @@ S3 Objects: Imagine you have a collection of toys, like cars, dolls, and action 
 <p>In R, S3 and S4 objects are related to object-oriented programming (OOP), which
 allows you to create custom data structures with associated behaviors and methods.
 Let me explain them using simple language and metaphors, along with practical examples.</p>
-<p>S3 Objects:
-Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.). In R, an S3 object is like a toy with its own properties and behaviors.</p>
+<div id="s3-objects" class="section level3">
+<h3>S3 Objects</h3>
+<p>Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.). In R, an S3 object is like a toy with its own properties and behaviors.</p>
 <p>For example, let’s create an S3 object called “car” with properties like “color” and “speed”, and a method to “move”:</p>
 <pre class="r"><code># Define the car object
 car &lt;- list(color = &quot;red&quot;, speed = 0)
@@ -399,6 +400,7 @@ car &lt;- move_car(car, 30)</code></pre>
 <pre><code>## The red car is moving at 30 mph</code></pre>
 <p>In this example, the car is an S3 object (a list), and <code>move_car</code> is a function
 that operates on the car object, updating its speed and displaying a message.</p>
+</div>
 <div id="s4-objects" class="section level3">
 <h3>S4 Objects</h3>
 <p>Now, imagine you have a factory that produces toys. Each toy has a specific design,
@@ -433,6 +435,11 @@ return an object without printing it.</p>
 <p>By using invisible(), you can update the object’s state (in this case, the speed slot) and return the modified object without cluttering the console output. This makes it easier to work with the object in subsequent operations or assignments.</p>
 <pre class="r"><code># Create an instance of the Car class
 my_car &lt;- new(&quot;Car&quot;, color = &quot;blue&quot;, speed = 0)</code></pre>
+<p>We can access the the slots using <code>@</code>:</p>
+<pre class="r"><code>my_car@color</code></pre>
+<pre><code>## [1] &quot;blue&quot;</code></pre>
+<pre class="r"><code>my_car@speed</code></pre>
+<pre><code>## [1] 0</code></pre>
 <p>When you create an instance of the Car class using new(“Car”, color = “blue”, speed = 0),
 you are initializing the color slot with the value “blue” and the speed slot with the value 0.
 Slots provide a way to encapsulate and organize data within an object, making it easier to manage and maintain the object’s state.</p>
@@ -448,14 +455,18 @@ my_car &lt;- move(my_car, 40)</code></pre>
 ## [1] 40</code></pre>
 <p>Here’s what we did:</p>
 <ol style="list-style-type: decimal">
-<li><p>First, we defined the Car class using setClass.</p></li>
-<li><p>We then created a generic function called move using setGeneric. The standardGeneric function is a utility function that creates a standard generic function with the specified name.</p></li>
+<li><p>First, we defined the Car class using <code>setClass</code>.</p></li>
+<li><p>We then created a generic function called move using <code>setGeneric</code>. The <code>standardGeneric</code> function is a utility function that creates a standard generic function with the specified name.</p></li>
 <li><p>After defining the generic function, we can now define the method for the Car class using <code>setMethod</code>.</p></li>
 <li><p>The <code>setMethod</code> call specifies the generic function name (“move”), the signature (the class or classes the method should be dispatched for), and the function definition for the method.</p></li>
 <li><p>In the method definition, we update the speed slot of the object (the Car instance) and print a message using cat.</p></li>
 <li><p>Finally, we create an instance of the Car class and use the move method on it.</p></li>
 </ol>
 <p>By defining the generic function first, R knows that “move” is a valid generic function, and you can then define methods for different classes that should be dispatched when calling the move function.</p>
+</div>
+<div id="further-reading" class="section level3">
+<h3>Further reading</h3>
+<p>Advanced R: <a href="http://adv-r.had.co.nz/S4.html" class="uri">http://adv-r.had.co.nz/S4.html</a></p>
 </div>
 
     </div>
@@ -498,6 +509,11 @@ my_car &lt;- move(my_car, 40)</code></pre>
     
     <div class="article-widget">
       <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/" rel="next">How to separate a comma delimited string into multiple lines in R and python </a>
+  </div>
   
   
   <div class="post-nav-item">

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Biotech on Chatomics</title>
+    <link>/tags/biotech/</link>
+    <description>Recent content in Biotech on Chatomics</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Fri, 03 Jan 2025 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/biotech/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Biotech Data Strategy: Building a Scalable Foundation for Startups</title>
+      <link>/post/biotech-data/</link>
+      <pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/biotech-data/</guid>
+      <description>In a biotech startup, an early data strategy is key to ensure public and private data remain useful and valuable. As AI hype reaches new heights, I want to emphasize that a data strategy must precede any AI strategy.
+Data is the oil of the AI engine. Unfortunately, the real-world data are usually messy and not AI-ready. Without a robust data strategy, you are building an AI system on a shaky foundation.</description>
+    </item>
+    
+  </channel>
+</rss>

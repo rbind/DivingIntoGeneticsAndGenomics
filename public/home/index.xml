@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Homes on DNA confesses Data speak</title>
+    <title>Homes on Chatomics</title>
     <link>/home/</link>
-    <description>Recent content in Homes on DNA confesses Data speak</description>
+    <description>Recent content in Homes on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sun, 15 Oct 2017 00:00:00 -0400</lastBuildDate>
+    <lastBuildDate>Sun, 15 Oct 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/home/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>Academic</title>
       <link>/home/hero/</link>
-      <pubDate>Sun, 15 Oct 2017 00:00:00 -0400</pubDate>
+      <pubDate>Sun, 15 Oct 2017 00:00:00 +0000</pubDate>
       
       <guid>/home/hero/</guid>
       <description>The highly flexible website framework for Hugo with an extensible plugin mechanism. Create a beautifully simple site in under 10 minutes 🚀 Latest release  
@@ -25,17 +25,17 @@
     <item>
       <title></title>
       <link>/home/about/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/home/about/</guid>
-      <description>About me I am now the Director of Computational Biology at Immunitas Therapeutics, serving as the scientific advisory board member for Pythia Biosciences, a bioinformatics software company focusing on multi-omics data analysis and industry advisory board member for the Northeastern University Bioinformatics program.
-At Immunitas, we employ a single cell sequencing platform to dissect the biology of immune cells in human tumors. Our focus on human samples allows us to start with and stay closer to the most relevant and translatable biology for patients and accelerates the pace of our research.</description>
+      <description>About me I am a computational biologist working on genomics, epigenomics and transcriptomics. I use R primary for data wrangling and visualization in the tidyverse ecosystem; I use python for writing Snakemake workflows and reformatting data; I am a unix geek learning shell tricks almost every month; I care about reproducible research and open science.
+I also have a great interest in promoting open science and reforming bioinformatics education. I frequently share my thoughts on twitter and tips in my blog post.</description>
     </item>
     
     <item>
       <title>Selected Publications</title>
       <link>/home/publications_selected/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/home/publications_selected/</guid>
       <description></description>
@@ -44,7 +44,7 @@ At Immunitas, we employ a single cell sequencing platform to dissect the biology
     <item>
       <title>Recent Publications</title>
       <link>/home/publications/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/home/publications/</guid>
       <description></description>
@@ -53,7 +53,7 @@ At Immunitas, we employ a single cell sequencing platform to dissect the biology
     <item>
       <title>Talks &amp; Teachings</title>
       <link>/home/talks/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/home/talks/</guid>
       <description></description>
@@ -62,7 +62,7 @@ At Immunitas, we employ a single cell sequencing platform to dissect the biology
     <item>
       <title>Recent Posts</title>
       <link>/home/posts/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/home/posts/</guid>
       <description></description>
@@ -71,7 +71,7 @@ At Immunitas, we employ a single cell sequencing platform to dissect the biology
     <item>
       <title>Projects</title>
       <link>/home/projects/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/home/projects/</guid>
       <description></description>
@@ -80,7 +80,7 @@ At Immunitas, we employ a single cell sequencing platform to dissect the biology
     <item>
       <title>Teaching</title>
       <link>/home/teaching/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/home/teaching/</guid>
       <description>I taught the ChIP-seq bioinformatics lab for the GS01 1143 Introduction to Bioinformatics course to ~30 people with diverse background. Some of them did not have any experience with terminals. I walked through the materials slowly and it was well received!
@@ -93,7 +93,7 @@ Teaching in action!</description>
     <item>
       <title>Tags</title>
       <link>/home/tags/</link>
-      <pubDate>Wed, 20 Sep 2017 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 20 Sep 2017 00:00:00 +0000</pubDate>
       
       <guid>/home/tags/</guid>
       <description></description>
@@ -102,7 +102,7 @@ Teaching in action!</description>
     <item>
       <title>Newsletter</title>
       <link>/home/cv/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/home/cv/</guid>
       <description>Join my FREE newsletter here to learn bioinformatics and computational biology.</description>
@@ -111,7 +111,7 @@ Teaching in action!</description>
     <item>
       <title>Contact</title>
       <link>/home/contact/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 -0400</pubDate>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>/home/contact/</guid>
       <description></description>

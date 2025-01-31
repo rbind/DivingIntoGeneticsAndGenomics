@@ -1,21 +1,81 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Talks &amp; Workshops on DNA confesses Data speak</title>
+    <title>Talks &amp; Workshops on Chatomics</title>
     <link>/talk/</link>
-    <description>Recent content in Talks &amp; Workshops on DNA confesses Data speak</description>
+    <description>Recent content in Talks &amp; Workshops on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sun, 01 Jan 2017 00:00:00 -0500</lastBuildDate>
+    <lastBuildDate>Sun, 01 Jan 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/talk/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Removing roadblocks to accessing single cell research</title>
+      <link>/talk/2024-10x_roundtable/</link>
+      <pubDate>Tue, 19 Nov 2024 11:00:00 +0000</pubDate>
+      
+      <guid>/talk/2024-10x_roundtable/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Panel discussion: Coding and data science skills in industry</title>
+      <link>/talk/2024-embl/</link>
+      <pubDate>Mon, 11 Nov 2024 11:00:00 +0000</pubDate>
+      
+      <guid>/talk/2024-embl/</guid>
+      <description>I was invited to EMBL, Germany to participate the panel discussion for data science training for industry.
+It was my first time to go to Europe. I enjoyed the trip a lot!
+I even met Dr.Wolfgang Huber in person!</description>
+    </item>
+    
+    <item>
+      <title>Single-cell analysis best practices and challenges</title>
+      <link>/talk/2024-fog-singlecell/</link>
+      <pubDate>Wed, 25 Sep 2024 11:00:00 +0000</pubDate>
+      
+      <guid>/talk/2024-fog-singlecell/</guid>
+      <description>The Single Cell Track begins with sessions on &amp;lsquo;Improving Your Understanding of Disease Complexity&amp;rsquo; with Saurabh Vishnu Laddha and a panel on &amp;lsquo;Navigating the Crossroads of Single Cell Genomics and Human Genetics&amp;rsquo; with Joseph Powell, Marisol Alvarez-Martinez, PhD, Fan Zhang, PhD and Giorgio Gaglia
+Occurring in parallel on the Spatial Omics Track, we have two sessions on multimodal spatial methods, including proteomics and transcriptomics and mass spec imaging, featuring Tullia Bruno and Elizabeth Neumann</description>
+    </item>
+    
+    <item>
+      <title>From Cell Line to Command Line: my unexpected career in Bioinformatics</title>
+      <link>/talk/2024-ufgi_talk/</link>
+      <pubDate>Thu, 05 Sep 2024 11:00:00 +0000</pubDate>
+      
+      <guid>/talk/2024-ufgi_talk/</guid>
+      <description>I was invited to give a talk to the University Florida Genetics Institute (UFGI) graduate program. I graduated from there! Go, Gators!
+read my story here https://divingintogeneticsandgenomics.com/publication/2023-10-04-nature-career/
+Guess which one is me?!</description>
+    </item>
+    
+    <item>
+      <title>Hands-on E-workshop Molecular Informatics - Transforming Biotechnology Research with Computational Analysis</title>
+      <link>/talk/2024-pakistan_talk/</link>
+      <pubDate>Tue, 03 Sep 2024 06:00:00 +0000</pubDate>
+      
+      <guid>/talk/2024-pakistan_talk/</guid>
+      <description>I gave a workshop on RNA-seq analysis in the Hands-on E-workshop &amp;ldquo;Molecular Informatics - Transforming Biotechnology Research with Computational Analysis&amp;rdquo; for the INTERNATIONAL ISLAMIC UNIVERSITY, ISLAMABAD, PAKISTAN.
+Github repo is here https://github.com/crazyhottommy/bulk-RNAseq-workshop</description>
+    </item>
+    
+    <item>
+      <title>Dissecting myeloid and T cells interaction niches in the TME using spatial transcriptome</title>
+      <link>/talk/2024-boston-genomics-festival-monkeybread/</link>
+      <pubDate>Wed, 12 Jun 2024 11:00:00 +0000</pubDate>
+      
+      <guid>/talk/2024-boston-genomics-festival-monkeybread/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Academia to Industry: Computational Biology Careeer Advice and Tips</title>
       <link>/talk/2024-indian-isg/</link>
-      <pubDate>Fri, 26 Apr 2024 06:30:00 -0400</pubDate>
+      <pubDate>Fri, 26 Apr 2024 06:30:00 +0000</pubDate>
       
       <guid>/talk/2024-indian-isg/</guid>
       <description>Your journey in the field of computational biology is inspiring and we hope through the webinar ISCB RSG India would be able to bring your story firsthand to the budding computational biologists. We trust that they will not only gain academic insights from your talk but would also be able to find the right motivation to carve their own path in this constantly evolving field. As we can see from your profile, you have a diverse skill set and experience of both academia and industry.</description>
@@ -24,7 +84,7 @@
     <item>
       <title>computational biology career path tips</title>
       <link>/talk/2024-decipher-rafa-course/</link>
-      <pubDate>Thu, 18 Apr 2024 17:00:00 -0400</pubDate>
+      <pubDate>Thu, 18 Apr 2024 17:00:00 +0000</pubDate>
       
       <guid>/talk/2024-decipher-rafa-course/</guid>
       <description></description>
@@ -33,7 +93,7 @@
     <item>
       <title>Bridging the Gap: how to learn computational biology the right way</title>
       <link>/talk/2024-iowa-state/</link>
-      <pubDate>Thu, 04 Apr 2024 15:00:00 -0400</pubDate>
+      <pubDate>Thu, 04 Apr 2024 15:00:00 +0000</pubDate>
       
       <guid>/talk/2024-iowa-state/</guid>
       <description>With a theme of &amp;lsquo;From Code to Cure Bridging the Gap in Biological Sciences,&amp;rsquo; the cooperative efforts of the Interdisciplinary Biological Sciences Graduate Programs have culminated in organizing The 2nd Annual Interdisciplinary Biological Sciences Symposium - 2024(IBSS). The goal of IBSS 2024 is to unite scholars from diverse biological domains to deliver advances in the relevant fields and to promote an atmosphere to facilitate the exchange of idIBSS Flyereas and information.</description>
@@ -42,7 +102,7 @@
     <item>
       <title>Introduction to Single-cell RNAseq analysis</title>
       <link>/talk/2024-tunis-r/</link>
-      <pubDate>Sat, 30 Mar 2024 11:00:00 -0400</pubDate>
+      <pubDate>Sat, 30 Mar 2024 11:00:00 +0000</pubDate>
       
       <guid>/talk/2024-tunis-r/</guid>
       <description></description>
@@ -51,7 +111,7 @@
     <item>
       <title>Single-cell RNAseq data integration: methods and challenges</title>
       <link>/talk/2024-pythia/</link>
-      <pubDate>Wed, 24 Jan 2024 11:00:00 -0500</pubDate>
+      <pubDate>Wed, 24 Jan 2024 11:00:00 +0000</pubDate>
       
       <guid>/talk/2024-pythia/</guid>
       <description>Say hi to 2024 with the first webinar in our &amp;ldquo;Omics Connect&amp;rdquo; series!
@@ -60,9 +120,20 @@ You will also learn from Jenny Pham, Head of Scientific Marketing and Training P
     </item>
     
     <item>
+      <title>Single-cell analysis: best practices and unsolved problems</title>
+      <link>/talk/2024-10x-singlecell/</link>
+      <pubDate>Wed, 24 Jan 2024 11:00:00 +0000</pubDate>
+      
+      <guid>/talk/2024-10x-singlecell/</guid>
+      <description>Single-cell and spatial omics are powerful tools that can help unlock important biological insights. How to analyze such data properly and what are the best practices?
+Don&amp;rsquo;t miss our upcoming webinar with 10x Genomics where we will discuss this complex but exciting topic in depth! 🌟
+Dive into multiple angles of single-cell and spatial multi-omics data analysis - from its applications to the caveats of interpreting the data, and recommendations of tools and platforms to use.</description>
+    </item>
+    
+    <item>
       <title>workshop: Charting human biology using AI for Precision Health &amp; Precision Medicine</title>
       <link>/talk/2023-ai-conference/</link>
-      <pubDate>Thu, 16 Nov 2023 15:30:00 -0500</pubDate>
+      <pubDate>Thu, 16 Nov 2023 15:30:00 +0000</pubDate>
       
       <guid>/talk/2023-ai-conference/</guid>
       <description>I co-organized this AI conference with Ilknur Icke and Matteo Aldeghi from Bayer.</description>
@@ -71,7 +142,7 @@ You will also learn from Jenny Pham, Head of Scientific Marketing and Training P
     <item>
       <title>Navigating Omics Data Analysis Challenges in Biotech</title>
       <link>/talk/2023-bigomics/</link>
-      <pubDate>Thu, 09 Nov 2023 10:00:00 -0500</pubDate>
+      <pubDate>Thu, 09 Nov 2023 10:00:00 +0000</pubDate>
       
       <guid>/talk/2023-bigomics/</guid>
       <description>In this episode of &amp;ldquo;Navigating Omics Data Analysis Challenges in Biotech&amp;rdquo;, we have the pleasure of interviewing 🎯 Ming &amp;ldquo;Tommy&amp;rdquo; Tang, the Director of Computational Biology at Immunitas Therapeutics.
@@ -82,7 +153,7 @@ During this interview, we&amp;rsquo;ll deep dive into his extensive experience i
     <item>
       <title>Drug Discovery Biology Strategy Meeting</title>
       <link>/talk/2023-drug-discovery-conference/</link>
-      <pubDate>Tue, 07 Nov 2023 15:30:00 -0500</pubDate>
+      <pubDate>Tue, 07 Nov 2023 15:30:00 +0000</pubDate>
       
       <guid>/talk/2023-drug-discovery-conference/</guid>
       <description>We are excited to introduce 🎯 Ming &amp;ldquo;Tommy&amp;rdquo; Tang, an exceptional leader in computational biology, who will be guiding an engaging discussion at the upcoming 10th Drug Discovery Strategy Meeting on November 7 in Boston. Tommy currently serves as the Director of Computational Biology at Immunitas Therapeutics, a pioneering startup dedicated to revolutionizing cancer therapeutics through innovative approaches.
@@ -92,7 +163,7 @@ With a deep commitment to advancing our understanding of the complexities of imm
     <item>
       <title>Panel Discussion on GPT &amp; Drug Discovery: Rise of Generative Models</title>
       <link>/talk/2023-generative-ai/</link>
-      <pubDate>Thu, 26 Oct 2023 12:00:00 -0400</pubDate>
+      <pubDate>Thu, 26 Oct 2023 12:00:00 +0000</pubDate>
       
       <guid>/talk/2023-generative-ai/</guid>
       <description>Generative #AI has the potential to transform the drug discovery 💊 field. Let&amp;rsquo;s pressure test the hype vs. reality in an exciting panel discussion 🎤. Join our expert panel as they delve into the transformative potential of Generative AI in drug discovery. We&amp;rsquo;ve gathered industry leaders 🤝🏻
@@ -103,7 +174,7 @@ Helena Deus, PhD, Principal, Technology Consulting, EPAM Systems</description>
     <item>
       <title>How has computational biology impacted the field of immuno-oncology</title>
       <link>/talk/2023-data-in-biotech/</link>
-      <pubDate>Wed, 25 Oct 2023 12:00:00 -0400</pubDate>
+      <pubDate>Wed, 25 Oct 2023 12:00:00 +0000</pubDate>
       
       <guid>/talk/2023-data-in-biotech/</guid>
       <description>How has computational biology impacted the field of immuno-oncology?
@@ -116,7 +187,7 @@ Over this fascinating deep-dive interview with the Director of Computational Bio
     <item>
       <title>Pathfinder podcast</title>
       <link>/talk/2023-purdue-pathfinder/</link>
-      <pubDate>Tue, 10 Oct 2023 12:00:00 -0400</pubDate>
+      <pubDate>Tue, 10 Oct 2023 12:00:00 +0000</pubDate>
       
       <guid>/talk/2023-purdue-pathfinder/</guid>
       <description>On this episode of Pathfinder, we welcome 🎯 Ming &amp;ldquo;Tommy&amp;rdquo; Tang &amp;ldquo;Tommy&amp;rdquo; Tang who serves as the Director of Computational Biology at Immunitas Therapeutics, a clinical-stage biotech company committed to discovering and developing novel therapeutics for patients with cancer. In this role, he guides a skilled computational biology unit in scrutinizing single-cell genomic data to unveil the intricacies of immune cells within human tumors. Prior to joining Immunitas, Tommy was the lead scientist for the Cancer Immunologic Data Commons at Dana Farber Cancer Institute.</description>
@@ -125,7 +196,7 @@ Over this fascinating deep-dive interview with the Director of Computational Bio
     <item>
       <title>Unleashing the power of computational biology</title>
       <link>/talk/2023-antiverse/</link>
-      <pubDate>Sun, 01 Oct 2023 12:00:00 -0400</pubDate>
+      <pubDate>Sun, 01 Oct 2023 12:00:00 +0000</pubDate>
       
       <guid>/talk/2023-antiverse/</guid>
       <description>I had the fun to be on the podcast hosted by the CEO of antiverse: Murat Tunaboylu.</description>
@@ -134,7 +205,7 @@ Over this fascinating deep-dive interview with the Director of Computational Bio
     <item>
       <title>How To Switch From Wet-Lab To Dry-Lab? Tips for single cell scientists</title>
       <link>/talk/2023-transform/</link>
-      <pubDate>Sat, 02 Sep 2023 12:00:00 -0400</pubDate>
+      <pubDate>Sat, 02 Sep 2023 12:00:00 +0000</pubDate>
       
       <guid>/talk/2023-transform/</guid>
       <description>This episode isn&amp;rsquo;t about methods or technology; it&amp;rsquo;s about inspiring scientists around the #singlecell world. Listen to 🎯 Ming &amp;ldquo;Tommy&amp;rdquo; Tang&amp;rsquo;s story and let it inspire you. It might just sparkle ✨ a transformation in your own scientific journey!
@@ -144,7 +215,7 @@ In this episode, Dr. Ming “Tommy” Tang shares his story of changing from han
     <item>
       <title>Dissecting myeloid and T cells interaction niches in the TME using spatial transcriptome </title>
       <link>/talk/2023-myeloid-talk/</link>
-      <pubDate>Mon, 17 Jul 2023 12:00:00 -0400</pubDate>
+      <pubDate>Mon, 17 Jul 2023 12:00:00 +0000</pubDate>
       
       <guid>/talk/2023-myeloid-talk/</guid>
       <description></description>
@@ -153,7 +224,7 @@ In this episode, Dr. Ming “Tommy” Tang shares his story of changing from han
     <item>
       <title>Patient Participation: The Unsung Hero of Drug Development</title>
       <link>/talk/2023-patient-drug-discovery-pod/</link>
-      <pubDate>Fri, 07 Jul 2023 12:00:00 -0400</pubDate>
+      <pubDate>Fri, 07 Jul 2023 12:00:00 +0000</pubDate>
       
       <guid>/talk/2023-patient-drug-discovery-pod/</guid>
       <description>Drumroll, please! 🥁 We&amp;rsquo;re ecstatic to unveil our newest episode of Decoding Life: Conversations with a Computational Biologist - &amp;ldquo;Patient Participation: The Unsung Hero of Drug Development&amp;rdquo;! Packed with valuable insights, we dive headfirst into the transformative role patients play in drug development.
@@ -163,7 +234,7 @@ Thrilled to have 🎯 Ming &amp;ldquo;Tommy&amp;rdquo; Tang, Director of Computa
     <item>
       <title>Single-cell analysis: best practices and unsolved problems</title>
       <link>/talk/2023-poland/</link>
-      <pubDate>Fri, 09 Jun 2023 03:15:00 -0400</pubDate>
+      <pubDate>Fri, 09 Jun 2023 03:15:00 +0000</pubDate>
       
       <guid>/talk/2023-poland/</guid>
       <description></description>
@@ -172,7 +243,7 @@ Thrilled to have 🎯 Ming &amp;ldquo;Tommy&amp;rdquo; Tang, Director of Computa
     <item>
       <title>Learn Computational Biology the Right Way</title>
       <link>/talk/2023-bioinfocongress/</link>
-      <pubDate>Mon, 06 Mar 2023 11:15:00 -0500</pubDate>
+      <pubDate>Mon, 06 Mar 2023 11:15:00 +0000</pubDate>
       
       <guid>/talk/2023-bioinfocongress/</guid>
       <description>As the Bioinforange platform, we prepare and share Turkish and English review articles, news articles, videos, and scientific short notes on many biological science fields, especially bioinformatics. At the same time, we organize seminars, workshops, conferences, and congress events with the participation of valuable scientists. We have a website called www.bioinforange.com (Turkish content) and www.bioinfocodes.com (English content). We are also present on all social media platforms as @bioinforange and @bioinfocodes. Our platform is followed by scientists and our student friends who are studying in many scientific fields.</description>
@@ -181,7 +252,7 @@ Thrilled to have 🎯 Ming &amp;ldquo;Tommy&amp;rdquo; Tang, Director of Computa
     <item>
       <title>Reproducible genomic data science</title>
       <link>/talk/2022-iscb-reproducible/</link>
-      <pubDate>Sat, 09 Jul 2022 12:30:00 -0400</pubDate>
+      <pubDate>Sat, 09 Jul 2022 12:30:00 +0000</pubDate>
       
       <guid>/talk/2022-iscb-reproducible/</guid>
       <description>I gave a talk on reproducible genomic data science at the International Society for Computational Biology (ISCB) Student Council Symposium 2022 and had a panel discussion together with Yo Yehudi on open science.</description>
@@ -190,7 +261,7 @@ Thrilled to have 🎯 Ming &amp;ldquo;Tommy&amp;rdquo; Tang, Director of Computa
     <item>
       <title>Single-Cell Analysis 101: Current Approaches and Open Questions</title>
       <link>/talk/2022-single-cell-abrf/</link>
-      <pubDate>Tue, 29 Mar 2022 12:30:00 -0400</pubDate>
+      <pubDate>Tue, 29 Mar 2022 12:30:00 +0000</pubDate>
       
       <guid>/talk/2022-single-cell-abrf/</guid>
       <description>I gave a talk on single-cell analysis 101 in the ABRF2022 conference. Thank you, Ben Johnson for the inivtation. I enjoyed it! The slides and video can be found in the links above!</description>
@@ -199,7 +270,7 @@ Thrilled to have 🎯 Ming &amp;ldquo;Tommy&amp;rdquo; Tang, Director of Computa
     <item>
       <title>Annual postdoc Alternative careers event King&#39;s College London</title>
       <link>/talk/2022-alternative-path/</link>
-      <pubDate>Wed, 09 Mar 2022 06:00:00 -0500</pubDate>
+      <pubDate>Wed, 09 Mar 2022 06:00:00 +0000</pubDate>
       
       <guid>/talk/2022-alternative-path/</guid>
       <description> I shared my career path at the annual postdoc Alternative careers event King&amp;rsquo;s College London. I am glad that I can give some tips to the postdocs and reminds them alternative careers exist besides academia. (Starting at 36 min at the youtube video I linked above).
@@ -209,7 +280,7 @@ Event My career path in one slide: </description>
     <item>
       <title>Career mentoring for Department of Genomic Medicine, MD Anderson Cancer Center</title>
       <link>/talk/2022-career-mentoring-mda/</link>
-      <pubDate>Mon, 03 Jan 2022 06:00:00 -0500</pubDate>
+      <pubDate>Mon, 03 Jan 2022 06:00:00 +0000</pubDate>
       
       <guid>/talk/2022-career-mentoring-mda/</guid>
       <description> I shared my career path at a Career mentoring session for Department of Genomic Medicine, MD Anderson Cancer Center. I had the pleasure to see many old colleagues and mentors Dr.Andrew Futreal and Dr.Jianjun (Jay) Zhang.
@@ -219,7 +290,7 @@ Event </description>
     <item>
       <title>Reproducible research in genomic data science</title>
       <link>/talk/2021-reproducible-rsg/</link>
-      <pubDate>Sun, 12 Sep 2021 06:00:00 -0400</pubDate>
+      <pubDate>Sun, 12 Sep 2021 06:00:00 +0000</pubDate>
       
       <guid>/talk/2021-reproducible-rsg/</guid>
       <description>I gave a keynote talk on reproducible research in genomic data science at the ISCB SC RSG Turkey Student Symposium 2021 https://symposium.rsgturkey.com/. I really enjoyed the speaking. Thank you for the inivtation! The slides and video can be found in the links above. Enjoy!</description>
@@ -228,7 +299,7 @@ Event </description>
     <item>
       <title>Fast analysis of scATAC-seq data using a predefined set of genomic regions</title>
       <link>/talk/2021-fast-scatacseq/</link>
-      <pubDate>Fri, 23 Apr 2021 10:00:00 -0400</pubDate>
+      <pubDate>Fri, 23 Apr 2021 10:00:00 +0000</pubDate>
       
       <guid>/talk/2021-fast-scatacseq/</guid>
       <description>I am invited by Henry Rong in Center for Functional Cancer Epigenomics (CFCE) at Dana-Farber to give a presentation on Fast analysis of scATAC-seq data using a predefined set of genomic regions. This project was a enjoyable collabration with Davide Cittaro at San Raffaele Scientific Institute in Italy.</description>
@@ -237,7 +308,7 @@ Event </description>
     <item>
       <title>STAT115 single cell ATACseq lecture</title>
       <link>/talk/2021-stat115-scrnaseq-lecture/</link>
-      <pubDate>Tue, 30 Mar 2021 12:00:00 -0400</pubDate>
+      <pubDate>Tue, 30 Mar 2021 12:00:00 +0000</pubDate>
       
       <guid>/talk/2021-stat115-scrnaseq-lecture/</guid>
       <description>I gave a guest lecture on single cell ATACseq for STAT115 to the Harvard students. The videos can be found at https://liulab-dfci.github.io/bioinfo-combio/scatac.html. slides can be found in the PDF as well. Shirley has put all her course videos in the above bookdown. Great resource for Bioinformatics!</description>
@@ -246,7 +317,7 @@ Event </description>
     <item>
       <title>PACT meeting update: single-cell and bulk ATAC-seq analysis pipelines</title>
       <link>/talk/2020-maestro-pact-talk/</link>
-      <pubDate>Tue, 10 Nov 2020 11:15:00 -0500</pubDate>
+      <pubDate>Tue, 10 Nov 2020 11:15:00 +0000</pubDate>
       
       <guid>/talk/2020-maestro-pact-talk/</guid>
       <description>In the joint Partnership for Access to Clinical Trials (PACT) and CIMAC-CIDC Network Fall meeting. I presented the update for our bulk ATAC-seq pipeline and the MAESTRO single-cell workflow. I led the discussion of the adoption of single-cell ATAC-seq in the CIMAC trails afterwards.</description>
@@ -255,7 +326,7 @@ Event </description>
     <item>
       <title>MAESTRO: Model-based Analyses of Single-cell Transcriptome and Regulome</title>
       <link>/talk/2020-maestro-broad-talk/</link>
-      <pubDate>Mon, 02 Nov 2020 14:30:00 -0500</pubDate>
+      <pubDate>Mon, 02 Nov 2020 14:30:00 +0000</pubDate>
       
       <guid>/talk/2020-maestro-broad-talk/</guid>
       <description>I gave a talk on our single-cell RNA-seq and single-cell ATAC-seq analysis tool MAESTRO in the Broad Institute CC&amp;amp;E Seminar Series.</description>
@@ -264,7 +335,7 @@ Event </description>
     <item>
       <title>reproducible computing for your own benifit</title>
       <link>/talk/2020-reproducible-computing/</link>
-      <pubDate>Tue, 02 Jun 2020 14:30:00 -0400</pubDate>
+      <pubDate>Tue, 02 Jun 2020 14:30:00 +0000</pubDate>
       
       <guid>/talk/2020-reproducible-computing/</guid>
       <description>We are hiring several new computational biologists in Shirley Liu Lab. All the new hires together with wet lab people are going through a 5-week long intensive bioinformatics training: STAT115.
@@ -274,7 +345,7 @@ I am TAing for 2 weeks and I gave a talk on reproducible computing. Please find 
     <item>
       <title>Tools and tricks for a data scientist</title>
       <link>/talk/2020-tools-tricks-data-science/</link>
-      <pubDate>Mon, 09 Mar 2020 14:30:00 -0400</pubDate>
+      <pubDate>Mon, 09 Mar 2020 14:30:00 +0000</pubDate>
       
       <guid>/talk/2020-tools-tricks-data-science/</guid>
       <description>In the lab meeting today, I introduced some of the linux tricks and apps I have been using for my daily work. I consider myself as a genomic data scientist. It is a bioinformatician&amp;rsquo;s rebranding according to Jason Williams.
@@ -284,7 +355,7 @@ I am sharing the PDF here, hope you find some of the tricks are useful too!</des
     <item>
       <title>Harvard FAS informatics nanocourse</title>
       <link>/talk/2019-harvard-fas-workshop/</link>
-      <pubDate>Mon, 19 Aug 2019 00:00:00 -0400</pubDate>
+      <pubDate>Mon, 19 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>/talk/2019-harvard-fas-workshop/</guid>
       <description>In this 2-week long Harvard FAS informatics nanocourse, I co-taught snakemake for one afternoon and lead-instructed scRNAseq analysis for a full day.
@@ -297,7 +368,7 @@ I am sharing the PDF here, hope you find some of the tricks are useful too!</des
     <item>
       <title>Reproducible research in bioinformatics</title>
       <link>/talk/2019-bunkerhill-talk/</link>
-      <pubDate>Thu, 28 Mar 2019 14:30:00 -0400</pubDate>
+      <pubDate>Thu, 28 Mar 2019 14:30:00 +0000</pubDate>
       
       <guid>/talk/2019-bunkerhill-talk/</guid>
       <description>I was invited to give a talk on reproducible bioinformatics research to the students in the Bunker Hill Community College in Boston, MA. I was so glad to introduce bioinformatics to the students and share my own perspectives on reproducible research.
@@ -308,7 +379,7 @@ Embed your slides or video here using shortcodes. Further details can easily be 
     <item>
       <title>From cell line to command line: my journey to bioinformatics</title>
       <link>/talk/2018-uf-talk/</link>
-      <pubDate>Fri, 31 Aug 2018 00:00:00 -0400</pubDate>
+      <pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate>
       
       <guid>/talk/2018-uf-talk/</guid>
       <description>I was invited to give a talk to my PhD Genetics and Genomics program at the University of Florida. I talked about my personal experience on how I started doing bioinformatics and shared tips and resources to get the students started their own journey into bioinformatics.
@@ -319,7 +390,7 @@ Embed your slides or video here using shortcodes. Further details can easily be 
     <item>
       <title>2018 Next-Gen Sequence Analysis Workshop</title>
       <link>/talk/2018-dibsi-course/</link>
-      <pubDate>Tue, 10 Jul 2018 00:00:00 -0400</pubDate>
+      <pubDate>Tue, 10 Jul 2018 00:00:00 +0000</pubDate>
       
       <guid>/talk/2018-dibsi-course/</guid>
       <description>I taught the ChIP-seq lesson for 2018 ANGUS Next-Gen Sequence Analysis Workshop held in UC Davis from 7/1/2018 to 7/14/2018, and TAed for the rest of the sessions. You can find my class link here and all the rest materials here. This is the first formal teaching I have done after I became a certified instructor for Data Carpentry. The same teaching skills applied!
@@ -330,7 +401,7 @@ Some tips for teaching:
     <item>
       <title>GS01 1143 Introduction to Bioinformatics course</title>
       <link>/talk/2017-gsbs-chipseq-class/</link>
-      <pubDate>Thu, 02 Nov 2017 00:00:00 -0400</pubDate>
+      <pubDate>Thu, 02 Nov 2017 00:00:00 +0000</pubDate>
       
       <guid>/talk/2017-gsbs-chipseq-class/</guid>
       <description>I taught the ChIP-seq bioinformatics lab for the GS01 1143 Introduction to Bioinformatics course to ~30 people with diverse background. Some of them did not have any experience with terminals. I walked through the materials slowly and it was well received!
@@ -343,7 +414,7 @@ Teaching in action!</description>
     <item>
       <title>University of Miami 2-day Software Carpentry workshop</title>
       <link>/talk/2015-miami-carpentry/</link>
-      <pubDate>Thu, 02 Apr 2015 00:00:00 -0400</pubDate>
+      <pubDate>Thu, 02 Apr 2015 00:00:00 +0000</pubDate>
       
       <guid>/talk/2015-miami-carpentry/</guid>
       <description>I was excited to teach Shell and R to a group of 20 biologists from the University of Miami. This event was sponsored by Software carpentry https://software-carpentry.org/ and the University of Miami. see the course info here.

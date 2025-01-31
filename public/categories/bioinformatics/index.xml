@@ -1,16 +1,159 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Bioinformatics on DNA confesses Data speak</title>
+    <title>Bioinformatics on Chatomics</title>
     <link>/categories/bioinformatics/</link>
-    <description>Recent content in Bioinformatics on DNA confesses Data speak</description>
+    <description>Recent content in Bioinformatics on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Wed, 27 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 27 Oct 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/bioinformatics/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>I regret not doing so</title>
+      <link>/post/learn-linear-algebra/</link>
+      <pubDate>Sun, 27 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/learn-linear-algebra/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+My regret is not learning linear algebra well during college.
+I barely passed the exam for it (and calculus, it was a nightmare :) ).
+To be fair..
+It was not taught well and it sounded too boring. I did not know what the application of matrix multiplication was, not until…
+Many years later, I started to learn bioinformatics.</description>
+    </item>
+    
+    <item>
+      <title>How CCA alignment and cell label transfer work in Seurat</title>
+      <link>/post/cca-alignment/</link>
+      <pubDate>Sat, 19 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/cca-alignment/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Understand CCA Following my last blog post on PCA projection and cell label transfer, we are going to talk about CCA.
+In single-cell RNA-seq data integration using Canonical Correlation Analysis (CCA), we typically align two matrices representing different datasets, where both datasets have the same set of genes but different numbers of cells.</description>
+    </item>
+    
+    <item>
+      <title>How PCA projection and cell label transfer work in Seurat</title>
+      <link>/post/pca-projection/</link>
+      <pubDate>Thu, 17 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-projection/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Understand the example datasets We will use PBMC3k and PBMC10k data. We will project the PBMC3k data to the PBMC10k data and get the labels
+library(Seurat) library(Matrix) library(irlba) # For PCA library(RcppAnnoy) # For fast nearest neighbor search library(dplyr) # Assuming the PBMC datasets (3k and 10k) are already normalized # and represented as sparse matrices # devtools::install_github(&amp;#39;satijalab/seurat-data&amp;#39;) library(SeuratData) #AvailableData() #InstallData(&amp;quot;pbmc3k&amp;quot;) pbmc3k&amp;lt;-UpdateSeuratObject(pbmc3k) pbmc3k@meta.</description>
+    </item>
+    
+    <item>
+      <title>You need to master it if you deal with genomics data</title>
+      <link>/post/genomic-interval/</link>
+      <pubDate>Sat, 21 Sep 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/genomic-interval/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Motivation What’s the most common problem you need to solve when dealing with genomics data?
+For me, it is Genomic Intervals!
+The genomics data usually represents linearly: chromosome name, start and end.
+We use it to define a region in the genome ( A peak from ChIP-seq data); the location of a gene, a DNA methylation site ( a single point), a mutation call (a single point), and a duplication region in cancer etc.</description>
+    </item>
+    
+    <item>
+      <title>A docker image to keep this site alive</title>
+      <link>/post/docker-mac-m3/</link>
+      <pubDate>Mon, 26 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/docker-mac-m3/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+I have been writing blog posts for over 10 years. I was using blogspot and in 2018, I switched to blogdown and I love it.
+My blogdown website divingintogeneticsandgenomics.com was using Hugo v0.42 and blogdown v1.0. It has been many years and now I have a macbook pro with an M3 chip. I could not install the old versions of the R packages to serve the site.</description>
+    </item>
+    
+    <item>
+      <title>The Most Common Mistake In Bioinformatics, one-off error</title>
+      <link>/post/most-common-mistake-for-bioinformatics/</link>
+      <pubDate>Mon, 19 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/most-common-mistake-for-bioinformatics/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In my last blog post, I talked about some common bioinformatics mistakes.
+Today, we are going to talk about THE MOST common bioinformatics mistake people make. And I think it deserves a separate post about it. Even some experienced programmers get it wrong and the mistake prevails in many bioinformatics software:
+The one-off mistake!</description>
+    </item>
+    
+    <item>
+      <title>The Most Common Stupid Mistakes In Bioinformatics</title>
+      <link>/post/stupid-mistakes-for-bioinformatics/</link>
+      <pubDate>Tue, 13 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/stupid-mistakes-for-bioinformatics/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+This post is inspired by this popular thread in https://www.biostars.org/.
+Common mistakes in general  Off-by-One Errors:  Mistakes occur when switching between different indexing systems. For example, BED files are 0-based while GFF/GTF files are 1-based, leading to potential misinterpretations of genomic coordinates.   This is one of the most common mistakes!</description>
+    </item>
+    
+    <item>
+      <title>Six tips to build a strong Bioinformatics CV</title>
+      <link>/post/six-tips-to-build-a-strong-bioinformatics-cv/</link>
+      <pubDate>Thu, 06 Jun 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/six-tips-to-build-a-strong-bioinformatics-cv/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+If you apply for a Bioinformatics position, hundreds of CVs get to sent to the hiring manager. How to stand out among all of them? Below are 6 tips from my hiring experience:
+Include a GitHub Link: Ensure your CV has a GitHub link with relevant content like Python or R packages, data analysis projects, or replicated figures from published papers.</description>
+    </item>
+    
+    <item>
+      <title>R or Python for Bioinformatics?</title>
+      <link>/post/r-or-python-for-bioinformatics/</link>
+      <pubDate>Wed, 05 Jun 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/r-or-python-for-bioinformatics/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+R or Python for Bioinformatics? Watch the video here:
+    If you need to pick Python or R for bioinformatics, which one should you choose? This is a decades-old question from many beginners.
+This is my story.
+I started learning Unix Commands 12 years ago (See an example of how powerful Unix commands can be).</description>
+    </item>
+    
+    <item>
+      <title>How to level up Real-life bioinformatics skill: from dealing with one sample to a lot of samples</title>
+      <link>/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</link>
+      <pubDate>Fri, 17 May 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+The other day, I saw this tweet:
+Machine learning and bioinformatics tutorials these days pic.twitter.com/0FhWWG09TB — Ramon Massoni Badosa (@rmassonix) May 15, 2024   Many of the bioinformatics tutorials are like that. I am not saying the tutorial is not good. For beginners, we need something basic first to understand it.</description>
+    </item>
+    
+    <item>
+      <title>Common mistakes when analyzing single-cell RNAseq data </title>
+      <link>/post/common-mistakes-when-analyzing-single-cell-rnaseq-data/</link>
+      <pubDate>Wed, 15 May 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/common-mistakes-when-analyzing-single-cell-rnaseq-data/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+I recently was interviewed by the SEQanswers forum on single-cell RNAseq analysis.
+In your opinion, what is the most challenging aspect of single-cell analysis?  Every single-cell dataset is unique in terms of data quality and QC has to be carried out in a dataset specific manner. Cell annotation is still one of the most challenging steps.</description>
+    </item>
+    
+    <item>
+      <title>How to separate a comma delimited string into multiple lines in R and python </title>
+      <link>/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</link>
+      <pubDate>Thu, 09 May 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+The problem df&amp;lt;- data.frame(id = c(1,2,3), value = c(&amp;#39;x,y&amp;#39;, &amp;#39;z,w&amp;#39;, &amp;#39;a&amp;#39;)) df #&amp;gt; id value #&amp;gt; 1 1 x,y #&amp;gt; 2 2 z,w #&amp;gt; 3 3 a we want to put x,y in the first row into two rows:
+1, x
+1, y
+and put z,w into two rows too.
+ solution with R There is a neat function separate_rows that does exactly this in tidyr package:</description>
+    </item>
     
     <item>
       <title>Bioinformatics is not (just) statistics </title>
