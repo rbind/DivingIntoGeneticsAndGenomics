@@ -319,6 +319,16 @@ Heatmap(t(scale(t(TCGA_lung_cpm_sub))),
 This shows you how useful PCA is. In my next post, I will show you how a similar 
 analysis is done in a single-cell ATACseq dataset. Stay tuned!
 
+Watch the video here:
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=4m4nAaIXYcM")
+```
+
+Do not forget to subscribe to my channel: Chatomics.
+
 **To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
 biology and bioinformatics.**
 
