@@ -1,0 +1,237 @@
+---
+title: "PCA analysis on scATACseq data"
+author: Ming Tommy Tang
+date: "2025-02-02"
+slug: pca-scATAC
+categories:
+  - review
+tags:
+  - bioinformatics
+  - scATAC
+  - data
+  - pca
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<p>In my last post, I showed you how to use <a href="https://divingintogeneticsandgenomics.com/post/pca-tcga/">PCA for bulk RNAseq data</a>.</p>
+<p>Today, let’s see how we can use it for scATACseq data.</p>
+<p>Download the example dataset from 10x genomics <a href="https://support.10xgenomics.com/single-cell-atac/datasets/1.1.0/atac_pbmc_5k_v1" class="uri">https://support.10xgenomics.com/single-cell-atac/datasets/1.1.0/atac_pbmc_5k_v1</a></p>
+<p>The dataset is 5k Peripheral blood mononuclear cells (PBMCs) from a healthy donor (v1.0).</p>
+<p>Download the <code>atac_pbmc_5k_v1_filtered_peak_bc_matrix.tar.gz</code> file and unzip it.
+It will give you a folder <code>filtered_peak_bc_matrix</code> containing three files:</p>
+<ul>
+<li>barcodes.tsv</li>
+<li>matrix.mtx</li>
+<li>peaks.bed</li>
+</ul>
+<pre class="r"><code>library(Seurat)
+library(Matrix)
+library(readr)
+library(dplyr)
+mat&lt;- readMM(&quot;~/blog_data/filtered_peak_bc_matrix/matrix.mtx&quot;)
+
+# this is a sparse matrix 
+mat[1:5, 1:5]</code></pre>
+<pre><code>#&gt; 5 x 5 sparse Matrix of class &quot;dgTMatrix&quot;
+#&gt;               
+#&gt; [1,] . . . . .
+#&gt; [2,] . . . . .
+#&gt; [3,] . . . . .
+#&gt; [4,] . . . . .
+#&gt; [5,] . . 2 2 .</code></pre>
+<pre class="r"><code>peaks&lt;- read_tsv(&quot;~/blog_data/filtered_peak_bc_matrix/peaks.bed&quot;, col_names = FALSE)
+head(peaks)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 3
+#&gt;   X1        X2     X3
+#&gt;   &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+#&gt; 1 chr1  569196 569616
+#&gt; 2 chr1  713593 714659
+#&gt; 3 chr1  752507 752955
+#&gt; 4 chr1  762419 763295
+#&gt; 5 chr1  804991 805709
+#&gt; 6 chr1  839797 840795</code></pre>
+<pre class="r"><code>peaks&lt;- peaks %&gt;%
+        mutate(peak = paste(X1,X2,X3, sep=&quot;_&quot;))
+
+barcodes&lt;- read_tsv(&quot;~/blog_data/filtered_peak_bc_matrix/barcodes.tsv&quot;, col_names = FALSE)
+head(barcodes)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 1
+#&gt;   X1                
+#&gt;   &lt;chr&gt;             
+#&gt; 1 AAACGAAAGACACTTC-1
+#&gt; 2 AAACGAAAGCATACCT-1
+#&gt; 3 AAACGAAAGCGCGTTC-1
+#&gt; 4 AAACGAAAGGAAGACA-1
+#&gt; 5 AAACGAACAGGCATCC-1
+#&gt; 6 AAACGAAGTTTGTCTT-1</code></pre>
+<p>set the rownames and colnames for the count matrix</p>
+<pre class="r"><code>rownames(mat)&lt;- peaks$peak
+colnames(mat)&lt;- barcodes$X1
+
+mat[1:5, 1:5]</code></pre>
+<pre><code>#&gt; 5 x 5 sparse Matrix of class &quot;dgTMatrix&quot;
+#&gt;                    AAACGAAAGACACTTC-1 AAACGAAAGCATACCT-1 AAACGAAAGCGCGTTC-1
+#&gt; chr1_569196_569616                  .                  .                  .
+#&gt; chr1_713593_714659                  .                  .                  .
+#&gt; chr1_752507_752955                  .                  .                  .
+#&gt; chr1_762419_763295                  .                  .                  .
+#&gt; chr1_804991_805709                  .                  .                  2
+#&gt;                    AAACGAAAGGAAGACA-1 AAACGAACAGGCATCC-1
+#&gt; chr1_569196_569616                  .                  .
+#&gt; chr1_713593_714659                  .                  .
+#&gt; chr1_752507_752955                  .                  .
+#&gt; chr1_762419_763295                  .                  .
+#&gt; chr1_804991_805709                  2                  .</code></pre>
+<p>check the range of the matrix</p>
+<pre class="r"><code>range(mat)</code></pre>
+<pre><code>#&gt; [1]  0 62</code></pre>
+<pre class="r"><code>dim(mat)</code></pre>
+<pre><code>#&gt; [1] 47520  4621</code></pre>
+<p>It has 47520 peaks and 4621 cells.</p>
+<div id="pca-for-the-raw-counts" class="section level3">
+<h3>PCA for the raw counts</h3>
+<p>Let’s calculate the PCA from scratch with <code>irlba</code> for big matrix. Use built-in <code>svd</code> if the matrix is small or use <code>prcomp</code>. They are all for the same purpose: calculate PCA.</p>
+<pre class="r"><code>mat.pca&lt;- irlba::irlba(t(mat))
+
+cell_embeddings&lt;- mat.pca$u %*% diag(mat.pca$d)
+
+dim(cell_embeddings)</code></pre>
+<pre><code>#&gt; [1] 4621    5</code></pre>
+<pre class="r"><code>cell_embeddings[1:5, 1:5]</code></pre>
+<pre><code>#&gt;           [,1]      [,2]       [,3]       [,4]        [,5]
+#&gt; [1,]  80.37159 -7.069846 -6.9684003 -4.4335265 -4.60719405
+#&gt; [2,] 109.67981 36.289439  0.1593661  1.8245021 -0.24826248
+#&gt; [3,]  55.16413 19.974192  0.2210001 -3.7452100 -4.96653834
+#&gt; [4,]  71.95250 25.298451  2.3182169 -0.5619408  3.07409882
+#&gt; [5,]  77.84515 27.053327 -0.2662783 -1.8013677  0.06394454</code></pre>
+<pre class="r"><code>plot(cell_embeddings[, 1], cell_embeddings[,2])</code></pre>
+<p><img src="/post/2025-02-02-pca-scATACseq_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>The PCA looks a little strange.</p>
+</div>
+<div id="pca-after-tf-idf-transformation" class="section level3">
+<h3>PCA after TF-IDF transformation</h3>
+<p><strong>Latent Semantic Indexing</strong> or LSI method and used a transformation of the binarized scATAC count matrix called ’TF-IDF` (term frequency–inverse document frequency) which is used in text mining followed by PCA.</p>
+<p><strong>What is TF-IDF Transformation and Why is it Useful in scATAC-seq Analysis?</strong></p>
+<p><strong>TF-IDF (Term Frequency-Inverse Document Frequency)</strong> is a numerical transformation originally from <strong>text mining</strong>. In <strong>scATAC-seq</strong>, it helps normalize sparse and binary data to highlight <strong>important peaks</strong> for downstream analysis.</p>
+<p>In text mining, <strong>TF-IDF</strong> measures how important a word (term) is in a document relative to all other documents. It consists of:</p>
+<p>🔹 <strong>TF (Term Frequency)</strong> → How often a term appears in a document.<br />
+🔹 <strong>IDF (Inverse Document Frequency)</strong> → Downweights commonly occurring terms across all documents.</p>
+<p>Mathematically:<br />
+<span class="math display">\[
+TF = \frac{\text{Raw count of term in a document}}{\text{Total terms in the document}}
+\]</span>
+<span class="math display">\[
+IDF = \log \left( \frac{\text{Total number of documents}}{\text{Number of documents containing the term}} \right)
+\]</span>
+<span class="math display">\[
+TF-IDF = TF \times IDF
+\]</span></p>
+</div>
+<div id="why-is-tf-idf-used-in-scatac-seq" class="section level3">
+<h3>Why is TF-IDF Used in scATAC-seq?</h3>
+<p>Unlike scRNA-seq (which has more <strong>continuous expression values</strong>), scATAC-seq data is largely <strong>binary</strong> (1 = accessible, 0 = inaccessible). Raw counts are highly sparse and noisy.</p>
+<p><strong>Problem</strong>: Some peaks (e.g., promoters of housekeeping genes) are open in many cells and dominate the dataset.</p>
+<p><strong>Solution</strong>: TF-IDF downweights <strong>ubiquitous peaks</strong> and emphasizes <strong>cell-type-specific</strong> regulatory regions.</p>
+<p>Let’s implement it in R:</p>
+<pre class="r"><code># make a copy of the original matrix 
+mat2&lt;- mat
+
+# binarize the matrix 
+mat2@x[mat2@x &gt;0]&lt;- 1 
+
+# a custom function to perform TF-IDF transformation 
+TF.IDF.custom &lt;- function(data, verbose = TRUE) {
+  if (class(x = data) == &quot;data.frame&quot;) {
+    data &lt;- as.matrix(x = data)
+  }
+  if (class(x = data) != &quot;dgCMatrix&quot;) {
+    data &lt;- as(object = data, Class = &quot;dgCMatrix&quot;)
+  }
+  if (verbose) {
+    message(&quot;Performing TF-IDF normalization&quot;)
+  }
+  npeaks &lt;- Matrix::colSums(x = data)
+  tf &lt;- t(x = t(x = data) / npeaks)
+  # log transformation
+  idf &lt;- log(1+ ncol(x = data) / Matrix::rowSums(x = data))
+  norm.data &lt;- Diagonal(n = length(x = idf), x = idf) %*% tf
+  norm.data[which(x = is.na(x = norm.data))] &lt;- 0
+  return(norm.data)
+}</code></pre>
+</div>
+<div id="pca-on-the-tf-idf-transformed-matrix" class="section level3">
+<h3>PCA on the TF-IDF transformed matrix</h3>
+<pre class="r"><code>mat2&lt;- TF.IDF.custom(mat2)
+
+# what&#39;s the range after transformation?
+range(mat2)</code></pre>
+<pre><code>#&gt; [1] 0.00000000 0.04444816</code></pre>
+<pre class="r"><code>mat2[1:5, 1:5]</code></pre>
+<pre><code>#&gt; 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+#&gt;      AAACGAAAGACACTTC-1 AAACGAAAGCATACCT-1 AAACGAAAGCGCGTTC-1
+#&gt; [1,]                  .                  .       .           
+#&gt; [2,]                  .                  .       .           
+#&gt; [3,]                  .                  .       .           
+#&gt; [4,]                  .                  .       .           
+#&gt; [5,]                  .                  .       0.0006933661
+#&gt;      AAACGAAAGGAAGACA-1 AAACGAACAGGCATCC-1
+#&gt; [1,]       .                             .
+#&gt; [2,]       .                             .
+#&gt; [3,]       .                             .
+#&gt; [4,]       .                             .
+#&gt; [5,]       0.0005400022                  .</code></pre>
+<pre class="r"><code>library(irlba)
+set.seed(123)
+mat.lsi&lt;- irlba::irlba(t(mat2), 50)
+
+# peak_loadings &lt;- mat.lsi$v  
+
+cell_embeddings &lt;- mat.lsi$u %*% diag(mat.lsi$d)  # Cell embeddings (5k cells in rows)
+dim(cell_embeddings)</code></pre>
+<pre><code>#&gt; [1] 4621   50</code></pre>
+<pre class="r"><code>cell_embeddings[1:5, 1:5]</code></pre>
+<pre><code>#&gt;             [,1]         [,2]         [,3]          [,4]          [,5]
+#&gt; [1,] -0.01188588 -0.003586754 2.441022e-05  0.0001228626  1.196982e-04
+#&gt; [2,] -0.01110892  0.005137220 1.483881e-04 -0.0002180946 -1.504167e-04
+#&gt; [3,] -0.01133256  0.005288389 8.627158e-05 -0.0001686069 -3.212530e-04
+#&gt; [4,] -0.01113891  0.005190526 1.798458e-04 -0.0005039129 -7.432966e-05
+#&gt; [5,] -0.01108726  0.005486348 1.156304e-04 -0.0001435541 -5.605533e-05</code></pre>
+<pre class="r"><code>plot(cell_embeddings[, 1], cell_embeddings[, 2])</code></pre>
+<p><img src="/post/2025-02-02-pca-scATACseq_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>You can see that PCA on the TF-IDF transformed matrix reveals more distinct clusters.</p>
+</div>
+<div id="the-first-pc-is-correlated-with-sequencing-depth" class="section level3">
+<h3>The first PC is correlated with sequencing depth</h3>
+<pre class="r"><code>seq_depth&lt;- colSums(mat2)
+
+abs(cor(seq_depth, cell_embeddings[, 1]))</code></pre>
+<pre><code>#&gt; [1] 0.9485232</code></pre>
+<pre class="r"><code>abs(cor(seq_depth, cell_embeddings[, 2]))</code></pre>
+<pre><code>#&gt; [1] 0.8458564</code></pre>
+<pre class="r"><code>abs(cor(seq_depth, cell_embeddings[, 3]))</code></pre>
+<pre><code>#&gt; [1] 0.03379006</code></pre>
+<p>The first two PCs are highly correlated with sequencing depth.
+That’s why for downstream analysis, the first PC is usually discarded.</p>
+<p>Alternatively, you can use <code>Signac</code> package to do the same.</p>
+<pre class="r"><code>library(Signac)
+
+# Apply TF-IDF transformation to scATAC-seq data
+atac &lt;- RunTFIDF(atac)</code></pre>
+</div>
+<div id="conclusions" class="section level3">
+<h3>Conclusions</h3>
+<ul>
+<li><p>LSI is just PCA on the binarized scATACseq count matrix after TF-IDF transformed.</p></li>
+<li><p>In scATAC-seq, TF-IDF transformation helps normalize sparse and binary data to highlight important peaks for downstream analysis.</p></li>
+<li><p>Read my old blog post <a href="https://divingintogeneticsandgenomics.com/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></p></li>
+<li><p>Bonus: <a href="https://www.nxn.se/p/how-to-read-pca-plots">How to read PCA plots</a></p></li>
+</ul>
+</div>

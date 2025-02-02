@@ -1,0 +1,222 @@
+---
+title: "PCA analysis on scATACseq data"
+author: Ming Tommy Tang
+date: "2025-02-02"
+slug: pca-scATAC
+categories:
+  - review
+tags:
+  - bioinformatics
+  - scATAC
+  - data
+  - pca
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+```
+
+In my last post, I showed you how to use [PCA for bulk RNAseq data](https://divingintogeneticsandgenomics.com/post/pca-tcga/).
+
+Today, let's see how we can use it for scATACseq data.
+
+Download the example dataset from 10x genomics https://support.10xgenomics.com/single-cell-atac/datasets/1.1.0/atac_pbmc_5k_v1
+
+The dataset is 5k Peripheral blood mononuclear cells (PBMCs) from a healthy donor (v1.0).
+
+Download the `atac_pbmc_5k_v1_filtered_peak_bc_matrix.tar.gz` file and unzip it.
+It will give you a folder `filtered_peak_bc_matrix` containing three files:
+
+- barcodes.tsv
+- matrix.mtx
+- peaks.bed
+
+```{r}
+library(Seurat)
+library(Matrix)
+library(readr)
+library(dplyr)
+mat<- readMM("~/blog_data/filtered_peak_bc_matrix/matrix.mtx")
+
+# this is a sparse matrix 
+mat[1:5, 1:5]
+
+peaks<- read_tsv("~/blog_data/filtered_peak_bc_matrix/peaks.bed", col_names = FALSE)
+head(peaks)
+
+peaks<- peaks %>%
+        mutate(peak = paste(X1,X2,X3, sep="_"))
+
+barcodes<- read_tsv("~/blog_data/filtered_peak_bc_matrix/barcodes.tsv", col_names = FALSE)
+head(barcodes)
+```
+
+set the rownames and colnames for the count matrix 
+```{r}
+rownames(mat)<- peaks$peak
+colnames(mat)<- barcodes$X1
+
+mat[1:5, 1:5]
+```
+
+check the range of the matrix 
+```{r}
+range(mat)
+
+dim(mat)
+```
+
+It has 47520 peaks and 4621 cells.
+
+### PCA for the raw counts 
+
+Let’s calculate the PCA from scratch with `irlba` for big matrix. Use built-in `svd` if the matrix is small or use `prcomp`. They are all for the same purpose: calculate PCA. 
+
+```{r}
+mat.pca<- irlba::irlba(t(mat))
+
+cell_embeddings<- mat.pca$u %*% diag(mat.pca$d)
+
+dim(cell_embeddings)
+cell_embeddings[1:5, 1:5]
+
+plot(cell_embeddings[, 1], cell_embeddings[,2])
+```
+
+The PCA looks a little strange. 
+
+### PCA after TF-IDF transformation
+
+**Latent Semantic Indexing** or LSI method and used a transformation of the binarized scATAC count matrix called ’TF-IDF` (term frequency–inverse document frequency) which is used in text mining followed by PCA.
+
+
+**What is TF-IDF Transformation and Why is it Useful in scATAC-seq Analysis?**  
+
+**TF-IDF (Term Frequency-Inverse Document Frequency)** is a numerical transformation originally from **text mining**. In **scATAC-seq**, it helps normalize sparse and binary data to highlight **important peaks** for downstream analysis.  
+
+In text mining, **TF-IDF** measures how important a word (term) is in a document relative to all other documents. It consists of:  
+
+🔹 **TF (Term Frequency)** → How often a term appears in a document.  
+🔹 **IDF (Inverse Document Frequency)** → Downweights commonly occurring terms across all documents.  
+
+Mathematically:  
+\[
+TF = \frac{\text{Raw count of term in a document}}{\text{Total terms in the document}}
+\]
+\[
+IDF = \log \left( \frac{\text{Total number of documents}}{\text{Number of documents containing the term}} \right)
+\]
+\[
+TF-IDF = TF \times IDF
+\]
+
+### Why is TF-IDF Used in scATAC-seq?
+
+Unlike scRNA-seq (which has more **continuous expression values**), scATAC-seq data is largely **binary** (1 = accessible, 0 = inaccessible). Raw counts are highly sparse and noisy.  
+
+**Problem**: Some peaks (e.g., promoters of housekeeping genes) are open in many cells and dominate the dataset.
+
+**Solution**: TF-IDF downweights **ubiquitous peaks** and emphasizes **cell-type-specific** regulatory regions. 
+
+Let's implement it in R:
+
+```{r}
+# make a copy of the original matrix 
+mat2<- mat
+
+# binarize the matrix 
+mat2@x[mat2@x >0]<- 1 
+
+# a custom function to perform TF-IDF transformation 
+TF.IDF.custom <- function(data, verbose = TRUE) {
+  if (class(x = data) == "data.frame") {
+    data <- as.matrix(x = data)
+  }
+  if (class(x = data) != "dgCMatrix") {
+    data <- as(object = data, Class = "dgCMatrix")
+  }
+  if (verbose) {
+    message("Performing TF-IDF normalization")
+  }
+  npeaks <- Matrix::colSums(x = data)
+  tf <- t(x = t(x = data) / npeaks)
+  # log transformation
+  idf <- log(1+ ncol(x = data) / Matrix::rowSums(x = data))
+  norm.data <- Diagonal(n = length(x = idf), x = idf) %*% tf
+  norm.data[which(x = is.na(x = norm.data))] <- 0
+  return(norm.data)
+}
+```
+
+### PCA on the TF-IDF transformed matrix 
+
+```{r}
+mat2<- TF.IDF.custom(mat2)
+
+# what's the range after transformation?
+range(mat2)
+
+mat2[1:5, 1:5]
+
+library(irlba)
+set.seed(123)
+mat.lsi<- irlba::irlba(t(mat2), 50)
+
+# peak_loadings <- mat.lsi$v  
+
+cell_embeddings <- mat.lsi$u %*% diag(mat.lsi$d)  # Cell embeddings (5k cells in rows)
+dim(cell_embeddings)
+
+
+cell_embeddings[1:5, 1:5]
+
+plot(cell_embeddings[, 1], cell_embeddings[, 2])
+```
+
+You can see that PCA on the TF-IDF transformed matrix reveals more distinct clusters. 
+
+### The first PC is correlated with sequencing depth
+
+```{r}
+seq_depth<- colSums(mat2)
+
+abs(cor(seq_depth, cell_embeddings[, 1]))
+abs(cor(seq_depth, cell_embeddings[, 2]))
+
+abs(cor(seq_depth, cell_embeddings[, 3]))
+```
+
+The first two PCs are highly correlated with sequencing depth. 
+That's why for downstream analysis, the first PC is usually discarded.
+
+
+Alternatively, you can use `Signac` package to do the same.
+
+```{r eval=FALSE}
+library(Signac)
+
+# Apply TF-IDF transformation to scATAC-seq data
+atac <- RunTFIDF(atac)
+```
+  
+### Conclusions
+
+- LSI is just PCA on the binarized scATACseq count matrix after TF-IDF transformed.
+
+- In scATAC-seq, TF-IDF transformation helps normalize sparse and binary data to highlight important peaks for downstream analysis.
+
+- Read my old blog post [clustering scATACseq data: the TF-IDF way](https://divingintogeneticsandgenomics.com/post/clustering-scatacseq-data-the-tf-idf-way/)
+
+- Bonus: [How to read PCA plots](https://www.nxn.se/p/how-to-read-pca-plots)

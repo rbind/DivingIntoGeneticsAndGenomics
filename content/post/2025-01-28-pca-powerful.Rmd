@@ -265,7 +265,7 @@ autoplot(TCGA_pca_res, data = TCGA_lung_meta , color ="seq_depth") +
   ggtitle("TCGA NSCLC")
 ```
 
-You see the sequencing depth is high to low from left to right in PC1.
+You see the sequencing depth is low to high from left to right in PC1.
 
 ### PCA after cpm (counts per million) normalization
 
