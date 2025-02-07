@@ -1,0 +1,489 @@
+---
+title: "PCA analysis on TCGA bulk RNAseq data continued"
+author: Ming Tommy Tang
+date: "2025-02-07"
+slug: pca-tcga2
+categories:
+  - review
+tags:
+  - bioinformatics
+  - TCGA
+  - RNAseq
+  - data
+  - pca
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<p>In my <a href="https://divingintogeneticsandgenomics.com/post/pca-tcga/">last blog post</a>, I showed you how to download TCGA RNAseq count data and
+do PCA and make a heatmap. It is interesting to see some of the LUSC samples mix with the LUAD samples and vice versa.</p>
+<p>In this post, we will continue to use PCA to do more Exploratory data analysis (EDA).</p>
+<p>Let’s further investigate those samples and use the rank matrix derived from the count matrix to do PCA.</p>
+<div id="download-and-combine-the-data" class="section level3">
+<h3>Download and combine the data</h3>
+<p>The following code is the same as my last post.</p>
+<p>It takes long time to download the data, so I saved it as and Rdata.</p>
+<pre class="r"><code>library(TCGAbiolinks)
+library(SummarizedExperiment)
+library(dplyr)
+library(here)</code></pre>
+<p>Download TCGA data using <code>TCGAbiolinks</code>.</p>
+<pre class="r"><code># Load TCGA data (example for LUAD - Lung Adenocarcinoma)
+LUAD_query &lt;- GDCquery(project = &quot;TCGA-LUAD&quot;,
+                  data.category = &quot;Transcriptome Profiling&quot;,
+                  data.type = &quot;Gene Expression Quantification&quot;,
+                  workflow.type = &quot;STAR - Counts&quot;)
+
+GDCdownload(LUAD_query)
+
+# this returns a summarizedExperiment object 
+TCGA_LUAD_data &lt;- GDCprepare(LUAD_query)
+
+saveRDS(TCGA_LUAD_data, &quot;~/blog_data/TCGA_LUAD_SummarizedExperiment.rds&quot;))</code></pre>
+<p>Read in the saved RDS file:</p>
+<pre class="r"><code>TCGA_LUAD_data&lt;- readRDS(&quot;~/blog_data/TCGA_LUAD_SummarizedExperiment.rds&quot;)
+TCGA_LUAD_mat&lt;- assay(TCGA_LUAD_data)
+dim(TCGA_LUAD_mat)</code></pre>
+<pre><code>#&gt; [1] 60660   600</code></pre>
+<p>We have 600 samples.</p>
+<p>You noticed that the gene name is in ENSEMBLE ID.</p>
+<p>We will download the TCGA LUSC data in the same way.</p>
+<pre class="r"><code>LUSC_query &lt;- GDCquery(project = &quot;TCGA-LUSC&quot;,
+                  data.category = &quot;Transcriptome Profiling&quot;,
+                  data.type = &quot;Gene Expression Quantification&quot;,
+                  workflow.type = &quot;STAR - Counts&quot;)
+
+GDCdownload(LUSC_query)
+
+TCGA_LUSC_data &lt;- GDCprepare(LUSC_query)
+
+saveRDS(TCGA_LUSC_data, &quot;~/blog_data/TCGA_LUSC_SummarizedExperiment.rds&quot;))</code></pre>
+<p>read in the saved RDS</p>
+<pre class="r"><code>TCGA_LUSC_data&lt;- readRDS(&quot;~/blog_data/TCGA_LUSC_SummarizedExperiment.rds&quot;)
+
+TCGA_LUSC_mat&lt;- assay(TCGA_LUSC_data)
+
+dim(TCGA_LUSC_mat)</code></pre>
+<pre><code>#&gt; [1] 60660   553</code></pre>
+</div>
+<div id="convert-ensembl-id-to-gene-symbols" class="section level3">
+<h3>convert ENSEMBL id to gene symbols</h3>
+<pre class="r"><code>library(org.Hs.eg.db)
+
+# remove the version number in the end of the ENSEMBL id
+TCGA_LUAD_genes&lt;- rownames(TCGA_LUAD_mat) %&gt;%
+  tibble::enframe() %&gt;%
+  mutate(ENSEMBL =stringr::str_replace(value, &quot;\\.[0-9]+&quot;, &quot;&quot;))
+
+head(TCGA_LUAD_genes)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 3
+#&gt;    name value              ENSEMBL        
+#&gt;   &lt;int&gt; &lt;chr&gt;              &lt;chr&gt;          
+#&gt; 1     1 ENSG00000000003.15 ENSG00000000003
+#&gt; 2     2 ENSG00000000005.6  ENSG00000000005
+#&gt; 3     3 ENSG00000000419.13 ENSG00000000419
+#&gt; 4     4 ENSG00000000457.14 ENSG00000000457
+#&gt; 5     5 ENSG00000000460.17 ENSG00000000460
+#&gt; 6     6 ENSG00000000938.13 ENSG00000000938</code></pre>
+<pre class="r"><code># there are duplicated gene symbols for different ENSEMBL id
+clusterProfiler::bitr(TCGA_LUAD_genes$ENSEMBL, 
+                      fromType = &quot;ENSEMBL&quot;,
+                      toType = &quot;SYMBOL&quot;,
+                      OrgDb = org.Hs.eg.db) %&gt;%
+        janitor::get_dupes(SYMBOL) %&gt;%
+        head()</code></pre>
+<pre><code>#&gt;         SYMBOL dupe_count         ENSEMBL
+#&gt; 1 LOC124905422         16 ENSG00000199270
+#&gt; 2 LOC124905422         16 ENSG00000199334
+#&gt; 3 LOC124905422         16 ENSG00000199337
+#&gt; 4 LOC124905422         16 ENSG00000199352
+#&gt; 5 LOC124905422         16 ENSG00000199396
+#&gt; 6 LOC124905422         16 ENSG00000199910</code></pre>
+<pre class="r"><code># just keep one of them (simple solution)
+TCGA_LUAD_gene_map&lt;- clusterProfiler::bitr(TCGA_LUAD_genes$ENSEMBL,
+                                           fromType = &quot;ENSEMBL&quot;,
+                                           toType = &quot;SYMBOL&quot;,
+                                           OrgDb = org.Hs.eg.db) %&gt;%
+        distinct(SYMBOL, .keep_all = TRUE) 
+       
+                       
+TCGA_LUAD_gene_map&lt;- TCGA_LUAD_gene_map %&gt;%
+  left_join(TCGA_LUAD_genes)
+
+head(TCGA_LUAD_gene_map)</code></pre>
+<pre><code>#&gt;           ENSEMBL SYMBOL name              value
+#&gt; 1 ENSG00000000003 TSPAN6    1 ENSG00000000003.15
+#&gt; 2 ENSG00000000005   TNMD    2  ENSG00000000005.6
+#&gt; 3 ENSG00000000419   DPM1    3 ENSG00000000419.13
+#&gt; 4 ENSG00000000457  SCYL3    4 ENSG00000000457.14
+#&gt; 5 ENSG00000000460  FIRRM    5 ENSG00000000460.17
+#&gt; 6 ENSG00000000938    FGR    6 ENSG00000000938.13</code></pre>
+<p>Subset the gene expression matrices and replace the rownames to gene symbol.</p>
+<pre class="r"><code>TCGA_LUSC_mat&lt;- TCGA_LUSC_mat[TCGA_LUAD_gene_map$value, ]
+row.names(TCGA_LUSC_mat)&lt;- TCGA_LUAD_gene_map$SYMBOL
+TCGA_LUSC_mat[1:5, 1:5]</code></pre>
+<pre><code>#&gt;        TCGA-43-7657-11A-01R-2125-07 TCGA-43-7657-01A-31R-2125-07
+#&gt; TSPAN6                         2459                         2329
+#&gt; TNMD                              0                            0
+#&gt; DPM1                           1734                         2533
+#&gt; SCYL3                           795                          496
+#&gt; FIRRM                           206                          434
+#&gt;        TCGA-60-2695-01A-01R-0851-07 TCGA-21-1070-01A-01R-0692-07
+#&gt; TSPAN6                         4271                         2955
+#&gt; TNMD                              1                            0
+#&gt; DPM1                           2692                         2865
+#&gt; SCYL3                          2494                          887
+#&gt; FIRRM                          2850                          947
+#&gt;        TCGA-94-7033-01A-11R-1949-07
+#&gt; TSPAN6                         3405
+#&gt; TNMD                              2
+#&gt; DPM1                           1706
+#&gt; SCYL3                           600
+#&gt; FIRRM                           420</code></pre>
+<pre class="r"><code>TCGA_LUAD_mat&lt;- TCGA_LUAD_mat[TCGA_LUAD_gene_map$value, ]
+row.names(TCGA_LUAD_mat)&lt;- TCGA_LUAD_gene_map$SYMBOL
+TCGA_LUAD_mat[1:5, 1:5]</code></pre>
+<pre><code>#&gt;        TCGA-73-4658-01A-01R-1755-07 TCGA-44-2661-11A-01R-1758-07
+#&gt; TSPAN6                         3659                         1395
+#&gt; TNMD                            188                            8
+#&gt; DPM1                            981                         1031
+#&gt; SCYL3                           456                          541
+#&gt; FIRRM                           158                          135
+#&gt;        TCGA-55-6986-11A-01R-1949-07 TCGA-55-8615-01A-11R-2403-07
+#&gt; TSPAN6                         6760                         2257
+#&gt; TNMD                              3                            0
+#&gt; DPM1                           2070                          644
+#&gt; SCYL3                          1110                          538
+#&gt; FIRRM                           202                          212
+#&gt;        TCGA-97-8177-01A-11R-2287-07
+#&gt; TSPAN6                         5009
+#&gt; TNMD                             13
+#&gt; DPM1                           2731
+#&gt; SCYL3                           919
+#&gt; FIRRM                           321</code></pre>
+<pre class="r"><code>## check the dimentions 
+dim(TCGA_LUSC_mat)</code></pre>
+<pre><code>#&gt; [1] 36940   553</code></pre>
+<pre class="r"><code>dim(TCGA_LUAD_mat)</code></pre>
+<pre><code>#&gt; [1] 36940   600</code></pre>
+</div>
+<div id="combine-tcga-lusc-and-luad" class="section level3">
+<h3>combine TCGA LUSC and LUAD</h3>
+<p>PCA plot use top variable genes.</p>
+<pre class="r"><code># double check the genes are the same
+all.equal(rownames(TCGA_LUAD_mat), rownames(TCGA_LUSC_mat))</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>TCGA_lung_mat&lt;- cbind(TCGA_LUSC_mat, TCGA_LUAD_mat)
+
+TCGA_lung_meta&lt;- data.frame(cancer_type = c(rep( &quot;LUSC&quot;, ncol(TCGA_LUSC_mat)), 
+                   rep(&quot;LUAD&quot;, ncol(TCGA_LUAD_mat))))
+
+rownames(TCGA_lung_meta)&lt;- c(colnames(TCGA_LUAD_mat), colnames(TCGA_LUSC_mat))
+
+head(TCGA_lung_meta)</code></pre>
+<pre><code>#&gt;                              cancer_type
+#&gt; TCGA-73-4658-01A-01R-1755-07        LUSC
+#&gt; TCGA-44-2661-11A-01R-1758-07        LUSC
+#&gt; TCGA-55-6986-11A-01R-1949-07        LUSC
+#&gt; TCGA-55-8615-01A-11R-2403-07        LUSC
+#&gt; TCGA-97-8177-01A-11R-2287-07        LUSC
+#&gt; TCGA-49-6744-11A-01R-1858-07        LUSC</code></pre>
+<pre class="r"><code>dim(TCGA_lung_mat)</code></pre>
+<pre><code>#&gt; [1] 36940  1153</code></pre>
+</div>
+<div id="pca-after-cpm-counts-per-million-normalization" class="section level3">
+<h3>PCA after cpm (counts per million) normalization</h3>
+<pre class="r"><code>library(ggplot2)
+library(ggfortify)
+
+# convert the raw counts to log2(cpm+1) using edgeR.
+TCGA_lung_cpm&lt;- edgeR::cpm(TCGA_lung_mat, log = TRUE, prior.count = 1)
+
+select_top_var_genes&lt;- function(mat, top_n=1000){
+        idx&lt;- order(rowVars(TCGA_lung_cpm), decreasing = TRUE)[1:top_n]
+        return(mat[idx,])
+}
+## top 1000 most variable genes
+
+TCGA_lung_cpm_sub &lt;- select_top_var_genes(TCGA_lung_cpm, top_n = 1000)
+
+TCGA_pca_res2 &lt;- prcomp(t(TCGA_lung_cpm_sub), scale. = TRUE)
+
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color =&quot;cancer_type&quot;) +
+  scale_color_manual(values = c(&quot;blue&quot;, &quot;red&quot;)) +
+  ggtitle(&quot;TCGA NSCLC&quot;)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Now we see the first PC separates cancer type: LUSC vs LUAD, which makes sense!
+It is interesting to see some of the LUSC samples mix with the LUAD samples and vice versa.</p>
+<p>Let’s further investigate those samples.</p>
+</div>
+<div id="luad-and-lusc-markers" class="section level3">
+<h3>LUAD and LUSC markers</h3>
+<p>LUAD originates in the alveolar epithelial cells and is often associated with EGFR mutations, particularly in non-smokers.</p>
+<p>NKX2-1 (TTF-1)
+Lung epithelial differentiation marker.
+Highly expressed in LUAD but absent in LUSC (TCGA, IHC studies).</p>
+<p>NAPSA (Napsin A).
+Aspartic protease in surfactant protein processing.
+High specificity for LUAD (IHC studies).</p>
+<pre class="r"><code>TCGA_lung_meta$NAPSA&lt;- TCGA_lung_cpm[&quot;NAPSA&quot;, ]
+TCGA_lung_meta$TFF1&lt;- TCGA_lung_cpm[&quot;TFF1&quot;, ]
+
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color =&quot;TFF1&quot;) +
+        scale_color_viridis_b() +
+        facet_wrap(~ cancer_type) + 
+        ggtitle(&quot;TCGA NSCLC&quot;)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Let’s cap the TFF1 max value at 6</p>
+<pre class="r"><code>quantile(TCGA_lung_meta$TFF1, c(0.1,0.2,0.5,0.8,0.9, 0.951))</code></pre>
+<pre><code>#&gt;       10%       20%       50%       80%       90%     95.1% 
+#&gt; -5.660578 -4.480366 -2.351457  0.832825  3.428506  6.247145</code></pre>
+<pre class="r"><code># Cap the maximum value at 6
+TCGA_lung_meta$TFF1 &lt;- pmin(TCGA_lung_meta$TFF1, 6)
+
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color =&quot;TFF1&quot;) +
+        scale_color_viridis_b() +
+        facet_wrap(~ cancer_type) + 
+        ggtitle(&quot;TCGA NSCLC&quot;)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+TFF1 mRNA is not high across the LUAD samples. TFF1 protein maybe a better marker?</p>
+<pre class="r"><code>quantile(TCGA_lung_meta$NAPSA, c(0.1,0.2,0.5,0.8,0.9, 0.951))</code></pre>
+<pre><code>#&gt;        10%        20%        50%        80%        90%      95.1% 
+#&gt;  0.5522465  3.3168667  7.5590742  9.9427697 10.4473737 10.9337256</code></pre>
+<pre class="r"><code># Cap the maximum value at 8
+TCGA_lung_meta$NAPSA &lt;- pmin(TCGA_lung_meta$NAPSA, 8)
+
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color =&quot;NAPSA&quot;) +
+        scale_color_viridis_b() +
+        facet_wrap(~ cancer_type) + 
+        ggtitle(&quot;TCGA NSCLC&quot;)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>NAPSA level looks pretty high in most of the LUAD samples. The LUAD samples at PC1 &gt; 0 have lower NAPSA levels. Also, the LUSC samples at PC1 &lt; 0 have high NAPSA levels too.</p>
+<p>Are those samples mislabeled?</p>
+<p>Let’s check several LUSC markers.</p>
+<p>LUSC arises from the bronchial epithelium and is strongly associated with smoking.</p>
+<p>TP63 (ΔNp63).<br />
+Transcription factor crucial for squamous differentiation.<br />
+High expression in LUSC, absent in LUAD (TCGA, IHC studies).</p>
+<p>KRT5 (Cytokeratin 5).<br />
+Cytoskeletal protein in basal epithelial cells.<br />
+Expressed in LUSC, absent in LUAD.</p>
+<pre class="r"><code>TCGA_lung_meta$TP63&lt;- TCGA_lung_cpm[&quot;TP63&quot;, ]
+TCGA_lung_meta$KRT5&lt;- TCGA_lung_cpm[&quot;KRT5&quot;, ]
+
+TCGA_lung_meta$TP63 &lt;- pmin(TCGA_lung_meta$TP63, 8)
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color =&quot;TP63&quot;) +
+        scale_color_viridis_b() +
+        facet_wrap(~ cancer_type) + 
+        ggtitle(&quot;TCGA NSCLC&quot;) </code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre class="r"><code>autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color =&quot;KRT5&quot;) +
+        scale_color_viridis_b() +
+        facet_wrap(~ cancer_type) + 
+        ggtitle(&quot;TCGA NSCLC&quot;)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-14-2.png" width="672" />
+Both TP63 and KRT5 are very high in most of the LUSC samples except the samples that are located in PC1 &lt; 0.</p>
+</div>
+<div id="isolate-those-samples-based-on-pc1" class="section level3">
+<h3>Isolate those samples based on PC1</h3>
+<pre class="r"><code>PC1_greater_zero&lt;- TCGA_pca_res2$x[, 1] &gt; 0
+
+PC1_smaller_zero&lt;- TCGA_pca_res2$x[, 1] &lt; 0 
+
+TCGA_lung_meta$PC1_greater_zero&lt;- PC1_greater_zero
+TCGA_lung_meta$PC1_smaller_zero&lt;- PC1_smaller_zero
+
+head(TCGA_lung_meta)</code></pre>
+<pre><code>#&gt;                              cancer_type     NAPSA      TFF1      TP63
+#&gt; TCGA-73-4658-01A-01R-1755-07        LUSC  8.000000 -4.324249 3.9402703
+#&gt; TCGA-44-2661-11A-01R-1758-07        LUSC -1.606127 -4.303566 8.0000000
+#&gt; TCGA-55-6986-11A-01R-1949-07        LUSC  6.353927 -3.275591 0.2082599
+#&gt; TCGA-55-8615-01A-11R-2403-07        LUSC  5.488879 -5.660578 8.0000000
+#&gt; TCGA-97-8177-01A-11R-2287-07        LUSC  5.493101 -1.190246 7.3304868
+#&gt; TCGA-49-6744-11A-01R-1858-07        LUSC  7.820269 -2.755688 7.9849378
+#&gt;                                   KRT5 PC1_greater_zero PC1_smaller_zero
+#&gt; TCGA-73-4658-01A-01R-1755-07  5.319164            FALSE             TRUE
+#&gt; TCGA-44-2661-11A-01R-1758-07 12.662280             TRUE            FALSE
+#&gt; TCGA-55-6986-11A-01R-1949-07  9.679160             TRUE            FALSE
+#&gt; TCGA-55-8615-01A-11R-2403-07 12.642629             TRUE            FALSE
+#&gt; TCGA-97-8177-01A-11R-2287-07 13.268546             TRUE            FALSE
+#&gt; TCGA-49-6744-11A-01R-1858-07 12.970187             TRUE            FALSE</code></pre>
+<pre class="r"><code>### samples that are labeled as LUAD but mixed with LUSC
+TCGA_lung_meta %&gt;%
+        filter(cancer_type == &quot;LUAD&quot;, PC1_greater_zero)</code></pre>
+<pre><code>#&gt;                              cancer_type      NAPSA       TFF1        TP63
+#&gt; TCGA-86-8673-01A-11R-2403-07        LUAD  4.5663310 -2.9086627  8.00000000
+#&gt; TCGA-62-A46V-01A-11R-A24H-07        LUAD  8.0000000 -3.9525629  8.00000000
+#&gt; TCGA-50-5044-01A-21R-1858-07        LUAD  5.1896518  6.0000000  4.97915437
+#&gt; TCGA-68-7757-01B-11R-2296-07        LUAD  5.2821693 -2.6573753  2.13422809
+#&gt; TCGA-85-A510-01A-11R-A26W-07        LUAD  0.6750456  0.8804522  3.06914674
+#&gt; TCGA-46-3766-01A-01R-0980-07        LUAD  3.8035608  1.2287754  8.00000000
+#&gt; TCGA-22-5481-11A-01R-1949-07        LUAD  1.6385518  2.6653434  3.75590039
+#&gt; TCGA-22-5478-11A-11R-1635-07        LUAD  0.8663622 -2.4048553  6.74546294
+#&gt; TCGA-85-7696-01A-11R-2125-07        LUAD  4.2119379 -5.6605785  4.22054191
+#&gt; TCGA-22-4594-01A-01R-1201-07        LUAD  8.0000000  2.2538799 -0.25637501
+#&gt; TCGA-6A-AB49-01A-12R-A405-07        LUAD  3.3164053  6.0000000 -0.36926332
+#&gt; TCGA-56-7582-11A-01R-2045-07        LUAD  4.7683084  4.7304238  7.43781179
+#&gt; TCGA-56-8305-01A-11R-2296-07        LUAD  2.4551189 -3.2311191  6.68722426
+#&gt; TCGA-56-8082-11A-01R-2247-07        LUAD -1.0005648 -5.6605785  3.04340846
+#&gt; TCGA-46-3768-01A-01R-0980-07        LUAD  3.4054552 -1.5515290  0.01880819
+#&gt; TCGA-51-6867-01A-11R-2045-07        LUAD -0.1692585 -3.7407587 -0.22384634
+#&gt; TCGA-18-5592-01A-01R-1635-07        LUAD  7.6273065  4.3000062  1.39552859
+#&gt; TCGA-37-A5EN-01A-21R-A26W-07        LUAD  4.4655326 -2.5591610  7.30258763
+#&gt; TCGA-33-4566-01A-01R-1443-07        LUAD  3.6139878 -1.5412537  0.67660915
+#&gt; TCGA-37-3783-01A-01R-1201-07        LUAD  0.4009309 -0.6624330  3.43389639
+#&gt; TCGA-63-6202-01A-11R-1820-07        LUAD  2.6775120 -1.4593075  7.44113586
+#&gt; TCGA-85-A4PA-01A-11R-A24Z-07        LUAD -0.8290303  5.1433581  2.46188014
+#&gt; TCGA-34-2596-01A-01R-0851-07        LUAD  5.0267500 -4.0101523  7.61493110
+#&gt; TCGA-85-8351-01A-11R-2296-07        LUAD  3.5228858  2.0954799  0.82487449
+#&gt; TCGA-22-5479-01A-31R-1949-07        LUAD  3.5100065  4.0738093  1.32455573
+#&gt; TCGA-NK-A5CX-01A-11R-A26W-07        LUAD  6.0066781  3.8234108  2.41929047
+#&gt; TCGA-NC-A5HQ-01A-11R-A26W-07        LUAD  7.9814798 -0.5346360  7.74020469
+#&gt; TCGA-85-7699-01A-11R-2125-07        LUAD  4.8822744  3.2524249  0.83695151
+#&gt; TCGA-22-4604-01A-01R-1201-07        LUAD  2.2691027  6.0000000 -1.44367696
+#&gt; TCGA-34-5234-01A-01R-1635-07        LUAD -4.5754090 -5.6605785 -1.69885139
+#&gt; TCGA-58-8392-01A-11R-2326-07        LUAD -1.1835498  2.4616245  2.52401659
+#&gt; TCGA-63-A5MV-01A-21R-A26W-07        LUAD  1.4774444  3.7063909 -0.04737659
+#&gt;                                    KRT5 PC1_greater_zero PC1_smaller_zero
+#&gt; TCGA-86-8673-01A-11R-2403-07 13.2356777             TRUE            FALSE
+#&gt; TCGA-62-A46V-01A-11R-A24H-07 11.0546842             TRUE            FALSE
+#&gt; TCGA-50-5044-01A-21R-1858-07  8.6900116             TRUE            FALSE
+#&gt; TCGA-68-7757-01B-11R-2296-07 -1.6421941             TRUE            FALSE
+#&gt; TCGA-85-A510-01A-11R-A26W-07 -0.7983457             TRUE            FALSE
+#&gt; TCGA-46-3766-01A-01R-0980-07 12.3189714             TRUE            FALSE
+#&gt; TCGA-22-5481-11A-01R-1949-07  0.9659658             TRUE            FALSE
+#&gt; TCGA-22-5478-11A-11R-1635-07  4.9274942             TRUE            FALSE
+#&gt; TCGA-85-7696-01A-11R-2125-07  0.1741246             TRUE            FALSE
+#&gt; TCGA-22-4594-01A-01R-1201-07 -1.1152292             TRUE            FALSE
+#&gt; TCGA-6A-AB49-01A-12R-A405-07  0.5338189             TRUE            FALSE
+#&gt; TCGA-56-7582-11A-01R-2045-07 11.0139166             TRUE            FALSE
+#&gt; TCGA-56-8305-01A-11R-2296-07  4.3536074             TRUE            FALSE
+#&gt; TCGA-56-8082-11A-01R-2247-07 -1.2340165             TRUE            FALSE
+#&gt; TCGA-46-3768-01A-01R-0980-07  2.8018288             TRUE            FALSE
+#&gt; TCGA-51-6867-01A-11R-2045-07  5.7568558             TRUE            FALSE
+#&gt; TCGA-18-5592-01A-01R-1635-07  2.0926904             TRUE            FALSE
+#&gt; TCGA-37-A5EN-01A-21R-A26W-07  2.4172140             TRUE            FALSE
+#&gt; TCGA-33-4566-01A-01R-1443-07  0.6207392             TRUE            FALSE
+#&gt; TCGA-37-3783-01A-01R-1201-07  7.6497640             TRUE            FALSE
+#&gt; TCGA-63-6202-01A-11R-1820-07 11.1047418             TRUE            FALSE
+#&gt; TCGA-85-A4PA-01A-11R-A24Z-07  4.5905074             TRUE            FALSE
+#&gt; TCGA-34-2596-01A-01R-0851-07  9.2787683             TRUE            FALSE
+#&gt; TCGA-85-8351-01A-11R-2296-07  3.2194062             TRUE            FALSE
+#&gt; TCGA-22-5479-01A-31R-1949-07 -1.4336687             TRUE            FALSE
+#&gt; TCGA-NK-A5CX-01A-11R-A26W-07 -0.5332040             TRUE            FALSE
+#&gt; TCGA-NC-A5HQ-01A-11R-A26W-07 10.9722815             TRUE            FALSE
+#&gt; TCGA-85-7699-01A-11R-2125-07  1.8870867             TRUE            FALSE
+#&gt; TCGA-22-4604-01A-01R-1201-07  0.7859955             TRUE            FALSE
+#&gt; TCGA-34-5234-01A-01R-1635-07  2.1115393             TRUE            FALSE
+#&gt; TCGA-58-8392-01A-11R-2326-07 -3.2069578             TRUE            FALSE
+#&gt; TCGA-63-A5MV-01A-21R-A26W-07 -1.2697271             TRUE            FALSE</code></pre>
+<p>One can further investigate those samples (by imaging data or proteomics data) and see if there could be mislabeled.</p>
+<pre class="r"><code>### samples that are labeled as LUSC but mixed with LUAD
+TCGA_lung_meta %&gt;%
+        filter(cancer_type == &quot;LUSC&quot;, PC1_smaller_zero) %&gt;%
+        head()</code></pre>
+<pre><code>#&gt;                              cancer_type   NAPSA      TFF1     TP63     KRT5
+#&gt; TCGA-73-4658-01A-01R-1755-07        LUSC 8.00000 -4.324249 3.940270 5.319164
+#&gt; TCGA-67-3771-01A-01R-0946-07        LUSC 8.00000 -3.701993 4.260983 7.132368
+#&gt; TCGA-44-6776-11A-01R-1858-07        LUSC 8.00000 -5.660578 3.632858 6.775651
+#&gt; TCGA-55-8511-01A-11R-2403-07        LUSC 7.89183 -3.911218 5.754526 3.194861
+#&gt; TCGA-97-8172-01A-11R-2287-07        LUSC 8.00000 -4.485356 1.690959 1.436336
+#&gt; TCGA-55-6979-01A-11R-1949-07        LUSC 6.51150 -3.224689 4.954470 2.687894
+#&gt;                              PC1_greater_zero PC1_smaller_zero
+#&gt; TCGA-73-4658-01A-01R-1755-07            FALSE             TRUE
+#&gt; TCGA-67-3771-01A-01R-0946-07            FALSE             TRUE
+#&gt; TCGA-44-6776-11A-01R-1858-07            FALSE             TRUE
+#&gt; TCGA-55-8511-01A-11R-2403-07            FALSE             TRUE
+#&gt; TCGA-97-8172-01A-11R-2287-07            FALSE             TRUE
+#&gt; TCGA-55-6979-01A-11R-1949-07            FALSE             TRUE</code></pre>
+</div>
+<div id="pca-on-the-rank-matrix" class="section level3">
+<h3>PCA on the rank matrix</h3>
+<p>There could be certain batch effect that we do not know.</p>
+<p>and the batch effect somehow force the LUAD and LUSC mixing in the PCA plot.</p>
+<p>Let’s try rank the genes per sample by their expression level and use the rank
+matrix to do PCA.</p>
+<pre class="r"><code># Convert to rank matrix (ranking each column separately)
+# TPM may be better than CPM 
+# rank_matrix &lt;- apply(TCGA_lung_cpm, 2, rank, ties.method = &quot;average&quot;)
+# faster than the apply
+
+library(matrixStats)
+rank_matrix &lt;- colRanks(TCGA_lung_cpm, ties.method = &quot;average&quot;)
+
+## colRanks returns sample x gene, transpose it back to gene x sample
+rank_matrix&lt;- t(rank_matrix)
+
+hist(rank_matrix)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>PCA assumes continuous, approximately normal data because it relies on variance computation.
+Rank values are discrete and not normally distributed.
+However, in practice, PCA can still work on ranked data, though its interpretation changes.</p>
+<pre class="r"><code>rank_matrix_sub&lt;- select_top_var_genes(rank_matrix, top_n = 1000)
+hist(rank_matrix_sub)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-18-1.png" width="672" />
+It looks approximately normal.</p>
+<p>PCA on this matrix:</p>
+<pre class="r"><code>pca_result_rank&lt;- prcomp(t(rank_matrix_sub), scale. = TRUE)
+
+autoplot(pca_result_rank, data = TCGA_lung_meta , color =&quot;cancer_type&quot;) +
+  ggtitle(&quot;TCGA NSCLC raw rank&quot;)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<pre class="r"><code>autoplot(pca_result_rank, data = TCGA_lung_meta , color =&quot;cancer_type&quot;) +
+  facet_wrap(~cancer_type) +
+  ggtitle(&quot;TCGA NSCLC raw rank&quot;)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-19-2.png" width="672" />
+PCA on the raw rank matrix somehow can separate LUAD and LUSC as well!</p>
+</div>
+<div id="pca-on-normalized-rank-matrix" class="section level3">
+<h3>PCA on normalized rank matrix</h3>
+<p>This maps ranks to a normal distribution using the inverse normal transformation.</p>
+<pre class="r"><code>rank_normalized&lt;- qnorm((rank_matrix - 0.5) / nrow(rank_matrix))
+hist(rank_normalized)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<pre class="r"><code>rank_normalized_sub&lt;- select_top_var_genes(rank_normalized, top_n = 1000)
+hist(rank_normalized_sub)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+It looks approximately normal.</p>
+<p>PCA on the normalized rank matrix</p>
+<pre class="r"><code>pca_result_rank&lt;- prcomp(t(rank_normalized_sub), scale. = TRUE)
+
+autoplot(pca_result_rank, data = TCGA_lung_meta , color =&quot;cancer_type&quot;) +
+  ggtitle(&quot;TCGA NSCLC normalized rank&quot;)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<pre class="r"><code>autoplot(pca_result_rank, data = TCGA_lung_meta , color =&quot;cancer_type&quot;) +
+  facet_wrap(~cancer_type) +
+  ggtitle(&quot;TCGA NSCLC normalized rank&quot;)</code></pre>
+<p><img src="/post/2025-02-04-pca-tcga-continue_files/figure-html/unnamed-chunk-22-2.png" width="672" /></p>
+<p>The PCA plot looks similar to the one with the raw rank and the cpm normalized counts.
+We still see those LUAD/LUSC mixing samples.</p>
+</div>
+<div id="key-takeaways" class="section level3">
+<h3>Key takeaways</h3>
+<ul>
+<li><p>Use PCA do do exploratory data analysis.</p></li>
+<li><p>Use your biology knowledge (in our case, LUAD and LUSC known markers) to investigate the strange samples.</p></li>
+<li><p>PCA on the raw rank matrix and the normalized rank matrix can separate the LUAD and LUSC samples.</p></li>
+</ul>
+<p>There is a long post for how to use <code>DESeq2</code> on large scale dataset.</p>
+<p><a href="https://bsky.app/profile/iansudbery.bsky.social/post/3lgdp62x5bc2q" class="uri">https://bsky.app/profile/iansudbery.bsky.social/post/3lgdp62x5bc2q</a></p>
+<p>In my next blog post, I will show you using <code>DESeq2</code> vs <code>wilcox rank sum</code> test for
+differential gene expression analysis.</p>
+</div>
+<div id="further-reading" class="section level3">
+<h3>Further reading</h3>
+<ul>
+<li><p><a href="https://www.nature.com/articles/s41587-022-01440-w">Removing unwanted variation from large-scale RNA sequencing data with PRPS</a></p></li>
+<li><p>The github repo associated with the paper has a lot of tutorials <a href="https://github.com/RMolania/TCGA_PanCancer_UnwantedVariation/" class="uri">https://github.com/RMolania/TCGA_PanCancer_UnwantedVariation/</a></p></li>
+<li><p><a href="https://htmlpreview.github.io/?https://github.com/RMolania/TCGA_PanCancer_UnwantedVariation/blob/master/Vigettes/TCGA_BRCA_RNAseq_Vignette.html" class="uri">https://htmlpreview.github.io/?https://github.com/RMolania/TCGA_PanCancer_UnwantedVariation/blob/master/Vigettes/TCGA_BRCA_RNAseq_Vignette.html</a></p></li>
+<li><p>Twitter thread by Mike Love on how to analyze large scale RNAseq data <a href="https://x.com/mikelove/status/1513468597288452097?s=46" class="uri">https://x.com/mikelove/status/1513468597288452097?s=46</a></p></li>
+<li><p>Follow Mike Love’s tutorial here <a href="https://github.com/mikelove/preNivolumabOnNivolumab" class="uri">https://github.com/mikelove/preNivolumabOnNivolumab</a></p></li>
+</ul>
+</div>

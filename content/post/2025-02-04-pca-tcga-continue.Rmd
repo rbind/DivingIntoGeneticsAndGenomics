@@ -1,0 +1,411 @@
+---
+title: "PCA analysis on TCGA bulk RNAseq data continued"
+author: Ming Tommy Tang
+date: "2025-02-07"
+slug: pca-tcga2
+categories:
+  - review
+tags:
+  - bioinformatics
+  - TCGA
+  - RNAseq
+  - data
+  - pca
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+```
+In my [last blog post](https://divingintogeneticsandgenomics.com/post/pca-tcga/), I showed you how to download TCGA RNAseq count data and 
+do PCA and make a heatmap. It is interesting to see some of the LUSC samples mix with the LUAD samples and vice versa.
+
+In this post, we will continue to use PCA to do more Exploratory data analysis (EDA).
+
+Let's further investigate those samples and use the rank matrix derived from the count matrix to do PCA.
+
+### Download and combine the data
+
+The following code is the same as my last post.
+
+It takes long time to download the data, so I saved it as and Rdata.
+```{r}
+library(TCGAbiolinks)
+library(SummarizedExperiment)
+library(dplyr)
+library(here)
+```
+
+Download TCGA data using `TCGAbiolinks`.
+
+```{r eval=FALSE}
+# Load TCGA data (example for LUAD - Lung Adenocarcinoma)
+LUAD_query <- GDCquery(project = "TCGA-LUAD",
+                  data.category = "Transcriptome Profiling",
+                  data.type = "Gene Expression Quantification",
+                  workflow.type = "STAR - Counts")
+
+GDCdownload(LUAD_query)
+
+# this returns a summarizedExperiment object 
+TCGA_LUAD_data <- GDCprepare(LUAD_query)
+
+saveRDS(TCGA_LUAD_data, "~/blog_data/TCGA_LUAD_SummarizedExperiment.rds"))
+```
+
+Read in the saved RDS file:
+```{r}
+TCGA_LUAD_data<- readRDS("~/blog_data/TCGA_LUAD_SummarizedExperiment.rds")
+TCGA_LUAD_mat<- assay(TCGA_LUAD_data)
+dim(TCGA_LUAD_mat)
+```
+We have 600 samples.
+
+You noticed that the gene name is in ENSEMBLE ID.
+
+We will download the TCGA LUSC data in the same way.
+```{r eval=FALSE}
+LUSC_query <- GDCquery(project = "TCGA-LUSC",
+                  data.category = "Transcriptome Profiling",
+                  data.type = "Gene Expression Quantification",
+                  workflow.type = "STAR - Counts")
+
+GDCdownload(LUSC_query)
+
+TCGA_LUSC_data <- GDCprepare(LUSC_query)
+
+saveRDS(TCGA_LUSC_data, "~/blog_data/TCGA_LUSC_SummarizedExperiment.rds"))
+```
+
+read in the saved RDS 
+```{r}
+TCGA_LUSC_data<- readRDS("~/blog_data/TCGA_LUSC_SummarizedExperiment.rds")
+
+TCGA_LUSC_mat<- assay(TCGA_LUSC_data)
+
+dim(TCGA_LUSC_mat)
+```
+
+
+### convert ENSEMBL id to gene symbols
+
+```{r}
+library(org.Hs.eg.db)
+
+# remove the version number in the end of the ENSEMBL id
+TCGA_LUAD_genes<- rownames(TCGA_LUAD_mat) %>%
+  tibble::enframe() %>%
+  mutate(ENSEMBL =stringr::str_replace(value, "\\.[0-9]+", ""))
+
+head(TCGA_LUAD_genes)
+
+# there are duplicated gene symbols for different ENSEMBL id
+clusterProfiler::bitr(TCGA_LUAD_genes$ENSEMBL, 
+                      fromType = "ENSEMBL",
+                      toType = "SYMBOL",
+                      OrgDb = org.Hs.eg.db) %>%
+        janitor::get_dupes(SYMBOL) %>%
+        head()
+
+# just keep one of them (simple solution)
+TCGA_LUAD_gene_map<- clusterProfiler::bitr(TCGA_LUAD_genes$ENSEMBL,
+                                           fromType = "ENSEMBL",
+                                           toType = "SYMBOL",
+                                           OrgDb = org.Hs.eg.db) %>%
+        distinct(SYMBOL, .keep_all = TRUE) 
+       
+                       
+TCGA_LUAD_gene_map<- TCGA_LUAD_gene_map %>%
+  left_join(TCGA_LUAD_genes)
+
+head(TCGA_LUAD_gene_map)
+```
+
+Subset the gene expression matrices and replace the rownames to gene symbol.
+```{r}
+TCGA_LUSC_mat<- TCGA_LUSC_mat[TCGA_LUAD_gene_map$value, ]
+row.names(TCGA_LUSC_mat)<- TCGA_LUAD_gene_map$SYMBOL
+TCGA_LUSC_mat[1:5, 1:5]
+
+
+TCGA_LUAD_mat<- TCGA_LUAD_mat[TCGA_LUAD_gene_map$value, ]
+row.names(TCGA_LUAD_mat)<- TCGA_LUAD_gene_map$SYMBOL
+TCGA_LUAD_mat[1:5, 1:5]
+
+## check the dimentions 
+dim(TCGA_LUSC_mat)
+dim(TCGA_LUAD_mat)
+```
+
+
+### combine TCGA LUSC and LUAD
+
+PCA plot use top variable genes.
+
+```{r}
+# double check the genes are the same
+all.equal(rownames(TCGA_LUAD_mat), rownames(TCGA_LUSC_mat))
+
+TCGA_lung_mat<- cbind(TCGA_LUSC_mat, TCGA_LUAD_mat)
+
+TCGA_lung_meta<- data.frame(cancer_type = c(rep( "LUSC", ncol(TCGA_LUSC_mat)), 
+                   rep("LUAD", ncol(TCGA_LUAD_mat))))
+
+rownames(TCGA_lung_meta)<- c(colnames(TCGA_LUAD_mat), colnames(TCGA_LUSC_mat))
+
+head(TCGA_lung_meta)
+dim(TCGA_lung_mat)
+```
+
+### PCA after cpm (counts per million) normalization
+
+```{r}
+library(ggplot2)
+library(ggfortify)
+
+# convert the raw counts to log2(cpm+1) using edgeR.
+TCGA_lung_cpm<- edgeR::cpm(TCGA_lung_mat, log = TRUE, prior.count = 1)
+
+select_top_var_genes<- function(mat, top_n=1000){
+        idx<- order(rowVars(TCGA_lung_cpm), decreasing = TRUE)[1:top_n]
+        return(mat[idx,])
+}
+## top 1000 most variable genes
+
+TCGA_lung_cpm_sub <- select_top_var_genes(TCGA_lung_cpm, top_n = 1000)
+
+TCGA_pca_res2 <- prcomp(t(TCGA_lung_cpm_sub), scale. = TRUE)
+
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color ="cancer_type") +
+  scale_color_manual(values = c("blue", "red")) +
+  ggtitle("TCGA NSCLC")
+```
+
+Now we see the first PC separates cancer type: LUSC vs LUAD, which makes sense!
+It is interesting to see some of the LUSC samples mix with the LUAD samples and vice versa.
+
+Let's further investigate those samples.
+
+### LUAD and LUSC markers
+
+LUAD originates in the alveolar epithelial cells and is often associated with EGFR mutations, particularly in non-smokers.
+
+NKX2-1 (TTF-1)	
+Lung epithelial differentiation marker. 
+Highly expressed in LUAD but absent in LUSC (TCGA, IHC studies). 
+
+NAPSA (Napsin A). 
+Aspartic protease in surfactant protein processing. 
+High specificity for LUAD (IHC studies). 
+
+```{r}
+TCGA_lung_meta$NAPSA<- TCGA_lung_cpm["NAPSA", ]
+TCGA_lung_meta$TFF1<- TCGA_lung_cpm["TFF1", ]
+
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color ="TFF1") +
+        scale_color_viridis_b() +
+        facet_wrap(~ cancer_type) + 
+        ggtitle("TCGA NSCLC")
+```
+
+Let's cap the TFF1 max value at 6
+
+```{r}
+
+quantile(TCGA_lung_meta$TFF1, c(0.1,0.2,0.5,0.8,0.9, 0.951))
+
+# Cap the maximum value at 6
+TCGA_lung_meta$TFF1 <- pmin(TCGA_lung_meta$TFF1, 6)
+
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color ="TFF1") +
+        scale_color_viridis_b() +
+        facet_wrap(~ cancer_type) + 
+        ggtitle("TCGA NSCLC")
+```
+TFF1 mRNA is not high across the LUAD samples. TFF1 protein maybe a better marker?
+
+```{r}
+quantile(TCGA_lung_meta$NAPSA, c(0.1,0.2,0.5,0.8,0.9, 0.951))
+
+# Cap the maximum value at 8
+TCGA_lung_meta$NAPSA <- pmin(TCGA_lung_meta$NAPSA, 8)
+
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color ="NAPSA") +
+        scale_color_viridis_b() +
+        facet_wrap(~ cancer_type) + 
+        ggtitle("TCGA NSCLC")
+
+```
+
+NAPSA level looks pretty high in most of the LUAD samples. The LUAD samples at PC1 > 0 have lower NAPSA levels. Also, the LUSC samples at PC1 < 0 have high NAPSA levels too.
+
+Are those samples mislabeled?
+
+Let's check several LUSC markers.
+
+LUSC arises from the bronchial epithelium and is strongly associated with smoking.
+
+TP63 (ΔNp63). 	
+Transcription factor crucial for squamous differentiation. 	
+High expression in LUSC, absent in LUAD (TCGA, IHC studies). 
+
+KRT5 (Cytokeratin 5). 	
+Cytoskeletal protein in basal epithelial cells. 	
+Expressed in LUSC, absent in LUAD. 
+
+```{r}
+TCGA_lung_meta$TP63<- TCGA_lung_cpm["TP63", ]
+TCGA_lung_meta$KRT5<- TCGA_lung_cpm["KRT5", ]
+
+TCGA_lung_meta$TP63 <- pmin(TCGA_lung_meta$TP63, 8)
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color ="TP63") +
+        scale_color_viridis_b() +
+        facet_wrap(~ cancer_type) + 
+        ggtitle("TCGA NSCLC") 
+
+autoplot(TCGA_pca_res2, data = TCGA_lung_meta , color ="KRT5") +
+        scale_color_viridis_b() +
+        facet_wrap(~ cancer_type) + 
+        ggtitle("TCGA NSCLC")
+```
+Both TP63 and KRT5 are very high in most of the LUSC samples except the samples that are located in PC1 < 0. 
+
+
+### Isolate those samples based on PC1
+
+```{r}
+PC1_greater_zero<- TCGA_pca_res2$x[, 1] > 0
+
+PC1_smaller_zero<- TCGA_pca_res2$x[, 1] < 0 
+
+TCGA_lung_meta$PC1_greater_zero<- PC1_greater_zero
+TCGA_lung_meta$PC1_smaller_zero<- PC1_smaller_zero
+
+head(TCGA_lung_meta)
+
+### samples that are labeled as LUAD but mixed with LUSC
+TCGA_lung_meta %>%
+        filter(cancer_type == "LUAD", PC1_greater_zero)
+```
+One can further investigate those samples (by imaging data or proteomics data) and see if there could be mislabeled.
+
+```{r}
+### samples that are labeled as LUSC but mixed with LUAD
+TCGA_lung_meta %>%
+        filter(cancer_type == "LUSC", PC1_smaller_zero) %>%
+        head()
+```
+
+### PCA on the rank matrix
+
+There could be certain batch effect that we do not know.
+
+and the batch effect somehow force the LUAD and LUSC mixing in the PCA plot.
+
+Let's try rank the genes per sample by their expression level and use the rank
+matrix to do PCA.
+
+```{r}
+# Convert to rank matrix (ranking each column separately)
+# TPM may be better than CPM 
+# rank_matrix <- apply(TCGA_lung_cpm, 2, rank, ties.method = "average")
+# faster than the apply
+
+library(matrixStats)
+rank_matrix <- colRanks(TCGA_lung_cpm, ties.method = "average")
+
+## colRanks returns sample x gene, transpose it back to gene x sample
+rank_matrix<- t(rank_matrix)
+
+hist(rank_matrix)
+```
+
+PCA assumes continuous, approximately normal data because it relies on variance computation.
+Rank values are discrete and not normally distributed.
+However, in practice, PCA can still work on ranked data, though its interpretation changes.
+
+```{r}
+rank_matrix_sub<- select_top_var_genes(rank_matrix, top_n = 1000)
+hist(rank_matrix_sub)
+```
+It looks approximately normal.
+
+PCA on this matrix:
+```{r}
+pca_result_rank<- prcomp(t(rank_matrix_sub), scale. = TRUE)
+
+autoplot(pca_result_rank, data = TCGA_lung_meta , color ="cancer_type") +
+  ggtitle("TCGA NSCLC raw rank")
+
+autoplot(pca_result_rank, data = TCGA_lung_meta , color ="cancer_type") +
+  facet_wrap(~cancer_type) +
+  ggtitle("TCGA NSCLC raw rank")
+```
+PCA on the raw rank matrix somehow can separate LUAD and LUSC as well!
+
+### PCA on normalized rank matrix 
+
+This maps ranks to a normal distribution using the inverse normal transformation.
+```{r}
+rank_normalized<- qnorm((rank_matrix - 0.5) / nrow(rank_matrix))
+hist(rank_normalized)
+```
+
+```{r}
+rank_normalized_sub<- select_top_var_genes(rank_normalized, top_n = 1000)
+hist(rank_normalized_sub)
+```
+It looks approximately normal.
+
+PCA on the normalized rank matrix 
+```{r}
+pca_result_rank<- prcomp(t(rank_normalized_sub), scale. = TRUE)
+
+autoplot(pca_result_rank, data = TCGA_lung_meta , color ="cancer_type") +
+  ggtitle("TCGA NSCLC normalized rank")
+
+autoplot(pca_result_rank, data = TCGA_lung_meta , color ="cancer_type") +
+  facet_wrap(~cancer_type) +
+  ggtitle("TCGA NSCLC normalized rank")
+```
+
+The PCA plot looks similar to the one with the raw rank and the cpm normalized counts.
+We still see those LUAD/LUSC mixing samples.
+
+### Key takeaways
+
+- Use PCA do do exploratory data analysis.
+
+- Use your biology knowledge (in our case, LUAD and LUSC known markers) to investigate the strange samples. 
+
+- PCA on the raw rank matrix and the normalized rank matrix can separate the LUAD and LUSC samples.
+
+There is a long post for how to use `DESeq2` on large scale dataset. 
+
+https://bsky.app/profile/iansudbery.bsky.social/post/3lgdp62x5bc2q
+
+In my next blog post, I will show you using `DESeq2` vs `wilcox rank sum` test for
+differential gene expression analysis.
+
+### Further reading
+
+- [Removing unwanted variation from large-scale RNA sequencing data with PRPS](https://www.nature.com/articles/s41587-022-01440-w)
+
+- The github repo associated with the paper has a lot of tutorials https://github.com/RMolania/TCGA_PanCancer_UnwantedVariation/
+
+- https://htmlpreview.github.io/?https://github.com/RMolania/TCGA_PanCancer_UnwantedVariation/blob/master/Vigettes/TCGA_BRCA_RNAseq_Vignette.html
+
+- Twitter thread by Mike Love on how to analyze large scale RNAseq data https://x.com/mikelove/status/1513468597288452097?s=46
+
+- Follow Mike Love's tutorial here https://github.com/mikelove/preNivolumabOnNivolumab
