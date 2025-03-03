@@ -1,0 +1,121 @@
+---
+title: "How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap"
+author: Ming Tommy Tang
+date: "2025-03-02"
+slug: bioinfo-roadmap
+categories:
+  - review
+tags:
+  - bioinformatics
+  - courses
+
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+## You Can Change Your Appetites  
+
+Linear algebra, statistics, machine learning—these used to feel abstract to me. I had zero experience of bioinformatics when I was studying my PhD in a wet lab.
+
+I memorized formulas without truly understanding them. But over time, I found the right resources that made these concepts click, especially in the context of bioinformatics.  
+
+I wrote a blog post: [My opinionated selection of books/urls for bioinformatics/data science curriculum](https://divingintogeneticsandgenomics.com/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/) six years ago, and many links are broken. so I decided to write a new one.
+
+If I were starting my bioinformatics/computational journey again 12 years ago, here are the **FREE** resources I would recommend.  
+
+---
+
+## 1. Master the Linux Command Line  
+
+Knowing how to work in a Unix environment is a must for any bioinformatician. Start with these:  
+
+- **[Software Carpentry UNIX Shell Playlist](https://www.youtube.com/watch?v=U3iNcBtycaQ&list=PLA86D04D6E0BFD2E0)** – My first introduction to Unix. It's old but still solid.  
+- **[How Linux Works (Book)](https://nostarch.com/howlinuxworks3)** – A great deep dive into how Linux operates.  
+- **[Data Science at the Command Line (Book)](https://jeroenjanssens.com/dsatcl/)** – Fun read with lots of useful tricks.  
+- **[Practice in a Bioinformatics Sandbox](https://sandbox.bio/)** – Great for hands-on command-line practice.  
+
+---
+
+## 2. Learn R for Genomics  
+
+R is an essential tool for bioinformatics, especially for data wrangling and visualization.  
+
+- **[R for Data Science](https://r4ds.had.co.nz/)** – Learn `tidyverse`, master data manipulation, and reshape data efficiently.  
+
+- **[Data Analysis for the Life Sciences with R](https://www.crcpress.com/Data-Analysis-for-the-Life-Sciences-with-R/Irizarry-Love/p/book/9781498775670)** – I took this course 3 times and learned a ton!  
+
+- **[Computational Genomics with R](https://compgenomr.github.io/book/)** – Practical applications of genomics with R.  
+
+- **[Bioinformatics Data Skills](https://www.oreilly.com/library/view/bioinformatics-data-skills/9781449367480/)** – A must-have for anyone serious about bioinformatics. It covers unix, R and python.
+
+---
+
+## 3. Build a Strong Statistical Foundation  
+
+Understanding statistics is critical. These books and videos will help:  
+
+- **[Discovering Statistics with R](https://www.discovr.rocks/)** – A fantastic and engaging stats book (2nd edition coming soon).
+
+- **[Modern Statistics for Modern Biology](https://www.huber.embl.de/msmb/)** – A great resource for statistical applications in biology.  
+
+- **[StatQuest by Josh Starmer](https://statquest.org/video-index/)** – I’ve watched the PCA video at least 20 times.  
+
+---
+
+## 4. Linear Algebra: Make It Click  
+
+I never understood eigenvectors and eigenvalues—until I found these:  
+
+- **[3Blue1Brown Linear Algebra Videos](https://www.3blue1brown.com/)** – The best visual explanations of matrix transformations.  
+- **[MIT 18.06: Linear Algebra](https://web.mit.edu/18.06/www/)** – A formal, in-depth introduction to linear algebra.  
+
+Why it is important to learn linear algebra? Most of the genomics data are just matrices:
+
+* an RNAseq expression matrix is a gene-by-sample matrix, with entries to be read counts for each gene
+* a single-cell expression matrix is a gene-by-cell matrix, with entries to be read counts for each gene
+* a ChIP-seq count matrix is a peak-by-sample matrix, with entries to be the number of reads in each peak
+* a drug response matrix is a drug-by-sample matrix, with entries to be IC50 for example
+
+and many more… in other words,
+
+Matrix is **EVERYWHERE** for bioinformatics (and many other data science topics)!
+
+Many of the bioinformatics problems can be rephrased as matrix manipulation.
+
+Understand what does matrix multiplication mean deeply; Why matrix factorization is useful for genomics (see my [post](https://divingintogeneticsandgenomics.com/post/matrix-factorization-for-single-cell-rnaseq-data/)). 
+
+Matrix calculation is also the foundation of deep learning! 
+
+---
+
+## 5. Get Comfortable with Machine Learning  
+
+Statistics and machine learning go hand in hand:  
+
+- **[StatQuest ML Videos](https://statquest.org/video-index/)** – Clear explanations of PCA, regression, decision trees, SVM and more.  
+
+- **[An Introduction to Statistical Learning](https://www.statlearning.com/)** – One of the best ML books, now with R and Python editions.  
+
+---
+
+## 6. Python for Bioinformatics  
+
+I’m primarily an R user, but I use Python for workflow automation. If I had to start again:  
+
+- **[Python for Biologists](https://www.amazon.com/Python-Biologists-complete-programming-beginners/dp/1492346136)** – A great beginner-friendly book.  
+
+- **[Biology Meets Programming: Bioinformatics for Beginners](https://www.coursera.org/learn/bioinformatics)** – I took this Coursera course and found it useful.  
+
+---
+
+
+## Just Start!  
+
+Pick any resource that fits your learning stage and dive in. **Waiting won’t change anything. Taking action will.** Those who start and experiment win in bioinformatics.  
+
+of course, subscribe to my youtube channel chatomics to learn bioinformatics too! https://www.youtube.com/@chatomics
+
+If you found this useful, share it with others who might benefit. Happy learning! 🚀

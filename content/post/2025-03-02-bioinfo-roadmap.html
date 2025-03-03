@@ -1,0 +1,109 @@
+---
+title: "How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap"
+author: Ming Tommy Tang
+date: "2025-03-02"
+slug: bioinfo-roadmap
+categories:
+  - review
+tags:
+  - bioinformatics
+  - courses
+
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<div id="you-can-change-your-appetites" class="section level2">
+<h2>You Can Change Your Appetites</h2>
+<p>Linear algebra, statistics, machine learning—these used to feel abstract to me. I had zero experience of bioinformatics when I was studying my PhD in a wet lab.</p>
+<p>I memorized formulas without truly understanding them. But over time, I found the right resources that made these concepts click, especially in the context of bioinformatics.</p>
+<p>I wrote a blog post: <a href="https://divingintogeneticsandgenomics.com/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/">My opinionated selection of books/urls for bioinformatics/data science curriculum</a> six years ago, and many links are broken. so I decided to write a new one.</p>
+<p>If I were starting my bioinformatics/computational journey again 12 years ago, here are the <strong>FREE</strong> resources I would recommend.</p>
+<hr />
+</div>
+<div id="master-the-linux-command-line" class="section level2">
+<h2>1. Master the Linux Command Line</h2>
+<p>Knowing how to work in a Unix environment is a must for any bioinformatician. Start with these:</p>
+<ul>
+<li><strong><a href="https://www.youtube.com/watch?v=U3iNcBtycaQ&amp;list=PLA86D04D6E0BFD2E0">Software Carpentry UNIX Shell Playlist</a></strong> – My first introduction to Unix. It’s old but still solid.<br />
+</li>
+<li><strong><a href="https://nostarch.com/howlinuxworks3">How Linux Works (Book)</a></strong> – A great deep dive into how Linux operates.<br />
+</li>
+<li><strong><a href="https://jeroenjanssens.com/dsatcl/">Data Science at the Command Line (Book)</a></strong> – Fun read with lots of useful tricks.<br />
+</li>
+<li><strong><a href="https://sandbox.bio/">Practice in a Bioinformatics Sandbox</a></strong> – Great for hands-on command-line practice.</li>
+</ul>
+<hr />
+</div>
+<div id="learn-r-for-genomics" class="section level2">
+<h2>2. Learn R for Genomics</h2>
+<p>R is an essential tool for bioinformatics, especially for data wrangling and visualization.</p>
+<ul>
+<li><p><strong><a href="https://r4ds.had.co.nz/">R for Data Science</a></strong> – Learn <code>tidyverse</code>, master data manipulation, and reshape data efficiently.</p></li>
+<li><p><strong><a href="https://www.crcpress.com/Data-Analysis-for-the-Life-Sciences-with-R/Irizarry-Love/p/book/9781498775670">Data Analysis for the Life Sciences with R</a></strong> – I took this course 3 times and learned a ton!</p></li>
+<li><p><strong><a href="https://compgenomr.github.io/book/">Computational Genomics with R</a></strong> – Practical applications of genomics with R.</p></li>
+<li><p><strong><a href="https://www.oreilly.com/library/view/bioinformatics-data-skills/9781449367480/">Bioinformatics Data Skills</a></strong> – A must-have for anyone serious about bioinformatics. It covers unix, R and python.</p></li>
+</ul>
+<hr />
+</div>
+<div id="build-a-strong-statistical-foundation" class="section level2">
+<h2>3. Build a Strong Statistical Foundation</h2>
+<p>Understanding statistics is critical. These books and videos will help:</p>
+<ul>
+<li><p><strong><a href="https://www.discovr.rocks/">Discovering Statistics with R</a></strong> – A fantastic and engaging stats book (2nd edition coming soon).</p></li>
+<li><p><strong><a href="https://www.huber.embl.de/msmb/">Modern Statistics for Modern Biology</a></strong> – A great resource for statistical applications in biology.</p></li>
+<li><p><strong><a href="https://statquest.org/video-index/">StatQuest by Josh Starmer</a></strong> – I’ve watched the PCA video at least 20 times.</p></li>
+</ul>
+<hr />
+</div>
+<div id="linear-algebra-make-it-click" class="section level2">
+<h2>4. Linear Algebra: Make It Click</h2>
+<p>I never understood eigenvectors and eigenvalues—until I found these:</p>
+<ul>
+<li><strong><a href="https://www.3blue1brown.com/">3Blue1Brown Linear Algebra Videos</a></strong> – The best visual explanations of matrix transformations.<br />
+</li>
+<li><strong><a href="https://web.mit.edu/18.06/www/">MIT 18.06: Linear Algebra</a></strong> – A formal, in-depth introduction to linear algebra.</li>
+</ul>
+<p>Why it is important to learn linear algebra? Most of the genomics data are just matrices:</p>
+<ul>
+<li>an RNAseq expression matrix is a gene-by-sample matrix, with entries to be read counts for each gene</li>
+<li>a single-cell expression matrix is a gene-by-cell matrix, with entries to be read counts for each gene</li>
+<li>a ChIP-seq count matrix is a peak-by-sample matrix, with entries to be the number of reads in each peak</li>
+<li>a drug response matrix is a drug-by-sample matrix, with entries to be IC50 for example</li>
+</ul>
+<p>and many more… in other words,</p>
+<p>Matrix is <strong>EVERYWHERE</strong> for bioinformatics (and many other data science topics)!</p>
+<p>Many of the bioinformatics problems can be rephrased as matrix manipulation.</p>
+<p>Understand what does matrix multiplication mean deeply; Why matrix factorization is useful for genomics (see my <a href="https://divingintogeneticsandgenomics.com/post/matrix-factorization-for-single-cell-rnaseq-data/">post</a>).</p>
+<p>Matrix calculation is also the foundation of deep learning!</p>
+<hr />
+</div>
+<div id="get-comfortable-with-machine-learning" class="section level2">
+<h2>5. Get Comfortable with Machine Learning</h2>
+<p>Statistics and machine learning go hand in hand:</p>
+<ul>
+<li><p><strong><a href="https://statquest.org/video-index/">StatQuest ML Videos</a></strong> – Clear explanations of PCA, regression, decision trees, SVM and more.</p></li>
+<li><p><strong><a href="https://www.statlearning.com/">An Introduction to Statistical Learning</a></strong> – One of the best ML books, now with R and Python editions.</p></li>
+</ul>
+<hr />
+</div>
+<div id="python-for-bioinformatics" class="section level2">
+<h2>6. Python for Bioinformatics</h2>
+<p>I’m primarily an R user, but I use Python for workflow automation. If I had to start again:</p>
+<ul>
+<li><p><strong><a href="https://www.amazon.com/Python-Biologists-complete-programming-beginners/dp/1492346136">Python for Biologists</a></strong> – A great beginner-friendly book.</p></li>
+<li><p><strong><a href="https://www.coursera.org/learn/bioinformatics">Biology Meets Programming: Bioinformatics for Beginners</a></strong> – I took this Coursera course and found it useful.</p></li>
+</ul>
+<hr />
+</div>
+<div id="just-start" class="section level2">
+<h2>Just Start!</h2>
+<p>Pick any resource that fits your learning stage and dive in. <strong>Waiting won’t change anything. Taking action will.</strong> Those who start and experiment win in bioinformatics.</p>
+<p>of course, subscribe to my youtube channel chatomics to learn bioinformatics too! <a href="https://www.youtube.com/@chatomics" class="uri">https://www.youtube.com/@chatomics</a></p>
+<p>If you found this useful, share it with others who might benefit. Happy learning! 🚀</p>
+</div>
