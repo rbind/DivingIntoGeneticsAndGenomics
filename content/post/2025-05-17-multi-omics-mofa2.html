@@ -40,6 +40,11 @@ text-align: justify}
 <li>And most often asked, what do they reveal together that they don’t individually?</li>
 </ul>
 <p>Clarifying this upfront helps determine whether you need an unsupervised factor model, a predictive classifier, or a mechanistic graph-based approach.</p>
+<p><strong>Tommy’s NOTE: Read this paper by <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11949029/">Vivek et al Leveraging complementary multi-omics data integration methods for mechanistic insights in kidney diseases</a>.</strong></p>
+<p>They tested both <code>MOFA2</code>(unsupervisied) and <code>DIABLO</code> (supervised) for a pilot study in Chronic Kidney Disease.</p>
+<p>A new preprint from Vivek and the group: <a href="https://www.medrxiv.org/content/10.1101/2025.05.12.25327328v1">Multi-omics data integration from patients with carotid stenosis illuminates key molecular signatures of atherosclerotic instability</a>.<br />
+<a href="https://www.linkedin.com/posts/vivek-das-phd-m-sc-b1110b25_happy-to-share-our-latest-preprint-where-activity-7329763931097399298-VAk8/">Linkedin Post</a>.</p>
+<p><strong>Those are good examples on how multi-omics data analysis is used in real-world applications!</strong></p>
 </div>
 <div id="navigating-data-hurdles" class="section level3">
 <h3><strong>Navigating data hurdles</strong></h3>
@@ -50,12 +55,13 @@ text-align: justify}
 <li>Sparsity (ATAC-seq vs RNA-seq)</li>
 <li>Noise (proteomics often suffers from batch effects and high levels of missingness)</li>
 <li>Biological resolution. RNA-seq typically collects data on 20-60K genes while methylation panels may only cover few thousand loci or ~55K regions for the <a href="https://www.twistbioscience.com/resources/data-files/twist-human-methylome-panel-target-bed-file">TWIST panel</a>. 55K is the capture regions, and they contain ~8 Million CpG sites.</li>
-<li>Data distribution</li>
+<li>Data distribution.</li>
 </ul>
 <p>A naive concatenation can drown true signal in the modality with the most features or create phantom clusters driven by batch differences.</p>
-<p><strong>Tommy’s NOTE: <a href="https://divingintogeneticsandgenomics.com/post/python-visium/">The last blog post</a> when integrating the spatial coordinates matrix and the gene expression matrix is a perfect example for this problem.</strong></p>
-<p><img src="/img/figures/Fig04.png" /></p>
-<p>Thus, a robust method should be able to normalize per data modality, learn modality-specific weights, or regularize appropriately (e.g., weighted PCA, MOFA2, DIABLO).</p>
+<p><strong>Tommy’s NOTE: <a href="https://divingintogeneticsandgenomics.com/post/python-visium/">The last blog post</a> when integrating the spatial coordinates matrix and the gene expression matrix is a perfect example for this problem.</strong>
+<img src="/img/figures/Fig04.png" />
+<strong>A simple z-score normalization for each data modality worked.</strong></p>
+<p>For more complex data, a robust method may be needed to normalize per data modality, learn modality-specific weights, or regularize appropriately (e.g., weighted PCA, MOFA2, DIABLO).</p>
 </div>
 <div id="interpretability-and-biological-plausibility" class="section level3">
 <h3><strong>Interpretability and Biological Plausibility</strong></h3>

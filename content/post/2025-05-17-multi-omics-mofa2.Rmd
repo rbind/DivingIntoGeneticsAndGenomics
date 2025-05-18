@@ -58,6 +58,15 @@ What do we want to identify across different data modalities:
 
 Clarifying this upfront helps determine whether you need an unsupervised factor model, a predictive classifier, or a mechanistic graph-based approach.
 
+**Tommy's NOTE: Read this paper by [Vivek et al Leveraging complementary multi-omics data integration methods for mechanistic insights in kidney diseases](https://pmc.ncbi.nlm.nih.gov/articles/PMC11949029/).**
+
+They tested both `MOFA2`(unsupervisied) and `DIABLO` (supervised) for a pilot study in Chronic Kidney Disease.
+
+A new preprint from Vivek and the group: [Multi-omics data integration from patients with carotid stenosis illuminates key molecular signatures of atherosclerotic instability](https://www.medrxiv.org/content/10.1101/2025.05.12.25327328v1).   
+[Linkedin Post](https://www.linkedin.com/posts/vivek-das-phd-m-sc-b1110b25_happy-to-share-our-latest-preprint-where-activity-7329763931097399298-VAk8/).
+
+**Those are good examples on how multi-omics data analysis is used in real-world applications!**
+
 
 ### __Navigating data hurdles__
 
@@ -70,15 +79,15 @@ Collected data modalities can also differ in
 * Sparsity (ATAC-seq vs RNA-seq)
 * Noise (proteomics often suffers from batch effects and high levels of missingness)
 * Biological resolution. RNA-seq typically collects data on 20-60K genes while methylation panels may only cover few thousand loci or ~55K regions for the [TWIST panel](https://www.twistbioscience.com/resources/data-files/twist-human-methylome-panel-target-bed-file). 55K is the capture regions, and they contain ~8 Million CpG sites. 
-* Data distribution
+* Data distribution.
 
 A naive concatenation can drown true signal in the modality with the most features or create phantom clusters driven by batch differences. 
 
 **Tommy's NOTE: [The last blog post](https://divingintogeneticsandgenomics.com/post/python-visium/) when integrating the spatial coordinates matrix and the gene expression matrix is a perfect example for this problem.**
-
 ![](/img/figures/Fig04.png)
+**A simple z-score normalization for each data modality worked.**
 
-Thus, a robust method should be able to normalize per data modality, learn modality-specific weights, or regularize appropriately (e.g., weighted PCA, MOFA2, DIABLO).
+For more complex data, a robust method may be needed to normalize per data modality, learn modality-specific weights, or regularize appropriately (e.g., weighted PCA, MOFA2, DIABLO).
 
 ### __Interpretability and Biological Plausibility__
 
