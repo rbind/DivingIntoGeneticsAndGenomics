@@ -1,0 +1,758 @@
+---
+title: "How to calculate partial correlation controlling cancer types"
+author: Ming Tommy Tang
+date: "2025-05-22"
+slug: partial-cor
+categories:
+  - tutorial
+tags:
+  - bioinformatics
+  - Depmap
+  - CRISPR
+  - data
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<div id="what-is-partial-correlation" class="section level3">
+<h3>What is partial correlation</h3>
+<p>Partial correlation measures the relationship between two variables while controlling for the effect of one or more other variables.</p>
+<p>Suppose you want to know how X and Y are related, independent of how both are influenced by Z. Partial correlation helps answer:</p>
+<blockquote>
+<p>If we remove the influence of Z, is there still a connection between X and Y?</p>
+</blockquote>
+<p>What does it have to do with Bioinformatics?</p>
+<p>You are studying the relationship between two genes:</p>
+<p>Gene A and Gene B
+You observe a high correlation between their expression levels across many samples.</p>
+<p>But… both genes might be regulated by Transcription Factor X.</p>
+<p>So, is the correlation between Gene A and Gene B direct, or is it just because both are influenced by TF X?</p>
+<p>Use partial correlation to test the relationship between Gene A and Gene B, controlling for TF X.</p>
+</div>
+<div id="a-dummy-example-in-calculating-pearson-correlation" class="section level2">
+<h2>A dummy example in calculating pearson correlation</h2>
+<p>It is easy to calculate correlation in R with the <code>cor</code> function.</p>
+<p>To calculate partial correlation, we will turn to linear regression. What’s the relationship
+of linear regression with correlation?</p>
+<p>I encourage everyone read this <a href="https://lindeloev.github.io/tests-as-linear/">Common statistical tests are linear models</a>.</p>
+<blockquote>
+<p>It shows the linear models underlying common parametric and “non-parametric” tests.</p>
+</blockquote>
+<p>I will walk you through an example in the link above:</p>
+<pre class="r"><code># Load packages for data handling and plotting
+library(tidyverse)
+library(patchwork)
+library(broom) # tidy model output
+library(kableExtra) # nice table
+
+# Reproducible &quot;random&quot; results
+set.seed(123)
+
+# Generate normal data with known parameters
+rnorm_fixed&lt;- function(N, mu = 0, sd = 1) scale(rnorm(N)) * sd + mu
+
+y&lt;- c(rnorm(15), exp(rnorm(15)), runif(20, min = -3, max = 0))  # Almost zero mean, not normal
+
+x&lt;- rnorm_fixed(50, mu = 0, sd = 1)  # Used in correlation where this is on x-axis
+
+y2&lt;- x * 2 + rnorm(50)
+
+# Long format data with indicator
+value = c(y, y2)
+group = rep(c(&#39;y1&#39;, &#39;y2&#39;), each = 50)
+
+value</code></pre>
+<pre><code>#&gt;   [1] -0.56047565 -0.23017749  1.55870831  0.07050839  0.12928774  1.71506499
+#&gt;   [7]  0.46091621 -1.26506123 -0.68685285 -0.44566197  1.22408180  0.35981383
+#&gt;  [13]  0.40077145  0.11068272 -0.55584113  5.97099235  1.64518111  0.13992942
+#&gt;  [19]  2.01648501  0.62326006  0.34375582  0.80414561  0.35843625  0.48244361
+#&gt;  [25]  0.53524041  0.18513068  2.31124663  1.16575986  0.32041542  3.50368377
+#&gt;  [31] -1.00465442 -2.71547802 -1.84809109 -2.17684907 -0.55607988 -1.65445098
+#&gt;  [37] -0.56980694 -0.56283147 -0.61697304 -1.68050494 -0.73657452 -1.11233661
+#&gt;  [43] -0.86945280 -2.99812568 -1.57405028 -2.33964334 -1.86055039 -1.16168699
+#&gt;  [49] -1.94460627 -2.66659373 -0.68291806 -0.04276485 -2.70999814  4.07998775
+#&gt;  [55]  3.92608432 -3.23176985  1.16150604  0.36461222  1.37554546 -1.33991208
+#&gt;  [61] -0.27327874  0.06561465 -0.46989453  2.57602440 -1.58258384  3.20820029
+#&gt;  [67] -4.36535571 -0.49221693 -0.23172931  1.27279542  0.14340372 -0.63955336
+#&gt;  [73] -2.48836915 -2.45402352 -1.99769497  0.85022079  0.97729907 -0.65016344
+#&gt;  [79]  1.07879359  3.41875068 -1.10469580 -6.22321486  1.62403278 -1.96482688
+#&gt;  [85]  0.18237357  1.50685612 -0.52711916 -2.77116144 -0.68528078 -0.50858194
+#&gt;  [91]  1.32977539  1.18283073 -0.91275131  0.88646473 -2.67243128  1.74339325
+#&gt;  [97]  0.85705167  1.58252482  1.05483796  0.98965858</code></pre>
+<pre class="r"><code># x and y2 are highly correlated 
+data.frame(x=x, y=y2) %&gt;%
+        ggplot(aes(x=x, y =y2)) +
+        geom_point() +
+        geom_smooth(method=&#39;lm&#39;) +
+        theme_minimal(base_size = 14)</code></pre>
+<p><img src="/post/2025-05-22_partial_correlation_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code># x and y are not correlated
+data.frame(x=x, y=y) %&gt;%
+        ggplot(aes(x=x, y =y)) +
+        geom_point() +
+        geom_smooth(method=&#39;lm&#39;) +
+        theme_minimal(base_size = 14)</code></pre>
+<p><img src="/post/2025-05-22_partial_correlation_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<p>Let’s calculate the correlation and p-value</p>
+<pre class="r"><code># use cor.test
+a&lt;- cor.test(y, x, method = &quot;pearson&quot;) # Built-in
+
+a </code></pre>
+<pre><code>#&gt; 
+#&gt; 	Pearson&#39;s product-moment correlation
+#&gt; 
+#&gt; data:  y and x
+#&gt; t = 1.0303, df = 48, p-value = 0.308
+#&gt; alternative hypothesis: true correlation is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  -0.1368577  0.4087073
+#&gt; sample estimates:
+#&gt;       cor 
+#&gt; 0.1470934</code></pre>
+<pre class="r"><code>tidy(a) %&gt;%
+  kable(digits = 3, 
+        caption = &quot;Correlation Test Results&quot;,
+        col.names = c(&quot;Estimate&quot;, &quot;Statistic&quot;, &quot;p-value&quot;, &quot;Parameter&quot;, 
+                     &quot;Lower CI&quot;, &quot;Upper CI&quot;, &quot;Method&quot;, &quot;Alternative&quot;))</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-4">Table 1: </span>Correlation Test Results</caption>
+<colgroup>
+<col width="8%" />
+<col width="9%" />
+<col width="7%" />
+<col width="9%" />
+<col width="8%" />
+<col width="8%" />
+<col width="35%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">Estimate</th>
+<th align="right">Statistic</th>
+<th align="right">p-value</th>
+<th align="right">Parameter</th>
+<th align="right">Lower CI</th>
+<th align="right">Upper CI</th>
+<th align="left">Method</th>
+<th align="left">Alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.147</td>
+<td align="right">1.03</td>
+<td align="right">0.308</td>
+<td align="right">48</td>
+<td align="right">-0.137</td>
+<td align="right">0.409</td>
+<td align="left">Pearson’s product-moment correlation</td>
+<td align="left">two.sided</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>## use linear model
+b&lt;- lm(y ~ 1 + x) # Equivalent linear model: y = Beta0*1 + Beta1*x
+
+
+# Create a nice table
+tidy(b) %&gt;%
+  kable(digits = 3, 
+        caption = &quot;Linear Model Results&quot;,
+        col.names = c(&quot;Term&quot;, &quot;Estimate&quot;, &quot;Std Error&quot;, &quot;t-statistic&quot;, &quot;p-value&quot;))</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-4">Table 1: </span>Linear Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">Term</th>
+<th align="right">Estimate</th>
+<th align="right">Std Error</th>
+<th align="right">t-statistic</th>
+<th align="right">p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">-0.159</td>
+<td align="right">0.231</td>
+<td align="right">-0.689</td>
+<td align="right">0.494</td>
+</tr>
+<tr class="even">
+<td align="left">x</td>
+<td align="right">0.241</td>
+<td align="right">0.233</td>
+<td align="right">1.030</td>
+<td align="right">0.308</td>
+</tr>
+</tbody>
+</table>
+<p>The p-value is the same (p = 0.308), but the coefficient is not (0.147 vs 0.241).</p>
+<p>It turns out, we need to standardize x and y to get the same correlation coefficient.</p>
+<pre class="r"><code># need to scale to get the same correlation coefficient
+c&lt;- lm(scale(y) ~ 1 + scale(x))
+
+tidy(c) %&gt;%
+  kable(digits = 3, 
+        caption = &quot;Linear Model Results&quot;,
+        col.names = c(&quot;Term&quot;, &quot;Estimate&quot;, &quot;Std Error&quot;, &quot;t-statistic&quot;, &quot;p-value&quot;))</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-5">Table 2: </span>Linear Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">Term</th>
+<th align="right">Estimate</th>
+<th align="right">Std Error</th>
+<th align="right">t-statistic</th>
+<th align="right">p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.000</td>
+<td align="right">0.141</td>
+<td align="right">0.00</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">scale(x)</td>
+<td align="right">0.147</td>
+<td align="right">0.143</td>
+<td align="right">1.03</td>
+<td align="right">0.308</td>
+</tr>
+</tbody>
+</table>
+<p>Now, we get the same 0.147 of the coefficient.</p>
+</div>
+<div id="why-need-to-standardize-it-to-get-the-right-correlation-coefficient" class="section level2">
+<h2>Why need to standardize it to get the right correlation coefficient</h2>
+<div id="pearsons-correlation-coefficient" class="section level3">
+<h3>Pearson’s Correlation Coefficient</h3>
+<p>The formula for Pearson’s correlation coefficient (<span class="math inline">\(r\)</span>) is:</p>
+<p><span class="math display">\[
+r = \frac{\sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})}
+         {\sqrt{\sum_{i=1}^{n} (x_i - \bar{x})^2} \sqrt{\sum_{i=1}^{n} (y_i - \bar{y})^2}}
+\]</span></p>
+</div>
+<div id="regression-slope-for-standardized-variables" class="section level3">
+<h3>Regression Slope for Standardized Variables</h3>
+<p>When <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are standardized to <span class="math inline">\(z\)</span>-scores:</p>
+<p><span class="math display">\[
+x_{std} = \frac{x - \bar{x}}{SD(x)}
+\]</span></p>
+<p><span class="math display">\[
+y_{std} = \frac{y - \bar{y}}{SD(y)}
+\]</span></p>
+<p>The regression slope (<span class="math inline">\(\beta\)</span>) is:</p>
+<p><span class="math display">\[
+\beta = \frac{\sum_{i=1}^{n} x_{std,i} \, y_{std,i}}{\sum_{i=1}^{n} x_{std,i}^2}
+\]</span></p>
+</div>
+<div id="proof-of-equivalence" class="section level3">
+<h3>Proof of Equivalence</h3>
+<p>Since standardized variables have <span class="math inline">\(SD(x_{std}) = SD(y_{std}) = 1\)</span>,</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n} x_{std,i}^2 = n
+\]</span></p>
+<p>So,</p>
+<p><span class="math display">\[
+\beta = \frac{\sum_{i=1}^{n} x_{std,i} \, y_{std,i}}{n}
+\]</span></p>
+<p>Expanding <span class="math inline">\(x_{std}\)</span> and <span class="math inline">\(y_{std}\)</span>:</p>
+<p><span class="math display">\[
+\beta = \frac{1}{n} \cdot \frac{\sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})}{SD(x) \cdot SD(y)}
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\beta = r
+\]</span></p>
+<p>Now, let’s calculate the pairs of x and y1 which are significantly correlated:</p>
+<pre class="r"><code>a2&lt;- cor.test(y2, x, method = &quot;pearson&quot;) # Built-in
+
+a2</code></pre>
+<pre><code>#&gt; 
+#&gt; 	Pearson&#39;s product-moment correlation
+#&gt; 
+#&gt; data:  y2 and x
+#&gt; t = 13.164, df = 48, p-value &lt; 2.2e-16
+#&gt; alternative hypothesis: true correlation is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  0.8048173 0.9333683
+#&gt; sample estimates:
+#&gt;       cor 
+#&gt; 0.8849249</code></pre>
+<pre class="r"><code>tidy(a2) %&gt;%
+  kable(digits = 3, 
+        caption = &quot;Correlation Test Results&quot;,
+        col.names = c(&quot;Estimate&quot;, &quot;Statistic&quot;, &quot;p-value&quot;, &quot;Parameter&quot;, 
+                     &quot;Lower CI&quot;, &quot;Upper CI&quot;, &quot;Method&quot;, &quot;Alternative&quot;))</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-6">Table 3: </span>Correlation Test Results</caption>
+<colgroup>
+<col width="8%" />
+<col width="9%" />
+<col width="7%" />
+<col width="9%" />
+<col width="8%" />
+<col width="8%" />
+<col width="35%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">Estimate</th>
+<th align="right">Statistic</th>
+<th align="right">p-value</th>
+<th align="right">Parameter</th>
+<th align="right">Lower CI</th>
+<th align="right">Upper CI</th>
+<th align="left">Method</th>
+<th align="left">Alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.885</td>
+<td align="right">13.164</td>
+<td align="right">0</td>
+<td align="right">48</td>
+<td align="right">0.805</td>
+<td align="right">0.933</td>
+<td align="left">Pearson’s product-moment correlation</td>
+<td align="left">two.sided</td>
+</tr>
+</tbody>
+</table>
+<p>correlation of 0.885 with a p value of 0.</p>
+<pre class="r"><code>## use linear model
+b2&lt;- lm(y2 ~ 1 + x) # Equivalent linear model: y = Beta0*1 + Beta1*x
+
+
+# Create a nice table
+tidy(b2) %&gt;%
+  kable(digits = 3, 
+        caption = &quot;Linear Model Results&quot;,
+        col.names = c(&quot;Term&quot;, &quot;Estimate&quot;, &quot;Std Error&quot;, &quot;t-statistic&quot;, &quot;p-value&quot;))</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-7">Table 4: </span>Linear Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">Term</th>
+<th align="right">Estimate</th>
+<th align="right">Std Error</th>
+<th align="right">t-statistic</th>
+<th align="right">p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">-0.072</td>
+<td align="right">0.136</td>
+<td align="right">-0.526</td>
+<td align="right">0.601</td>
+</tr>
+<tr class="even">
+<td align="left">x</td>
+<td align="right">1.811</td>
+<td align="right">0.138</td>
+<td align="right">13.164</td>
+<td align="right">0.000</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># need to scale to get the same correlation coefficient
+c2&lt;- lm(scale(y2) ~ 1 + scale(x))
+
+tidy(c2) %&gt;%
+  kable(digits = 3, 
+        caption = &quot;Linear Model Results&quot;,
+        col.names = c(&quot;Term&quot;, &quot;Estimate&quot;, &quot;Std Error&quot;, &quot;t-statistic&quot;, &quot;p-value&quot;))</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-8">Table 5: </span>Linear Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">Term</th>
+<th align="right">Estimate</th>
+<th align="right">Std Error</th>
+<th align="right">t-statistic</th>
+<th align="right">p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.000</td>
+<td align="right">0.067</td>
+<td align="right">0.000</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">scale(x)</td>
+<td align="right">0.885</td>
+<td align="right">0.067</td>
+<td align="right">13.164</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>we get the same coefficient of <code>0.885</code> and p-value of 0.</p>
+<p>It is very satisfying to see we get the same results using different methods.</p>
+</div>
+</div>
+<div id="a-practical-example-in-calculating-partial-correlation" class="section level2">
+<h2>A practical example in calculating partial correlation</h2>
+<p>Go to <a href="https://depmap.org/portal/data_page/?tab=currentRelease">Depmap</a>
+Download the CRISPR screening dependency data <code>CRISPRGeneEffect.csv</code></p>
+<p>The file is &gt; 400MB.</p>
+<p>Also download the <code>Model.csv</code> file which contains the metadata information (e.g, cancer type for each cell line)</p>
+<pre class="r"><code>library(readr)
+library(dplyr)
+
+#read in the data
+crispr_score&lt;- read_csv(&quot;~/blog_data/CRISPRGeneEffect.csv&quot;)
+
+crispr_score[1:5, 1:5]</code></pre>
+<pre><code>#&gt; # A tibble: 5 × 5
+#&gt;   ...1       `A1BG (1)` `A1CF (29974)` `A2M (2)` `A2ML1 (144568)`
+#&gt;   &lt;chr&gt;           &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;            &lt;dbl&gt;
+#&gt; 1 ACH-000001    -0.122         0.0426     0.0261          -0.148 
+#&gt; 2 ACH-000004    -0.0165       -0.0885    -0.0882          -0.0412
+#&gt; 3 ACH-000005    -0.185         0.00330    0.161            0.0862
+#&gt; 4 ACH-000007    -0.0719       -0.114      0.0829           0.0996
+#&gt; 5 ACH-000009    -0.0192       -0.135      0.0603           0.0766</code></pre>
+<p>We need to clean up the column names. remove the parentheses and the ENTREZE ID (numbers).</p>
+<p>NOTE: this type of regular expression is a perfect question for <code>LLM</code>.</p>
+<pre class="r"><code>crispr_score&lt;- crispr_score %&gt;%
+        dplyr::rename(ModelID = `...1`) %&gt;%
+        rename_with(~str_trim(str_remove(.x, &quot; \\(.*\\)$&quot;)), -1)
+
+crispr_score[1:5, 1:5]</code></pre>
+<pre><code>#&gt; # A tibble: 5 × 5
+#&gt;   ModelID       A1BG     A1CF     A2M   A2ML1
+#&gt;   &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+#&gt; 1 ACH-000001 -0.122   0.0426   0.0261 -0.148 
+#&gt; 2 ACH-000004 -0.0165 -0.0885  -0.0882 -0.0412
+#&gt; 3 ACH-000005 -0.185   0.00330  0.161   0.0862
+#&gt; 4 ACH-000007 -0.0719 -0.114    0.0829  0.0996
+#&gt; 5 ACH-000009 -0.0192 -0.135    0.0603  0.0766</code></pre>
+<pre class="r"><code>meta&lt;- read_csv(&quot;~/blog_data/Model.csv&quot;)
+head(meta)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 47
+#&gt;   ModelID    PatientID CellLineName StrippedCellLineName DepmapModelType
+#&gt;   &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;                &lt;chr&gt;          
+#&gt; 1 ACH-000001 PT-gj46wT NIH:OVCAR-3  NIHOVCAR3            HGSOC          
+#&gt; 2 ACH-000002 PT-5qa3uk HL-60        HL60                 AML            
+#&gt; 3 ACH-000003 PT-puKIyc CACO2        CACO2                COAD           
+#&gt; 4 ACH-000004 PT-q4K2cp HEL          HEL                  AML            
+#&gt; 5 ACH-000005 PT-q4K2cp HEL 92.1.7   HEL9217              AML            
+#&gt; 6 ACH-000006 PT-ej13Dz MONO-MAC-6   MONOMAC6             AMOL           
+#&gt; # ℹ 42 more variables: OncotreeLineage &lt;chr&gt;, OncotreePrimaryDisease &lt;chr&gt;,
+#&gt; #   OncotreeSubtype &lt;chr&gt;, OncotreeCode &lt;chr&gt;, PatientSubtypeFeatures &lt;chr&gt;,
+#&gt; #   RRID &lt;chr&gt;, Age &lt;dbl&gt;, AgeCategory &lt;chr&gt;, Sex &lt;chr&gt;, PatientRace &lt;chr&gt;,
+#&gt; #   PrimaryOrMetastasis &lt;chr&gt;, SampleCollectionSite &lt;chr&gt;, SourceType &lt;chr&gt;,
+#&gt; #   SourceDetail &lt;chr&gt;, CatalogNumber &lt;chr&gt;, ModelType &lt;chr&gt;,
+#&gt; #   TissueOrigin &lt;lgl&gt;, ModelDerivationMaterial &lt;chr&gt;, ModelTreatment &lt;chr&gt;,
+#&gt; #   PatientTreatmentStatus &lt;chr&gt;, PatientTreatmentType &lt;chr&gt;, …</code></pre>
+<pre class="r"><code>table(meta$OncotreeLineage)</code></pre>
+<pre><code>#&gt; 
+#&gt;             Adrenal Gland          Ampulla of Vater             B lymphoblast 
+#&gt;                         2                         4                         1 
+#&gt;             Biliary Tract     Bladder/Urinary Tract                      Bone 
+#&gt;                        46                        39                        90 
+#&gt;                     Bowel                    Breast                    Cervix 
+#&gt;                        99                        96                        25 
+#&gt;                 CNS/Brain                 Embryonal         Esophagus/Stomach 
+#&gt;                       125                         1                       103 
+#&gt;                       Eye                Fibroblast                      Hair 
+#&gt;                        24                        42                         2 
+#&gt;             Head and Neck                    Kidney                     Liver 
+#&gt;                        95                        73                        29 
+#&gt;                      Lung                  Lymphoid                    Muscle 
+#&gt;                       260                       260                         5 
+#&gt;                   Myeloid                    Normal                     Other 
+#&gt;                        88                        13                         2 
+#&gt;      Ovary/Fallopian Tube                  Pancreas Peripheral Nervous System 
+#&gt;                        75                        68                        60 
+#&gt;                    Pleura                  Prostate                      Skin 
+#&gt;                        36                        15                       149 
+#&gt;               Soft Tissue                    Testis                   Thyroid 
+#&gt;                        86                        12                        25 
+#&gt;                    Uterus              Vulva/Vagina 
+#&gt;                        44                         5</code></pre>
+<pre class="r"><code># subset only the breast cancer cell line
+breast_meta&lt;- meta %&gt;%
+        select(ModelID, OncotreeLineage) %&gt;%
+        mutate(breast = case_when(
+                OncotreeLineage == &quot;Breast&quot; ~ &quot;yes&quot;,
+                TRUE ~ &quot;no&quot;
+        ))
+
+
+crispr_all&lt;- inner_join(meta, crispr_score)
+
+
+crispr_all&lt;- crispr_all %&gt;%
+        mutate(breast = case_when(
+                OncotreeLineage == &quot;Breast&quot; ~ &quot;yes&quot;,
+                TRUE ~ &quot;no&quot;
+        ))
+
+
+
+ggplot(crispr_all,  aes(x= FOXA1, y= ESR1)) +
+        geom_point(aes(color = breast)) +
+        geom_smooth(method=&#39;lm&#39;, formula= y~x) +
+        facet_wrap(~breast) </code></pre>
+<p><img src="/post/2025-05-22_partial_correlation_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+It looks like the FOXA1 and ESR1 CRISPR dependency score are more correlated in Breast cancer.</p>
+<p>Let’s calculate the correlation and p-value</p>
+<pre class="r"><code>cor.test(crispr_all$FOXA1[crispr_all$breast == &quot;yes&quot;], crispr_all$ESR1[crispr_all$breast == &quot;yes&quot;])</code></pre>
+<pre><code>#&gt; 
+#&gt; 	Pearson&#39;s product-moment correlation
+#&gt; 
+#&gt; data:  crispr_all$FOXA1[crispr_all$breast == &quot;yes&quot;] and crispr_all$ESR1[crispr_all$breast == &quot;yes&quot;]
+#&gt; t = 4.3022, df = 51, p-value = 7.658e-05
+#&gt; alternative hypothesis: true correlation is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  0.2855579 0.6900675
+#&gt; sample estimates:
+#&gt;       cor 
+#&gt; 0.5160227</code></pre>
+<pre class="r"><code>cor.test(crispr_all$FOXA1, crispr_all$ESR1)</code></pre>
+<pre><code>#&gt; 
+#&gt; 	Pearson&#39;s product-moment correlation
+#&gt; 
+#&gt; data:  crispr_all$FOXA1 and crispr_all$ESR1
+#&gt; t = 14.076, df = 1176, p-value &lt; 2.2e-16
+#&gt; alternative hypothesis: true correlation is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  0.3297560 0.4275629
+#&gt; sample estimates:
+#&gt;       cor 
+#&gt; 0.3797201</code></pre>
+<ul>
+<li><p>All cell lines (r = 0.38): This includes the confounding effect of cancer type. Different cancer types have different baseline dependencies for both FOXA1 and ESR1.</p></li>
+<li><p>Breast cancer only (r = 0.52): This removes the cancer type confounding, showing the “true” relationship within a homogeneous cancer type.</p></li>
+<li><p>The increase from 0.38 to 0.52 suggests that cancer type was acting as a confounding variable, diluting the true correlation between FOXA1 and ESR1 dependencies.</p></li>
+</ul>
+<div id="lets-use-linear-model-to-calculate-correlation" class="section level3">
+<h3>Let’s use linear model to calculate correlation</h3>
+<pre class="r"><code># need to scale to get the same correlation coefficient
+lm_cor &lt;- lm(scale(crispr_all$ESR1) ~ 1 + scale(crispr_all$FOXA1))
+
+summary(lm_cor)</code></pre>
+<pre><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = scale(crispr_all$ESR1) ~ 1 + scale(crispr_all$FOXA1))
+#&gt; 
+#&gt; Residuals:
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -7.7928 -0.3632  0.0598  0.4546  3.5335 
+#&gt; 
+#&gt; Coefficients:
+#&gt;                          Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)             4.703e-17  2.697e-02    0.00        1    
+#&gt; scale(crispr_all$FOXA1) 3.797e-01  2.698e-02   14.08   &lt;2e-16 ***
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; Residual standard error: 0.9255 on 1176 degrees of freedom
+#&gt; Multiple R-squared:  0.1442,	Adjusted R-squared:  0.1435 
+#&gt; F-statistic: 198.1 on 1 and 1176 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code># a nice table
+tidy(lm_cor) %&gt;%
+  kable(digits = 3, 
+        caption = &quot;Linear Model Results&quot;,
+        col.names = c(&quot;Term&quot;, &quot;Estimate&quot;, &quot;Std Error&quot;, &quot;t-statistic&quot;, &quot;p-value&quot;))</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-13">Table 6: </span>Linear Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">Term</th>
+<th align="right">Estimate</th>
+<th align="right">Std Error</th>
+<th align="right">t-statistic</th>
+<th align="right">p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.00</td>
+<td align="right">0.027</td>
+<td align="right">0.000</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">scale(crispr_all$FOXA1)</td>
+<td align="right">0.38</td>
+<td align="right">0.027</td>
+<td align="right">14.076</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>The results is the same as <code>cor.test(crispr_all$FOXA1, crispr_all$ESR1)</code></p>
+</div>
+</div>
+<div id="adding-the-cancer-type-as-a-covariate-to-calculate-partial-correlation" class="section level2">
+<h2>adding the cancer type as a covariate to calculate partial correlation</h2>
+<pre class="r"><code>lm_cor_partial &lt;- lm(scale(crispr_all$ESR1) ~ scale(crispr_all$FOXA1) + crispr_all$OncotreeLineage)
+
+unique(crispr_all$OncotreeLineage) %&gt;% sort()</code></pre>
+<pre><code>#&gt;  [1] &quot;Adrenal Gland&quot;             &quot;Ampulla of Vater&quot;         
+#&gt;  [3] &quot;Biliary Tract&quot;             &quot;Bladder/Urinary Tract&quot;    
+#&gt;  [5] &quot;Bone&quot;                      &quot;Bowel&quot;                    
+#&gt;  [7] &quot;Breast&quot;                    &quot;Cervix&quot;                   
+#&gt;  [9] &quot;CNS/Brain&quot;                 &quot;Esophagus/Stomach&quot;        
+#&gt; [11] &quot;Eye&quot;                       &quot;Fibroblast&quot;               
+#&gt; [13] &quot;Head and Neck&quot;             &quot;Kidney&quot;                   
+#&gt; [15] &quot;Liver&quot;                     &quot;Lung&quot;                     
+#&gt; [17] &quot;Lymphoid&quot;                  &quot;Myeloid&quot;                  
+#&gt; [19] &quot;Other&quot;                     &quot;Ovary/Fallopian Tube&quot;     
+#&gt; [21] &quot;Pancreas&quot;                  &quot;Peripheral Nervous System&quot;
+#&gt; [23] &quot;Pleura&quot;                    &quot;Prostate&quot;                 
+#&gt; [25] &quot;Skin&quot;                      &quot;Soft Tissue&quot;              
+#&gt; [27] &quot;Testis&quot;                    &quot;Thyroid&quot;                  
+#&gt; [29] &quot;Uterus&quot;                    &quot;Vulva/Vagina&quot;</code></pre>
+<p>We have 30 lineages, and by default the reference group is <code>Adrenal Gland</code> which is the first sorted alphabetically.</p>
+<pre class="r"><code>summary(lm_cor_partial)</code></pre>
+<pre><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = scale(crispr_all$ESR1) ~ scale(crispr_all$FOXA1) + 
+#&gt;     crispr_all$OncotreeLineage)
+#&gt; 
+#&gt; Residuals:
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -7.1693 -0.3711  0.0329  0.4560  3.5215 
+#&gt; 
+#&gt; Coefficients:
+#&gt;                                                     Estimate Std. Error t value
+#&gt; (Intercept)                                           1.2382     0.9029   1.371
+#&gt; scale(crispr_all$FOXA1)                               0.3021     0.0299  10.104
+#&gt; crispr_all$OncotreeLineageAmpulla of Vater           -0.9696     1.0094  -0.961
+#&gt; crispr_all$OncotreeLineageBiliary Tract              -1.2050     0.9157  -1.316
+#&gt; crispr_all$OncotreeLineageBladder/Urinary Tract      -1.0857     0.9161  -1.185
+#&gt; crispr_all$OncotreeLineageBone                       -1.1071     0.9126  -1.213
+#&gt; crispr_all$OncotreeLineageBowel                      -1.0521     0.9100  -1.156
+#&gt; crispr_all$OncotreeLineageBreast                     -2.1645     0.9131  -2.371
+#&gt; crispr_all$OncotreeLineageCervix                     -0.8041     0.9276  -0.867
+#&gt; crispr_all$OncotreeLineageCNS/Brain                  -1.3465     0.9079  -1.483
+#&gt; crispr_all$OncotreeLineageEsophagus/Stomach          -1.1176     0.9094  -1.229
+#&gt; crispr_all$OncotreeLineageEye                        -1.3322     0.9325  -1.429
+#&gt; crispr_all$OncotreeLineageFibroblast                 -0.8213     1.2769  -0.643
+#&gt; crispr_all$OncotreeLineageHead and Neck              -1.1233     0.9087  -1.236
+#&gt; crispr_all$OncotreeLineageKidney                     -1.4100     0.9161  -1.539
+#&gt; crispr_all$OncotreeLineageLiver                      -1.0757     0.9215  -1.167
+#&gt; crispr_all$OncotreeLineageLung                       -1.2399     0.9064  -1.368
+#&gt; crispr_all$OncotreeLineageLymphoid                   -1.1707     0.9078  -1.290
+#&gt; crispr_all$OncotreeLineageMyeloid                    -1.1257     0.9136  -1.232
+#&gt; crispr_all$OncotreeLineageOther                      -0.7691     1.2769  -0.602
+#&gt; crispr_all$OncotreeLineageOvary/Fallopian Tube       -1.6780     0.9105  -1.843
+#&gt; crispr_all$OncotreeLineagePancreas                   -1.1337     0.9124  -1.242
+#&gt; crispr_all$OncotreeLineagePeripheral Nervous System  -1.1941     0.9131  -1.308
+#&gt; crispr_all$OncotreeLineagePleura                     -1.0867     0.9241  -1.176
+#&gt; crispr_all$OncotreeLineageProstate                   -0.8901     0.9481  -0.939
+#&gt; crispr_all$OncotreeLineageSkin                       -1.0486     0.9090  -1.154
+#&gt; crispr_all$OncotreeLineageSoft Tissue                -1.2275     0.9129  -1.345
+#&gt; crispr_all$OncotreeLineageTestis                     -1.9009     0.9891  -1.922
+#&gt; crispr_all$OncotreeLineageThyroid                    -1.1388     0.9430  -1.208
+#&gt; crispr_all$OncotreeLineageUterus                     -1.2534     0.9161  -1.368
+#&gt; crispr_all$OncotreeLineageVulva/Vagina               -1.3165     1.1058  -1.191
+#&gt;                                                     Pr(&gt;|t|)    
+#&gt; (Intercept)                                           0.1705    
+#&gt; scale(crispr_all$FOXA1)                               &lt;2e-16 ***
+#&gt; crispr_all$OncotreeLineageAmpulla of Vater            0.3370    
+#&gt; crispr_all$OncotreeLineageBiliary Tract               0.1884    
+#&gt; crispr_all$OncotreeLineageBladder/Urinary Tract       0.2362    
+#&gt; crispr_all$OncotreeLineageBone                        0.2254    
+#&gt; crispr_all$OncotreeLineageBowel                       0.2479    
+#&gt; crispr_all$OncotreeLineageBreast                      0.0179 *  
+#&gt; crispr_all$OncotreeLineageCervix                      0.3862    
+#&gt; crispr_all$OncotreeLineageCNS/Brain                   0.1383    
+#&gt; crispr_all$OncotreeLineageEsophagus/Stomach           0.2193    
+#&gt; crispr_all$OncotreeLineageEye                         0.1534    
+#&gt; crispr_all$OncotreeLineageFibroblast                  0.5203    
+#&gt; crispr_all$OncotreeLineageHead and Neck               0.2167    
+#&gt; crispr_all$OncotreeLineageKidney                      0.1240    
+#&gt; crispr_all$OncotreeLineageLiver                       0.2433    
+#&gt; crispr_all$OncotreeLineageLung                        0.1716    
+#&gt; crispr_all$OncotreeLineageLymphoid                    0.1974    
+#&gt; crispr_all$OncotreeLineageMyeloid                     0.2182    
+#&gt; crispr_all$OncotreeLineageOther                       0.5471    
+#&gt; crispr_all$OncotreeLineageOvary/Fallopian Tube        0.0656 .  
+#&gt; crispr_all$OncotreeLineagePancreas                    0.2143    
+#&gt; crispr_all$OncotreeLineagePeripheral Nervous System   0.1912    
+#&gt; crispr_all$OncotreeLineagePleura                      0.2399    
+#&gt; crispr_all$OncotreeLineageProstate                    0.3481    
+#&gt; crispr_all$OncotreeLineageSkin                        0.2489    
+#&gt; crispr_all$OncotreeLineageSoft Tissue                 0.1790    
+#&gt; crispr_all$OncotreeLineageTestis                      0.0549 .  
+#&gt; crispr_all$OncotreeLineageThyroid                     0.2274    
+#&gt; crispr_all$OncotreeLineageUterus                      0.1715    
+#&gt; crispr_all$OncotreeLineageVulva/Vagina                0.2341    
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; Residual standard error: 0.9029 on 1147 degrees of freedom
+#&gt; Multiple R-squared:  0.2056,	Adjusted R-squared:  0.1848 
+#&gt; F-statistic: 9.896 on 30 and 1147 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Interpreting the linear model coefficients</p>
+<ul>
+<li>FOXA1 coefficient (scale(crispr_all$FOXA1) = 0.3021)</li>
+</ul>
+<p>Meaning: For every 1 standard deviation increase in FOXA1 dependency score, ESR1 dependency score increases by 0.3021 standard deviations, controlling for cancer type</p>
+<p>P-value &lt; 2e-16: Highly significant relationship
+This 0.3021 is your partial correlation coefficient between FOXA1 and ESR1, controlling for cancer type</p>
+<ul>
+<li>Cancer type coefficients (e.g., Breast = -2.1645)</li>
+</ul>
+<p>Meaning: Each coefficient represents the difference in ESR1 dependency (in standard deviations) between that cancer type and the reference cancer type (Adrenal Gland).</p>
+<p>Breast coefficient (-2.1645, p = 0.0179): Breast cancer cell lines have significantly lower ESR1 dependency scores compared to the reference cancer type (Adrenal Gland), on average.</p>
+<p>Most other cancer types: Non-significant differences from the reference type.</p>
+<p>Biological interpretation:</p>
+<p>FOXA1 and ESR1 have a moderate positive partial correlation (0.30) across cancer types.</p>
+<p>This suggests these genes may be part of related pathways or have synthetic lethal relationships.</p>
+<p>Breast cancer shows even stronger co-dependency (0.53), which makes biological sense given the importance of estrogen signaling in breast cancer.</p>
+<p>The significant negative coefficient for breast cancer (-2.16) indicates breast cancers generally have lower ESR1 dependency scores overall.</p>
+</div>
+<div id="what-we-found-suggest" class="section level2">
+<h2>What we found suggest</h2>
+<ul>
+<li><p>FOXA1-ESR1 have genuine co-dependency (partial r = 0.30).</p></li>
+<li><p>Breast cancer amplifies this relationship (r = 0.53 within breast).</p></li>
+<li><p>Cancer type was indeed confounding the raw correlation (0.37).</p></li>
+</ul>
+<p>The relationship is biologically meaningful across cancer types, but particularly strong in breast cancer.</p>
+</div>
+<div id="other-usages-of-partial-correlation" class="section level2">
+<h2>Other usages of partial correlation</h2>
+<p>Partial Correlation Improves Network Accuracy</p>
+<ol style="list-style-type: decimal">
+<li>Eliminating Spurious Correlations
+Problem: Standard Pearson/Spearman correlations detect both direct interactions and indirect relationships mediated by shared regulators or technical confounders (e.g., batch effects).</li>
+</ol>
+<p>Solution: Partial correlation removes the linear effects of all other variables, revealing direct dependencies between gene pairs.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Biological Validation
+Studies show partial correlation networks:</li>
+</ol>
+<p>Reduce false positives by 30-50% compared to correlation networks in cancer genomics
+Align better with experimentally validated interactions (e.g., ChIP-seq/TF binding data).</p>
+<p>Further readings:</p>
+<ul>
+<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3332147/">Partial correlation network analyses to detect altered gene interactions in human disease: using preeclampsia as a model</a></li>
+<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4194134/">Biological network inference using low order partial correlation</a></li>
+</ul>
+</div>

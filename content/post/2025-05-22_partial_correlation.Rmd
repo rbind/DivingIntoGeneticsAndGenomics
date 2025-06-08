@@ -1,0 +1,419 @@
+---
+title: "How to calculate partial correlation controlling cancer types"
+author: Ming Tommy Tang
+date: "2025-05-22"
+slug: partial-cor
+categories:
+  - tutorial
+tags:
+  - bioinformatics
+  - Depmap
+  - CRISPR
+  - data
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+```
+
+### What is partial correlation
+
+Partial correlation measures the relationship between two variables while controlling for the effect of one or more other variables.
+
+Suppose you want to know how X and Y are related, independent of how both are influenced by Z. Partial correlation helps answer:
+
+>If we remove the influence of Z, is there still a connection between X and Y?
+
+What does it have to do with Bioinformatics?
+
+You are studying the relationship between two genes:
+
+Gene A and Gene B
+You observe a high correlation between their expression levels across many samples.
+
+But… both genes might be regulated by Transcription Factor X.
+
+So, is the correlation between Gene A and Gene B direct, or is it just because both are influenced by TF X?
+
+Use partial correlation to test the relationship between Gene A and Gene B, controlling for TF X.
+
+
+
+## A dummy example in calculating pearson correlation
+
+It is easy to calculate correlation in R with the `cor` function.
+
+To calculate partial correlation, we will turn to linear regression. What's the relationship 
+of linear regression with correlation?
+
+I encourage everyone read this [Common statistical tests are linear models](https://lindeloev.github.io/tests-as-linear/).
+
+>It shows the linear models underlying common parametric and “non-parametric” tests. 
+
+I will walk you through an example in the link above:
+
+```{r}
+# Load packages for data handling and plotting
+library(tidyverse)
+library(patchwork)
+library(broom) # tidy model output
+library(kableExtra) # nice table
+
+# Reproducible "random" results
+set.seed(123)
+
+# Generate normal data with known parameters
+rnorm_fixed<- function(N, mu = 0, sd = 1) scale(rnorm(N)) * sd + mu
+
+y<- c(rnorm(15), exp(rnorm(15)), runif(20, min = -3, max = 0))  # Almost zero mean, not normal
+
+x<- rnorm_fixed(50, mu = 0, sd = 1)  # Used in correlation where this is on x-axis
+
+y2<- x * 2 + rnorm(50)
+
+# Long format data with indicator
+value = c(y, y2)
+group = rep(c('y1', 'y2'), each = 50)
+
+value
+```
+
+
+```{r}
+# x and y2 are highly correlated 
+data.frame(x=x, y=y2) %>%
+        ggplot(aes(x=x, y =y2)) +
+        geom_point() +
+        geom_smooth(method='lm') +
+        theme_minimal(base_size = 14)
+
+
+# x and y are not correlated
+data.frame(x=x, y=y) %>%
+        ggplot(aes(x=x, y =y)) +
+        geom_point() +
+        geom_smooth(method='lm') +
+        theme_minimal(base_size = 14)
+```
+
+Let's calculate the correlation and p-value 
+```{r}
+# use cor.test
+a<- cor.test(y, x, method = "pearson") # Built-in
+
+a 
+
+tidy(a) %>%
+  kable(digits = 3, 
+        caption = "Correlation Test Results",
+        col.names = c("Estimate", "Statistic", "p-value", "Parameter", 
+                     "Lower CI", "Upper CI", "Method", "Alternative"))
+
+## use linear model
+b<- lm(y ~ 1 + x) # Equivalent linear model: y = Beta0*1 + Beta1*x
+
+
+# Create a nice table
+tidy(b) %>%
+  kable(digits = 3, 
+        caption = "Linear Model Results",
+        col.names = c("Term", "Estimate", "Std Error", "t-statistic", "p-value"))
+```
+
+The p-value is the same (p = 0.308), but the coefficient is not (0.147 vs 0.241).
+
+It turns out, we need to standardize x and y to get the same correlation coefficient.
+```{r}
+# need to scale to get the same correlation coefficient
+c<- lm(scale(y) ~ 1 + scale(x))
+
+tidy(c) %>%
+  kable(digits = 3, 
+        caption = "Linear Model Results",
+        col.names = c("Term", "Estimate", "Std Error", "t-statistic", "p-value"))
+```
+Now, we get the same 0.147 of the coefficient.
+
+## Why need to standardize it to get the right correlation coefficient
+
+### Pearson's Correlation Coefficient
+
+The formula for Pearson's correlation coefficient ($r$) is:
+
+$$
+r = \frac{\sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})}
+         {\sqrt{\sum_{i=1}^{n} (x_i - \bar{x})^2} \sqrt{\sum_{i=1}^{n} (y_i - \bar{y})^2}}
+$$
+
+###  Regression Slope for Standardized Variables
+
+When $x$ and $y$ are standardized to $z$-scores:
+
+$$
+x_{std} = \frac{x - \bar{x}}{SD(x)}
+$$
+
+$$
+y_{std} = \frac{y - \bar{y}}{SD(y)}
+$$
+
+The regression slope ($\beta$) is:
+
+$$
+\beta = \frac{\sum_{i=1}^{n} x_{std,i} \, y_{std,i}}{\sum_{i=1}^{n} x_{std,i}^2}
+$$
+
+
+###  Proof of Equivalence
+
+Since standardized variables have $SD(x_{std}) = SD(y_{std}) = 1$,
+
+$$
+\sum_{i=1}^{n} x_{std,i}^2 = n
+$$
+
+So,
+
+$$
+\beta = \frac{\sum_{i=1}^{n} x_{std,i} \, y_{std,i}}{n}
+$$
+
+Expanding $x_{std}$ and $y_{std}$:
+
+$$
+\beta = \frac{1}{n} \cdot \frac{\sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})}{SD(x) \cdot SD(y)}
+$$
+
+Therefore,
+
+$$
+\beta = r
+$$
+
+
+Now, let's calculate the pairs of x and y1 which are significantly correlated:
+
+```{r}
+a2<- cor.test(y2, x, method = "pearson") # Built-in
+
+a2
+
+tidy(a2) %>%
+  kable(digits = 3, 
+        caption = "Correlation Test Results",
+        col.names = c("Estimate", "Statistic", "p-value", "Parameter", 
+                     "Lower CI", "Upper CI", "Method", "Alternative"))
+```
+
+correlation of 0.885 with a p value of 0.
+
+```{r}
+## use linear model
+b2<- lm(y2 ~ 1 + x) # Equivalent linear model: y = Beta0*1 + Beta1*x
+
+
+# Create a nice table
+tidy(b2) %>%
+  kable(digits = 3, 
+        caption = "Linear Model Results",
+        col.names = c("Term", "Estimate", "Std Error", "t-statistic", "p-value"))
+```
+
+
+```{r}
+# need to scale to get the same correlation coefficient
+c2<- lm(scale(y2) ~ 1 + scale(x))
+
+tidy(c2) %>%
+  kable(digits = 3, 
+        caption = "Linear Model Results",
+        col.names = c("Term", "Estimate", "Std Error", "t-statistic", "p-value"))
+```
+we get the same coefficient of `0.885` and p-value of 0.
+
+It is very satisfying to see we get the same results using different methods.
+
+
+## A practical example in calculating partial correlation
+Go to [Depmap](https://depmap.org/portal/data_page/?tab=currentRelease)
+Download the CRISPR screening dependency data `CRISPRGeneEffect.csv`
+
+The file is > 400MB.
+
+Also download the `Model.csv` file which contains the metadata information (e.g, cancer type for each cell line)
+
+```{r}
+library(readr)
+library(dplyr)
+
+#read in the data
+crispr_score<- read_csv("~/blog_data/CRISPRGeneEffect.csv")
+
+crispr_score[1:5, 1:5]
+```
+
+We need to clean up the column names. remove the parentheses and the ENTREZE ID (numbers).
+
+NOTE: this type of regular expression is a perfect question for `LLM`.
+
+```{r}
+crispr_score<- crispr_score %>%
+        dplyr::rename(ModelID = `...1`) %>%
+        rename_with(~str_trim(str_remove(.x, " \\(.*\\)$")), -1)
+
+crispr_score[1:5, 1:5]
+```
+
+
+```{r}
+meta<- read_csv("~/blog_data/Model.csv")
+head(meta)
+
+
+table(meta$OncotreeLineage)
+
+# subset only the breast cancer cell line
+breast_meta<- meta %>%
+        select(ModelID, OncotreeLineage) %>%
+        mutate(breast = case_when(
+                OncotreeLineage == "Breast" ~ "yes",
+                TRUE ~ "no"
+        ))
+
+
+crispr_all<- inner_join(meta, crispr_score)
+
+
+crispr_all<- crispr_all %>%
+        mutate(breast = case_when(
+                OncotreeLineage == "Breast" ~ "yes",
+                TRUE ~ "no"
+        ))
+
+
+
+ggplot(crispr_all,  aes(x= FOXA1, y= ESR1)) +
+        geom_point(aes(color = breast)) +
+        geom_smooth(method='lm', formula= y~x) +
+        facet_wrap(~breast) 
+```
+It looks like the FOXA1 and ESR1 CRISPR dependency score are more correlated in Breast cancer.
+ 
+
+Let's calculate the correlation and p-value
+```{r}
+cor.test(crispr_all$FOXA1[crispr_all$breast == "yes"], crispr_all$ESR1[crispr_all$breast == "yes"])
+
+cor.test(crispr_all$FOXA1, crispr_all$ESR1)
+```
+
+* All cell lines (r = 0.38): This includes the confounding effect of cancer type. Different cancer types have different baseline dependencies for both FOXA1 and ESR1.
+
+* Breast cancer only (r = 0.52): This removes the cancer type confounding, showing the "true" relationship within a homogeneous cancer type.
+
+* The increase from 0.38 to 0.52 suggests that cancer type was acting as a confounding variable, diluting the true correlation between FOXA1 and ESR1 dependencies.
+
+
+### Let's use linear model to calculate correlation
+
+```{r}
+# need to scale to get the same correlation coefficient
+lm_cor <- lm(scale(crispr_all$ESR1) ~ 1 + scale(crispr_all$FOXA1))
+
+summary(lm_cor)
+
+# a nice table
+tidy(lm_cor) %>%
+  kable(digits = 3, 
+        caption = "Linear Model Results",
+        col.names = c("Term", "Estimate", "Std Error", "t-statistic", "p-value"))
+```
+
+The results is the same as `cor.test(crispr_all$FOXA1, crispr_all$ESR1)`
+
+## adding the cancer type as a covariate to calculate partial correlation
+
+```{r}
+lm_cor_partial <- lm(scale(crispr_all$ESR1) ~ scale(crispr_all$FOXA1) + crispr_all$OncotreeLineage)
+
+unique(crispr_all$OncotreeLineage) %>% sort()
+```
+
+We have 30 lineages, and by default the reference group is `Adrenal Gland` which is the first sorted alphabetically.
+
+```{r}
+summary(lm_cor_partial)
+```
+
+
+Interpreting the linear model coefficients
+
+* FOXA1 coefficient (scale(crispr_all$FOXA1) = 0.3021)
+
+Meaning: For every 1 standard deviation increase in FOXA1 dependency score, ESR1 dependency score increases by 0.3021 standard deviations, controlling for cancer type
+
+P-value < 2e-16: Highly significant relationship
+This 0.3021 is your partial correlation coefficient between FOXA1 and ESR1, controlling for cancer type
+
+* Cancer type coefficients (e.g., Breast = -2.1645)
+
+Meaning: Each coefficient represents the difference in ESR1 dependency (in standard deviations) between that cancer type and the reference cancer type (Adrenal Gland).
+
+Breast coefficient (-2.1645, p = 0.0179): Breast cancer cell lines have significantly lower ESR1 dependency scores compared to the reference cancer type (Adrenal Gland), on average.
+
+Most other cancer types: Non-significant differences from the reference type.
+
+
+Biological interpretation:
+
+FOXA1 and ESR1 have a moderate positive partial correlation (0.30) across cancer types.
+
+This suggests these genes may be part of related pathways or have synthetic lethal relationships.
+
+Breast cancer shows even stronger co-dependency (0.53), which makes biological sense given the importance of estrogen signaling in breast cancer.
+
+The significant negative coefficient for breast cancer (-2.16) indicates breast cancers generally have lower ESR1 dependency scores overall.
+
+## What we found suggest 
+
+* FOXA1-ESR1 have genuine co-dependency (partial r = 0.30).
+
+* Breast cancer amplifies this relationship (r = 0.53 within breast).
+
+* Cancer type was indeed confounding the raw correlation (0.37).
+
+The relationship is biologically meaningful across cancer types, but particularly strong in breast cancer.
+
+
+## Other usages of partial correlation
+
+Partial Correlation Improves Network Accuracy
+
+1. Eliminating Spurious Correlations
+Problem: Standard Pearson/Spearman correlations detect both direct interactions and indirect relationships mediated by shared regulators or technical confounders (e.g., batch effects).
+
+Solution: Partial correlation removes the linear effects of all other variables, revealing direct dependencies between gene pairs. 
+
+2. Biological Validation
+Studies show partial correlation networks:
+
+Reduce false positives by 30-50% compared to correlation networks in cancer genomics 
+Align better with experimentally validated interactions (e.g., ChIP-seq/TF binding data). 
+
+Further readings:
+
+* [Partial correlation network analyses to detect altered gene interactions in human disease: using preeclampsia as a model](https://pmc.ncbi.nlm.nih.gov/articles/PMC3332147/)
+* [Biological network inference using low order partial correlation](https://pmc.ncbi.nlm.nih.gov/articles/PMC4194134/)
+
