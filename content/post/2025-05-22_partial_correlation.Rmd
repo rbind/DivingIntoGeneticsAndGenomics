@@ -250,6 +250,10 @@ It is very satisfying to see we get the same results using different methods.
 Go to [Depmap](https://depmap.org/portal/data_page/?tab=currentRelease)
 Download the CRISPR screening dependency data `CRISPRGeneEffect.csv`
 
+The `CRISPRGeneEffect.csv` file from DepMap contains results from genome-wide CRISPR-Cas9 knockout screens across hundreds of cancer cell lines, reporting how essential each gene is for cell survival. The gene effect scores, calculated using the CERES or Chronos algorithms, indicate the impact of knocking out each gene: **lower scores mean a gene is more essential for that cell line’s viability**. 
+
+This dataset enables researchers to identify cancer-specific genetic vulnerabilities and potential therapeutic targets by showing which genes are critical for the survival of different cancer types.
+
 The file is > 400MB.
 
 Also download the `Model.csv` file which contains the metadata information (e.g, cancer type for each cell line)
@@ -323,8 +327,7 @@ cor.test(crispr_all$FOXA1, crispr_all$ESR1)
 
 * Breast cancer only (r = 0.52): This removes the cancer type confounding, showing the "true" relationship within a homogeneous cancer type.
 
-* The increase from 0.38 to 0.52 suggests that cancer type was acting as a confounding variable, diluting the true correlation between FOXA1 and ESR1 dependencies.
-
+* The increase from 0.38 to 0.52 suggests that cancer type was acting as a confounding variable.
 
 ### Let's use linear model to calculate correlation
 
@@ -362,19 +365,18 @@ Interpreting the linear model coefficients
 
 * FOXA1 coefficient (scale(crispr_all$FOXA1) = 0.3021)
 
-Meaning: For every 1 standard deviation increase in FOXA1 dependency score, ESR1 dependency score increases by 0.3021 standard deviations, controlling for cancer type
+Meaning: For every 1 standard deviation increase in FOXA1 dependency score, ESR1 dependency score increases by 0.3021 standard deviations, controlling for cancer type.
 
 P-value < 2e-16: Highly significant relationship
-This 0.3021 is your partial correlation coefficient between FOXA1 and ESR1, controlling for cancer type
+This 0.3021 is your partial correlation coefficient between FOXA1 and ESR1, controlling for cancer type.
 
 * Cancer type coefficients (e.g., Breast = -2.1645)
 
 Meaning: Each coefficient represents the difference in ESR1 dependency (in standard deviations) between that cancer type and the reference cancer type (Adrenal Gland).
 
-Breast coefficient (-2.1645, p = 0.0179): Breast cancer cell lines have significantly lower ESR1 dependency scores compared to the reference cancer type (Adrenal Gland), on average.
+Breast coefficient (-2.1645, p = 0.0179): Breast cancer cell lines have significantly lower ESR1 dependency scores (lower means more dependent) compared to the reference cancer type (Adrenal Gland), on average.
 
 Most other cancer types: Non-significant differences from the reference type.
-
 
 Biological interpretation:
 
