@@ -1,0 +1,166 @@
+---
+title: "How Cancer Drugs Really Work"
+author: Ming Tommy Tang & ChatGPT
+date: "2025-06-20"
+slug: cancer-drug
+categories:
+  - tutorial
+tags:
+  - bioinformatics
+  - Depmap
+  - CRISPR
+  - data
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<p>Suna was 28.
+She had melanoma.
+Chemo left her wrecked—her hair gone, her strength gone, and her hope fading.
+Doctors gave her weeks.</p>
+<p>Then they tried something different.</p>
+<p>It didn’t poison the tumor. It didn’t cut or burn.
+It <strong>woke up her immune system</strong>.</p>
+<p>Her own T-cells found the cancer.
+Attacked it.
+Killed it.</p>
+<p>She survived.</p>
+<p>That story isn’t rare anymore.
+And that’s the power of <strong>modern cancer therapy</strong>—an evolving arsenal that’s learning to <strong>outsmart</strong>, not just outgun, one of biology’s deadliest games.</p>
+<hr />
+<div id="from-brute-force-to-targeted-strikes" class="section level2">
+<h2>From Brute Force to Targeted Strikes</h2>
+<p>The earliest cancer treatments were blunt. Chemotherapy still plays a crucial role—it’s simple, aggressive, and often lifesaving.</p>
+<p>Chemotherapy works by attacking <strong>rapidly dividing cells</strong>. That includes cancer—but also hair follicles, blood cells, and the lining of your gut.</p>
+<p>Common mechanisms include:</p>
+<ul>
+<li><strong>DNA damage</strong>: Drugs that cross-link DNA strands, halting replication.</li>
+<li><strong>Mitotic arrest</strong>: Agents that interfere with <strong>microtubules</strong> or block enzymes like <strong>topoisomerases</strong>, freezing cells mid-division.</li>
+</ul>
+<p>The result: many cancer cells die. But so do many healthy ones.</p>
+<hr />
+</div>
+<div id="the-rise-of-precision" class="section level2">
+<h2>The Rise of Precision</h2>
+<p>As we understood cancer better, we began to see patterns—specific proteins, enzymes, and signals that tumors rely on to grow.</p>
+<p>Enter <strong>targeted therapy</strong>.</p>
+<p>These treatments act like guided missiles, striking key cellular machinery:</p>
+<ul>
+<li><strong>CDK4/6</strong>: Cell cycle drivers. Block them, and the cell stalls before it can divide.</li>
+<li><strong>VEGF</strong>: Promotes blood vessel growth. Inhibiting it starves the tumor.</li>
+<li><strong>Estrogen receptors (ER)</strong>: In hormone-sensitive tumors, cutting the signal cuts the growth.</li>
+<li><strong>HER2</strong>: A growth factor receptor often overexpressed in breast cancers.</li>
+<li><strong>KRAS</strong>: Long thought “undruggable,” it’s now being indirectly targeted using clever chemistry.</li>
+<li><strong>Cyclic peptides</strong>: Synthetic molecules that disrupt protein-protein interactions, wrapping around target surfaces like molecular zip ties.</li>
+</ul>
+<p>These strategies offer precision, but precision has a flaw: <strong>mutations</strong>. Cancer evolves fast. When the target changes, the drug can miss.</p>
+<hr />
+</div>
+<div id="the-immune-system-unleashed" class="section level2">
+<h2>The Immune System, Unleashed</h2>
+<p>Modern cancer therapy didn’t find a better poison.
+It found a better idea: <strong>use the body’s own defenses</strong>.</p>
+<p>Immunotherapy works by helping the immune system do what it does best—recognize and destroy threats.</p>
+<div id="checkpoint-inhibition" class="section level3">
+<h3>Checkpoint Inhibition</h3>
+<p>T-cells are powerful, but they’re held in check by built-in brakes like <strong>PD-1</strong> and <strong>CTLA-4</strong>.</p>
+<p>Tumors exploit these brakes to hide. Checkpoint inhibitors remove them.</p>
+<p>When activated, T-cells release <strong>IFN-γ</strong>, a signal that:</p>
+<ul>
+<li>Increases <strong>MHC I</strong> on tumor cells, making them easier to spot</li>
+<li>Triggers <strong>CXCL9/10</strong>, chemokines that bring in immune reinforcements</li>
+</ul>
+<p>The result? The immune system storms the tumor.</p>
+</div>
+<div id="cytokine-therapy" class="section level3">
+<h3>Cytokine Therapy</h3>
+<p>Cytokines are immune messengers. We can engineer them to target tumors more precisely.</p>
+<ul>
+<li><strong>Type I interferons</strong> drive cancer cells into <strong>senescence</strong>—a non-dividing, zombie-like state—and activate <strong>dendritic cells</strong> that train T-cells to recognize threats.</li>
+<li><strong>IL-2</strong> fuels T-cell proliferation. It’s powerful, but dosing must be precise—too much can cause immune overdrive.</li>
+</ul>
+</div>
+<div id="oncolytic-viruses" class="section level3">
+<h3>Oncolytic Viruses</h3>
+<p>Some therapies use modified viruses. These infect and <strong>burst tumor cells from the inside</strong>. They also trigger a cascade of immune responses, drawing the body’s attention to the danger.</p>
+</div>
+<div id="antibody-based-therapies" class="section level3">
+<h3>Antibody-Based Therapies</h3>
+<p>Antibodies aren’t just immune defenders—they’re delivery systems:</p>
+<ul>
+<li>Some bind to surface markers like <strong>HER2</strong>, tagging tumors for destruction.</li>
+<li>Others carry toxic molecules inside cancer cells.</li>
+<li><strong>Bispecific antibodies</strong> physically link T-cells and tumors, ensuring targeted killing.</li>
+</ul>
+</div>
+<div id="car-t-cell-therapy" class="section level3">
+<h3>CAR-T Cell Therapy</h3>
+<p>This is personalized warfare.</p>
+<p>Scientists extract a patient’s own T-cells, reprogram them to detect tumor antigens (like <strong>CD19</strong> or <strong>BCMA</strong>), and reinfuse them.</p>
+<p>In blood cancers, it’s transformative. In solid tumors, challenges like the tumor microenvironment remain—but progress is rapid.</p>
+<hr />
+</div>
+</div>
+<div id="resistance-is-real" class="section level2">
+<h2>Resistance Is Real</h2>
+<p>Cancer mutates. It finds backdoors. It learns.</p>
+<p>Some of its tricks:</p>
+<ul>
+<li><strong>JAK/STAT mutations</strong>: disrupt immune signaling</li>
+<li><strong>DNA repair upregulation</strong>: helps survive chemotherapy</li>
+<li><strong>Glutathione enzymes</strong>: detoxify otherwise lethal compounds</li>
+</ul>
+<p>To counter this, scientists are developing:</p>
+<ul>
+<li><strong>Epigenetic modulators</strong>: reverse silencing of tumor suppressors</li>
+<li><strong>Molecular glues</strong>: force toxic protein degradation by hijacking cellular trash systems</li>
+<li><strong>Protein stabilizers</strong>: restore function to damaged genes like <strong>p53</strong></li>
+</ul>
+<hr />
+</div>
+<div id="why-combination-matters" class="section level2">
+<h2>Why Combination Matters</h2>
+<p>No single treatment is enough anymore.</p>
+<p>Smart therapies now <strong>combine multiple mechanisms</strong>:</p>
+<ul>
+<li>Chemotherapy paired with immune checkpoint inhibitors exposes new antigens</li>
+<li>CDK4/6 inhibition can slow tumor growth and <strong>increase immune infiltration</strong></li>
+<li>Oncolytic viruses plus cytokine therapy create a multi-layered immune response</li>
+</ul>
+<p>The result is synergy: targeting cancer from all sides, blocking every known escape route.</p>
+<hr />
+</div>
+<div id="taming-the-chaos" class="section level2">
+<h2>Taming the Chaos</h2>
+<p>Cancer biology is messy.</p>
+<p>So is raw data.</p>
+<p>Just like a biostatistician tidies a dataset in R—reshaping tables, standardizing columns, long-to-wide—you need structure to find signal in the noise.</p>
+<p>Understanding cancer requires <strong>tidy thinking</strong>.
+Every pathway, mutation, and immune interaction must be placed in context.
+Only then can we make rational decisions in an irrational landscape.</p>
+<hr />
+</div>
+<div id="what-weve-learned" class="section level2">
+<h2>What We’ve Learned</h2>
+<p>Suna’s story used to be rare.
+Now it’s becoming common.
+Because we stopped looking for a silver bullet—and started building an arsenal.</p>
+<p><strong>Key concepts to remember:</strong></p>
+<ul>
+<li><strong>Checkpoint inhibition</strong> (PD-1, CTLA-4) removes immune brakes</li>
+<li><strong>Cytokines</strong> like interferons and IL-2 fuel anti-tumor immunity</li>
+<li><strong>Oncolytic viruses</strong> and <strong>CAR-T cells</strong> bring new ways to kill tumors</li>
+<li>Resistance arises fast—combination therapy is critical</li>
+<li>Clear biological insight depends on structure and tidy thinking</li>
+</ul>
+<p><strong>PS</strong></p>
+<p>The best book for cancer biology is “The Biology of Cancer” by Robert Weinberg.</p>
+<p><img src="/img/biolog_of_cancer.jpg" /></p>
+</div>

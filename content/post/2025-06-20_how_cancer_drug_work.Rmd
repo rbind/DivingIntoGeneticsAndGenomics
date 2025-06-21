@@ -1,0 +1,200 @@
+---
+title: "How Cancer Drugs Really Work"
+author: Ming Tommy Tang & ChatGPT
+date: "2025-06-20"
+slug: cancer-drug
+categories:
+  - tutorial
+tags:
+  - bioinformatics
+  - Depmap
+  - CRISPR
+  - data
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+```
+
+Suna was 28.
+She had melanoma.
+Chemo left her wrecked—her hair gone, her strength gone, and her hope fading.
+Doctors gave her weeks.
+
+Then they tried something different.
+
+It didn’t poison the tumor. It didn’t cut or burn.
+It **woke up her immune system**.
+
+Her own T-cells found the cancer.
+Attacked it.
+Killed it.
+
+She survived.
+
+That story isn’t rare anymore.
+And that’s the power of **modern cancer therapy**—an evolving arsenal that’s learning to **outsmart**, not just outgun, one of biology’s deadliest games.
+
+---
+
+## From Brute Force to Targeted Strikes
+
+The earliest cancer treatments were blunt. Chemotherapy still plays a crucial role—it’s simple, aggressive, and often lifesaving.
+
+Chemotherapy works by attacking **rapidly dividing cells**. That includes cancer—but also hair follicles, blood cells, and the lining of your gut.
+
+Common mechanisms include:
+
+* **DNA damage**: Drugs that cross-link DNA strands, halting replication.
+* **Mitotic arrest**: Agents that interfere with **microtubules** or block enzymes like **topoisomerases**, freezing cells mid-division.
+
+The result: many cancer cells die. But so do many healthy ones.
+
+---
+
+## The Rise of Precision
+
+As we understood cancer better, we began to see patterns—specific proteins, enzymes, and signals that tumors rely on to grow.
+
+Enter **targeted therapy**.
+
+These treatments act like guided missiles, striking key cellular machinery:
+
+* **CDK4/6**: Cell cycle drivers. Block them, and the cell stalls before it can divide.
+* **VEGF**: Promotes blood vessel growth. Inhibiting it starves the tumor.
+* **Estrogen receptors (ER)**: In hormone-sensitive tumors, cutting the signal cuts the growth.
+* **HER2**: A growth factor receptor often overexpressed in breast cancers.
+* **KRAS**: Long thought "undruggable," it’s now being indirectly targeted using clever chemistry.
+* **Cyclic peptides**: Synthetic molecules that disrupt protein-protein interactions, wrapping around target surfaces like molecular zip ties.
+
+These strategies offer precision, but precision has a flaw: **mutations**. Cancer evolves fast. When the target changes, the drug can miss.
+
+---
+
+## The Immune System, Unleashed
+
+Modern cancer therapy didn’t find a better poison.
+It found a better idea: **use the body’s own defenses**.
+
+Immunotherapy works by helping the immune system do what it does best—recognize and destroy threats.
+
+### Checkpoint Inhibition
+
+T-cells are powerful, but they're held in check by built-in brakes like **PD-1** and **CTLA-4**.
+
+Tumors exploit these brakes to hide. Checkpoint inhibitors remove them.
+
+When activated, T-cells release **IFN-γ**, a signal that:
+
+* Increases **MHC I** on tumor cells, making them easier to spot
+* Triggers **CXCL9/10**, chemokines that bring in immune reinforcements
+
+The result? The immune system storms the tumor.
+
+### Cytokine Therapy
+
+Cytokines are immune messengers. We can engineer them to target tumors more precisely.
+
+* **Type I interferons** drive cancer cells into **senescence**—a non-dividing, zombie-like state—and activate **dendritic cells** that train T-cells to recognize threats.
+* **IL-2** fuels T-cell proliferation. It's powerful, but dosing must be precise—too much can cause immune overdrive.
+
+### Oncolytic Viruses
+
+Some therapies use modified viruses. These infect and **burst tumor cells from the inside**. They also trigger a cascade of immune responses, drawing the body’s attention to the danger.
+
+### Antibody-Based Therapies
+
+Antibodies aren’t just immune defenders—they're delivery systems:
+
+* Some bind to surface markers like **HER2**, tagging tumors for destruction.
+* Others carry toxic molecules inside cancer cells.
+* **Bispecific antibodies** physically link T-cells and tumors, ensuring targeted killing.
+
+### CAR-T Cell Therapy
+
+This is personalized warfare.
+
+Scientists extract a patient's own T-cells, reprogram them to detect tumor antigens (like **CD19** or **BCMA**), and reinfuse them.
+
+In blood cancers, it’s transformative. In solid tumors, challenges like the tumor microenvironment remain—but progress is rapid.
+
+---
+
+## Resistance Is Real
+
+Cancer mutates. It finds backdoors. It learns.
+
+Some of its tricks:
+
+* **JAK/STAT mutations**: disrupt immune signaling
+* **DNA repair upregulation**: helps survive chemotherapy
+* **Glutathione enzymes**: detoxify otherwise lethal compounds
+
+To counter this, scientists are developing:
+
+* **Epigenetic modulators**: reverse silencing of tumor suppressors
+* **Molecular glues**: force toxic protein degradation by hijacking cellular trash systems
+* **Protein stabilizers**: restore function to damaged genes like **p53**
+
+---
+
+## Why Combination Matters
+
+No single treatment is enough anymore.
+
+Smart therapies now **combine multiple mechanisms**:
+
+* Chemotherapy paired with immune checkpoint inhibitors exposes new antigens
+* CDK4/6 inhibition can slow tumor growth and **increase immune infiltration**
+* Oncolytic viruses plus cytokine therapy create a multi-layered immune response
+
+The result is synergy: targeting cancer from all sides, blocking every known escape route.
+
+---
+
+## Taming the Chaos
+
+Cancer biology is messy.
+
+So is raw data.
+
+Just like a biostatistician tidies a dataset in R—reshaping tables, standardizing columns, long-to-wide—you need structure to find signal in the noise.
+
+Understanding cancer requires **tidy thinking**.
+Every pathway, mutation, and immune interaction must be placed in context.
+Only then can we make rational decisions in an irrational landscape.
+
+---
+
+## What We’ve Learned
+
+Suna’s story used to be rare.
+Now it’s becoming common.
+Because we stopped looking for a silver bullet—and started building an arsenal.
+
+**Key concepts to remember:**
+
+* **Checkpoint inhibition** (PD-1, CTLA-4) removes immune brakes
+* **Cytokines** like interferons and IL-2 fuel anti-tumor immunity
+* **Oncolytic viruses** and **CAR-T cells** bring new ways to kill tumors
+* Resistance arises fast—combination therapy is critical
+* Clear biological insight depends on structure and tidy thinking
+
+
+**PS**
+
+The best book for cancer biology is "The Biology of Cancer" by Robert Weinberg.
+
+![](/img/biolog_of_cancer.jpg)
