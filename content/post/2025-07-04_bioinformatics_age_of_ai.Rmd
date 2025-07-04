@@ -1,0 +1,156 @@
+---
+title: "Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist"
+author: Ming Tommy Tang & ChatGPT
+date: "2025-07-04"
+slug: ai-bioinformatics
+categories:
+  - perspective
+tags:
+  - bioinformatics
+  - AI
+  - computational biology
+  - code
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+```
+
+AI is transforming every field — and bioinformatics is no exception.
+From designing drug molecules in minutes to writing entire pipelines, generative AI is making it faster than ever to process biological data. But here’s the truth:
+
+> **AI doesn’t understand biology — *you* do.**
+
+That’s why, in this new era, your value isn’t replaced by AI — it’s multiplied by your ability to **judge, validate, and improve** what AI produces.
+
+In this post, you’ll learn the **5 essential skills** every bioinformatician must master to thrive in the age of AI.
+
+If you want to watch the video:
+
+```{r echo=FALSE}
+library("vembedr")
+
+embed_url("https://www.youtube.com/watch?v=uU0fix2Nn1M")
+```
+
+
+---
+
+## Why AI Isn't Enough (Yet)
+
+AI can generate fast, elegant code — but often without understanding the *biological logic* behind it. A recent benchmark (BioCoder) shows that even ChatGPT-4 scores only 50% accuracy on complex bioinformatics tasks.
+
+> 80% of AI-generated bioinformatics code requires human correction.
+
+This means your expertise is more important than ever. AI can be an assistant — but only if *you* can spot the errors it doesn't know it’s making.
+
+---
+
+## Common AI Mistakes in Bioinformatics
+
+Before diving into the five core skills, here are common red flags in AI-generated code:
+
+* Off-by-one errors: e.g., treating 0-based coordinates as 1-based
+* Strand orientation confusion: ignoring 5' to 3' directionality
+* File format mix-ups: VCF vs GFF vs BED vs SAM/BAM
+* Misapplied statistics: running t-tests on non-normal data
+* Memory disasters: loading whole genomes instead of streaming data
+
+---
+
+## Skill #1: Know Your Data Formats
+
+Bioinformatics is filled with diverse file types — FASTQ, BAM, VCF, GTF, BED — and each one has quirks. You need to:
+
+* Recognize single-end vs paired-end reads
+* Interpret quality scores in FASTQ
+* Understand how coordinates are indexed in BED (0-based) vs VCF (1-based)
+
+AI might run the code, but if it misreads a file, it might quietly corrupt your results.
+
+---
+
+## Skill #2: Understand Statistics (Deeply)
+
+Don’t let AI misuse statistical methods. Know:
+
+* When to use t-tests vs non-parametric tests
+* Why variance stabilization matters in DESeq2
+* How to correct for multiple testing with FDR
+* The meaning and difference between TPM, RPKM, and raw counts
+
+Bad stats = beautiful graphs with meaningless results.
+
+---
+
+## Skill #3: Biological Validation
+
+AI doesn’t know that a protein must be divisible by three codons to be valid.
+You do.
+Use your biological knowledge to catch logic errors:
+
+* Reverse complements must be correct (5' to 3')
+* Splice sites should follow GT-AG rules
+* Cell-type-specific expression should make sense (e.g., surfactant proteins don’t belong in nuclei)
+
+---
+
+## Skill #4: Review Code Like a Scientist
+
+Here’s a quick AI code review checklist:
+
+* Are all parameters clearly defined?
+* Does the script run without errors?
+* Does it handle empty files or edge cases?
+* Is the code reproducible?
+* Is it version controlled and commented?
+
+When AI gives you something, don’t just copy-paste it. Inspect it. Stress-test it. Own it.
+
+---
+
+## Skill #5: Build Tests Like a Wet Lab Scientist
+
+Don’t trust AI pipelines until they pass positive and negative controls:
+
+* Variant calling? Use known reference variants from Genome in a Bottle.
+* Sequence alignment? Identical sequences should score 100% similarity. Random ones shouldn’t.
+* Gene expression? Make sure housekeeping genes behave as expected.
+
+Think of this like bench science — every experiment needs controls.
+
+---
+
+## Final Thoughts: Use AI, But Don’t Trust It Blindly
+
+What to do next:
+
+1. Trust, but verify everything AI gives you.
+2. Document your prompts and outputs for reproducibility.
+3. Stay grounded in fundamentals — file formats, biology, stats, code structure.
+4. Connect with the community: Share, discuss, and learn from others.
+5. Let AI amplify your skills — not replace your judgment.
+
+> AI is your assistant, not your replacement.
+
+Bioinformatics in the age of AI will reward those who know both how to prompt and how to question the answers.
+
+---
+
+Want more?
+Check out [my newsletter](https://divingintogeneticsandgenomics.kit.com/profile) for weekly bioinformatics tips and coding insights.
+
+
+

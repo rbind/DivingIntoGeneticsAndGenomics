@@ -1,0 +1,136 @@
+---
+title: "Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist"
+author: Ming Tommy Tang & ChatGPT
+date: "2025-07-04"
+slug: ai-bioinformatics
+categories:
+  - perspective
+tags:
+  - bioinformatics
+  - AI
+  - computational biology
+  - code
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+<link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<p>AI is transforming every field — and bioinformatics is no exception.
+From designing drug molecules in minutes to writing entire pipelines, generative AI is making it faster than ever to process biological data. But here’s the truth:</p>
+<blockquote>
+<p><strong>AI doesn’t understand biology — <em>you</em> do.</strong></p>
+</blockquote>
+<p>That’s why, in this new era, your value isn’t replaced by AI — it’s multiplied by your ability to <strong>judge, validate, and improve</strong> what AI produces.</p>
+<p>In this post, you’ll learn the <strong>5 essential skills</strong> every bioinformatician must master to thrive in the age of AI.</p>
+<p>If you want to watch the video:</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/uU0fix2Nn1M" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<hr />
+<div id="why-ai-isnt-enough-yet" class="section level2">
+<h2>Why AI Isn’t Enough (Yet)</h2>
+<p>AI can generate fast, elegant code — but often without understanding the <em>biological logic</em> behind it. A recent benchmark (BioCoder) shows that even ChatGPT-4 scores only 50% accuracy on complex bioinformatics tasks.</p>
+<blockquote>
+<p>80% of AI-generated bioinformatics code requires human correction.</p>
+</blockquote>
+<p>This means your expertise is more important than ever. AI can be an assistant — but only if <em>you</em> can spot the errors it doesn’t know it’s making.</p>
+<hr />
+</div>
+<div id="common-ai-mistakes-in-bioinformatics" class="section level2">
+<h2>Common AI Mistakes in Bioinformatics</h2>
+<p>Before diving into the five core skills, here are common red flags in AI-generated code:</p>
+<ul>
+<li>Off-by-one errors: e.g., treating 0-based coordinates as 1-based</li>
+<li>Strand orientation confusion: ignoring 5’ to 3’ directionality</li>
+<li>File format mix-ups: VCF vs GFF vs BED vs SAM/BAM</li>
+<li>Misapplied statistics: running t-tests on non-normal data</li>
+<li>Memory disasters: loading whole genomes instead of streaming data</li>
+</ul>
+<hr />
+</div>
+<div id="skill-1-know-your-data-formats" class="section level2">
+<h2>Skill #1: Know Your Data Formats</h2>
+<p>Bioinformatics is filled with diverse file types — FASTQ, BAM, VCF, GTF, BED — and each one has quirks. You need to:</p>
+<ul>
+<li>Recognize single-end vs paired-end reads</li>
+<li>Interpret quality scores in FASTQ</li>
+<li>Understand how coordinates are indexed in BED (0-based) vs VCF (1-based)</li>
+</ul>
+<p>AI might run the code, but if it misreads a file, it might quietly corrupt your results.</p>
+<hr />
+</div>
+<div id="skill-2-understand-statistics-deeply" class="section level2">
+<h2>Skill #2: Understand Statistics (Deeply)</h2>
+<p>Don’t let AI misuse statistical methods. Know:</p>
+<ul>
+<li>When to use t-tests vs non-parametric tests</li>
+<li>Why variance stabilization matters in DESeq2</li>
+<li>How to correct for multiple testing with FDR</li>
+<li>The meaning and difference between TPM, RPKM, and raw counts</li>
+</ul>
+<p>Bad stats = beautiful graphs with meaningless results.</p>
+<hr />
+</div>
+<div id="skill-3-biological-validation" class="section level2">
+<h2>Skill #3: Biological Validation</h2>
+<p>AI doesn’t know that a protein must be divisible by three codons to be valid.
+You do.
+Use your biological knowledge to catch logic errors:</p>
+<ul>
+<li>Reverse complements must be correct (5’ to 3’)</li>
+<li>Splice sites should follow GT-AG rules</li>
+<li>Cell-type-specific expression should make sense (e.g., surfactant proteins don’t belong in nuclei)</li>
+</ul>
+<hr />
+</div>
+<div id="skill-4-review-code-like-a-scientist" class="section level2">
+<h2>Skill #4: Review Code Like a Scientist</h2>
+<p>Here’s a quick AI code review checklist:</p>
+<ul>
+<li>Are all parameters clearly defined?</li>
+<li>Does the script run without errors?</li>
+<li>Does it handle empty files or edge cases?</li>
+<li>Is the code reproducible?</li>
+<li>Is it version controlled and commented?</li>
+</ul>
+<p>When AI gives you something, don’t just copy-paste it. Inspect it. Stress-test it. Own it.</p>
+<hr />
+</div>
+<div id="skill-5-build-tests-like-a-wet-lab-scientist" class="section level2">
+<h2>Skill #5: Build Tests Like a Wet Lab Scientist</h2>
+<p>Don’t trust AI pipelines until they pass positive and negative controls:</p>
+<ul>
+<li>Variant calling? Use known reference variants from Genome in a Bottle.</li>
+<li>Sequence alignment? Identical sequences should score 100% similarity. Random ones shouldn’t.</li>
+<li>Gene expression? Make sure housekeeping genes behave as expected.</li>
+</ul>
+<p>Think of this like bench science — every experiment needs controls.</p>
+<hr />
+</div>
+<div id="final-thoughts-use-ai-but-dont-trust-it-blindly" class="section level2">
+<h2>Final Thoughts: Use AI, But Don’t Trust It Blindly</h2>
+<p>What to do next:</p>
+<ol style="list-style-type: decimal">
+<li>Trust, but verify everything AI gives you.</li>
+<li>Document your prompts and outputs for reproducibility.</li>
+<li>Stay grounded in fundamentals — file formats, biology, stats, code structure.</li>
+<li>Connect with the community: Share, discuss, and learn from others.</li>
+<li>Let AI amplify your skills — not replace your judgment.</li>
+</ol>
+<blockquote>
+<p>AI is your assistant, not your replacement.</p>
+</blockquote>
+<p>Bioinformatics in the age of AI will reward those who know both how to prompt and how to question the answers.</p>
+<hr />
+<p>Want more?
+Check out <a href="https://divingintogeneticsandgenomics.kit.com/profile">my newsletter</a> for weekly bioinformatics tips and coding insights.</p>
+</div>
