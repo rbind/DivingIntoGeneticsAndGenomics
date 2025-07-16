@@ -1,0 +1,176 @@
+---
+title: "How to create a GenomicRanges object in Bioconductor using canonical transcripts"
+author: Ming Tommy Tang
+date: "2025-07-15"
+slug: canonical-tx
+categories:
+  - tutorial
+tags:
+  - bioinformatics
+  - Bioconductor
+  - annotation
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+```
+
+## Introduction to Annotation Data Packages in Bioconductor
+
+Accurate gene and transcript annotation is the foundation of many bioinformatics workflows, including RNA-seq analysis, functional genomics, and variant annotation. 
+
+In the R/Bioconductor ecosystem, dedicated annotation data packages make it easy for researchers to access, query, and leverage gene models sourced from major biological databases. 
+
+Understanding the origin and structure of these annotation packages—such as those based on [UCSC](https://genome.ucsc.edu/), [Ensembl](https://useast.ensembl.org/index.html), and other reference sets—is essential for reproducibility and clarity in your analyses.
+
+### Key Annotation Databases and Their Packages
+
+- **TxDb.Hsapiens.UCSC.hg38.knownGene**  
+  Built using gene models from the UCSC Genome Browser’s “knownGene” track for the human hg38 assembly. `UCSC` integrates gene predictions from several sources, including RefSeq, GenBank, and Ensembl, but curates its own transcript IDs and structures.
+
+- **EnsDb Data Packages**  
+  Based on Ensembl, a comprehensive genome annotation resource. EnsDb packages (created via the `ensembldb` package) are derived directly from Ensembl’s annotation of genes, transcripts, and proteins for specific genome builds. They reflect Ensembl’s standardized data model and genomic coordinates.
+
+### Major Transcript Reference Systems
+
+Different annotation resources define transcripts differently, and “canonical” transcripts can refer to the preferred or most representative isoforms per gene. Here are some prominent systems:
+
+| Reference System      | Description                                                                                 | Canonical Selection   |
+|----------------------|---------------------------------------------------------------------------------------------|----------------------|
+| **UCSC (knownGene)** | Aggregates gene predictions, uses its own transcript IDs; many overlaps with RefSeq/Ensembl | UCSC-specific rules  |
+| **Ensembl**          | Own annotation pipeline; covers standard and alternative transcripts, updated regularly      | Ensembl canonical    |
+| **RefSeq**           | Curated by NCBI; focuses on high-confidence, experimentally validated transcripts            | RefSeq Select        |
+| **MANE**             | “Matched Annotation from NCBI and EMBL-EBI”; a collaboration to produce a single transcript per protein-coding gene, identical in both RefSeq and Ensembl | MANE Select          |
+
+#### Additional Notes
+
+- **RefSeq** annotations are highly curated, with a focus on stability and biological accuracy.
+- **MANE** transcripts provide a harmonized “best” transcript for each gene, facilitating cross-platform comparisons and clinical reporting.
+- **Canonical transcripts** in Ensembl and UCSC are assigned based on expression, conservation, clinical relevance, or other attributes; the computational definitions may differ.
+
+### Why These Differences Matter
+
+Selecting the appropriate annotation resource in your analysis affects:
+
+- **Transcript/gene definitions**: Variations in exon boundaries, IDs, and number of isoforms.
+- **Reproducibility**: Results may change depending on annotation source/version.
+- **Interpretation**: Clinical applications and downstream analyses (e.g., variant annotation) can be impacted by transcript choice.
+
+In practice, choosing the right isoform of the mRNA can matter a lot for annotating your variants, the protein amino acid changes can be different based on the isoforms that are selected.
+
+When annotating peaks for ChIP-seq data. Peaks have different distances among different isoforms.
+
+### Create a TxDb object using canonical transcripts only
+
+```{r}
+library(GenomicRanges)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(AnnotationHub)
+library(ensembldb)
+# load hg38 transcript
+# directly filter canonical transcripts from the Ensembl database
+ah<- AnnotationHub(localHub = FALSE)
+edb<- ah[["AH98047"]]
+
+edb
+
+transcripts(edb)
+```
+There is a metadata column called `tx_is_canonical` to show if the transcript is canonical or not.
+
+```{r}
+# Get transcripts directly from the EnsDb object with canonical filter
+hg38_transcripts<- transcripts(edb, filter = ~ tx_is_canonical == TRUE)
+
+# only the canonical transcripts are retained. tx_is_canonical are all 1s
+hg38_transcripts
+```
+
+There are unconventional chromosome names such as LRG_239,
+```{r}
+seqnames(hg38_transcripts)
+
+
+# only keep the standard names
+hg38_transcripts<- hg38_transcripts %>%
+  keepStandardChromosomes(pruning.mode = "coarse")
+
+seqnames(hg38_transcripts)
+```
+
+rename chromosome from 1,2,3 to chr1, chr2, chr3 etc 
+so it can overlap with the peaks if your peaks are in chr1 start end format.
+
+```{r}
+seqlevels(hg38_transcripts)
+
+# prefix chr
+new_seqnames <- paste0("chr", seqlevels(hg38_transcripts))
+names(new_seqnames) <- seqlevels(hg38_transcripts)
+
+new_seqnames
+hg38_transcripts <- renameSeqlevels(hg38_transcripts, new_seqnames)
+
+# add the gene symbol using database mapping for better accuracy
+hg38_transcripts$SYMBOL <- mapIds(edb,
+                                 keys = hg38_transcripts$tx_id,
+                                 column = "SYMBOL",
+                                 keytype = "TXID")
+
+
+hg38_transcripts
+```
+Now we have a `GenomicRanges` object with only the canonical transcripts!! You can then use it to annotate your ChIP-seq peaks for example.
+
+In my next blog post, I am going to show you how to calculate [regulatory potential score](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-1934-6) using ChIP-seq peaks and this canonical transcripts annotation.
+
+
+Let's take a look at the UCSC annotation.
+```{r}
+txdb<- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+UCSC_transcripts<- transcripts(txdb)
+UCSC_transcripts
+
+head(seqlevels(UCSC_transcripts), n = 30)
+```
+we see strange chromosome names such as `chr1_GL383518v1_alt`.
+
+The human reference assembly includes not just the main chromosomes (e.g., chr1, chr2...) but also alternate loci and fix patches.
+
+"alt" contigs cover areas of the genome where population-level structural variation or highly polymorphic regions cannot be represented by a single, linear reference.
+
+Each name describes: The primary chromosome (chr1)
+
+The unique contig identifier (GL383518v1, KI270759v1, etc.; these are GenBank accession numbers with version)
+
+The "_alt" suffix, indicating an alternate locus or haplotype scaffold.
+
+Also, this transcripts annotation does not have gene symbols and you may need to map it using `org.Hs.eg.db` package.
+
+
+get all the genes representation 
+```{r}
+genes(txdb)
+```
+Note this function collapse all the transcripts from the same gene into a single GenomicRanges. This may or may not be what you want. It effectively getting the longest isoform of that gene.
+
+### Conclusion
+
+When building workflows in Bioconductor, it’s crucial to know the origins and intentions behind annotation data packages. Whether you rely on UCSC, Ensembl, RefSeq, or MANE, your chosen dataset will shape how genes and transcripts are referenced throughout your research. Always specify your annotation sources for transparent, reproducible results.
+
+
