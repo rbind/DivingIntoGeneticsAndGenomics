@@ -15,5 +15,5 @@ weight = 70
 
 +++
 
-Join my FREE newsletter [here](https://divingintogeneticsandgenomics.ck.page/newsletter) 
+Join my FREE newsletter [here](https://divingintogeneticsandgenomics.kit.com/profile) 
 to learn bioinformatics and computational biology.
