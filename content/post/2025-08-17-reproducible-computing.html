@@ -1,0 +1,100 @@
+---
+title: "Reproducible Computing in Bioinformatics: Lessons from My Latest Talk"
+author: Ming Tommy Tang
+date: "2025-08-17"
+slug: repro-comp
+categories:
+  - tutorial
+tags:
+  - bioinformatics
+  - reproducible
+  - data analysis
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<p>Hey everyone, it’s Tommy here. If you’ve been following my blog or my Twitter/X (<span class="citation">@tangming2005</span>), you know I love diving into the practical side of bioinformatics and genomics.</p>
+<p>Recently, I gave a talk titled <a href="https://divingintogeneticsandgenomics.com/talk/2025-moderna-reproducible/">“Good Enough Practices for Reproducible Computing”</a> at Moderna, where I spent a good chunk of time chatting about reproducible computing.</p>
+<p>Why? Because in our field, where data is exploding and analyses get complex, making sure your work can be repeated—by you or anyone else—is a game-changer. I thought it’d be fun to turn those slides into a blog post here.</p>
+<p>In this post, I’ll focus on the reproducible computing part, sharing why it matters, why it’s tricky, and some simple tips to make it happen. I’ll keep it straightforward, like I do in my other posts—no fancy jargon without explanation. Let’s jump in!</p>
+<div id="why-bother-with-reproducibility" class="section level2">
+<h2>Why Bother with Reproducibility?</h2>
+<p>First off, remember that story from Keith Baggerly at MD Anderson? He uncovered issues in high-throughput biology papers because methods weren’t clear or reproducible. Check out his hilarious YouTube talk on it: <a href="https://www.youtube.com/watch?v=7gYIs7uYbMo">The Importance of Reproducible Research in High-Throughput Biology</a>.</p>
+<p>Stuff like that shows how non-reproducible work can lead to wrong conclusions, wasted time, and even bad decisions in drug development—which can be super expensive.</p>
+<p>But here’s a personal angle: <strong>Your closest collaborator is yourself six months from now</strong>. I’ve been there—digging up an old analysis and thinking, “What the heck did I do here?”</p>
+<p>If it’s not reproducible, you’re starting from scratch. And in biotech/pharama, where I’m now Director of Bioinformatics at AstraZeneca, we can’t afford that. Reproducibility saves time, builds trust, lets others build on your work and most importantly, it saves lives.</p>
+<p><a href="https://ccah.vetmed.ucdavis.edu/areas-study/genetics/titus-brown-lab">Titus Brown</a> summed it up nicely in one of his talks: Reproducibility isn’t just nice; it’s essential in computational biology.</p>
+</div>
+<div id="the-challenges-why-is-it-so-hard" class="section level2">
+<h2>The Challenges: Why Is It So Hard?</h2>
+<p>From my experience (and the gaps in my own career journey from wet lab to comp bio), here are the big hurdles:</p>
+<ul>
+<li><strong>Data and Scripts Go Missing</strong>: Raw data isn’t versioned, or scripts are “available upon request” (yeah, right).</li>
+<li><strong>Vague Methods</strong>: Papers skip details on tools, versions, or even operating systems.</li>
+<li><strong>Version Mismatches</strong>: Different R/Python packages, bioinformatics tools, or OS (Mac vs. Linux vs. Windows) can change results.</li>
+<li><strong>No Standards</strong>: Everyone organizes projects differently, making collaboration a nightmare.</li>
+</ul>
+<p>I’ve seen this in my over a decade long career in bioiinformatics. One mismatch, and poof—results don’t match.</p>
+</div>
+<div id="how-to-make-your-work-reproducible-practical-tips" class="section level2">
+<h2>How to Make Your Work Reproducible: Practical Tips</h2>
+<p>The good news? You don’t need rocket science. Here’s what I covered in the talk—simple steps:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Version Your Data and Files Smartly</strong><br />
+Name files like a pro: Use ISO 8601 dates (YYYY-MM-DD), no spaces or special chars, and add slugs for clarity. For example, “2025-08-17_reproducible-analysis_results.csv” beats “final_v2.csv”.</p>
+<p>Shoutout to Jenny Bryan for her awesome slides on this: <a href="http://www2.stat.duke.edu/~rcs46/lectures_2015/01-markdown-git/slides/naming-slides/naming-slides.pdf">Naming Things</a>.</p>
+<p>Organize projects consistently: Folders like /data (read-only), /scripts, /results. In R, use <code>here::here()</code> for paths—avoids headaches. Python folks, check out <a href="https://pypi.org/project/pyhere/">pyhere</a> on GitHub.</p></li>
+<li><p><strong>Git for Code Versioning</strong><br />
+Git is your best friend for tracking changes. I commit often and push daily. Basic commands: <code>git init</code>, <code>git add</code>, <code>git commit</code>, <code>git push</code>.</p>
+<p>It saved me when inheriting projects at Immunitas Therapeutics (after people left). If you’re new, try <a href="https://happygitwithr.com">Happy Git with R</a> or <a href="https://learngitbranching.js.org">Learn Git Branching</a>.</p>
+<p>Pro tip: Use branches for experiments you might toss.</p></li>
+<li><p><strong>Manage Environments with Tools Like Conda, uv, or renv</strong><br />
+Pin package versions! For Python, I love mamba (faster Conda) or uv (super quick, check it out on GitHub: <a href="https://github.com/astral-sh/uv" class="uri">https://github.com/astral-sh/uv</a>).</p>
+<p>In R, renv snapshots your library: <code>renv::init()</code>, <code>renv::snapshot()</code>. No more “It works on my machine” excuses.</p></li>
+<li><p><strong>Containers for the Win: Docker or Singularity</strong><br />
+Think of Docker as a virtual machine that bundles everything—OS, packages, code. I’ve used it for ChIP-seq pipelines.
+Resources:</p>
+<ul>
+<li><p><a href="https://rocker-project.org">Rocker Project</a> for R in Docker, or BioContainers for bio tools.</p></li>
+<li><p><a href="https://www.bioconductor.org/help/docker/">Bioconductor container</a></p></li>
+</ul></li>
+<li><p><strong>Literate Programming: Mix Code and Words</strong><br />
+Use Jupyter Notebooks for Python or R Markdown/Quarto for R. I will need to switch to Quarto—it’s next-gen R Markdown (<a href="https://quarto.org" class="uri">https://quarto.org</a>). Embed code chunks, explanations, and outputs.</p>
+<p>Bonus: Quartois Git-friendly if you avoid huge notebooks. Document outside too, like in my enhancer-promoter repo: <a href="https://gitlab.com/tangming2005/Enhancer_promoter_interaction_data" class="uri">https://gitlab.com/tangming2005/Enhancer_promoter_interaction_data</a>.</p>
+<p>Python users want to take a look at <a href="https://marimo.io/">marimo</a> as a Jupyter alternative</p></li>
+<li><p><strong>Automate Everything</strong><br />
+Scripts over manual tweaks! For repetitive tasks, bash scripts or workflows like Snakemake/Nextflow. In R, {targets} is gold (book: <a href="https://books.ropensci.org/targets/" class="uri">https://books.ropensci.org/targets/</a>).<br />
+Automation = best documentation. Computers love boring work; let them handle it.</p></li>
+<li><p><strong>Clean Code with Functions</strong><br />
+Don’t repeat yourself—use functions. In R, purrr::map() for loops. I even ask ChatGPT to refactor messy code. For bigger stuff, build packages with roxygen2 (book: <a href="https://r-pkgs.org" class="uri">https://r-pkgs.org</a>).</p>
+<p>Functional programming keeps things tidy and reusable.</p></li>
+</ol>
+</div>
+<div id="good-enough-practices-to-get-started" class="section level2">
+<h2>Good Enough Practices to Get Started</h2>
+<p>You don’t need perfection. Start with:</p>
+<ul>
+<li>Consistent folders.<br />
+</li>
+<li>Notebooks for analyses.<br />
+</li>
+<li>Git for versioning.<br />
+</li>
+<li>A quick HTML report with knitr.<br />
+</li>
+<li>End every project with a slide deck linking to your GitHub.</li>
+</ul>
+<p>Over time, aim for the full spectrum: Reproduce your own work anytime, anywhere, and let others do the same.</p>
+</div>
+<div id="wrapping-up" class="section level2">
+<h2>Wrapping Up</h2>
+<p>Reproducible computing transformed my career—from PhD at UF to leading teams now. It avoids errors, speeds things up, and makes you a better scientist.</p>
+<p>If you’re in bioinformatics, embrace it! Got questions? Hit me up on Twitter or in the comments below. And if you like this, subscribe to my newsletter for more tips: <a href="https://divingintogeneticsandgenomics.ck.page/profile" class="uri">https://divingintogeneticsandgenomics.ck.page/profile</a>.</p>
+<p>What do you think— what’s your biggest reproducibility headache? Let’s chat!</p>
+<p>(Oh, and if you’re into videos, check my YouTube channel <a href="https://www.youtube.com/@chatomics">Chatomics</a> for related tutorials.)</p>
+</div>

@@ -88,7 +88,11 @@ edb<- ah[["AH98047"]]
 
 edb
 
-transcripts(edb)
+edb_tx<- transcripts(edb)
+
+edb_tx
+
+
 ```
 There is a metadata column called `tx_is_canonical` to show if the transcript is canonical or not.
 
