@@ -45,8 +45,9 @@ editor_options:
 <h2>How to Make Your Work Reproducible: Practical Tips</h2>
 <p>The good news? You don’t need rocket science. Here’s what I covered in the talk—simple steps:</p>
 <ol style="list-style-type: decimal">
-<li><p><strong>Version Your Data and Files Smartly</strong><br />
-Name files like a pro: Use ISO 8601 dates (YYYY-MM-DD), no spaces or special chars, and add slugs for clarity. For example, “2025-08-17_reproducible-analysis_results.csv” beats “final_v2.csv”.</p>
+<li><p><strong>Version Your Data and Files Smartly</strong></p>
+<p>Version control large files with <a href="https://git-lfs.com/">git lfs</a>.</p>
+<p>Name files like a pro: Use ISO 8601 dates (YYYY-MM-DD), no spaces or special chars, and add slugs for clarity. For example, “2025-08-17_reproducible-analysis_results.csv” beats “final_v2.csv”.</p>
 <p>Shoutout to Jenny Bryan for her awesome slides on this: <a href="http://www2.stat.duke.edu/~rcs46/lectures_2015/01-markdown-git/slides/naming-slides/naming-slides.pdf">Naming Things</a>.</p>
 <p>Organize projects consistently: Folders like /data (read-only), /scripts, /results. In R, use <code>here::here()</code> for paths—avoids headaches. Python folks, check out <a href="https://pypi.org/project/pyhere/">pyhere</a> on GitHub.</p></li>
 <li><p><strong>Git for Code Versioning</strong><br />

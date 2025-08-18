@@ -53,6 +53,9 @@ I've seen this in my over a decade long career in bioiinformatics. One mismatch,
 The good news? You don't need rocket science. Here's what I covered in the talk—simple steps:
 
 1. **Version Your Data and Files Smartly**  
+   
+   Version control large files with [git lfs](https://git-lfs.com/).
+   
    Name files like a pro: Use ISO 8601 dates (YYYY-MM-DD), no spaces or special chars, and add slugs for clarity. For example, "2025-08-17_reproducible-analysis_results.csv" beats "final_v2.csv".  
    
    Shoutout to Jenny Bryan for her awesome slides on this: [Naming Things](http://www2.stat.duke.edu/~rcs46/lectures_2015/01-markdown-git/slides/naming-slides/naming-slides.pdf).  
