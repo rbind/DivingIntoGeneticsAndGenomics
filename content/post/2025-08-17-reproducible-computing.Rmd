@@ -75,14 +75,16 @@ The good news? You don't need rocket science. Here's what I covered in the talk�
    Think of Docker as a virtual machine that bundles everything—OS, packages, code. I've used it for ChIP-seq pipelines.
    Resources: 
    
-   - [Rocker Project](https://rocker-project.org) for R in Docker, or BioContainers for bio tools.
+   - [Rocker Project](https://rocker-project.org) for R in Docker, 
+   
+   - [BioContainers](https://biocontainers.pro/) for bio tools.
    
    - [Bioconductor container](https://www.bioconductor.org/help/docker/)
 
 5. **Literate Programming: Mix Code and Words**  
    Use Jupyter Notebooks for Python or R Markdown/Quarto for R. I will need to switch to Quarto—it's next-gen R Markdown (https://quarto.org). Embed code chunks, explanations, and outputs.  
    
-   Bonus: Quartois Git-friendly if you avoid huge notebooks. Document outside too, like in my enhancer-promoter repo: https://gitlab.com/tangming2005/Enhancer_promoter_interaction_data.
+   Bonus: Quarto is Git-friendly. Document outside too, like in my enhancer-promoter repo: https://gitlab.com/tangming2005/Enhancer_promoter_interaction_data.
    
    Python users want to take a look at [marimo](https://marimo.io/) as a Jupyter alternative
 
@@ -101,6 +103,7 @@ You don't need perfection. Start with:
 
 - Consistent folders.  
 - Notebooks for analyses.  
+- Extensive documentation.
 - Git for versioning.  
 - A quick HTML report with knitr.  
 - End every project with a slide deck linking to your GitHub.  

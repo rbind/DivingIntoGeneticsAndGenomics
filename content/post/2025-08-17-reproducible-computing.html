@@ -60,12 +60,13 @@ Pin package versions! For Python, I love mamba (faster Conda) or uv (super quick
 Think of Docker as a virtual machine that bundles everything—OS, packages, code. I’ve used it for ChIP-seq pipelines.
 Resources:</p>
 <ul>
-<li><p><a href="https://rocker-project.org">Rocker Project</a> for R in Docker, or BioContainers for bio tools.</p></li>
+<li><p><a href="https://rocker-project.org">Rocker Project</a> for R in Docker,</p></li>
+<li><p><a href="https://biocontainers.pro/">BioContainers</a> for bio tools.</p></li>
 <li><p><a href="https://www.bioconductor.org/help/docker/">Bioconductor container</a></p></li>
 </ul></li>
 <li><p><strong>Literate Programming: Mix Code and Words</strong><br />
 Use Jupyter Notebooks for Python or R Markdown/Quarto for R. I will need to switch to Quarto—it’s next-gen R Markdown (<a href="https://quarto.org" class="uri">https://quarto.org</a>). Embed code chunks, explanations, and outputs.</p>
-<p>Bonus: Quartois Git-friendly if you avoid huge notebooks. Document outside too, like in my enhancer-promoter repo: <a href="https://gitlab.com/tangming2005/Enhancer_promoter_interaction_data" class="uri">https://gitlab.com/tangming2005/Enhancer_promoter_interaction_data</a>.</p>
+<p>Bonus: Quarto is Git-friendly. Document outside too, like in my enhancer-promoter repo: <a href="https://gitlab.com/tangming2005/Enhancer_promoter_interaction_data" class="uri">https://gitlab.com/tangming2005/Enhancer_promoter_interaction_data</a>.</p>
 <p>Python users want to take a look at <a href="https://marimo.io/">marimo</a> as a Jupyter alternative</p></li>
 <li><p><strong>Automate Everything</strong><br />
 Scripts over manual tweaks! For repetitive tasks, bash scripts or workflows like Snakemake/Nextflow. In R, {targets} is gold (book: <a href="https://books.ropensci.org/targets/" class="uri">https://books.ropensci.org/targets/</a>).<br />
@@ -83,6 +84,7 @@ Don’t repeat yourself—use functions. In R, purrr::map() for loops. I even as
 </li>
 <li>Notebooks for analyses.<br />
 </li>
+<li>Extensive documentation.</li>
 <li>Git for versioning.<br />
 </li>
 <li>A quick HTML report with knitr.<br />
