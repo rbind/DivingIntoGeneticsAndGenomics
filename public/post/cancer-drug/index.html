@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Suna was 28. She had melanoma. Chemo left her wrecked—her hair gone, her strength gone, and her hope fading. Doctors gave her weeks.
+Then they tried something different.
+It didn’t poison the tumor. It didn’t cut or burn. It woke up her immune system.
+Her own T-cells found the cancer. Attacked it. Killed it.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/cancer-drug/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/cancer-drug/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="/post/cancer-drug/">
+  <meta property="og:title" content="How Cancer Drugs Really Work | Chatomics">
+  <meta property="og:description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Suna was 28. She had melanoma. Chemo left her wrecked—her hair gone, her strength gone, and her hope fading. Doctors gave her weeks.
+Then they tried something different.
+It didn’t poison the tumor. It didn’t cut or burn. It woke up her immune system.
+Her own T-cells found the cancer. Attacked it. Killed it.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2025-06-20T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2025-06-20T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>How Cancer Drugs Really Work | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">How Cancer Drugs Really Work</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2025-06-20 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Jun 20, 2025
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/cancer-drug/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/tutorial/">tutorial</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=How%20Cancer%20Drugs%20Really%20Work&amp;url=%2fpost%2fcancer-drug%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fcancer-drug%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fcancer-drug%2f&amp;title=How%20Cancer%20Drugs%20Really%20Work"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fcancer-drug%2f&amp;title=How%20Cancer%20Drugs%20Really%20Work"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=How%20Cancer%20Drugs%20Really%20Work&amp;body=%2fpost%2fcancer-drug%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<p>Suna was 28.
+She had melanoma.
+Chemo left her wrecked—her hair gone, her strength gone, and her hope fading.
+Doctors gave her weeks.</p>
+<p>Then they tried something different.</p>
+<p>It didn’t poison the tumor. It didn’t cut or burn.
+It <strong>woke up her immune system</strong>.</p>
+<p>Her own T-cells found the cancer.
+Attacked it.
+Killed it.</p>
+<p>She survived.</p>
+<p>That story isn’t rare anymore.
+And that’s the power of <strong>modern cancer therapy</strong>—an evolving arsenal that’s learning to <strong>outsmart</strong>, not just outgun, one of biology’s deadliest games.</p>
+<hr />
+<div id="from-brute-force-to-targeted-strikes" class="section level2">
+<h2>From Brute Force to Targeted Strikes</h2>
+<p>The earliest cancer treatments were blunt. Chemotherapy still plays a crucial role—it’s simple, aggressive, and often lifesaving.</p>
+<p>Chemotherapy works by attacking <strong>rapidly dividing cells</strong>. That includes cancer—but also hair follicles, blood cells, and the lining of your gut.</p>
+<p>Common mechanisms include:</p>
+<ul>
+<li><strong>DNA damage</strong>: Drugs that cross-link DNA strands, halting replication.</li>
+<li><strong>Mitotic arrest</strong>: Agents that interfere with <strong>microtubules</strong> or block enzymes like <strong>topoisomerases</strong>, freezing cells mid-division.</li>
+</ul>
+<p>The result: many cancer cells die. But so do many healthy ones.</p>
+<hr />
+</div>
+<div id="the-rise-of-precision" class="section level2">
+<h2>The Rise of Precision</h2>
+<p>As we understood cancer better, we began to see patterns—specific proteins, enzymes, and signals that tumors rely on to grow.</p>
+<p>Enter <strong>targeted therapy</strong>.</p>
+<p>These treatments act like guided missiles, striking key cellular machinery:</p>
+<ul>
+<li><strong>CDK4/6</strong>: Cell cycle drivers. Block them, and the cell stalls before it can divide.</li>
+<li><strong>VEGF</strong>: Promotes blood vessel growth. Inhibiting it starves the tumor.</li>
+<li><strong>Estrogen receptors (ER)</strong>: In hormone-sensitive tumors, cutting the signal cuts the growth.</li>
+<li><strong>HER2</strong>: A growth factor receptor often overexpressed in breast cancers.</li>
+<li><strong>KRAS</strong>: Long thought “undruggable,” it’s now being indirectly targeted using clever chemistry.</li>
+<li><strong>Cyclic peptides</strong>: Synthetic molecules that disrupt protein-protein interactions, wrapping around target surfaces like molecular zip ties.</li>
+</ul>
+<p>These strategies offer precision, but precision has a flaw: <strong>mutations</strong>. Cancer evolves fast. When the target changes, the drug can miss.</p>
+<hr />
+</div>
+<div id="the-immune-system-unleashed" class="section level2">
+<h2>The Immune System, Unleashed</h2>
+<p>Modern cancer therapy didn’t find a better poison.
+It found a better idea: <strong>use the body’s own defenses</strong>.</p>
+<p>Immunotherapy works by helping the immune system do what it does best—recognize and destroy threats.</p>
+<div id="checkpoint-inhibition" class="section level3">
+<h3>Checkpoint Inhibition</h3>
+<p>T-cells are powerful, but they’re held in check by built-in brakes like <strong>PD-1</strong> and <strong>CTLA-4</strong>.</p>
+<p>Tumors exploit these brakes to hide. Checkpoint inhibitors remove them.</p>
+<p>When activated, T-cells release <strong>IFN-γ</strong>, a signal that:</p>
+<ul>
+<li>Increases <strong>MHC I</strong> on tumor cells, making them easier to spot</li>
+<li>Triggers <strong>CXCL9/10</strong>, chemokines that bring in immune reinforcements</li>
+</ul>
+<p>The result? The immune system storms the tumor.</p>
+</div>
+<div id="cytokine-therapy" class="section level3">
+<h3>Cytokine Therapy</h3>
+<p>Cytokines are immune messengers. We can engineer them to target tumors more precisely.</p>
+<ul>
+<li><strong>Type I interferons</strong> drive cancer cells into <strong>senescence</strong>—a non-dividing, zombie-like state—and activate <strong>dendritic cells</strong> that train T-cells to recognize threats.</li>
+<li><strong>IL-2</strong> fuels T-cell proliferation. It’s powerful, but dosing must be precise—too much can cause immune overdrive.</li>
+</ul>
+</div>
+<div id="oncolytic-viruses" class="section level3">
+<h3>Oncolytic Viruses</h3>
+<p>Some therapies use modified viruses. These infect and <strong>burst tumor cells from the inside</strong>. They also trigger a cascade of immune responses, drawing the body’s attention to the danger.</p>
+</div>
+<div id="antibody-based-therapies" class="section level3">
+<h3>Antibody-Based Therapies</h3>
+<p>Antibodies aren’t just immune defenders—they’re delivery systems:</p>
+<ul>
+<li>Some bind to surface markers like <strong>HER2</strong>, tagging tumors for destruction.</li>
+<li>Others carry toxic molecules inside cancer cells.</li>
+<li><strong>Bispecific antibodies</strong> physically link T-cells and tumors, ensuring targeted killing.</li>
+</ul>
+</div>
+<div id="car-t-cell-therapy" class="section level3">
+<h3>CAR-T Cell Therapy</h3>
+<p>This is personalized warfare.</p>
+<p>Scientists extract a patient’s own T-cells, reprogram them to detect tumor antigens (like <strong>CD19</strong> or <strong>BCMA</strong>), and reinfuse them.</p>
+<p>In blood cancers, it’s transformative. In solid tumors, challenges like the tumor microenvironment remain—but progress is rapid.</p>
+<hr />
+</div>
+</div>
+<div id="resistance-is-real" class="section level2">
+<h2>Resistance Is Real</h2>
+<p>Cancer mutates. It finds backdoors. It learns.</p>
+<p>Some of its tricks:</p>
+<ul>
+<li><strong>JAK/STAT mutations</strong>: disrupt immune signaling</li>
+<li><strong>DNA repair upregulation</strong>: helps survive chemotherapy</li>
+<li><strong>Glutathione enzymes</strong>: detoxify otherwise lethal compounds</li>
+</ul>
+<p>To counter this, scientists are developing:</p>
+<ul>
+<li><strong>Epigenetic modulators</strong>: reverse silencing of tumor suppressors</li>
+<li><strong>Molecular glues</strong>: force toxic protein degradation by hijacking cellular trash systems</li>
+<li><strong>Protein stabilizers</strong>: restore function to damaged genes like <strong>p53</strong></li>
+</ul>
+<hr />
+</div>
+<div id="why-combination-matters" class="section level2">
+<h2>Why Combination Matters</h2>
+<p>No single treatment is enough anymore.</p>
+<p>Smart therapies now <strong>combine multiple mechanisms</strong>:</p>
+<ul>
+<li>Chemotherapy paired with immune checkpoint inhibitors exposes new antigens</li>
+<li>CDK4/6 inhibition can slow tumor growth and <strong>increase immune infiltration</strong></li>
+<li>Oncolytic viruses plus cytokine therapy create a multi-layered immune response</li>
+</ul>
+<p>The result is synergy: targeting cancer from all sides, blocking every known escape route.</p>
+<hr />
+</div>
+<div id="taming-the-chaos" class="section level2">
+<h2>Taming the Chaos</h2>
+<p>Cancer biology is messy.</p>
+<p>So is raw data.</p>
+<p>Just like a biostatistician tidies a dataset in R—reshaping tables, standardizing columns, long-to-wide—you need structure to find signal in the noise.</p>
+<p>Understanding cancer requires <strong>tidy thinking</strong>.
+Every pathway, mutation, and immune interaction must be placed in context.
+Only then can we make rational decisions in an irrational landscape.</p>
+<hr />
+</div>
+<div id="what-weve-learned" class="section level2">
+<h2>What We’ve Learned</h2>
+<p>Suna’s story used to be rare.
+Now it’s becoming common.
+Because we stopped looking for a silver bullet—and started building an arsenal.</p>
+<p><strong>Key concepts to remember:</strong></p>
+<ul>
+<li><strong>Checkpoint inhibition</strong> (PD-1, CTLA-4) removes immune brakes</li>
+<li><strong>Cytokines</strong> like interferons and IL-2 fuel anti-tumor immunity</li>
+<li><strong>Oncolytic viruses</strong> and <strong>CAR-T cells</strong> bring new ways to kill tumors</li>
+<li>Resistance arises fast—combination therapy is critical</li>
+<li>Clear biological insight depends on structure and tidy thinking</li>
+</ul>
+<p><strong>PS</strong></p>
+<p>The best book for cancer biology is “The Biology of Cancer” by Robert Weinberg.</p>
+<p><img src="/img/biolog_of_cancer.jpg" /></p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/depmap/">Depmap</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/crispr/">CRISPR</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/data/">data</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/partial-cor/">How to calculate partial correlation controlling cancer types</a></li>
+        
+        <li><a href="/post/pca-tcga2/">PCA analysis on TCGA bulk RNAseq data continued</a></li>
+        
+        <li><a href="/post/pca-scatac/">PCA analysis on scATACseq data</a></li>
+        
+        <li><a href="/post/pca-tcga/">PCA analysis on TCGA bulk RNAseq data</a></li>
+        
+        <li><a href="/post/biotech-data/">Biotech Data Strategy: Building a Scalable Foundation for Startups</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/ai-bioinformatics/" rel="next">Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/partial-cor/" rel="prev">How to calculate partial correlation controlling cancer types</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

@@ -51,11 +51,13 @@ You can find the package at my github.</description>
       <guid>/project/snakemake-pipelines/</guid>
       <description>Snakemake is a python extension for writing workflows. Genomics data processing usually requires bundling many different tools to reach a stage that is ready for downstream analysis.
 I have been using snakemake writing workflows for various genomic and epigenomic datasets.
- ChIP-seq
+ pyflow-ChIP-seq
  DNA-seq
- RNA-seq
- ATAC-seq
- RRBSeq
+ pyflow-RNA-seq
+ pyflow-ATAC-seq
+ pyflow-RRBSeq
+ pyflow-cellranger
+ pyflow-scATACseq
   The DNAseq Snakemake pipeline is the most complicated workflow I have written so far. I will need to think about refining it, modulizing it and adding conda env support.</description>
     </item>
     

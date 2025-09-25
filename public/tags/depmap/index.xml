@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Depmap on Chatomics</title>
+    <link>/tags/depmap/</link>
+    <description>Recent content in Depmap on Chatomics</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Fri, 20 Jun 2025 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/depmap/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How Cancer Drugs Really Work</title>
+      <link>/post/cancer-drug/</link>
+      <pubDate>Fri, 20 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/cancer-drug/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Suna was 28. She had melanoma. Chemo left her wrecked—her hair gone, her strength gone, and her hope fading. Doctors gave her weeks.
+Then they tried something different.
+It didn’t poison the tumor. It didn’t cut or burn. It woke up her immune system.
+Her own T-cells found the cancer. Attacked it. Killed it.</description>
+    </item>
+    
+    <item>
+      <title>How to calculate partial correlation controlling cancer types</title>
+      <link>/post/partial-cor/</link>
+      <pubDate>Thu, 22 May 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/partial-cor/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+What is partial correlation Partial correlation measures the relationship between two variables while controlling for the effect of one or more other variables.
+Suppose you want to know how X and Y are related, independent of how both are influenced by Z. Partial correlation helps answer:
+ If we remove the influence of Z, is there still a connection between X and Y?</description>
+    </item>
+    
+  </channel>
+</rss>

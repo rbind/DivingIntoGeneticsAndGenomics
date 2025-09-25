@@ -7,10 +7,71 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Fri, 03 Jan 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 20 Jun 2025 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/data/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How Cancer Drugs Really Work</title>
+      <link>/post/cancer-drug/</link>
+      <pubDate>Fri, 20 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/cancer-drug/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Suna was 28. She had melanoma. Chemo left her wrecked—her hair gone, her strength gone, and her hope fading. Doctors gave her weeks.
+Then they tried something different.
+It didn’t poison the tumor. It didn’t cut or burn. It woke up her immune system.
+Her own T-cells found the cancer. Attacked it. Killed it.</description>
+    </item>
+    
+    <item>
+      <title>How to calculate partial correlation controlling cancer types</title>
+      <link>/post/partial-cor/</link>
+      <pubDate>Thu, 22 May 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/partial-cor/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+What is partial correlation Partial correlation measures the relationship between two variables while controlling for the effect of one or more other variables.
+Suppose you want to know how X and Y are related, independent of how both are influenced by Z. Partial correlation helps answer:
+ If we remove the influence of Z, is there still a connection between X and Y?</description>
+    </item>
+    
+    <item>
+      <title>PCA analysis on TCGA bulk RNAseq data continued</title>
+      <link>/post/pca-tcga2/</link>
+      <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-tcga2/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In my last blog post, I showed you how to download TCGA RNAseq count data and do PCA and make a heatmap. It is interesting to see some of the LUSC samples mix with the LUAD samples and vice versa.
+In this post, we will continue to use PCA to do more Exploratory data analysis (EDA).</description>
+    </item>
+    
+    <item>
+      <title>PCA analysis on scATACseq data</title>
+      <link>/post/pca-scatac/</link>
+      <pubDate>Sun, 02 Feb 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-scatac/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In my last post, I showed you how to use PCA for bulk RNAseq data.
+Today, let’s see how we can use it for scATACseq data.
+Download the example dataset from 10x genomics https://support.10xgenomics.com/single-cell-atac/datasets/1.1.0/atac_pbmc_5k_v1
+The dataset is 5k Peripheral blood mononuclear cells (PBMCs) from a healthy donor (v1.0).
+Download the atac_pbmc_5k_v1_filtered_peak_bc_matrix.tar.gz file and unzip it.</description>
+    </item>
+    
+    <item>
+      <title>PCA analysis on TCGA bulk RNAseq data</title>
+      <link>/post/pca-tcga/</link>
+      <pubDate>Wed, 29 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-tcga/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+what is PCA? Principal Component Analysis (PCA) is a mathematical technique used to reduce the dimensionality of large datasets while preserving the most important patterns in the data.
+It transforms the original high-dimensional data into a smaller set of new variables called principal components (PCs), which capture the most variation in the data.</description>
+    </item>
     
     <item>
       <title>Biotech Data Strategy: Building a Scalable Foundation for Startups</title>

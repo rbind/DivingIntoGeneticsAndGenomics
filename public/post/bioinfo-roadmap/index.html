@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="You Can Change Your Appetites Linear algebra, statistics, machine learning—these used to feel abstract to me. I had zero experience of bioinformatics when I was studying my PhD in a wet lab.
+I memorized formulas without truly understanding them. But over time, I found the right resources that made these concepts click, especially in the context of bioinformatics.
+I wrote a blog post: My opinionated selection of books/urls for bioinformatics/data science curriculum six years ago, and many links are broken.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/bioinfo-roadmap/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/bioinfo-roadmap/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="/post/bioinfo-roadmap/">
+  <meta property="og:title" content="How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap | Chatomics">
+  <meta property="og:description" content="You Can Change Your Appetites Linear algebra, statistics, machine learning—these used to feel abstract to me. I had zero experience of bioinformatics when I was studying my PhD in a wet lab.
+I memorized formulas without truly understanding them. But over time, I found the right resources that made these concepts click, especially in the context of bioinformatics.
+I wrote a blog post: My opinionated selection of books/urls for bioinformatics/data science curriculum six years ago, and many links are broken.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2025-03-02T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2025-03-02T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2025-03-02 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Mar 2, 2025
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/bioinfo-roadmap/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/review/">review</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=How%20I%20Would%20Learn%20Bioinformatics%20From%20Scratch%2012%20Years%20Later%3a%20A%20Roadmap&amp;url=%2fpost%2fbioinfo-roadmap%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fbioinfo-roadmap%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fbioinfo-roadmap%2f&amp;title=How%20I%20Would%20Learn%20Bioinformatics%20From%20Scratch%2012%20Years%20Later%3a%20A%20Roadmap"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fbioinfo-roadmap%2f&amp;title=How%20I%20Would%20Learn%20Bioinformatics%20From%20Scratch%2012%20Years%20Later%3a%20A%20Roadmap"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=How%20I%20Would%20Learn%20Bioinformatics%20From%20Scratch%2012%20Years%20Later%3a%20A%20Roadmap&amp;body=%2fpost%2fbioinfo-roadmap%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <div id="you-can-change-your-appetites" class="section level2">
+<h2>You Can Change Your Appetites</h2>
+<p>Linear algebra, statistics, machine learning—these used to feel abstract to me. I had zero experience of bioinformatics when I was studying my PhD in a wet lab.</p>
+<p>I memorized formulas without truly understanding them. But over time, I found the right resources that made these concepts click, especially in the context of bioinformatics.</p>
+<p>I wrote a blog post: <a href="https://divingintogeneticsandgenomics.com/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/">My opinionated selection of books/urls for bioinformatics/data science curriculum</a> six years ago, and many links are broken. so I decided to write a new one.</p>
+<p>If I were starting my bioinformatics/computational journey again 12 years ago, here are the <strong>FREE</strong> resources I would recommend.</p>
+<hr />
+</div>
+<div id="master-the-linux-command-line" class="section level2">
+<h2>1. Master the Linux Command Line</h2>
+<p>Knowing how to work in a Unix environment is a must for any bioinformatician. Start with these:</p>
+<ul>
+<li><strong><a href="https://www.youtube.com/watch?v=U3iNcBtycaQ&amp;list=PLA86D04D6E0BFD2E0">Software Carpentry UNIX Shell Playlist</a></strong> – My first introduction to Unix. It’s old but still solid.<br />
+</li>
+<li><strong><a href="https://nostarch.com/howlinuxworks3">How Linux Works (Book)</a></strong> – A great deep dive into how Linux operates.<br />
+</li>
+<li><strong><a href="https://jeroenjanssens.com/dsatcl/">Data Science at the Command Line (Book)</a></strong> – Fun read with lots of useful tricks.<br />
+</li>
+<li><strong><a href="https://sandbox.bio/">Practice in a Bioinformatics Sandbox</a></strong> – Great for hands-on command-line practice.</li>
+</ul>
+<hr />
+</div>
+<div id="learn-r-for-genomics" class="section level2">
+<h2>2. Learn R for Genomics</h2>
+<p>R is an essential tool for bioinformatics, especially for data wrangling and visualization.</p>
+<ul>
+<li><p><strong><a href="https://r4ds.had.co.nz/">R for Data Science</a></strong> – Learn <code>tidyverse</code>, master data manipulation, and reshape data efficiently.</p></li>
+<li><p><strong><a href="https://www.crcpress.com/Data-Analysis-for-the-Life-Sciences-with-R/Irizarry-Love/p/book/9781498775670">Data Analysis for the Life Sciences with R</a></strong> – I took this course 3 times and learned a ton!</p></li>
+<li><p><strong><a href="https://compgenomr.github.io/book/">Computational Genomics with R</a></strong> – Practical applications of genomics with R.</p></li>
+<li><p><strong><a href="https://www.oreilly.com/library/view/bioinformatics-data-skills/9781449367480/">Bioinformatics Data Skills</a></strong> – A must-have for anyone serious about bioinformatics. It covers unix, R and python.</p></li>
+</ul>
+<hr />
+</div>
+<div id="build-a-strong-statistical-foundation" class="section level2">
+<h2>3. Build a Strong Statistical Foundation</h2>
+<p>Understanding statistics is critical. These books and videos will help:</p>
+<ul>
+<li><p><strong><a href="https://www.discovr.rocks/">Discovering Statistics with R</a></strong> – A fantastic and engaging stats book (2nd edition coming soon).</p></li>
+<li><p><strong><a href="https://www.huber.embl.de/msmb/">Modern Statistics for Modern Biology</a></strong> – A great resource for statistical applications in biology.</p></li>
+<li><p><strong><a href="https://statquest.org/video-index/">StatQuest by Josh Starmer</a></strong> – I’ve watched the PCA video at least 20 times.</p></li>
+</ul>
+<hr />
+</div>
+<div id="linear-algebra-make-it-click" class="section level2">
+<h2>4. Linear Algebra: Make It Click</h2>
+<p>I never understood eigenvectors and eigenvalues—until I found these:</p>
+<ul>
+<li><strong><a href="https://www.3blue1brown.com/">3Blue1Brown Linear Algebra Videos</a></strong> – The best visual explanations of matrix transformations.<br />
+</li>
+<li><strong><a href="https://web.mit.edu/18.06/www/">MIT 18.06: Linear Algebra</a></strong> – A formal, in-depth introduction to linear algebra.</li>
+</ul>
+<p>Why it is important to learn linear algebra? Most of the genomics data are just matrices:</p>
+<ul>
+<li>an RNAseq expression matrix is a gene-by-sample matrix, with entries to be read counts for each gene</li>
+<li>a single-cell expression matrix is a gene-by-cell matrix, with entries to be read counts for each gene</li>
+<li>a ChIP-seq count matrix is a peak-by-sample matrix, with entries to be the number of reads in each peak</li>
+<li>a drug response matrix is a drug-by-sample matrix, with entries to be IC50 for example</li>
+</ul>
+<p>and many more… in other words,</p>
+<p>Matrix is <strong>EVERYWHERE</strong> for bioinformatics (and many other data science topics)!</p>
+<p>Many of the bioinformatics problems can be rephrased as matrix manipulation.</p>
+<p>Understand what does matrix multiplication mean deeply; Why matrix factorization is useful for genomics (see my <a href="https://divingintogeneticsandgenomics.com/post/matrix-factorization-for-single-cell-rnaseq-data/">post</a>).</p>
+<p>Matrix calculation is also the foundation of deep learning!</p>
+<hr />
+</div>
+<div id="get-comfortable-with-machine-learning" class="section level2">
+<h2>5. Get Comfortable with Machine Learning</h2>
+<p>Statistics and machine learning go hand in hand:</p>
+<ul>
+<li><p><strong><a href="https://statquest.org/video-index/">StatQuest ML Videos</a></strong> – Clear explanations of PCA, regression, decision trees, SVM and more.</p></li>
+<li><p><strong><a href="https://www.statlearning.com/">An Introduction to Statistical Learning</a></strong> – One of the best ML books, now with R and Python editions.</p></li>
+</ul>
+<hr />
+</div>
+<div id="python-for-bioinformatics" class="section level2">
+<h2>6. Python for Bioinformatics</h2>
+<p>I’m primarily an R user, but I use Python for workflow automation. If I had to start again:</p>
+<ul>
+<li><p><strong><a href="https://www.amazon.com/Python-Biologists-complete-programming-beginners/dp/1492346136">Python for Biologists</a></strong> – A great beginner-friendly book.</p></li>
+<li><p><strong><a href="https://www.coursera.org/learn/bioinformatics">Biology Meets Programming: Bioinformatics for Beginners</a></strong> – I took this Coursera course and found it useful.</p></li>
+</ul>
+<hr />
+</div>
+<div id="just-start" class="section level2">
+<h2>Just Start!</h2>
+<p>Pick any resource that fits your learning stage and dive in. <strong>Waiting won’t change anything. Taking action will.</strong> Those who start and experiment win in bioinformatics.</p>
+<p>of course, subscribe to my youtube channel chatomics to learn bioinformatics too! <a href="https://www.youtube.com/@chatomics" class="uri">https://www.youtube.com/@chatomics</a></p>
+<p>If you found this useful, share it with others who might benefit. Happy learning! 🚀</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/courses/">courses</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/pca-tcga2/">PCA analysis on TCGA bulk RNAseq data continued</a></li>
+        
+        <li><a href="/post/pca-scatac/">PCA analysis on scATACseq data</a></li>
+        
+        <li><a href="/post/pca-tcga/">PCA analysis on TCGA bulk RNAseq data</a></li>
+        
+        <li><a href="/post/biotech-data/">Biotech Data Strategy: Building a Scalable Foundation for Startups</a></li>
+        
+        <li><a href="/post/review-2024/">Review 2024</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/python-visium/" rel="next">Exploring Spatial Transcriptomics A Dive into Visium Data Analysis in Python</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/pca-tcga2/" rel="prev">PCA analysis on TCGA bulk RNAseq data continued</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Why guest posting? I want to write more hands-on tutorials, but I realized:
+ I am not an expert for every data type. I am too busy to write new ones.  So that&rsquo;s why I started to experiment guest posting!
+If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
+I love to collaborate and share knowledge!">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/python-visium/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/python-visium/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="/post/python-visium/">
+  <meta property="og:title" content="Exploring Spatial Transcriptomics A Dive into Visium Data Analysis in Python | Chatomics">
+  <meta property="og:description" content="Why guest posting? I want to write more hands-on tutorials, but I realized:
+ I am not an expert for every data type. I am too busy to write new ones.  So that&rsquo;s why I started to experiment guest posting!
+If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
+I love to collaborate and share knowledge!">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2025-05-03T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2025-05-03T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Exploring Spatial Transcriptomics A Dive into Visium Data Analysis in Python | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Exploring Spatial Transcriptomics A Dive into Visium Data Analysis in Python</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2025-05-03 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      May 3, 2025
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    17 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/python-visium/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/python/">python</a
+    >, 
+    
+    <a href="/categories/spatial/">spatial</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Exploring%20Spatial%20Transcriptomics%20A%20Dive%20into%20Visium%20Data%20Analysis%20in%20Python&amp;url=%2fpost%2fpython-visium%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fpython-visium%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fpython-visium%2f&amp;title=Exploring%20Spatial%20Transcriptomics%20A%20Dive%20into%20Visium%20Data%20Analysis%20in%20Python"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fpython-visium%2f&amp;title=Exploring%20Spatial%20Transcriptomics%20A%20Dive%20into%20Visium%20Data%20Analysis%20in%20Python"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Exploring%20Spatial%20Transcriptomics%20A%20Dive%20into%20Visium%20Data%20Analysis%20in%20Python&amp;body=%2fpost%2fpython-visium%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<h2 id="why-guest-posting">Why guest posting?</h2>
+
+<p>I want to write more hands-on tutorials, but I realized:</p>
+
+<ul>
+<li>I am not an expert for every data type.</li>
+<li>I am too busy to write new ones.</li>
+</ul>
+
+<p>So that&rsquo;s why I started to experiment guest posting!</p>
+
+<p>If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me
+on <a href="https://www.linkedin.com/in/%F0%9F%8E%AF-ming-tommy-tang-40650014/" target="_blank">LinkedIn</a>.</p>
+
+<p>I love to collaborate and share knowledge!</p>
+
+<p>This is the first ever guest blog post in my blog site <a href="https://divingintogeneticsandgenomics.com/" target="_blank"><code>Chatomics</code></a> by</p>
+
+<p><strong>Author:</strong> <a href="https://www.linkedin.com/in/agalvezm/" target="_blank">Angel Galvez Merchan</a></p>
+
+<blockquote>
+<p>Angel was a computational Biologist at Cellarity, leveraging omics data analysis and machine learning to advance drug discovery. PhD in Biology from Caltech, where he studied and developed single-cell genomics tools at Lior Pachter lab and investigated mRNA degradation mechanisms in Rebecca Voorhees lab.</p>
+</blockquote>
+
+<p>Angel is going to introduce the basics of spatial transcriptomics data analysis with a Visium dataset using Python.</p>
+
+<p>I love the way how he introduced the spatial data on top of his previous experience with single-cell data and he explains the details in a very accessible way. Enjoy!</p>
+
+<h2 id="overview-of-spatial-transcriptomics-technologies">Overview of Spatial Transcriptomics Technologies</h2>
+
+<p>Spatial transcriptomics is transforming our understanding of tissue biology by enabling researchers to measure gene expression within the spatial context of intact tissues. Unlike traditional single-cell RNA sequencing (scRNA-seq), which dissociates cells and loses spatial information, spatial transcriptomics retains the physical location of gene expression, opening up powerful insights into tissue architecture, cellular niches, and microenvironments in health and disease.</p>
+
+<p>Several technologies have emerged in recent years, each with distinct approaches, strengths, and trade-offs:</p>
+
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Origin / Platform</th>
+<th>Resolution</th>
+<th>Approach</th>
+<th>Unique Features &amp; Notes</th>
+<th>Use Case Fit</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><strong>10x Visium</strong></td>
+<td>10x Genomics (2019)</td>
+<td>~55 µm (multi-cell)</td>
+<td>Slide-based capture on barcoded spots</td>
+<td>Mature ecosystem; open-source-friendly</td>
+<td>General-purpose profiling</td>
+</tr>
+
+<tr>
+<td><strong>Visium HD</strong></td>
+<td>10x Genomics (2024)</td>
+<td>2 µm (single cell-scale)</td>
+<td>Slide-based, barcoded grid (probe-based)</td>
+<td>Continuous 2x2 µm grid; FFPE/fresh/fixed frozen compatible; CytAssist workflow; high sensitivity; probe panels</td>
+<td>Single cell-scale, high-res profiling</td>
+</tr>
+
+<tr>
+<td><strong>Slide-seq / V2</strong></td>
+<td>Macosko Lab, Harvard (2019-2020)</td>
+<td>~10 µm (near single-cell)</td>
+<td>Barcoded beads on slide</td>
+<td>Higher spatial resolution; complex bead registration</td>
+<td>Fine-grained spatial detail</td>
+</tr>
+
+<tr>
+<td><strong>MERFISH / seqFISH</strong></td>
+<td>Zhuang Lab / Raj Lab (2015-2021)</td>
+<td>Subcellular</td>
+<td>Multiplexed in situ hybridization</td>
+<td>Single-molecule precision; targeted gene panels</td>
+<td>Subcellular mapping</td>
+</tr>
+
+<tr>
+<td><strong>Vizgen (MERFISH)</strong></td>
+<td>Vizgen (2021)</td>
+<td>Subcellular (single-molecule)</td>
+<td>Imaging-based, multiplexed FISH</td>
+<td>Commercialized MERFISH; high multiplexing; single-molecule detection; robust error correction</td>
+<td>Single-molecule, subcellular mapping</td>
+</tr>
+
+<tr>
+<td><strong>GeoMx / CosMx</strong></td>
+<td>NanoString (2020-2022)</td>
+<td>CosMx: single-cell<br>GeoMx: low</td>
+<td>Barcoded ROI-based probe hybridization</td>
+<td>Flexible RNA/protein profiling; strong FFPE support</td>
+<td>Targeted profiling in clinical</td>
+</tr>
+
+<tr>
+<td><strong>Stereo-seq</strong></td>
+<td>BGI Genomics (2021)</td>
+<td>~0.5 µm (subcellular)</td>
+<td>DNA nanoball arrays</td>
+<td>Ultra-high resolution; high data volume</td>
+<td>Ultra-high-res spatial mapping</td>
+</tr>
+
+<tr>
+<td><strong>Xenium</strong></td>
+<td>10x Genomics (2023)</td>
+<td>Single-cell (subcellular post-segmentation)</td>
+<td>Imaging-based in situ hybridization</td>
+<td>High-plex RNA panels (up to 5,000 genes); padlock probe/rolling circle amplification; fast, robust imaging</td>
+<td>Targeted, high-plex single-cell spatial</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="why-focus-on-visium">Why Focus on Visium?</h2>
+
+<p>In this blog post, we will focus on <strong>10x Genomics Visium</strong> because it provides a particularly smooth transition into spatial transcriptomics for those already familiar with scRNA-seq. Its data structure and analysis workflow align closely with standard scRNA-seq practices, allowing researchers to reuse tools like <code>scanpy</code> and <code>anndata</code> with minimal adaptation. Combined with a robust commercial ecosystem, standardized outputs, and strong community support, Visium is an ideal starting point for single-cell experts looking to explore spatial context.</p>
+
+<p>In fact, this was how I personally began exploring spatial transcriptomics: by extending familiar scRNA-seq workflows into spatial data, and gradually discovering the rich new layers it adds to biological interpretation. I hope this approach helps you make the transition as smooth and enjoyable as it did for me.</p>
+
+<p><strong>Link to Google Colab:</strong> <a href="https://colab.research.google.com/drive/1nrnBi1LsigG3YEDEJTg5xGwq6c3ye4X3?usp=sharing" target="_blank">https://colab.research.google.com/drive/1nrnBi1LsigG3YEDEJTg5xGwq6c3ye4X3?usp=sharing</a></p>
+
+<h2 id="imports-and-installs">Imports and installs</h2>
+
+<pre><code class="language-python">%%capture
+
+# Installs
+!pip3 install igraph leidenalg scanpy squidpy anndata plotly
+
+# Imports
+import scanpy as sc
+import squidpy as sq
+import anndata
+import os
+import tarfile
+import requests
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+</code></pre>
+
+<h2 id="read-data">Read data</h2>
+
+<p>Let&rsquo;s kick things off by loading a real Visium dataset. For this tutorial, we will use the &ldquo;V1_Human_Lymph_Node&rdquo; sample provided by 10x Genomics, which is conveniently available through <code>scanpy</code> built-in datasets module.</p>
+
+<p>This dataset comes from a human lymph node section and includes gene expression data, spatial coordinates, and a histology image.</p>
+
+<pre><code class="language-python">adata = sc.datasets.visium_sge(sample_id=&quot;V1_Human_Lymph_Node&quot;)
+adata.var_names_make_unique()
+</code></pre>
+
+<pre><code>&lt;ipython-input-2-3408fd5b9ba4&gt;:1: FutureWarning: Use `squidpy.datasets.visium` instead.
+  adata = sc.datasets.visium_sge(sample_id=&quot;V1_Human_Lymph_Node&quot;)
+
+
+
+  0%|          | 0.00/7.86M [00:00&lt;?, ?B/s]
+
+
+
+  0%|          | 0.00/29.3M [00:00&lt;?, ?B/s]
+
+
+/usr/local/lib/python3.11/dist-packages/scanpy/datasets/_datasets.py:555: FutureWarning: Use `squidpy.read.visium` instead.
+  return read_visium(sample_dir, source_image_path=source_image_path)
+/usr/local/lib/python3.11/dist-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&quot;var&quot;)
+/usr/local/lib/python3.11/dist-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&quot;var&quot;)
+</code></pre>
+
+<h2 id="understanding-the-visium-data-structure">Understanding the Visium data structure</h2>
+
+<p>Let&rsquo;s inspect the adata object:</p>
+
+<pre><code class="language-python">adata
+</code></pre>
+
+<pre><code>AnnData object with n_obs Ã— n_vars = 4035 Ã— 36601
+    obs: 'in_tissue', 'array_row', 'array_col'
+    var: 'gene_ids', 'feature_types', 'genome'
+    uns: 'spatial'
+    obsm: 'spatial'
+</code></pre>
+
+<p>At first glance, the Visium dataset looks a lot like a standard scRNA-seq dataset. And that is because they share the same foundation: a <strong>gene count matrix</strong>, with genes as rows and observations (in this case, spatial spots) as columns.</p>
+
+<p>But Visium adds <strong>two extra layers</strong> of spatial context:</p>
+
+<ol>
+<li><p><strong>Coordinates</strong> Each spot on the slide is associated with spatial (x, y) coordinates, enabling us to map gene expression back onto tissue morphology.</p></li>
+
+<li><p><strong>Tissue Image</strong>“ Alongside the expression data, Visium includes an image of the tissue section. This makes it possible to overlay gene expression patterns on top of actual histology, bridging morphology and molecular data.</p></li>
+</ol>
+
+<p>These extra layers turn a familiar data object into something more informative, adding new dimensions that change how we explore and interpret the data.</p>
+
+<h2 id="shared-foundation-the-gene-count-matrix">Shared foundation: the Gene Count Matrix</h2>
+
+<p>This matrix is functionally very similar to what you would find in scRNA-seq workflows. Each spot (a small region of tissue) acts like a pseudo-cell, and each entry in the matrix represents the expression level of a gene in that spot. Because of this similarity, many pre-processing steps (depth-normalization, log transformation, dimensionality reduction, clustering, etc.) can be performed using the same tools and techniques used for scRNA-seq.</p>
+
+<h3 id="qc-metrics">QC metrics</h3>
+
+<p>Most QC metrics used in scRNA-seq can be translated to Visium data. We can use the same function in <code>scanpy</code> to calculate those metrics.</p>
+
+<pre><code class="language-python"># Add annotation for mitochondrial genes
+adata.var[&quot;mt&quot;] = adata.var_names.str.startswith(&quot;MT-&quot;)
+
+# Calculate QC metrics
+sc.pp.calculate_qc_metrics(adata, qc_vars=[&quot;mt&quot;], inplace=True)
+</code></pre>
+
+<h3 id="filters">Filters</h3>
+
+<p>Just like in single cell RNA-seq, it makes sense to filter out spots with very few detected genes, as these are: often low-quality or empty regions.</p>
+
+<pre><code class="language-python"># Filter out spots with less than 200 genes
+sc.pp.filter_cells(adata, min_genes=200)
+</code></pre>
+
+<h3 id="normalization">Normalization</h3>
+
+<p>In most scRNA-seq workflows, we perform cell-depth normalization to correct for differences in sequencing depth or capture  efficiency, followed by a log transformation to stabilize variance. However, there is an important caveat:</p>
+
+<h4 id="visium-single-cells">Visium != single cells</h4>
+
+<p>Although Visium data looks like single-cell data (a gene-by-spot matrix), each spot captures transcripts from a multi-cellular region of the tissue, making it more akin to a series of bulk RNA-seq samples with spatial information.</p>
+
+<p>That difference matters, especially when thinking about how to normalize the data. In spatial transcriptomics, the total number of transcripts in a spot might actually reflect meaningful biology, like differences in tissue density, cellularity, or metabolic activity.</p>
+
+<p>Let&rsquo;s visualize the total counts per spot:</p>
+
+<pre><code class="language-python">sq.pl.spatial_scatter(
+    adata,
+    color=&quot;total_counts&quot;,
+    size=1.5
+)
+</code></pre>
+
+<p><img src="/img/figures/figure_1.png" alt="" /></p>
+
+<p>You might notice that total counts show some spatial structure and aren&rsquo;t randomly distributed across the tissue. In some cases, these patterns may align with known tissue morphology, hinting at potential biological relevance. This opens up the possibility that total counts may reflect meaningful differences, like local cell density or transcriptional activity.</p>
+
+<h4 id="so-what-should-we-do">So&hellip; what should we do?</h4>
+
+<p><strong>There is no single best answer right now.</strong> How to normalize spatial transcriptomics data is still an open question in the field, and different approaches may be better suited for different downstream analyses.</p>
+
+<p>Sometimes, the spatial structure you see in total counts may reflect real biology, but other times, it could stem from technical artifacts, such as differences in how well certain regions of the slide captured transcripts. Some areas might just perform better than others in terms of RNA capture, leading to apparent &ldquo;hotspots&rdquo; or &ldquo;cold spots&rdquo; that aren&rsquo;t necessarily biologically meaningful.</p>
+
+<p>For the purpose of this tutorial, we will keep things simple and apply the standard scRNA-seq normalization approach. But it is important to be aware of the assumptions behind this method, and the limitations it brings when working with spatial data.</p>
+
+<pre><code class="language-python"># Normalize to 10,000 total counts per spot
+sc.pp.normalize_total(adata, target_sum=1e4)
+
+# Log transform the data
+sc.pp.log1p(adata)
+</code></pre>
+
+<p>This gives us a log-normalized expression matrix, similar to what we would use in single-cell workflows. Just keep in mind that we are treating total counts as technical noise, which may not always be true.</p>
+
+<h3 id="highly-variable-genes">Highly variable genes</h3>
+
+<p>As in scRNA-seq, we can select highly variable genes (HVGs) to focus on the most informative features for downstream analysis:</p>
+
+<pre><code class="language-python">sc.pp.highly_variable_genes(adata)
+</code></pre>
+
+<blockquote>
+<p><strong>Note:</strong> Some studies suggest that combining highly variable genes with spatially variable genes can improve cell type clustering performance (see <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11537352/" target="_blank">this preprint</a> for details). For simplicity, we&rsquo;ll stick with standard HVGs here.</p>
+</blockquote>
+
+<h3 id="dimensionality-reduction-and-visualization">Dimensionality reduction and visualization</h3>
+
+<p>You can apply the same dimensionality reduction and visualization pipeline used in scRNA-seq. After normalization and HVG selection, standard steps like PCA, nearest neighbor graph construction, leiden clustering and UMAP can be used to project the data into a low-dimensional space:</p>
+
+<pre><code class="language-python"># Run PCA
+sc.pp.pca(adata, n_comps=50)
+
+# Calculate neighbors
+sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+
+# Leiden clustering
+sc.tl.leiden(adata, resolution=0.8)
+
+# Computing UMAP
+sc.tl.umap(adata)
+</code></pre>
+
+<pre><code>&lt;ipython-input-9-4431874b17ef&gt;:8: FutureWarning: In the future, the default backend for leiden will be igraph instead of leidenalg.
+
+ To achieve the future defaults please pass: flavor=&quot;igraph&quot; and n_iterations=2.  directed must also be False to work with igraph's implementation.
+  sc.tl.leiden(adata, resolution=0.8)
+</code></pre>
+
+<p>You can try to identify cell types in Visium data using the same approach as in single-cell RNA-seq: by plotting known marker genes. For example, to explore B cell populations, we can visualize expression of a few canonical B cell markers:</p>
+
+<pre><code class="language-python"># Visualizing marker genes
+sc.pl.umap(adata, color=['leiden', 'CD19', 'MS4A1', 'FCER2'], cmap = 'Reds')
+</code></pre>
+
+<p><img src="/img/figures/figure_2.png" alt="" /></p>
+
+<p>This brings us back to the key difference we mentioned earlier: each dot in the UMAP represents a spot, not an individual cell. Unlike in scRNA-seq, we don&rsquo;t always see crisp clusters corresponding to distinct cell types. Instead, marker gene expression often appears broadly distributed, reflecting the fact that many spots likely contain mixtures of cell types. In the case of the lymph node, where B cells are abundant, this result makes sense. It is somewhat expected that most spots contain at least some B cell transcript signal.</p>
+
+<h2 id="the-unique-layers-of-spatial-transcriptomics">The Unique Layers of Spatial Transcriptomics</h2>
+
+<p>So far, we have worked with the gene count matrix, a structure that closely mirrors scRNA-seq. Now, let&rsquo;s look at what makes spatial transcriptomics different: the additional layers of spatial context.</p>
+
+<h3 id="histology-image">Histology Image</h3>
+
+<p>Alongside the gene expression data, Visium also provides a <strong>histology image</strong> of the tissue section. This image is stored within the <code>adata.uns</code> dictionary and can be accessed as a standard NumPy array, with pixel values encoded in RGB format:</p>
+
+<pre><code class="language-python">img = adata.uns['spatial']['V1_Human_Lymph_Node']['images']['hires']
+print(f&quot;Shape: {img.shape}, Type: {type(img)}, Dtype: {img.dtype}&quot;)
+
+# First top left pixels
+img[:3, :3, :]
+</code></pre>
+
+<pre><code>Shape: (2000, 1921, 3), Type: &lt;class 'numpy.ndarray'&gt;, Dtype: float32
+
+
+
+
+
+array([[[0.5882353 , 0.6       , 0.5764706 ],
+        [0.58431375, 0.6       , 0.5686275 ],
+        [0.5882353 , 0.6       , 0.5686275 ]],
+
+       [[0.5882353 , 0.6       , 0.57254905],
+        [0.5882353 , 0.6       , 0.5764706 ],
+        [0.58431375, 0.6       , 0.5764706 ]],
+
+       [[0.58431375, 0.6       , 0.5803922 ],
+        [0.58431375, 0.6       , 0.5764706 ],
+        [0.58431375, 0.59607846, 0.57254905]]], dtype=float32)
+</code></pre>
+
+<p>We can visualize the tissue image using:</p>
+
+<pre><code class="language-python">sq.pl.spatial_scatter(adata)
+</code></pre>
+
+<p><img src="/img/figures/figure_3.png" alt="" /></p>
+
+<h4 id="calculating-features-in-image">Calculating features in image</h4>
+
+<p>Tissue images can contain one or more channels. For example, fluorescence-based data might include separate channels for different markers. Even in standard histology images like H&amp;E, we can extract useful information by calculating image-based features.</p>
+
+<p>These features might include pixel intensity, texture, or structural patterns associated with different tissue regions or staining types. While in this example the image isn&rsquo;t rich in contrast and has no multi-channel content, we willll still use it to demonstrate how image features can be extracted and used in spatial analyses.</p>
+
+<pre><code class="language-python"># Define image container
+img = sq.im.ImageContainer.from_adata(adata)
+</code></pre>
+
+<p><code>squidpy</code>&rsquo;s <code>calculate_image_features</code> function, when used with the default option (<code>features=&quot;summary&quot;</code>), computes a set of basic image features for each spot, including:</p>
+
+<ul>
+<li>Mean intensity<br /></li>
+<li>Standard deviation<br /></li>
+<li>Quantiles (e.g., median, 10th/90th percentiles)<br /></li>
+<li>Texture features</li>
+<li>Edge features (like edge density using Sobel filters)<br /></li>
+</ul>
+
+<p>These features are computed using a <strong>circular region around each spot</strong> on the tissue image, providing a local summary of the image content beneath each capture area.</p>
+
+<pre><code class="language-python">sq.im.calculate_image_features(
+    adata,
+    img,
+    features=&quot;summary&quot;,
+    key_added=&quot;image_features&quot;
+)
+</code></pre>
+
+<pre><code>  0%|          | 0/4032 [00:00&lt;?, ?/s]
+</code></pre>
+
+<pre><code class="language-python"># Transfer to obs for plotting
+adata.obs[&quot;summary_ch-0_mean&quot;] = adata.obsm[&quot;image_features&quot;][&quot;summary_ch-0_mean&quot;]
+sq.pl.spatial_scatter(
+    adata,
+    color=&quot;summary_ch-0_mean&quot;,
+    size=1.5
+)
+</code></pre>
+
+<p><img src="/img/figures/figure_4.png" alt="" /></p>
+
+<p>This plot represents the mean pixel intensity from the image under each spot, giving us a rough idea of local brightness across the tissue.</p>
+
+<h4 id="clustering-on-image-features">Clustering on image features</h4>
+
+<p>Since the image features are numerical values (just like gene expression), we can use them for clustering. This allows us to group spots based on similarities in their local tissue appearance.</p>
+
+<pre><code class="language-python">sc.pp.neighbors(adata, use_rep=&quot;image_features&quot;)
+sc.tl.leiden(adata, key_added=&quot;image_features_clusters&quot;, resolution = 0.1)
+
+#adata.uns.pop('image_features_clusters_colors')
+sq.pl.spatial_scatter(
+    adata,
+    color=&quot;image_features_clusters&quot;,
+    size=1.5
+)
+
+</code></pre>
+
+<p><img src="/img/figures/figure_5.png" alt="" /></p>
+
+<h3 id="spatial-coordinates">Spatial Coordinates</h3>
+
+<p>Each spot in Visium data comes with associated <strong>(x, y) coordinates</strong> that indicate its physical location on the tissue slide. These spatial coordinates allow us to map gene expression data back onto the tissue&rsquo;s layout.</p>
+
+<p>You can access them in <code>adata.obsm</code></p>
+
+<pre><code class="language-python"># Extracting spatial coordinates
+coords = adata.obsm[&quot;spatial&quot;]
+print(f&quot;Shape: {coords.shape}, Type: {type(coords)}, Dtype: {coords.dtype}&quot;)
+
+# First few coordinates
+coords[:3, :]
+</code></pre>
+
+<pre><code>Shape: (4032, 2), Type: &lt;class 'numpy.ndarray'&gt;, Dtype: int64
+
+
+
+
+
+array([[8346, 6982],
+       [4270, 1363],
+       [2635, 8074]])
+</code></pre>
+
+<p>This returns an array with the x and y positions (in pixels) for each spot on the slide.</p>
+
+<h3 id="building-a-spatial-neighborhood-graph">Building a Spatial Neighborhood Graph</h3>
+
+<p>To incorporate spatial relationships into our analysis, we can build a <strong>spatial neighborhood graph</strong>. This graph defines which spots are considered neighbors based on their physical proximity on the slide.</p>
+
+<p>With <code>squidpy</code>, this is easily done using:</p>
+
+<pre><code class="language-python">sq.gr.spatial_neighbors(adata, coord_type=&quot;grid&quot;)
+</code></pre>
+
+<p>The resulting graph is stored in <code>adata.obsp[&quot;spatial_connectivities&quot;]</code></p>
+
+<pre><code class="language-python">adata.obsp[&quot;spatial_connectivities&quot;].shape
+</code></pre>
+
+<pre><code>(4032, 4032)
+</code></pre>
+
+<p>We can also visualize the graph to see how spots are linked together.</p>
+
+<pre><code class="language-python">sq.pl.spatial_scatter(adata, connectivity_key=&quot;spatial_connectivities&quot;)
+</code></pre>
+
+<p><img src="/img/figures/figure_6.png" alt="" /></p>
+
+<h2 id="integrating-the-layers-of-spatial-transcriptomics">Integrating the Layers of Spatial Transcriptomics</h2>
+
+<p>So far, we&rsquo;ve explored the core components of spatial transcriptomics: the gene count matrix, the histology image, and the spatial coordinates. Each of these layers is valuable on its own, but the real power of spatial transcriptomics emerges when we <strong>combine them</strong>.</p>
+
+<p>By integrating gene expression with spatial context and image-derived features, we can uncover patterns that would be invisible in standard scRNA-seq. This is where spatial transcriptomics moves beyond simply measuring gene expression. It starts to reveal how cells are organized, how they interact, and how structure relates to function.</p>
+
+<p>In the following sections, we will explore a few ways to combine these layers for spatially aware analysis.</p>
+
+<h3 id="gene-expression-features-observed-on-tissue">Gene expression features observed on tissue</h3>
+
+<p>One of the most powerful aspects of spatial transcriptomics is the ability to visualize gene expression directly on the tissue. This allows us to observe how specific genes are spatially distributed and how they relate to tissue structure.</p>
+
+<p>For example, we can visualize expression of the T cell marker CD3E:</p>
+
+<pre><code class="language-python">sq.pl.spatial_scatter(adata, color = 'CD3E')
+</code></pre>
+
+<p><img src="/img/figures/figure_7.png" alt="" /></p>
+
+<p>We can see that CD3E expression is broadly distributed across the tissue, with some localized areas of higher expression. This pattern likely reflects regions with enriched T cell presence.</p>
+
+<h3 id="spatial-mapping-of-gene-expression-clusters">Spatial Mapping of Gene Expression Clusters</h3>
+
+<p>We can visualize the Leiden clusters <strong>computed from the gene expression data</strong> directly on the tissue. This
+allows us to see whether spots that are transcriptionally similar are also spatially close to one another and whether distinct expression programs correspond to specific tissue regions.</p>
+
+<pre><code class="language-python">sq.pl.spatial_scatter(adata, color = 'leiden')
+</code></pre>
+
+<p><img src="/img/figures/figure_8.png" alt="" /></p>
+
+<p>Cluster 9 stands out as a spatially localized group of spots. To understand what characterizes this cluster, we can examine its marker genes:</p>
+
+<pre><code class="language-python">sc.tl.rank_genes_groups(adata, 'leiden')
+sc.pl.rank_genes_groups(adata, n_genes=25, groups = ['9'])
+</code></pre>
+
+<p><img src="/img/figures/figure_9.png" alt="" /></p>
+
+<p>The results indicate that cluster 9 is enriched for interferon-induced genes, suggesting that this region of the tissue is actively responding to interferon signaling. To further support this, we can visualize the expression of additional known interferon-stimulated genes that were not among the top-ranked markers.</p>
+
+<pre><code class="language-python">sq.pl.spatial_scatter(adata, color = ['OAS1'])
+</code></pre>
+
+<p><img src="/img/figures/figure_10.png" alt="" /></p>
+
+<h3 id="finding-spatially-variable-genes">Finding Spatially Variable Genes</h3>
+
+<p>In addition to identifying genes that vary across transcriptional clusters, we can also look for genes that show <strong>spatial structure</strong>, that is, genes whose expression levels are <strong>non-randomly distributed across the tissue</strong>.</p>
+
+<p>One way to quantify this is with <strong>Moran&rsquo;s I</strong>, a measure of spatial autocorrelation. Genes with high Moran&rsquo;s I values tend to be expressed in spatially coherent patterns, rather than scattered randomly across spots.</p>
+
+<p>We can compute this using:</p>
+
+<pre><code class="language-python">sq.gr.spatial_autocorr(adata, mode=&quot;moran&quot;)
+</code></pre>
+
+<p>Note that this functions uses the spatial neighborhood graph that we computed in previous sections. We can check the top spatially structured genes:</p>
+
+<pre><code class="language-python"># Top spatially structured genes
+adata.uns[&quot;moranI&quot;][&quot;I&quot;].sort_values(ascending = False)[0:15]
+</code></pre>
+
+<p><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }</p>
+
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+
+<p></style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>I</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>FDCSP</th>
+      <td>0.701889</td>
+    </tr>
+    <tr>
+      <th>IGHG2</th>
+      <td>0.656459</td>
+    </tr>
+    <tr>
+      <th>MT-CO1</th>
+      <td>0.609527</td>
+    </tr>
+    <tr>
+      <th>CR2</th>
+      <td>0.598975</td>
+    </tr>
+    <tr>
+      <th>MT-CO2</th>
+      <td>0.586977</td>
+    </tr>
+    <tr>
+      <th>CXCL13</th>
+      <td>0.546026</td>
+    </tr>
+    <tr>
+      <th>MT-ND4</th>
+      <td>0.538226</td>
+    </tr>
+    <tr>
+      <th>CLU</th>
+      <td>0.526424</td>
+    </tr>
+    <tr>
+      <th>MT-ND3</th>
+      <td>0.518973</td>
+    </tr>
+    <tr>
+      <th>MT-ATP6</th>
+      <td>0.515217</td>
+    </tr>
+    <tr>
+      <th>MT-CYB</th>
+      <td>0.498500</td>
+    </tr>
+    <tr>
+      <th>CCL19</th>
+      <td>0.497364</td>
+    </tr>
+    <tr>
+      <th>JCHAIN</th>
+      <td>0.494780</td>
+    </tr>
+    <tr>
+      <th>IGLC3</th>
+      <td>0.488655</td>
+    </tr>
+    <tr>
+      <th>MT-ND1</th>
+      <td>0.474826</td>
+    </tr>
+  </tbody>
+</table>
+</div><br><label><b>dtype:</b> float64</label></p>
+
+<p>And we can visualize some of them, confirming their spatial structure:</p>
+
+<pre><code class="language-python">sq.pl.spatial_scatter(adata, color = ['IGKC','IGHG2','IGHG4'])
+</code></pre>
+
+<p><img src="/img/figures/figure_11.png" alt="" /></p>
+
+<h3 id="segmenting-the-tissue-into-spatial-domains">Segmenting the Tissue into Spatial Domains</h3>
+
+<p>A key goal in spatial transcriptomics is to define <strong>tissue regions</strong> that reflect both molecular identity and physical organization. In contrast to clustering based purely on gene expression, spatial domain identification focuses on grouping spots that are transcriptionally similar and spatially close, capturing functional zones within the tissue.</p>
+
+<p>There are many sophisticated methods for identifying spatial domains including <a href="https://www.biorxiv.org/content/10.1101/2023.06.28.546949v2" target="_blank">concordex</a>, <a href="https://www.nature.com/articles/s41467-022-29439-6" target="_blank">STAGATE</a>, and others. Working with these tools and deeply exploring spatial domain detection could easily be a blog post (or several) on its own.</p>
+
+<p>For now, we will use a simple but intuitive approach that captures the essence of spatial domain identification. We take the <strong>principal components (PCs)</strong> from the PCA of the gene count matrix (a compact summary of transcriptional variation) and <strong>concatenate them with the spatial coordinates</strong> of each spot. This creates a feature space that incorporates both molecular identity and physical location.</p>
+
+<p>While this method lacks the complexity of more specialized spatial domain tools, it is surprisingly effective at revealing spatially coherent, transcriptionally distinct regions. It also serves as a great way to build intuition about how gene expression and tissue architecture align.</p>
+
+<pre><code class="language-python"># Extract PCA and spatial coordinates
+X_pca = adata.obsm[&quot;X_pca&quot;][:, :10]  # use first 10 PCs
+X_spatial = adata.obsm[&quot;spatial&quot;]
+
+# Concatenate PCA + spatial into a new matrix
+X_combined = np.concatenate([X_pca, X_spatial], axis=1)
+adata.obsm[&quot;X_expr_space&quot;] = X_combined
+
+# Build neighbor graph and cluster using the combined features
+sc.pp.neighbors(adata, use_rep=&quot;X_expr_space&quot;)
+sc.tl.leiden(adata, key_added=&quot;leiden_expr_spatial&quot;, resolution = 0.5)
+
+# Visualize
+sq.pl.spatial_scatter(adata, color=&quot;leiden_expr_spatial&quot;, size=1.5)
+</code></pre>
+
+<p><img src="/img/figures/figure_12.png" alt="" /></p>
+
+<p>But wait, something looks off. After running clustering on the combined PCA and spatial coordinates, we get a very clean segmentation of the tissue, but the regions look <strong>suspiciously like purely spatial clusters</strong>.</p>
+
+<p>If we inspect the input for or combined matrix, we can see the issue:</p>
+
+<p>The PC values look like this:</p>
+
+<pre><code class="language-python">print(X_pca[0])
+</code></pre>
+
+<pre><code>[-2.4115074  -0.9721273   1.4502645  -0.91959316 -0.8045143   0.61556464
+ -0.4716737   0.47577807 -0.03904063  0.02958526]
+</code></pre>
+
+<p>But the spatial coordinates are on a completely different scale:</p>
+
+<pre><code class="language-python">print(X_spatial[0])
+</code></pre>
+
+<pre><code>[8346 6982]
+</code></pre>
+
+<p>Because the spatial coordinates have much larger magnitudes, they dominate the clustering, overpowering the transcriptional signal. The result is clustering that is driven almost entirely by physical location.</p>
+
+<p>To fix this, we simply need to standardize both the PCA and spatial features so they contribute equally:</p>
+
+<pre><code class="language-python"># Scale values
+scaler_pca = StandardScaler()
+X_pca_scaled = scaler_pca.fit_transform(X_pca)
+
+scaler_spatial = StandardScaler()
+X_spatial_scaled = scaler_spatial.fit_transform(X_spatial)
+
+# Combine into one matrix
+X_combined = np.concatenate([X_pca_scaled, X_spatial_scaled], axis=1)
+adata.obsm[&quot;X_expr_spatial_scaled&quot;] = X_combined
+
+# Neighbors + clustering
+sc.pp.neighbors(adata, use_rep=&quot;X_expr_spatial_scaled&quot;)
+sc.tl.leiden(adata, key_added=&quot;leiden_expr_spatial_scaled&quot;, resolution = 0.5)
+
+# Visualize
+sq.pl.spatial_scatter(adata, color=&quot;leiden_expr_spatial_scaled&quot;, size=1.5)
+</code></pre>
+
+<p><img src="/img/figures/figure_13.png" alt="" /></p>
+
+<p>We now get regions that reflect a balance of spatial coherence and transcriptional similarity, a much more meaningful segmentation of the tissue</p>
+
+<p>Here is a question for you: <strong>What happens if you use 20 principal components instead of 10?</strong>  What do you think might change?</p>
+
+<p>I will leave this as an exercise for the reader. Take a moment to guess before running the code below!</p>
+
+<pre><code class="language-python">X_pca = adata.obsm[&quot;X_pca&quot;][:, :20]  # use first 20 PCs
+X_spatial = adata.obsm[&quot;spatial&quot;]
+
+scaler_pca = StandardScaler()
+X_pca_scaled = scaler_pca.fit_transform(X_pca)
+
+scaler_spatial = StandardScaler()
+X_spatial_scaled = scaler_spatial.fit_transform(X_spatial)
+
+X_combined = np.concatenate([X_pca_scaled, X_spatial_scaled], axis=1)
+adata.obsm[&quot;X_expr_spatial_scaled&quot;] = X_combined
+
+sc.pp.neighbors(adata, use_rep=&quot;X_expr_spatial_scaled&quot;)
+sc.tl.leiden(adata, key_added=&quot;leiden_expr_spatial_scaled&quot;, resolution = 0.5)
+
+sq.pl.spatial_scatter(adata, color=&quot;leiden_expr_spatial_scaled&quot;, size=1.5)
+</code></pre>
+
+<h2 id="conclusions">Conclusions</h2>
+
+<p>In this tutorial, we explored the foundational concepts of spatial transcriptomics using 10x Visium data, with a perspective rooted in scRNA-seq workflows. Beginning with the familiar gene count matrix, we examined how spatial data builds on this structure by introducing additional layers, such as spatial coordinates and histology images.</p>
+
+<p>This tutorial serves as an entry point into the field. While there is much more to explore (from spatial domain modeling, to cell-cell interaction analysis) we hope it has provided a solid foundation and demonstrated how spatial transcriptomics extends naturally from single-cell analysis, while offering entirely new opportunities for discovery.</p>
+
+<p>Happy exploring!</p>
+
+<h2 id="notes-from-tommy">Notes from Tommy</h2>
+
+<p>We developed <a href="https://monkeybread.readthedocs.io/en/latest/index.html" target="_blank">https://monkeybread.readthedocs.io/en/latest/index.html</a> when I was at Immunitas, and we use a counts table of the cell type counts around each cell within 50um, and cluster that matrix to find cellular niches and we heard good words from users.</p>
+
+<p>Tutorial here <a href="https://monkeybread.readthedocs.io/en/latest/notebooks/tutorial.html" target="_blank">https://monkeybread.readthedocs.io/en/latest/notebooks/tutorial.html</a></p>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/blogdown/">blogdown</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/visium/">Visium</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/the-end-of-2018/">The end of 2018</a></li>
+        
+        <li><a href="/post/my-first-try-on-rmarkdown-using-blogdown/">my first try on Rmarkdown using blogdown</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/multiomics-mofa2/" rel="next">Multi-Omics Integration Strategy and Deep Diving into MOFA2</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/bioinfo-roadmap/" rel="prev">How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

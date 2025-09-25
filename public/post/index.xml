@@ -13,6 +13,135 @@
     
     
     <item>
+      <title>Reproducible Computing in Bioinformatics: Lessons from My Latest Talk</title>
+      <link>/post/repro-comp/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/repro-comp/</guid>
+      <description>Hey everyone, it’s Tommy here. If you’ve been following my blog or my Twitter/X (@tangming2005), you know I love diving into the practical side of bioinformatics and genomics.
+Recently, I gave a talk titled “Good Enough Practices for Reproducible Computing” at Moderna, where I spent a good chunk of time chatting about reproducible computing.
+Why? Because in our field, where data is exploding and analyses get complex, making sure your work can be repeated—by you or anyone else—is a game-changer.</description>
+    </item>
+    
+    <item>
+      <title>How to create a GenomicRanges object in Bioconductor using canonical transcripts</title>
+      <link>/post/canonical-tx/</link>
+      <pubDate>Tue, 15 Jul 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/canonical-tx/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Introduction to Annotation Data Packages in Bioconductor Accurate gene and transcript annotation is the foundation of many bioinformatics workflows, including RNA-seq analysis, functional genomics, and variant annotation.
+In the R/Bioconductor ecosystem, dedicated annotation data packages make it easy for researchers to access, query, and leverage gene models sourced from major biological databases.</description>
+    </item>
+    
+    <item>
+      <title>Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist</title>
+      <link>/post/ai-bioinformatics/</link>
+      <pubDate>Fri, 04 Jul 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/ai-bioinformatics/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+AI is transforming every field — and bioinformatics is no exception. From designing drug molecules in minutes to writing entire pipelines, generative AI is making it faster than ever to process biological data. But here’s the truth:
+ AI doesn’t understand biology — you do.
+ That’s why, in this new era, your value isn’t replaced by AI — it’s multiplied by your ability to judge, validate, and improve what AI produces.</description>
+    </item>
+    
+    <item>
+      <title>How Cancer Drugs Really Work</title>
+      <link>/post/cancer-drug/</link>
+      <pubDate>Fri, 20 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/cancer-drug/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Suna was 28. She had melanoma. Chemo left her wrecked—her hair gone, her strength gone, and her hope fading. Doctors gave her weeks.
+Then they tried something different.
+It didn’t poison the tumor. It didn’t cut or burn. It woke up her immune system.
+Her own T-cells found the cancer. Attacked it. Killed it.</description>
+    </item>
+    
+    <item>
+      <title>How to calculate partial correlation controlling cancer types</title>
+      <link>/post/partial-cor/</link>
+      <pubDate>Thu, 22 May 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/partial-cor/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+What is partial correlation Partial correlation measures the relationship between two variables while controlling for the effect of one or more other variables.
+Suppose you want to know how X and Y are related, independent of how both are influenced by Z. Partial correlation helps answer:
+ If we remove the influence of Z, is there still a connection between X and Y?</description>
+    </item>
+    
+    <item>
+      <title>Multi-Omics Integration Strategy and Deep Diving into MOFA2</title>
+      <link>/post/multiomics-mofa2/</link>
+      <pubDate>Sat, 17 May 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/multiomics-mofa2/</guid>
+      <description>body { text-align: justify}  Today’s guest blog post on multiOmics integration is written by Aditi Qamra and edited by Tommy.
+If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
+ Aditi is a senior data scientist working on biomarker discovery and early product development at Roche, using multimodal clinical and genomic data. She has a PhD and postdoc in epigenomics of solid tumors and enjoys upskilling herself in stats topics.</description>
+    </item>
+    
+    <item>
+      <title>Exploring Spatial Transcriptomics A Dive into Visium Data Analysis in Python</title>
+      <link>/post/python-visium/</link>
+      <pubDate>Sat, 03 May 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/python-visium/</guid>
+      <description>Why guest posting? I want to write more hands-on tutorials, but I realized:
+ I am not an expert for every data type. I am too busy to write new ones.  So that&amp;rsquo;s why I started to experiment guest posting!
+If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
+I love to collaborate and share knowledge!</description>
+    </item>
+    
+    <item>
+      <title>How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap</title>
+      <link>/post/bioinfo-roadmap/</link>
+      <pubDate>Sun, 02 Mar 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/bioinfo-roadmap/</guid>
+      <description>You Can Change Your Appetites Linear algebra, statistics, machine learning—these used to feel abstract to me. I had zero experience of bioinformatics when I was studying my PhD in a wet lab.
+I memorized formulas without truly understanding them. But over time, I found the right resources that made these concepts click, especially in the context of bioinformatics.
+I wrote a blog post: My opinionated selection of books/urls for bioinformatics/data science curriculum six years ago, and many links are broken.</description>
+    </item>
+    
+    <item>
+      <title>PCA analysis on TCGA bulk RNAseq data continued</title>
+      <link>/post/pca-tcga2/</link>
+      <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-tcga2/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In my last blog post, I showed you how to download TCGA RNAseq count data and do PCA and make a heatmap. It is interesting to see some of the LUSC samples mix with the LUAD samples and vice versa.
+In this post, we will continue to use PCA to do more Exploratory data analysis (EDA).</description>
+    </item>
+    
+    <item>
+      <title>PCA analysis on scATACseq data</title>
+      <link>/post/pca-scatac/</link>
+      <pubDate>Sun, 02 Feb 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-scatac/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In my last post, I showed you how to use PCA for bulk RNAseq data.
+Today, let’s see how we can use it for scATACseq data.
+Download the example dataset from 10x genomics https://support.10xgenomics.com/single-cell-atac/datasets/1.1.0/atac_pbmc_5k_v1
+The dataset is 5k Peripheral blood mononuclear cells (PBMCs) from a healthy donor (v1.0).
+Download the atac_pbmc_5k_v1_filtered_peak_bc_matrix.tar.gz file and unzip it.</description>
+    </item>
+    
+    <item>
+      <title>PCA analysis on TCGA bulk RNAseq data</title>
+      <link>/post/pca-tcga/</link>
+      <pubDate>Wed, 29 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-tcga/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+what is PCA? Principal Component Analysis (PCA) is a mathematical technique used to reduce the dimensionality of large datasets while preserving the most important patterns in the data.
+It transforms the original high-dimensional data into a smaller set of new variables called principal components (PCs), which capture the most variation in the data.</description>
+    </item>
+    
+    <item>
       <title>Biotech Data Strategy: Building a Scalable Foundation for Startups</title>
       <link>/post/biotech-data/</link>
       <pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate>

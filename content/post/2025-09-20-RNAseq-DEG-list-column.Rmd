@@ -1,0 +1,533 @@
+---
+title: "Do not repeat yourself: List column to do RNAseq differential expression analysis"
+author: Ming Tommy Tang
+date: "2025-09-23"
+slug: list-column-rnaseq
+categories:
+  - tutorial
+tags:
+  - bioinformatics
+  - RNAseq
+  - DEseq2
+  - R
+  - list column
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include=FALSE}
+# https://bookdown.org/yihui/rmarkdown-cookbook/cache-lazy.html
+knitr::opts_chunk$set(
+  comment = "#>", echo = TRUE, message= FALSE, warning = FALSE,
+  cache = FALSE, cache.lazy= FALSE
+)
+```
+
+**To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
+biology and bioinformatics.**
+
+
+In this blog post, I am going to show you how to use [`list column`](https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html) and `purrr::map()`, a powerful 
+toolkit in your belt to avoid repetition in your bioinformatics analysis.
+
+To demonstrate the usage, We will use RNAseq differential expression analysis and pathway enrichment analysis as an example.
+
+Let's use a real example https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE197576
+
+GSE197576 is a human RNA-seq dataset profiling transcriptional changes in SW480 colorectal cancer cells after knockout of ITPR3 or RELB compared to controls, under both normoxic and hypoxic conditions. The experiment includes duplicate samples for each condition and provides raw gene count matrices, enabling exploration of gene expression responses to both gene knockout and oxygen levels in this cell line
+
+How to download the files from GEO ftp https://www.ncbi.nlm.nih.gov/geo/info/download.html
+
+If use command line `wget` or `curl`, download the files [here](https://ftp.ncbi.nlm.nih.gov/geo/series/GSE197nnn/GSE197576/suppl/).
+
+Alternatively, use GEOquery https://bioconductor.org/packages/release/bioc/html/GEOquery.html
+
+```{bash eval=FALSE}
+cd blog_data/
+wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE197nnn/GSE197576/suppl/GSE197576_raw_gene_counts_matrix.tsv.gz
+
+# if wget is not installed in your computer, use 
+curl -O https://ftp.ncbi.nlm.nih.gov/geo/series/GSE197nnn/GSE197576/suppl/GSE197576_raw_gene_counts_matrix.tsv.gz
+
+```
+
+## Standard DESeq2 workflow for a single comparison
+
+### read the data into R and make a DESeq2 object 
+
+follow the tutorial http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
+
+```{r}
+library(dplyr)
+library(readr)
+library(here)
+# BiocManager::install("DESeq2")
+library(DESeq2)
+library(purrr)  # for map functions
+library(tibble) # for tibble functions
+library(stringr)
+library(ggplot2)
+
+raw_counts<- read_tsv("~/blog_data/GSE197576_raw_gene_counts_matrix.tsv.gz")
+head(raw_counts)
+
+colnames(raw_counts)
+```
+
+There are 12 samples with 6 conditions and each condition has a replicates.
+![](/img/GEO_samples.png)
+
+- control guide RNA: sgCTRL
+- ITPR3 knockout: sgITPR3
+- RELB konckout: sgRELB
+- low oxygen condition: hypoxia 
+- normal oxygen condition: normoxia
+
+
+convert the dataframe to a matrix:
+```{r}
+raw_counts_mat<- raw_counts[, -1] %>% as.matrix()
+
+rownames(raw_counts_mat)<- raw_counts$gene
+
+head(raw_counts_mat)
+
+```
+
+### Differential expression analysis: hypoxia vs normoxia
+
+We will do a single comparison first to compare hypoxia vs normoxia in sgCTRL.
+
+subset the matrix and make a sample sheet:
+
+```{r}
+# column 1,2 are sgCTRL normoxia column 7,8 are sgCTRL hypoxia
+
+raw_counts_mat_sub<- raw_counts_mat[, c(1,2,7,8)]
+
+head(raw_counts_mat_sub)
+
+coldata<- data.frame(condition = c("normoxia", "normoxia", "hypoxia", "hypoxia"))
+
+rownames(coldata)<- colnames(raw_counts_mat_sub)
+
+coldata
+```
+
+Make a DEseq2 object
+
+```{r}
+all(rownames(coldata) == colnames(raw_counts_mat_sub))
+
+keep<- rowSums(raw_counts_mat_sub > 10) >= 2 # 10 counts in at least 2 samples 
+
+raw_counts_mat_sub<- raw_counts_mat_sub[keep, ]
+
+# follow standard DESeq2 workflow
+dds <- DESeqDataSetFromMatrix(countData = raw_counts_mat_sub,
+                              colData = coldata,
+                              design = ~ condition)
+dds <- DESeq(dds)
+res <- results(dds, contrast = c("condition", "hypoxia", "normoxia"))
+
+res
+
+significant_genes<- res %>%
+  as.data.frame() %>%
+  dplyr::filter(padj <=0.01, abs(log2FoldChange) >= 2) %>% 
+  rownames()
+
+
+significant_genes
+```
+
+
+## pathway analysis
+
+follow the `clusterprofiler` [tutorial](https://yulab-smu.top/biomedical-knowledge-mining-book/enrichment-overview.html)
+
+### over-representation test
+
+```{r}
+library(clusterProfiler)
+library(org.Hs.eg.db)
+#convert gene symbol to Entrez ID for 
+
+significant_genes_map<- clusterProfiler::bitr(geneID = significant_genes,
+                      fromType="SYMBOL", toType="ENTREZID",
+                      OrgDb="org.Hs.eg.db")
+
+head(significant_genes_map)
+
+## background genes are genes that are detected in the RNAseq experiment 
+background_genes<- res %>% 
+  as.data.frame() %>% 
+  filter(baseMean != 0) %>%
+  tibble::rownames_to_column(var = "gene") %>%
+  pull(gene)
+
+background_genes_map<- bitr(geneID = background_genes, 
+                            fromType="SYMBOL", 
+                            toType="ENTREZID",
+                      OrgDb="org.Hs.eg.db")
+```
+
+### GO term enrichment 
+
+Gene Ontology(GO) defines concepts/classes used to describe gene function, and relationships between these concepts. It classifies functions along three aspects:
+
+MF: Molecular Function
+molecular activities of gene products
+
+CC: Cellular Component
+where gene products are active
+
+BP: Biological Process
+pathways and larger processes made up of the activities of multiple gene products
+
+GO terms are organized in a directed acyclic graph, where edges between terms represent parent-child relationship.
+
+```{r}
+ego <- enrichGO(gene          = significant_genes_map$ENTREZID,
+                universe      = background_genes_map$ENTREZID,
+                OrgDb         = org.Hs.eg.db,
+                ont           = "BP",
+                pAdjustMethod = "BH",
+                pvalueCutoff  = 0.01,
+                qvalueCutoff  = 0.05,
+                readable      = TRUE)
+head(ego)
+
+library(enrichplot)
+barplot(ego, showCategory=10) 
+dotplot(ego)
+```
+
+We see angiogenesis and response to oxygen levels pathways are enriched which makes sense!
+
+### MsigDB Hallmark gene sets
+
+- H: hallmark gene sets
+- C1: positional gene sets
+- C2: curated gene sets
+- C3: motif gene sets
+- C4: computational gene sets
+- C5: GO gene sets
+- C6: oncogenic signatures
+- C7: immunologic signatures
+
+
+```{r}
+# install.packages("msigdbr")
+library(msigdbr)
+
+m_df <- msigdbr(species = "human")
+head(m_df)
+
+# Note, the new version of msigdbr changed the arguments: category vs collection
+# welcome to Bioinformatics!..
+
+m_t2g <- msigdbr(species = "human", collection = "H") %>% 
+  dplyr::select(gs_name, ncbi_gene)
+
+
+head(m_t2g)
+
+em <- enricher(significant_genes_map$ENTREZID, TERM2GENE=m_t2g, 
+               universe = background_genes_map$ENTREZID )
+head(em)
+
+dotplot(em)
+```
+
+Hypoxia and EMT are on the top which makes biological sense too.
+
+### Gene set enrichment analysis
+
+```{r}
+## you need all the genes and pre-rank them by p-value
+## rank all the genes by signed fold change * -log10pvalue.
+
+res_df<- res %>% 
+  as.data.frame() %>% 
+  filter(baseMean != 0) %>%
+  tibble::rownames_to_column(var = "gene")
+
+
+res_df<- res_df %>% 
+  mutate(signed_rank_stats = sign(log2FoldChange) * -log10(pvalue)) %>%
+  left_join(background_genes_map, by= c("gene" = "SYMBOL")) %>%
+  arrange(desc(signed_rank_stats))
+
+gene_list<- res_df$signed_rank_stats
+names(gene_list)<- res_df$ENTREZID
+
+# em2 <- GSEA(gene_list, TERM2GENE=m_t2g)
+```
+The above will error out:
+
+>using 'fgsea' for GSEA analysis, please cite Korotkevich et al (2019).
+
+>preparing geneSet collections...
+>GSEA analysis...
+>Error in preparePathwaysAndStats(pathways, stats, minSize, maxSize, gseaParam,  : 
+>  Not all stats values are finite numbers
+  
+  
+It is because some p-values are 0, and log10 will make them infinite.
+
+```{r}
+head(res_df)
+```
+
+change the inf to big numbers
+```{r}
+res_df<- res_df %>%
+  mutate(negative_log10pvalue = -log10(pvalue)) %>%
+  mutate(negative_log10pvalue = ifelse(is.infinite(negative_log10pvalue), 1000, negative_log10pvalue)) %>%
+  mutate(signed_rank_stats = sign(log2FoldChange) * negative_log10pvalue)
+
+gene_list<- res_df$signed_rank_stats
+names(gene_list)<- res_df$ENTREZID
+
+
+em2 <- GSEA(gene_list, TERM2GENE=m_t2g)
+head(em2)
+
+# em2@result %>% View()
+```
+
+The `NES` (normalized enrichment score) tells you the pathway is up or down-regulated.
+
+For example, Hypoxia has a positive NES, so it is up-regulated.
+G2M checkpoint has a negative NES, so it is down-regulated.
+
+### visualization 
+
+```{r}
+p1<- gseaplot(em2, geneSetID = "HALLMARK_G2M_CHECKPOINT", 
+              by = "runningScore", title = "HALLMARK_G2M_CHECKPOINT")
+
+p2 <- gseaplot(em2, geneSetID = "HALLMARK_HYPOXIA", 
+               by = "runningScore", title = "HALLMARK_HYPOXIA")
+
+p1/p2
+```
+
+We rank the full gene list from the most up-regulated to the most down-regulated.
+Most of the hypoxia genes (the black bars in the lower panel) are in the front of the gene list while most of the 
+G2M checkpoint genes (the black bars in the upper panel) are in the end of the gene list. 
+
+## Do DESeq2 for multiple comparisons using list column and purrr::map()
+
+We have gone through a routine RNAseq analysis for a single comparison: hypoxia vs normoxia.
+The original datasets have multiple different conditions. You can copy and paste the code
+and change the columns you want to subset. Or depending the purpose of your experiment, you may 
+use DESeq2 for more complicated design.
+
+This tutorial is to demonstrate how you can avoid repeating yourself.
+so let's say you want to do the following comparisons:
+
+1. hypoxia vs normoxia under sgCTRL
+2. sgRELB vs sgCTRL under normoxia
+3. sgITPR3 vs sgCTRL under normoxia
+4. sgRELB vs sgCTRL under hypoxia
+5. sgITPR3 vs sgCTRL under hypoxia
+
+The first thing come to mind is to write a function:
+
+```{r}
+design_table<- colnames(raw_counts_mat) %>%
+        tibble::enframe(name = "sample_number", value = "sample_name") %>%
+        mutate(condition = stringr::str_replace(sample_name, "[0-9]+_SW_", "")) %>%
+        mutate(condition = stringr::str_replace(condition, "_[0-3]", ""))
+
+design_table<- as.data.frame(design_table)
+
+rownames(design_table)<- design_table$sample_name
+
+design_table
+```
+
+A function to do 2 condition DESeq2 comparison
+
+```{r}
+run_deseq2<- function(counts_mat, design_table, contrast_name){
+        design_table<- design_table %>%
+                dplyr::filter(condition %in% contrast_name)
+        counts_mat<- counts_mat[, rownames(design_table)]
+        keep<- rowSums(counts_mat > 10) >= 2 
+        counts_mat<- counts_mat[keep, ]
+        
+        dds<- DESeqDataSetFromMatrix(countData = counts_mat, 
+                                     colData = design_table, 
+                                     design= ~ condition)
+        dds<- DESeq(dds)
+        res<- results(dds, contrast = contrast_name)
+        
+        return(res)
+}
+
+
+# test the function 
+hypoxia_vs_normoxia_res<- run_deseq2(counts_mat = raw_counts_mat,
+                                     design_table = design_table,
+                                     contrast_name = c("condition", "sgCTRL_Hyp", "sgCTRL_Norm"))
+
+hypoxia_vs_normoxia_res
+```
+
+It is the same as we calculated in the very beginning 
+
+```{r}
+res
+```
+
+Now that we have a function, we can call that function with a for loop, but I want to show you a better
+way.
+
+
+### keep everything in a tibble
+
+make a `tibble` which can hold a list column. It is super-powerful.
+Read the best tutorial on [purrr](https://jennybc.github.io/purrr-tutorial/).
+
+```{r test2}
+res_df<- tibble::tibble(contrast_nominator = c("sgCTRL_Hyp", "sgRELB_Norm", "sgITPR3_Norm","sgRELB_Hyp", "sgITPR3_Hyp"),
+                contrast_demoniator =c("sgCTRL_Norm", "sgCTRL_Norm", "sgCTRL_Norm", "sgCTRL_Hyp", "sgCTRL_Hyp"))
+
+res_df
+
+res_df<- res_df %>%
+        dplyr::mutate(res = map2(contrast_nominator, contrast_demoniator,
+                          ~ run_deseq2(counts_mat = raw_counts_mat,
+                                       design_table = design_table,
+                                       contrast = c("condition", .x, .y))))
+## access individual DESeq2 results
+res_df$res[[1]]
+
+#res_df$res[[2]]
+```
+
+This is pretty cool!
+
+### volcano plots for all comparisons
+
+First, need to convert the DESeqResults object to a dataframe
+```{r}
+res_df2<- res_df %>%
+        mutate(res2 = map(res, as.data.frame)) %>%
+        dplyr::select(-res) 
+
+res_df2
+```
+
+Now, unnest it to a full dataframe:
+
+```{r}
+res_df2 %>%
+        tidyr::unnest(cols = res2) %>%
+        head()
+```
+The nice thing is that this is a tidy dataframe and it is easy to make any figures.
+
+```{r}
+res_df2 %>%
+        tidyr::unnest(cols = res2) %>%
+        mutate(comparison = paste0(contrast_nominator, "_vs_", contrast_demoniator)) %>%
+        ggplot(aes(x=log2FoldChange, y = -log10(pvalue))) +
+        geom_point() +
+        facet_wrap(~comparison)
+```
+How powerful is this?!
+
+
+Now let's find the differentially expressed genes for each comparison
+
+```{r}
+filter_sig_genes<- function(res){
+        sig_genes<- res %>% as.data.frame() %>%
+                dplyr::filter(padj < 0.05, abs(log2FoldChange) > 2) %>%
+                rownames()
+        
+        return(sig_genes)
+        
+}
+
+filter_sig_genes(hypoxia_vs_normoxia_res) %>%
+        head()
+
+res_df<- res_df %>%
+        mutate(sig_genes = map(res, filter_sig_genes))
+
+res_df
+```
+
+Now, the `sig_genes` is a list column contains a list of characters (genes)
+
+Let's keep going to do a gene set over-representation analysis for each comparison
+
+```{r test}
+
+# let's use the gene symbol 
+m_t2g <- msigdbr(species = "human", collection = "H") %>% 
+  dplyr::select(gs_name, db_gene_symbol)
+
+
+head(m_t2g)
+
+em <- enricher(significant_genes_map$ENTREZID, TERM2GENE=m_t2g, 
+               universe = background_genes_map$ENTREZID )
+
+
+res_df<- res_df %>%
+        mutate(hallmark_res = map(sig_genes, ~ enricher(.x, TERM2GENE=m_t2g, 
+                                                        universe = background_genes_map$SYMBOL)))
+
+res_df
+```
+
+Now, you see the pattern, you can keep add the results into a new column and because `tibble` can contain a list column
+and a list can contain any objects (even a ggplot2!).
+
+
+```{r}
+res_df<- res_df %>%
+        mutate(dotplots = map(hallmark_res, dotplot))
+
+res_df
+```
+
+
+You can take a look at the plots:
+```{r}
+res_df$dotplots[[1]]
+
+# this is an empty one because no terms were enriched
+# res_df$dotplots[[2]]
+
+res_df$dotplots[[3]]
+
+res_df$dotplots[[4]]
+```
+
+Finally, you can save those plots to files by:
+
+```{r}
+pwalk(list(a = res_df$contrast_nominator, b = res_df$contrast_demoniator, c = res_df$dotplots),
+     safely(function(a, b,c) ggsave(filename = paste0("~/blog_data/", a, "_vs_",b, ".pdf"), 
+                                    plot = c, width = 6, height = 6)))
+```
+
+using `safely` can avoid that empty figure error.
+
+Hopefully, you learned that how powerful `tibble` and `purrr` are.
+
+start using them!
+
+Happy Learning!
+
+Tommy aka crazyhottommy

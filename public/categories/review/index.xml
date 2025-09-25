@@ -7,10 +7,57 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Fri, 03 Jan 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 02 Mar 2025 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/review/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap</title>
+      <link>/post/bioinfo-roadmap/</link>
+      <pubDate>Sun, 02 Mar 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/bioinfo-roadmap/</guid>
+      <description>You Can Change Your Appetites Linear algebra, statistics, machine learning—these used to feel abstract to me. I had zero experience of bioinformatics when I was studying my PhD in a wet lab.
+I memorized formulas without truly understanding them. But over time, I found the right resources that made these concepts click, especially in the context of bioinformatics.
+I wrote a blog post: My opinionated selection of books/urls for bioinformatics/data science curriculum six years ago, and many links are broken.</description>
+    </item>
+    
+    <item>
+      <title>PCA analysis on TCGA bulk RNAseq data continued</title>
+      <link>/post/pca-tcga2/</link>
+      <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-tcga2/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In my last blog post, I showed you how to download TCGA RNAseq count data and do PCA and make a heatmap. It is interesting to see some of the LUSC samples mix with the LUAD samples and vice versa.
+In this post, we will continue to use PCA to do more Exploratory data analysis (EDA).</description>
+    </item>
+    
+    <item>
+      <title>PCA analysis on scATACseq data</title>
+      <link>/post/pca-scatac/</link>
+      <pubDate>Sun, 02 Feb 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-scatac/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In my last post, I showed you how to use PCA for bulk RNAseq data.
+Today, let’s see how we can use it for scATACseq data.
+Download the example dataset from 10x genomics https://support.10xgenomics.com/single-cell-atac/datasets/1.1.0/atac_pbmc_5k_v1
+The dataset is 5k Peripheral blood mononuclear cells (PBMCs) from a healthy donor (v1.0).
+Download the atac_pbmc_5k_v1_filtered_peak_bc_matrix.tar.gz file and unzip it.</description>
+    </item>
+    
+    <item>
+      <title>PCA analysis on TCGA bulk RNAseq data</title>
+      <link>/post/pca-tcga/</link>
+      <pubDate>Wed, 29 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-tcga/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+what is PCA? Principal Component Analysis (PCA) is a mathematical technique used to reduce the dimensionality of large datasets while preserving the most important patterns in the data.
+It transforms the original high-dimensional data into a smaller set of new variables called principal components (PCs), which capture the most variation in the data.</description>
+    </item>
     
     <item>
       <title>Biotech Data Strategy: Building a Scalable Foundation for Startups</title>

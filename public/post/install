@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# this is a script for installing the liminal command line tool
+# learn more at 
+# if yo
+
+echo ""
+echo ""
+
+# cleanup old conflicting artifacts
+rm -rf ~/.liminal-tools/bin/
+
+_LIMINAL_PACKAGE_FOR_PIP_INSTALL="${LIMINAL_PACKAGE_FOR_PIP_INSTALL:-liminal-cli@latest}"
+(
+	set -e
+	echo "Starting to download and install dependencies...." $(date) 
+
+	curl -LsSf https://astral.sh/uv/install.sh | sh
+	$HOME/.local/bin/uv python install 3.13
+	$HOME/.local/bin/uv tool install --python 3.13 --from "$_LIMINAL_PACKAGE_FOR_PIP_INSTALL" liminal-cli
+
+	echo "... finished installing dependencies" $(date)
+)
+
+echo ""
+echo ""
+echo ""
+
+if [ "$?" -ne 0 ]; then
+  echo "Error: Issue installing dependencies, please reach out at email"
+  exit 1
+fi
+
+# our CLI is installed. Set up shellsync
+$HOME/.local/bin/liminal_cl shell install

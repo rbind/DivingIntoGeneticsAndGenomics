@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Introduction to Annotation Data Packages in Bioconductor Accurate gene and transcript annotation is the foundation of many bioinformatics workflows, including RNA-seq analysis, functional genomics, and variant annotation.
+In the R/Bioconductor ecosystem, dedicated annotation data packages make it easy for researchers to access, query, and leverage gene models sourced from major biological databases.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/canonical-tx/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/canonical-tx/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="/post/canonical-tx/">
+  <meta property="og:title" content="How to create a GenomicRanges object in Bioconductor using canonical transcripts | Chatomics">
+  <meta property="og:description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Introduction to Annotation Data Packages in Bioconductor Accurate gene and transcript annotation is the foundation of many bioinformatics workflows, including RNA-seq analysis, functional genomics, and variant annotation.
+In the R/Bioconductor ecosystem, dedicated annotation data packages make it easy for researchers to access, query, and leverage gene models sourced from major biological databases.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2025-07-15T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2025-07-15T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>How to create a GenomicRanges object in Bioconductor using canonical transcripts | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">How to create a GenomicRanges object in Bioconductor using canonical transcripts</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2025-07-15 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Jul 15, 2025
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    12 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/canonical-tx/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/tutorial/">tutorial</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=How%20to%20create%20a%20GenomicRanges%20object%20in%20Bioconductor%20using%20canonical%20transcripts&amp;url=%2fpost%2fcanonical-tx%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fcanonical-tx%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fcanonical-tx%2f&amp;title=How%20to%20create%20a%20GenomicRanges%20object%20in%20Bioconductor%20using%20canonical%20transcripts"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fcanonical-tx%2f&amp;title=How%20to%20create%20a%20GenomicRanges%20object%20in%20Bioconductor%20using%20canonical%20transcripts"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=How%20to%20create%20a%20GenomicRanges%20object%20in%20Bioconductor%20using%20canonical%20transcripts&amp;body=%2fpost%2fcanonical-tx%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<div id="introduction-to-annotation-data-packages-in-bioconductor" class="section level2">
+<h2>Introduction to Annotation Data Packages in Bioconductor</h2>
+<p>Accurate gene and transcript annotation is the foundation of many bioinformatics workflows, including RNA-seq analysis, functional genomics, and variant annotation.</p>
+<p>In the R/Bioconductor ecosystem, dedicated annotation data packages make it easy for researchers to access, query, and leverage gene models sourced from major biological databases.</p>
+<p>Understanding the origin and structure of these annotation packages—such as those based on <a href="https://genome.ucsc.edu/">UCSC</a>, <a href="https://useast.ensembl.org/index.html">Ensembl</a>, and other reference sets—is essential for reproducibility and clarity in your analyses.</p>
+<div id="key-annotation-databases-and-their-packages" class="section level3">
+<h3>Key Annotation Databases and Their Packages</h3>
+<ul>
+<li><p><strong>TxDb.Hsapiens.UCSC.hg38.knownGene</strong><br />
+Built using gene models from the UCSC Genome Browser’s “knownGene” track for the human hg38 assembly. <code>UCSC</code> integrates gene predictions from several sources, including RefSeq, GenBank, and Ensembl, but curates its own transcript IDs and structures.</p></li>
+<li><p><strong>EnsDb Data Packages</strong><br />
+Based on Ensembl, a comprehensive genome annotation resource. EnsDb packages (created via the <code>ensembldb</code> package) are derived directly from Ensembl’s annotation of genes, transcripts, and proteins for specific genome builds. They reflect Ensembl’s standardized data model and genomic coordinates.</p></li>
+</ul>
+</div>
+<div id="major-transcript-reference-systems" class="section level3">
+<h3>Major Transcript Reference Systems</h3>
+<p>Different annotation resources define transcripts differently, and “canonical” transcripts can refer to the preferred or most representative isoforms per gene. Here are some prominent systems:</p>
+<table>
+<colgroup>
+<col width="16%" />
+<col width="67%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Reference System</th>
+<th>Description</th>
+<th>Canonical Selection</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>UCSC (knownGene)</strong></td>
+<td>Aggregates gene predictions, uses its own transcript IDs; many overlaps with RefSeq/Ensembl</td>
+<td>UCSC-specific rules</td>
+</tr>
+<tr class="even">
+<td><strong>Ensembl</strong></td>
+<td>Own annotation pipeline; covers standard and alternative transcripts, updated regularly</td>
+<td>Ensembl canonical</td>
+</tr>
+<tr class="odd">
+<td><strong>RefSeq</strong></td>
+<td>Curated by NCBI; focuses on high-confidence, experimentally validated transcripts</td>
+<td>RefSeq Select</td>
+</tr>
+<tr class="even">
+<td><strong>MANE</strong></td>
+<td>“Matched Annotation from NCBI and EMBL-EBI”; a collaboration to produce a single transcript per protein-coding gene, identical in both RefSeq and Ensembl</td>
+<td>MANE Select</td>
+</tr>
+</tbody>
+</table>
+<div id="additional-notes" class="section level4">
+<h4>Additional Notes</h4>
+<ul>
+<li><strong>RefSeq</strong> annotations are highly curated, with a focus on stability and biological accuracy.</li>
+<li><strong>MANE</strong> transcripts provide a harmonized “best” transcript for each gene, facilitating cross-platform comparisons and clinical reporting.</li>
+<li><strong>Canonical transcripts</strong> in Ensembl and UCSC are assigned based on expression, conservation, clinical relevance, or other attributes; the computational definitions may differ.</li>
+</ul>
+</div>
+</div>
+<div id="why-these-differences-matter" class="section level3">
+<h3>Why These Differences Matter</h3>
+<p>Selecting the appropriate annotation resource in your analysis affects:</p>
+<ul>
+<li><strong>Transcript/gene definitions</strong>: Variations in exon boundaries, IDs, and number of isoforms.</li>
+<li><strong>Reproducibility</strong>: Results may change depending on annotation source/version.</li>
+<li><strong>Interpretation</strong>: Clinical applications and downstream analyses (e.g., variant annotation) can be impacted by transcript choice.</li>
+</ul>
+<p>In practice, choosing the right isoform of the mRNA can matter a lot for annotating your variants, the protein amino acid changes can be different based on the isoforms that are selected.</p>
+<p>When annotating peaks for ChIP-seq data. Peaks have different distances among different isoforms.</p>
+</div>
+<div id="create-a-txdb-object-using-canonical-transcripts-only" class="section level3">
+<h3>Create a TxDb object using canonical transcripts only</h3>
+<pre class="r"><code>library(GenomicRanges)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(AnnotationHub)
+library(ensembldb)
+# load hg38 transcript
+# directly filter canonical transcripts from the Ensembl database
+ah&lt;- AnnotationHub(localHub = FALSE)
+edb&lt;- ah[[&quot;AH98047&quot;]]
+
+edb</code></pre>
+<pre><code>#&gt; EnsDb for Ensembl:
+#&gt; |Backend: SQLite
+#&gt; |Db type: EnsDb
+#&gt; |Type of Gene ID: Ensembl Gene ID
+#&gt; |Supporting package: ensembldb
+#&gt; |Db created by: ensembldb package from Bioconductor
+#&gt; |script_version: 0.3.7
+#&gt; |Creation time: Sat Dec 18 14:48:15 2021
+#&gt; |ensembl_version: 105
+#&gt; |ensembl_host: localhost
+#&gt; |Organism: Homo sapiens
+#&gt; |taxonomy_id: 9606
+#&gt; |genome_build: GRCh38
+#&gt; |DBSCHEMAVERSION: 2.2
+#&gt; | No. of genes: 69329.
+#&gt; | No. of transcripts: 268255.
+#&gt; |Protein data available.</code></pre>
+<pre class="r"><code>transcripts(edb)</code></pre>
+<pre><code>#&gt; GRanges object with 268255 ranges and 11 metadata columns:
+#&gt;                   seqnames            ranges strand |           tx_id
+#&gt;                      &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |     &lt;character&gt;
+#&gt;   ENST00000456328        1       11869-14409      + | ENST00000456328
+#&gt;   ENST00000450305        1       12010-13670      + | ENST00000450305
+#&gt;   ENST00000488147        1       14404-29570      - | ENST00000488147
+#&gt;   ENST00000619216        1       17369-17436      - | ENST00000619216
+#&gt;   ENST00000473358        1       29554-31097      + | ENST00000473358
+#&gt;               ...      ...               ...    ... .             ...
+#&gt;   ENST00000420810        Y 26549425-26549743      + | ENST00000420810
+#&gt;   ENST00000456738        Y 26586642-26591601      - | ENST00000456738
+#&gt;   ENST00000435945        Y 26594851-26634652      - | ENST00000435945
+#&gt;   ENST00000435741        Y 26626520-26627159      - | ENST00000435741
+#&gt;   ENST00000431853        Y 56855244-56855488      + | ENST00000431853
+#&gt;                               tx_biotype tx_cds_seq_start tx_cds_seq_end
+#&gt;                              &lt;character&gt;        &lt;integer&gt;      &lt;integer&gt;
+#&gt;   ENST00000456328   processed_transcript             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000450305 transcribed_unproces..             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000488147 unprocessed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000619216                  miRNA             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000473358                 lncRNA             &lt;NA&gt;           &lt;NA&gt;
+#&gt;               ...                    ...              ...            ...
+#&gt;   ENST00000420810   processed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000456738 unprocessed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000435945 unprocessed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000435741   processed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000431853   processed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;                           gene_id tx_support_level     tx_id_version gc_content
+#&gt;                       &lt;character&gt;        &lt;integer&gt;       &lt;character&gt;  &lt;numeric&gt;
+#&gt;   ENST00000456328 ENSG00000223972                1 ENST00000456328.2    55.3410
+#&gt;   ENST00000450305 ENSG00000223972             &lt;NA&gt; ENST00000450305.2    58.0696
+#&gt;   ENST00000488147 ENSG00000227232             &lt;NA&gt; ENST00000488147.1    61.1399
+#&gt;   ENST00000619216 ENSG00000278267             &lt;NA&gt; ENST00000619216.1    61.7647
+#&gt;   ENST00000473358 ENSG00000243485                5 ENST00000473358.1    58.5674
+#&gt;               ...             ...              ...               ...        ...
+#&gt;   ENST00000420810 ENSG00000224240             &lt;NA&gt; ENST00000420810.1    41.6928
+#&gt;   ENST00000456738 ENSG00000227629             &lt;NA&gt; ENST00000456738.1    44.7368
+#&gt;   ENST00000435945 ENSG00000237917             &lt;NA&gt; ENST00000435945.1    44.2875
+#&gt;   ENST00000435741 ENSG00000231514             &lt;NA&gt; ENST00000435741.1    55.1562
+#&gt;   ENST00000431853 ENSG00000235857             &lt;NA&gt; ENST00000431853.1    53.0612
+#&gt;                   tx_external_name tx_is_canonical         tx_name
+#&gt;                        &lt;character&gt;       &lt;integer&gt;     &lt;character&gt;
+#&gt;   ENST00000456328      DDX11L1-202               0 ENST00000456328
+#&gt;   ENST00000450305      DDX11L1-201               1 ENST00000450305
+#&gt;   ENST00000488147       WASH7P-201               1 ENST00000488147
+#&gt;   ENST00000619216    MIR6859-1-201               1 ENST00000619216
+#&gt;   ENST00000473358  MIR1302-2HG-202               1 ENST00000473358
+#&gt;               ...              ...             ...             ...
+#&gt;   ENST00000420810      CYCSP49-201               1 ENST00000420810
+#&gt;   ENST00000456738   SLC25A15P1-201               1 ENST00000456738
+#&gt;   ENST00000435945      PARP4P1-201               1 ENST00000435945
+#&gt;   ENST00000435741       CCNQP2-201               1 ENST00000435741
+#&gt;   ENST00000431853      CTBP2P1-201               1 ENST00000431853
+#&gt;   -------
+#&gt;   seqinfo: 456 sequences (1 circular) from GRCh38 genome</code></pre>
+<p>There is a metadata column called <code>tx_is_canonical</code> to show if the transcript is canonical or not.</p>
+<pre class="r"><code># Get transcripts directly from the EnsDb object with canonical filter
+hg38_transcripts&lt;- transcripts(edb, filter = ~ tx_is_canonical == TRUE)
+
+# only the canonical transcripts are retained. tx_is_canonical are all 1s
+hg38_transcripts</code></pre>
+<pre><code>#&gt; GRanges object with 69329 ranges and 11 metadata columns:
+#&gt;                   seqnames            ranges strand |           tx_id
+#&gt;                      &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |     &lt;character&gt;
+#&gt;   ENST00000450305        1       12010-13670      + | ENST00000450305
+#&gt;   ENST00000488147        1       14404-29570      - | ENST00000488147
+#&gt;   ENST00000619216        1       17369-17436      - | ENST00000619216
+#&gt;   ENST00000473358        1       29554-31097      + | ENST00000473358
+#&gt;   ENST00000607096        1       30366-30503      + | ENST00000607096
+#&gt;               ...      ...               ...    ... .             ...
+#&gt;   ENST00000420810        Y 26549425-26549743      + | ENST00000420810
+#&gt;   ENST00000456738        Y 26586642-26591601      - | ENST00000456738
+#&gt;   ENST00000435945        Y 26594851-26634652      - | ENST00000435945
+#&gt;   ENST00000435741        Y 26626520-26627159      - | ENST00000435741
+#&gt;   ENST00000431853        Y 56855244-56855488      + | ENST00000431853
+#&gt;                               tx_biotype tx_cds_seq_start tx_cds_seq_end
+#&gt;                              &lt;character&gt;        &lt;integer&gt;      &lt;integer&gt;
+#&gt;   ENST00000450305 transcribed_unproces..             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000488147 unprocessed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000619216                  miRNA             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000473358                 lncRNA             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000607096                  miRNA             &lt;NA&gt;           &lt;NA&gt;
+#&gt;               ...                    ...              ...            ...
+#&gt;   ENST00000420810   processed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000456738 unprocessed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000435945 unprocessed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000435741   processed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000431853   processed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;                           gene_id tx_support_level     tx_id_version gc_content
+#&gt;                       &lt;character&gt;        &lt;integer&gt;       &lt;character&gt;  &lt;numeric&gt;
+#&gt;   ENST00000450305 ENSG00000223972             &lt;NA&gt; ENST00000450305.2    58.0696
+#&gt;   ENST00000488147 ENSG00000227232             &lt;NA&gt; ENST00000488147.1    61.1399
+#&gt;   ENST00000619216 ENSG00000278267             &lt;NA&gt; ENST00000619216.1    61.7647
+#&gt;   ENST00000473358 ENSG00000243485                5 ENST00000473358.1    58.5674
+#&gt;   ENST00000607096 ENSG00000284332             &lt;NA&gt; ENST00000607096.1    31.1594
+#&gt;               ...             ...              ...               ...        ...
+#&gt;   ENST00000420810 ENSG00000224240             &lt;NA&gt; ENST00000420810.1    41.6928
+#&gt;   ENST00000456738 ENSG00000227629             &lt;NA&gt; ENST00000456738.1    44.7368
+#&gt;   ENST00000435945 ENSG00000237917             &lt;NA&gt; ENST00000435945.1    44.2875
+#&gt;   ENST00000435741 ENSG00000231514             &lt;NA&gt; ENST00000435741.1    55.1562
+#&gt;   ENST00000431853 ENSG00000235857             &lt;NA&gt; ENST00000431853.1    53.0612
+#&gt;                   tx_external_name tx_is_canonical         tx_name
+#&gt;                        &lt;character&gt;       &lt;integer&gt;     &lt;character&gt;
+#&gt;   ENST00000450305      DDX11L1-201               1 ENST00000450305
+#&gt;   ENST00000488147       WASH7P-201               1 ENST00000488147
+#&gt;   ENST00000619216    MIR6859-1-201               1 ENST00000619216
+#&gt;   ENST00000473358  MIR1302-2HG-202               1 ENST00000473358
+#&gt;   ENST00000607096    MIR1302-2-201               1 ENST00000607096
+#&gt;               ...              ...             ...             ...
+#&gt;   ENST00000420810      CYCSP49-201               1 ENST00000420810
+#&gt;   ENST00000456738   SLC25A15P1-201               1 ENST00000456738
+#&gt;   ENST00000435945      PARP4P1-201               1 ENST00000435945
+#&gt;   ENST00000435741       CCNQP2-201               1 ENST00000435741
+#&gt;   ENST00000431853      CTBP2P1-201               1 ENST00000431853
+#&gt;   -------
+#&gt;   seqinfo: 456 sequences (1 circular) from GRCh38 genome</code></pre>
+<p>There are unconventional chromosome names such as LRG_239,</p>
+<pre class="r"><code>seqnames(hg38_transcripts)</code></pre>
+<pre><code>#&gt; factor-Rle of length 69329 with 456 runs
+#&gt;   Lengths:                       5702 ...                        522
+#&gt;   Values : 1                          ...         Y                 
+#&gt; Levels(456): 1 10 11 12 13 14 15 16 ... LRG_763 LRG_792 LRG_793 LRG_93 MT X Y</code></pre>
+<pre class="r"><code># only keep the standard names
+hg38_transcripts&lt;- hg38_transcripts %&gt;%
+  keepStandardChromosomes(pruning.mode = &quot;coarse&quot;)
+
+seqnames(hg38_transcripts)</code></pre>
+<pre><code>#&gt; factor-Rle of length 62800 with 25 runs
+#&gt;   Lengths: 5702 2429 3488 3152 1448 2358 2295 ... 3132 2554 2417   37 2522  522
+#&gt;   Values :   1    10   11   12   13   14   15 ...   7    8    9    MT   X    Y 
+#&gt; Levels(25): 1 10 11 12 13 14 15 16 17 18 19 2 20 21 22 3 4 5 6 7 8 9 MT X Y</code></pre>
+<p>rename chromosome from 1,2,3 to chr1, chr2, chr3 etc
+so it can overlap with the peaks if your peaks are in chr1 start end format.</p>
+<pre class="r"><code>seqlevels(hg38_transcripts)</code></pre>
+<pre><code>#&gt;  [1] &quot;1&quot;  &quot;10&quot; &quot;11&quot; &quot;12&quot; &quot;13&quot; &quot;14&quot; &quot;15&quot; &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;19&quot; &quot;2&quot;  &quot;20&quot; &quot;21&quot; &quot;22&quot;
+#&gt; [16] &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;8&quot;  &quot;9&quot;  &quot;MT&quot; &quot;X&quot;  &quot;Y&quot;</code></pre>
+<pre class="r"><code># prefix chr
+new_seqnames &lt;- paste0(&quot;chr&quot;, seqlevels(hg38_transcripts))
+names(new_seqnames) &lt;- seqlevels(hg38_transcripts)
+
+new_seqnames</code></pre>
+<pre><code>#&gt;       1      10      11      12      13      14      15      16      17      18 
+#&gt;  &quot;chr1&quot; &quot;chr10&quot; &quot;chr11&quot; &quot;chr12&quot; &quot;chr13&quot; &quot;chr14&quot; &quot;chr15&quot; &quot;chr16&quot; &quot;chr17&quot; &quot;chr18&quot; 
+#&gt;      19       2      20      21      22       3       4       5       6       7 
+#&gt; &quot;chr19&quot;  &quot;chr2&quot; &quot;chr20&quot; &quot;chr21&quot; &quot;chr22&quot;  &quot;chr3&quot;  &quot;chr4&quot;  &quot;chr5&quot;  &quot;chr6&quot;  &quot;chr7&quot; 
+#&gt;       8       9      MT       X       Y 
+#&gt;  &quot;chr8&quot;  &quot;chr9&quot; &quot;chrMT&quot;  &quot;chrX&quot;  &quot;chrY&quot;</code></pre>
+<pre class="r"><code>hg38_transcripts &lt;- renameSeqlevels(hg38_transcripts, new_seqnames)
+
+# add the gene symbol using database mapping for better accuracy
+hg38_transcripts$SYMBOL &lt;- mapIds(edb,
+                                 keys = hg38_transcripts$tx_id,
+                                 column = &quot;SYMBOL&quot;,
+                                 keytype = &quot;TXID&quot;)
+
+
+hg38_transcripts</code></pre>
+<pre><code>#&gt; GRanges object with 62800 ranges and 12 metadata columns:
+#&gt;                   seqnames            ranges strand |           tx_id
+#&gt;                      &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |     &lt;character&gt;
+#&gt;   ENST00000450305     chr1       12010-13670      + | ENST00000450305
+#&gt;   ENST00000488147     chr1       14404-29570      - | ENST00000488147
+#&gt;   ENST00000619216     chr1       17369-17436      - | ENST00000619216
+#&gt;   ENST00000473358     chr1       29554-31097      + | ENST00000473358
+#&gt;   ENST00000607096     chr1       30366-30503      + | ENST00000607096
+#&gt;               ...      ...               ...    ... .             ...
+#&gt;   ENST00000420810     chrY 26549425-26549743      + | ENST00000420810
+#&gt;   ENST00000456738     chrY 26586642-26591601      - | ENST00000456738
+#&gt;   ENST00000435945     chrY 26594851-26634652      - | ENST00000435945
+#&gt;   ENST00000435741     chrY 26626520-26627159      - | ENST00000435741
+#&gt;   ENST00000431853     chrY 56855244-56855488      + | ENST00000431853
+#&gt;                               tx_biotype tx_cds_seq_start tx_cds_seq_end
+#&gt;                              &lt;character&gt;        &lt;integer&gt;      &lt;integer&gt;
+#&gt;   ENST00000450305 transcribed_unproces..             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000488147 unprocessed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000619216                  miRNA             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000473358                 lncRNA             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000607096                  miRNA             &lt;NA&gt;           &lt;NA&gt;
+#&gt;               ...                    ...              ...            ...
+#&gt;   ENST00000420810   processed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000456738 unprocessed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000435945 unprocessed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000435741   processed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;   ENST00000431853   processed_pseudogene             &lt;NA&gt;           &lt;NA&gt;
+#&gt;                           gene_id tx_support_level     tx_id_version gc_content
+#&gt;                       &lt;character&gt;        &lt;integer&gt;       &lt;character&gt;  &lt;numeric&gt;
+#&gt;   ENST00000450305 ENSG00000223972             &lt;NA&gt; ENST00000450305.2    58.0696
+#&gt;   ENST00000488147 ENSG00000227232             &lt;NA&gt; ENST00000488147.1    61.1399
+#&gt;   ENST00000619216 ENSG00000278267             &lt;NA&gt; ENST00000619216.1    61.7647
+#&gt;   ENST00000473358 ENSG00000243485                5 ENST00000473358.1    58.5674
+#&gt;   ENST00000607096 ENSG00000284332             &lt;NA&gt; ENST00000607096.1    31.1594
+#&gt;               ...             ...              ...               ...        ...
+#&gt;   ENST00000420810 ENSG00000224240             &lt;NA&gt; ENST00000420810.1    41.6928
+#&gt;   ENST00000456738 ENSG00000227629             &lt;NA&gt; ENST00000456738.1    44.7368
+#&gt;   ENST00000435945 ENSG00000237917             &lt;NA&gt; ENST00000435945.1    44.2875
+#&gt;   ENST00000435741 ENSG00000231514             &lt;NA&gt; ENST00000435741.1    55.1562
+#&gt;   ENST00000431853 ENSG00000235857             &lt;NA&gt; ENST00000431853.1    53.0612
+#&gt;                   tx_external_name tx_is_canonical         tx_name      SYMBOL
+#&gt;                        &lt;character&gt;       &lt;integer&gt;     &lt;character&gt; &lt;character&gt;
+#&gt;   ENST00000450305      DDX11L1-201               1 ENST00000450305     DDX11L1
+#&gt;   ENST00000488147       WASH7P-201               1 ENST00000488147      WASH7P
+#&gt;   ENST00000619216    MIR6859-1-201               1 ENST00000619216   MIR6859-1
+#&gt;   ENST00000473358  MIR1302-2HG-202               1 ENST00000473358 MIR1302-2HG
+#&gt;   ENST00000607096    MIR1302-2-201               1 ENST00000607096   MIR1302-2
+#&gt;               ...              ...             ...             ...         ...
+#&gt;   ENST00000420810      CYCSP49-201               1 ENST00000420810     CYCSP49
+#&gt;   ENST00000456738   SLC25A15P1-201               1 ENST00000456738  SLC25A15P1
+#&gt;   ENST00000435945      PARP4P1-201               1 ENST00000435945     PARP4P1
+#&gt;   ENST00000435741       CCNQP2-201               1 ENST00000435741      CCNQP2
+#&gt;   ENST00000431853      CTBP2P1-201               1 ENST00000431853     CTBP2P1
+#&gt;   -------
+#&gt;   seqinfo: 25 sequences (1 circular) from GRCh38 genome</code></pre>
+<p>Now we have a <code>GenomicRanges</code> object with only the canonical transcripts!! You can then use it to annotate your ChIP-seq peaks for example.</p>
+<p>In my next blog post, I am going to show you how to calculate <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-1934-6">regulatory potential score</a> using ChIP-seq peaks and this canonical transcripts annotation.</p>
+<p>Let’s take a look at the UCSC annotation.</p>
+<pre class="r"><code>txdb&lt;- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+UCSC_transcripts&lt;- transcripts(txdb)
+UCSC_transcripts</code></pre>
+<pre><code>#&gt; GRanges object with 276905 ranges and 2 metadata columns:
+#&gt;                       seqnames        ranges strand |     tx_id
+#&gt;                          &lt;Rle&gt;     &lt;IRanges&gt;  &lt;Rle&gt; | &lt;integer&gt;
+#&gt;        [1]                chr1   11869-14409      + |         1
+#&gt;        [2]                chr1   12010-13670      + |         2
+#&gt;        [3]                chr1   29554-31097      + |         3
+#&gt;        [4]                chr1   30267-31109      + |         4
+#&gt;        [5]                chr1   30366-30503      + |         5
+#&gt;        ...                 ...           ...    ... .       ...
+#&gt;   [276901] chrX_MU273397v1_alt 239036-260095      - |    276901
+#&gt;   [276902] chrX_MU273397v1_alt 272358-282686      - |    276902
+#&gt;   [276903] chrX_MU273397v1_alt 314193-316302      - |    276903
+#&gt;   [276904] chrX_MU273397v1_alt 314813-315236      - |    276904
+#&gt;   [276905] chrX_MU273397v1_alt 324527-324923      - |    276905
+#&gt;                      tx_name
+#&gt;                  &lt;character&gt;
+#&gt;        [1] ENST00000456328.2
+#&gt;        [2] ENST00000450305.2
+#&gt;        [3] ENST00000473358.1
+#&gt;        [4] ENST00000469289.1
+#&gt;        [5] ENST00000607096.1
+#&gt;        ...               ...
+#&gt;   [276901] ENST00000710260.1
+#&gt;   [276902] ENST00000710028.1
+#&gt;   [276903] ENST00000710030.1
+#&gt;   [276904] ENST00000710216.1
+#&gt;   [276905] ENST00000710031.1
+#&gt;   -------
+#&gt;   seqinfo: 711 sequences (1 circular) from hg38 genome</code></pre>
+<pre class="r"><code>head(seqlevels(UCSC_transcripts), n = 30)</code></pre>
+<pre><code>#&gt;  [1] &quot;chr1&quot;                &quot;chr2&quot;                &quot;chr3&quot;               
+#&gt;  [4] &quot;chr4&quot;                &quot;chr5&quot;                &quot;chr6&quot;               
+#&gt;  [7] &quot;chr7&quot;                &quot;chr8&quot;                &quot;chr9&quot;               
+#&gt; [10] &quot;chr10&quot;               &quot;chr11&quot;               &quot;chr12&quot;              
+#&gt; [13] &quot;chr13&quot;               &quot;chr14&quot;               &quot;chr15&quot;              
+#&gt; [16] &quot;chr16&quot;               &quot;chr17&quot;               &quot;chr18&quot;              
+#&gt; [19] &quot;chr19&quot;               &quot;chr20&quot;               &quot;chr21&quot;              
+#&gt; [22] &quot;chr22&quot;               &quot;chrX&quot;                &quot;chrY&quot;               
+#&gt; [25] &quot;chrM&quot;                &quot;chr1_GL383518v1_alt&quot; &quot;chr1_GL383519v1_alt&quot;
+#&gt; [28] &quot;chr1_GL383520v2_alt&quot; &quot;chr1_KI270759v1_alt&quot; &quot;chr1_KI270760v1_alt&quot;</code></pre>
+<p>we see strange chromosome names such as <code>chr1_GL383518v1_alt</code>.</p>
+<p>The human reference assembly includes not just the main chromosomes (e.g., chr1, chr2…) but also alternate loci and fix patches.</p>
+<p>“alt” contigs cover areas of the genome where population-level structural variation or highly polymorphic regions cannot be represented by a single, linear reference.</p>
+<p>Each name describes: The primary chromosome (chr1)</p>
+<p>The unique contig identifier (GL383518v1, KI270759v1, etc.; these are GenBank accession numbers with version)</p>
+<p>The “_alt” suffix, indicating an alternate locus or haplotype scaffold.</p>
+<p>Also, this transcripts annotation does not have gene symbols and you may need to map it using <code>org.Hs.eg.db</code> package.</p>
+<p>get all the genes representation</p>
+<pre class="r"><code>genes(txdb)</code></pre>
+<pre><code>#&gt; GRanges object with 30733 ranges and 1 metadata column:
+#&gt;             seqnames              ranges strand |     gene_id
+#&gt;                &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;
+#&gt;           1    chr19   58345178-58362751      - |           1
+#&gt;          10     chr8   18386311-18401218      + |          10
+#&gt;         100    chr20   44584896-44652252      - |         100
+#&gt;        1000    chr18   27932879-28177946      - |        1000
+#&gt;   100008586     chrX   49551278-49568218      + |   100008586
+#&gt;         ...      ...                 ...    ... .         ...
+#&gt;        9990    chr15   34229784-34338060      - |        9990
+#&gt;        9991     chr9 112217716-112333664      - |        9991
+#&gt;        9992    chr21   34364006-34371381      + |        9992
+#&gt;        9993    chr22   19036282-19122454      - |        9993
+#&gt;        9997    chr22   50523568-50526461      - |        9997
+#&gt;   -------
+#&gt;   seqinfo: 711 sequences (1 circular) from hg38 genome</code></pre>
+<p>Note this function collapse all the transcripts from the same gene into a single GenomicRanges. This may or may not be what you want. It effectively getting the longest isoform of that gene.</p>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<p>When building workflows in Bioconductor, it’s crucial to know the origins and intentions behind annotation data packages. Whether you rely on UCSC, Ensembl, RefSeq, or MANE, your chosen dataset will shape how genes and transcripts are referenced throughout your research. Always specify your annotation sources for transparent, reproducible results.</p>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioconductor/">Bioconductor</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/annotation/">annotation</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/r-or-python-for-bioinformatics/">R or Python for Bioinformatics?</a></li>
+        
+        <li><a href="/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/">Downstream of bulk RNAseq: read in salmon output using tximport and then DESeq2</a></li>
+        
+        <li><a href="/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/">Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</a></li>
+        
+        <li><a href="/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/">How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</a></li>
+        
+        <li><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/repro-comp/" rel="next">Reproducible Computing in Bioinformatics: Lessons from My Latest Talk</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/ai-bioinformatics/" rel="prev">Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

@@ -168,7 +168,7 @@
     <item>
       <title>Multiomics</title>
       <link>/categories/multiomics/</link>
-      <pubDate>Tue, 22 Aug 2023 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 17 May 2025 00:00:00 +0000</pubDate>
       
       <guid>/categories/multiomics/</guid>
       <description></description>
@@ -202,9 +202,18 @@
     </item>
     
     <item>
+      <title>Perspective</title>
+      <link>/categories/perspective/</link>
+      <pubDate>Fri, 04 Jul 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/perspective/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Python</title>
       <link>/categories/python/</link>
-      <pubDate>Thu, 09 May 2024 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 03 May 2025 00:00:00 +0000</pubDate>
       
       <guid>/categories/python/</guid>
       <description></description>
@@ -240,7 +249,7 @@
     <item>
       <title>Review</title>
       <link>/categories/review/</link>
-      <pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 02 Mar 2025 00:00:00 +0000</pubDate>
       
       <guid>/categories/review/</guid>
       <description></description>
@@ -312,7 +321,7 @@
     <item>
       <title>Spatial</title>
       <link>/categories/spatial/</link>
-      <pubDate>Tue, 08 Aug 2023 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 03 May 2025 00:00:00 +0000</pubDate>
       
       <guid>/categories/spatial/</guid>
       <description></description>
@@ -333,6 +342,15 @@
       <pubDate>Mon, 25 Jan 2021 00:00:00 +0000</pubDate>
       
       <guid>/categories/thoughts/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tutorial</title>
+      <link>/categories/tutorial/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/tutorial/</guid>
       <description></description>
     </item>
     

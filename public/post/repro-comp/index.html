@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Hey everyone, it’s Tommy here. If you’ve been following my blog or my Twitter/X (@tangming2005), you know I love diving into the practical side of bioinformatics and genomics.
+Recently, I gave a talk titled “Good Enough Practices for Reproducible Computing” at Moderna, where I spent a good chunk of time chatting about reproducible computing.
+Why? Because in our field, where data is exploding and analyses get complex, making sure your work can be repeated—by you or anyone else—is a game-changer.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/repro-comp/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/repro-comp/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="/post/repro-comp/">
+  <meta property="og:title" content="Reproducible Computing in Bioinformatics: Lessons from My Latest Talk | Chatomics">
+  <meta property="og:description" content="Hey everyone, it’s Tommy here. If you’ve been following my blog or my Twitter/X (@tangming2005), you know I love diving into the practical side of bioinformatics and genomics.
+Recently, I gave a talk titled “Good Enough Practices for Reproducible Computing” at Moderna, where I spent a good chunk of time chatting about reproducible computing.
+Why? Because in our field, where data is exploding and analyses get complex, making sure your work can be repeated—by you or anyone else—is a game-changer.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2025-08-17T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2025-08-17T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Reproducible Computing in Bioinformatics: Lessons from My Latest Talk | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Reproducible Computing in Bioinformatics: Lessons from My Latest Talk</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2025-08-17 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Aug 17, 2025
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/repro-comp/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/tutorial/">tutorial</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Reproducible%20Computing%20in%20Bioinformatics%3a%20Lessons%20from%20My%20Latest%20Talk&amp;url=%2fpost%2frepro-comp%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2frepro-comp%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2frepro-comp%2f&amp;title=Reproducible%20Computing%20in%20Bioinformatics%3a%20Lessons%20from%20My%20Latest%20Talk"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2frepro-comp%2f&amp;title=Reproducible%20Computing%20in%20Bioinformatics%3a%20Lessons%20from%20My%20Latest%20Talk"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Reproducible%20Computing%20in%20Bioinformatics%3a%20Lessons%20from%20My%20Latest%20Talk&amp;body=%2fpost%2frepro-comp%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>Hey everyone, it’s Tommy here. If you’ve been following my blog or my Twitter/X (<span class="citation">@tangming2005</span>), you know I love diving into the practical side of bioinformatics and genomics.</p>
+<p>Recently, I gave a talk titled <a href="https://divingintogeneticsandgenomics.com/talk/2025-moderna-reproducible/">“Good Enough Practices for Reproducible Computing”</a> at Moderna, where I spent a good chunk of time chatting about reproducible computing.</p>
+<p>Why? Because in our field, where data is exploding and analyses get complex, making sure your work can be repeated—by you or anyone else—is a game-changer. I thought it’d be fun to turn those slides into a blog post here.</p>
+<p>In this post, I’ll focus on the reproducible computing part, sharing why it matters, why it’s tricky, and some simple tips to make it happen. I’ll keep it straightforward, like I do in my other posts—no fancy jargon without explanation. Let’s jump in!</p>
+<div id="why-bother-with-reproducibility" class="section level2">
+<h2>Why Bother with Reproducibility?</h2>
+<p>First off, remember that story from Keith Baggerly at MD Anderson? He uncovered issues in high-throughput biology papers because methods weren’t clear or reproducible. Check out his hilarious YouTube talk on it: <a href="https://www.youtube.com/watch?v=7gYIs7uYbMo">The Importance of Reproducible Research in High-Throughput Biology</a>.</p>
+<p>Stuff like that shows how non-reproducible work can lead to wrong conclusions, wasted time, and even bad decisions in drug development—which can be super expensive.</p>
+<p>But here’s a personal angle: <strong>Your closest collaborator is yourself six months from now</strong>. I’ve been there—digging up an old analysis and thinking, “What the heck did I do here?”</p>
+<p>If it’s not reproducible, you’re starting from scratch. And in biotech/pharama, where I’m now Director of Bioinformatics at AstraZeneca, we can’t afford that. Reproducibility saves time, builds trust, lets others build on your work and most importantly, it saves lives.</p>
+<p><a href="https://ccah.vetmed.ucdavis.edu/areas-study/genetics/titus-brown-lab">Titus Brown</a> summed it up nicely in one of his talks: Reproducibility isn’t just nice; it’s essential in computational biology.</p>
+</div>
+<div id="the-challenges-why-is-it-so-hard" class="section level2">
+<h2>The Challenges: Why Is It So Hard?</h2>
+<p>From my experience (and the gaps in my own career journey from wet lab to comp bio), here are the big hurdles:</p>
+<ul>
+<li><strong>Data and Scripts Go Missing</strong>: Raw data isn’t versioned, or scripts are “available upon request” (yeah, right).</li>
+<li><strong>Vague Methods</strong>: Papers skip details on tools, versions, or even operating systems.</li>
+<li><strong>Version Mismatches</strong>: Different R/Python packages, bioinformatics tools, or OS (Mac vs. Linux vs. Windows) can change results.</li>
+<li><strong>No Standards</strong>: Everyone organizes projects differently, making collaboration a nightmare.</li>
+</ul>
+<p>I’ve seen this in my over a decade long career in bioiinformatics. One mismatch, and poof—results don’t match.</p>
+</div>
+<div id="how-to-make-your-work-reproducible-practical-tips" class="section level2">
+<h2>How to Make Your Work Reproducible: Practical Tips</h2>
+<p>The good news? You don’t need rocket science. Here’s what I covered in the talk—simple steps:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Version Your Data and Files Smartly</strong></p>
+<p>Version control large files with <a href="https://git-lfs.com/">git lfs</a>.</p>
+<p>Name files like a pro: Use ISO 8601 dates (YYYY-MM-DD), no spaces or special chars, and add slugs for clarity. For example, “2025-08-17_reproducible-analysis_results.csv” beats “final_v2.csv”.</p>
+<p>Shoutout to Jenny Bryan for her awesome slides on this: <a href="http://www2.stat.duke.edu/~rcs46/lectures_2015/01-markdown-git/slides/naming-slides/naming-slides.pdf">Naming Things</a>.</p>
+<p>Organize projects consistently: Folders like /data (read-only), /scripts, /results. In R, use <code>here::here()</code> for paths—avoids headaches. Python folks, check out <a href="https://pypi.org/project/pyhere/">pyhere</a> on GitHub.</p></li>
+<li><p><strong>Git for Code Versioning</strong><br />
+Git is your best friend for tracking changes. I commit often and push daily. Basic commands: <code>git init</code>, <code>git add</code>, <code>git commit</code>, <code>git push</code>.</p>
+<p>It saved me when inheriting projects at Immunitas Therapeutics (after people left). If you’re new, try <a href="https://happygitwithr.com">Happy Git with R</a> or <a href="https://learngitbranching.js.org">Learn Git Branching</a>.</p>
+<p>Pro tip: Use branches for experiments you might toss.</p></li>
+<li><p><strong>Manage Environments with Tools Like Conda, uv, or renv</strong><br />
+Pin package versions! For Python, I love mamba (faster Conda) or uv (super quick, check it out on GitHub: <a href="https://github.com/astral-sh/uv" class="uri">https://github.com/astral-sh/uv</a>).</p>
+<p>In R, renv snapshots your library: <code>renv::init()</code>, <code>renv::snapshot()</code>. No more “It works on my machine” excuses.</p></li>
+<li><p><strong>Containers for the Win: Docker or Singularity</strong><br />
+Think of Docker as a virtual machine that bundles everything—OS, packages, code. I’ve used it for ChIP-seq pipelines.
+Resources:</p>
+<ul>
+<li><p><a href="https://rocker-project.org">Rocker Project</a> for R in Docker,</p></li>
+<li><p><a href="https://biocontainers.pro/">BioContainers</a> for bio tools.</p></li>
+<li><p><a href="https://www.bioconductor.org/help/docker/">Bioconductor container</a></p></li>
+</ul></li>
+<li><p><strong>Literate Programming: Mix Code and Words</strong><br />
+Use Jupyter Notebooks for Python or R Markdown/Quarto for R. I will need to switch to Quarto—it’s next-gen R Markdown (<a href="https://quarto.org" class="uri">https://quarto.org</a>). Embed code chunks, explanations, and outputs.</p>
+<p>Bonus: Quarto is Git-friendly. Document outside too, like in my enhancer-promoter repo: <a href="https://gitlab.com/tangming2005/Enhancer_promoter_interaction_data" class="uri">https://gitlab.com/tangming2005/Enhancer_promoter_interaction_data</a>.</p>
+<p>Python users want to take a look at <a href="https://marimo.io/">marimo</a> as a Jupyter alternative</p></li>
+<li><p><strong>Automate Everything</strong><br />
+Scripts over manual tweaks! For repetitive tasks, bash scripts or workflows like Snakemake/Nextflow. In R, {targets} is gold (book: <a href="https://books.ropensci.org/targets/" class="uri">https://books.ropensci.org/targets/</a>).<br />
+Automation = best documentation. Computers love boring work; let them handle it.</p></li>
+<li><p><strong>Clean Code with Functions</strong><br />
+Don’t repeat yourself—use functions. In R, purrr::map() for loops. I even ask ChatGPT to refactor messy code. For bigger stuff, build packages with roxygen2 (book: <a href="https://r-pkgs.org" class="uri">https://r-pkgs.org</a>).</p>
+<p>Functional programming keeps things tidy and reusable.</p></li>
+</ol>
+</div>
+<div id="good-enough-practices-to-get-started" class="section level2">
+<h2>Good Enough Practices to Get Started</h2>
+<p>You don’t need perfection. Start with:</p>
+<ul>
+<li>Consistent folders.<br />
+</li>
+<li>Notebooks for analyses.<br />
+</li>
+<li>Extensive documentation.</li>
+<li>Git for versioning.<br />
+</li>
+<li>A quick HTML report with knitr.<br />
+</li>
+<li>End every project with a slide deck linking to your GitHub.</li>
+</ul>
+<p>Over time, aim for the full spectrum: Reproduce your own work anytime, anywhere, and let others do the same.</p>
+<div id="tools-that-are-useful" class="section level3">
+<h3>Tools that are useful</h3>
+<ol style="list-style-type: decimal">
+<li><p><a href="https://github.com/vsbuffalo/scidataflow">SciDataFlow</a> — Facilitating the Flow of Data in Science. By Vince Buffalo, author of <a href="https://www.amazon.com/Bioinformatics-Data-Skills-Reproducible-Research/dp/1449367372">Bioinformatics data skills</a> (one my favorite books).</p></li>
+<li><p><a href="https://arxiv.org/abs/2303.07876">pracpac</a>: Practical R Packaging with Docker. By <a href="https://stephenturner.us/">Stephen Turner</a>.</p></li>
+<li><p><a href="https://docs.ropensci.org/rix/">rix</a>: Reproducible Environments with <a href="https://nixos.org/">Nix</a>.</p></li>
+<li><p><a href="https://handbook.datalad.org/en/latest/usecases/ml-analysis.html">DataLad for reproducible machine-learning analyses</a></p></li>
+<li><p><a href="https://github.com/tycho-kirchner/shournal">Shournal</a> A (file-) journal for your shell.</p></li>
+<li><p>I do not want to write down every linux commands in the terminal anymore. Check out <a href="https://www.liminalbios.com/">Shell Sync</a></p></li>
+<li><p><a href="https://vatlab.github.io/sos-docs/index.html">Script of Scripts (SoS)</a> is a computational environment for the development and execution of scripts in multiple languages for daily computational research. It can be used to develop scripts to analyze data interactively in a Jupyter environment, and, with minimal effort, convert the scripts to a workflow that analyzes a large amount of data in batch mode.</p></li>
+<li><p><a href="https://github.com/Boehringer-Ingelheim/dso">DSO</a>: is a command line helper for building reproducible data anlaysis projects with ease from Boehringer-Ingelheim.</p></li>
+<li><p>Imagine being able to click on a plot and seeing the complete Jupyter/Rmd notebook, data, and parameters. That’s <a href="https://www.gofigr.io/">GoFigr</a>!</p></li>
+</ol>
+</div>
+<div id="two-books-i-have-read" class="section level3">
+<h3>Two books I have read</h3>
+<ul>
+<li><p><a href="https://raps-with-r.dev/">Building reproducible analytical pipelines with R</a>. Highly recommend if you use R.</p></li>
+<li><p><a href="https://www.amazon.com/Software-Engineering-Data-Scientists-Notebooks/dp/1098136209">Software Engineering for Data Scientists: From Notebooks to Scalable Systems</a> if you use python. But the concepts are applicable no matter what language you use.</p></li>
+</ul>
+</div>
+</div>
+<div id="wrapping-up" class="section level2">
+<h2>Wrapping Up</h2>
+<p>Reproducible computing transformed my career—from PhD at UF to leading teams now. It avoids errors, speeds things up, and makes you a better scientist.</p>
+<p>If you’re in bioinformatics, embrace it! Got questions? Hit me up on Twitter or in the comments below. And if you like this, subscribe to my newsletter for more tips: <a href="https://divingintogeneticsandgenomics.ck.page/profile" class="uri">https://divingintogeneticsandgenomics.ck.page/profile</a>.</p>
+<p>What do you think— what’s your biggest reproducibility headache? Let’s chat!</p>
+<p>(Oh, and if you’re into videos, check my YouTube channel <a href="https://www.youtube.com/@chatomics">Chatomics</a> for related tutorials.)</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/reproducible/">reproducible</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/data-analysis/">data analysis</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/canonical-tx/">How to create a GenomicRanges object in Bioconductor using canonical transcripts</a></li>
+        
+        <li><a href="/post/ai-bioinformatics/">Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist</a></li>
+        
+        <li><a href="/post/cancer-drug/">How Cancer Drugs Really Work</a></li>
+        
+        <li><a href="/post/partial-cor/">How to calculate partial correlation controlling cancer types</a></li>
+        
+        <li><a href="/post/multiomics-mofa2/">Multi-Omics Integration Strategy and Deep Diving into MOFA2</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/canonical-tx/" rel="prev">How to create a GenomicRanges object in Bioconductor using canonical transcripts</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

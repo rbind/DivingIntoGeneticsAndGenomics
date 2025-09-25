@@ -7,10 +7,32 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Thu, 26 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 07 Feb 2025 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/tcga/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>PCA analysis on TCGA bulk RNAseq data continued</title>
+      <link>/post/pca-tcga2/</link>
+      <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-tcga2/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In my last blog post, I showed you how to download TCGA RNAseq count data and do PCA and make a heatmap. It is interesting to see some of the LUSC samples mix with the LUAD samples and vice versa.
+In this post, we will continue to use PCA to do more Exploratory data analysis (EDA).</description>
+    </item>
+    
+    <item>
+      <title>PCA analysis on TCGA bulk RNAseq data</title>
+      <link>/post/pca-tcga/</link>
+      <pubDate>Wed, 29 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-tcga/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+what is PCA? Principal Component Analysis (PCA) is a mathematical technique used to reduce the dimensionality of large datasets while preserving the most important patterns in the data.
+It transforms the original high-dimensional data into a smaller set of new variables called principal components (PCs), which capture the most variation in the data.</description>
+    </item>
     
     <item>
       <title>How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</title>

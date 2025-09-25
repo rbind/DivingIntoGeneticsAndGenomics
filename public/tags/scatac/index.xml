@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ScATAC on Chatomics</title>
+    <link>/tags/scatac/</link>
+    <description>Recent content in ScATAC on Chatomics</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Sun, 02 Feb 2025 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/scatac/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>PCA analysis on scATACseq data</title>
+      <link>/post/pca-scatac/</link>
+      <pubDate>Sun, 02 Feb 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/pca-scatac/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In my last post, I showed you how to use PCA for bulk RNAseq data.
+Today, let’s see how we can use it for scATACseq data.
+Download the example dataset from 10x genomics https://support.10xgenomics.com/single-cell-atac/datasets/1.1.0/atac_pbmc_5k_v1
+The dataset is 5k Peripheral blood mononuclear cells (PBMCs) from a healthy donor (v1.0).
+Download the atac_pbmc_5k_v1_filtered_peak_bc_matrix.tar.gz file and unzip it.</description>
+    </item>
+    
+  </channel>
+</rss>

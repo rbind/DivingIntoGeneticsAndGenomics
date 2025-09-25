@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="body { text-align: justify}  Today’s guest blog post on multiOmics integration is written by Aditi Qamra and edited by Tommy.
+If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
+ Aditi is a senior data scientist working on biomarker discovery and early product development at Roche, using multimodal clinical and genomic data. She has a PhD and postdoc in epigenomics of solid tumors and enjoys upskilling herself in stats topics.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/multiomics-mofa2/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/multiomics-mofa2/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="/post/multiomics-mofa2/">
+  <meta property="og:title" content="Multi-Omics Integration Strategy and Deep Diving into MOFA2 | Chatomics">
+  <meta property="og:description" content="body { text-align: justify}  Today’s guest blog post on multiOmics integration is written by Aditi Qamra and edited by Tommy.
+If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
+ Aditi is a senior data scientist working on biomarker discovery and early product development at Roche, using multimodal clinical and genomic data. She has a PhD and postdoc in epigenomics of solid tumors and enjoys upskilling herself in stats topics.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2025-05-17T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2025-05-17T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Multi-Omics Integration Strategy and Deep Diving into MOFA2 | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Multi-Omics Integration Strategy and Deep Diving into MOFA2</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2025-05-17 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      May 17, 2025
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    13 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/multiomics-mofa2/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/multiomics/">multiomics</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Multi-Omics%20Integration%20Strategy%20and%20Deep%20Diving%20into%20MOFA2&amp;url=%2fpost%2fmultiomics-mofa2%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fmultiomics-mofa2%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fmultiomics-mofa2%2f&amp;title=Multi-Omics%20Integration%20Strategy%20and%20Deep%20Diving%20into%20MOFA2"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fmultiomics-mofa2%2f&amp;title=Multi-Omics%20Integration%20Strategy%20and%20Deep%20Diving%20into%20MOFA2"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Multi-Omics%20Integration%20Strategy%20and%20Deep%20Diving%20into%20MOFA2&amp;body=%2fpost%2fmultiomics-mofa2%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <style>
+body {
+text-align: justify}
+</style>
+<p>Today’s guest blog post on multiOmics integration is written by <a href="https://www.linkedin.com/in/aditiq/">Aditi Qamra</a> and edited by Tommy.</p>
+<p>If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me
+on <a href="https://www.linkedin.com/in/%F0%9F%8E%AF-ming-tommy-tang-40650014/">LinkedIn</a>.</p>
+<blockquote>
+<p>Aditi is a senior data scientist working on biomarker discovery and early product development at Roche, using multimodal clinical and genomic data. She has a PhD and postdoc in epigenomics of solid tumors and enjoys upskilling herself in stats topics.</p>
+</blockquote>
+<p>Multi-omic data collection and analysis is becoming increasingly routine in research and clinical settings. By collecting biological signals across different layers of regulation like gene expression, methylation, mutation, protein abundance etc., the intent is to infer higher order, often non-linear relationships that would be invisible in single-data views.</p>
+<p>In a <a href="https://divingintogeneticsandgenomics.com/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/">previous post</a> on this topic, Tommy walked through the basics of multi-omic integration through an example integrating transcriptomics and mutation data using a linear factor analysis. While this was a great start, multiple methods have been published on this topic from classical multivariate stats to bayesian and graph based models.</p>
+<div id="how-to-choose-the-right-method-for-your-data-and-question" class="section level2">
+<h2><strong>How to choose the right method for your data and question?</strong></h2>
+<p>The optimal multi-omic integration strategy depends on three things: the biological question, data type, and the objective of our analysis.</p>
+<div id="start-with-the-biological-question" class="section level3">
+<h3><strong>Start with the biological question</strong></h3>
+<p>What do we want to identify across different data modalities:</p>
+<ul>
+<li>Shared programs: Are you looking for biological themes that echo across data types e.g. immune cell activation reflected in both gene expression and cytokine levels?</li>
+<li>Unique signals: Or do you need to tease out what one omic tells you that none of the others can?</li>
+<li>Does combining them improve ability to stratify patients or predict disease/treatment outcome</li>
+<li>And most often asked, what do they reveal together that they don’t individually?</li>
+</ul>
+<p>Clarifying this upfront helps determine whether you need an unsupervised factor model, a predictive classifier, or a mechanistic graph-based approach.</p>
+<p><strong>Tommy’s NOTE: Read this paper by <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11949029/">Vivek et al Leveraging complementary multi-omics data integration methods for mechanistic insights in kidney diseases</a>.</strong></p>
+<p>They tested both <code>MOFA2</code>(unsupervisied) and <code>DIABLO</code> (supervised) for a pilot study in Chronic Kidney Disease.</p>
+<p>A new preprint from Vivek and the group: <a href="https://www.medrxiv.org/content/10.1101/2025.05.12.25327328v1">Multi-omics data integration from patients with carotid stenosis illuminates key molecular signatures of atherosclerotic instability</a>.<br />
+<a href="https://www.linkedin.com/posts/vivek-das-phd-m-sc-b1110b25_happy-to-share-our-latest-preprint-where-activity-7329763931097399298-VAk8/">Linkedin Post</a>.</p>
+<p><strong>Those are good examples on how multi-omics data analysis is used in real-world applications!</strong></p>
+</div>
+<div id="navigating-data-hurdles" class="section level3">
+<h3><strong>Navigating data hurdles</strong></h3>
+<p>The right tool should address the different data distributions and the practical challenges of collecting multi-omic data.</p>
+<p>Multi-omic datasets are rarely complete matrices. You might have RNA-seq for 200 samples, proteomics for 150, and methylation for only 180 of those, which needs methods that can support partial observations.</p>
+<p>Collected data modalities can also differ in</p>
+<ul>
+<li>Sparsity (ATAC-seq vs RNA-seq)</li>
+<li>Noise (proteomics often suffers from batch effects and high levels of missingness)</li>
+<li>Biological resolution. RNA-seq typically collects data on 20-60K genes while methylation panels may only cover few thousand loci or ~55K regions for the <a href="https://www.twistbioscience.com/resources/data-files/twist-human-methylome-panel-target-bed-file">TWIST panel</a>. 55K is the capture regions, and they contain ~8 Million CpG sites.</li>
+<li>Data distribution.</li>
+</ul>
+<p>A naive concatenation can drown true signal in the modality with the most features or create phantom clusters driven by batch differences.</p>
+<p><strong>Tommy’s NOTE: <a href="https://divingintogeneticsandgenomics.com/post/python-visium/">The last blog post</a> when integrating the spatial coordinates matrix and the gene expression matrix is a perfect example for this problem.</strong>
+<img src="/img/figures/Fig04.png" />
+<strong>A simple z-score normalization for each data modality worked.</strong></p>
+<p>For more complex data, a robust method may be needed to normalize per data modality, learn modality-specific weights, or regularize appropriately (e.g., weighted PCA, MOFA2, DIABLO).</p>
+</div>
+<div id="interpretability-and-biological-plausibility" class="section level3">
+<h3><strong>Interpretability and Biological Plausibility</strong></h3>
+<p>Whatever the method, results must ultimately be biologically interpretable. This means, we should be able to map back our results to original features (genes, loci, proteins etc.) It is also important to avoid interpreting these statistically inferred patterns since most integration tools are designed to uncover correlations, not causal relationships between omics layers.</p>
+</div>
+<div id="orthogonal-validation" class="section level3">
+<h3><strong>Orthogonal Validation</strong></h3>
+<p>Finally, we should always orthogonally validate findings to be able to trust the output of multi-omic methods e.g. Do results align with known biology, be validated through functional assays and/or generalize to other cohorts.</p>
+</div>
+<div id="list-of-available-multi-omic-tools" class="section level3">
+<h3>List of available multi-omic tools</h3>
+<p>Mike Love has an extensive list of multiomic tools categorized by type <a href="https://github.com/mikelove/awesome-multi-omics">here</a>.</p>
+<p>This review <a href="https://www.ncbi.nlm.nih.gov/core/lw/2.0/html/tileshop_pmc/tileshop_pmc_inline.html?title=Click%20on%20image%20to%20zoom&amp;p=PMC3&amp;id=7003173_10.1177_1177932219899051-fig1.jpg">paper</a> also outlines tools split by method.</p>
+<p>A <a href="https://frontlinegenomics.com/a-guide-to-multi-omics-integration-strategies/">blog post</a> written by Matthew Higgs also outlines a comprehensive list of multi-omics integration tools.</p>
+</div>
+</div>
+<div id="deep-diving-into-one-method-multi-omic-factor-analysis-mofa2" class="section level2">
+<h2><strong>Deep diving into one method: Multi Omic Factor Analysis (MOFA2)</strong></h2>
+<p>A frequently asked question when integrating multi-omic data is to identify underlying shared biological programs which are not directly measurable e.g. immune interactions in the tumor microenvironment which may be reflected across different immune and stromal cell proportions, gene expression and cytokine profiles.</p>
+<p>MOFA2 (Multi-Omics Factor Analysis) is a Bayesian probabilistic statistical framework designed for the unsupervised integration of multi-omic data to identify latent factors capturing sources of variation across multiple omics layers and is well suited to handle sparse and missing data.</p>
+<p>This was a lot of jargon - Let’s break it down:</p>
+<div id="what-is-a-probabilistic-framework" class="section level3">
+<h3><strong>What is a Probabilistic Framework</strong></h3>
+<p>Models like MOFA2 posit that the observed data i.e our collected data modalities is generated from a small number of latent factors, each with their feature-specific weights aka feature loadings, plus noise. But instead of estimating single fixed values for latent factors, feature loadings and noise, it treats them as random variables with probability distributions.</p>
+</div>
+<div id="why-use-probabilistic-modeling" class="section level3">
+<h3><strong>Why use Probabilistic Modeling</strong></h3>
+<p>By modeling the data as probability distributions rather than fixed values, we naturally capture and quantify uncertainty and noise
+It allows for specification of different distributions per data modality</p>
+</div>
+<div id="what-are-latent-factors" class="section level3">
+<h3><strong>What are Latent Factors</strong></h3>
+<p>Latent factors are unobserved (hidden) variables that explain patterns of variation in your data. We can infer them from the data by looking for patterns of co-variation across samples and omic layers.</p>
+<p><strong>NOTE, read Tommy’s LinkedIn post <a href="https://www.linkedin.com/posts/%F0%9F%8E%AF-ming-tommy-tang-40650014_what-the-heck-is-latent-space-if-pca-activity-7316086311013027841-kNUw">explaining latent space</a>.</strong></p>
+<p>Models like MOFA2 reduces the dimensionality of the data by identifying these latent factors. Each factor has a continuous distribution per sample as well as weight associated with the all the underlying features of the different data modalities that indicate how strongly they are influenced by each factor.</p>
+<pre class="r"><code>Observed data ≈ latent factors × weights + noise.</code></pre>
+<p><img src="/img/figures/Fig01.png" /></p>
+<p><strong>Notice the factors are shared across all data modalities and weights are specific to each modality - This is what helps capture shared variation and while explaining how latent factors influence the features within each modality.</strong></p>
+</div>
+<div id="why-bayesian" class="section level3">
+<h3><strong>Why Bayesian</strong>?</h3>
+<p>MOFA2 is Bayesian because it uses Bayes’ theorem to infer how likely are different values of the latent factors and weights are, given the observed data. It places prior distributions on the unknown parameters and updates these priors using the observed data to infer posterior distributions via Bayes’ theorem.</p>
+<p>This is where we dive a bit deeper into the maths of MOFA2 (but intuitively):</p>
+<p>In Bayesian statistics -</p>
+<ol style="list-style-type: decimal">
+<li>We start with a guess about what the parameter might be—called the prior distribution</li>
+<li>Then we collect data and see how likely it is under various parameter values—this is the likelihood</li>
+<li>Finally we combine the prior and the likelihood to get an updated belief—the posterior distribution.</li>
+</ol>
+<p>Mathematically:</p>
+<p><img src="/img/figures/Fig02.png" /></p>
+<ul>
+<li>θ = Parameters you want to infer</li>
+<li>D = Observed data</li>
+<li>p(θ∣D) = posterior distribution, what we believe about θ after observing data</li>
+<li>p(D∣θ) = likelihood, the probability of observing D given specific θ</li>
+<li>p(θ) = prior, what we believed about θ before seeing data</li>
+<li>p(D) = evidence or marginal likelihood, the overall probability of data under all possible θ acts as a normalizing constant.</li>
+</ul>
+<p>Extending this to MOFA2:</p>
+<p><img src="/img/figures/Fig03.png" /></p>
+<ul>
+<li><p><strong>Prior</strong>: The prior distribution p(factor, loadings..) reflects our initial beliefs about the latent factors and their associated weights.
+For factors, MOFA2 assumes each latent factor has a normal distribution centered around zero, reflecting the idea that most factors might have little influence on the data, but some factors could be more influential.
+For weights or factor loadings, sparsity-inducing priors (automatic relevance determination) are used which ensures not all features and not all factors are selected yielding simpler and more interpretable models.</p></li>
+<li><p><strong>Likelihood</strong>: The likelihood function p(data|factors, loadings..) tells us how likely the observed data is, given a set of latent factors and their feature loadings. In MOFA2, user can specify each data modality as an appropriate distribution e.g. Gaussian likelihood, where the data is assumed to be normally distributed around the factors with some level of noise.</p></li>
+<li><p><strong>Posterior</strong>: The posterior distribution p(factor, loadings.. ∣data ) is what we ultimately want to estimate. It gives us the updated belief about the latent factors and feature loadings after incorporating the observed data. The posterior distribution quantifies not just the “most likely” values of these parameters but also how uncertain we are about them.</p></li>
+</ul>
+<p><strong>But what about the p(data)</strong> ?</p>
+<p>p(data) is the probability of the observed data under all possible settings of latent factors and loadings, weighted by how likely each setting is under the priors. To compute this, we would have to know every possible combination of latent variables and parameters, which is extremely computationally expensive. But without computing this, we cannot also compute the desired posterior according to the Bayes’ theorem (!) - So what should we do ?</p>
+<p>Instead of computing the true marginal likelihood (and hence the true posterior) exactly, MOFA2 uses variational inference to approximate it.</p>
+</div>
+<div id="what-is-variational-inference" class="section level3">
+<h3><strong>What is Variational Inference</strong></h3>
+<p>Variational inference assumes that the true posterior distribution is too complex to work with directly. Instead, it approximates the posterior p(factor, loadings.. | data) by using a simpler family of distributions denoted by q(factor, loadings..), such as Gaussians, even though the true posterior may be much more complicated.</p>
+<p>It then optimizes the parameters of this simpler assumed distribution (means, variances) to make it overlap as much as possible with the true posterior.
+At this point, you should stop and ask - “We don’t know the true posterior to begin with, how can we optimize?”</p>
+<p>The answer lies in the fact that the log of the marginal likelihood, log p(data), is a fixed quantity for a given model and dataset. It can be expressed as:</p>
+<pre class="r"><code>log p(data)= ELBO + KL Divergence</code></pre>
+<p>Let’s walk through the new terms:</p>
+<ul>
+<li><p><strong>ELBO (Evidence Lower Bound)</strong> : A quantity that can be computed and optimized. It measures how well the approximating distribution explains the data while balancing complexity</p></li>
+<li><p><strong>KL divergence</strong>: Measures the “distance” between the approximated posterior and the true posterior. This cannot be computed directly. It is always non negative. But critically, since log⁡p(data) is fixed, maximizing ELBO automatically minimizes the KL divergence — even though we never compute the KL divergence explicitly. Since KL Divergence is always non negative, ELBO is always going to be equal to or less than log p(data) i.e the true lower bound
+Thus, variational inference lets us approximate the true posterior without needing to know it, by focusing entirely on maximizing the ELBO.</p></li>
+</ul>
+<p><strong>Tommy’s NOTE: read this <a href="https://mbernste.github.io/posts/vae/">blog post by Matt B</a> to understand how variational inference is used in variational autoEncoder. (Warning! mathematical equations heavy, Tommy can not process).</strong></p>
+</div>
+<div id="what-is-elbo" class="section level3">
+<h3><strong>What is ELBO</strong></h3>
+<pre class="r"><code>ELBO = Data fit + Prior regularization - Complexity Control</code></pre>
+<ul>
+<li><strong>Data Fit (Likelihood Term)</strong>: How well your chosen latent factors and loadings “reconstruct” the observed omic measurements.</li>
+</ul>
+<p>We already know that MOFA2 treats every measurement in each data modality as the model’s predicted value (latent factors × loadings) plus some random noise. It then asks, “How far off is my prediction?” by computing a weighted squared error for each feature—features with more noise count less. Because MOFA2 assumes both its uncertainty and the noise are Gaussian, all those errors collapse into a simple formula that can be computed directly.</p>
+<ul>
+<li><strong>Prior Regularization (Prior Term)</strong>: How well the inferred factors and loadings stick to what you believed about them before seeing the data i.e the prior distributions.</li>
+</ul>
+<p>MOFA2 starts by assuming every latent factor and every feature loading “wants” to be zero. It treats each as a Gaussian centered at zero ( as we discussed earlier), then penalizes any inferred value that strays too far—more deviation means a bigger penalty. Because these penalties have simple formulas, MOFA2 can compute them exactly to keep most factors and weights small unless the data really demand otherwise.</p>
+<ul>
+<li><strong>Complexity Control (Entropy Term)</strong>: Finally, MOFA2 makes sure it doesn’t get “too sure” about any factor or loading ie avoid overfitting.
+It does this by rewarding a bit of spread in the approximate distribution. Remember, entropy of a distribution quantifies its spread: a very narrow, overconfident q has low entropy; a broad, uncertain q has high entropy.</li>
+</ul>
+<p>Since MOFA2’s q(factor, loadings) is just a Gaussian, this “reward for uncertainty” is a simple function of its variances, so it can be calculated directly and helps prevent overfitting.</p>
+<p>Thus:</p>
+<ul>
+<li>Data Fit pulls your solution toward explaining every wiggle in the data. This helps capturing the relevant biological variation present in the data.</li>
+<li>Prior Regularization pulls it back toward your initial beliefs (e.g., that most factors have small effects) and helps respecting prior structural assumptions (such as sparsity or centeredness around zero).</li>
+<li>Entropy makes sure you don’t clamp down too hard—letting the model stay appropriately uncertain.</li>
+</ul>
+<p>By computing each of these in closed form (thanks to Gaussian choices), MOFA2 can efficiently optimize the ELBO and thus approximate the true posterior—all without ever having to tackle the intractable values.</p>
+</div>
+<div id="code-example" class="section level3">
+<h3><strong>Code example</strong></h3>
+<p>Now that we have gone through the theory of MOFA2 in a top down approach in deep, lets cover a practical example. We will walk through specific code lines in <a href="https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/CLL.html">tutorial</a> accompanying MOFA2 but focus on what each step does rather than trying to replicate it.</p>
+<p>Using 4 data modalities in CLL_data, the tutorial attempts to identify latent factors capturing variation in mutational, mRNA, methylation and drug response data.</p>
+<p>It first sets up the model and priors using the <code>create_mofa</code> function. This instantiates zero-centered Gaussian priors on factors and loadings.</p>
+<p>When you call <code>prepare_mofa(..., model_options = model_opts)</code>, the <code>model_opts</code> list lets you control the variational inference process and how ELBO is evaluated:</p>
+<p>The <code>model_opts$likelihoods</code> option tells MOFA2 which probability distribution to assume for each data view when computing the likelihood term in the ELBO.</p>
+<ul>
+<li>gaussian: assumes continuous data with additive Normal noise (the default for log-transformed expression, methylation β-values, z-scored proteomics, etc.)</li>
+<li>bernoulli: treats the data as binary presence/absence (e.g. ATAC peak calls).</li>
+<li>poisson: for raw count data (e.g. untransformed RNA-seq counts).</li>
+</ul>
+<p>If you pick the wrong likelihood (e.g. Gaussian on raw counts), the fit will be poor and the ELBO will not converge appropriately. It is thus important to match each modality’s model_opts$likelihoods to your actual data distribution.</p>
+<p>When you call <code>prepare_mofa(..., training_options = train_opts)</code>, the <code>train_opts</code> list lets you control the variational inference process and how ELBO is evaluated:</p>
+<ul>
+<li><p><code>maxiter</code>: Maximum number of variational inference iterations. Convergence is assessed via the ELBO statistic. If ELBO hasn’t plateaued by maxiter, you can increase this number to allow more refinement.</p></li>
+<li><p><code>convergence_mode</code>: Tolerance level for ELBO changes before stopping.</p></li>
+<li><p><code>startELBO</code>: Iteration at which to compute the first ELBO value (default = 1).</p></li>
+<li><p><code>freqELBO</code>: How often (in iterations) to record ELBO. Recording every 1 iteration can be slow for large runs—setting freqELBO = 10 or 20 reduces logging overhead.</p></li>
+<li><p><code>drop_factor_threshold</code>: Threshold on variance explained below which a factor is considered inactive and dropped. A value of 0.01 drops factors explaining &lt; 1% variance; default = –1 disables automatic dropping.</p></li>
+</ul>
+</div>
+</div>
+<div id="limitations-of-mofa2" class="section level2">
+<h2><strong>Limitations of MOFA2</strong></h2>
+<ul>
+<li>MOFA2 models each view as a linear combination of factors. Thus, it can miss non-linear relationships that deep-learning methods might capture.</li>
+<li>MOFA2 supports only Gaussian, Bernoulli and Poisson likelihoods. If your data violate those assumptions (e.g., heavy tails, zero inflation), fit and factor interpretability can suffer.</li>
+<li>Factors can mix unrelated signals if modalities are imbalanced or correlated, making biological interpretation less clear without careful downstream validation.</li>
+<li>You need to pre-correct batch effects yourself or rely on MOFA2’s noise term, which isn’t always enough for large technical confounders.</li>
+<li>Imbalance in features of different modalities can overshadow the results.</li>
+</ul>
+</div>
+<div id="summary" class="section level2">
+<h2><strong>Summary</strong></h2>
+<p>By aligning your biological question, data characteristics, and interpretability requirements you can choose which tool to select for your multi-omic integration analysis.</p>
+<p>In deeply understanding one such tool <code>MOFA2</code> we internalized the core of Bayesian/probabilistic integration methods—namely, that they all:</p>
+<ul>
+<li>Define a generative latent‐variable model (data generated from hidden factors + noise),</li>
+<li>Place priors on factors and loadings to encode sparsity or effect‐size beliefs,</li>
+<li>Choose modality‐specific likelihoods to match data distributions, and</li>
+<li>Use approximate inference (EM, variational inference or VAEs) to recover posteriors.</li>
+</ul>
+<p>Now that we understand these four pillars, you can pick up and interpret any related multi-omic tool.</p>
+</div>
+<div id="references" class="section level2">
+<h2><strong>References</strong></h2>
+<ol style="list-style-type: decimal">
+<li><a href="https://biofam.github.io/MOFA2/" class="uri">https://biofam.github.io/MOFA2/</a></li>
+<li><a href="https://www.embopress.org/doi/full/10.15252/msb.20178124" class="uri">https://www.embopress.org/doi/full/10.15252/msb.20178124</a></li>
+</ol>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/multiomics/">multiomics</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/bioinfo-roadmap/">How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap</a></li>
+        
+        <li><a href="/post/pca-tcga2/">PCA analysis on TCGA bulk RNAseq data continued</a></li>
+        
+        <li><a href="/post/pca-scatac/">PCA analysis on scATACseq data</a></li>
+        
+        <li><a href="/post/pca-tcga/">PCA analysis on TCGA bulk RNAseq data</a></li>
+        
+        <li><a href="/post/biotech-data/">Biotech Data Strategy: Building a Scalable Foundation for Startups</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/partial-cor/" rel="next">How to calculate partial correlation controlling cancer types</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/python-visium/" rel="prev">Exploring Spatial Transcriptomics A Dive into Visium Data Analysis in Python</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

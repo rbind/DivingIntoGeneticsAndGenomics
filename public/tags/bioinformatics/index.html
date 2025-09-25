@@ -96,7 +96,7 @@
   <meta property="og:description" content="Director of Bioinformatics">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2025-01-03T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2025-08-17T00:00:00&#43;00:00">
   
 
   
@@ -284,116 +284,118 @@
   
   
   <div>
-    <h2><a href="/post/biotech-data/">Biotech Data Strategy: Building a Scalable Foundation for Startups</a></h2>
+    <h2><a href="/post/repro-comp/">Reproducible Computing in Bioinformatics: Lessons from My Latest Talk</a></h2>
     <div class="article-style">
       
-      In a biotech startup, an early data strategy is key to ensure public and private data remain useful and valuable. As AI hype reaches new heights, I want to emphasize that a data strategy must precede any AI strategy.
-Data is the oil of the AI engine. Unfortunately, the real-world data are usually messy and not AI-ready. Without a robust data strategy, you are building an AI system on a shaky foundation.
+      Hey everyone, it’s Tommy here. If you’ve been following my blog or my Twitter/X (@tangming2005), you know I love diving into the practical side of bioinformatics and genomics.
+Recently, I gave a talk titled “Good Enough Practices for Reproducible Computing” at Moderna, where I spent a good chunk of time chatting about reproducible computing.
+Why? Because in our field, where data is exploding and analyses get complex, making sure your work can be repeated—by you or anyone else—is a game-changer.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/review-2024/">Review 2024</a></h2>
-    <div class="article-style">
-      
-      As 2024 wraps up, it’s the perfect time to reflect and prepare for the new year. I wrote the review for 2023 here.
-Goals reached ✅ I lost 12 lb in 6 weeks!
- ✅ Supported the clinical trial to identify bio markers for potential responders to our drug at Immunitas. Helped with indication selection for the second and third program. I moved to Astrazeneca in August. I really appreciate my experience at Immunitas and learned a lot.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/learn-linear-algebra/">I regret not doing so</a></h2>
+    <h2><a href="/post/canonical-tx/">How to create a GenomicRanges object in Bioconductor using canonical transcripts</a></h2>
     <div class="article-style">
       
       To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
-My regret is not learning linear algebra well during college.
-I barely passed the exam for it (and calculus, it was a nightmare :) ).
-To be fair..
-It was not taught well and it sounded too boring. I did not know what the application of matrix multiplication was, not until…
-Many years later, I started to learn bioinformatics.
+Introduction to Annotation Data Packages in Bioconductor Accurate gene and transcript annotation is the foundation of many bioinformatics workflows, including RNA-seq analysis, functional genomics, and variant annotation.
+In the R/Bioconductor ecosystem, dedicated annotation data packages make it easy for researchers to access, query, and leverage gene models sourced from major biological databases.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/cca-alignment/">How CCA alignment and cell label transfer work in Seurat</a></h2>
+    <h2><a href="/post/ai-bioinformatics/">Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist</a></h2>
     <div class="article-style">
       
       To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
-Understand CCA Following my last blog post on PCA projection and cell label transfer, we are going to talk about CCA.
-In single-cell RNA-seq data integration using Canonical Correlation Analysis (CCA), we typically align two matrices representing different datasets, where both datasets have the same set of genes but different numbers of cells.
+AI is transforming every field — and bioinformatics is no exception. From designing drug molecules in minutes to writing entire pipelines, generative AI is making it faster than ever to process biological data. But here’s the truth:
+ AI doesn’t understand biology — you do.
+ That’s why, in this new era, your value isn’t replaced by AI — it’s multiplied by your ability to judge, validate, and improve what AI produces.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/pca-projection/">How PCA projection and cell label transfer work in Seurat</a></h2>
+    <h2><a href="/post/cancer-drug/">How Cancer Drugs Really Work</a></h2>
     <div class="article-style">
       
       To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
-Understand the example datasets We will use PBMC3k and PBMC10k data. We will project the PBMC3k data to the PBMC10k data and get the labels
-library(Seurat) library(Matrix) library(irlba) # For PCA library(RcppAnnoy) # For fast nearest neighbor search library(dplyr) # Assuming the PBMC datasets (3k and 10k) are already normalized # and represented as sparse matrices # devtools::install_github(&#39;satijalab/seurat-data&#39;) library(SeuratData) #AvailableData() #InstallData(&quot;pbmc3k&quot;) pbmc3k&lt;-UpdateSeuratObject(pbmc3k) pbmc3k@meta.
+Suna was 28. She had melanoma. Chemo left her wrecked—her hair gone, her strength gone, and her hope fading. Doctors gave her weeks.
+Then they tried something different.
+It didn’t poison the tumor. It didn’t cut or burn. It woke up her immune system.
+Her own T-cells found the cancer. Attacked it. Killed it.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/genomic-interval/">You need to master it if you deal with genomics data</a></h2>
+    <h2><a href="/post/partial-cor/">How to calculate partial correlation controlling cancer types</a></h2>
     <div class="article-style">
       
       To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
-Motivation What’s the most common problem you need to solve when dealing with genomics data?
-For me, it is Genomic Intervals!
-The genomics data usually represents linearly: chromosome name, start and end.
-We use it to define a region in the genome ( A peak from ChIP-seq data); the location of a gene, a DNA methylation site ( a single point), a mutation call (a single point), and a duplication region in cancer etc.
+What is partial correlation Partial correlation measures the relationship between two variables while controlling for the effect of one or more other variables.
+Suppose you want to know how X and Y are related, independent of how both are influenced by Z. Partial correlation helps answer:
+ If we remove the influence of Z, is there still a connection between X and Y?
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/docker-mac-m3/">A docker image to keep this site alive</a></h2>
+    <h2><a href="/post/multiomics-mofa2/">Multi-Omics Integration Strategy and Deep Diving into MOFA2</a></h2>
     <div class="article-style">
       
-      To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
-I have been writing blog posts for over 10 years. I was using blogspot and in 2018, I switched to blogdown and I love it.
-My blogdown website divingintogeneticsandgenomics.com was using Hugo v0.42 and blogdown v1.0. It has been many years and now I have a macbook pro with an M3 chip. I could not install the old versions of the R packages to serve the site.
+      body { text-align: justify}  Today’s guest blog post on multiOmics integration is written by Aditi Qamra and edited by Tommy.
+If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
+ Aditi is a senior data scientist working on biomarker discovery and early product development at Roche, using multimodal clinical and genomic data. She has a PhD and postdoc in epigenomics of solid tumors and enjoys upskilling herself in stats topics.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/most-common-mistake-for-bioinformatics/">The Most Common Mistake In Bioinformatics, one-off error</a></h2>
+    <h2><a href="/post/bioinfo-roadmap/">How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap</a></h2>
     <div class="article-style">
       
-      To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
-In my last blog post, I talked about some common bioinformatics mistakes.
-Today, we are going to talk about THE MOST common bioinformatics mistake people make. And I think it deserves a separate post about it. Even some experienced programmers get it wrong and the mistake prevails in many bioinformatics software:
-The one-off mistake!
+      You Can Change Your Appetites Linear algebra, statistics, machine learning—these used to feel abstract to me. I had zero experience of bioinformatics when I was studying my PhD in a wet lab.
+I memorized formulas without truly understanding them. But over time, I found the right resources that made these concepts click, especially in the context of bioinformatics.
+I wrote a blog post: My opinionated selection of books/urls for bioinformatics/data science curriculum six years ago, and many links are broken.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/stupid-mistakes-for-bioinformatics/">The Most Common Stupid Mistakes In Bioinformatics</a></h2>
+    <h2><a href="/post/pca-tcga2/">PCA analysis on TCGA bulk RNAseq data continued</a></h2>
     <div class="article-style">
       
       To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
-This post is inspired by this popular thread in <a href="https://www.biostars.org/" target="_blank">https://www.biostars.org/</a>.
-Common mistakes in general  Off-by-One Errors:  Mistakes occur when switching between different indexing systems. For example, BED files are 0-based while GFF/GTF files are 1-based, leading to potential misinterpretations of genomic coordinates.   This is one of the most common mistakes!
+In my last blog post, I showed you how to download TCGA RNAseq count data and do PCA and make a heatmap. It is interesting to see some of the LUSC samples mix with the LUAD samples and vice versa.
+In this post, we will continue to use PCA to do more Exploratory data analysis (EDA).
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/six-tips-to-build-a-strong-bioinformatics-cv/">Six tips to build a strong Bioinformatics CV</a></h2>
+    <h2><a href="/post/pca-scatac/">PCA analysis on scATACseq data</a></h2>
     <div class="article-style">
       
       To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
-If you apply for a Bioinformatics position, hundreds of CVs get to sent to the hiring manager. How to stand out among all of them? Below are 6 tips from my hiring experience:
-Include a GitHub Link: Ensure your CV has a GitHub link with relevant content like Python or R packages, data analysis projects, or replicated figures from published papers.
+In my last post, I showed you how to use PCA for bulk RNAseq data.
+Today, let’s see how we can use it for scATACseq data.
+Download the example dataset from 10x genomics <a href="https://support.10xgenomics.com/single-cell-atac/datasets/1.1.0/atac_pbmc_5k_v1" target="_blank">https://support.10xgenomics.com/single-cell-atac/datasets/1.1.0/atac_pbmc_5k_v1</a>
+The dataset is 5k Peripheral blood mononuclear cells (PBMCs) from a healthy donor (v1.0).
+Download the atac_pbmc_5k_v1_filtered_peak_bc_matrix.tar.gz file and unzip it.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="/post/pca-tcga/">PCA analysis on TCGA bulk RNAseq data</a></h2>
+    <div class="article-style">
+      
+      To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+what is PCA? Principal Component Analysis (PCA) is a mathematical technique used to reduce the dimensionality of large datasets while preserving the most important patterns in the data.
+It transforms the original high-dimensional data into a smaller set of new variables called principal components (PCs), which capture the most variation in the data.
       
     </div>
   </div>

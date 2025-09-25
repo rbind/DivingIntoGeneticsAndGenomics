@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Perspective on Chatomics</title>
+    <link>/categories/perspective/</link>
+    <description>Recent content in Perspective on Chatomics</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Fri, 04 Jul 2025 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/perspective/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist</title>
+      <link>/post/ai-bioinformatics/</link>
+      <pubDate>Fri, 04 Jul 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/ai-bioinformatics/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+AI is transforming every field — and bioinformatics is no exception. From designing drug molecules in minutes to writing entire pipelines, generative AI is making it faster than ever to process biological data. But here’s the truth:
+ AI doesn’t understand biology — you do.
+ That’s why, in this new era, your value isn’t replaced by AI — it’s multiplied by your ability to judge, validate, and improve what AI produces.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,927 @@
+---
+title: "Do not repeat yourself: List column to do RNAseq differential expression analysis"
+author: Ming Tommy Tang
+date: "2025-09-23"
+slug: list-column-rnaseq
+categories:
+  - tutorial
+tags:
+  - bioinformatics
+  - RNAseq
+  - DEseq2
+  - R
+  - list column
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<p>In this blog post, I am going to show you how to use <a href="https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html"><code>list column</code></a> and <code>purrr::map()</code>, a powerful
+toolkit in your belt to avoid repetition in your bioinformatics analysis.</p>
+<p>To demonstrate the usage, We will use RNAseq differential expression analysis and pathway enrichment analysis as an example.</p>
+<p>Let’s use a real example <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE197576" class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE197576</a></p>
+<p>GSE197576 is a human RNA-seq dataset profiling transcriptional changes in SW480 colorectal cancer cells after knockout of ITPR3 or RELB compared to controls, under both normoxic and hypoxic conditions. The experiment includes duplicate samples for each condition and provides raw gene count matrices, enabling exploration of gene expression responses to both gene knockout and oxygen levels in this cell line</p>
+<p>How to download the files from GEO ftp <a href="https://www.ncbi.nlm.nih.gov/geo/info/download.html" class="uri">https://www.ncbi.nlm.nih.gov/geo/info/download.html</a></p>
+<p>If use command line <code>wget</code> or <code>curl</code>, download the files <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE197nnn/GSE197576/suppl/">here</a>.</p>
+<p>Alternatively, use GEOquery <a href="https://bioconductor.org/packages/release/bioc/html/GEOquery.html" class="uri">https://bioconductor.org/packages/release/bioc/html/GEOquery.html</a></p>
+<pre class="bash"><code>cd blog_data/
+wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE197nnn/GSE197576/suppl/GSE197576_raw_gene_counts_matrix.tsv.gz
+
+# if wget is not installed in your computer, use 
+curl -O https://ftp.ncbi.nlm.nih.gov/geo/series/GSE197nnn/GSE197576/suppl/GSE197576_raw_gene_counts_matrix.tsv.gz
+</code></pre>
+<div id="standard-deseq2-workflow-for-a-single-comparison" class="section level2">
+<h2>Standard DESeq2 workflow for a single comparison</h2>
+<div id="read-the-data-into-r-and-make-a-deseq2-object" class="section level3">
+<h3>read the data into R and make a DESeq2 object</h3>
+<p>follow the tutorial <a href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html" class="uri">http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html</a></p>
+<pre class="r"><code>library(dplyr)
+library(readr)
+library(here)
+# BiocManager::install(&quot;DESeq2&quot;)
+library(DESeq2)
+library(purrr)  # for map functions
+library(tibble) # for tibble functions
+library(stringr)
+library(ggplot2)
+
+raw_counts&lt;- read_tsv(&quot;~/blog_data/GSE197576_raw_gene_counts_matrix.tsv.gz&quot;)
+head(raw_counts)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 13
+#&gt;   gene        `01_SW_sgCTRL_Norm` `02_SW_sgCTRL_Norm` `03_SW_sgITPR3_1_Norm`
+#&gt;   &lt;chr&gt;                     &lt;dbl&gt;               &lt;dbl&gt;                  &lt;dbl&gt;
+#&gt; 1 DDX11L1                       0                   0                      0
+#&gt; 2 WASH7P                       18                  11                     28
+#&gt; 3 MIR6859-1                     5                   1                      6
+#&gt; 4 MIR1302-2HG                   0                   0                      0
+#&gt; 5 MIR1302-2                     0                   0                      0
+#&gt; 6 FAM138A                       0                   0                      0
+#&gt; # ℹ 9 more variables: `04_SW_sgITPR3_1_Norm` &lt;dbl&gt;,
+#&gt; #   `07_SW_sgRELB_3_Norm` &lt;dbl&gt;, `08_SW_sgRELB_3_Norm` &lt;dbl&gt;,
+#&gt; #   `11_SW_sgCTRL_Hyp` &lt;dbl&gt;, `12_SW_sgCTRL_Hyp` &lt;dbl&gt;,
+#&gt; #   `13_SW_sgITPR3_1_Hyp` &lt;dbl&gt;, `14_SW_sgITPR3_1_Hyp` &lt;dbl&gt;,
+#&gt; #   `17_SW_sgRELB_3_Hyp` &lt;dbl&gt;, `18_SW_sgRELB_3_Hyp` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>colnames(raw_counts)</code></pre>
+<pre><code>#&gt;  [1] &quot;gene&quot;                 &quot;01_SW_sgCTRL_Norm&quot;    &quot;02_SW_sgCTRL_Norm&quot;   
+#&gt;  [4] &quot;03_SW_sgITPR3_1_Norm&quot; &quot;04_SW_sgITPR3_1_Norm&quot; &quot;07_SW_sgRELB_3_Norm&quot; 
+#&gt;  [7] &quot;08_SW_sgRELB_3_Norm&quot;  &quot;11_SW_sgCTRL_Hyp&quot;     &quot;12_SW_sgCTRL_Hyp&quot;    
+#&gt; [10] &quot;13_SW_sgITPR3_1_Hyp&quot;  &quot;14_SW_sgITPR3_1_Hyp&quot;  &quot;17_SW_sgRELB_3_Hyp&quot;  
+#&gt; [13] &quot;18_SW_sgRELB_3_Hyp&quot;</code></pre>
+<p>There are 12 samples with 6 conditions and each condition has a replicates.
+<img src="/img/GEO_samples.png" /></p>
+<ul>
+<li>control guide RNA: sgCTRL</li>
+<li>ITPR3 knockout: sgITPR3</li>
+<li>RELB konckout: sgRELB</li>
+<li>low oxygen condition: hypoxia</li>
+<li>normal oxygen condition: normoxia</li>
+</ul>
+<p>convert the dataframe to a matrix:</p>
+<pre class="r"><code>raw_counts_mat&lt;- raw_counts[, -1] %&gt;% as.matrix()
+
+rownames(raw_counts_mat)&lt;- raw_counts$gene
+
+head(raw_counts_mat)</code></pre>
+<pre><code>#&gt;             01_SW_sgCTRL_Norm 02_SW_sgCTRL_Norm 03_SW_sgITPR3_1_Norm
+#&gt; DDX11L1                     0                 0                    0
+#&gt; WASH7P                     18                11                   28
+#&gt; MIR6859-1                   5                 1                    6
+#&gt; MIR1302-2HG                 0                 0                    0
+#&gt; MIR1302-2                   0                 0                    0
+#&gt; FAM138A                     0                 0                    0
+#&gt;             04_SW_sgITPR3_1_Norm 07_SW_sgRELB_3_Norm 08_SW_sgRELB_3_Norm
+#&gt; DDX11L1                        0                   0                   0
+#&gt; WASH7P                        20                  18                  25
+#&gt; MIR6859-1                      5                   3                  13
+#&gt; MIR1302-2HG                    0                   0                   0
+#&gt; MIR1302-2                      0                   0                   0
+#&gt; FAM138A                        0                   0                   0
+#&gt;             11_SW_sgCTRL_Hyp 12_SW_sgCTRL_Hyp 13_SW_sgITPR3_1_Hyp
+#&gt; DDX11L1                    0                0                   0
+#&gt; WASH7P                    23               45                  44
+#&gt; MIR6859-1                  8               12                   0
+#&gt; MIR1302-2HG                1                0                   0
+#&gt; MIR1302-2                  0                0                   0
+#&gt; FAM138A                    0                0                   0
+#&gt;             14_SW_sgITPR3_1_Hyp 17_SW_sgRELB_3_Hyp 18_SW_sgRELB_3_Hyp
+#&gt; DDX11L1                       0                  0                  0
+#&gt; WASH7P                       27                 30                 25
+#&gt; MIR6859-1                     8                  8                  5
+#&gt; MIR1302-2HG                   0                  0                  0
+#&gt; MIR1302-2                     0                  0                  0
+#&gt; FAM138A                       0                  0                  0</code></pre>
+</div>
+<div id="differential-expression-analysis-hypoxia-vs-normoxia" class="section level3">
+<h3>Differential expression analysis: hypoxia vs normoxia</h3>
+<p>We will do a single comparison first to compare hypoxia vs normoxia in sgCTRL.</p>
+<p>subset the matrix and make a sample sheet:</p>
+<pre class="r"><code># column 1,2 are sgCTRL normoxia column 7,8 are sgCTRL hypoxia
+
+raw_counts_mat_sub&lt;- raw_counts_mat[, c(1,2,7,8)]
+
+head(raw_counts_mat_sub)</code></pre>
+<pre><code>#&gt;             01_SW_sgCTRL_Norm 02_SW_sgCTRL_Norm 11_SW_sgCTRL_Hyp
+#&gt; DDX11L1                     0                 0                0
+#&gt; WASH7P                     18                11               23
+#&gt; MIR6859-1                   5                 1                8
+#&gt; MIR1302-2HG                 0                 0                1
+#&gt; MIR1302-2                   0                 0                0
+#&gt; FAM138A                     0                 0                0
+#&gt;             12_SW_sgCTRL_Hyp
+#&gt; DDX11L1                    0
+#&gt; WASH7P                    45
+#&gt; MIR6859-1                 12
+#&gt; MIR1302-2HG                0
+#&gt; MIR1302-2                  0
+#&gt; FAM138A                    0</code></pre>
+<pre class="r"><code>coldata&lt;- data.frame(condition = c(&quot;normoxia&quot;, &quot;normoxia&quot;, &quot;hypoxia&quot;, &quot;hypoxia&quot;))
+
+rownames(coldata)&lt;- colnames(raw_counts_mat_sub)
+
+coldata</code></pre>
+<pre><code>#&gt;                   condition
+#&gt; 01_SW_sgCTRL_Norm  normoxia
+#&gt; 02_SW_sgCTRL_Norm  normoxia
+#&gt; 11_SW_sgCTRL_Hyp    hypoxia
+#&gt; 12_SW_sgCTRL_Hyp    hypoxia</code></pre>
+<p>Make a DEseq2 object</p>
+<pre class="r"><code>all(rownames(coldata) == colnames(raw_counts_mat_sub))</code></pre>
+<pre><code>#&gt; [1] TRUE</code></pre>
+<pre class="r"><code>keep&lt;- rowSums(raw_counts_mat_sub &gt; 10) &gt;= 2 # 10 counts in at least 2 samples 
+
+raw_counts_mat_sub&lt;- raw_counts_mat_sub[keep, ]
+
+# follow standard DESeq2 workflow
+dds &lt;- DESeqDataSetFromMatrix(countData = raw_counts_mat_sub,
+                              colData = coldata,
+                              design = ~ condition)
+dds &lt;- DESeq(dds)
+res &lt;- results(dds, contrast = c(&quot;condition&quot;, &quot;hypoxia&quot;, &quot;normoxia&quot;))
+
+res</code></pre>
+<pre><code>#&gt; log2 fold change (MLE): condition hypoxia vs normoxia 
+#&gt; Wald test p-value: condition hypoxia vs normoxia 
+#&gt; DataFrame with 14773 rows and 6 columns
+#&gt;                baseMean log2FoldChange     lfcSE      stat      pvalue
+#&gt;               &lt;numeric&gt;      &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;   &lt;numeric&gt;
+#&gt; WASH7P         23.21968       0.980058  0.563773   1.73839   0.0821421
+#&gt; LOC100996442   10.36881       1.187227  0.819025   1.44956   0.1471811
+#&gt; LOC729737       8.91192       2.142716  0.940163   2.27909   0.0226617
+#&gt; WASH9P         55.19471       0.526744  0.346707   1.51928   0.1286928
+#&gt; LOC100288069   76.26492       0.490303  0.297131   1.65012   0.0989180
+#&gt; ...                 ...            ...       ...       ...         ...
+#&gt; ND4          119814.453      0.0419782 0.0453806  0.925025 3.54953e-01
+#&gt; ND5           44220.020      0.5544584 0.0941469  5.889289 3.87860e-09
+#&gt; ND6           11378.733      0.9634273 0.1104717  8.721031 2.75680e-18
+#&gt; CYTB          55770.859      0.0480192 0.0530959  0.904386 3.65791e-01
+#&gt; TRNP            397.987      2.0433030 0.1474365 13.858872 1.12427e-43
+#&gt;                     padj
+#&gt;                &lt;numeric&gt;
+#&gt; WASH7P          0.136916
+#&gt; LOC100996442    0.224132
+#&gt; LOC729737       0.044295
+#&gt; WASH9P          0.200546
+#&gt; LOC100288069    0.160443
+#&gt; ...                  ...
+#&gt; ND4          4.60905e-01
+#&gt; ND5          2.06333e-08
+#&gt; ND6          2.97924e-17
+#&gt; CYTB         4.71909e-01
+#&gt; TRNP         3.92645e-42</code></pre>
+<pre class="r"><code>significant_genes&lt;- res %&gt;%
+  as.data.frame() %&gt;%
+  dplyr::filter(padj &lt;=0.01, abs(log2FoldChange) &gt;= 2) %&gt;% 
+  rownames()
+
+
+significant_genes</code></pre>
+<pre><code>#&gt;   [1] &quot;HES2&quot;         &quot;ERRFI1&quot;       &quot;NPPB&quot;         &quot;CTRC&quot;         &quot;ESPNP&quot;       
+#&gt;   [6] &quot;PADI2&quot;        &quot;CDA&quot;          &quot;LOC105376863&quot; &quot;CSMD2&quot;        &quot;GJB4&quot;        
+#&gt;  [11] &quot;COL8A2&quot;       &quot;POU3F1&quot;       &quot;EDN2&quot;         &quot;FAM183A&quot;      &quot;TMEM125&quot;     
+#&gt;  [16] &quot;BEST4&quot;        &quot;BTBD19&quot;       &quot;LOC107984952&quot; &quot;LDLRAD1&quot;      &quot;LOC105378751&quot;
+#&gt;  [21] &quot;KANK4&quot;        &quot;IL12RB2&quot;      &quot;LOC107985054&quot; &quot;CCN1&quot;         &quot;F3&quot;          
+#&gt;  [26] &quot;CNN3&quot;         &quot;S1PR1&quot;        &quot;OVGP1&quot;        &quot;KCND3&quot;        &quot;ITGA10&quot;      
+#&gt;  [31] &quot;ADAMTSL4&quot;     &quot;LOC105371441&quot; &quot;TCHH&quot;         &quot;MUC1&quot;         &quot;SEMA4A&quot;      
+#&gt;  [36] &quot;SH2D2A&quot;       &quot;DDR2&quot;         &quot;CACNA1E&quot;      &quot;LOC107985232&quot; &quot;KIF21B&quot;      
+#&gt;  [41] &quot;CACNA1S&quot;      &quot;TNNT2&quot;        &quot;ELF3&quot;         &quot;PCAT6&quot;        &quot;PPFIA4&quot;      
+#&gt;  [46] &quot;MYBPH&quot;        &quot;CHI3L1&quot;       &quot;KISS1&quot;        &quot;CD34&quot;         &quot;LAMB3&quot;       
+#&gt;  [51] &quot;TGFB2&quot;        &quot;CAPN8&quot;        &quot;ALKAL2&quot;       &quot;TRIB2&quot;        &quot;LRATD1&quot;      
+#&gt;  [56] &quot;MATN3&quot;        &quot;KCNK3&quot;        &quot;LBH&quot;          &quot;XDH&quot;          &quot;DYSF&quot;        
+#&gt;  [61] &quot;LOC107985917&quot; &quot;C2orf92&quot;      &quot;CREG2&quot;        &quot;LOC105373989&quot; &quot;INHBB&quot;       
+#&gt;  [66] &quot;CYP27C1&quot;      &quot;MYO7B&quot;        &quot;LIMS2&quot;        &quot;GPR17&quot;        &quot;PLA2R1&quot;      
+#&gt;  [71] &quot;NABP1-OT1&quot;    &quot;CAVIN2&quot;       &quot;MARCHF4&quot;      &quot;IGFBP5&quot;       &quot;PTPRN&quot;       
+#&gt;  [76] &quot;INHA&quot;         &quot;COL4A3&quot;       &quot;ALPP&quot;         &quot;ALPG&quot;         &quot;EFHD1&quot;       
+#&gt;  [81] &quot;ACKR3&quot;        &quot;KLHL30&quot;       &quot;LOC101927509&quot; &quot;LRRN1&quot;        &quot;BHLHE40&quot;     
+#&gt;  [86] &quot;ATP2B2&quot;       &quot;TMEM40&quot;       &quot;COLQ&quot;         &quot;THRB&quot;         &quot;LTF&quot;         
+#&gt;  [91] &quot;ITIH3&quot;        &quot;CACNA1D&quot;      &quot;TMEM45A&quot;      &quot;MYH15&quot;        &quot;ZBED2&quot;       
+#&gt;  [96] &quot;PLCXD2&quot;       &quot;MGLL&quot;         &quot;LOC107986127&quot; &quot;SLCO2A1&quot;      &quot;LOC105374118&quot;
+#&gt; [101] &quot;BCL6&quot;         &quot;PLAAT1&quot;       &quot;NRROS&quot;        &quot;LIMCH1&quot;       &quot;CXCL8&quot;       
+#&gt; [106] &quot;EREG&quot;         &quot;CCNG2&quot;        &quot;ABCG2&quot;        &quot;FAM13A&quot;       &quot;DDIT4L&quot;      
+#&gt; [111] &quot;ETNPPL&quot;       &quot;NDNF&quot;         &quot;DDX60L&quot;       &quot;UBE2QL1&quot;      &quot;SEMA5A&quot;      
+#&gt; [116] &quot;DNAH5&quot;        &quot;CCL28&quot;        &quot;LOC105379051&quot; &quot;LUCAT1&quot;       &quot;ARRDC3&quot;      
+#&gt; [121] &quot;LOX&quot;          &quot;ADAMTS19-AS1&quot; &quot;ADAMTS19&quot;     &quot;CSF2&quot;         &quot;KLHL3&quot;       
+#&gt; [126] &quot;PSD2&quot;         &quot;PCDH1&quot;        &quot;FGF1&quot;         &quot;ARHGEF37&quot;     &quot;PDGFRB&quot;      
+#&gt; [131] &quot;STC2&quot;         &quot;N4BP3&quot;        &quot;PPP1R3G&quot;      &quot;NRN1&quot;         &quot;F13A1&quot;       
+#&gt; [136] &quot;NEDD9&quot;        &quot;EDN1&quot;         &quot;LOC105375050&quot; &quot;FOXP4-AS1&quot;    &quot;VEGFA&quot;       
+#&gt; [141] &quot;PKHD1&quot;        &quot;PRSS35&quot;       &quot;PRDM1&quot;        &quot;CD24&quot;         &quot;TMEM200A&quot;    
+#&gt; [146] &quot;CCN2&quot;         &quot;SGK1&quot;         &quot;TNFAIP3&quot;      &quot;ZC3H12D&quot;      &quot;SYTL3&quot;       
+#&gt; [151] &quot;LOC442497&quot;    &quot;LOC116435278&quot; &quot;LOC112267991&quot; &quot;SLC29A4&quot;      &quot;ITGB8-AS1&quot;   
+#&gt; [156] &quot;ITGB8&quot;        &quot;INMT&quot;         &quot;AQP1&quot;         &quot;INHBA&quot;        &quot;IGFBP1&quot;      
+#&gt; [161] &quot;IGFBP3&quot;       &quot;LOC84214&quot;     &quot;GTF2IRD2B&quot;    &quot;CCL26&quot;        &quot;UPK3B&quot;       
+#&gt; [166] &quot;ABCB1&quot;        &quot;CDK14&quot;        &quot;CYP3A5&quot;       &quot;CYP3A7&quot;       &quot;NYAP1&quot;       
+#&gt; [171] &quot;ACHE&quot;         &quot;SERPINE1&quot;     &quot;CAV2&quot;         &quot;CAV1&quot;         &quot;CPA4&quot;        
+#&gt; [176] &quot;PLXNA4&quot;       &quot;LOC105375519&quot; &quot;AKR1B1&quot;       &quot;TCAF2&quot;        &quot;ZNF467&quot;      
+#&gt; [181] &quot;LOC101927914&quot; &quot;LOC105375610&quot; &quot;PPP1R3B&quot;      &quot;MTUS1-DT&quot;     &quot;LOXL2&quot;       
+#&gt; [186] &quot;STC1&quot;         &quot;SDAD1P1&quot;      &quot;BNIP3L&quot;       &quot;PNMA2&quot;        &quot;TEX15&quot;       
+#&gt; [191] &quot;DKK4&quot;         &quot;SNAI2&quot;        &quot;XKR4&quot;         &quot;CALB1&quot;        &quot;SLA&quot;         
+#&gt; [196] &quot;CCN4&quot;         &quot;NDRG1&quot;        &quot;LOC105375792&quot; &quot;ADGRB1&quot;       &quot;GLIS3&quot;       
+#&gt; [201] &quot;LURAP1L&quot;      &quot;MIR31HG&quot;      &quot;MOB3B&quot;        &quot;ARID3C&quot;       &quot;CA9&quot;         
+#&gt; [206] &quot;LOC105376041&quot; &quot;CNTNAP3&quot;      &quot;MAMDC2&quot;       &quot;ANXA1&quot;        &quot;DAPK1&quot;       
+#&gt; [211] &quot;LINC02937&quot;    &quot;LOC100129316&quot; &quot;ABCA1&quot;        &quot;KLF4&quot;         &quot;LPAR1&quot;       
+#&gt; [216] &quot;PTGS1&quot;        &quot;COL5A1&quot;       &quot;CLIC3&quot;        &quot;LOC105376363&quot; &quot;AKR1C3&quot;      
+#&gt; [221] &quot;PFKFB3&quot;       &quot;CELF2&quot;        &quot;LOC283028&quot;    &quot;ANXA8L1&quot;      &quot;ANXA8&quot;       
+#&gt; [226] &quot;HKDC1&quot;        &quot;UNC5B-AS1&quot;    &quot;DDIT4&quot;        &quot;SYNPO2L&quot;      &quot;CYP26A1&quot;     
+#&gt; [231] &quot;ANKRD2&quot;       &quot;WNT8B&quot;        &quot;COL17A1&quot;      &quot;DUSP5-DT&quot;     &quot;EMX2OS&quot;      
+#&gt; [236] &quot;EMX2&quot;         &quot;PLPP4&quot;        &quot;LOC107984128&quot; &quot;ADAM12&quot;       &quot;MIR210HG&quot;    
+#&gt; [241] &quot;IFITM10&quot;      &quot;ADM&quot;          &quot;CAND1.11&quot;     &quot;DEPDC7&quot;       &quot;LMO2&quot;        
+#&gt; [246] &quot;CHRM4&quot;        &quot;ZP1&quot;          &quot;LOC107984338&quot; &quot;LINC02736&quot;    &quot;LOC105369349&quot;
+#&gt; [251] &quot;CHKA-DT&quot;      &quot;LOC101928473&quot; &quot;ARHGEF17-AS1&quot; &quot;ARHGEF17&quot;     &quot;UCP3&quot;        
+#&gt; [256] &quot;SYTL2&quot;        &quot;BIRC3&quot;        &quot;CRYAB&quot;        &quot;LOC107984387&quot; &quot;LOC105369498&quot;
+#&gt; [261] &quot;DRD2&quot;         &quot;TAGLN&quot;        &quot;IL10RA&quot;       &quot;USP2-AS1&quot;     &quot;POU2F3&quot;      
+#&gt; [266] &quot;MIR100HG&quot;     &quot;NTM&quot;          &quot;IQSEC3&quot;       &quot;SLC6A12&quot;      &quot;SLC6A13&quot;     
+#&gt; [271] &quot;SLC2A14&quot;      &quot;LINC02449&quot;    &quot;LINC01252&quot;    &quot;GPRC5A&quot;       &quot;ARHGDIB&quot;     
+#&gt; [276] &quot;SLCO1B3&quot;      &quot;TSPAN11&quot;      &quot;PRICKLE1&quot;     &quot;AMIGO2&quot;       &quot;PCED1B&quot;      
+#&gt; [281] &quot;ENDOU&quot;        &quot;DDN&quot;          &quot;PRPH&quot;         &quot;KRT7&quot;         &quot;KRT75&quot;       
+#&gt; [286] &quot;KRT6A&quot;        &quot;KRT4&quot;         &quot;CALCOCO1&quot;     &quot;HOXC5&quot;        &quot;ITGA5&quot;       
+#&gt; [291] &quot;MMP19&quot;        &quot;ARHGAP9&quot;      &quot;LINC02454&quot;    &quot;BTG1&quot;         &quot;LOC105369958&quot;
+#&gt; [296] &quot;TCP11L2&quot;      &quot;TRPV4&quot;        &quot;HSPB8&quot;        &quot;CFAP251&quot;      &quot;LOC105370092&quot;
+#&gt; [301] &quot;EGLN3&quot;        &quot;EGLN3-AS1&quot;    &quot;GNG2&quot;         &quot;HIF1A-AS3&quot;    &quot;LOC107984016&quot;
+#&gt; [306] &quot;DIO3OS&quot;       &quot;CRIP2&quot;        &quot;ATP10A&quot;       &quot;PLCB2&quot;        &quot;SPTBN5&quot;      
+#&gt; [311] &quot;FAM81A&quot;       &quot;NOX5&quot;         &quot;HCN4&quot;         &quot;LOC102723750&quot; &quot;PSTPIP1&quot;     
+#&gt; [316] &quot;LINC01583&quot;    &quot;LOC105370924&quot; &quot;ISG20&quot;        &quot;CARMAL&quot;       &quot;IRAIN&quot;       
+#&gt; [321] &quot;LOC107984790&quot; &quot;TPSG1&quot;        &quot;TPSB2&quot;        &quot;TPSAB1&quot;       &quot;GREP1&quot;       
+#&gt; [326] &quot;MIR193BHG&quot;    &quot;LINC02167&quot;    &quot;MMP2&quot;         &quot;CAPNS2&quot;       &quot;CDH11&quot;       
+#&gt; [331] &quot;TPPP3&quot;        &quot;HAS3&quot;         &quot;MAF&quot;          &quot;ATP2C2-AS1&quot;   &quot;LOC105371393&quot;
+#&gt; [336] &quot;LOC107984862&quot; &quot;INCA1&quot;        &quot;PIK3R6&quot;       &quot;PIK3R5&quot;       &quot;CDRT1&quot;       
+#&gt; [341] &quot;NOS2&quot;         &quot;CORO6&quot;        &quot;CCL2&quot;         &quot;DUSP14&quot;       &quot;LOC105371934&quot;
+#&gt; [346] &quot;KRT13&quot;        &quot;KRT15&quot;        &quot;GAST&quot;         &quot;GNGT2&quot;        &quot;PICART1&quot;     
+#&gt; [351] &quot;COL1A1&quot;       &quot;NOG&quot;          &quot;YPEL2&quot;        &quot;CACNG4&quot;       &quot;SDK2&quot;        
+#&gt; [356] &quot;FOXJ1&quot;        &quot;FSCN2&quot;        &quot;CD7&quot;          &quot;LINC02582&quot;    &quot;LINC00908&quot;   
+#&gt; [361] &quot;SHC2&quot;         &quot;KISS1R&quot;       &quot;IZUMO4&quot;       &quot;S1PR4&quot;        &quot;SMIM24&quot;      
+#&gt; [366] &quot;EBI3&quot;         &quot;C3&quot;           &quot;FBN3&quot;         &quot;ANGPTL4&quot;      &quot;COL5A3&quot;      
+#&gt; [371] &quot;ZNF878&quot;       &quot;UCA1&quot;         &quot;CPAMD8&quot;       &quot;KCNN1&quot;        &quot;IQCN&quot;        
+#&gt; [376] &quot;LOC105372338&quot; &quot;LOC102724908&quot; &quot;LOC105372371&quot; &quot;LGI4&quot;         &quot;UPK1A&quot;       
+#&gt; [381] &quot;LGALS14&quot;      &quot;CEACAM6&quot;      &quot;PSG8&quot;         &quot;PSG1&quot;         &quot;PSG11&quot;       
+#&gt; [386] &quot;PSG2&quot;         &quot;LOC107985349&quot; &quot;PSG5&quot;         &quot;PSG4&quot;         &quot;PSG9&quot;        
+#&gt; [391] &quot;LYPD5&quot;        &quot;ZNF404&quot;       &quot;ZNF221&quot;       &quot;NKPD1&quot;        &quot;IGFL4&quot;       
+#&gt; [396] &quot;IGFL2&quot;        &quot;IGFL2-AS1&quot;    &quot;IGFL1&quot;        &quot;EHD2&quot;         &quot;CABP5&quot;       
+#&gt; [401] &quot;ZNF114&quot;       &quot;NTF4&quot;         &quot;LOC105372441&quot; &quot;KLK3&quot;         &quot;KLK10&quot;       
+#&gt; [406] &quot;SIGLEC6&quot;      &quot;VSTM1&quot;        &quot;SYT5&quot;         &quot;PTPRH&quot;        &quot;COX6B2&quot;      
+#&gt; [411] &quot;IL11&quot;         &quot;FER1L4&quot;       &quot;SPAG4&quot;        &quot;KIAA1755&quot;     &quot;WFDC10B&quot;     
+#&gt; [416] &quot;CYP24A1&quot;      &quot;LOC105369299&quot; &quot;LOC105372789&quot; &quot;CLDN14-AS1&quot;   &quot;LINC02940&quot;   
+#&gt; [421] &quot;LOC105372803&quot; &quot;LINC02943&quot;    &quot;LINC00323&quot;    &quot;ABCG1&quot;        &quot;TFF2&quot;        
+#&gt; [426] &quot;ITGB2&quot;        &quot;ITGB2-AS1&quot;    &quot;LOC112268278&quot; &quot;LOC105372838&quot; &quot;CCDC188&quot;     
+#&gt; [431] &quot;GAL3ST1&quot;      &quot;PIK3IP1&quot;      &quot;TIMP3&quot;        &quot;GRPR&quot;         &quot;MAGEB17&quot;     
+#&gt; [436] &quot;CACNA1F&quot;      &quot;IL2RG&quot;        &quot;NHSL2&quot;        &quot;RTL5&quot;         &quot;CAPN6&quot;       
+#&gt; [441] &quot;KLHL13&quot;       &quot;LMNTD2_1&quot;     &quot;MIR210HG_1&quot;   &quot;TRNP&quot;</code></pre>
+</div>
+</div>
+<div id="pathway-analysis" class="section level2">
+<h2>pathway analysis</h2>
+<p>follow the <code>clusterprofiler</code> <a href="https://yulab-smu.top/biomedical-knowledge-mining-book/enrichment-overview.html">tutorial</a></p>
+<div id="over-representation-test" class="section level3">
+<h3>over-representation test</h3>
+<pre class="r"><code>library(clusterProfiler)
+library(org.Hs.eg.db)
+#convert gene symbol to Entrez ID for 
+
+significant_genes_map&lt;- clusterProfiler::bitr(geneID = significant_genes,
+                      fromType=&quot;SYMBOL&quot;, toType=&quot;ENTREZID&quot;,
+                      OrgDb=&quot;org.Hs.eg.db&quot;)
+
+head(significant_genes_map)</code></pre>
+<pre><code>#&gt;   SYMBOL ENTREZID
+#&gt; 1   HES2    54626
+#&gt; 2 ERRFI1    54206
+#&gt; 3   NPPB     4879
+#&gt; 4   CTRC    11330
+#&gt; 5  ESPNP   284729
+#&gt; 6  PADI2    11240</code></pre>
+<pre class="r"><code>## background genes are genes that are detected in the RNAseq experiment 
+background_genes&lt;- res %&gt;% 
+  as.data.frame() %&gt;% 
+  filter(baseMean != 0) %&gt;%
+  tibble::rownames_to_column(var = &quot;gene&quot;) %&gt;%
+  pull(gene)
+
+background_genes_map&lt;- bitr(geneID = background_genes, 
+                            fromType=&quot;SYMBOL&quot;, 
+                            toType=&quot;ENTREZID&quot;,
+                      OrgDb=&quot;org.Hs.eg.db&quot;)</code></pre>
+</div>
+<div id="go-term-enrichment" class="section level3">
+<h3>GO term enrichment</h3>
+<p>Gene Ontology(GO) defines concepts/classes used to describe gene function, and relationships between these concepts. It classifies functions along three aspects:</p>
+<p>MF: Molecular Function
+molecular activities of gene products</p>
+<p>CC: Cellular Component
+where gene products are active</p>
+<p>BP: Biological Process
+pathways and larger processes made up of the activities of multiple gene products</p>
+<p>GO terms are organized in a directed acyclic graph, where edges between terms represent parent-child relationship.</p>
+<pre class="r"><code>ego &lt;- enrichGO(gene          = significant_genes_map$ENTREZID,
+                universe      = background_genes_map$ENTREZID,
+                OrgDb         = org.Hs.eg.db,
+                ont           = &quot;BP&quot;,
+                pAdjustMethod = &quot;BH&quot;,
+                pvalueCutoff  = 0.01,
+                qvalueCutoff  = 0.05,
+                readable      = TRUE)
+head(ego)</code></pre>
+<pre><code>#&gt;                    ID                                  Description GeneRatio
+#&gt; GO:0001525 GO:0001525                                 angiogenesis    43/319
+#&gt; GO:0048514 GO:0048514                   blood vessel morphogenesis    47/319
+#&gt; GO:0007186 GO:0007186 G protein-coupled receptor signaling pathway    36/319
+#&gt; GO:0045765 GO:0045765                   regulation of angiogenesis    25/319
+#&gt; GO:1901342 GO:1901342        regulation of vasculature development    25/319
+#&gt; GO:0044703 GO:0044703          multi-organism reproductive process    20/319
+#&gt;              BgRatio RichFactor FoldEnrichment    zScore       pvalue
+#&gt; GO:0001525 372/11616  0.1155914       4.209121 10.571109 7.201188e-16
+#&gt; GO:0048514 443/11616  0.1060948       3.863314 10.325459 8.254001e-16
+#&gt; GO:0007186 375/11616  0.0960000       3.495724  8.255305 4.849715e-11
+#&gt; GO:0045765 188/11616  0.1329787       4.842260  8.924911 5.551690e-11
+#&gt; GO:1901342 192/11616  0.1302083       4.741379  8.784087 8.823659e-11
+#&gt; GO:0044703 127/11616  0.1574803       5.734456  9.014760 2.318484e-10
+#&gt;                p.adjust       qvalue
+#&gt; GO:0001525 1.388736e-12 1.115593e-12
+#&gt; GO:0048514 1.388736e-12 1.115593e-12
+#&gt; GO:0007186 4.670359e-08 3.751774e-08
+#&gt; GO:0045765 4.670359e-08 3.751774e-08
+#&gt; GO:1901342 5.938322e-08 4.770348e-08
+#&gt; GO:0044703 1.300283e-07 1.044538e-07
+#&gt;                                                                                                                                                                                                                                                                                 geneID
+#&gt; GO:0001525                   NPPB/COL8A2/EDN2/CCN1/F3/S1PR1/SEMA4A/SH2D2A/CHI3L1/CD34/TGFB2/COL4A3/ACKR3/CXCL8/EREG/NDNF/SEMA5A/FGF1/PDGFRB/EDN1/VEGFA/CCN2/TNFAIP3/ITGB8/AQP1/SERPINE1/CAV1/LOXL2/ADGRB1/ANXA1/KLF4/ADAM12/ADM/ITGA5/MMP19/BTG1/NOX5/MMP2/PIK3R6/CCL2/C3/ANGPTL4/KLK3
+#&gt; GO:0048514 NPPB/COL8A2/EDN2/CCN1/F3/S1PR1/SEMA4A/SH2D2A/CHI3L1/CD34/TGFB2/XDH/COL4A3/ACKR3/CXCL8/EREG/NDNF/SEMA5A/LOX/FGF1/PDGFRB/EDN1/VEGFA/PRDM1/CCN2/TNFAIP3/ITGB8/AQP1/SERPINE1/CAV1/LOXL2/ADGRB1/ANXA1/KLF4/ADAM12/ADM/ITGA5/MMP19/BTG1/NOX5/MMP2/PIK3R6/CCL2/NOG/C3/ANGPTL4/KLK3
+#&gt; GO:0007186                                                           NPPB/PADI2/S1PR1/KISS1/GPR17/ACKR3/CACNA1D/MGLL/CXCL8/EREG/ARRDC3/PDGFRB/EDN1/CCL26/CAV1/ADGRB1/ANXA1/ABCA1/LPAR1/AKR1C3/ADM/CHRM4/DRD2/GPRC5A/GNG2/PLCB2/PIK3R6/PIK3R5/CCL2/GAST/GNGT2/KISS1R/S1PR4/C3/TFF2/GRPR
+#&gt; GO:0045765                                                                                                                        NPPB/F3/SEMA4A/CHI3L1/CD34/TGFB2/COL4A3/CXCL8/SEMA5A/FGF1/VEGFA/TNFAIP3/ITGB8/AQP1/SERPINE1/ADGRB1/KLF4/ADAM12/ADM/ITGA5/BTG1/PIK3R6/C3/ANGPTL4/KLK3
+#&gt; GO:1901342                                                                                                                        NPPB/F3/SEMA4A/CHI3L1/CD34/TGFB2/COL4A3/CXCL8/SEMA5A/FGF1/VEGFA/TNFAIP3/ITGB8/AQP1/SERPINE1/ADGRB1/KLF4/ADAM12/ADM/ITGA5/BTG1/PIK3R6/C3/ANGPTL4/KLK3
+#&gt; GO:0044703                                                                                                                                                            ERRFI1/OVGP1/IGFBP5/STC2/EDN1/VEGFA/PRDM1/STC1/ADM/ARHGDIB/ENDOU/ITGA5/MMP2/TPPP3/PSG1/PSG11/PSG2/PSG5/PSG4/PSG9
+#&gt;            Count
+#&gt; GO:0001525    43
+#&gt; GO:0048514    47
+#&gt; GO:0007186    36
+#&gt; GO:0045765    25
+#&gt; GO:1901342    25
+#&gt; GO:0044703    20</code></pre>
+<pre class="r"><code>library(enrichplot)
+barplot(ego, showCategory=10) </code></pre>
+<p><img src="/post/2025-09-20-RNAseq-DEG-list-column_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>dotplot(ego)</code></pre>
+<p><img src="/post/2025-09-20-RNAseq-DEG-list-column_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<p>We see angiogenesis and response to oxygen levels pathways are enriched which makes sense!</p>
+</div>
+<div id="msigdb-hallmark-gene-sets" class="section level3">
+<h3>MsigDB Hallmark gene sets</h3>
+<ul>
+<li>H: hallmark gene sets</li>
+<li>C1: positional gene sets</li>
+<li>C2: curated gene sets</li>
+<li>C3: motif gene sets</li>
+<li>C4: computational gene sets</li>
+<li>C5: GO gene sets</li>
+<li>C6: oncogenic signatures</li>
+<li>C7: immunologic signatures</li>
+</ul>
+<pre class="r"><code># install.packages(&quot;msigdbr&quot;)
+library(msigdbr)
+
+m_df &lt;- msigdbr(species = &quot;human&quot;)
+head(m_df)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 20
+#&gt;   gene_symbol ncbi_gene ensembl_gene db_gene_symbol db_ncbi_gene db_ensembl_gene
+#&gt;   &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;          
+#&gt; 1 ABCC4       10257     ENSG0000012… ABCC4          10257        ENSG00000125257
+#&gt; 2 ABRAXAS2    23172     ENSG0000016… ABRAXAS2       23172        ENSG00000165660
+#&gt; 3 ACTN4       81        ENSG0000013… ACTN4          81           ENSG00000130402
+#&gt; 4 ACVR1       90        ENSG0000011… ACVR1          90           ENSG00000115170
+#&gt; 5 ADAM9       8754      ENSG0000016… ADAM9          8754         ENSG00000168615
+#&gt; 6 ADAMTS5     11096     ENSG0000015… ADAMTS5        11096        ENSG00000154736
+#&gt; # ℹ 14 more variables: source_gene &lt;chr&gt;, gs_id &lt;chr&gt;, gs_name &lt;chr&gt;,
+#&gt; #   gs_collection &lt;chr&gt;, gs_subcollection &lt;chr&gt;, gs_collection_name &lt;chr&gt;,
+#&gt; #   gs_description &lt;chr&gt;, gs_source_species &lt;chr&gt;, gs_pmid &lt;chr&gt;,
+#&gt; #   gs_geoid &lt;chr&gt;, gs_exact_source &lt;chr&gt;, gs_url &lt;chr&gt;, db_version &lt;chr&gt;,
+#&gt; #   db_target_species &lt;chr&gt;</code></pre>
+<pre class="r"><code># Note, the new version of msigdbr changed the arguments: category vs collection
+# welcome to Bioinformatics!..
+
+m_t2g &lt;- msigdbr(species = &quot;human&quot;, collection = &quot;H&quot;) %&gt;% 
+  dplyr::select(gs_name, ncbi_gene)
+
+
+head(m_t2g)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 2
+#&gt;   gs_name               ncbi_gene
+#&gt;   &lt;chr&gt;                 &lt;chr&gt;    
+#&gt; 1 HALLMARK_ADIPOGENESIS 19       
+#&gt; 2 HALLMARK_ADIPOGENESIS 11194    
+#&gt; 3 HALLMARK_ADIPOGENESIS 10449    
+#&gt; 4 HALLMARK_ADIPOGENESIS 33       
+#&gt; 5 HALLMARK_ADIPOGENESIS 34       
+#&gt; 6 HALLMARK_ADIPOGENESIS 35</code></pre>
+<pre class="r"><code>em &lt;- enricher(significant_genes_map$ENTREZID, TERM2GENE=m_t2g, 
+               universe = background_genes_map$ENTREZID )
+head(em)</code></pre>
+<pre><code>#&gt;                                                                                    ID
+#&gt; HALLMARK_HYPOXIA                                                     HALLMARK_HYPOXIA
+#&gt; HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION
+#&gt; HALLMARK_KRAS_SIGNALING_DN                                 HALLMARK_KRAS_SIGNALING_DN
+#&gt; HALLMARK_KRAS_SIGNALING_UP                                 HALLMARK_KRAS_SIGNALING_UP
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB                     HALLMARK_TNFA_SIGNALING_VIA_NFKB
+#&gt; HALLMARK_INFLAMMATORY_RESPONSE                         HALLMARK_INFLAMMATORY_RESPONSE
+#&gt;                                                                           Description
+#&gt; HALLMARK_HYPOXIA                                                     HALLMARK_HYPOXIA
+#&gt; HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION
+#&gt; HALLMARK_KRAS_SIGNALING_DN                                 HALLMARK_KRAS_SIGNALING_DN
+#&gt; HALLMARK_KRAS_SIGNALING_UP                                 HALLMARK_KRAS_SIGNALING_UP
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB                     HALLMARK_TNFA_SIGNALING_VIA_NFKB
+#&gt; HALLMARK_INFLAMMATORY_RESPONSE                         HALLMARK_INFLAMMATORY_RESPONSE
+#&gt;                                            GeneRatio  BgRatio RichFactor
+#&gt; HALLMARK_HYPOXIA                              29/136 170/3393  0.1705882
+#&gt; HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION    24/136 142/3393  0.1690141
+#&gt; HALLMARK_KRAS_SIGNALING_DN                    15/136 102/3393  0.1470588
+#&gt; HALLMARK_KRAS_SIGNALING_UP                    17/136 133/3393  0.1278195
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB              19/136 165/3393  0.1151515
+#&gt; HALLMARK_INFLAMMATORY_RESPONSE                15/136 119/3393  0.1260504
+#&gt;                                            FoldEnrichment   zScore       pvalue
+#&gt; HALLMARK_HYPOXIA                                 4.255926 8.899329 6.744891e-12
+#&gt; HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION       4.216653 8.000707 7.107222e-10
+#&gt; HALLMARK_KRAS_SIGNALING_DN                       3.668901 5.591871 9.013894e-06
+#&gt; HALLMARK_KRAS_SIGNALING_UP                       3.188910 5.261788 1.527983e-05
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB                 2.872861 5.039289 2.148691e-05
+#&gt; HALLMARK_INFLAMMATORY_RESPONSE                   3.144773 4.866356 5.948204e-05
+#&gt;                                                p.adjust       qvalue
+#&gt; HALLMARK_HYPOXIA                           2.900303e-10 2.200965e-10
+#&gt; HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION 1.528053e-08 1.159599e-08
+#&gt; HALLMARK_KRAS_SIGNALING_DN                 1.291992e-04 9.804587e-05
+#&gt; HALLMARK_KRAS_SIGNALING_UP                 1.642582e-04 1.246512e-04
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB           1.847874e-04 1.402304e-04
+#&gt; HALLMARK_INFLAMMATORY_RESPONSE             4.262880e-04 3.234988e-04
+#&gt;                                                                                                                                                                                       geneID
+#&gt; HALLMARK_HYPOXIA                           54206/1907/3491/2152/8497/3623/57007/8553/55076/901/4015/8614/7422/1490/7128/3484/3486/5054/857/6781/665/10397/1289/5209/54541/133/694/3669/51129
+#&gt; HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION                         1296/3491/4148/3576/4015/5159/7422/1490/7128/3624/3486/5054/4017/6591/1289/8038/6876/50863/3678/4313/1009/1277/50509/7078
+#&gt; HALLMARK_KRAS_SIGNALING_DN                                                                                  1907/7042/80303/7068/3699/1906/6446/105375355/56154/3851/3860/3866/3780/7032/778
+#&gt; HALLMARK_KRAS_SIGNALING_UP                                                                             7139/28951/2069/1437/2162/639/7128/3624/3486/5243/9314/80201/330/3587/51129/3689/3561
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB                                                                  3491/2152/3914/57007/8553/604/1437/1906/7422/6446/7128/3624/5054/19/9314/5209/330/694/6347
+#&gt; HALLMARK_INFLAMMATORY_RESPONSE                                                                                     2152/3576/2069/1906/3696/3624/5054/19/1902/133/3587/3678/23533/6347/10148
+#&gt;                                            Count
+#&gt; HALLMARK_HYPOXIA                              29
+#&gt; HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION    24
+#&gt; HALLMARK_KRAS_SIGNALING_DN                    15
+#&gt; HALLMARK_KRAS_SIGNALING_UP                    17
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB              19
+#&gt; HALLMARK_INFLAMMATORY_RESPONSE                15</code></pre>
+<pre class="r"><code>dotplot(em)</code></pre>
+<p><img src="/post/2025-09-20-RNAseq-DEG-list-column_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Hypoxia and EMT are on the top which makes biological sense too.</p>
+</div>
+<div id="gene-set-enrichment-analysis" class="section level3">
+<h3>Gene set enrichment analysis</h3>
+<pre class="r"><code>## you need all the genes and pre-rank them by p-value
+## rank all the genes by signed fold change * -log10pvalue.
+
+res_df&lt;- res %&gt;% 
+  as.data.frame() %&gt;% 
+  filter(baseMean != 0) %&gt;%
+  tibble::rownames_to_column(var = &quot;gene&quot;)
+
+
+res_df&lt;- res_df %&gt;% 
+  mutate(signed_rank_stats = sign(log2FoldChange) * -log10(pvalue)) %&gt;%
+  left_join(background_genes_map, by= c(&quot;gene&quot; = &quot;SYMBOL&quot;)) %&gt;%
+  arrange(desc(signed_rank_stats))
+
+gene_list&lt;- res_df$signed_rank_stats
+names(gene_list)&lt;- res_df$ENTREZID
+
+# em2 &lt;- GSEA(gene_list, TERM2GENE=m_t2g)</code></pre>
+<p>The above will error out:</p>
+<blockquote>
+<p>using ‘fgsea’ for GSEA analysis, please cite Korotkevich et al (2019).</p>
+</blockquote>
+<blockquote>
+<p>preparing geneSet collections…
+GSEA analysis…
+Error in preparePathwaysAndStats(pathways, stats, minSize, maxSize, gseaParam, :
+Not all stats values are finite numbers</p>
+</blockquote>
+<p>It is because some p-values are 0, and log10 will make them infinite.</p>
+<pre class="r"><code>head(res_df)</code></pre>
+<pre><code>#&gt;      gene  baseMean log2FoldChange      lfcSE     stat pvalue padj
+#&gt; 1  ERRFI1  4301.159       2.760227 0.06818372 40.48220      0    0
+#&gt; 2   LAMB3  3151.210       2.637983 0.06606053 39.93282      0    0
+#&gt; 3 BHLHE40  6333.176       2.389235 0.05264755 45.38170      0    0
+#&gt; 4  ARRDC3  2202.457       4.140424 0.09291231 44.56270      0    0
+#&gt; 5    STC2  9740.083       2.790358 0.05518147 50.56693      0    0
+#&gt; 6  IGFBP3 22598.174       5.370911 0.05519163 97.31386      0    0
+#&gt;   signed_rank_stats ENTREZID
+#&gt; 1               Inf    54206
+#&gt; 2               Inf     3914
+#&gt; 3               Inf     8553
+#&gt; 4               Inf    57561
+#&gt; 5               Inf     8614
+#&gt; 6               Inf     3486</code></pre>
+<p>change the inf to big numbers</p>
+<pre class="r"><code>res_df&lt;- res_df %&gt;%
+  mutate(negative_log10pvalue = -log10(pvalue)) %&gt;%
+  mutate(negative_log10pvalue = ifelse(is.infinite(negative_log10pvalue), 1000, negative_log10pvalue)) %&gt;%
+  mutate(signed_rank_stats = sign(log2FoldChange) * negative_log10pvalue)
+
+gene_list&lt;- res_df$signed_rank_stats
+names(gene_list)&lt;- res_df$ENTREZID
+
+
+em2 &lt;- GSEA(gene_list, TERM2GENE=m_t2g)
+head(em2)</code></pre>
+<pre><code>#&gt;                                                                    ID
+#&gt; HALLMARK_E2F_TARGETS                             HALLMARK_E2F_TARGETS
+#&gt; HALLMARK_G2M_CHECKPOINT                       HALLMARK_G2M_CHECKPOINT
+#&gt; HALLMARK_OXIDATIVE_PHOSPHORYLATION HALLMARK_OXIDATIVE_PHOSPHORYLATION
+#&gt; HALLMARK_HYPOXIA                                     HALLMARK_HYPOXIA
+#&gt; HALLMARK_MYC_TARGETS_V1                       HALLMARK_MYC_TARGETS_V1
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB     HALLMARK_TNFA_SIGNALING_VIA_NFKB
+#&gt;                                                           Description setSize
+#&gt; HALLMARK_E2F_TARGETS                             HALLMARK_E2F_TARGETS     196
+#&gt; HALLMARK_G2M_CHECKPOINT                       HALLMARK_G2M_CHECKPOINT     194
+#&gt; HALLMARK_OXIDATIVE_PHOSPHORYLATION HALLMARK_OXIDATIVE_PHOSPHORYLATION     190
+#&gt; HALLMARK_HYPOXIA                                     HALLMARK_HYPOXIA     170
+#&gt; HALLMARK_MYC_TARGETS_V1                       HALLMARK_MYC_TARGETS_V1     189
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB     HALLMARK_TNFA_SIGNALING_VIA_NFKB     165
+#&gt;                                    enrichmentScore       NES       pvalue
+#&gt; HALLMARK_E2F_TARGETS                    -0.7992625 -2.241756 1.000000e-10
+#&gt; HALLMARK_G2M_CHECKPOINT                 -0.7740591 -2.164090 1.000000e-10
+#&gt; HALLMARK_OXIDATIVE_PHOSPHORYLATION      -0.7497171 -2.082826 1.000000e-10
+#&gt; HALLMARK_HYPOXIA                         0.9399727  2.076040 1.000000e-10
+#&gt; HALLMARK_MYC_TARGETS_V1                 -0.7050760 -1.958278 1.920402e-08
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB         0.8803318  1.934970 1.240718e-07
+#&gt;                                        p.adjust       qvalue rank
+#&gt; HALLMARK_E2F_TARGETS               1.250000e-09 6.315789e-10 1752
+#&gt; HALLMARK_G2M_CHECKPOINT            1.250000e-09 6.315789e-10 1554
+#&gt; HALLMARK_OXIDATIVE_PHOSPHORYLATION 1.250000e-09 6.315789e-10 1904
+#&gt; HALLMARK_HYPOXIA                   1.250000e-09 6.315789e-10  653
+#&gt; HALLMARK_MYC_TARGETS_V1            1.920402e-07 9.703084e-08 1126
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB   1.033931e-06 5.224075e-07 1080
+#&gt;                                                      leading_edge
+#&gt; HALLMARK_E2F_TARGETS               tags=60%, list=12%, signal=54%
+#&gt; HALLMARK_G2M_CHECKPOINT            tags=51%, list=11%, signal=46%
+#&gt; HALLMARK_OXIDATIVE_PHOSPHORYLATION tags=50%, list=13%, signal=44%
+#&gt; HALLMARK_HYPOXIA                    tags=50%, list=4%, signal=48%
+#&gt; HALLMARK_MYC_TARGETS_V1             tags=66%, list=8%, signal=62%
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB    tags=41%, list=7%, signal=39%
+#&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           core_enrichment
+#&gt; HALLMARK_E2F_TARGETS                                           27338/3978/6241/9972/7398/10635/55635/25842/79019/1633/3148/4605/10549/10248/9133/9125/6839/9833/10535/10733/3184/253714/3930/5558/10212/51155/10714/10615/29089/2146/4288/9319/84844/23594/5982/8726/4999/3161/24137/3015/84296/9787/672/10797/5889/9126/23649/983/3835/57122/7514/1965/3838/29028/9212/8914/11340/9700/3609/5424/4085/7153/701/204/4001/7112/6790/4830/9918/55646/6628/4678/3070/5631/10051/6427/29127/1111/332/1854/5591/11051/8243/2547/79075/54962/5983/991/4436/23165/10492/4171/1503/6749/5347/7374/9238/993/10527/1019/1164/4174/3159/5902/6426/1786/79077/5111/4172/4175/4176/10528/5901/4173/5425/1434/5036/9221
+#&gt; HALLMARK_G2M_CHECKPOINT                                                                                                                                                          4605/10403/3980/9133/6839/10592/10733/3184/6713/3832/1810/3930/1874/5558/10212/51155/3619/1869/8454/8438/2146/4288/23594/6599/3161/24137/22809/5933/9585/3015/7027/3151/890/23649/699/10036/983/262/3835/22974/7514/3838/5001/990/7150/7290/55872/10926/9212/9184/9700/3609/10419/51776/4085/8318/7153/4001/7112/6790/10432/4678/7272/10051/6427/29127/1111/332/10146/7371/8243/4953/9156/7090/6421/3837/3192/991/10492/51659/4171/10772/5347/993/1019/1164/6632/4174/3159/6426/8140/4172/4175/3312/85236/4691/1736/9221
+#&gt; HALLMARK_OXIDATIVE_PHOSPHORYLATION                                                                                                                                                                       6389/522/4726/10975/4702/4720/4717/4694/7384/1743/4835/23530/509/291/6832/9551/65003/10939/1340/4729/4723/513/4552/1351/374291/5018/4712/2746/3420/50/7417/2108/10440/7386/5250/9927/1355/1374/8604/3032/64981/34/10989/29796/3028/4706/56993/8802/1892/5447/10884/29088/7388/51318/26517/4697/9377/3313/2395/1738/4704/92609/533/64960/1349/1737/54704/6390/23203/517/4191/515/5435/2271/7416/518/6392/56945/3419/54205/9131/3417/38/516/11331/498/10935/10128/1537/1431/5160/2806/506/292/3945
+#&gt; HALLMARK_HYPOXIA                                                                                                                                                                                                                                   54206/8553/8614/3486/5054/665/10397/54541/6515/5230/133/2355/857/3491/6513/8497/5209/7045/8974/6385/1316/7052/3725/7422/205/55818/694/4627/3099/901/5155/5163/7167/2026/2632/2113/55076/1907/1490/302/5033/10370/55139/6095/23645/8660/1649/2152/284119/10957/3098/23764/4783/2023/5214/5211/5236/30001/3309/7852/1026/4601/112464/467/26118/5329/51129/6533/2597/26136/3669/54800/4015/23327/5066/7128/2131/7436/6781/26355/2997/3623/23036/3516/7538
+#&gt; HALLMARK_MYC_TARGETS_V1            6599/6637/4999/65005/5250/10921/3015/8662/8664/3066/7027/3608/6193/890/3178/4706/6128/5093/2058/7514/1965/55651/2739/7298/3838/9045/8886/5984/328/9184/10054/1982/9377/4085/6428/8318/5478/6633/7965/1478/1964/26354/51690/4830/6627/9136/23435/6194/6427/9188/3376/1854/10146/10856/6634/10971/4953/2079/2547/7416/56910/51491/10291/3837/1207/5496/8669/23196/3192/991/6732/1665/10728/23450/10492/10155/4171/1503/6187/3336/3181/11331/3615/1019/6418/10935/8761/2107/6632/7555/3735/1537/4686/4174/5902/26156/6059/6426/3183/7284/6723/5111/4175/10576/4176/790/6741/10528/5901/5245/2806/4173/10574/6950/26135/7203/708/5425/10575/3326/22948/5036/4869/9221/3329
+#&gt; HALLMARK_TNFA_SIGNALING_VIA_NFKB                                                                                                                                                                                                                                                                                                                   3914/8553/5054/6515/2355/3491/5209/6385/1316/3725/7422/694/9314/10318/22822/4616/23645/8660/2152/10957/4082/10769/56937/1827/6446/23764/4783/329/7050/3383/23135/9120/19/10725/1026/467/5329/2114/330/8744/960/8061/7128/604/4084/2354/4791/7538/10938/6303/1847/25976/3976/23258/4088/1906/3572/5606/4792/3280/3624/1437/4973/687/1839/9516/1846/3371</code></pre>
+<pre class="r"><code># em2@result %&gt;% View()</code></pre>
+<p>The <code>NES</code> (normalized enrichment score) tells you the pathway is up or down-regulated.</p>
+<p>For example, Hypoxia has a positive NES, so it is up-regulated.
+G2M checkpoint has a negative NES, so it is down-regulated.</p>
+</div>
+<div id="visualization" class="section level3">
+<h3>visualization</h3>
+<pre class="r"><code>p1&lt;- gseaplot(em2, geneSetID = &quot;HALLMARK_G2M_CHECKPOINT&quot;, 
+              by = &quot;runningScore&quot;, title = &quot;HALLMARK_G2M_CHECKPOINT&quot;)
+
+p2 &lt;- gseaplot(em2, geneSetID = &quot;HALLMARK_HYPOXIA&quot;, 
+               by = &quot;runningScore&quot;, title = &quot;HALLMARK_HYPOXIA&quot;)
+
+p1/p2</code></pre>
+<p><img src="/post/2025-09-20-RNAseq-DEG-list-column_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>We rank the full gene list from the most up-regulated to the most down-regulated.
+Most of the hypoxia genes (the black bars in the lower panel) are in the front of the gene list while most of the
+G2M checkpoint genes (the black bars in the upper panel) are in the end of the gene list.</p>
+</div>
+</div>
+<div id="do-deseq2-for-multiple-comparisons-using-list-column-and-purrrmap" class="section level2">
+<h2>Do DESeq2 for multiple comparisons using list column and purrr::map()</h2>
+<p>We have gone through a routine RNAseq analysis for a single comparison: hypoxia vs normoxia.
+The original datasets have multiple different conditions. You can copy and paste the code
+and change the columns you want to subset. Or depending the purpose of your experiment, you may
+use DESeq2 for more complicated design.</p>
+<p>This tutorial is to demonstrate how you can avoid repeating yourself.
+so let’s say you want to do the following comparisons:</p>
+<ol style="list-style-type: decimal">
+<li>hypoxia vs normoxia under sgCTRL</li>
+<li>sgRELB vs sgCTRL under normoxia</li>
+<li>sgITPR3 vs sgCTRL under normoxia</li>
+<li>sgRELB vs sgCTRL under hypoxia</li>
+<li>sgITPR3 vs sgCTRL under hypoxia</li>
+</ol>
+<p>The first thing come to mind is to write a function:</p>
+<pre class="r"><code>design_table&lt;- colnames(raw_counts_mat) %&gt;%
+        tibble::enframe(name = &quot;sample_number&quot;, value = &quot;sample_name&quot;) %&gt;%
+        mutate(condition = stringr::str_replace(sample_name, &quot;[0-9]+_SW_&quot;, &quot;&quot;)) %&gt;%
+        mutate(condition = stringr::str_replace(condition, &quot;_[0-3]&quot;, &quot;&quot;))
+
+design_table&lt;- as.data.frame(design_table)
+
+rownames(design_table)&lt;- design_table$sample_name
+
+design_table</code></pre>
+<pre><code>#&gt;                      sample_number          sample_name    condition
+#&gt; 01_SW_sgCTRL_Norm                1    01_SW_sgCTRL_Norm  sgCTRL_Norm
+#&gt; 02_SW_sgCTRL_Norm                2    02_SW_sgCTRL_Norm  sgCTRL_Norm
+#&gt; 03_SW_sgITPR3_1_Norm             3 03_SW_sgITPR3_1_Norm sgITPR3_Norm
+#&gt; 04_SW_sgITPR3_1_Norm             4 04_SW_sgITPR3_1_Norm sgITPR3_Norm
+#&gt; 07_SW_sgRELB_3_Norm              5  07_SW_sgRELB_3_Norm  sgRELB_Norm
+#&gt; 08_SW_sgRELB_3_Norm              6  08_SW_sgRELB_3_Norm  sgRELB_Norm
+#&gt; 11_SW_sgCTRL_Hyp                 7     11_SW_sgCTRL_Hyp   sgCTRL_Hyp
+#&gt; 12_SW_sgCTRL_Hyp                 8     12_SW_sgCTRL_Hyp   sgCTRL_Hyp
+#&gt; 13_SW_sgITPR3_1_Hyp              9  13_SW_sgITPR3_1_Hyp  sgITPR3_Hyp
+#&gt; 14_SW_sgITPR3_1_Hyp             10  14_SW_sgITPR3_1_Hyp  sgITPR3_Hyp
+#&gt; 17_SW_sgRELB_3_Hyp              11   17_SW_sgRELB_3_Hyp   sgRELB_Hyp
+#&gt; 18_SW_sgRELB_3_Hyp              12   18_SW_sgRELB_3_Hyp   sgRELB_Hyp</code></pre>
+<p>A function to do 2 condition DESeq2 comparison</p>
+<pre class="r"><code>run_deseq2&lt;- function(counts_mat, design_table, contrast_name){
+        design_table&lt;- design_table %&gt;%
+                dplyr::filter(condition %in% contrast_name)
+        counts_mat&lt;- counts_mat[, rownames(design_table)]
+        keep&lt;- rowSums(counts_mat &gt; 10) &gt;= 2 
+        counts_mat&lt;- counts_mat[keep, ]
+        
+        dds&lt;- DESeqDataSetFromMatrix(countData = counts_mat, 
+                                     colData = design_table, 
+                                     design= ~ condition)
+        dds&lt;- DESeq(dds)
+        res&lt;- results(dds, contrast = contrast_name)
+        
+        return(res)
+}
+
+
+# test the function 
+hypoxia_vs_normoxia_res&lt;- run_deseq2(counts_mat = raw_counts_mat,
+                                     design_table = design_table,
+                                     contrast_name = c(&quot;condition&quot;, &quot;sgCTRL_Hyp&quot;, &quot;sgCTRL_Norm&quot;))
+
+hypoxia_vs_normoxia_res</code></pre>
+<pre><code>#&gt; log2 fold change (MLE): condition sgCTRL_Hyp vs sgCTRL_Norm 
+#&gt; Wald test p-value: condition sgCTRL_Hyp vs sgCTRL_Norm 
+#&gt; DataFrame with 14773 rows and 6 columns
+#&gt;                baseMean log2FoldChange     lfcSE      stat      pvalue
+#&gt;               &lt;numeric&gt;      &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;   &lt;numeric&gt;
+#&gt; WASH7P         23.21968       0.980058  0.563773   1.73839   0.0821421
+#&gt; LOC100996442   10.36881       1.187227  0.819025   1.44956   0.1471811
+#&gt; LOC729737       8.91192       2.142716  0.940163   2.27909   0.0226617
+#&gt; WASH9P         55.19471       0.526744  0.346707   1.51928   0.1286928
+#&gt; LOC100288069   76.26492       0.490303  0.297131   1.65012   0.0989180
+#&gt; ...                 ...            ...       ...       ...         ...
+#&gt; ND4          119814.453      0.0419782 0.0453806  0.925025 3.54953e-01
+#&gt; ND5           44220.020      0.5544584 0.0941469  5.889289 3.87860e-09
+#&gt; ND6           11378.733      0.9634273 0.1104717  8.721031 2.75680e-18
+#&gt; CYTB          55770.859      0.0480192 0.0530959  0.904386 3.65791e-01
+#&gt; TRNP            397.987      2.0433030 0.1474365 13.858872 1.12427e-43
+#&gt;                     padj
+#&gt;                &lt;numeric&gt;
+#&gt; WASH7P          0.136916
+#&gt; LOC100996442    0.224132
+#&gt; LOC729737       0.044295
+#&gt; WASH9P          0.200546
+#&gt; LOC100288069    0.160443
+#&gt; ...                  ...
+#&gt; ND4          4.60905e-01
+#&gt; ND5          2.06333e-08
+#&gt; ND6          2.97924e-17
+#&gt; CYTB         4.71909e-01
+#&gt; TRNP         3.92645e-42</code></pre>
+<p>It is the same as we calculated in the very beginning</p>
+<pre class="r"><code>res</code></pre>
+<pre><code>#&gt; log2 fold change (MLE): condition hypoxia vs normoxia 
+#&gt; Wald test p-value: condition hypoxia vs normoxia 
+#&gt; DataFrame with 14773 rows and 6 columns
+#&gt;                baseMean log2FoldChange     lfcSE      stat      pvalue
+#&gt;               &lt;numeric&gt;      &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;   &lt;numeric&gt;
+#&gt; WASH7P         23.21968       0.980058  0.563773   1.73839   0.0821421
+#&gt; LOC100996442   10.36881       1.187227  0.819025   1.44956   0.1471811
+#&gt; LOC729737       8.91192       2.142716  0.940163   2.27909   0.0226617
+#&gt; WASH9P         55.19471       0.526744  0.346707   1.51928   0.1286928
+#&gt; LOC100288069   76.26492       0.490303  0.297131   1.65012   0.0989180
+#&gt; ...                 ...            ...       ...       ...         ...
+#&gt; ND4          119814.453      0.0419782 0.0453806  0.925025 3.54953e-01
+#&gt; ND5           44220.020      0.5544584 0.0941469  5.889289 3.87860e-09
+#&gt; ND6           11378.733      0.9634273 0.1104717  8.721031 2.75680e-18
+#&gt; CYTB          55770.859      0.0480192 0.0530959  0.904386 3.65791e-01
+#&gt; TRNP            397.987      2.0433030 0.1474365 13.858872 1.12427e-43
+#&gt;                     padj
+#&gt;                &lt;numeric&gt;
+#&gt; WASH7P          0.136916
+#&gt; LOC100996442    0.224132
+#&gt; LOC729737       0.044295
+#&gt; WASH9P          0.200546
+#&gt; LOC100288069    0.160443
+#&gt; ...                  ...
+#&gt; ND4          4.60905e-01
+#&gt; ND5          2.06333e-08
+#&gt; ND6          2.97924e-17
+#&gt; CYTB         4.71909e-01
+#&gt; TRNP         3.92645e-42</code></pre>
+<p>Now that we have a function, we can call that function with a for loop, but I want to show you a better
+way.</p>
+<div id="keep-everything-in-a-tibble" class="section level3">
+<h3>keep everything in a tibble</h3>
+<p>make a <code>tibble</code> which can hold a list column. It is super-powerful.
+Read the best tutorial on <a href="https://jennybc.github.io/purrr-tutorial/">purrr</a>.</p>
+<pre class="r"><code>res_df&lt;- tibble::tibble(contrast_nominator = c(&quot;sgCTRL_Hyp&quot;, &quot;sgRELB_Norm&quot;, &quot;sgITPR3_Norm&quot;,&quot;sgRELB_Hyp&quot;, &quot;sgITPR3_Hyp&quot;),
+                contrast_demoniator =c(&quot;sgCTRL_Norm&quot;, &quot;sgCTRL_Norm&quot;, &quot;sgCTRL_Norm&quot;, &quot;sgCTRL_Hyp&quot;, &quot;sgCTRL_Hyp&quot;))
+
+res_df</code></pre>
+<pre><code>#&gt; # A tibble: 5 × 2
+#&gt;   contrast_nominator contrast_demoniator
+#&gt;   &lt;chr&gt;              &lt;chr&gt;              
+#&gt; 1 sgCTRL_Hyp         sgCTRL_Norm        
+#&gt; 2 sgRELB_Norm        sgCTRL_Norm        
+#&gt; 3 sgITPR3_Norm       sgCTRL_Norm        
+#&gt; 4 sgRELB_Hyp         sgCTRL_Hyp         
+#&gt; 5 sgITPR3_Hyp        sgCTRL_Hyp</code></pre>
+<pre class="r"><code>res_df&lt;- res_df %&gt;%
+        dplyr::mutate(res = map2(contrast_nominator, contrast_demoniator,
+                          ~ run_deseq2(counts_mat = raw_counts_mat,
+                                       design_table = design_table,
+                                       contrast = c(&quot;condition&quot;, .x, .y))))
+## access individual DESeq2 results
+res_df$res[[1]]</code></pre>
+<pre><code>#&gt; log2 fold change (MLE): condition sgCTRL_Hyp vs sgCTRL_Norm 
+#&gt; Wald test p-value: condition sgCTRL_Hyp vs sgCTRL_Norm 
+#&gt; DataFrame with 14773 rows and 6 columns
+#&gt;                baseMean log2FoldChange     lfcSE      stat      pvalue
+#&gt;               &lt;numeric&gt;      &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;   &lt;numeric&gt;
+#&gt; WASH7P         23.21968       0.980058  0.563773   1.73839   0.0821421
+#&gt; LOC100996442   10.36881       1.187227  0.819025   1.44956   0.1471811
+#&gt; LOC729737       8.91192       2.142716  0.940163   2.27909   0.0226617
+#&gt; WASH9P         55.19471       0.526744  0.346707   1.51928   0.1286928
+#&gt; LOC100288069   76.26492       0.490303  0.297131   1.65012   0.0989180
+#&gt; ...                 ...            ...       ...       ...         ...
+#&gt; ND4          119814.453      0.0419782 0.0453806  0.925025 3.54953e-01
+#&gt; ND5           44220.020      0.5544584 0.0941469  5.889289 3.87860e-09
+#&gt; ND6           11378.733      0.9634273 0.1104717  8.721031 2.75680e-18
+#&gt; CYTB          55770.859      0.0480192 0.0530959  0.904386 3.65791e-01
+#&gt; TRNP            397.987      2.0433030 0.1474365 13.858872 1.12427e-43
+#&gt;                     padj
+#&gt;                &lt;numeric&gt;
+#&gt; WASH7P          0.136916
+#&gt; LOC100996442    0.224132
+#&gt; LOC729737       0.044295
+#&gt; WASH9P          0.200546
+#&gt; LOC100288069    0.160443
+#&gt; ...                  ...
+#&gt; ND4          4.60905e-01
+#&gt; ND5          2.06333e-08
+#&gt; ND6          2.97924e-17
+#&gt; CYTB         4.71909e-01
+#&gt; TRNP         3.92645e-42</code></pre>
+<pre class="r"><code>#res_df$res[[2]]</code></pre>
+<p>This is pretty cool!</p>
+</div>
+<div id="volcano-plots-for-all-comparisons" class="section level3">
+<h3>volcano plots for all comparisons</h3>
+<p>First, need to convert the DESeqResults object to a dataframe</p>
+<pre class="r"><code>res_df2&lt;- res_df %&gt;%
+        mutate(res2 = map(res, as.data.frame)) %&gt;%
+        dplyr::select(-res) 
+
+res_df2</code></pre>
+<pre><code>#&gt; # A tibble: 5 × 3
+#&gt;   contrast_nominator contrast_demoniator res2             
+#&gt;   &lt;chr&gt;              &lt;chr&gt;               &lt;list&gt;           
+#&gt; 1 sgCTRL_Hyp         sgCTRL_Norm         &lt;df [14,773 × 6]&gt;
+#&gt; 2 sgRELB_Norm        sgCTRL_Norm         &lt;df [14,731 × 6]&gt;
+#&gt; 3 sgITPR3_Norm       sgCTRL_Norm         &lt;df [14,696 × 6]&gt;
+#&gt; 4 sgRELB_Hyp         sgCTRL_Hyp          &lt;df [15,487 × 6]&gt;
+#&gt; 5 sgITPR3_Hyp        sgCTRL_Hyp          &lt;df [15,188 × 6]&gt;</code></pre>
+<p>Now, unnest it to a full dataframe:</p>
+<pre class="r"><code>res_df2 %&gt;%
+        tidyr::unnest(cols = res2) %&gt;%
+        head()</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 8
+#&gt;   contrast_nominator contrast_demoniator baseMean log2FoldChange lfcSE  stat
+#&gt;   &lt;chr&gt;              &lt;chr&gt;                  &lt;dbl&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1 sgCTRL_Hyp         sgCTRL_Norm            23.2           0.980 0.564  1.74
+#&gt; 2 sgCTRL_Hyp         sgCTRL_Norm            10.4           1.19  0.819  1.45
+#&gt; 3 sgCTRL_Hyp         sgCTRL_Norm             8.91          2.14  0.940  2.28
+#&gt; 4 sgCTRL_Hyp         sgCTRL_Norm            55.2           0.527 0.347  1.52
+#&gt; 5 sgCTRL_Hyp         sgCTRL_Norm            76.3           0.490 0.297  1.65
+#&gt; 6 sgCTRL_Hyp         sgCTRL_Norm            13.9           1.24  0.704  1.76
+#&gt; # ℹ 2 more variables: pvalue &lt;dbl&gt;, padj &lt;dbl&gt;</code></pre>
+<p>The nice thing is that this is a tidy dataframe and it is easy to make any figures.</p>
+<pre class="r"><code>res_df2 %&gt;%
+        tidyr::unnest(cols = res2) %&gt;%
+        mutate(comparison = paste0(contrast_nominator, &quot;_vs_&quot;, contrast_demoniator)) %&gt;%
+        ggplot(aes(x=log2FoldChange, y = -log10(pvalue))) +
+        geom_point() +
+        facet_wrap(~comparison)</code></pre>
+<p><img src="/post/2025-09-20-RNAseq-DEG-list-column_files/figure-html/unnamed-chunk-19-1.png" width="672" />
+How powerful is this?!</p>
+<p>Now let’s find the differentially expressed genes for each comparison</p>
+<pre class="r"><code>filter_sig_genes&lt;- function(res){
+        sig_genes&lt;- res %&gt;% as.data.frame() %&gt;%
+                dplyr::filter(padj &lt; 0.05, abs(log2FoldChange) &gt; 2) %&gt;%
+                rownames()
+        
+        return(sig_genes)
+        
+}
+
+filter_sig_genes(hypoxia_vs_normoxia_res) %&gt;%
+        head()</code></pre>
+<pre><code>#&gt; [1] &quot;LOC729737&quot; &quot;PERM1&quot;     &quot;HES2&quot;      &quot;ERRFI1&quot;    &quot;LINC01714&quot; &quot;NPPB&quot;</code></pre>
+<pre class="r"><code>res_df&lt;- res_df %&gt;%
+        mutate(sig_genes = map(res, filter_sig_genes))
+
+res_df</code></pre>
+<pre><code>#&gt; # A tibble: 5 × 4
+#&gt;   contrast_nominator contrast_demoniator res            sig_genes  
+#&gt;   &lt;chr&gt;              &lt;chr&gt;               &lt;list&gt;         &lt;list&gt;     
+#&gt; 1 sgCTRL_Hyp         sgCTRL_Norm         &lt;DESqRslt[,6]&gt; &lt;chr [502]&gt;
+#&gt; 2 sgRELB_Norm        sgCTRL_Norm         &lt;DESqRslt[,6]&gt; &lt;chr [192]&gt;
+#&gt; 3 sgITPR3_Norm       sgCTRL_Norm         &lt;DESqRslt[,6]&gt; &lt;chr [166]&gt;
+#&gt; 4 sgRELB_Hyp         sgCTRL_Hyp          &lt;DESqRslt[,6]&gt; &lt;chr [275]&gt;
+#&gt; 5 sgITPR3_Hyp        sgCTRL_Hyp          &lt;DESqRslt[,6]&gt; &lt;chr [101]&gt;</code></pre>
+<p>Now, the <code>sig_genes</code> is a list column contains a list of characters (genes)</p>
+<p>Let’s keep going to do a gene set over-representation analysis for each comparison</p>
+<pre class="r"><code># let&#39;s use the gene symbol 
+m_t2g &lt;- msigdbr(species = &quot;human&quot;, collection = &quot;H&quot;) %&gt;% 
+  dplyr::select(gs_name, db_gene_symbol)
+
+
+head(m_t2g)</code></pre>
+<pre><code>#&gt; # A tibble: 6 × 2
+#&gt;   gs_name               db_gene_symbol
+#&gt;   &lt;chr&gt;                 &lt;chr&gt;         
+#&gt; 1 HALLMARK_ADIPOGENESIS ABCA1         
+#&gt; 2 HALLMARK_ADIPOGENESIS ABCB8         
+#&gt; 3 HALLMARK_ADIPOGENESIS ACAA2         
+#&gt; 4 HALLMARK_ADIPOGENESIS ACADL         
+#&gt; 5 HALLMARK_ADIPOGENESIS ACADM         
+#&gt; 6 HALLMARK_ADIPOGENESIS ACADS</code></pre>
+<pre class="r"><code>em &lt;- enricher(significant_genes_map$ENTREZID, TERM2GENE=m_t2g, 
+               universe = background_genes_map$ENTREZID )
+
+
+res_df&lt;- res_df %&gt;%
+        mutate(hallmark_res = map(sig_genes, ~ enricher(.x, TERM2GENE=m_t2g, 
+                                                        universe = background_genes_map$SYMBOL)))
+
+res_df</code></pre>
+<pre><code>#&gt; # A tibble: 5 × 5
+#&gt;   contrast_nominator contrast_demoniator res            sig_genes  
+#&gt;   &lt;chr&gt;              &lt;chr&gt;               &lt;list&gt;         &lt;list&gt;     
+#&gt; 1 sgCTRL_Hyp         sgCTRL_Norm         &lt;DESqRslt[,6]&gt; &lt;chr [502]&gt;
+#&gt; 2 sgRELB_Norm        sgCTRL_Norm         &lt;DESqRslt[,6]&gt; &lt;chr [192]&gt;
+#&gt; 3 sgITPR3_Norm       sgCTRL_Norm         &lt;DESqRslt[,6]&gt; &lt;chr [166]&gt;
+#&gt; 4 sgRELB_Hyp         sgCTRL_Hyp          &lt;DESqRslt[,6]&gt; &lt;chr [275]&gt;
+#&gt; 5 sgITPR3_Hyp        sgCTRL_Hyp          &lt;DESqRslt[,6]&gt; &lt;chr [101]&gt;
+#&gt; # ℹ 1 more variable: hallmark_res &lt;list&gt;</code></pre>
+<p>Now, you see the pattern, you can keep add the results into a new column and because <code>tibble</code> can contain a list column
+and a list can contain any objects (even a ggplot2!).</p>
+<pre class="r"><code>res_df&lt;- res_df %&gt;%
+        mutate(dotplots = map(hallmark_res, dotplot))
+
+res_df</code></pre>
+<pre><code>#&gt; # A tibble: 5 × 6
+#&gt;   contrast_nominator contrast_demoniator res            sig_genes  
+#&gt;   &lt;chr&gt;              &lt;chr&gt;               &lt;list&gt;         &lt;list&gt;     
+#&gt; 1 sgCTRL_Hyp         sgCTRL_Norm         &lt;DESqRslt[,6]&gt; &lt;chr [502]&gt;
+#&gt; 2 sgRELB_Norm        sgCTRL_Norm         &lt;DESqRslt[,6]&gt; &lt;chr [192]&gt;
+#&gt; 3 sgITPR3_Norm       sgCTRL_Norm         &lt;DESqRslt[,6]&gt; &lt;chr [166]&gt;
+#&gt; 4 sgRELB_Hyp         sgCTRL_Hyp          &lt;DESqRslt[,6]&gt; &lt;chr [275]&gt;
+#&gt; 5 sgITPR3_Hyp        sgCTRL_Hyp          &lt;DESqRslt[,6]&gt; &lt;chr [101]&gt;
+#&gt; # ℹ 2 more variables: hallmark_res &lt;list&gt;, dotplots &lt;list&gt;</code></pre>
+<p>You can take a look at the plots:</p>
+<pre class="r"><code>res_df$dotplots[[1]]</code></pre>
+<p><img src="/post/2025-09-20-RNAseq-DEG-list-column_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<pre class="r"><code># this is an empty one because no terms were enriched
+# res_df$dotplots[[2]]
+
+res_df$dotplots[[3]]</code></pre>
+<p><img src="/post/2025-09-20-RNAseq-DEG-list-column_files/figure-html/unnamed-chunk-22-2.png" width="672" /></p>
+<pre class="r"><code>res_df$dotplots[[4]]</code></pre>
+<p><img src="/post/2025-09-20-RNAseq-DEG-list-column_files/figure-html/unnamed-chunk-22-3.png" width="672" /></p>
+<p>Finally, you can save those plots to files by:</p>
+<pre class="r"><code>pwalk(list(a = res_df$contrast_nominator, b = res_df$contrast_demoniator, c = res_df$dotplots),
+     safely(function(a, b,c) ggsave(filename = paste0(&quot;~/blog_data/&quot;, a, &quot;_vs_&quot;,b, &quot;.pdf&quot;), 
+                                    plot = c, width = 6, height = 6)))</code></pre>
+<p>using <code>safely</code> can avoid that empty figure error.</p>
+<p>Hopefully, you learned that how powerful <code>tibble</code> and <code>purrr</code> are.</p>
+<p>start using them!</p>
+<p>Happy Learning!</p>
+<p>Tommy aka crazyhottommy</p>
+</div>
+</div>

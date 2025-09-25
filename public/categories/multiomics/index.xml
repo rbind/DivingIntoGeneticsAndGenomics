@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Tue, 22 Aug 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 17 May 2025 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/multiomics/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Multi-Omics Integration Strategy and Deep Diving into MOFA2</title>
+      <link>/post/multiomics-mofa2/</link>
+      <pubDate>Sat, 17 May 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/multiomics-mofa2/</guid>
+      <description>body { text-align: justify}  Today’s guest blog post on multiOmics integration is written by Aditi Qamra and edited by Tommy.
+If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
+ Aditi is a senior data scientist working on biomarker discovery and early product development at Roche, using multimodal clinical and genomic data. She has a PhD and postdoc in epigenomics of solid tumors and enjoys upskilling herself in stats topics.</description>
+    </item>
     
     <item>
       <title>multi-omics data integration: a case study with transcriptomics and genomics mutation data</title>

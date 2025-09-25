@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Courses on Chatomics</title>
+    <link>/tags/courses/</link>
+    <description>Recent content in Courses on Chatomics</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Sun, 02 Mar 2025 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/courses/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap</title>
+      <link>/post/bioinfo-roadmap/</link>
+      <pubDate>Sun, 02 Mar 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/bioinfo-roadmap/</guid>
+      <description>You Can Change Your Appetites Linear algebra, statistics, machine learning—these used to feel abstract to me. I had zero experience of bioinformatics when I was studying my PhD in a wet lab.
+I memorized formulas without truly understanding them. But over time, I found the right resources that made these concepts click, especially in the context of bioinformatics.
+I wrote a blog post: My opinionated selection of books/urls for bioinformatics/data science curriculum six years ago, and many links are broken.</description>
+    </item>
+    
+  </channel>
+</rss>

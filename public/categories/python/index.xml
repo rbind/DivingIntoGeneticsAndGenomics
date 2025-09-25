@@ -7,10 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Thu, 09 May 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 03 May 2025 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Exploring Spatial Transcriptomics A Dive into Visium Data Analysis in Python</title>
+      <link>/post/python-visium/</link>
+      <pubDate>Sat, 03 May 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/post/python-visium/</guid>
+      <description>Why guest posting? I want to write more hands-on tutorials, but I realized:
+ I am not an expert for every data type. I am too busy to write new ones.  So that&amp;rsquo;s why I started to experiment guest posting!
+If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
+I love to collaborate and share knowledge!</description>
+    </item>
     
     <item>
       <title>How to separate a comma delimited string into multiple lines in R and python </title>

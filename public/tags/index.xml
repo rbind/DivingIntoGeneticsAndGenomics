@@ -22,6 +22,15 @@
     </item>
     
     <item>
+      <title>AI</title>
+      <link>/tags/ai/</link>
+      <pubDate>Fri, 04 Jul 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/ai/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>ATACseq</title>
       <link>/tags/atacseq/</link>
       <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
@@ -31,9 +40,18 @@
     </item>
     
     <item>
+      <title>Annotation</title>
+      <link>/tags/annotation/</link>
+      <pubDate>Tue, 15 Jul 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/annotation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Bioconductor</title>
       <link>/tags/bioconductor/</link>
-      <pubDate>Wed, 05 Jun 2024 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 15 Jul 2025 00:00:00 +0000</pubDate>
       
       <guid>/tags/bioconductor/</guid>
       <description></description>
@@ -42,7 +60,7 @@
     <item>
       <title>Bioconductor</title>
       <link>/tags/bioconductor/</link>
-      <pubDate>Wed, 05 Jun 2024 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 15 Jul 2025 00:00:00 +0000</pubDate>
       
       <guid>/tags/bioconductor/</guid>
       <description></description>
@@ -51,7 +69,7 @@
     <item>
       <title>Bioinformatics</title>
       <link>/tags/bioinformatics/</link>
-      <pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
       
       <guid>/tags/bioinformatics/</guid>
       <description></description>
@@ -69,7 +87,7 @@
     <item>
       <title>Blogdown</title>
       <link>/tags/blogdown/</link>
-      <pubDate>Fri, 28 Dec 2018 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 03 May 2025 00:00:00 +0000</pubDate>
       
       <guid>/tags/blogdown/</guid>
       <description></description>
@@ -103,6 +121,15 @@
     </item>
     
     <item>
+      <title>CRISPR</title>
+      <link>/tags/crispr/</link>
+      <pubDate>Fri, 20 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/crispr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Cancer immunology</title>
       <link>/tags/cancer-immunology/</link>
       <pubDate>Sat, 26 Sep 2020 00:00:00 +0000</pubDate>
@@ -121,11 +148,47 @@
     </item>
     
     <item>
+      <title>Code</title>
+      <link>/tags/code/</link>
+      <pubDate>Fri, 04 Jul 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/code/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Computational biology</title>
+      <link>/tags/computational-biology/</link>
+      <pubDate>Fri, 04 Jul 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/computational-biology/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Courses</title>
+      <link>/tags/courses/</link>
+      <pubDate>Sun, 02 Mar 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/courses/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Data</title>
       <link>/tags/data/</link>
-      <pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 20 Jun 2025 00:00:00 +0000</pubDate>
       
       <guid>/tags/data/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Data analysis</title>
+      <link>/tags/data-analysis/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/data-analysis/</guid>
       <description></description>
     </item>
     
@@ -135,6 +198,15 @@
       <pubDate>Tue, 31 Oct 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/deeplearning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Depmap</title>
+      <link>/tags/depmap/</link>
+      <pubDate>Fri, 20 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/depmap/</guid>
       <description></description>
     </item>
     
@@ -310,6 +382,15 @@
     </item>
     
     <item>
+      <title>Multiomics</title>
+      <link>/tags/multiomics/</link>
+      <pubDate>Sat, 17 May 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/multiomics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Neural network</title>
       <link>/tags/neural-network/</link>
       <pubDate>Tue, 31 Oct 2023 00:00:00 +0000</pubDate>
@@ -333,6 +414,15 @@
       <pubDate>Thu, 31 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/paper/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Pca</title>
+      <link>/tags/pca/</link>
+      <pubDate>Sat, 19 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/pca/</guid>
       <description></description>
     </item>
     
@@ -384,7 +474,7 @@
     <item>
       <title>RNAseq</title>
       <link>/tags/rnaseq/</link>
-      <pubDate>Mon, 18 Mar 2024 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
       
       <guid>/tags/rnaseq/</guid>
       <description></description>
@@ -396,6 +486,15 @@
       <pubDate>Sun, 03 Sep 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/rnn/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Reproducible</title>
+      <link>/tags/reproducible/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/reproducible/</guid>
       <description></description>
     </item>
     
@@ -414,6 +513,15 @@
       <pubDate>Fri, 17 May 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/rstats/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ScATAC</title>
+      <link>/tags/scatac/</link>
+      <pubDate>Sun, 02 Feb 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/scatac/</guid>
       <description></description>
     </item>
     
@@ -501,7 +609,7 @@
     <item>
       <title>TCGA</title>
       <link>/tags/tcga/</link>
-      <pubDate>Thu, 26 Oct 2023 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
       
       <guid>/tags/tcga/</guid>
       <description></description>
@@ -531,6 +639,15 @@
       <pubDate>Mon, 19 Aug 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/unix/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Visium</title>
+      <link>/tags/visium/</link>
+      <pubDate>Sat, 03 May 2025 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/visium/</guid>
       <description></description>
     </item>
     

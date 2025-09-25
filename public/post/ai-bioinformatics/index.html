@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+AI is transforming every field — and bioinformatics is no exception. From designing drug molecules in minutes to writing entire pipelines, generative AI is making it faster than ever to process biological data. But here’s the truth:
+ AI doesn’t understand biology — you do.
+ That’s why, in this new era, your value isn’t replaced by AI — it’s multiplied by your ability to judge, validate, and improve what AI produces.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/ai-bioinformatics/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/ai-bioinformatics/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="/post/ai-bioinformatics/">
+  <meta property="og:title" content="Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist | Chatomics">
+  <meta property="og:description" content="To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+AI is transforming every field — and bioinformatics is no exception. From designing drug molecules in minutes to writing entire pipelines, generative AI is making it faster than ever to process biological data. But here’s the truth:
+ AI doesn’t understand biology — you do.
+ That’s why, in this new era, your value isn’t replaced by AI — it’s multiplied by your ability to judge, validate, and improve what AI produces.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2025-07-04T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2025-07-04T00:00:00&#43;00:00">
+  
+
+  
+  
+
+  <title>Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2025-07-04 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Jul 4, 2025
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/ai-bioinformatics/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/perspective/">perspective</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Mastering%20Bioinformatics%20in%20the%20Age%20of%20AI%3a%20Foundational%20Skills%20for%20the%20Modern%20Scientist&amp;url=%2fpost%2fai-bioinformatics%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fai-bioinformatics%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fai-bioinformatics%2f&amp;title=Mastering%20Bioinformatics%20in%20the%20Age%20of%20AI%3a%20Foundational%20Skills%20for%20the%20Modern%20Scientist"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fai-bioinformatics%2f&amp;title=Mastering%20Bioinformatics%20in%20the%20Age%20of%20AI%3a%20Foundational%20Skills%20for%20the%20Modern%20Scientist"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Mastering%20Bioinformatics%20in%20the%20Age%20of%20AI%3a%20Foundational%20Skills%20for%20the%20Modern%20Scientist&amp;body=%2fpost%2fai-bioinformatics%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <link href="/rmarkdown-libs/vembedr/css/vembedr.css" rel="stylesheet" />
+
+
+<p><strong>To not miss a post like this, sign up for my <a href="https://divingintogeneticsandgenomics.ck.page/profile">newsletter</a> to learn computational
+biology and bioinformatics.</strong></p>
+<p>AI is transforming every field — and bioinformatics is no exception.
+From designing drug molecules in minutes to writing entire pipelines, generative AI is making it faster than ever to process biological data. But here’s the truth:</p>
+<blockquote>
+<p><strong>AI doesn’t understand biology — <em>you</em> do.</strong></p>
+</blockquote>
+<p>That’s why, in this new era, your value isn’t replaced by AI — it’s multiplied by your ability to <strong>judge, validate, and improve</strong> what AI produces.</p>
+<p>In this post, you’ll learn the <strong>5 essential skills</strong> every bioinformatician must master to thrive in the age of AI.</p>
+<p>If you want to watch the video:</p>
+<div class="vembedr">
+<div>
+<iframe src="https://www.youtube.com/embed/uU0fix2Nn1M" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
+</div>
+</div>
+<hr />
+<div id="why-ai-isnt-enough-yet" class="section level2">
+<h2>Why AI Isn’t Enough (Yet)</h2>
+<p>AI can generate fast, elegant code — but often without understanding the <em>biological logic</em> behind it. A recent benchmark (BioCoder) shows that even ChatGPT-4 scores only 50% accuracy on complex bioinformatics tasks.</p>
+<blockquote>
+<p>80% of AI-generated bioinformatics code requires human correction.</p>
+</blockquote>
+<p>This means your expertise is more important than ever. AI can be an assistant — but only if <em>you</em> can spot the errors it doesn’t know it’s making.</p>
+<hr />
+</div>
+<div id="common-ai-mistakes-in-bioinformatics" class="section level2">
+<h2>Common AI Mistakes in Bioinformatics</h2>
+<p>Before diving into the five core skills, here are common red flags in AI-generated code:</p>
+<ul>
+<li>Off-by-one errors: e.g., treating 0-based coordinates as 1-based</li>
+<li>Strand orientation confusion: ignoring 5’ to 3’ directionality</li>
+<li>File format mix-ups: VCF vs GFF vs BED vs SAM/BAM</li>
+<li>Misapplied statistics: running t-tests on non-normal data</li>
+<li>Memory disasters: loading whole genomes instead of streaming data</li>
+</ul>
+<hr />
+</div>
+<div id="skill-1-know-your-data-formats" class="section level2">
+<h2>Skill #1: Know Your Data Formats</h2>
+<p>Bioinformatics is filled with diverse file types — FASTQ, BAM, VCF, GTF, BED — and each one has quirks. You need to:</p>
+<ul>
+<li>Recognize single-end vs paired-end reads</li>
+<li>Interpret quality scores in FASTQ</li>
+<li>Understand how coordinates are indexed in BED (0-based) vs VCF (1-based)</li>
+</ul>
+<p>AI might run the code, but if it misreads a file, it might quietly corrupt your results.</p>
+<hr />
+</div>
+<div id="skill-2-understand-statistics-deeply" class="section level2">
+<h2>Skill #2: Understand Statistics (Deeply)</h2>
+<p>Don’t let AI misuse statistical methods. Know:</p>
+<ul>
+<li>When to use t-tests vs non-parametric tests</li>
+<li>Why variance stabilization matters in DESeq2</li>
+<li>How to correct for multiple testing with FDR</li>
+<li>The meaning and difference between TPM, RPKM, and raw counts</li>
+</ul>
+<p>Bad stats = beautiful graphs with meaningless results.</p>
+<hr />
+</div>
+<div id="skill-3-biological-validation" class="section level2">
+<h2>Skill #3: Biological Validation</h2>
+<p>AI doesn’t know that a protein must be divisible by three codons to be valid.
+You do.
+Use your biological knowledge to catch logic errors:</p>
+<ul>
+<li>Reverse complements must be correct (5’ to 3’)</li>
+<li>Splice sites should follow GT-AG rules</li>
+<li>Cell-type-specific expression should make sense (e.g., surfactant proteins don’t belong in nuclei)</li>
+</ul>
+<hr />
+</div>
+<div id="skill-4-review-code-like-a-scientist" class="section level2">
+<h2>Skill #4: Review Code Like a Scientist</h2>
+<p>Here’s a quick AI code review checklist:</p>
+<ul>
+<li>Are all parameters clearly defined?</li>
+<li>Does the script run without errors?</li>
+<li>Does it handle empty files or edge cases?</li>
+<li>Is the code reproducible?</li>
+<li>Is it version controlled and commented?</li>
+</ul>
+<p>When AI gives you something, don’t just copy-paste it. Inspect it. Stress-test it. Own it.</p>
+<hr />
+</div>
+<div id="skill-5-build-tests-like-a-wet-lab-scientist" class="section level2">
+<h2>Skill #5: Build Tests Like a Wet Lab Scientist</h2>
+<p>Don’t trust AI pipelines until they pass positive and negative controls:</p>
+<ul>
+<li>Variant calling? Use known reference variants from Genome in a Bottle.</li>
+<li>Sequence alignment? Identical sequences should score 100% similarity. Random ones shouldn’t.</li>
+<li>Gene expression? Make sure housekeeping genes behave as expected.</li>
+</ul>
+<p>Think of this like bench science — every experiment needs controls.</p>
+<hr />
+</div>
+<div id="final-thoughts-use-ai-but-dont-trust-it-blindly" class="section level2">
+<h2>Final Thoughts: Use AI, But Don’t Trust It Blindly</h2>
+<p>What to do next:</p>
+<ol style="list-style-type: decimal">
+<li>Trust, but verify everything AI gives you.</li>
+<li>Document your prompts and outputs for reproducibility.</li>
+<li>Stay grounded in fundamentals — file formats, biology, stats, code structure.</li>
+<li>Connect with the community: Share, discuss, and learn from others.</li>
+<li>Let AI amplify your skills — not replace your judgment.</li>
+</ol>
+<blockquote>
+<p>AI is your assistant, not your replacement.</p>
+</blockquote>
+<p>Bioinformatics in the age of AI will reward those who know both how to prompt and how to question the answers.</p>
+<hr />
+<p>Want more?
+Check out <a href="https://divingintogeneticsandgenomics.kit.com/profile">my newsletter</a> for weekly bioinformatics tips and coding insights.</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/ai/">AI</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/computational-biology/">computational biology</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/code/">code</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/cancer-drug/">How Cancer Drugs Really Work</a></li>
+        
+        <li><a href="/post/partial-cor/">How to calculate partial correlation controlling cancer types</a></li>
+        
+        <li><a href="/post/multiomics-mofa2/">Multi-Omics Integration Strategy and Deep Diving into MOFA2</a></li>
+        
+        <li><a href="/post/bioinfo-roadmap/">How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap</a></li>
+        
+        <li><a href="/post/pca-tcga2/">PCA analysis on TCGA bulk RNAseq data continued</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/canonical-tx/" rel="next">How to create a GenomicRanges object in Bioconductor using canonical transcripts</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/cancer-drug/" rel="prev">How Cancer Drugs Really Work</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+
