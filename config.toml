@@ -31,11 +31,20 @@ hasCJKLanguage = false  # Set `true` for Chinese/Japanese/Korean languages.
 defaultContentLanguageInSubdir = false
 
 # Get last modified date for content from Git?
-enableGitInfo = false
+enableGitInfo = true
+
+# Generate robots.txt
+enableRobotsTXT = true
 
 [outputs]
-  home = [ "HTML", "CSS", "RSS" ]
+  home = [ "HTML", "CSS", "RSS", "JSON" ]
   section = [ "HTML", "RSS" ]
+
+# Sitemap configuration for better SEO
+[sitemap]
+  changefreq = "weekly"
+  priority = 0.5
+  filename = "sitemap.xml"
 
 # Configure BlackFriday Markdown rendering.
 #   See: https://gohugo.io/getting-started/configuration/#configure-blackfriday
@@ -45,6 +54,9 @@ enableGitInfo = false
   smartypants = true  # `false` disables all smart punctuation substitutions (e.g. smart quotes, dashes, fractions).
 
 [params]
+  # SEO - Site description for search engines
+  description = "Learn bioinformatics, genomics, and computational biology through practical tutorials. Expert guides on single-cell RNA-seq, R programming, Python, data analysis, and bioinformatics workflows."
+
   # Color theme.
   #   Choose from `default`, `ocean`, `forest`, `coffee`, `dark`, or `1950s`.
   color_theme = "custom"
@@ -308,6 +320,7 @@ enableGitInfo = false
   tag = "tags"
   category = "categories"
   publication_type = "publication_types"
+  series = "series"  # For organizing tutorial series (e.g., CITE-seq series)
 
 # Languages
 #   Create a [languages.X] block for each language you want, where X is the language ID.

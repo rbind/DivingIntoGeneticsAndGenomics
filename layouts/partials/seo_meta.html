@@ -1,0 +1,64 @@
+<!-- Enhanced SEO Meta Tags -->
+<!-- This partial adds comprehensive SEO meta tags without modifying .Rmd files -->
+
+<!-- Meta Description -->
+{{ if .Description }}
+<meta name="description" content="{{ .Description | htmlEscape }}">
+{{ else if .Summary }}
+<meta name="description" content="{{ .Summary | plainify | truncate 160 | htmlEscape }}">
+{{ else }}
+<meta name="description" content="{{ .Content | plainify | truncate 160 | htmlEscape }}">
+{{ end }}
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:title" content="{{ .Title | htmlEscape }} | {{ .Site.Title }}">
+{{ if .Description }}
+<meta property="og:description" content="{{ .Description | htmlEscape }}">
+{{ else if .Summary }}
+<meta property="og:description" content="{{ .Summary | plainify | truncate 160 | htmlEscape }}">
+{{ else }}
+<meta property="og:description" content="{{ .Content | plainify | truncate 160 | htmlEscape }}">
+{{ end }}
+{{ if .Params.image }}
+<meta property="og:image" content="{{ .Params.image | absURL }}">
+{{ else }}
+<meta property="og:image" content="{{ "img/icon-192.png" | absURL }}">
+{{ end }}
+<meta property="og:site_name" content="{{ .Site.Title }}">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@{{ .Site.Params.twitter }}">
+<meta name="twitter:creator" content="@{{ .Site.Params.twitter }}">
+<meta name="twitter:title" content="{{ .Title | htmlEscape }}">
+{{ if .Description }}
+<meta name="twitter:description" content="{{ .Description | htmlEscape }}">
+{{ else if .Summary }}
+<meta name="twitter:description" content="{{ .Summary | plainify | truncate 160 | htmlEscape }}">
+{{ else }}
+<meta name="twitter:description" content="{{ .Content | plainify | truncate 160 | htmlEscape }}">
+{{ end }}
+{{ if .Params.image }}
+<meta name="twitter:image" content="{{ .Params.image | absURL }}">
+{{ else }}
+<meta name="twitter:image" content="{{ "img/icon-192.png" | absURL }}">
+{{ end }}
+
+<!-- Article specific meta -->
+{{ if .IsPage }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+<meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">
+<meta property="article:author" content="{{ .Site.Params.name }}">
+{{ range .Params.tags }}
+<meta property="article:tag" content="{{ . }}">
+{{ end }}
+{{ end }}
+
+<!-- Additional SEO tags -->
+<meta name="author" content="{{ .Site.Params.name }}">
+{{ with .Params.tags }}
+<meta name="keywords" content="{{ delimit . ", " }}">
+{{ end }}
+<link rel="canonical" href="{{ .Permalink }}">

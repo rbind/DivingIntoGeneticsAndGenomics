@@ -1,0 +1,149 @@
+<!-- Structured Data (Schema.org JSON-LD) -->
+{{ if .IsPage }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": {{ .Title | jsonify }},
+  "description": {{ if .Description }}{{ .Description | jsonify }}{{ else }}{{ .Summary | plainify | truncate 200 | jsonify }}{{ end }},
+  "author": {
+    "@type": "Person",
+    "name": "{{ .Site.Params.name }}",
+    "jobTitle": "{{ .Site.Params.role }}",
+    "url": "{{ .Site.BaseURL }}"
+  },
+  "datePublished": "{{ .Date.Format "2006-01-02" }}",
+  "dateModified": "{{ .Lastmod.Format "2006-01-02" }}",
+  {{ if .Params.image -}}
+  "image": "{{ .Params.image | absURL }}",
+  {{- else -}}
+  "image": "{{ "img/icon-192.png" | absURL }}",
+  {{- end }}
+  "url": "{{ .Permalink }}"{{ with .Params.tags }},
+  "keywords": "{{ delimit . ", " }}"{{ end }},
+  "proficiencyLevel": "Beginner to Advanced",
+  "dependencies": "R, Bioconductor{{ with .Params.tags }}, {{ delimit . ", " }}{{ end }}",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ .Site.Title }}",
+    "url": "{{ .Site.BaseURL }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ "img/icon-192.png" | absURL }}"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ .Permalink }}"
+  }
+}
+</script>
+{{ end }}
+
+<!-- Breadcrumb Schema -->
+{{ if .IsPage }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ .Site.BaseURL }}"
+    },
+    {{ if eq .Section "post" }}
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog Posts",
+      "item": "{{ .Site.BaseURL }}post/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": {{ .Title | jsonify }},
+      "item": "{{ .Permalink }}"
+    }
+    {{ else if eq .Section "publication" }}
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Publications",
+      "item": "{{ .Site.BaseURL }}publication/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": {{ .Title | jsonify }},
+      "item": "{{ .Permalink }}"
+    }
+    {{ else if eq .Section "talk" }}
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Talks & Teachings",
+      "item": "{{ .Site.BaseURL }}talk/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": {{ .Title | jsonify }},
+      "item": "{{ .Permalink }}"
+    }
+    {{ else }}
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": {{ .Title | jsonify }},
+      "item": "{{ .Permalink }}"
+    }
+    {{ end }}
+  ]
+}
+</script>
+{{ end }}
+
+<!-- Organization Schema for Homepage -->
+{{ if .IsHome }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "{{ .Site.Title }}",
+  "url": "{{ .Site.BaseURL }}",
+  "logo": "{{ "img/icon-192.png" | absURL }}",
+  "description": "Bioinformatics, genomics, and computational biology tutorials. Learn single-cell RNA-seq, R programming, and data analysis.",
+  "founder": {
+    "@type": "Person",
+    "name": "{{ .Site.Params.name }}",
+    "jobTitle": "{{ .Site.Params.role }}"
+  },
+  "sameAs": [
+    "https://twitter.com/{{ .Site.Params.twitter }}",
+    "https://github.com/crazyhottommy",
+    "https://www.linkedin.com/in/ming-tommy-tang-40650014/",
+    "https://scholar.google.com/citations?user=6uF4Sa8AAAAJ",
+    "https://www.youtube.com/channel/UC0DNFLi8yg1UVo67bCLMMJg"
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "{{ .Site.Title }}",
+  "url": "{{ .Site.BaseURL }}",
+  "description": "Bioinformatics, genomics, and computational biology tutorials",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ .Site.BaseURL }}search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+{{ end }}

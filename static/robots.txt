@@ -1,0 +1,30 @@
+# robots.txt for divingintogeneticsandgenomics.com
+# Generated for better SEO and crawl efficiency
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://divingintogeneticsandgenomics.com/sitemap.xml
+
+# Block non-content directories to save crawl budget
+Disallow: /rmarkdown-libs/
+Disallow: /*_files/
+Disallow: /*_cache/
+Disallow: /css/
+Disallow: /js/
+Disallow: /fonts/
+
+# Allow important static content
+Allow: /img/
+Allow: /post/
+Allow: /publication/
+Allow: /talk/
+Allow: /project/
+
+# Block bad bots (optional - uncomment if needed)
+# User-agent: SemrushBot
+# Crawl-delay: 10
+
+# User-agent: AhrefsBot
+# Crawl-delay: 10
