@@ -1,0 +1,633 @@
+---
+title: "Understanding prcomp() center and scale Arguments for Single-Cell RNA-seq PCA"
+author: Ming Tang
+date: '2025-10-29'
+slug: understanding-prcomp-center-scale-arguments
+categories:
+  - R
+  - bioinformatics
+  - single-cell
+tags:
+  - R
+  - PCA
+  - single-cell
+  - scRNAseq
+  - dimensionality-reduction
+  - tutorial
+  - statistics
+header:
+  caption: ''
+  image: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+During my work with single-cell RNA-seq data, I've often encountered confusion about PCA and specifically when to use the `center` and `scale` arguments in R's `prcomp()` function. While tools like Seurat's `RunPCA()` abstract away these details, understanding what happens under the hood is crucial for proper analysis and troubleshooting.
+
+In this post, I'll show you exactly what `center` and `scale` do, why they matter, and what happens when you get them wrong. We'll start with a simple synthetic example to build intuition, then dive into real single-cell RNA-seq data from the pbmc3k dataset.
+
+## What does prcomp() actually do?
+
+Before we jump into the arguments, let's quickly review what PCA does. Principal Component Analysis finds new axes (principal components) that capture the maximum variance in your data. The first PC captures the most variance, the second PC captures the second most (and is orthogonal to the first), and so on.
+
+The `prcomp()` function in R has two key arguments that control data preprocessing:
+
+- **`center`**: Should each variable be shifted to have mean zero? (Default: `TRUE`)
+- **`scale`**: Should each variable be scaled to have unit variance? (Default: `FALSE`)
+
+Let's see why these matter.
+
+## Example 1: Why scaling matters with different feature scales
+
+Let me show you a gotcha I encountered early in my bioinformatics journey. Imagine you have two features that separate your groups, but they're measured on completely different scales. Here's the key insight: **the feature with the most variance isn't always the one that separates your groups best!**
+
+```{r setup, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(patchwork)
+
+# Set seed for reproducibility
+set.seed(42)
+
+# Create synthetic data where scaling makes a BIG difference
+n_samples <- 100
+
+# Feature 1: LOW variance but GOOD group separation
+# This is the discriminative feature (e.g., a biomarker)
+feature1_group1 <- rnorm(n_samples/2, mean = 2, sd = 0.3)
+feature1_group2 <- rnorm(n_samples/2, mean = 4, sd = 0.3)
+
+# Feature 2: HIGH variance but POOR group separation
+# Mostly noise within groups (e.g., a technical variable)
+feature2_group1 <- rnorm(n_samples/2, mean = 1000, sd = 200)
+feature2_group2 <- rnorm(n_samples/2, mean = 1050, sd = 200)
+
+# Combine into a data matrix
+data_matrix <- cbind(
+  feature1 = c(feature1_group1, feature1_group2),
+  feature2 = c(feature2_group1, feature2_group2)
+)
+
+# Add group labels
+groups <- rep(c("Group1", "Group2"), each = n_samples/2)
+
+# Look at the data
+head(data_matrix)
+```
+
+Now let's examine the variance and group separation for each feature:
+
+```{r check-scales}
+# Check the mean of each feature
+apply(data_matrix, 2, mean)
+
+# Check the variance of each feature
+apply(data_matrix, 2, var)
+
+# Check how well each feature separates the groups
+cat("Feature 1:", mean(feature1_group2) - mean(feature1_group1), "\n")
+cat("Feature 2:", mean(feature2_group2) - mean(feature2_group1), "\n")
+
+cat("Feature 1 effect size:",
+    (mean(feature1_group2) - mean(feature1_group1)) /
+    sqrt((var(feature1_group1) + var(feature1_group2))/2), "\n")
+cat("Feature 2 effect size:",
+    (mean(feature2_group2) - mean(feature2_group1)) /
+    sqrt((var(feature2_group1) + var(feature2_group2))/2), "\n")
+```
+
+**The key observation**: `feature2` has ~3000x more variance than `feature1`, but `feature1` actually separates the groups much better (effect size ~6.5 vs ~0.4)!
+
+### The worst case: No centering AND no scaling
+
+Let's first see what happens when we skip both centering and scaling:
+
+```{r pca-no-center-no-scale}
+# PCA without centering and without scaling - the worst case!
+pca_neither <- prcomp(data_matrix, center = FALSE, scale. = FALSE)
+
+# Check the loadings
+print(pca_neither$rotation)
+
+# Standard deviations of PCs
+print(pca_neither$sdev)
+```
+
+**Extreme dominance by feature2!** The loading is essentially 1.0 for feature2 and nearly 0 for feature1. Why? Because feature2 has both:
+1. **High mean** (~1000): Distance from origin (0,0) to the data center creates huge "variance"
+2. **High variance** (~34,000): Additional spread around that mean
+
+Feature1 (mean ~3, variance ~1.14) is completely invisible to PCA in this case.
+
+Let's visualize it:
+
+```{r plot-no-center-no-scale, fig.width=10, fig.height=4}
+pca_df_neither <- data.frame(
+  PC1 = pca_neither$x[, 1],
+  PC2 = pca_neither$x[, 2],
+  group = groups
+)
+
+p_neither <- ggplot(pca_df_neither, aes(x = PC1, y = PC2, color = group)) +
+  geom_point(size = 2, alpha = 0.7) +
+  labs(title = "PCA: No centering, No scaling",
+       subtitle = "Complete failure - groups totally overlap!",
+       x = "PC1 (100% Feature2)",
+       y = "PC2") +
+  scale_color_manual(values = c("Group1" = "#E41A1C", "Group2" = "#377EB8")) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+p_neither
+```
+
+Groups are completely indistinguishable in PC1! It does have separation in PC2 though. 
+This shows why **centering is the first essential step**.
+
+### PCA with centering but no scaling
+
+Now let's center the data but still skip scaling:
+
+```{r pca-no-scale}
+# PCA with centering but NO scaling
+pca_no_scale <- prcomp(data_matrix, center = TRUE, scale. = FALSE)
+
+# Check the standard deviations of each PC
+pca_no_scale$sdev
+
+# Look at the rotation (loadings) matrix
+pca_no_scale$rotation
+```
+
+**The problem**: PC1 is almost entirely driven by `feature2` because it has much larger variance. The loading for `feature2` on PC1 is ~-1.0, while `feature1` barely contributes (loading ~-0.001).
+
+But here's the catch: **`feature2` doesn't separate the groups well!** It has high variance but most of that is just noise within groups. So PC1 captures lots of variance but doesn't help us distinguish Group1 from Group2.
+
+Let's visualize it:
+
+```{r plot-no-scale, fig.width=10, fig.height=4}
+# Create a dataframe for plotting
+pca_df_no_scale <- data.frame(
+  PC1 = pca_no_scale$x[, 1],
+  PC2 = pca_no_scale$x[, 2],
+  group = groups
+)
+
+# Also create individual feature plots for comparison
+plot_features <- data.frame(
+  feature1 = data_matrix[, 1],
+  feature2 = data_matrix[, 2],
+  group = groups
+)
+
+p1_features <- ggplot(plot_features, aes(x = feature1, y = feature2, color = group)) +
+  geom_point(size = 2, alpha = 0.7) +
+  labs(title = "Original features",
+       subtitle = "Feature1 separates groups, Feature2 is mostly noise",
+       x = "Feature 1 (low variance, high signal)",
+       y = "Feature 2 (high variance, low signal)") +
+  scale_color_manual(values = c("Group1" = "#E41A1C", "Group2" = "#377EB8")) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+p1_pca <- ggplot(pca_df_no_scale, aes(x = PC1, y = PC2, color = group)) +
+  geom_point(size = 2, alpha = 0.7) +
+  labs(title = "PCA without scaling",
+       subtitle = "Poor separation - PC1 captures noise, not signal!",
+       x = "PC1 (dominated by Feature 2)",
+       y = "PC2") +
+  scale_color_manual(values = c("Group1" = "#E41A1C", "Group2" = "#377EB8")) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+p1_features | p1_pca
+```
+
+Notice how the groups can not be separated by PC1! The discriminative information in `feature1` is relegated to PC2, which explains very little variance. Centering helped, but we still have poor separation in PC1 because of the variance difference.
+
+### The solution: Centering AND scaling
+
+Now let's both center AND scale the features:
+
+```{r pca-with-scale}
+# PCA with centering AND scaling
+pca_with_scale <- prcomp(data_matrix, center = TRUE, scale. = TRUE)
+
+# Check the standard deviations
+pca_with_scale$sdev
+
+# Look at the rotation matrix
+pca_with_scale$rotation
+```
+
+Now both features contribute more equally to the principal components! The loadings are much more balanced (~0.7 for both features on PC1).
+
+Let's visualize it:
+
+```{r plot-with-scale, fig.width=10, fig.height=4}
+pca_df_with_scale <- data.frame(
+  PC1 = pca_with_scale$x[, 1],
+  PC2 = pca_with_scale$x[, 2],
+  group = groups
+)
+
+p2_pca <- ggplot(pca_df_with_scale, aes(x = PC1, y = PC2, color = group)) +
+  geom_point(size = 2, alpha = 0.7) +
+  labs(title = "PCA with scaling",
+       subtitle = "Excellent separation - both features contribute!",
+       x = "PC1 (combines both features)",
+       y = "PC2") +
+  scale_color_manual(values = c("Group1" = "#E41A1C", "Group2" = "#377EB8")) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+# Compare variance explained
+variance_no_scale <- pca_no_scale$sdev^2 / sum(pca_no_scale$sdev^2) * 100
+variance_with_scale <- pca_with_scale$sdev^2 / sum(pca_with_scale$sdev^2) * 100
+
+variance_comparison <- data.frame(
+  PC = rep(c("PC1", "PC2"), 2),
+  variance = c(variance_no_scale, variance_with_scale),
+  scaling = rep(c("No scaling", "With scaling"), each = 2)
+)
+
+p2_variance <- ggplot(variance_comparison, aes(x = PC, y = variance, fill = scaling)) +
+  geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +
+  labs(title = "Variance explained",
+       subtitle = "Scaling changes which PC captures group separation",
+       y = "Variance explained (%)") +
+  scale_fill_manual(values = c("No scaling" = "#999999", "With scaling" = "#E69F00")) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+p2_pca | p2_variance
+```
+
+**What changed?**
+
+- **No centering, no scaling**: Complete disaster - groups totally overlap in PC1 (99.9% variance but 0% signal)
+- **Centering, no scaling**: PC1 explains 99.9% variance but doesn't separate groups well (captures noise in Feature2), and the groups are separated in PC2 which explains little variance.
+- **Centering + scaling**: PC1 explains ~60% variance and **clearly separates the groups** (both features contribute)
+
+### Side-by-side comparison of all three approaches
+
+Let's visualize all three scenarios together to see the dramatic differences:
+
+```{r plot-all-three, fig.width=12, fig.height=4}
+# Combine all three PCAs for comparison
+comparison_df <- data.frame(
+  group = rep(groups, 3),
+  PC1 = c(pca_neither$x[, 1], pca_no_scale$x[, 1], pca_with_scale$x[, 1]),
+  PC2 = c(pca_neither$x[, 2], pca_no_scale$x[, 2], pca_with_scale$x[, 2]),
+  method = rep(c("No center, no scale", "Center only", "Center + Scale"),
+               each = length(groups))
+)
+
+# Make method a factor with correct order
+comparison_df$method <- factor(comparison_df$method,
+                               levels = c("No center, no scale", "Center only", "Center + Scale"))
+
+ggplot(comparison_df, aes(x = PC1, y = PC2, color = group)) +
+  geom_point(size = 2, alpha = 0.7) +
+  facet_wrap(~method, scales = "free") +
+  scale_color_manual(values = c("Group1" = "#E41A1C", "Group2" = "#377EB8")) +
+  labs(title = "Effect of centering and scaling on PCA",
+       subtitle = "From complete failure (left) to excellent separation (right)") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        strip.text = element_text(size = 11, face = "bold"))
+```
+
+This is the **critical lesson**:
+
+1. **Always center** - Without centering, high-mean features create artificial "variance" from the origin
+2. **Scale when needed** - When features have different scales, high-variance features dominate even if they're just noise, while low-variance features with real signal get ignored
+
+For most exploratory analyses, you want **both centering and scaling**!
+
+## Example 2: Real single-cell RNA-seq data with pbmc3k
+
+Now let's see this in action with real scRNA-seq data. We'll use the pbmc3k dataset from Seurat.
+
+```{r load-pbmc, message=FALSE, warning=FALSE}
+library(Seurat)
+library(SeuratData)
+
+# Install pbmc3k dataset if you haven't
+# InstallData("pbmc3k")
+
+# Load the data
+data("pbmc3k")
+
+# need to update the object otherwise it gives you errors
+pbmc3k<- UpdateSeuratObject(pbmc3k)
+
+# Standard preprocessing
+pbmc3k <- NormalizeData(pbmc3k)
+pbmc3k <- FindVariableFeatures(pbmc3k, nfeatures = 2000)
+
+# Get the scaled data (what Seurat uses for PCA)
+# Seurat's ScaleData centers AND scales each gene
+pbmc3k <- ScaleData(pbmc3k)
+
+# For comparison, let's also get the normalized but NOT scaled data
+# Extract normalized counts for variable features
+variable_features <- VariableFeatures(pbmc3k)
+normalized_data <- GetAssayData(pbmc3k, layer = "data")[variable_features, ]
+
+# Transpose so samples are rows, genes are columns (required for prcomp)
+normalized_data_t <- t(as.matrix(normalized_data))
+scaled_data_t <- t(as.matrix(GetAssayData(pbmc3k, slot = "scale.data")))
+
+dim(normalized_data_t)
+```
+We have 2700 cells and 2000 most variable genes 
+
+### Understanding what Seurat does
+
+Before we run PCA ourselves, let's understand what Seurat's `RunPCA()` does:
+
+1. Takes the **scaled data** (from `ScaleData()`). 
+
+scaled.data in Seurat is already centered + scaled. 
+If you `?ScaleData`, you will see default:
+
+`do.scale = TRUE` and `do.center = TRUE`.
+
+2. Runs PCA on the scaled data.
+
+Let's verify this:
+
+```{r seurat-pca}
+# Run Seurat's PCA
+pbmc3k <- RunPCA(pbmc3k, features = variable_features, verbose = FALSE)
+
+# Get the first 5 PCs
+seurat_pcs <- Embeddings(pbmc3k, "pca")[, 1:5]
+head(seurat_pcs)
+```
+
+### Manual PCA on scaled data (reproducing Seurat)
+
+`prcomp` assumes rows are samples, columns are genes.
+
+Actually for single-cell data, Seurat uses `irlba` for faster calculation
+but `prcomp()` gives the same result.
+
+see my old post: https://divingintogeneticsandgenomics.com/post/permute-test-for-pca-components/
+
+```{r manual-pca-scaled}
+# Run prcomp on the scaled data (same as Seurat)
+# the scaled_data_t is already centered + scaled 
+pca_scaled <- prcomp(scaled_data_t, center = FALSE, scale. = FALSE)
+
+# Compare with Seurat's PCA
+manual_pcs <- pca_scaled$x[, 1:5]
+
+head(manual_pcs[, 1:5])
+```
+It is the same as the `seurat_pcs` with a different sign.
+                
+```{r}             
+# Check correlation (should be very high, might differ in sign)
+cor(seurat_pcs[, 1], manual_pcs[, 1])
+```
+
+The correlation is very close to 1 or -1 (sign doesn't matter for PCA). We've successfully reproduced Seurat's PCA!
+
+### What happens if we don't center?
+
+Now let's see what happens if we skip centering. We'll use the **log-normalized data** (not the scaled data) to properly demonstrate this, since the scaled data is already centered.
+
+```{r pca-no-center}
+# PCA on normalized data WITH centering (correct)
+pca_norm_centered <- prcomp(normalized_data_t, center = TRUE, scale. = FALSE)
+
+# PCA on normalized data WITHOUT centering (wrong!)
+pca_norm_no_center <- prcomp(normalized_data_t, center = FALSE, scale. = FALSE)
+
+# Check the means of genes in normalized data (should NOT be zero)
+mean(apply(normalized_data_t, 2, mean))
+
+# Compare the results
+comparison_df <- data.frame(
+  PC1_centered = pca_norm_centered$x[, 1],
+  PC1_not_centered = pca_norm_no_center$x[, 1],
+  PC2_centered = pca_norm_centered$x[, 2],
+  PC2_not_centered = pca_norm_no_center$x[, 2]
+)
+
+head(comparison_df)
+
+# Correlation between the two
+cor(comparison_df$PC1_centered, comparison_df$PC1_not_centered)
+cor(comparison_df$PC2_centered, comparison_df$PC2_not_centered)
+```
+
+Interestingly, the correlation for PC1 is still very high -0.9, 
+but PC2 correlation is only -0.13, meaning these are capturing different patterns!
+
+Let's visualize this:
+
+```{r plot-center-comparison, fig.width=10, fig.height=4}
+# Create comparison plots
+plot_df <- data.frame(
+  PC1_centered = pca_norm_centered$x[, 1],
+  PC2_centered = pca_norm_centered$x[, 2],
+  PC1_no_center = pca_norm_no_center$x[, 1],
+  PC2_no_center = pca_norm_no_center$x[, 2],
+  cluster = pbmc3k$seurat_annotations
+)
+
+p_centered <- ggplot(plot_df, aes(x = PC1_centered, y = PC2_centered, color = cluster)) +
+  geom_point(size = 1, alpha = 0.7) +
+  labs(title = "PCA with centering (correct)",
+       subtitle = "Each gene centered to mean = 0",
+       x = "PC1", y = "PC2") +
+  scale_color_brewer(palette = "Paired") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+p_no_center <- ggplot(plot_df, aes(x = PC1_no_center, y = PC2_no_center, color = cluster)) +
+  geom_point(size = 1, alpha = 0.7) +
+  labs(title = "PCA without centering (wrong!)",
+       subtitle = "PC1 captures mean expression, not variation",
+       x = "PC1", y = "PC2") +
+  scale_color_brewer(palette = "Paired") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+p_centered | p_no_center
+```
+
+After centering, PC2 separates Naive CD4T, memory CD4T, CD8T, NK and B cells much better.
+Interestingly, without centering, it seems to separates FCGR3A+ (CD16) monocytes and CD14 monocytes better.
+
+But you will see that after `center` and `scale`, FCGR3A+ (CD16) monocytes and CD14 monocytes will be separated too.
+
+```{r check-loadings}
+# Look at the loadings for the first PC without centering vs with centering
+top_genes_no_center <- names(sort(abs(pca_norm_no_center$rotation[, 1]), decreasing = TRUE)[1:10])
+top_genes_centered <- names(sort(abs(pca_norm_centered$rotation[, 1]), decreasing = TRUE)[1:10])
+
+top_loadings_no_center <- sort(abs(pca_norm_no_center$rotation[, 1]), decreasing = TRUE)[1:10]
+top_loadings_centered <- sort(abs(pca_norm_centered$rotation[, 1]), decreasing = TRUE)[1:10]
+
+cat("Top 10 gene loadings WITHOUT centering:\n")
+print(top_loadings_no_center)
+```
+
+These are highly expressed housekeeping genes and structural RNAs:
+- **MALAT1**: Highly abundant non-coding RNA
+- **ACTB**: Actin beta - housekeeping gene
+- **TMSB4X, TMSB10**: Thymosin beta - structural proteins
+- **FTL, FTH1**: Ferritin - iron storage
+
+```{r}
+cat("\nTop 10 gene loadings WITH centering:\n")
+print(top_loadings_centered)
+```
+
+These are **biologically meaningful markers** for specific cell types:
+- **LYZ, CST3**: Myeloid/monocyte markers
+- **S100A9, S100A8**: Monocyte markers (especially inflammatory)
+- **TYROBP, FCER1G, AIF1**: Immune cell activation markers
+- **LGALS1**: Expressed in monocytes and T cells
+
+Let's verify this by checking mean expression levels:
+
+```{r verify-mean-expression}
+# Check mean expression of top genes from each PCA
+mean_expr_no_center <- apply(normalized_data_t[, top_genes_no_center], 2, mean)
+mean_expr_centered <- apply(normalized_data_t[, top_genes_centered], 2, mean)
+
+cat("Mean expression (top genes WITHOUT centering):\n")
+print(sort(mean_expr_no_center, decreasing = TRUE))
+
+cat("\nMean expression (top genes WITH centering):\n")
+print(sort(mean_expr_centered, decreasing = TRUE))
+```
+
+**The key insight**:
+
+- **Without centering**: PC1 loads on genes with **high mean expression** (housekeeping genes that are abundant in all cells). This doesn't tell us about cell type differences!
+
+- **With centering**: PC1 loads on genes with **high variance between cells** (markers that differ between cell types). This captures biological variation!
+
+**The problem with no centering**: Without centering, PCA finds axes that maximize variance around the origin (0,0), not around the data's actual center. For gene expression data where most genes have positive log-normalized values with non-zero means, the first PC without centering tends to just capture which genes are generally abundant (mean expression level) rather than which genes vary between cells (biological signal).
+
+This is why **centering is absolutely critical** for PCA on gene expression data!
+
+### PCA on normalized (not scaled) data
+
+What if we run PCA on the log-normalized data without the scaling step? We already did this above (`pca_norm_centered`), so let's compare the variance explained between `centered + scaled` vs `centered only` data.
+
+```{r pca-normalized-only}
+# We already have pca_norm_centered from above
+# Compare variance explained between scaled and normalized data
+variance_scaled <- (pca_scaled$sdev^2 / sum(pca_scaled$sdev^2))[1:20]
+variance_normalized <- (pca_norm_centered$sdev^2 / sum(pca_norm_centered$sdev^2))[1:20]
+
+variance_df <- data.frame(
+  PC = rep(1:20, 2),
+  variance = c(variance_scaled, variance_normalized),
+  type = rep(c("Scaled data", "Centered data"), each = 20)
+)
+
+ggplot(variance_df, aes(x = PC, y = variance * 100, color = type)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  labs(title = "Variance explained by PCs",
+       subtitle = "Scaled vs normalized data",
+       x = "Principal Component",
+       y = "Variance Explained (%)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+Notice that with scaled data, the variance is more evenly distributed across PCs. With normalized (unscaled) data, the first few PCs capture much more variance - but is this biological signal or just high-variance genes dominating?
+
+```{r plot-normalized-comparison, fig.width=10, fig.height=4}
+plot_df_norm <- data.frame(
+  PC1_scaled = pca_scaled$x[, 1],
+  PC2_scaled = pca_scaled$x[, 2],
+  PC1_normalized = pca_norm_centered$x[, 1],
+  PC2_normalized = pca_norm_centered$x[, 2],
+  cluster = pbmc3k$seurat_annotations
+)
+
+p_scaled <- ggplot(plot_df_norm, aes(x = PC1_scaled, y = PC2_scaled, color = cluster)) +
+  geom_point(size = 0.5, alpha = 0.7) +
+  labs(title = "PCA on centered + scaled data (standard)",
+       x = "PC1", y = "PC2") +
+  scale_color_brewer(palette = "Paired") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+p_normalized <- ggplot(plot_df_norm, aes(x = PC1_normalized, y = PC2_normalized, color = cluster)) +
+  geom_point(size = 0.5, alpha = 0.7) +
+  labs(title = "PCA on centered (unscaled) data",
+       x = "PC1", y = "PC2") +
+  scale_color_brewer(palette = "Paired") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+p_scaled | p_normalized
+```
+
+Interestingly, both give reasonable separation of clusters! This is because log-normalization already reduces the scale differences between genes somewhat. However, scaling further separates CD14 monocytes and CD16 monocytes.
+
+Standard practice in scRNA-seq is to scale the data first because:
+
+1. It gives each gene equal weight (not just high-expressing genes)
+2. It's more robust to outliers
+3. It's the established standard (reproducibility matters!)
+
+## Key takeaways
+
+After working through these examples, here are the lessons I wish I knew earlier:
+
+### When to use `center = TRUE` (almost always!)
+
+**Always use `center = TRUE` unless you have a very specific reason not to**. PCA finds directions of maximum variance around the center of the data. If you don't center, you're finding variance around the origin, which is rarely what you want.
+
+### When to use `scale. = TRUE`
+
+**Use `scale. = TRUE` when**:
+- Your features are on different scales (e.g., mixing counts and ratios)
+- You want each feature to contribute equally regardless of its variance
+- You're doing exploratory analysis and don't want high-variance features to dominate
+
+**Don't use `scale. = TRUE` when**:
+- Your data is already scaled (like Seurat's scaled data)
+- The variance itself is meaningful (rare in biology)
+
+### For scRNA-seq specifically
+
+The standard workflow is:
+1. Log-normalize the counts
+2. **Scale** the variable features (centers and scales each gene)
+3. Run PCA with **`center = TRUE, scale. = FALSE`** (no scaling because already done!)
+
+This is exactly what `Seurat::ScaleData()` + `Seurat::RunPCA()` does under the hood.
+
+## Bonus: Why does Seurat scale genes?
+
+You might wonder: if we're selecting highly variable genes, why scale them? Won't that remove the variance information we just selected for?
+
+The answer is subtle. We select highly variable genes to focus on genes that vary across cells (biological signal). But then we scale them so that:
+- High-mean genes don't dominate the PCA
+- Each gene contributes equally to the principal components
+- We capture patterns of co-expression, not just expression magnitude
+
+Think of it this way: we select genes that vary a lot (biological), then scale them so we focus on *how they co-vary* rather than *how much they vary*.
+
+## Summary
+
+- **Always center** your data before PCA (`center = TRUE`)
+- **Scale when features are on different scales** (`scale. = TRUE`)
+- **For scRNA-seq**: Scale genes first, then PCA without scaling
+- Understanding these arguments helps you troubleshoot and understand what tools like Seurat are doing
+
+I hope this demystifies `prcomp()` for you! Have you encountered other PCA gotchas? Share in the comments below.
+
