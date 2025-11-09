@@ -284,13 +284,13 @@ beta basic \
   -o results/
 ```
 
-**Parameters**:
-- `-p`: ChIP-seq peaks (BED format, 3 or 5 columns)
-- `-e`: Differential expression file
-- `-k LIM`: File format (LIM=LIMMA, CUF=Cuffdiff, BSF=BETA standard format, O=custom)
-- `-g hg38`: Genome assembly (hg38, hg19, mm10, mm9)
-- `-n`: Experiment name (used for output file prefixes)
-- `-o`: Output directory
+**Parameters**:  
+- `-p`: ChIP-seq peaks (BED format, 3 or 5 columns).   
+- `-e`: Differential expression file.   
+- `-k LIM`: File format (LIM=LIMMA, CUF=Cuffdiff, BSF=BETA standard format, O=custom).   
+- `-g hg38`: Genome assembly (hg38, hg19, mm10, mm9).   
+- `-n`: Experiment name (used for output file prefixes).   
+- `-o`: Output directory.   
 
 ### Understanding the output
 

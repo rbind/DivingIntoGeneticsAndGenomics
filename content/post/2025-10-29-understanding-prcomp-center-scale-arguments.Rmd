@@ -467,9 +467,6 @@ But you will see that after `center` and `scale`, FCGR3A+ (CD16) monocytes and C
 
 ```{r check-loadings}
 # Look at the loadings for the first PC without centering vs with centering
-top_genes_no_center <- names(sort(abs(pca_norm_no_center$rotation[, 1]), decreasing = TRUE)[1:10])
-top_genes_centered <- names(sort(abs(pca_norm_centered$rotation[, 1]), decreasing = TRUE)[1:10])
-
 top_loadings_no_center <- sort(abs(pca_norm_no_center$rotation[, 1]), decreasing = TRUE)[1:10]
 top_loadings_centered <- sort(abs(pca_norm_centered$rotation[, 1]), decreasing = TRUE)[1:10]
 
@@ -607,7 +604,7 @@ After working through these examples, here are the lessons I wish I knew earlier
 The standard workflow is:
 1. Log-normalize the counts
 2. **Scale** the variable features (centers and scales each gene)
-3. Run PCA with **`center = TRUE, scale. = FALSE`** (no scaling because already done!)
+3. Run PCA with **`center = FALSE, scale. = FALSE`** (no scaling because already done!)
 
 This is exactly what `Seurat::ScaleData()` + `Seurat::RunPCA()` does under the hood.
 
