@@ -284,13 +284,52 @@ beta basic \
   -o results/
 ```
 
-**Parameters**:  
-- `-p`: ChIP-seq peaks (BED format, 3 or 5 columns).   
-- `-e`: Differential expression file.   
-- `-k LIM`: File format (LIM=LIMMA, CUF=Cuffdiff, BSF=BETA standard format, O=custom).   
-- `-g hg38`: Genome assembly (hg38, hg19, mm10, mm9).   
-- `-n`: Experiment name (used for output file prefixes).   
-- `-o`: Output directory.   
+**Parameters**:
+- `-p`: ChIP-seq peaks (BED format, 3 or 5 columns).
+- `-e`: Differential expression file.
+- `-k LIM`: File format (LIM=LIMMA, CUF=Cuffdiff, BSF=BETA standard format, O=custom).
+- `-g hg38`: Genome assembly (hg38, hg19, mm10, mm9).
+- `-n`: Experiment name (used for output file prefixes).
+- `-o`: Output directory.
+
+### IMPORTANT: Peak number cutoff
+
+**BETA only uses the top 10,000 peaks by default**, even if your BED file contains many more!
+
+If you have 34,000 peaks in your file, you'll see this message:
+```
+Read file <your_peaks.bed> All <10000> peaks
+```
+
+This is a design choice to:
+- **Focus on high-confidence peaks**: The strongest peaks are most likely functional
+- **Reduce computational time**: Fewer peaks = faster analysis
+- **Reduce noise**: Weaker peaks may not represent real binding events
+
+**To use all your peaks**, add the `--pn` parameter:
+
+```bash
+beta basic \
+  -p TF_peaks.bed \
+  -e diff_expr.txt \
+  -k LIM \
+  -g hg38 \
+  -n my_TF \
+  --pn 34000 \
+  -o results/
+```
+
+Or set it high to ensure all peaks are included:
+```bash
+--pn 100000
+```
+
+**When to adjust this:**
+- **Keep default (10,000)**: If you have broad/noisy ChIP-seq or want to focus on strongest binding
+- **Increase**: If you have high-quality ChIP-seq with many strong peaks and want comprehensive analysis
+- **Decrease (e.g., `--pn 5000`)**: If you want to analyze only the very strongest binding events
+
+I learned this the hard way when my analysis with 34,000 peaks only used 10,000! Always check the output messages to verify how many peaks BETA is actually using.
 
 ### Understanding the output
 
