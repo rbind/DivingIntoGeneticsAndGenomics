@@ -36,7 +36,7 @@ weight = 5
 
 ![](/img/chatomics.png)
 
-Ming "Tommy" Tang is the Director of Bioinformatics at AstraZeneca with 12+ years of experience in computational biology, single-cell genomics, and cancer research. He is the author of the Chatomics blog (230+ tutorials, 6,000+ monthly readers) covering single-cell RNA-seq, Seurat, R/Python programming, ATAC-seq, and bioinformatics best practices. He holds a PhD in Genetics and Genomics from the University of Florida.
+Ming "Tommy" Tang is the Director of Bioinformatics at AstraZeneca with 14+ years of experience in computational biology, single-cell genomics, and cancer research. He is the author of the Chatomics blog (230+ tutorials, 6,000+ monthly readers) covering single-cell RNA-seq, Seurat, R/Python programming, ATAC-seq, and bioinformatics best practices. He holds a PhD in Genetics and Genomics from the University of Florida.
 
 ### Key Facts
 
