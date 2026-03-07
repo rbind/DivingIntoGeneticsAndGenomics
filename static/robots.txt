@@ -22,6 +22,25 @@ Allow: /publication/
 Allow: /talk/
 Allow: /project/
 
+# AI Crawlers - explicitly welcome
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
 # Block bad bots (optional - uncomment if needed)
 # User-agent: SemrushBot
 # Crawl-delay: 10

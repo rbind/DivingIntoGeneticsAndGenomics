@@ -4,7 +4,7 @@ date = 2024-04-18T17:00:00  # Schedule page publish date.
 title = "computational biology career path tips"
 time_start = 2024-04-18T17:00:00
 time_end = 2024-04-18T18:00:00
-abstract = ""
+abstract = "Career development talk for the Decipher Life Sciences community on building a successful computational biology career. Covers tips for skill development in bioinformatics, navigating the job market, and practical advice for transitioning from academia to the biotech and pharma industry."
 abstract_short = ""
 event = "Industry expert speaker for the Intro to ML Course"
 event_url = "https://www.linkedin.com/posts/decipher-life-sciences_datascience-biotech-education-activity-7179146392903266307-_ptO?utm_source=share&utm_medium=member_desktop"

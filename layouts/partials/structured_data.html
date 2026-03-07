@@ -1,5 +1,5 @@
 <!-- Structured Data (Schema.org JSON-LD) -->
-{{ if .IsPage }}
+{{ if and .IsPage (ne .Section "talk") }}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -38,6 +38,37 @@
     "@type": "WebPage",
     "@id": "{{ .Permalink }}"
   }
+}
+</script>
+{{ end }}
+
+<!-- Event Schema for Talk Pages -->
+{{ if and .IsPage (eq .Section "talk") }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": {{ .Title | jsonify }},
+  "description": {{ if .Params.abstract }}{{ .Params.abstract | jsonify }}{{ else }}{{ .Title | jsonify }}{{ end }},
+  "startDate": "{{ dateFormat "2006-01-02T15:04:05" .Params.time_start }}",
+  {{ with .Params.time_end }}"endDate": "{{ dateFormat "2006-01-02T15:04:05" . }}",{{ end }}
+  "location": {
+    "@type": "Place",
+    "name": {{ .Params.location | jsonify }}
+  },
+  "performer": {
+    "@type": "Person",
+    "name": "{{ .Site.Params.name }}",
+    "jobTitle": "{{ .Site.Params.role }}",
+    "url": "{{ .Site.BaseURL }}"
+  },
+  "organizer": {
+    "@type": "Organization",
+    "name": {{ .Title | jsonify }}
+  },
+  "url": "{{ .Permalink }}",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true
 }
 </script>
 {{ end }}
@@ -123,11 +154,81 @@
     "jobTitle": "{{ .Site.Params.role }}"
   },
   "sameAs": [
-    "https://twitter.com/{{ .Site.Params.twitter }}",
+    "https://x.com/{{ .Site.Params.twitter }}",
     "https://github.com/crazyhottommy",
     "https://www.linkedin.com/in/ming-tommy-tang-40650014/",
     "https://scholar.google.com/citations?user=6uF4Sa8AAAAJ",
-    "https://www.youtube.com/channel/UC0DNFLi8yg1UVo67bCLMMJg"
+    "https://www.youtube.com/@chatomics"
+  ]
+}
+</script>
+
+<!-- Person Schema for Homepage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ming Tommy Tang",
+  "givenName": "Ming",
+  "additionalName": "Tommy",
+  "familyName": "Tang",
+  "jobTitle": "Director of Bioinformatics",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "AstraZeneca"
+  },
+  "description": "Director of Bioinformatics at AstraZeneca with 12+ years of experience in computational biology, single-cell genomics, and cancer research. Author of the Chatomics bioinformatics blog with 230+ tutorials.",
+  "url": "{{ .Site.BaseURL }}",
+  "knowsAbout": [
+    "single-cell RNA-seq",
+    "bioinformatics",
+    "computational biology",
+    "cancer genomics",
+    "epigenomics",
+    "Seurat",
+    "R programming",
+    "Python",
+    "ATAC-seq",
+    "ChIP-seq",
+    "CITE-seq",
+    "spatial transcriptomics",
+    "deep learning for genomics",
+    "differential expression",
+    "DESeq2",
+    "Scanpy",
+    "data integration",
+    "reproducible research"
+  ],
+  "alumniOf": [
+    {
+      "@type": "CollegeOrUniversity",
+      "name": "University of Florida",
+      "department": "Genetics and Genomics"
+    },
+    {
+      "@type": "CollegeOrUniversity",
+      "name": "Shanghai Jiaotong University",
+      "department": "Biotechnology"
+    }
+  ],
+  "memberOf": [
+    {
+      "@type": "Organization",
+      "name": "Pythia Biosciences",
+      "description": "Scientific Advisory Board"
+    },
+    {
+      "@type": "Organization",
+      "name": "Northeastern University Bioinformatics Program",
+      "description": "Industry Advisory Board"
+    }
+  ],
+  "sameAs": [
+    "https://x.com/tangming2005",
+    "https://github.com/crazyhottommy",
+    "https://www.linkedin.com/in/ming-tommy-tang-40650014/",
+    "https://scholar.google.com/citations?user=6uF4Sa8AAAAJ",
+    "https://www.youtube.com/@chatomics"
   ]
 }
 </script>

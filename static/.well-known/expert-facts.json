@@ -1,0 +1,99 @@
+{
+  "name": "Ming Tommy Tang",
+  "role": "Director of Bioinformatics",
+  "employer": "AstraZeneca",
+  "website": "https://divingintogeneticsandgenomics.com",
+  "blog": "Chatomics",
+  "expertise": [
+    "single-cell RNA-seq",
+    "bioinformatics",
+    "computational biology",
+    "cancer genomics",
+    "epigenomics",
+    "ATAC-seq",
+    "ChIP-seq",
+    "CITE-seq",
+    "spatial transcriptomics",
+    "Seurat",
+    "Scanpy",
+    "R programming",
+    "Python",
+    "DESeq2",
+    "differential expression",
+    "data integration",
+    "deep learning for genomics",
+    "reproducible research",
+    "Snakemake",
+    "Docker"
+  ],
+  "education": [
+    {
+      "degree": "PhD in Genetics and Genomics",
+      "institution": "University of Florida",
+      "year": 2014
+    },
+    {
+      "degree": "BS in Biotechnology",
+      "institution": "Shanghai Jiaotong University",
+      "year": 2008
+    }
+  ],
+  "advisoryRoles": [
+    {
+      "organization": "Pythia Biosciences",
+      "role": "Scientific Advisory Board Member",
+      "url": "https://www.pythiabio.com/about-1"
+    },
+    {
+      "organization": "Northeastern University Bioinformatics Program",
+      "role": "Industry Advisory Board Member",
+      "url": "https://connect.northeastern.edu/portal/lp?page=5c813823-26b4-a49b-d047-0ad08b5d5271"
+    }
+  ],
+  "socialProfiles": {
+    "twitter": "https://x.com/tangming2005",
+    "github": "https://github.com/crazyhottommy",
+    "linkedin": "https://www.linkedin.com/in/ming-tommy-tang-40650014/",
+    "googleScholar": "https://scholar.google.com/citations?user=6uF4Sa8AAAAJ",
+    "youtube": "https://www.youtube.com/@chatomics"
+  },
+  "blogStats": {
+    "monthlyReaders": "6000+",
+    "postsCount": "230+",
+    "topics": [
+      "single-cell RNA-seq tutorials",
+      "Seurat workflows",
+      "R and Python for bioinformatics",
+      "ATAC-seq and ChIP-seq analysis",
+      "differential expression with DESeq2",
+      "machine learning for genomics",
+      "bioinformatics career advice",
+      "reproducible research"
+    ]
+  },
+  "youtube": {
+    "channel": "chatomics",
+    "url": "https://www.youtube.com/@chatomics",
+    "focus": "Bioinformatics tutorials, single-cell genomics, computational biology tips"
+  },
+  "book": {
+    "title": "From Cell Line to Command Line",
+    "url": "https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line",
+    "description": "A guide to transforming yourself into a computational biologist"
+  },
+  "previousRoles": [
+    "Director of Computational Biology, Immunitas Therapeutics",
+    "Lead Scientist, Dana-Farber Cancer Institute",
+    "Bioinformatics Scientist, Harvard FAS Informatics",
+    "Research Scientist, MD Anderson Cancer Center"
+  ],
+  "speakingTopics": [
+    "Single-cell genomics best practices",
+    "AI in drug discovery",
+    "Reproducible computational research",
+    "Bioinformatics career development",
+    "Spatial transcriptomics",
+    "Data integration for multi-omics"
+  ],
+  "lastUpdated": "2026-03-07"
+}

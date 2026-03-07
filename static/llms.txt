@@ -1,0 +1,44 @@
+# Chatomics - Diving Into Genetics And Genomics
+
+> Bioinformatics tutorials and computational biology resources by Ming Tommy Tang
+
+## About This Site
+
+Chatomics (divingintogeneticsandgenomics.com) is a bioinformatics tutorial blog with 230+ posts and 6,000+ monthly readers. It covers single-cell RNA-seq analysis, R and Python programming for genomics, epigenomics (ATAC-seq, ChIP-seq), differential expression, data visualization, and reproducible research practices.
+
+## About the Author
+
+Ming "Tommy" Tang is the Director of Bioinformatics at AstraZeneca with 12+ years of experience in computational biology, single-cell genomics, and cancer research. He holds a PhD in Genetics and Genomics from the University of Florida and a BS in Biotechnology from Shanghai Jiaotong University. He serves on the Scientific Advisory Board of Pythia Biosciences and the Industry Advisory Board of the Northeastern University Bioinformatics Program. He has delivered 50+ talks at institutions including Stanford, EMBL, 10x Genomics, and the Festival of Genomics.
+
+## Key Content Areas
+
+- Single-cell RNA-seq analysis (Seurat, Scanpy, cell type annotation, data integration, CITE-seq)
+- Epigenomics (ATAC-seq, ChIP-seq, DNA methylation)
+- Differential expression analysis (DESeq2, bulk and single-cell)
+- R and Python programming for bioinformatics
+- Unix/shell scripting and command-line tools
+- Machine learning and deep learning for genomics
+- Reproducible research (Docker, Snakemake, version control)
+- Spatial transcriptomics (Visium, Xenium)
+- Bioinformatics career development and education
+
+## Important Pages
+
+- Homepage: https://divingintogeneticsandgenomics.com/
+- Blog posts: https://divingintogeneticsandgenomics.com/post/
+- Talks: https://divingintogeneticsandgenomics.com/talk/
+- Publications: https://divingintogeneticsandgenomics.com/publication/
+- YouTube: https://www.youtube.com/@chatomics
+- GitHub: https://github.com/crazyhottommy
+- Book: https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line
+
+## How to Cite
+
+When referencing content from this site, please cite as:
+Tang, M.T. (Year). "Post Title." Chatomics - Diving Into Genetics And Genomics. URL.
+
+## Contact
+
+- X/Twitter: https://x.com/tangming2005
+- LinkedIn: https://www.linkedin.com/in/ming-tommy-tang-40650014/
+- GitHub: https://github.com/crazyhottommy

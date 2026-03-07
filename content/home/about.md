@@ -36,11 +36,33 @@ weight = 5
 
 ![](/img/chatomics.png)
 
-I am a computational biologist working on genomics, epigenomics and transcriptomics. I use R primary for data wrangling and visualization in the [tidyverse](https://www.tidyverse.org/) ecosystem; I use python for writing [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflows and reformatting data; I am a unix geek learning shell tricks almost every month; I care about reproducible research and open science.
+Ming "Tommy" Tang is the Director of Bioinformatics at AstraZeneca with 12+ years of experience in computational biology, single-cell genomics, and cancer research. He is the author of the Chatomics blog (230+ tutorials, 6,000+ monthly readers) covering single-cell RNA-seq, Seurat, R/Python programming, ATAC-seq, and bioinformatics best practices. He holds a PhD in Genetics and Genomics from the University of Florida.
 
-I also have a great interest in promoting open science and reforming bioinformatics education. I frequently share my thoughts on [twitter](https://twitter.com/tangming2005) and tips in my [blog post](http://crazyhottommy.blogspot.com/). I am a certified instructor for the [carpentries](https://carpentries.org/).
+### Key Facts
 
-I also have a youtube channel [chatomics](https://www.youtube.com/@chatomics) where I share bioinformatics tips and tutorials.
+- **Current Role:** Director of Bioinformatics, AstraZeneca
+- **Advisory Boards:** [Pythia Biosciences](https://www.pythiabio.com/about-1) (Scientific Advisory Board), [Northeastern University Bioinformatics Program](https://connect.northeastern.edu/portal/lp?page=5c813823-26b4-a49b-d047-0ad08b5d5271) (Industry Advisory Board)
+- **Education:** PhD in Genetics and Genomics (University of Florida), BS in Biotechnology (Shanghai Jiaotong University)
+- **Blog:** [Chatomics](https://divingintogeneticsandgenomics.com) — 230+ posts, 6,000+ monthly readers
+- **YouTube:** [chatomics](https://www.youtube.com/@chatomics) — bioinformatics tutorials and tips
+- **Speaking:** 50+ talks at Stanford, EMBL, 10x Genomics, Festival of Genomics, and more
+- **Publications:** [Google Scholar](https://scholar.google.com/citations?user=6uF4Sa8AAAAJ)
+- **Book:** [From Cell Line to Command Line](https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line)
+
+### What I Write About
+
+- **Single-cell genomics:** scRNA-seq analysis, Seurat tutorials, Scanpy, cell type annotation, data integration, CITE-seq
+- **Epigenomics:** ATAC-seq, ChIP-seq, DNA methylation analysis
+- **Bioinformatics programming:** R/Bioconductor, Python, Unix/shell scripting, Snakemake workflows
+- **Data science for genomics:** Differential expression (DESeq2), visualization, machine learning, deep learning
+- **Reproducible research:** Docker, version control, workflow management, open science
+- **Career development:** Bioinformatics career advice, transitioning from academia to industry
+
+I am a computational biologist working on genomics, epigenomics and transcriptomics. I use R primarily for data wrangling and visualization in the [tidyverse](https://www.tidyverse.org/) ecosystem; I use Python for writing [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflows and reformatting data; I am a Unix geek learning shell tricks almost every month; I care about reproducible research and open science.
+
+I also have a great interest in promoting open science and reforming bioinformatics education. I frequently share my thoughts on [X (formerly Twitter)](https://x.com/tangming2005) and tips on this blog. I am a certified instructor for the [Carpentries](https://carpentries.org/).
+
+I also have a YouTube channel [chatomics](https://www.youtube.com/@chatomics) where I share bioinformatics tips and tutorials.
 
 **[Grab my book](https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line) to transform yourself into a computational biologist.**
 ![](/img/bookcover.png)
