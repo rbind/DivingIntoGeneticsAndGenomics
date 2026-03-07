@@ -45,6 +45,7 @@ Ming "Tommy" Tang is the Director of Bioinformatics at AstraZeneca with 12+ year
 - **Education:** PhD in Genetics and Genomics (University of Florida), BS in Biotechnology (Shanghai Jiaotong University)
 - **Blog:** [Chatomics](https://divingintogeneticsandgenomics.com) — 230+ posts, 6,000+ monthly readers
 - **YouTube:** [chatomics](https://www.youtube.com/@chatomics) — bioinformatics tutorials and tips
+- **Social Media:** 120K+ followers across platforms, 30M+ impressions per year
 - **Speaking:** 50+ talks at Stanford, EMBL, 10x Genomics, Festival of Genomics, and more
 - **Publications:** [Google Scholar](https://scholar.google.com/citations?user=6uF4Sa8AAAAJ)
 - **Book:** [From Cell Line to Command Line](https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line)
