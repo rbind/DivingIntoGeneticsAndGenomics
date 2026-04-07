@@ -2,373 +2,373 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Chatomics</title>
-    <link>/categories/</link>
+    <link>https://divingintogeneticsandgenomics.com/categories/</link>
     <description>Recent content in Categories on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Sat, 21 Sep 2024 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Bioconductor</title>
-      <link>/categories/bioconductor/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/bioconductor/</link>
       <pubDate>Sat, 21 Sep 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/bioconductor/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/bioconductor/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Bioinformatics</title>
-      <link>/categories/bioinformatics/</link>
-      <pubDate>Sun, 27 Oct 2024 00:00:00 +0000</pubDate>
+      <link>https://divingintogeneticsandgenomics.com/categories/bioinformatics/</link>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
       
-      <guid>/categories/bioinformatics/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/bioinformatics/</guid>
       <description></description>
     </item>
     
     <item>
       <title>CITE-seq</title>
-      <link>/categories/cite-seq/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/cite-seq/</link>
       <pubDate>Mon, 18 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>/categories/cite-seq/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/cite-seq/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Cloud computing</title>
-      <link>/categories/cloud-computing/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/cloud-computing/</link>
       <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
       
-      <guid>/categories/cloud-computing/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/cloud-computing/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Config</title>
-      <link>/categories/config/</link>
-      <pubDate>Wed, 03 Oct 2018 00:00:00 +0000</pubDate>
+      <link>https://divingintogeneticsandgenomics.com/categories/config/</link>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
       
-      <guid>/categories/config/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/config/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Data</title>
-      <link>/categories/data/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/data/</link>
       <pubDate>Sun, 27 Oct 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/data/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Data management</title>
-      <link>/categories/data-management/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/data-management/</link>
       <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>/categories/data-management/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/data-management/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Deeplearning</title>
-      <link>/categories/deeplearning/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/deeplearning/</link>
       <pubDate>Tue, 31 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>/categories/deeplearning/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/deeplearning/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Docker</title>
-      <link>/categories/docker/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/docker/</link>
       <pubDate>Mon, 26 Aug 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/docker/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/docker/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Drug development</title>
-      <link>/categories/drug-development/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/drug-development/</link>
       <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
       
-      <guid>/categories/drug-development/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/drug-development/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Education</title>
-      <link>/categories/education/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/education/</link>
       <pubDate>Sun, 27 Oct 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/education/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/education/</guid>
       <description></description>
     </item>
     
     <item>
       <title>GUI</title>
-      <link>/categories/gui/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/gui/</link>
       <pubDate>Mon, 11 Sep 2023 00:00:00 +0000</pubDate>
       
-      <guid>/categories/gui/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/gui/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Genomics</title>
-      <link>/categories/genomics/</link>
-      <pubDate>Sun, 05 Feb 2023 00:00:00 +0000</pubDate>
+      <link>https://divingintogeneticsandgenomics.com/categories/genomics/</link>
+      <pubDate>Sun, 09 Nov 2025 00:00:00 +0000</pubDate>
       
-      <guid>/categories/genomics/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/genomics/</guid>
       <description></description>
     </item>
     
     <item>
       <title>HPC</title>
-      <link>/categories/hpc/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/hpc/</link>
       <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>/categories/hpc/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/hpc/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Linear algebra</title>
-      <link>/categories/linear-algebra/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/linear-algebra/</link>
       <pubDate>Sun, 27 Oct 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/linear-algebra/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/linear-algebra/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Machine learning</title>
-      <link>/categories/machine-learning/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/machine-learning/</link>
       <pubDate>Mon, 06 Nov 2023 00:00:00 +0000</pubDate>
       
-      <guid>/categories/machine-learning/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/machine-learning/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Matrix</title>
-      <link>/categories/matrix/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/matrix/</link>
       <pubDate>Sun, 27 Oct 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/matrix/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/matrix/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Multiomics</title>
-      <link>/categories/multiomics/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/multiomics/</link>
       <pubDate>Sat, 17 May 2025 00:00:00 +0000</pubDate>
       
-      <guid>/categories/multiomics/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/multiomics/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Neural network</title>
-      <link>/categories/neural-network/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/neural-network/</link>
       <pubDate>Wed, 18 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>/categories/neural-network/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/neural-network/</guid>
       <description></description>
     </item>
     
     <item>
       <title>New year resolution</title>
-      <link>/categories/new-year-resolution/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/new-year-resolution/</link>
       <pubDate>Sun, 31 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>/categories/new-year-resolution/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/new-year-resolution/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Package</title>
-      <link>/categories/package/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/package/</link>
       <pubDate>Tue, 06 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>/categories/package/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/package/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Perspective</title>
-      <link>/categories/perspective/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/perspective/</link>
       <pubDate>Fri, 04 Jul 2025 00:00:00 +0000</pubDate>
       
-      <guid>/categories/perspective/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/perspective/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Python</title>
-      <link>/categories/python/</link>
-      <pubDate>Sat, 03 May 2025 00:00:00 +0000</pubDate>
+      <link>https://divingintogeneticsandgenomics.com/categories/python/</link>
+      <pubDate>Sun, 09 Nov 2025 00:00:00 +0000</pubDate>
       
-      <guid>/categories/python/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/python/</guid>
       <description></description>
     </item>
     
     <item>
       <title>R</title>
-      <link>/categories/r/</link>
-      <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
+      <link>https://divingintogeneticsandgenomics.com/categories/r/</link>
+      <pubDate>Wed, 29 Oct 2025 00:00:00 +0000</pubDate>
       
-      <guid>/categories/r/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/r/</guid>
       <description></description>
     </item>
     
     <item>
       <title>RNAseq</title>
-      <link>/categories/rnaseq/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/rnaseq/</link>
       <pubDate>Wed, 13 Mar 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/rnaseq/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/rnaseq/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Reflection</title>
-      <link>/categories/reflection/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/reflection/</link>
       <pubDate>Sun, 31 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>/categories/reflection/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/reflection/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Review</title>
-      <link>/categories/review/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/review/</link>
       <pubDate>Sun, 02 Mar 2025 00:00:00 +0000</pubDate>
       
-      <guid>/categories/review/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/review/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Rstats</title>
-      <link>/categories/rstats/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/rstats/</link>
       <pubDate>Fri, 17 May 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/rstats/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/rstats/</guid>
       <description></description>
     </item>
     
     <item>
       <title>ScATACseq</title>
-      <link>/categories/scatacseq/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/scatacseq/</link>
       <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>/categories/scatacseq/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/scatacseq/</guid>
       <description></description>
     </item>
     
     <item>
       <title>ScRNAseq</title>
-      <link>/categories/scrnaseq/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/scrnaseq/</link>
       <pubDate>Wed, 15 May 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/scrnaseq/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/scrnaseq/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Seurat</title>
-      <link>/categories/seurat/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/seurat/</link>
       <pubDate>Sat, 19 Oct 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/seurat/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/seurat/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Single cell</title>
-      <link>/categories/single-cell/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/single-cell/</link>
       <pubDate>Sat, 19 Oct 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/single-cell/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/single-cell/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Single-cell</title>
-      <link>/categories/single-cell/</link>
-      <pubDate>Wed, 20 Mar 2024 00:00:00 +0000</pubDate>
+      <link>https://divingintogeneticsandgenomics.com/categories/single-cell/</link>
+      <pubDate>Wed, 29 Oct 2025 00:00:00 +0000</pubDate>
       
-      <guid>/categories/single-cell/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/single-cell/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Singularity</title>
-      <link>/categories/singularity/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/singularity/</link>
       <pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>/categories/singularity/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/singularity/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Spatial</title>
-      <link>/categories/spatial/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/spatial/</link>
       <pubDate>Sat, 03 May 2025 00:00:00 +0000</pubDate>
       
-      <guid>/categories/spatial/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/spatial/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Statistics</title>
-      <link>/categories/statistics/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/statistics/</link>
       <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>/categories/statistics/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/statistics/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Thoughts</title>
-      <link>/categories/thoughts/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/thoughts/</link>
       <pubDate>Mon, 25 Jan 2021 00:00:00 +0000</pubDate>
       
-      <guid>/categories/thoughts/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/thoughts/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tutorial</title>
-      <link>/categories/tutorial/</link>
-      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <link>https://divingintogeneticsandgenomics.com/categories/tutorial/</link>
+      <pubDate>Tue, 23 Sep 2025 00:00:00 +0000</pubDate>
       
-      <guid>/categories/tutorial/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/tutorial/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Unix</title>
-      <link>/categories/unix/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/unix/</link>
       <pubDate>Mon, 19 Aug 2024 00:00:00 +0000</pubDate>
       
-      <guid>/categories/unix/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/unix/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Visualization</title>
-      <link>/categories/visualization/</link>
+      <link>https://divingintogeneticsandgenomics.com/categories/visualization/</link>
       <pubDate>Thu, 08 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>/categories/visualization/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/categories/visualization/</guid>
       <description></description>
     </item>
     

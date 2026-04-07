@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Genomics on Chatomics</title>
-    <link>/tags/genomics/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/genomics/</link>
     <description>Recent content in Genomics on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Wed, 15 Nov 2023 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/genomics/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/genomics/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>My take on Data Challenges in Immuno-oncology, the Role of the Cloud, and Growing a Computational Biology Team</title>
-      <link>/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</link>
       <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</guid>
       <description>The original link. https://connect.corrdyn.com/blog/ming-tang-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team
 Guest Profile Tommy Tang&amp;rsquo;s career began when he pursued his Ph.D. in genetics and genomics at the University of Florida. Initially trained in molecular biology in the wet lab, he was driven to explore computational biology after encountering the limitations of traditional analysis methods. Through self-study, Tommy developed skills that enabled him to analyze complex genomic data sets.
 Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to Harvard and the Dana Farber Cancer Institute, where he worked on single-cell RNA sequencing.</description>
@@ -25,10 +25,10 @@ Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to H
     
     <item>
       <title>Calculate scATACseq TSS enrichment score</title>
-      <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/calculate-scatacseq-tss-enrichment-score/</link>
       <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/calculate-scatacseq-tss-enrichment-score/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/calculate-scatacseq-tss-enrichment-score/</guid>
       <description>TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
 From the Encode page:
  Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).</description>
@@ -36,10 +36,10 @@ From the Encode page:
     
     <item>
       <title>plot 10x scATAC coverage by cluster/group</title>
-      <link>/post/plot-10x-scatac-coverage-by-cluster-group/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/plot-10x-scatac-coverage-by-cluster-group/</link>
       <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
       <description>This post was inspired by Andrew Hill’s recent blog post.
 Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
 &amp;mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.</description>
@@ -47,10 +47,10 @@ Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGeno
     
     <item>
       <title>understand 10x scRNAseq and scATAC fastqs</title>
-      <link>/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
       <pubDate>Wed, 06 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/understand-10x-scrnaseq-and-scatac-fastqs/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/understand-10x-scrnaseq-and-scatac-fastqs/</guid>
       <description>single cell RNAseq Please read the following posts by Dave Tang. When I google, I always find his posts on top of the pages. Thanks for sharing your knowledge.
 https://davetang.org/muse/2018/06/06/10x-single-cell-bam-files/ https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/
 From the 10x manual:
@@ -59,10 +59,10 @@ From the 10x manual:
     
     <item>
       <title>Three gotchas when using R for Genomic data analysis</title>
-      <link>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/three-gotchas-when-using-r-for-genomic-data-analysis/</link>
       <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/three-gotchas-when-using-r-for-genomic-data-analysis/</guid>
       <description>During my daily work with R for genomic data analysis, I encountered several instances that R gives me some (bad) surprises.
 1. The devil 1 and 0 coordinate system read detail here https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey
 some files such as bed file is 0 based. Two genomic regions:
@@ -72,10 +72,10 @@ chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 
     
     <item>
       <title>Snakemake Pipelines</title>
-      <link>/project/snakemake-pipelines/</link>
+      <link>https://divingintogeneticsandgenomics.com/project/snakemake-pipelines/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
       
-      <guid>/project/snakemake-pipelines/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/project/snakemake-pipelines/</guid>
       <description>Snakemake is a python extension for writing workflows. Genomics data processing usually requires bundling many different tools to reach a stage that is ready for downstream analysis.
 I have been using snakemake writing workflows for various genomic and epigenomic datasets.
  pyflow-ChIP-seq

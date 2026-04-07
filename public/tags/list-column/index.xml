@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>List column on Chatomics</title>
+    <link>https://divingintogeneticsandgenomics.com/tags/list-column/</link>
+    <description>Recent content in List column on Chatomics</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Tue, 23 Sep 2025 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/list-column/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Do not repeat yourself: List column to do RNAseq differential expression analysis</title>
+      <link>https://divingintogeneticsandgenomics.com/post/list-column-rnaseq/</link>
+      <pubDate>Tue, 23 Sep 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://divingintogeneticsandgenomics.com/post/list-column-rnaseq/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In this blog post, I am going to show you how to use list column and purrr::map(), a powerful toolkit in your belt to avoid repetition in your bioinformatics analysis.
+To demonstrate the usage, We will use RNAseq differential expression analysis and pathway enrichment analysis as an example.
+Let’s use a real example https://www.</description>
+    </item>
+    
+  </channel>
+</rss>

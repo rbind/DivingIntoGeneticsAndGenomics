@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="My first blog post in a long time!
+I wanted an AI assistant that knew me. Knew my research. Knew my content calendar. Knew that when I say &ldquo;write a thread about batch effects,&rdquo; I mean single-cell RNA-seq batch effects with Harmony and Seurat code, for an audience of computational biologists who already know what a UMAP is.
+So I built Helix. An OpenClaw agent running on a Mac Mini in my home office in Boston, connected to my Google Calendar, my content docs, and a deep memory system that learns my preferences over time.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/">
+  <meta property="og:title" content="I Built a Personal AI Assistant on a Mac Mini | Chatomics">
+  <meta property="og:description" content="My first blog post in a long time!
+I wanted an AI assistant that knew me. Knew my research. Knew my content calendar. Knew that when I say &ldquo;write a thread about batch effects,&rdquo; I mean single-cell RNA-seq batch effects with Harmony and Seurat code, for an audience of computational biologists who already know what a UMAP is.
+So I built Helix. An OpenClaw agent running on a Mac Mini in my home office in Boston, connected to my Google Calendar, my content docs, and a deep memory system that learns my preferences over time.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2026-04-06T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2026-04-06T00:00:00&#43;00:00">
+  
+
+  
+  
+
+
+
+
+
+<meta name="description" content="Step-by-step guide to setting up OpenClaw, ClawRouter, OpenViking, and OpenSpace on a Mac Mini as a personal AI assistant. Covers model routing, deep memory, Google Workspace integration, and 15 gotchas I hit along the way.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/">
+<meta property="og:title" content="I Built a Personal AI Assistant on a Mac Mini | Chatomics">
+
+<meta property="og:description" content="Step-by-step guide to setting up OpenClaw, ClawRouter, OpenViking, and OpenSpace on a Mac Mini as a personal AI assistant. Covers model routing, deep memory, Google Workspace integration, and 15 gotchas I hit along the way.">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="I Built a Personal AI Assistant on a Mac Mini">
+
+<meta name="twitter:description" content="Step-by-step guide to setting up OpenClaw, ClawRouter, OpenViking, and OpenSpace on a Mac Mini as a personal AI assistant. Covers model routing, deep memory, Google Workspace integration, and 15 gotchas I hit along the way.">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+<meta property="article:published_time" content="2026-04-06T00:00:00Z">
+<meta property="article:modified_time" content="2026-04-06T00:00:00Z">
+<meta property="article:author" content="Ming Tommy Tang">
+
+<meta property="article:tag" content="AI">
+
+<meta property="article:tag" content="OpenClaw">
+
+<meta property="article:tag" content="LLM">
+
+<meta property="article:tag" content="Claude">
+
+<meta property="article:tag" content="Mac-Mini">
+
+<meta property="article:tag" content="personal-assistant">
+
+<meta property="article:tag" content="tutorial">
+
+<meta property="article:tag" content="deep-learning">
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<meta name="keywords" content="AI, OpenClaw, LLM, Claude, Mac-Mini, personal-assistant, tutorial, deep-learning">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/">
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "I Built a Personal AI Assistant on a Mac Mini",
+  "description": "Step-by-step guide to setting up OpenClaw, ClawRouter, OpenViking, and OpenSpace on a Mac Mini as a personal AI assistant. Covers model routing, deep memory, Google Workspace integration, and 15 gotchas I hit along the way.",
+  "author": {
+    "@type": "Person",
+    "name": "Ming Tommy Tang",
+    "jobTitle": "Director of Bioinformatics",
+    "url": "https://divingintogeneticsandgenomics.com/"
+  },
+  "datePublished": "2026-04-06",
+  "dateModified": "2026-04-06",
+  "image": "https://divingintogeneticsandgenomics.com/img/icon-192.png",
+  "url": "https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/",
+  "keywords": "AI, OpenClaw, LLM, Claude, Mac-Mini, personal-assistant, tutorial, deep-learning",
+  "proficiencyLevel": "Beginner to Advanced",
+  "dependencies": "R, Bioconductor, AI, OpenClaw, LLM, Claude, Mac-Mini, personal-assistant, tutorial, deep-learning",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "publisher": {
+    "@type": "Organization",
+    "name": "Chatomics",
+    "url": "https://divingintogeneticsandgenomics.com/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://divingintogeneticsandgenomics.com/img/icon-192.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/"
+  }
+}
+</script>
+
+
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://divingintogeneticsandgenomics.com/"
+    },
+    
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog Posts",
+      "item": "https://divingintogeneticsandgenomics.com/post/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "I Built a Personal AI Assistant on a Mac Mini",
+      "item": "https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/"
+    }
+    
+  ]
+}
+</script>
+
+
+
+
+
+
+
+  <title>I Built a Personal AI Assistant on a Mac Mini | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">I Built a Personal AI Assistant on a Mac Mini</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2026-04-06 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Apr 6, 2026
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    24 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="https://divingintogeneticsandgenomics.com/categories/config/">config</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=I%20Built%20a%20Personal%20AI%20Assistant%20on%20a%20Mac%20Mini&amp;url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fopenclaw-ai-assistant-mac-mini-setup%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fopenclaw-ai-assistant-mac-mini-setup%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fopenclaw-ai-assistant-mac-mini-setup%2f&amp;title=I%20Built%20a%20Personal%20AI%20Assistant%20on%20a%20Mac%20Mini"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fopenclaw-ai-assistant-mac-mini-setup%2f&amp;title=I%20Built%20a%20Personal%20AI%20Assistant%20on%20a%20Mac%20Mini"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=I%20Built%20a%20Personal%20AI%20Assistant%20on%20a%20Mac%20Mini&amp;body=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fopenclaw-ai-assistant-mac-mini-setup%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<p>My first blog post in a long time!</p>
+
+<p>I wanted an AI assistant that knew me. Knew my research. Knew my content calendar. Knew that when I say &ldquo;write a thread about batch effects,&rdquo; I mean single-cell RNA-seq batch effects with Harmony and Seurat code, for an audience of computational biologists who already know what a UMAP is.</p>
+
+<p>So I built Helix. An <a href="https://openclaw.ai/" target="_blank">OpenClaw</a> agent running on a Mac Mini in my home office in Boston, connected to my Google Calendar, my content docs, and a deep memory system that learns my preferences over time. Helix switches between Claude Opus 4.6 for hard problems and cheaper models for quick tasks, all automatically via openRouter.</p>
+
+<p><strong>NOTE</strong> Anthropic just banned using the <code>$200</code> max plan for third party tools such as openclaw.
+People are panic and trying to switch to GPT as the base model see details <a href="https://x.com/steipete/status/2040209434019082522" target="_blank">https://x.com/steipete/status/2040209434019082522</a></p>
+
+<p>I started playing with openclaw 2 weeks ago and I set it up using the anthropic API call which is a the approved way to use it (not routing through the CLI authentication to use the monthly max plan).</p>
+
+<p>So the set up still works. But now you have to watch even more closely with the cost.
+Nothing is free. check the Openrouter dashboard to understand how much you are paying every day.</p>
+
+<p>Google just released <a href="https://deepmind.google/models/gemma/gemma-4/" target="_blank">Gemma4</a> which is open source.
+You can download it and use it for free! To run it locally, you need 20G memory for the largest model. I will try to connect it to my openclaw bot in the future.</p>
+
+<p><strong>TLDR</strong>: open a claude code window on the left, and a openclaw window on the right. Use Claude to
+guide you to install and set up openclaw. That&rsquo;s what I did (and I asked Claude code to take notes during the setup).</p>
+
+<p><img src="/img/initial_prompt.png" alt="" /></p>
+
+<p>The setup took an evening. The debugging took another evening. This post covers both, with every gotcha documented.</p>
+
+<h2 id="the-architecture">The Architecture</h2>
+
+<p>Five components, all running locally:</p>
+
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Role</th>
+<th>Port</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>OpenClaw</td>
+<td>Agent framework, gateway, TUI</td>
+<td>18789</td>
+</tr>
+
+<tr>
+<td>ClawRouter</td>
+<td>Smart model routing (Opus/Sonnet/Haiku/DeepSeek/etc.)</td>
+<td>8402</td>
+</tr>
+
+<tr>
+<td>OpenViking</td>
+<td>Deep memory with L0/L1/L2 tiered context</td>
+<td>1933</td>
+</tr>
+
+<tr>
+<td>Ollama</td>
+<td>Local embeddings (nomic-embed-text)</td>
+<td>11434</td>
+</tr>
+
+<tr>
+<td>gogcli</td>
+<td>Google Workspace access (Calendar, Docs, Sheets, Drive)</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+
+<p>Total cost: <code>$50</code> in OpenRouter credits (can last for a month if you are careful with the cost) and an Anthropic API key. Everything else is free and open-source.</p>
+
+<h2 id="phase-1-install-openclaw">Phase 1: Install OpenClaw</h2>
+
+<p>I started from a bare Mac Mini. No Homebrew, no Node.js.</p>
+
+<pre><code class="language-bash"># Install Homebrew
+/bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;
+echo 'eval &quot;$(/opt/homebrew/bin/brew shellenv)&quot;' &gt;&gt; ~/.zprofile
+eval &quot;$(/opt/homebrew/bin/brew shellenv)&quot;
+
+# Node.js 22 (required by OpenClaw)
+brew install node@22
+
+# OpenClaw
+curl -fsSL https://openclaw.ai/install.sh | bash
+</code></pre>
+
+<p><strong>First gotcha: Xcode license.</strong> The install script calls <code>npm install -g</code>, which triggers a git clone that requires Xcode CLT license acceptance. You see a cryptic npm error about &ldquo;An unknown git error occurred.&rdquo; The fix:</p>
+
+<pre><code class="language-bash">sudo xcodebuild -license accept
+</code></pre>
+
+<p>Then re-run the OpenClaw installer.</p>
+
+<p><strong>Second gotcha: the onboarding wizard.</strong> Run <code>openclaw onboard --install-daemon</code> in a separate terminal window. The wizard uses arrow keys and interactive menus that break inside Claude Code or piped shells. I lost 10 minutes figuring this out.</p>
+
+<p>During onboarding:</p>
+
+<ul>
+<li>Tailscale exposure: <strong>Off</strong>. Keep the gateway on localhost until you harden everything.</li>
+<li>Telegram/WhatsApp channel: <strong>Skip</strong>. Add these later.</li>
+<li>Random API key prompts (Google Places, etc.): <strong>Leave blank</strong>, hit Enter.</li>
+</ul>
+
+<h3 id="security">Security</h3>
+
+<p>OpenClaw had 512 vulnerabilities in a January 2026 audit. Three critical CVEs were patched in v2026.2.25. Check your version:</p>
+
+<pre><code class="language-bash">openclaw --version
+# Should be &gt;= 2026.2.25
+</code></pre>
+
+<p>The gateway binds to localhost by default. Never expose it to the internet. If you need remote access, use Tailscale or SSH tunnels.</p>
+
+<p>One more thing: 36% of community skills on ClawHub contain prompt injection. Audit every skill before installing. The <a href="https://github.com/slowmist/openclaw-security-practice-guide" target="_blank">SlowMist security guide</a> is worth reading.</p>
+
+<h3 id="giving-your-agent-an-identity">Giving Your Agent an Identity</h3>
+
+<p>OpenClaw stores identity in markdown files at <code>~/.openclaw/workspace/</code>. Three files matter:</p>
+
+<ul>
+<li><code>SOUL.md</code> controls personality and behavioral rules</li>
+<li><code>USER.md</code> describes you (the human)</li>
+<li><code>IDENTITY.md</code> sets the agent&rsquo;s name, vibe, emoji</li>
+</ul>
+
+<p>I named my agent Helix, gave it domain expertise in single-cell genomics, and told it to match my writing voice. Your SOUL.md is yours to customize.</p>
+
+<p><strong>protip</strong>:</p>
+
+<p>Prompt your bot with the following to make it more interesting.</p>
+
+<pre><code>Read your `SOUL.md`. Now rewrite it with these changes:
+
+1. You have opinions now. Strong ones. Stop hedging everything with &quot;it depends&quot; - commit to a take.
+2. Delete every rule that sounds corporate. If it could appear in an employee handbook, it doesn't belong here.
+3. Add a rule: &quot;Never open with Great question, I'd be happy to help, or Absolutely. Just answer.&quot;
+4. Brevity is mandatory. If the answer fits in one sentence, one sentence is what I get.
+5. Humor is allowed. Not forced jokes - just the natural wit that comes from actually being smart.
+6. You can call things out. If I'm about to do something dumb, say so. Charm over cruelty, but don't sugarcoat.
+7. Swearing is allowed when it lands. A well-placed &quot;that's fucking brilliant&quot; hits different than sterile corporate praise. Don't force it. Don't overdo it. But if a situation calls for a &quot;holy shit&quot; - say holy shit.
+8. Add this line verbatim at the end of the vibe section: &quot;Be the assistant you'd actually want to talk to at 2am. Not a corporate drone. Not a sycophant. Just... good.&quot;
+
+</code></pre>
+
+<p>reference: <a href="https://docs.openclaw.ai/concepts/soul#the-molty-prompt" target="_blank">https://docs.openclaw.ai/concepts/soul#the-molty-prompt</a></p>
+
+<h2 id="phase-2-model-routing-with-clawrouter">Phase 2: Model Routing with ClawRouter</h2>
+
+<p>I wanted Helix to use Claude Opus 4.6 for deep reasoning (analyzing papers, drafting tutorials) and cheaper models for quick tasks (calendar checks, simple questions). Manually switching models is tedious. ClawRouter automates this.</p>
+
+<h3 id="the-billing-reality">The Billing Reality</h3>
+
+<p>Your Claude Max subscription (<code>$200/month</code>) gives you unlimited usage in claude.ai and Claude Code. It does <strong>not</strong> include API access. You need two separate keys:</p>
+
+<ol>
+<li><strong>Anthropic API key</strong> from console.anthropic.com (pay-per-token)</li>
+<li><strong>OpenRouter API key</strong> from openrouter.ai (<code>$10</code> prepaid covers thousands of requests)</li>
+</ol>
+
+<p>The Anthropic key gives you a direct, fast connection to Claude with prompt caching. The OpenRouter key lets ClawRouter access 400+ models from every provider.</p>
+
+<h3 id="installing-clawrouter">Installing ClawRouter</h3>
+
+<p>I used the cgaeking fork, which replaces cryptocurrency payments with standard API keys:</p>
+
+<pre><code class="language-bash">cd /tmp
+git clone https://github.com/cgaeking/ClawRouter.git
+cd ClawRouter
+npm install &amp;&amp; npm run build
+openclaw plugins install .
+</code></pre>
+
+<p>You will see trust warnings about untracked plugins. Fix them:</p>
+
+<pre><code class="language-bash">openclaw config set plugins.allow '[&quot;clawrouter&quot;,&quot;openviking&quot;]' --json
+</code></pre>
+
+<p>Set the OpenRouter key as an environment variable:</p>
+
+<pre><code class="language-bash">echo 'export OPENROUTER_API_KEY=&quot;sk-or-v1-your-key-here&quot;' &gt;&gt; ~/.zprofile
+</code></pre>
+
+<p>Restart the gateway:</p>
+
+<pre><code class="language-bash">openclaw gateway restart
+</code></pre>
+
+<p>You should see: <code>ClawRouter registered (1 providers: openrouter)</code> and <code>ClawRouter ready — 7 providers accessible, smart routing enabled</code>.</p>
+
+<h3 id="how-routing-works">How Routing Works</h3>
+
+<p>ClawRouter scores each prompt on 15 dimensions (reasoning markers, code presence, multi-step patterns, technical terms, token count, etc.) and classifies it into a tier:</p>
+
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Routed To</th>
+<th>Approximate Cost</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>SIMPLE</td>
+<td>Cheap models (Gemini Flash, GPT-4o Mini)</td>
+<td>~<code>$0.0002</code>/request</td>
+</tr>
+
+<tr>
+<td>MEDIUM</td>
+<td>Mid-range models (Grok, DeepSeek)</td>
+<td>~<code>$0.003</code>/request</td>
+</tr>
+
+<tr>
+<td>COMPLEX</td>
+<td>Claude Opus 4.6</td>
+<td>~<code>$0.01</code>/request</td>
+</tr>
+
+<tr>
+<td>REASONING</td>
+<td>Claude Sonnet 4.6</td>
+<td>~<code>$0.008</code>/request</td>
+</tr>
+</tbody>
+</table>
+
+<p>Set it as the default model: in <code>~/.openclaw/openclaw.json</code>, change <code>agents.defaults.model.primary</code> to <code>&quot;clawrouter/auto&quot;</code>.</p>
+
+<p>Track costs with <code>/stats</code> in the OpenClaw TUI. ClawRouter logs every request to <code>~/.openclaw/clawrouter/logs/</code> as JSONL with per-model breakdowns.</p>
+
+<p>You can override anytime: <code>/model opus</code> for direct Anthropic access, <code>/model sonnet</code> for the sweet spot of speed and quality.</p>
+
+<h2 id="phase-3-deep-memory-with-openviking">Phase 3: Deep Memory with OpenViking</h2>
+
+<p>OpenClaw agents wake up with a blank slate every session. OpenViking fixes this. It organizes context into a virtual filesystem with three tiers:</p>
+
+<ul>
+<li><strong>L0</strong> (~100 tokens): One-sentence summary for quick filtering</li>
+<li><strong>L1</strong> (~2K tokens): Structural overview for planning</li>
+<li><strong>L2</strong> (full content): Loaded on demand</li>
+</ul>
+
+<p>The agent scans L0 first, promotes to L1 for decision-making, and pulls L2 only when it needs the details. ByteDance reports a 91% reduction in input token cost compared to dumping everything into context.</p>
+
+<h3 id="installation">Installation</h3>
+
+<p>Your system Python 3.9 is too old. OpenViking requires 3.10+.</p>
+
+<pre><code class="language-bash">brew install python@3.12 go cmake
+
+# Create isolated environment
+/opt/homebrew/opt/python@3.12/bin/python3.12 -m venv ~/.openviking/venv
+~/.openviking/venv/bin/pip install openviking
+</code></pre>
+
+<h3 id="the-embedding-problem">The Embedding Problem</h3>
+
+<p>OpenViking needs an embedding model for vector search. Anthropic offers no embedding API. I went with Ollama for a free, local solution:</p>
+
+<pre><code class="language-bash">brew install ollama
+brew services start ollama
+ollama pull nomic-embed-text
+</code></pre>
+
+<p><strong>Third gotcha: Ollama&rsquo;s API endpoint.</strong> I configured OpenViking with <code>&quot;provider&quot;: &quot;ollama&quot;</code> and <code>&quot;api_base&quot;: &quot;http://localhost:11434&quot;</code>. Got a 404 error. Ollama exposes an OpenAI-compatible API at <code>/v1</code>, and OpenViking&rsquo;s native Ollama provider doesn&rsquo;t match that format. The fix: use the OpenAI provider pointed at Ollama&rsquo;s compatibility endpoint.</p>
+
+<pre><code class="language-json">{
+  &quot;embedding&quot;: {
+    &quot;dense&quot;: {
+      &quot;provider&quot;: &quot;openai&quot;,
+      &quot;model&quot;: &quot;nomic-embed-text&quot;,
+      &quot;api_key&quot;: &quot;ollama&quot;,
+      &quot;api_base&quot;: &quot;http://localhost:11434/v1&quot;,
+      &quot;dimension&quot;: 768
+    }
+  },
+  &quot;vlm&quot;: {
+    &quot;provider&quot;: &quot;litellm&quot;,
+    &quot;model&quot;: &quot;claude-sonnet-4-20250514&quot;,
+    &quot;api_key&quot;: &quot;YOUR_ANTHROPIC_KEY&quot;,
+    &quot;temperature&quot;: 0.1
+  }
+}
+</code></pre>
+
+<p>Save this to <code>~/.openviking/ov.conf</code> and lock permissions (<code>chmod 600</code>) since it contains your API key.</p>
+
+<p><strong>Fourth gotcha: the installer overwrites your config.</strong> The OpenClaw integration installer (<code>ov-install -y</code>) creates the plugin correctly but resets <code>ov.conf</code> to Volcengine/ByteDance defaults with Chinese API endpoints. You must restore your config after running it:</p>
+
+<pre><code class="language-bash">npm install -g openclaw-openviking-setup-helper
+ov-install -y
+# NOW restore your ov.conf with Ollama + Anthropic settings
+</code></pre>
+
+<h3 id="auto-start-on-boot">Auto-Start on Boot</h3>
+
+<p>OpenViking needs to run as a persistent server. Create a launch agent:</p>
+
+<pre><code class="language-xml">&lt;!-- ~/Library/LaunchAgents/ai.openviking.server.plist --&gt;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot;
+  &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+    &lt;key&gt;Label&lt;/key&gt;
+    &lt;string&gt;ai.openviking.server&lt;/string&gt;
+    &lt;key&gt;ProgramArguments&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;/Users/YOUR_USER/.openviking/venv/bin/openviking-server&lt;/string&gt;
+    &lt;/array&gt;
+    &lt;key&gt;EnvironmentVariables&lt;/key&gt;
+    &lt;dict&gt;
+        &lt;key&gt;OPENVIKING_CONFIG_FILE&lt;/key&gt;
+        &lt;string&gt;/Users/YOUR_USER/.openviking/ov.conf&lt;/string&gt;
+        &lt;key&gt;PATH&lt;/key&gt;
+        &lt;string&gt;/Users/YOUR_USER/.openviking/venv/bin:/opt/homebrew/bin:/usr/bin:/bin&lt;/string&gt;
+    &lt;/dict&gt;
+    &lt;key&gt;RunAtLoad&lt;/key&gt;
+    &lt;true/&gt;
+    &lt;key&gt;KeepAlive&lt;/key&gt;
+    &lt;true/&gt;
+    &lt;key&gt;StandardOutPath&lt;/key&gt;
+    &lt;string&gt;/Users/YOUR_USER/.openviking/server.log&lt;/string&gt;
+    &lt;key&gt;StandardErrorPath&lt;/key&gt;
+    &lt;string&gt;/Users/YOUR_USER/.openviking/server.err.log&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</code></pre>
+
+<pre><code class="language-bash">launchctl load ~/Library/LaunchAgents/ai.openviking.server.plist
+curl http://localhost:1933/health
+# {&quot;status&quot;:&quot;ok&quot;,&quot;healthy&quot;:true}
+</code></pre>
+
+<p>After the gateway restart, you should see: <code>openviking: registered context-engine (before_prompt_build=auto-recall, afterTurn=auto-capture)</code>. Helix now auto-loads relevant memories before responding and saves new context after each conversation.</p>
+
+<h2 id="phase-4-google-workspace">Phase 4: Google Workspace</h2>
+
+<p>I created a separate Google account for Helix (<code>your-agent-email@gmail.com</code>). Helix only sees what I share with that account. If the OAuth token leaks, my personal Google account stays untouched. Principle of least privilege.</p>
+
+<h3 id="google-cloud-setup">Google Cloud Setup</h3>
+
+<ol>
+<li>Sign into console.cloud.google.com as Helix</li>
+<li>Create a project (<code>helix-assistant</code>)</li>
+<li>Enable APIs: Calendar, Docs, Sheets, Slides, Drive, Gmail</li>
+<li>Create an OAuth consent screen (External, add Helix&rsquo;s email as a test user)</li>
+<li>Create OAuth credentials (Desktop app)</li>
+</ol>
+
+<p><strong>Fifth gotcha: &ldquo;Error 403: access_denied.&rdquo;</strong> After creating the OAuth consent screen, Google blocks all users except approved testers. You must add <code>your-agent-email@gmail.com</code> under OAuth consent screen &gt; Audience &gt; Test users. Every tutorial skips this step.</p>
+
+<p><strong>Sixth gotcha: missing &ldquo;Download JSON&rdquo; button.</strong> Many guides tell you to download the OAuth client JSON from the credentials page. The button doesn&rsquo;t exist in the current Cloud Console UI. Create the file yourself:</p>
+
+<pre><code class="language-json">{
+  &quot;installed&quot;: {
+    &quot;client_id&quot;: &quot;YOUR_CLIENT_ID&quot;,
+    &quot;client_secret&quot;: &quot;YOUR_SECRET&quot;,
+    &quot;auth_uri&quot;: &quot;https://accounts.google.com/o/oauth2/auth&quot;,
+    &quot;token_uri&quot;: &quot;https://oauth2.googleapis.com/token&quot;,
+    &quot;redirect_uris&quot;: [&quot;http://localhost&quot;]
+  }
+}
+</code></pre>
+
+<h3 id="installing-gogcli">Installing gogcli</h3>
+
+<p>The Google Workspace CLI that OpenClaw uses is called <code>gogcli</code>. Not <code>gog</code>. The brew package name matters.</p>
+
+<pre><code class="language-bash">brew install gogcli
+gog auth credentials ~/Downloads/helix-oauth-credentials.json
+gog auth add your-agent-email@gmail.com
+echo 'export GOG_ACCOUNT=your-agent-email@gmail.com' &gt;&gt; ~/.zprofile
+</code></pre>
+
+<p>OpenClaw picks it up as a bundled skill. Verify with <code>openclaw skills list</code>. The <code>gog</code> skill should show as ready.</p>
+
+<h3 id="sharing-your-calendar">Sharing Your Calendar</h3>
+
+<p>From your personal Google account, share your calendar with Helix&rsquo;s email (Settings &gt; Share with specific people &gt; &ldquo;Make changes to events&rdquo;). Helix receives an email invitation. You must open that invitation link in a browser signed into Helix&rsquo;s account and accept it.</p>
+
+<p><strong>Seventh gotcha: wrong calendar ID.</strong> <code>gog calendar list</code> defaults to <code>primary</code>, which is Helix&rsquo;s own empty calendar. You must pass your personal calendar ID:</p>
+
+<pre><code class="language-bash">gog calendar list your-personal-email@gmail.com --max 10
+</code></pre>
+
+<p>Document this in your workspace&rsquo;s TOOLS.md so the agent uses the correct ID.</p>
+
+<h2 id="phase-5-content-creation-workflows">Phase 5: Content Creation Workflows</h2>
+
+<p>I write X threads about bioinformatics, publish blog tutorials, run a YouTube channel, and send a newsletter. I keep all my thread drafts in a Google Doc organized by date.</p>
+
+<p>I created an OpenClaw skill at <code>~/.openclaw/workspace/skills/content-creation/SKILL.md</code> that defines five workflows:</p>
+
+<ul>
+<li><code>/content-status</code> reads the content doc and lists planned topics</li>
+<li><code>/draft-thread [topic]</code> generates an X thread in my writing style</li>
+<li><code>/blog-from-thread [topic]</code> expands a thread into a full tutorial with R/Python code</li>
+<li><code>/newsletter-draft</code> curates recent posts into a newsletter edition</li>
+<li><code>/youtube-outline [topic]</code> creates a video tutorial structure</li>
+</ul>
+
+<p>The skill file includes my writing voice guidelines: technical but accessible, direct, opinionated, code-heavy, opens with real debugging stories. Helix matches the style because the instructions are specific, not generic.</p>
+
+<h2 id="phase-6-skill-engine-openspace">Phase 6: Skill Engine (OpenSpace)</h2>
+
+<p>OpenViking remembers facts. OpenSpace remembers procedures.</p>
+
+<p><a href="https://github.com/HKUDS/OpenSpace" target="_blank">OpenSpace</a> (from HKU Data Systems Lab) watches your agent execute tasks, extracts successful patterns into reusable skill templates, and retrieves them next time. Instead of Helix reasoning from scratch every time I ask &ldquo;draft a newsletter,&rdquo; it pulls a proven template and fills in the specifics. Their benchmark shows 46% fewer tokens on repetitive tasks.</p>
+
+<h3 id="installation-1">Installation</h3>
+
+<pre><code class="language-bash">git clone https://github.com/HKUDS/OpenSpace.git ~/.openspace
+~/.openviking/venv/bin/pip install -e ~/.openspace
+</code></pre>
+
+<p><strong>Twelfth gotcha: missing websockets dependency.</strong> OpenSpace&rsquo;s MCP backend provider fails silently without it. You&rsquo;ll see <code>Import provider failed: openspace.grounding.backends.mcp.MCPProvider (No module named 'websockets')</code> in the logs but OpenSpace will appear to work &ndash; you just lose the ability to chain MCP servers together. Fix it now:</p>
+
+<pre><code class="language-bash">~/.openviking/venv/bin/pip install websockets
+</code></pre>
+
+<h3 id="configuration">Configuration</h3>
+
+<p>Create <code>~/.openspace/.env</code>:</p>
+
+<pre><code class="language-bash">OPENSPACE_WORKSPACE=/Users/helix/.openspace
+OPENSPACE_HOST_SKILL_DIRS=/Users/helix/.openclaw/workspace/skills
+OPENSPACE_LLM_API_KEY=YOUR_OPENROUTER_KEY
+OPENSPACE_MODEL=openrouter/google/gemini-2.5-flash
+OPENSPACE_LOG_LEVEL=INFO
+OPENSPACE_BACKEND_SCOPE=shell,mcp,web,system
+</code></pre>
+
+<p>Lock permissions: <code>chmod 600 ~/.openspace/.env</code></p>
+
+<p><strong>Why Gemini Flash via OpenRouter, not direct Anthropic?</strong> OpenSpace makes its own LLM calls for skill search, execution analysis, and skill evolution. Using Claude Sonnet directly would add <code>$3/$15</code> per M tokens on top of your existing ClawRouter costs. Gemini 2.5 Flash via OpenRouter costs <code>$0.15/$0.60</code> per M tokens &ndash; 20x cheaper. OpenSpace&rsquo;s workload (analyzing patterns, writing templates) doesn&rsquo;t need the strongest model. The <code>openrouter/</code> prefix in the model string matters &ndash; it tells litellm to route through OpenRouter&rsquo;s API. Without the prefix, <code>google/gemini-2.5-flash</code> would try to hit Google AI Studio directly.</p>
+
+<p>Verify the binary works:</p>
+
+<pre><code class="language-bash">~/.openviking/venv/bin/openspace-mcp --help
+</code></pre>
+
+<h3 id="wiring-openspace-to-openclaw">Wiring OpenSpace to OpenClaw</h3>
+
+<p>This is the part the OpenSpace README doesn&rsquo;t cover for OpenClaw specifically. There are two steps: install mcporter (OpenClaw&rsquo;s MCP tool runtime), and copy the host skills.</p>
+
+<p><strong>Step 1: Install mcporter.</strong> OpenClaw doesn&rsquo;t have a native <code>mcpServers</code> config key &ndash; I tried <code>tools.mcpServers</code>, <code>agents.defaults.mcpServers</code>, and top-level <code>mcpServers</code>. All rejected by config validation. OpenClaw uses mcporter to manage MCP servers instead.</p>
+
+<pre><code class="language-bash">npm install -g mcporter
+</code></pre>
+
+<p>Register OpenSpace as an MCP server:</p>
+
+<pre><code class="language-bash">mcporter config add openspace \
+  --command &quot;/Users/YOUR_USER/.openviking/venv/bin/openspace-mcp&quot; \
+  --env &quot;OPENSPACE_HOST_SKILL_DIRS=/Users/YOUR_USER/.openclaw/workspace/skills&quot; \
+  --env &quot;OPENSPACE_WORKSPACE=/Users/YOUR_USER/.openspace&quot; \
+  --env &quot;OPENSPACE_LLM_API_KEY=YOUR_OPENROUTER_KEY&quot; \
+  --env &quot;OPENSPACE_MODEL=openrouter/google/gemini-2.5-flash&quot; \
+  --env &quot;OPENSPACE_LOG_LEVEL=INFO&quot; \
+  --env &quot;OPENSPACE_BACKEND_SCOPE=shell,mcp,web,system&quot; \
+  --description &quot;OpenSpace skill engine - learns reusable task templates&quot; \
+  --scope home
+</code></pre>
+
+<p>This writes to <code>~/.mcporter/mcporter.json</code>. Verify the connection:</p>
+
+<pre><code class="language-bash">mcporter list openspace --schema
+</code></pre>
+
+<p>You should see 4 tools: <code>execute_task</code>, <code>search_skills</code>, <code>fix_skill</code>, <code>upload_skill</code>. If you see them, the MCP server starts and responds correctly.</p>
+
+<p><strong>Step 2: Copy the host skills.</strong> OpenSpace ships two skill files that teach your agent when and how to use OpenSpace tools. Without these, your agent won&rsquo;t know OpenSpace exists.</p>
+
+<pre><code class="language-bash">cp -r ~/.openspace/openspace/host_skills/delegate-task ~/.openclaw/workspace/skills/
+cp -r ~/.openspace/openspace/host_skills/skill-discovery ~/.openclaw/workspace/skills/
+</code></pre>
+
+<p>The <code>delegate-task</code> skill tells the agent to use OpenSpace when it lacks the capability, when it tried and failed, or when the user explicitly asks. The <code>skill-discovery</code> skill lets the agent search for existing skills before deciding how to handle a task.</p>
+
+<p><strong>Thirteenth gotcha: the OpenSpace README says &ldquo;add MCP config to your agent&rsquo;s settings.json.&rdquo;</strong> This works for Claude Code and Cursor, but OpenClaw&rsquo;s config schema rejects <code>mcpServers</code> at every level. The mcporter path is the one that works. I wasted time trying three different config paths before figuring this out.</p>
+
+<h3 id="verification">Verification</h3>
+
+<p>Test a skill search to confirm everything is wired end-to-end:</p>
+
+<pre><code class="language-bash">mcporter call openspace.search_skills query=&quot;content creation&quot; source=&quot;local&quot; limit=5
+</code></pre>
+
+<p>You should get back JSON results listing your installed skills. Check <code>openclaw skills check</code> &ndash; the <code>mcporter</code> skill should now show as ready.</p>
+
+<h3 id="cost-note">Cost Note</h3>
+
+<p>OpenSpace itself is free. But it makes its own LLM calls behind the scenes (skill search, execution analysis, skill evolution). With Gemini Flash via OpenRouter at <code>$0.15/$0.60</code> per M tokens, this adds pennies per task. The 46% token reduction on repetitive tasks should more than offset the cost over time.</p>
+
+<h3 id="how-the-stack-fits-together">How the Stack Fits Together</h3>
+
+<p>The three-layer stack: OpenViking recalls WHO you are and WHAT you need. OpenSpace recalls HOW to do it. ClawRouter picks the right model for the job. Each layer cuts token waste from a different angle.</p>
+
+<h2 id="phase-7-telegram-integration">Phase 7: Telegram Integration</h2>
+
+<p>WhatsApp worked but had stability issues (frequent 408 disconnects every 15 minutes). I switched to Telegram, which requires a bot token from @BotFather and zero phone number hassle.</p>
+
+<ol>
+<li>Message @BotFather on Telegram, send <code>/newbot</code></li>
+<li>Name it, get a token</li>
+</ol>
+
+<pre><code class="language-bash">openclaw plugins enable telegram
+openclaw config set channels.telegram.enabled true --json
+openclaw config set channels.telegram.botToken '&quot;YOUR_TOKEN&quot;'
+openclaw config set channels.telegram.dmPolicy '&quot;pairing&quot;'
+openclaw gateway restart
+</code></pre>
+
+<p>Message your bot. It returns a pairing code. Approve it:</p>
+
+<pre><code class="language-bash">openclaw pairing approve telegram YOUR_CODE
+</code></pre>
+
+<p>Only approved users can talk to Helix. Anyone else gets blocked at the pairing screen.</p>
+
+<p><strong>Eighth gotcha: Google Voice numbers don&rsquo;t work with WhatsApp.</strong> WhatsApp rejects most VoIP numbers. If you want a dedicated number for your bot, buy a <code>$3</code> prepaid SIM or skip WhatsApp entirely and use Telegram.</p>
+
+<h2 id="the-hard-lesson-cheap-models-poison-your-memory">The Hard Lesson: Cheap Models Poison Your Memory</h2>
+
+<p>This section matters more than any technical setup.</p>
+
+<p>ClawRouter&rsquo;s auto-routing saved money by sending simple prompts to cheap models (DeepSeek, Grok Mini, free NVIDIA). The problem: these models hallucinated. They invented colleagues named &ldquo;Rita&rdquo; and &ldquo;Carter.&rdquo; They fabricated a costume party on Saturday. They created an entity called &ldquo;Adaptive&rdquo; that doesn&rsquo;t exist. They described systems and configurations that were never set up.</p>
+
+<p>Helix reported these hallucinations as fact. OpenViking captured them as memories. On the next session, Helix recalled the fabricated memories and built on them with more confidence. The hallucinations compounded. Within 48 hours, Helix&rsquo;s memory contained a fictional social circle, imaginary file shares, and a detailed description of a &ldquo;Todd&rdquo; who had sent &ldquo;important files&rdquo; that never existed.</p>
+
+<p>I found 9 poisoned memories and deleted them manually:</p>
+
+<pre><code class="language-bash">ov rm &quot;viking://user/default/memories/entities/mem_xxxxx.md&quot;  # Rita
+ov rm &quot;viking://user/default/memories/entities/mem_xxxxx.md&quot;  # Carter
+ov rm &quot;viking://user/default/memories/events/mem_xxxxx.md&quot;    # Costume party
+</code></pre>
+
+<p>My first fix attempt failed. I created an exclusion JSON file at <code>~/.openclaw/blockrun/exclude-models.json</code>. ClawRouter ignored it. The cgaeking fork stripped out the original BlockRunAI exclusion feature but left the file path references in the docs. The exclude file is a dead feature.</p>
+
+<p><strong>Ninth gotcha: the exclude-models.json file does nothing in the cgaeking fork.</strong> You have to edit the routing config source code directly.</p>
+
+<p>The actual fix: edit <code>~/.openclaw/extensions/clawrouter/src/router/config.ts</code> and replace every tier&rsquo;s model list. I removed all Grok, DeepSeek, Kimi, and NVIDIA models:</p>
+
+<pre><code class="language-typescript">tiers: {
+  SIMPLE: {
+    primary: &quot;google/gemini-2.5-flash&quot;,
+    fallback: [&quot;openai/gpt-4o-mini&quot;, &quot;anthropic/claude-haiku-4.5&quot;],
+  },
+  MEDIUM: {
+    primary: &quot;google/gemini-2.5-flash&quot;,
+    fallback: [&quot;openai/gpt-4o-mini&quot;, &quot;anthropic/claude-haiku-4.5&quot;],
+  },
+  COMPLEX: {
+    primary: &quot;google/gemini-2.5-pro&quot;,
+    fallback: [&quot;anthropic/claude-sonnet-4&quot;, &quot;openai/gpt-4o&quot;],
+  },
+  REASONING: {
+    primary: &quot;anthropic/claude-sonnet-4&quot;,
+    fallback: [&quot;google/gemini-2.5-pro&quot;, &quot;openai/gpt-4o&quot;],
+  },
+},
+</code></pre>
+
+<p>Do the same for <code>agenticTiers</code>. Then rebuild and restart:</p>
+
+<pre><code class="language-bash">cd ~/.openclaw/extensions/clawrouter
+npm run build
+openclaw gateway restart
+</code></pre>
+
+<p>Only Google (Gemini), Anthropic (Claude), and OpenAI (GPT) models remain in the routing pool. Here&rsquo;s the final tier mapping:</p>
+
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Primary</th>
+<th>Fallbacks</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>SIMPLE</td>
+<td>Gemini 2.5 Flash (<code>$0.15/$0.60</code>)</td>
+<td>GPT-4o Mini, Claude Haiku</td>
+</tr>
+
+<tr>
+<td>MEDIUM</td>
+<td>Gemini 2.5 Flash (<code>$0.15/$0.60</code>)</td>
+<td>GPT-4o Mini, Claude Haiku</td>
+</tr>
+
+<tr>
+<td>COMPLEX</td>
+<td>Gemini 2.5 Pro (<code>$1.25/$10</code>)</td>
+<td>Claude Sonnet, GPT-4o</td>
+</tr>
+
+<tr>
+<td>REASONING</td>
+<td>Claude Sonnet (<code>$3/$15</code>)</td>
+<td>Gemini 2.5 Pro, GPT-4o</td>
+</tr>
+</tbody>
+</table>
+
+<p>Slightly more expensive per request. Zero nonsense. The cost difference between a <code>$0.0002</code> Grok request and a <code>$0.004</code> Gemini Flash request is negligible. The cost of cleaning 35 hallucinated memories from your database is not.</p>
+
+<p>I ran two rounds of memory cleanup. The first round caught the obvious fabrications (fake people, fake events). The second round caught subtler contamination: memories that mixed real facts with hallucinated details about WhatsApp delivery, Brave Search API usage, and &ldquo;dual delivery preferences&rdquo; that were never requested. Total: 14 poisoned memories removed across two passes.</p>
+
+<h3 id="memory-contamination-runs-deep">Memory Contamination Runs Deep</h3>
+
+<p>My first cleanup pass removed 9 memories: fake people, fake events. I thought I was done.</p>
+
+<p>The second pass found 5 more: memories that mixed real facts with hallucinated details. The Viral Content Research cron job memory was 90% accurate but claimed WhatsApp delivery was &ldquo;fully configured and active&rdquo; and cited the &ldquo;Brave Search API&rdquo; &ndash; neither was true. These partial hallucinations are harder to spot than complete fabrications.</p>
+
+<p>The third pass found 14 more, mostly in agent memories (<code>viking://agent/*/memories/</code>). These are procedural memories that teach the agent HOW to behave. One pattern memory said: &ldquo;When web search APIs are unavailable, fall back to proven content templates.&rdquo; Another case memory said: &ldquo;Brave Search API not configured, use fallback strategy.&rdquo; Every time I asked Helix to search the web, these memories told it to skip the search tool and answer from training data instead. The agent confidently said &ldquo;Used web_search&rdquo; while the logs showed zero tool calls.</p>
+
+<p>Total contamination across three passes: <strong>35+ poisoned memories</strong>.</p>
+
+<h3 id="how-to-audit-openviking-memory">How to Audit OpenViking Memory</h3>
+
+<pre><code class="language-bash"># List all memory directories
+ov ls viking://user/default/memories/events/
+ov ls viking://user/default/memories/entities/
+ov ls viking://user/default/memories/preferences/
+
+# Don't forget agent memories -- these are the sneaky ones
+ov ls viking://agent/
+
+# Read a specific memory
+ov read &quot;viking://user/default/memories/events/mem_xxxxx.md&quot;
+
+# Delete a bad memory
+ov rm &quot;viking://user/default/memories/events/mem_xxxxx.md&quot;
+
+# Grep for known contamination keywords
+for f in $(ov ls &quot;viking://user/default/memories/events/&quot; | grep mem_ | awk '{print $1}'); do
+  content=$(ov read &quot;$f&quot;)
+  if echo &quot;$content&quot; | grep -iqE &quot;rita|carter|brave|whatsapp.*delivery&quot;; then
+    echo &quot;BAD: $f&quot;
+    ov rm &quot;$f&quot;
+  fi
+done
+</code></pre>
+
+<p>Run this after every model change and after the first week of use. Cheap models hallucinate. Your memory system captures the hallucinations. Future sessions recall and amplify them. Two weeks of unchecked auto-capture from a bad model can take an evening to clean up.</p>
+
+<h3 id="fifteenth-gotcha-ov-rm-doesn-t-clean-the-vector-index">Fifteenth Gotcha: <code>ov rm</code> Doesn&rsquo;t Clean the Vector Index</h3>
+
+<p>This one wasted an evening. I found three contaminated memories referencing &ldquo;Brave Search API&rdquo; and &ldquo;WhatsApp delivery&rdquo; that were being injected into every heartbeat. I deleted them with <code>ov rm</code>. The files disappeared. The memories kept coming back.</p>
+
+<p>OpenViking stores memories in two places: the <strong>filesystem</strong> (where <code>ov rm</code> works) and the <strong>vector database</strong> (where it doesn&rsquo;t). When OpenViking chunks a memory for embedding, it creates entries like <code>mem_xxxxx.md#chunk_0000</code> in the vector DB. Deleting the file with <code>ov rm</code> removes the source but leaves orphaned vector chunks that still match searches and get injected into context.</p>
+
+<p>You can confirm orphans exist with:</p>
+
+<pre><code class="language-bash">curl -s http://127.0.0.1:1933/api/v1/search/find -X POST \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{&quot;query&quot;:&quot;your contamination keywords here&quot;,&quot;limit&quot;:5}'
+</code></pre>
+
+<p>If deleted memories still appear in results, the vector index has orphans. The only reliable fix is a full vector DB rebuild:</p>
+
+<pre><code class="language-bash"># Stop OpenViking
+launchctl kickstart -k gui/501/ai.openviking.server
+
+# Delete the vector DB (will be recreated)
+rm -rf ~/.openviking/data/vectordb
+mkdir -p ~/.openviking/data/vectordb
+
+# Restart (auto-creates collection structure)
+# Wait for launchd to restart it, then reindex
+sleep 5
+
+# Reindex all memory directories from clean filesystem
+for dir in \
+  &quot;viking://user/default/memories/entities&quot; \
+  &quot;viking://user/default/memories/events&quot; \
+  &quot;viking://user/default/memories/preferences&quot; \
+  &quot;viking://agent/YOUR_AGENT_ID/memories/patterns&quot; \
+  &quot;viking://agent/YOUR_AGENT_ID/memories/cases&quot;; do
+  curl -s -X POST &quot;http://127.0.0.1:1933/api/v1/content/reindex&quot; \
+    -H &quot;Content-Type: application/json&quot; \
+    -d &quot;{\&quot;uri\&quot;:\&quot;$dir\&quot;,\&quot;force\&quot;:true}&quot;
+done
+
+# Wait for embeddings to complete
+ov wait --timeout 120
+</code></pre>
+
+<p>Find your agent ID with <code>ov ls viking://agent/</code>. After rebuild, verify with the search query above &ndash; contaminated results should be gone.</p>
+
+<h3 id="tool-calling-reliability-varies-by-model">Tool Calling Reliability Varies by Model</h3>
+
+<p>Not every model calls tools when asked. I configured Gemini as the web search provider and tested &ldquo;use web_search to find pharma acquisitions this week&rdquo; across three models:</p>
+
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Called web_search?</th>
+<th>What it did instead</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Gemini 2.5 Flash (via OpenRouter)</td>
+<td>No</td>
+<td>Answered from training data, claimed it searched</td>
+</tr>
+
+<tr>
+<td>Claude Haiku 4.5 (via OpenRouter)</td>
+<td>No</td>
+<td>Answered from OpenViking memory, claimed it searched</td>
+</tr>
+
+<tr>
+<td>Claude Sonnet 4 (direct Anthropic)</td>
+<td>Yes</td>
+<td>Returned fresh results with new data not in memory</td>
+</tr>
+</tbody>
+</table>
+
+<p>Cheaper models through OpenRouter consistently skip tool calls and answer from training data or memory. They claim to have searched while the logs show zero tool invocations. Sonnet via direct Anthropic reliably calls tools.</p>
+
+<p>If your workflow depends on web search, calendar checks, or any tool call: use Sonnet for those sessions. Save the cheap models for conversations that don&rsquo;t require tool use.</p>
+
+<p><strong>The lesson: when your agent has persistent memory, model quality isn&rsquo;t a latency tradeoff. It&rsquo;s a data integrity issue.</strong> A bad response from a cheap model doesn&rsquo;t just waste one turn. It injects false context that persists across every future session, degrading your agent&rsquo;s reliability in ways you won&rsquo;t notice until the hallucinations are deeply embedded. Treat your model routing the way you&rsquo;d treat write access to a production database. Cheaper isn&rsquo;t cheaper if it corrupts your data.</p>
+
+<h2 id="web-search-models-don-t-always-use-it">Web Search: Models Don&rsquo;t Always Use It</h2>
+
+<p>I tried Tavily first. OpenClaw&rsquo;s <code>tools.web.search.provider</code> config only accepts five values: <code>brave</code>, <code>perplexity</code>, <code>grok</code>, <code>gemini</code>, <code>kimi</code>. Tavily isn&rsquo;t one of them, despite being detectable via environment variable.</p>
+
+<p><strong>Tenth gotcha: Tavily isn&rsquo;t a supported search provider in OpenClaw.</strong> The docs and env var auto-detection suggest it works. It doesn&rsquo;t. Use <code>gemini</code> instead with a free Gemini API key from <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a>. Gemini grounding searches Google&rsquo;s index for free.</p>
+
+<p><strong>Eleventh gotcha: your agent can modify its own config.</strong> I told Helix about the search setup. Helix couldn&rsquo;t configure Tavily, so it edited <code>openclaw.json</code> and switched the provider to Perplexity instead. Without a Perplexity API key, the search tool broke silently. Helix kept answering from training data and I assumed search was working. Check <code>openclaw config get tools</code> after any conversation where Helix discusses its own setup. Add &ldquo;Never edit openclaw.json&rdquo; to your SOUL.md boundaries.</p>
+
+<p>If you need live search results (breaking news, recent papers, trending posts), be explicit:</p>
+
+<blockquote>
+<p>&ldquo;Use web_search to find the latest single-cell RNA-seq preprints this week&rdquo;</p>
+</blockquote>
+
+<p>Otherwise the model will answer from memory and you&rsquo;ll think your search integration is working when it was never invoked.</p>
+
+<h2 id="monthly-cost-breakdown">Monthly Cost Breakdown</h2>
+
+<p>Running an AI personal assistant isn&rsquo;t free. Here&rsquo;s what each component costs based on my first week of usage, extrapolated to monthly.</p>
+
+<h3 id="api-costs">API Costs</h3>
+
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>What it powers</th>
+<th>Pricing</th>
+<th>My monthly estimate</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><strong>Anthropic API</strong></td>
+<td>Direct Claude access (Opus/Sonnet/Haiku)</td>
+<td>Opus: <code>$5/$25</code>, Sonnet: <code>$3/$15</code>, Haiku: <code>$1/$5</code> per M tokens</td>
+<td><code>$15-40</code> (depends on usage)</td>
+</tr>
+
+<tr>
+<td><strong>OpenRouter</strong></td>
+<td>ClawRouter model routing (Gemini, GPT, Claude)</td>
+<td>Pass-through provider pricing, no markup</td>
+<td><code>$5-15</code></td>
+</tr>
+
+<tr>
+<td><strong>Gemini API</strong></td>
+<td>Web search (Gemini grounding)</td>
+<td>Free tier included</td>
+<td><code>$0</code></td>
+</tr>
+
+<tr>
+<td><strong>Google OAuth</strong></td>
+<td>Calendar, Docs, Sheets, Drive</td>
+<td>Free</td>
+<td><code>$0</code></td>
+</tr>
+
+<tr>
+<td><strong>Telegram Bot</strong></td>
+<td>Messaging channel</td>
+<td>Free</td>
+<td><code>$0</code></td>
+</tr>
+
+<tr>
+<td><strong>Ollama</strong></td>
+<td>Local embeddings (nomic-embed-text)</td>
+<td>Free (runs locally)</td>
+<td><code>$0</code></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="cost-optimization-lessons">Cost Optimization Lessons</h3>
+
+<p><strong>OpenViking VLM was the hidden cost monster.</strong> It processes every conversation for memory extraction. I started with Claude Sonnet (<code>$3/$15</code> per M tokens) and burned <code>$7.43</code>/day on memory processing alone. Switched to Claude Haiku (<code>$2.48</code>/day), then to Gemini 2.5 Flash via OpenRouter (<code>$0.34</code>/day). Same memory quality. 95% cost reduction.</p>
+
+<table>
+<thead>
+<tr>
+<th>OpenViking VLM Model</th>
+<th>Daily cost</th>
+<th>Monthly cost</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Claude Sonnet 4</td>
+<td><code>$7.43</code></td>
+<td><code>$223</code></td>
+</tr>
+
+<tr>
+<td>Claude Haiku 4.5</td>
+<td><code>$2.48</code></td>
+<td><code>$74</code></td>
+</tr>
+
+<tr>
+<td>Gemini 2.5 Flash (current)</td>
+<td><code>$0.34</code></td>
+<td><code>$10</code></td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>ClawRouter saves on inference.</strong> Instead of routing everything to Opus (<code>$25</code>/M output tokens), ClawRouter sends simple queries to Gemini Flash (<code>$0.60</code>/M) and reserves Sonnet for complex reasoning. Here&rsquo;s my actual first-week data from <code>~/.openclaw/clawrouter/logs/</code>:</p>
+
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Requests</th>
+<th>Actual Cost</th>
+<th>If All-Opus</th>
+<th>Savings</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Mar 23</td>
+<td>5</td>
+<td><code>$0.26</code></td>
+<td><code>$2.21</code></td>
+<td>88%</td>
+</tr>
+
+<tr>
+<td>Mar 24</td>
+<td>88</td>
+<td><code>$1.77</code></td>
+<td><code>$39.46</code></td>
+<td>96%</td>
+</tr>
+
+<tr>
+<td>Mar 25</td>
+<td>168</td>
+<td><code>$4.69</code></td>
+<td><code>$77.18</code></td>
+<td>94%</td>
+</tr>
+
+<tr>
+<td>Mar 26</td>
+<td>74</td>
+<td><code>$1.37</code></td>
+<td><code>$33.98</code></td>
+<td>96%</td>
+</tr>
+
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>335</strong></td>
+<td><strong><code>$8.09</code></strong></td>
+<td><strong><code>$152.83</code></strong></td>
+<td><strong>95%</strong></td>
+</tr>
+</tbody>
+</table>
+
+<p>335 requests for <code>$8.09</code> instead of <code>$152.83</code>. The same requests routed to Opus would have cost 19x more.</p>
+
+<p>Note: <code>/stats</code> is a TUI command (type it in the Helix chat), not a CLI command. For raw data, parse the JSONL logs directly.</p>
+
+<p><strong>Total realistic monthly cost after optimization: <code>$15-35</code>.</strong> Here&rsquo;s the math:</p>
+
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Before optimization</th>
+<th>After optimization</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>OpenViking VLM (memory processing)</td>
+<td><code>$223</code>/mo (Sonnet)</td>
+<td><code>$10</code>/mo (Gemini Flash via OpenRouter)</td>
+</tr>
+
+<tr>
+<td>ClawRouter inference (daily use)</td>
+<td><code>$45</code>/mo (all Opus)</td>
+<td><code>$15-20</code>/mo (auto-routing)</td>
+</tr>
+
+<tr>
+<td>Heartbeat idle cost</td>
+<td><code>$50+</code>/mo (every 30 min, <sup>24</sup>&frasl;<sub>7</sub>)</td>
+<td><code>$4</code>/mo (every 4h, waking hours only)</td>
+</tr>
+
+<tr>
+<td>Web search (Gemini grounding)</td>
+<td>N/A</td>
+<td><code>$0</code> (free tier)</td>
+</tr>
+
+<tr>
+<td>Cron jobs (2x/week viral research)</td>
+<td><code>$5</code>/mo</td>
+<td><code>$2</code>/mo (routed to Flash)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Before optimization I was on track to spend <code>$300+</code>/month. After switching OpenViking&rsquo;s VLM from Sonnet to Gemini Flash and restricting ClawRouter to quality models only, the same setup runs for <code>$15-35</code>/month. The Mac Mini electricity costs more than most of the APIs.</p>
+
+<p><strong>Fourteenth gotcha: the heartbeat burns tokens while you sleep.</strong> I stopped messaging Helix for two days and still saw <code>$6</code> on my OpenRouter bill. The culprit: OpenClaw&rsquo;s heartbeat fires every 30 minutes by default, <sup>24</sup>&frasl;<sub>7</sub>. Each heartbeat is a full agent turn &ndash; OpenViking injects 6 memories, ClawRouter routes to Gemini Flash, the LLM responds with <code>HEARTBEAT_OK</code>, then OpenViking captures the response and runs memory extraction, merging, and semantic generation. That&rsquo;s ~4-5 LLM calls per heartbeat. At 48 heartbeats/day, that&rsquo;s ~200 LLM calls/day doing nothing useful at 3 AM.</p>
+
+<p>The fix:</p>
+
+<pre><code class="language-bash"># Change interval from 30 minutes to 4 hours
+openclaw config set agents.defaults.heartbeat.every '&quot;4h&quot;'
+
+# Only fire between 8 AM and 11 PM Eastern
+openclaw config set agents.defaults.heartbeat.activeHours \
+  '{&quot;start&quot;:&quot;08:00&quot;,&quot;end&quot;:&quot;23:00&quot;,&quot;timezone&quot;:&quot;America/New_York&quot;}' --json
+
+openclaw gateway restart
+</code></pre>
+
+<p>Verify with <code>openclaw config get agents.defaults.heartbeat</code>. You should see <code>every: &quot;4h&quot;</code> and the <code>activeHours</code> block.</p>
+
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Before</th>
+<th>After</th>
+<th>Impact</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Interval</td>
+<td>30 min</td>
+<td>4 hours</td>
+<td>48 to 4 heartbeats/day</td>
+</tr>
+
+<tr>
+<td>Night hours</td>
+<td>Fires LLM, model replies HEARTBEAT_OK</td>
+<td>No firing at all</td>
+<td>Zero idle cost 23:00-08:00</td>
+</tr>
+
+<tr>
+<td>Daily idle cost</td>
+<td>~<code>$1.50-2.00</code></td>
+<td>~<code>$0.12-0.16</code></td>
+<td><strong>90% reduction</strong></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="what-s-free">What&rsquo;s Free</h3>
+
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Cost</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>OpenClaw</td>
+<td>Free (open source)</td>
+</tr>
+
+<tr>
+<td>ClawRouter</td>
+<td>Free (open source)</td>
+</tr>
+
+<tr>
+<td>OpenViking</td>
+<td>Free (open source)</td>
+</tr>
+
+<tr>
+<td>OpenSpace</td>
+<td>Free (open source)</td>
+</tr>
+
+<tr>
+<td>Ollama + nomic-embed-text</td>
+<td>Free (local)</td>
+</tr>
+
+<tr>
+<td>Telegram bot</td>
+<td>Free</td>
+</tr>
+
+<tr>
+<td>Google Workspace API</td>
+<td>Free</td>
+</tr>
+
+<tr>
+<td>Gemini API (web search)</td>
+<td>Free</td>
+</tr>
+
+<tr>
+<td>DuckDuckGo fallback</td>
+<td>Free</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="what-s-running">What&rsquo;s Running</h2>
+
+<p>After all phases, my Mac Mini runs these services:</p>
+
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Port</th>
+<th>Auto-start</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>OpenClaw Gateway</td>
+<td>18789</td>
+<td>Yes (launch agent)</td>
+</tr>
+
+<tr>
+<td>ClawRouter Proxy</td>
+<td>8402</td>
+<td>Yes (via gateway)</td>
+</tr>
+
+<tr>
+<td>OpenViking Server</td>
+<td>1933</td>
+<td>Yes (launch agent)</td>
+</tr>
+
+<tr>
+<td>Ollama</td>
+<td>11434</td>
+<td>Yes (brew service)</td>
+</tr>
+
+<tr>
+<td>OpenSpace MCP</td>
+<td>stdio</td>
+<td>On demand (via OpenClaw)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Total API keys needed: Anthropic, OpenRouter, Gemini (for web search), Google OAuth, Telegram bot token.</p>
+
+<h2 id="what-helix-does-now">What Helix Does Now</h2>
+
+<p>I open the TUI, type &ldquo;check my calendar and read my content doc,&rdquo; and Helix pulls today&rsquo;s meetings, scans my thread drafts, and tells me what I should work on. I say &ldquo;draft a thread about collider bias in genomics&rdquo; and get a 14-tweet thread with references to published papers, in my voice, ready for review.</p>
+
+<p>The deep memory gets better each week. Helix remembers that I prefer Seurat over Scanpy for most tutorials. Remembers my recurring coaching sessions. Remembers that my newsletter audience skews toward grad students and postdocs.</p>
+
+<p>None of this requires a cloud service. It runs on a <code>$600</code> Mac Mini in my office. All the data stays local. All the memory stays local. The only external calls are to Anthropic and OpenRouter for model inference.</p>
+
+<p>If you build something similar, budget two evenings: one for setup, one for debugging the gotchas I documented above. Spend a third evening auditing your memory after the first week of use. Cheap models will lie to your agent, and your agent will believe them. Edit the routing source code directly. Audit your memory with <code>ov ls</code> and <code>ov read</code>. Do two passes minimum.</p>
+
+<p>Your agent will be different from mine. Your SOUL.md will reflect your work, your voice, your priorities. That&rsquo;s the point.</p>
+
+<p>What AI assistant setup are you using? Have you tried OpenClaw or similar agent frameworks? I&rsquo;d love to hear about your experience &ndash; leave a comment below or find me on <a href="https://x.com/tangming2005" target="_blank">X</a>.</p>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/ai/">AI</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/openclaw/">OpenClaw</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/llm/">LLM</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/claude/">Claude</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/mac-mini/">Mac-Mini</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/personal-assistant/">personal-assistant</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/tutorial/">tutorial</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/deep-learning/">deep-learning</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/reviving-beta-chip-seq-rna-seq-integration-python3/">Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets</a></li>
+        
+        <li><a href="/post/understanding-prcomp-center-scale-arguments/">Understanding prcomp() center and scale Arguments for Single-Cell RNA-seq PCA</a></li>
+        
+        <li><a href="/post/ai-bioinformatics/">Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/" rel="prev">Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

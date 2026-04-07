@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.42" />
+  <meta name="author" content="Ming Tommy Tang">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="I started to learn bioinformatics because I needed to analyze public ChIP-seq data in 2012. That&rsquo;s how I got to know Shirley Liu&rsquo;s lab at Dana-Farber Cancer Institute.
+And God knows that I would join her group in 2020 for a staff scientist position to lead the CIDC bioinformatic project.
+I witnessed the development of many groundbreaking computational tools for genomics in Shirley&rsquo;s lab. One tool that I found particularly elegant was BETA (Binding and Expression Target Analysis), developed by Su Wang and published in Nature Protocols in 2013.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#328cc1">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/custom.css">
+  
+
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-84019592-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+
+  
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/index.xml" type="application/rss+xml" title="Chatomics">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@https://twitter.com/tangming2005">
+  <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
+  
+  <meta property="og:site_name" content="Chatomics">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/">
+  <meta property="og:title" content="Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets | Chatomics">
+  <meta property="og:description" content="I started to learn bioinformatics because I needed to analyze public ChIP-seq data in 2012. That&rsquo;s how I got to know Shirley Liu&rsquo;s lab at Dana-Farber Cancer Institute.
+And God knows that I would join her group in 2020 for a staff scientist position to lead the CIDC bioinformatic project.
+I witnessed the development of many groundbreaking computational tools for genomics in Shirley&rsquo;s lab. One tool that I found particularly elegant was BETA (Binding and Expression Target Analysis), developed by Su Wang and published in Nature Protocols in 2013.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2025-11-09T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2025-11-10T10:50:25-05:00">
+  
+
+  
+  
+
+
+
+
+
+<meta name="description" content="Learn how to predict transcription factor direct targets with BETA, a powerful tool for integrating ChIP-seq and RNA-seq data. Now modernized for Python 3 with Claude Code.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/">
+<meta property="og:title" content="Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets | Chatomics">
+
+<meta property="og:description" content="Learn how to predict transcription factor direct targets with BETA, a powerful tool for integrating ChIP-seq and RNA-seq data. Now modernized for Python 3 with Claude Code.">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets">
+
+<meta name="twitter:description" content="Learn how to predict transcription factor direct targets with BETA, a powerful tool for integrating ChIP-seq and RNA-seq data. Now modernized for Python 3 with Claude Code.">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+<meta property="article:published_time" content="2025-11-09T00:00:00Z">
+<meta property="article:modified_time" content="2025-11-10T10:50:25-05:00">
+<meta property="article:author" content="Ming Tommy Tang">
+
+<meta property="article:tag" content="ChIP-seq">
+
+<meta property="article:tag" content="RNA-seq">
+
+<meta property="article:tag" content="transcription-factor">
+
+<meta property="article:tag" content="python">
+
+<meta property="article:tag" content="BETA">
+
+<meta property="article:tag" content="data-integration">
+
+<meta property="article:tag" content="gene-regulation">
+
+<meta property="article:tag" content="tutorial">
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<meta name="keywords" content="ChIP-seq, RNA-seq, transcription-factor, python, BETA, data-integration, gene-regulation, tutorial">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/">
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets",
+  "description": "Learn how to predict transcription factor direct targets with BETA, a powerful tool for integrating ChIP-seq and RNA-seq data. Now modernized for Python 3 with Claude Code.",
+  "author": {
+    "@type": "Person",
+    "name": "Ming Tommy Tang",
+    "jobTitle": "Director of Bioinformatics",
+    "url": "https://divingintogeneticsandgenomics.com/"
+  },
+  "datePublished": "2025-11-09",
+  "dateModified": "2025-11-10",
+  "image": "https://divingintogeneticsandgenomics.com/img/icon-192.png",
+  "url": "https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/",
+  "keywords": "ChIP-seq, RNA-seq, transcription-factor, python, BETA, data-integration, gene-regulation, tutorial",
+  "proficiencyLevel": "Beginner to Advanced",
+  "dependencies": "R, Bioconductor, ChIP-seq, RNA-seq, transcription-factor, python, BETA, data-integration, gene-regulation, tutorial",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "publisher": {
+    "@type": "Organization",
+    "name": "Chatomics",
+    "url": "https://divingintogeneticsandgenomics.com/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://divingintogeneticsandgenomics.com/img/icon-192.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/"
+  }
+}
+</script>
+
+
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://divingintogeneticsandgenomics.com/"
+    },
+    
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog Posts",
+      "item": "https://divingintogeneticsandgenomics.com/post/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets",
+      "item": "https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/"
+    }
+    
+  ]
+}
+</script>
+
+
+
+
+
+
+
+  <title>Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets | Chatomics</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">Chatomics</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#cv">
+            
+            <span>Newsletter</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#talks">
+            
+            <span>Talks &amp; Teachings</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets</h1>
+
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+        Last updated on
+    
+    <time datetime="2025-11-09 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
+      Nov 10, 2025
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Ming Tommy Tang">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    13 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">bioinformatics</a
+    >, 
+    
+    <a href="https://divingintogeneticsandgenomics.com/categories/genomics/">genomics</a
+    >, 
+    
+    <a href="https://divingintogeneticsandgenomics.com/categories/python/">python</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Reviving%20BETA%20for%20Python%203%3a%20Integrating%20ChIP-seq%20and%20RNA-seq%20to%20Predict%20TF%20Targets&amp;url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2freviving-beta-chip-seq-rna-seq-integration-python3%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2freviving-beta-chip-seq-rna-seq-integration-python3%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2freviving-beta-chip-seq-rna-seq-integration-python3%2f&amp;title=Reviving%20BETA%20for%20Python%203%3a%20Integrating%20ChIP-seq%20and%20RNA-seq%20to%20Predict%20TF%20Targets"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2freviving-beta-chip-seq-rna-seq-integration-python3%2f&amp;title=Reviving%20BETA%20for%20Python%203%3a%20Integrating%20ChIP-seq%20and%20RNA-seq%20to%20Predict%20TF%20Targets"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Reviving%20BETA%20for%20Python%203%3a%20Integrating%20ChIP-seq%20and%20RNA-seq%20to%20Predict%20TF%20Targets&amp;body=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2freviving-beta-chip-seq-rna-seq-integration-python3%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<p>I started to learn bioinformatics because I needed to analyze public ChIP-seq data in 2012.
+That&rsquo;s how I got to know <a href="https://liulab-dfci.github.io/" target="_blank">Shirley Liu&rsquo;s lab</a> at Dana-Farber Cancer Institute.</p>
+
+<p>And God knows that I would join her group in 2020 for a staff scientist position to lead the <a href="https://www.cancer.gov/about-nci/organization/cbiit/projects/cimac-cidc" target="_blank">CIDC bioinformatic project</a>.</p>
+
+<p>I witnessed the development of many groundbreaking computational tools for genomics in Shirley&rsquo;s lab. One tool that I found particularly elegant was BETA (Binding and Expression Target Analysis), developed by Su Wang and published in <a href="https://doi.org/10.1038/nprot.2013.150" target="_blank">Nature Protocols in 2013</a>.</p>
+
+<p>Fast forward to 2025, BETA faced a common problem: it was written in Python 2, which reached end-of-life in 2020. Many researchers still wanted to use this powerful tool, but Python 2 dependencies were increasingly difficult to install. That&rsquo;s when I decided to port it to Python 3 using Claude Code.</p>
+
+<p>It took me ~ 8 hours prompting Claude code (I purchased it for my personal use). Translating python 2 code to python 3 is not perfect. The legacy code has places less optimized. Claude fixed all of them!</p>
+
+<p>What&rsquo;s impressive is that I asked Claude to release the python package in <a href="https://pypi.org/project/beta-binding-analysis/" target="_blank"><code>PyPi</code></a> and set up CI/CD on github, all by prompting!</p>
+
+<p>Another good usage case for Claude code is to write comprehensive technical guide, tutorials and README.</p>
+
+<p>In this post, I&rsquo;ll explain why BETA remains relevant, how I modernized it, and how you can use it for your ChIP-seq and RNA-seq integration analysis.</p>
+
+<h2 id="the-biological-problem-direct-vs-indirect-targets">The biological problem: direct vs indirect targets</h2>
+
+<p>When you perform ChIP-seq to identify where a transcription factor (TF) binds and RNA-seq to see which genes change expression, you face a fundamental question: <strong>Which genes are direct targets versus secondary effects?</strong></p>
+
+<p>This is harder than it seems because:</p>
+
+<ol>
+<li><strong>No 1-to-1 mapping</strong>: A single binding site can regulate multiple genes, and a gene can be regulated by multiple binding sites</li>
+<li><strong>Not all binding is functional</strong>: Some ChIP-seq peaks may not actually regulate nearby genes due to unfavorable chromatin context or missing cofactors</li>
+<li><strong>Secondary effects</strong>: Your TF binds to gene A (direct target), which encodes another TF that regulates gene B (indirect target)</li>
+</ol>
+
+<p>Simply overlapping &ldquo;genes with nearby binding peaks&rdquo; and &ldquo;differentially expressed genes&rdquo; gives you many false positives. You need a smarter integration method.</p>
+
+<h2 id="what-beta-does">What BETA does</h2>
+
+<p>BETA solves this problem by integrating binding and expression data through three key analyses:</p>
+
+<h3 id="1-regulatory-potential-scoring">1. Regulatory potential scoring</h3>
+
+<p>Instead of just assigning the nearest gene to each peak, BETA calculates a <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-1934-6" target="_blank">&ldquo;regulatory potential score&rdquo;</a> for each gene based on ALL nearby binding sites. The score uses an exponentially decaying distance function - binding sites closer to the transcription start site (TSS) contribute more to the score.</p>
+
+<p><strong>The mathematical formula:</strong></p>
+
+<p>For each gene <code>g</code>, the regulatory potential score is:</p>
+
+<pre><code>S_g = Σ exp(-0.5 - 4 × Δ_i)
+</code></pre>
+
+<p>Where:
+- <code>Δ_i</code> = normalized distance from binding site <code>i</code> to the gene TSS
+- <code>Δ = (absolute distance in bp) / (distance cutoff)</code>
+- Default distance cutoff = 100,000 bp (100kb)
+- The summation is over all binding sites within the cutoff</p>
+
+<p><strong>Why this specific formula?</strong></p>
+
+<p>You might wonder: why exponential decay? Why these specific parameters (-0.5 and 4)? As statistician George Box famously said: &ldquo;All models are wrong, but some are useful.&rdquo;</p>
+
+<p>The exponential decay function was chosen for solid biological reasons:</p>
+
+<ol>
+<li><p><strong>Exponential decay matches biology</strong>: Studies of enhancer-promoter interactions show that regulatory effect decreases exponentially (not linearly) with distance. A site at 50kb has much less than half the effect of a site at 25kb.</p></li>
+
+<li><p><strong>The -0.5 constant</strong>: Sets the baseline contribution. A binding site right at the TSS (Δ=0) contributes exp(-0.5) ≈ 0.61 to the score. This prevents any single site from dominating too much.</p></li>
+
+<li><p><strong>The 4× multiplier</strong>: Controls how rapidly the contribution decays with distance:</p>
+
+<ul>
+<li>At 25% of max distance (Δ=0.25): contribution = exp(-0.5 - 1) ≈ 0.22</li>
+<li>At 50% of max distance (Δ=0.5): contribution = exp(-0.5 - 2) ≈ 0.08</li>
+<li>At 100% of max distance (Δ=1.0): contribution = exp(-0.5 - 4) ≈ 0.01</li>
+</ul></li>
+</ol>
+
+<p>The parameters were empirically validated using known TF-target relationships. Is it perfect? No. But it captures the key biological principle: <strong>proximity matters, and it matters exponentially</strong>.</p>
+
+<p><strong>Example calculation:</strong></p>
+
+<p>For a gene with binding sites at 5kb, 20kb, and 80kb from the TSS (with 100kb cutoff):</p>
+
+<pre><code>Δ₁ = 5,000 / 100,000 = 0.05
+Δ₂ = 20,000 / 100,000 = 0.20
+Δ₃ = 80,000 / 100,000 = 0.80
+
+Score = exp(-0.5 - 4×0.05) + exp(-0.5 - 4×0.20) + exp(-0.5 - 4×0.80)
+      = exp(-0.7) + exp(-1.3) + exp(-3.7)
+      = 0.497 + 0.273 + 0.025
+      = 0.795
+</code></pre>
+
+<p>Notice how the distant site (80kb) contributes only 0.025 while the close site (5kb) contributes 0.497 - that&rsquo;s the exponential decay at work.</p>
+
+<h3 id="2-activator-or-repressor-function-prediction">2. Activator or repressor function prediction</h3>
+
+<p>BETA uses the Kolmogorov-Smirnov (KS) test to determine if upregulated or downregulated genes have significantly higher regulatory potential scores than non-differentially expressed genes. This tells you whether your TF primarily activates or represses transcription.</p>
+
+<p><strong>How the KS test works in BETA:</strong></p>
+
+<p>First, BETA divides all genes into three groups:</p>
+
+<ol>
+<li><strong>UP</strong>: Upregulated genes (positive log2FC, passing FDR threshold)</li>
+<li><strong>DOWN</strong>: Downregulated genes (negative log2FC, passing FDR threshold)</li>
+<li><strong>NON</strong>: Non-differentially expressed genes (background)</li>
+</ol>
+
+<p>Then it performs one-tailed KS tests asking:
+- Are regulatory potential scores of UP genes significantly higher than NON genes?
+- Are regulatory potential scores of DOWN genes significantly higher than NON genes?</p>
+
+<p><strong>What does &ldquo;higher scores&rdquo; mean?</strong></p>
+
+<p>The KS test compares cumulative distribution functions (CDFs). Imagine ranking all genes from highest to lowest regulatory potential score. The CDF shows what fraction of genes from each group you&rsquo;ve accumulated as you go down the ranked list.</p>
+
+<p><strong>Example interpretation:</strong></p>
+
+<p>Let&rsquo;s say you have:
+- 1,000 UP genes
+- 1,000 DOWN genes
+- 8,000 NON genes
+- 10,000 total genes</p>
+
+<p>You rank all 10,000 genes by regulatory potential score (highest first). As you walk down the list:</p>
+
+<p><strong>Scenario 1 - TF is an activator:</strong>
+- By gene rank 1,000: You&rsquo;ve seen 600 UP genes (60%), but only 100 NON genes (1.25%)
+- The UP curve rises much faster than the NON curve
+- KS statistic D_up is large, p_up &lt; 0.001 → <strong>Activator</strong></p>
+
+<p><strong>Scenario 2 - TF is a repressor:</strong>
+- By gene rank 1,000: You&rsquo;ve seen 550 DOWN genes (55%), but only 100 NON genes (1.25%)
+- The DOWN curve rises faster than NON
+- KS statistic D_down is large, p_down &lt; 0.001 → <strong>Repressor</strong></p>
+
+<p><strong>The math behind it:</strong></p>
+
+<p>For a one-tailed test checking if UP genes have higher scores:</p>
+
+<pre><code>D_up = max(CDF_UP(x) - CDF_NON(x))
+</code></pre>
+
+<p>This is the maximum vertical distance between the two cumulative distribution curves. A large D value with small p-value means genes with high binding potential are enriched among upregulated genes.</p>
+
+<p><strong>Connection to GSEA:</strong></p>
+
+<p>If you&rsquo;re familiar with Gene Set Enrichment Analysis (GSEA), this should sound familiar! GSEA uses the exact same principle:</p>
+
+<ul>
+<li><strong>GSEA</strong>: Tests if members of a gene set (e.g., &ldquo;cell cycle genes&rdquo;) are enriched at the top or bottom of a ranked list (e.g., genes ranked by differential expression)</li>
+<li><strong>BETA</strong>: Tests if members of a gene set (UP or DOWN genes) are enriched at the top of a ranked list (genes ranked by regulatory potential)</li>
+</ul>
+
+<p>Both tools use the one-tailed KS test to detect enrichment, and both produce similar cumulative distribution curve visualizations. The key difference is what defines the gene set and what defines the ranking:</p>
+
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Gene Set</th>
+<th>Ranked List</th>
+<th>Question</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><strong>GSEA</strong></td>
+<td>Pathway genes (e.g., &ldquo;apoptosis&rdquo;)</td>
+<td>Ranked by expression change</td>
+<td>Are pathway genes enriched among DE genes?</td>
+</tr>
+
+<tr>
+<td><strong>BETA</strong></td>
+<td>UP or DOWN genes</td>
+<td>Ranked by regulatory potential</td>
+<td>Are DE genes enriched among high-binding genes?</td>
+</tr>
+</tbody>
+</table>
+
+<p>BETA essentially flips GSEA&rsquo;s perspective: instead of asking &ldquo;are these biological pathway genes differentially expressed?&rdquo;, it asks &ldquo;do these differentially expressed genes have strong TF binding nearby?&rdquo;</p>
+
+<p>This is why the visualization looks so similar - you&rsquo;re seeing the same statistical test applied to answer complementary biological questions.</p>
+
+<p><strong>BETA&rsquo;s output visualization:</strong>
+<img src="/img/reg_potential_ks.png" alt="" />
+The <code>{name}_function.pdf</code> file shows these cumulative distribution curves:
+- <strong>X-axis</strong>: Genes ranked by regulatory potential (high to low, or 1 to 15,000)</p>
+
+<ul>
+<li><p><strong>Y-axis</strong>: Cumulative percentage of genes (0% to 100%)</p></li>
+
+<li><p><strong>Dashed black line</strong>: NON genes (background)</p></li>
+
+<li><p><strong>Red line</strong>: UP genes</p></li>
+
+<li><p><strong>Blue line</strong>: DOWN genes</p></li>
+</ul>
+
+<p>If the red line shoots up early and stays above the dashed line → your UP genes are enriched for high regulatory potential → <strong>Activator</strong>.</p>
+
+<p>If the blue line rises faster → <strong>Repressor</strong>.</p>
+
+<p>If both red and blue rise faster than background → <strong>Dual function</strong> (the TF can both activate and repress different target genes).</p>
+
+<p><strong>Decision criteria:</strong></p>
+
+<pre><code>If p_up &lt; 0.001 (default):      TF is an ACTIVATOR
+If p_down &lt; 0.001:              TF is a REPRESSOR
+If both p_up and p_down &lt; 0.001: TF is BOTH
+</code></pre>
+
+<p>You can adjust the p-value threshold with the <code>-c</code> parameter (e.g., <code>-c 0.0001</code> for more stringent calling).</p>
+
+<p><strong>Why this matters:</strong></p>
+
+<p>Knowing whether your TF is an activator or repressor guides how you interpret the results:
+- <strong>Activators</strong>: Focus on upregulated direct targets - these are genes your TF turns ON</p>
+
+<ul>
+<li><p><strong>Repressors</strong>: Focus on downregulated direct targets - these are genes your TF turns OFF</p></li>
+
+<li><p><strong>Dual function</strong>: You&rsquo;ll need to analyze both target lists separately</p></li>
+</ul>
+
+<h3 id="3-direct-target-prediction-using-rank-product">3. Direct target prediction using rank product</h3>
+
+<p>Here&rsquo;s where BETA gets clever. It ranks genes by two independent criteria:</p>
+
+<ol>
+<li><strong>Binding rank</strong>: How strong is the regulatory potential?</li>
+<li><strong>Expression rank</strong>: How significant is the expression change?</li>
+</ol>
+
+<p>The rank product identifies genes that score well on BOTH criteria:</p>
+
+<pre><code>Rank Product = (binding_rank / total_genes) × (expression_rank / total_genes)
+</code></pre>
+
+<p>A gene in the top 1% for binding AND top 0.5% for expression gets:</p>
+
+<pre><code>RP = (0.01) × (0.005) = 0.00005
+</code></pre>
+
+<p>This is a very confident direct target! Genes with strong binding but no expression change, or vice versa, get filtered out.</p>
+
+<h2 id="porting-beta-to-python-3-with-claude-code">Porting BETA to Python 3 with Claude Code</h2>
+
+<p>The original BETA was written in Python 2.<sup>6</sup>&frasl;<sub>2</sub>.7. When I tried to use it recently, I encountered multiple issues:</p>
+
+<ul>
+<li>Python 2 is no longer maintained</li>
+<li>Dependencies like <code>numpy</code> and <code>scipy</code> for Python 2 are hard to install</li>
+<li>Modern Python packages don&rsquo;t support Python 2</li>
+</ul>
+
+<p>I could have done the porting manually, but that would have taken weeks of tedious work checking every print statement, string encoding, division operation, and library API change.</p>
+
+<p>Instead, I used Claude Code, and the porting process was remarkably smooth:</p>
+
+<ol>
+<li><strong>Automated syntax modernization</strong>: Claude Code converted print statements, fixed division operators, and updated string handling</li>
+<li><strong>Dependency updates</strong>: Modernized all dependencies to Python 3.8+ compatible versions</li>
+<li><strong>Code quality improvements</strong>: Added type hints and improved error handling</li>
+<li><strong>Testing</strong>: Ensured all three modes (basic, plus, minus) still produced correct results</li>
+</ol>
+
+<p>The entire port took about a day instead of weeks. This is the power of AI-assisted coding - it handles the tedious, repetitive work while I focus on validation and testing.</p>
+
+<p><strong>The message</strong>: Don&rsquo;t abandon great tools just because they&rsquo;re written in legacy Python. With Claude Code, you can modernize them and keep using powerful, well-tested algorithms.</p>
+
+<h2 id="how-to-install-and-use-beta2">How to install and use BETA2</h2>
+
+<h3 id="installation">Installation</h3>
+
+<p>BETA2 is now available on PyPI and installs easily with pip:</p>
+
+<pre><code class="language-bash">pip install beta-binding-analysis
+</code></pre>
+
+<p>That&rsquo;s it! No more dependency hell.</p>
+
+<h3 id="basic-usage-example">Basic usage example</h3>
+
+<p>Let&rsquo;s say you have:
+- ChIP-seq peaks from your transcription factor (BED format)
+- Differential expression results from RNA-seq (comparing TF activation vs control)</p>
+
+<p><strong>IMPORTANT</strong>: Your differential expression should represent TF activation (overexpression, stimulation) vs control. If you only have knockdown data, flip the sign of your log2FC values (multiply by -1).</p>
+
+<pre><code class="language-bash">beta basic \
+  -p TF_peaks.bed \
+  -e diff_expr.txt \
+  -k LIM \
+  -g hg38 \
+  -n my_TF \
+  -o results/
+</code></pre>
+
+<p><strong>Parameters</strong>:
+- <code>-p</code>: ChIP-seq peaks (BED format, 3 or 5 columns).
+- <code>-e</code>: Differential expression file.
+- <code>-k LIM</code>: File format (LIM=LIMMA, CUF=Cuffdiff, BSF=BETA standard format, O=custom).
+- <code>-g hg38</code>: Genome assembly (hg38, hg19, mm10, mm9).
+- <code>-n</code>: Experiment name (used for output file prefixes).
+- <code>-o</code>: Output directory.</p>
+
+<h3 id="important-peak-number-cutoff">IMPORTANT: Peak number cutoff</h3>
+
+<p><strong>BETA only uses the top 10,000 peaks by default</strong>, even if your BED file contains many more!</p>
+
+<p>If you have 34,000 peaks in your file, you&rsquo;ll see this message:</p>
+
+<pre><code>Read file &lt;your_peaks.bed&gt; All &lt;10000&gt; peaks
+</code></pre>
+
+<p>This is a design choice to:
+- <strong>Focus on high-confidence peaks</strong>: The strongest peaks are most likely functional
+- <strong>Reduce computational time</strong>: Fewer peaks = faster analysis
+- <strong>Reduce noise</strong>: Weaker peaks may not represent real binding events</p>
+
+<p><strong>To use all your peaks</strong>, add the <code>--pn</code> parameter:</p>
+
+<pre><code class="language-bash">beta basic \
+  -p TF_peaks.bed \
+  -e diff_expr.txt \
+  -k LIM \
+  -g hg38 \
+  -n my_TF \
+  --pn 34000 \
+  -o results/
+</code></pre>
+
+<p>Or set it high to ensure all peaks are included:</p>
+
+<pre><code class="language-bash">--pn 100000
+</code></pre>
+
+<p><strong>When to adjust this:</strong>
+- <strong>Keep default (10,000)</strong>: If you have broad/noisy ChIP-seq or want to focus on strongest binding
+- <strong>Increase</strong>: If you have high-quality ChIP-seq with many strong peaks and want comprehensive analysis
+- <strong>Decrease (e.g., <code>--pn 5000</code>)</strong>: If you want to analyze only the very strongest binding events</p>
+
+<p>I learned this the hard way when my analysis with 34,000 peaks only used 10,000! Always check the output messages to verify how many peaks BETA is actually using.</p>
+
+<h3 id="understanding-the-output">Understanding the output</h3>
+
+<p>BETA generates several files:</p>
+
+<ol>
+<li><strong><code>my_TF_function.pdf</code></strong>: Visualization showing whether your TF is an activator, repressor, or both</li>
+<li><strong><code>my_TF_uptarget.txt</code></strong>: Upregulated direct targets (if activator)</li>
+<li><strong><code>my_TF_downtarget.txt</code></strong>: Downregulated direct targets (if repressor)</li>
+</ol>
+
+<p>Each target file contains:</p>
+
+<pre><code>chr1    1000000    1002000    NM_001234    0.00012    +    GENE_SYMBOL
+</code></pre>
+
+<p>The 5th column is the rank product - lower values = more confident direct targets.</p>
+
+<p><strong>Rule of thumb</strong>: Rank product &lt; 0.001 gives you high-confidence direct targets (genes in top ~3% for both binding and expression).</p>
+
+<h3 id="example-with-estrogen-receptor">Example with estrogen receptor</h3>
+
+<p>The package includes test data for ESR1 (estrogen receptor alpha):</p>
+
+<pre><code class="language-bash">beta basic \
+  -p BETA_test_data/ER_349_peaks.bed \
+  -e BETA_test_data/ESR1_diff_expr.xls \
+  -k O \
+  --info 1,2,6 \
+  -g hg19 \
+  -n ESR1
+</code></pre>
+
+<p>This analyzes ER binding sites and estrogen-induced gene expression changes to identify ER direct targets.</p>
+
+<h3 id="advanced-motif-analysis">Advanced: Motif analysis</h3>
+
+<p>Want to discover cofactors? Use <code>beta plus</code> mode with a genome FASTA file:</p>
+
+<pre><code class="language-bash">beta plus \
+  -p TF_peaks.bed \
+  -e diff_expr.txt \
+  -k LIM \
+  -g hg38 \
+  --gs hg38.fa \
+  -n my_TF \
+  -o results/
+</code></pre>
+
+<p>This performs motif scanning to identify enriched TF binding motifs near your factor&rsquo;s peaks, revealing potential collaborating transcription factors.</p>
+
+<h2 id="when-to-use-beta">When to use BETA</h2>
+
+<p>BETA is perfect for:</p>
+
+<ul>
+<li><strong>ChIP-seq + RNA-seq integration</strong>: You have both datasets for the same TF</li>
+<li><strong>Target identification</strong>: You want to know which genes are DIRECT targets</li>
+<li><strong>Functional characterization</strong>: You want to know if your TF activates, represses, or both</li>
+<li><strong>Cofactor discovery</strong>: You want to find collaborating TFs (use plus mode)</li>
+</ul>
+
+<h2 id="why-beta-still-matters-in-2025">Why BETA still matters in 2025</h2>
+
+<p>You might ask: why use a tool from 2013? Several reasons:</p>
+
+<ol>
+<li><strong>The algorithm is still state-of-the-art</strong>: The regulatory potential model and rank product approach remain elegant and effective. In fact, the method is simple, easy to understand, and yet powerful. Simplicity is beauty.</li>
+<li><strong>Well-validated</strong>: Cited over 500 times, used successfully in countless studies</li>
+<li><strong>Interpretable</strong>: Unlike black-box machine learning models, you can understand exactly how BETA makes predictions</li>
+<li><strong>Fast</strong>: Runs in minutes, not hours</li>
+<li><strong>Now modernized</strong>: Python 3 support means it works with current software ecosystems</li>
+</ol>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>BETA represents the best of computational biology: elegant algorithms solving real biological problems with interpretable results. Thanks to Claude Code, this powerful tool is now accessible to a new generation of researchers using modern Python environments.</p>
+
+<p>If you&rsquo;re integrating ChIP-seq and RNA-seq data, I highly recommend giving BETA a try. The Python 3 version maintains all the power of the original while working seamlessly with current tools and workflows.</p>
+
+<h2 id="resources">Resources</h2>
+
+<ul>
+<li><strong>GitHub repository</strong>: <a href="https://github.com/crazyhottommy/BETA2" target="_blank">https://github.com/crazyhottommy/BETA2</a></li>
+<li><strong>PyPI package</strong>: <a href="https://pypi.org/project/beta-binding-analysis/" target="_blank">https://pypi.org/project/beta-binding-analysis/</a></li>
+<li><strong>Original paper</strong>: Wang et al. (2013) <a href="https://doi.org/10.1038/nprot.2013.150" target="_blank">Nature Protocols</a></li>
+<li><strong>Original BETA</strong>: <a href="http://cistrome.org/BETA/" target="_blank">http://cistrome.org/BETA/</a></li>
+</ul>
+
+<p><strong>Questions or issues?</strong> Open an issue on GitHub or comment below!</p>
+
+<p><strong>Acknowledgments</strong>: Thanks to Su Wang for developing the original BETA, and to Shirley Liu for creating such a productive environment for computational method development. My two years in the Liu lab shaped my approach to computational biology.</p>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/chip-seq/">ChIP-seq</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/rna-seq/">RNA-seq</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/transcription-factor/">transcription-factor</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/python/">python</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/beta/">BETA</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/data-integration/">data-integration</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/gene-regulation/">gene-regulation</a>
+  
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/tutorial/">tutorial</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/post/understanding-prcomp-center-scale-arguments/">Understanding prcomp() center and scale Arguments for Single-Cell RNA-seq PCA</a></li>
+        
+        <li><a href="/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/">How to separate a comma delimited string into multiple lines in R and python </a></li>
+        
+        <li><a href="/project/single-cell-atacseq/">Snakemake pipeline post-processing scATAC-seq</a></li>
+        
+        <li><a href="/post/how-to-make-a-transcript-to-gene-mapping-file/">How to make a transcript to gene mapping file</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/" rel="next">I Built a Personal AI Assistant on a Mac Mini</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="https://divingintogeneticsandgenomics.com/post/understanding-prcomp-center-scale-arguments/" rel="prev">Understanding prcomp() center and scale Arguments for Single-Cell RNA-seq PCA</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "divingintogeneticsandgenomics" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+

@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Spatial on Chatomics</title>
-    <link>/categories/spatial/</link>
+    <link>https://divingintogeneticsandgenomics.com/categories/spatial/</link>
     <description>Recent content in Spatial on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Sat, 03 May 2025 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/spatial/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/categories/spatial/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Exploring Spatial Transcriptomics A Dive into Visium Data Analysis in Python</title>
-      <link>/post/python-visium/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/python-visium/</link>
       <pubDate>Sat, 03 May 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/python-visium/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/python-visium/</guid>
       <description>Why guest posting? I want to write more hands-on tutorials, but I realized:
  I am not an expert for every data type. I am too busy to write new ones.  So that&amp;rsquo;s why I started to experiment guest posting!
 If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
@@ -26,10 +26,10 @@ I love to collaborate and share knowledge!</description>
     
     <item>
       <title>neighborhood/cellular niches analysis with spatial transcriptome data in Seurat and Bioconductor</title>
-      <link>/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</link>
       <pubDate>Tue, 08 Aug 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</guid>
       <description>Spatial transcriptome cellular niche analysis using 10x xenium data go to https://www.10xgenomics.com/resources/datasets
 There is a lung cancer and a breast cancer dataset. Let’s work on the lung cancer one.
 https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard
@@ -40,10 +40,10 @@ wget https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/1.3.0/Xenium_Pr
     
     <item>
       <title>How to do neighborhood/cellular niches analysis with spatial transcriptome data </title>
-      <link>/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/</link>
       <pubDate>Fri, 14 Apr 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
 In a previous blog post, I showed you how to make a Seurat spatial object from Vizgen spatial transcriptome data. In this post, I am going to show you how to identify clusters of neighborhood or cellular niches where specific cell types tend to co-localize.
  read in the data and pre-process library(Seurat) library(here) library(ggplot2) library(dplyr) # the LoadVizgen function requires the raw segmentation files which is too big.</description>
@@ -51,10 +51,10 @@ In a previous blog post, I showed you how to make a Seurat spatial object from V
     
     <item>
       <title>How to construct a spatial object in Seurat</title>
-      <link>/post/how-to-construct-a-spatial-object-in-seurat/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-construct-a-spatial-object-in-seurat/</link>
       <pubDate>Thu, 30 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-construct-a-spatial-object-in-seurat/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-construct-a-spatial-object-in-seurat/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
 Single-cell spatial transcriptome data is a new and advanced technology that combines the study of individual cells’ genes and their location in a tissue to understand the complex cellular and molecular differences within it. This allows scientists to investigate how genes are expressed and how cells interact with each other with much greater detail than before.</description>
     </item>

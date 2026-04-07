@@ -18,7 +18,7 @@
   <meta name="description" content="Director of Bioinformatics">
 
   
-  <link rel="alternate" hreflang="en-us" href="/tags/scrnaseq/">
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/tags/scrnaseq/">
 
   
 
@@ -75,15 +75,15 @@
   
 
   
-  <link rel="alternate" href="/tags/scrnaseq/index.xml" type="application/rss+xml" title="Chatomics">
-  <link rel="feed" href="/tags/scrnaseq/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/tags/scrnaseq/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/tags/scrnaseq/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/tags/scrnaseq/">
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/tags/scrnaseq/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -91,16 +91,69 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="Chatomics">
-  <meta property="og:url" content="/tags/scrnaseq/">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/tags/scrnaseq/">
   <meta property="og:title" content="ScRNAseq | Chatomics">
   <meta property="og:description" content="Director of Bioinformatics">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2020-02-21T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2020-03-17T00:00:00&#43;00:00">
   
 
   
   
+
+
+
+
+
+<meta name="description" content="">
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/tags/scrnaseq/">
+<meta property="og:title" content="ScRNAseq | Chatomics">
+
+<meta property="og:description" content="">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="ScRNAseq">
+
+<meta name="twitter:description" content="">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/tags/scrnaseq/">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <title>ScRNAseq | Chatomics</title>
 
@@ -284,7 +337,20 @@
   
   
   <div>
-    <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/">stacked violin plot for visualizing single-cell data in Seurat</a></h2>
+    <div class="article-style">
+      
+      In scanpy, there is a function to create a stacked violin plot.
+There is no such function in Seurat, and many people were asking for this feature. e.g. <a href="https://github.com/satijalab/seurat/issues/300" target="_blank">https://github.com/satijalab/seurat/issues/300</a>
+<a href="https://github.com/satijalab/seurat/issues/463" target="_blank">https://github.com/satijalab/seurat/issues/463</a>
+The developers have not implemented this feature yet. In this post, I am trying to make a stacked violin plot in Seurat.
+The idea is to create a violin plot per gene using the VlnPlot in Seurat, then customize the axis text/tick and reduce the margin for each plot and finally concatenate by cowplot::plot_grid or patchwork::wrap_plots.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
     <div class="article-style">
       
       In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
@@ -294,7 +360,7 @@ My next thought is: maybe the STAR aligner is doing something weird that exclude
   </div>
   
   <div>
-    <h2><a href="/post/cellranger-mk-reference-with-transgenes/">cellranger mk reference with transgenes</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/cellranger-mk-reference-with-transgenes/">cellranger mk reference with transgenes</a></h2>
     <div class="article-style">
       
       The problem I am working on some 10x scRNAseq data from transgenic mouse. The cells express Tdtomato and Cre genes. I need to add those to the cellranger reference to get the counts for those two genes.
@@ -307,7 +373,7 @@ tdtomato_cre.fa:
   </div>
   
   <div>
-    <h2><a href="/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/">add pct_in for each cluster for scRNAseq result table using list column</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/">add pct_in for each cluster for scRNAseq result table using list column</a></h2>
     <div class="article-style">
       
       Using nested dataframe and list column has transformed my way of data wrangling in R. For more on this topic, I highly recommend purrr tutorial from Jenney Bryan.
@@ -318,7 +384,7 @@ I am going to use presto for differential gene expression test. presto performs 
   </div>
   
   <div>
-    <h2><a href="/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/">Mixing mouse and human 10x single cell RNAseq data</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/">Mixing mouse and human 10x single cell RNAseq data</a></h2>
     <div class="article-style">
       
       In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.
@@ -329,7 +395,7 @@ In this paper <a href="https://www.biorxiv.org/content/10.1101/630087v1.full" ta
   </div>
   
   <div>
-    <h2><a href="/post/negative-bionomial-distribution-in-single-cell-rnaseq/">negative bionomial distribution in (single-cell) RNAseq </a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/negative-bionomial-distribution-in-single-cell-rnaseq/">negative bionomial distribution in (single-cell) RNAseq </a></h2>
     <div class="article-style">
       
       This post is inspired by two posts written by Valentine Svensson:
@@ -342,7 +408,7 @@ Thanks for writing those and put both the data and code in public. After I read 
   </div>
   
   <div>
-    <h2><a href="/post/run-rstudio-server-with-singularity-on-hpc/">Run Rstudio server with singularity on HPC</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/run-rstudio-server-with-singularity-on-hpc/">Run Rstudio server with singularity on HPC</a></h2>
     <div class="article-style">
       
       Background Please read the following before go ahead:
@@ -357,7 +423,7 @@ Thanks for writing those and put both the data and code in public. After I read 
   </div>
   
   <div>
-    <h2><a href="/post/understand-10x-scrnaseq-and-scatac-fastqs/">understand 10x scRNAseq and scATAC fastqs</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/understand-10x-scrnaseq-and-scatac-fastqs/">understand 10x scRNAseq and scATAC fastqs</a></h2>
     <div class="article-style">
       
       single cell RNAseq Please read the following posts by Dave Tang. When I google, I always find his posts on top of the pages. Thanks for sharing your knowledge.
@@ -369,7 +435,7 @@ From the 10x manual:
   </div>
   
   <div>
-    <h2><a href="/project/evaluating-scrnaseq-cluster/">Evaluating single cell RNAseq cluster stability</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/project/evaluating-scrnaseq-cluster/">Evaluating single cell RNAseq cluster stability</a></h2>
     <div class="article-style">
       
       An R package for evaluating and visualizing scRNAseq cluster stability

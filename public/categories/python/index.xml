@@ -2,22 +2,33 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Python on Chatomics</title>
-    <link>/categories/python/</link>
+    <link>https://divingintogeneticsandgenomics.com/categories/python/</link>
     <description>Recent content in Python on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sat, 03 May 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Nov 2025 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/python/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets</title>
+      <link>https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/</link>
+      <pubDate>Sun, 09 Nov 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/</guid>
+      <description>I started to learn bioinformatics because I needed to analyze public ChIP-seq data in 2012. That&amp;rsquo;s how I got to know Shirley Liu&amp;rsquo;s lab at Dana-Farber Cancer Institute.
+And God knows that I would join her group in 2020 for a staff scientist position to lead the CIDC bioinformatic project.
+I witnessed the development of many groundbreaking computational tools for genomics in Shirley&amp;rsquo;s lab. One tool that I found particularly elegant was BETA (Binding and Expression Target Analysis), developed by Su Wang and published in Nature Protocols in 2013.</description>
+    </item>
+    
+    <item>
       <title>Exploring Spatial Transcriptomics A Dive into Visium Data Analysis in Python</title>
-      <link>/post/python-visium/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/python-visium/</link>
       <pubDate>Sat, 03 May 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/python-visium/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/python-visium/</guid>
       <description>Why guest posting? I want to write more hands-on tutorials, but I realized:
  I am not an expert for every data type. I am too busy to write new ones.  So that&amp;rsquo;s why I started to experiment guest posting!
 If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
@@ -26,10 +37,10 @@ I love to collaborate and share knowledge!</description>
     
     <item>
       <title>How to separate a comma delimited string into multiple lines in R and python </title>
-      <link>/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</link>
       <pubDate>Thu, 09 May 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 The problem df&amp;lt;- data.frame(id = c(1,2,3), value = c(&amp;#39;x,y&amp;#39;, &amp;#39;z,w&amp;#39;, &amp;#39;a&amp;#39;)) df #&amp;gt; id value #&amp;gt; 1 1 x,y #&amp;gt; 2 2 z,w #&amp;gt; 3 3 a we want to put x,y in the first row into two rows:
 1, x
@@ -40,10 +51,10 @@ and put z,w into two rows too.
     
     <item>
       <title>My opinionated selection of books/urls for bioinformatics/data science curriculum</title>
-      <link>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</link>
       <pubDate>Thu, 12 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/</guid>
       <description>There was a paper on this topic: A New Online Computational Biology Curriculum.
 I am going to provide a biased list below (I have read most of the books if not all). I say it is biased because you will see many books of R are from Hadely Wickham. I now use tidyverse most of the time.
 Unix I suggest people who want to learn bioinformatics starting to learn unix commands first.</description>
@@ -51,10 +62,10 @@ Unix I suggest people who want to learn bioinformatics starting to learn unix co
     
     <item>
       <title>Split a 10xscATAC bam file by cluster</title>
-      <link>/post/split-a-10xscatac-bam-file-by-cluster/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/split-a-10xscatac-bam-file-by-cluster/</link>
       <pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/split-a-10xscatac-bam-file-by-cluster/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/split-a-10xscatac-bam-file-by-cluster/</guid>
       <description>I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in IGV.
 The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.</description>
     </item>

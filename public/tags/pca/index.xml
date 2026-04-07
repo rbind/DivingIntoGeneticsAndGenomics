@@ -2,22 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Pca on Chatomics</title>
-    <link>/tags/pca/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/pca/</link>
     <description>Recent content in Pca on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sat, 19 Oct 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 29 Oct 2025 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/pca/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/pca/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Understanding prcomp() center and scale Arguments for Single-Cell RNA-seq PCA</title>
+      <link>https://divingintogeneticsandgenomics.com/post/understanding-prcomp-center-scale-arguments/</link>
+      <pubDate>Wed, 29 Oct 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://divingintogeneticsandgenomics.com/post/understanding-prcomp-center-scale-arguments/</guid>
+      <description>During my work with single-cell RNA-seq data, I’ve often encountered confusion about PCA and specifically when to use the center and scale arguments in R’s prcomp() function. While tools like Seurat’s RunPCA() abstract away these details, understanding what happens under the hood is crucial for proper analysis and troubleshooting.
+In this post, I’ll show you exactly what center and scale do, why they matter, and what happens when you get them wrong.</description>
+    </item>
+    
+    <item>
       <title>How CCA alignment and cell label transfer work in Seurat</title>
-      <link>/post/cca-alignment/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/cca-alignment/</link>
       <pubDate>Sat, 19 Oct 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/cca-alignment/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/cca-alignment/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 Understand CCA Following my last blog post on PCA projection and cell label transfer, we are going to talk about CCA.
 In single-cell RNA-seq data integration using Canonical Correlation Analysis (CCA), we typically align two matrices representing different datasets, where both datasets have the same set of genes but different numbers of cells.</description>
@@ -25,10 +35,10 @@ In single-cell RNA-seq data integration using Canonical Correlation Analysis (CC
     
     <item>
       <title>How PCA projection and cell label transfer work in Seurat</title>
-      <link>/post/pca-projection/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/pca-projection/</link>
       <pubDate>Thu, 17 Oct 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/pca-projection/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/pca-projection/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 Understand the example datasets We will use PBMC3k and PBMC10k data. We will project the PBMC3k data to the PBMC10k data and get the labels
 library(Seurat) library(Matrix) library(irlba) # For PCA library(RcppAnnoy) # For fast nearest neighbor search library(dplyr) # Assuming the PBMC datasets (3k and 10k) are already normalized # and represented as sparse matrices # devtools::install_github(&amp;#39;satijalab/seurat-data&amp;#39;) library(SeuratData) #AvailableData() #InstallData(&amp;quot;pbmc3k&amp;quot;) pbmc3k&amp;lt;-UpdateSeuratObject(pbmc3k) pbmc3k@meta.</description>
@@ -36,10 +46,10 @@ library(Seurat) library(Matrix) library(irlba) # For PCA library(RcppAnnoy) # Fo
     
     <item>
       <title>permutation test for PCA components</title>
-      <link>/post/permute-test-for-pca-components/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/permute-test-for-pca-components/</link>
       <pubDate>Fri, 04 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/permute-test-for-pca-components/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/permute-test-for-pca-components/</guid>
       <description>PCA is a critical method for dimension reduction for high-dimensional data. High-dimensional data are data with features (p) a lot more than observations (n). However, this is changing with single-cell RNAseq data. Now, we can sequence millions (n) of single cells and each cell has ~20,000 genes/features (p).
 I suggest you read my previous blog post on using svd to calculate PCs.
 Single-cell expression data PCA In single-cell RNAseq analysis, feature selection will be performed first.</description>
@@ -47,10 +57,10 @@ Single-cell expression data PCA In single-cell RNAseq analysis, feature selectio
     
     <item>
       <title>PCA in action</title>
-      <link>/post/pca-in-action/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/pca-in-action/</link>
       <pubDate>Tue, 18 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/pca-in-action/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/pca-in-action/</guid>
       <description>PCA in practice. Principal Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).
 Let’s use a microarray data for demonstration.</description>
     </item>

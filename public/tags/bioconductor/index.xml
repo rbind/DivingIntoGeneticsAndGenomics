@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Bioconductor on Chatomics</title>
-    <link>/tags/bioconductor/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/bioconductor/</link>
     <description>Recent content in Bioconductor on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Tue, 15 Jul 2025 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/bioconductor/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/bioconductor/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>How to create a GenomicRanges object in Bioconductor using canonical transcripts</title>
-      <link>/post/canonical-tx/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/canonical-tx/</link>
       <pubDate>Tue, 15 Jul 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/canonical-tx/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/canonical-tx/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 Introduction to Annotation Data Packages in Bioconductor Accurate gene and transcript annotation is the foundation of many bioinformatics workflows, including RNA-seq analysis, functional genomics, and variant annotation.
 In the R/Bioconductor ecosystem, dedicated annotation data packages make it easy for researchers to access, query, and leverage gene models sourced from major biological databases.</description>
@@ -25,10 +25,10 @@ In the R/Bioconductor ecosystem, dedicated annotation data packages make it easy
     
     <item>
       <title>R or Python for Bioinformatics?</title>
-      <link>/post/r-or-python-for-bioinformatics/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/r-or-python-for-bioinformatics/</link>
       <pubDate>Wed, 05 Jun 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/r-or-python-for-bioinformatics/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/r-or-python-for-bioinformatics/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 R or Python for Bioinformatics? Watch the video here:
     If you need to pick Python or R for bioinformatics, which one should you choose? This is a decades-old question from many beginners.
@@ -38,10 +38,10 @@ I started learning Unix Commands 12 years ago (See an example of how powerful Un
     
     <item>
       <title>Downstream of bulk RNAseq: read in salmon output using tximport and then DESeq2</title>
-      <link>/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</link>
       <pubDate>Mon, 18 Mar 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</guid>
       <description>Join my newsletter to not miss a post like this
 In the last blog post, I showed you how to use salmon to get counts from fastq files downloaded from GEO. In this post, I am going to show you how to read in the .sf salmon quantification file into R; how to get the tx2gene.txt file and do DESeq2 for differential gene expression analysis. Let’s dive in!
 library(tximport) library(dplyr) library(ggplot2) files&amp;lt;- list.</description>
@@ -49,10 +49,10 @@ library(tximport) library(dplyr) library(ggplot2) files&amp;lt;- list.</descript
     
     <item>
       <title>Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</title>
-      <link>/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/</link>
       <pubDate>Tue, 05 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/</guid>
       <description>In my last post, I showed you how to get the protein and RNA counts from a CITE-seq experiment using Simpleaf.
 Now that we have the raw count matrices, we are ready to explore them within R.
 To follow the tutorial, you can download the associated data from here.
@@ -61,10 +61,10 @@ Load the data suppressPackageStartupMessages({ library(fishpond) library(ggplot2
     
     <item>
       <title>How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</title>
-      <link>/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</link>
       <pubDate>Thu, 26 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
 The Cancer Genome Atlas (TCGA) project is probably one of the most well-known large-scale cancer sequencing project. It sequenced ~10,000 treatment-naive tumors across 33 cancer types. Different data including whole-exome, whole-genome, copy-number (SNP array), bulk RNAseq, protein expression (Reverse-Phase Protein Array), DNA methylation are available.
 TCGA is a very successful large sequencing project. I highly recommend learning from the organization of it.</description>
@@ -72,10 +72,10 @@ TCGA is a very successful large sequencing project. I highly recommend learning 
     
     <item>
       <title>How to create pseudobulk from single-cell RNAseq data </title>
-      <link>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</link>
       <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</guid>
       <description>What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
 Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
 In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.</description>
@@ -83,10 +83,10 @@ In this blog post, I’ll guide you through the art of creating pseudobulk data 
     
     <item>
       <title>How to make a triangle correlation heatmap with p-values labeled </title>
-      <link>/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</link>
       <pubDate>Sun, 05 Feb 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</guid>
       <description>In this blog post, I am going to show you how to make a correlation heatmap with p-values and significant values labeled in the heatmap body. Let’s use the PBMC single cell data as an example.
 You may want to read my previous blog post How to do gene correlation for single-cell RNAseq data.
 Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) library(hdWGCNA) library(WGCNA) set.seed(1234)  prepare the data data(&amp;quot;pbmc3k&amp;quot;) pbmc3k #&amp;gt; An object of class Seurat #&amp;gt; 13714 features across 2700 samples within 1 assay #&amp;gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&amp;lt;- pbmc3k %&amp;gt;% NormalizeData(normalization.</description>
@@ -94,20 +94,20 @@ Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2
     
     <item>
       <title>How to do gene correlation for single-cell RNAseq data (part 2) using meta-cell </title>
-      <link>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/</link>
       <pubDate>Mon, 23 Jan 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-2-using-meta-cell/</guid>
       <description>In my last blog post, I showed that pearson gene correlation for single-cell data has flaws because of the sparsity of the count matrix.
 One way to get around it is to use the so called meta-cell. One can use KNN to find the K nearest neighbors and collapse them into a meta-cell. You can implement it from scratch, but one should not re-invent the wheel. For example, you can use metacells.</description>
     </item>
     
     <item>
       <title>Partial least square regression for marker gene identification in scRNAseq data</title>
-      <link>/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</link>
       <pubDate>Thu, 16 Jun 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</guid>
       <description>This is an extension of my last blog post marker gene selection using logistic regression and regularization for scRNAseq.
 Let’s use the same PBMC single-cell RNAseq data as an example.
 Load libraries
@@ -117,10 +117,10 @@ library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # fo
     
     <item>
       <title>Obtain metadata for public datasets in GEO</title>
-      <link>/post/obtain-metadata-for-public-datasets-in-geo/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/obtain-metadata-for-public-datasets-in-geo/</link>
       <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
       
-      <guid>/post/obtain-metadata-for-public-datasets-in-geo/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/obtain-metadata-for-public-datasets-in-geo/</guid>
       <description>There are so many public datasets there waiting for us to mine! It is the blessing and cursing as a computational biologist!
 Metadata, or the data describing (e.g., responder or non-responder for the treatment) the data are critical in interpreting the analysis. Without metadata, your data are useless.
 People usually go to GEO or ENA to download public data. I asked this question on twitter, and I will show you how to get the metadata as suggested by all the awesome tweeps.</description>
@@ -128,10 +128,10 @@ People usually go to GEO or ENA to download public data. I asked this question o
     
     <item>
       <title>Develop Bioconductor packages with docker container</title>
-      <link>/post/develop-bioconductor-packages-with-docker-container/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/develop-bioconductor-packages-with-docker-container/</link>
       <pubDate>Tue, 06 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/develop-bioconductor-packages-with-docker-container/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/develop-bioconductor-packages-with-docker-container/</guid>
       <description>Readings links to read:
  https://www.bioconductor.org/developers/package-guidelines/#rcode
  https://github.com/Bioconductor/Contributions

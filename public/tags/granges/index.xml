@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>GRanges on Chatomics</title>
-    <link>/tags/granges/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/granges/</link>
     <description>Recent content in GRanges on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Wed, 29 May 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/granges/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/granges/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Calculate scATACseq TSS enrichment score</title>
-      <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/calculate-scatacseq-tss-enrichment-score/</link>
       <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/calculate-scatacseq-tss-enrichment-score/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/calculate-scatacseq-tss-enrichment-score/</guid>
       <description>TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
 From the Encode page:
  Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).</description>
@@ -25,10 +25,10 @@ From the Encode page:
     
     <item>
       <title>plot 10x scATAC coverage by cluster/group</title>
-      <link>/post/plot-10x-scatac-coverage-by-cluster-group/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/plot-10x-scatac-coverage-by-cluster-group/</link>
       <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
       <description>This post was inspired by Andrew Hill’s recent blog post.
 Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
 &amp;mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.</description>
@@ -36,10 +36,10 @@ Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGeno
     
     <item>
       <title>Compute averages/sums on GRanges or equal length bins</title>
-      <link>/post/compute-averages-sums-on-granges-or-equal-length-bins/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/compute-averages-sums-on-granges-or-equal-length-bins/</link>
       <pubDate>Fri, 07 Sep 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/compute-averages-sums-on-granges-or-equal-length-bins/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/compute-averages-sums-on-granges-or-equal-length-bins/</guid>
       <description>Googling is a required technique for programmers. Once I have a programming problem in mind, the first thing I do is to google to see if other people have encountered the same problem and maybe they already have a solution. Do not re-invent the wheels. Actually, reading other people’s code and mimicing their code is a great way of learning. Today, I am going to show you how to compute binned averages/sums along a genome or any genomic regions of interest.</description>
     </item>
     

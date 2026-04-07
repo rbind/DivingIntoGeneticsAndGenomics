@@ -2,32 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Deeplearning on Chatomics</title>
-    <link>/tags/deeplearning/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/deeplearning/</link>
     <description>Recent content in Deeplearning on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Tue, 31 Oct 2023 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/deeplearning/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/deeplearning/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>My 4-steps to learn deep learning for genomics</title>
-      <link>/post/how-i-am-learning-deep-learning/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-i-am-learning-deep-learning/</link>
       <pubDate>Tue, 31 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-i-am-learning-deep-learning/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-i-am-learning-deep-learning/</guid>
       <description>Step 1, get a high-level understanding  Watch statquest by Josh Starmer.       1blue3brown deep learning playlist       Step2, code it out! If you are into python, watch “The spelled-out intro to neural networks and backpropagation: building micrograd”:
     I still code in R for most of the time, so I walk through the R code in the deep learning with R book.</description>
     </item>
     
     <item>
       <title>How to code a variational autoencoder (VAE) in R using the MNIST dataset</title>
-      <link>/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/</link>
       <pubDate>Wed, 18 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-code-a-variational-autoencoder-vae-in-r-using-mnist-dataset/</guid>
       <description>Imagine you have a bunch of pictures of cats, and you want to find a way to generate new cat pictures that look similar to the ones you have. A variation autoencoder (VAE) is like a magical tool for creating these new cat pictures.
 Here’s how it works:
 Encoder: The VAE first takes your cat pictures and passes them through an encoder. This encoder is like a detective that tries to capture the important features of the cats, such as their fur color, size, and shape.</description>
@@ -35,69 +35,69 @@ Encoder: The VAE first takes your cat pictures and passes them through an encode
     
     <item>
       <title>Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</title>
-      <link>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</link>
       <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</guid>
       <description>The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
 The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock. When the TCR encounters a target it recognizes, it sends signals to the T-cell telling it to attack and destroy the invader.</description>
     </item>
     
     <item>
       <title>Generative AI: Text generation using Long short-term memory (LSTM) model</title>
-      <link>/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</link>
       <pubDate>Sun, 24 Sep 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</guid>
       <description>In the world of deep learning, generating sequence data is a fundamental task. Typically, this involves training a network, often an RNN (Recurrent Neural Network) or a convnet (Convolutional Neural Network), to predict the next token or a sequence of tokens in a given sequence, using the preceding tokens as input. For example, when provided with the input “the cat is on the ma,” the network’s objective is to predict the next character, such as ‘t.</description>
     </item>
     
     <item>
       <title>How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</title>
-      <link>/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</link>
       <pubDate>Sat, 09 Sep 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</guid>
       <description>In the mysterious world of DNA, where the secrets of life are encoded, scientists are harnessing the power of cutting-edge technology to decipher the language of genes. One of the remarkable tools they’re using is the 1D Convolutionary Neural Network, or 1D CNN, which might sound like jargon from a sci-fi movie, but it’s actually a game-changer in DNA sequence analysis.
 Imagine DNA as a long, intricate string of letters, like a never-ending alphabet book.</description>
     </item>
     
     <item>
       <title>Long Short-term memory (LSTM) Recurrent Neural Network (RNN) to classify movie reviews </title>
-      <link>/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/</link>
       <pubDate>Sun, 03 Sep 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/long-short-term-memory-lstm-recurrent-neural-network-rnn-to-classify-movie-reviews/</guid>
       <description>A major characteristic of all neural networks I have used so far, such as densely connected networks and convnets (CNN) (see my previous post), is that they have no memory. Each input shown to them is processed independently, with no state kept in between inputs. In other words, they do not take into the context of the words (the words around the word).
 Imagine you’re reading a book, and you want to understand the story by keeping track of what’s happening in the plot.</description>
     </item>
     
     <item>
       <title>Understand word embedding and use deep learning to classify movie reviews</title>
-      <link>/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/</link>
       <pubDate>Thu, 31 Aug 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/understand-word-embedding-and-use-deep-learning-to-classify-movie-reviews/</guid>
       <description>Picture this: a computer that can actually grasp the emotions hidden in movie reviews – sensing whether they’re shouting with joy or grumbling in disappointment. This mind-bending capability comes from two incredible technologies: deep learning and word embedding. But don’t worry if these sound like jargon; I am here to unravel the mystery.
 Think of deep learning as a supercharged brain for computers. Just like we learn from experience, computers learn from data.</description>
     </item>
     
     <item>
       <title>How to classify MNIST images with convolutional neural network</title>
-      <link>/post/how-to-classify-mnist-images-with-convolutional-neural-network/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-classify-mnist-images-with-convolutional-neural-network/</link>
       <pubDate>Sun, 09 Apr 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-classify-mnist-images-with-convolutional-neural-network/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-classify-mnist-images-with-convolutional-neural-network/</guid>
       <description>Introduction An artificial intelligence system called a convolutional neural network (CNN) has gained a lot of popularity recently. For jobs like image recognition, where we want to teach a computer to recognize things in a picture, they are especially well suited.
 CNNs operate by dissecting an image into increasingly minute components, or “features.” The network then examines each feature and searches for patterns shared by various objects. For instance, a CNN might come to understand that some pixel patterns are frequently linked to faces, while others are linked to vehicles or trees.</description>
     </item>
     
     <item>
       <title>Deep learning to predict cancer from healthy controls using TCRseq data</title>
-      <link>/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/</link>
       <pubDate>Fri, 24 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
 The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
 The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock.</description>
@@ -105,10 +105,10 @@ The TCR is like a sensor or antenna that allows T-cells to recognize specific ta
     
     <item>
       <title>Basic tensor/array manipulations in R</title>
-      <link>/post/basic-tensor-array-manipulations-in-r/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/basic-tensor-array-manipulations-in-r/</link>
       <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/basic-tensor-array-manipulations-in-r/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/basic-tensor-array-manipulations-in-r/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
 In my last post, I showed you how to build a neural network in Keras with less than 20 lines of code. One of the key road blocks for beginners is to transform the input to the right shape of tensor (the deep learning terminology) or array (the R built-in type).
 In this post, I am going to show you some basic manipulations of the array.</description>

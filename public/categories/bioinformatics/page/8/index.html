@@ -18,7 +18,7 @@
   <meta name="description" content="Director of Bioinformatics">
 
   
-  <link rel="alternate" hreflang="en-us" href="/categories/bioinformatics/">
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">
 
   
 
@@ -75,15 +75,15 @@
   
 
   
-  <link rel="alternate" href="/categories/bioinformatics/index.xml" type="application/rss+xml" title="Chatomics">
-  <link rel="feed" href="/categories/bioinformatics/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/categories/bioinformatics/">
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -91,16 +91,69 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="Chatomics">
-  <meta property="og:url" content="/categories/bioinformatics/">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">
   <meta property="og:title" content="Bioinformatics | Chatomics">
   <meta property="og:description" content="Director of Bioinformatics">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2020-02-21T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2020-07-15T00:00:00&#43;00:00">
   
 
   
   
+
+
+
+
+
+<meta name="description" content="">
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">
+<meta property="og:title" content="Bioinformatics | Chatomics">
+
+<meta property="og:description" content="">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="Bioinformatics">
+
+<meta name="twitter:description" content="">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <title>Bioinformatics | Chatomics</title>
 
@@ -284,7 +337,40 @@
   
   
   <div>
-    <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/setting-up-travis-ci-for-github-repos/">setting up Travis CI for github repos</a></h2>
+    <div class="article-style">
+      
+      I wanted to set up Travis CI long time ago. Finally, I have a chance to do so. There are already many posts on how to do it. I write it down here for my own future reference. Thanks Tao Liu for the instructions. I have been learning a lot from him in collabrating with the MAESTRO project.
+ read the official documentation <a href="https://docs.travis-ci.com/user/tutorial/" target="_blank">https://docs.travis-ci.com/user/tutorial/</a> Jean Fan&rsquo;s blog post <a href="https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/" target="_blank">https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/</a> R specific <a href="https://docs" target="_blank">https://docs</a>.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/build-your-own-singularity-image/">build your own singularity image</a></h2>
+    <div class="article-style">
+      
+      I was using the tidyverse rocker image on HPC by singularity pull. see my previous post.
+Everything was OK until I encountered problems installing jpeg and Cairo R packages. Later, I also had an error installing scRepertoire dependency gsl.
+It turns out I have to install debian packages inside the container:
+$ apt update &amp;&amp; apt install -y &ndash;no-install-recommends libjpeg62-turbo-dev zlib1g-dev libpng-dev \ &amp;&amp; apt install -y &ndash;no-install-recommends libx11-dev libcairo2-dev libxt-dev \ &amp;&amp; apt install -y libgsl-dev  However, singularity file system is read-only.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/">customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</a></h2>
+    <div class="article-style">
+      
+      Seurat is great for scRNAseq analysis and it provides many easy-to-use ggplot2 wrappers for visualization. However, this brings the cost of flexibility. For example, In FeaturePlot, one can specify multiple genes and also split.by to further split to multiple the conditions in the meta.data. If split.by is not NULL, the ncol is ignored so you can not arrange the grid.
+This is best to understand with an example.
+library(dplyr) library(Seurat) library(patchwork) library(ggplot2) # Load the PBMC dataset pbmc.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
     <div class="article-style">
       
       In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
@@ -294,7 +380,7 @@ My next thought is: maybe the STAR aligner is doing something weird that exclude
   </div>
   
   <div>
-    <h2><a href="/post/cellranger-mk-reference-with-transgenes/">cellranger mk reference with transgenes</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/cellranger-mk-reference-with-transgenes/">cellranger mk reference with transgenes</a></h2>
     <div class="article-style">
       
       The problem I am working on some 10x scRNAseq data from transgenic mouse. The cells express Tdtomato and Cre genes. I need to add those to the cellranger reference to get the counts for those two genes.
@@ -307,7 +393,7 @@ tdtomato_cre.fa:
   </div>
   
   <div>
-    <h2><a href="/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/">add pct_in for each cluster for scRNAseq result table using list column</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/add-pct-in-for-each-cluster-for-scrnaseq-result-table-using-list-column/">add pct_in for each cluster for scRNAseq result table using list column</a></h2>
     <div class="article-style">
       
       Using nested dataframe and list column has transformed my way of data wrangling in R. For more on this topic, I highly recommend purrr tutorial from Jenney Bryan.
@@ -318,7 +404,7 @@ I am going to use presto for differential gene expression test. presto performs 
   </div>
   
   <div>
-    <h2><a href="/post/the-end-of-2019/">The end of 2019</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/the-end-of-2019/">The end of 2019</a></h2>
     <div class="article-style">
       
       It is the end of 2019. How time flies! It is a good time to reflect what I have achieved during the past year and what to look forward in 2020. I wrote a post for 2018 here. I am not the only one who has impostor syndrome :) It is important to celebrate your small successes/achievements by writing them down.
@@ -328,7 +414,7 @@ I am going to use presto for differential gene expression test. presto performs 
   </div>
   
   <div>
-    <h2><a href="/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/">Mixing mouse and human 10x single cell RNAseq data</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/mixing-mouse-and-human-10x-single-cell-rnaseq-data/">Mixing mouse and human 10x single cell RNAseq data</a></h2>
     <div class="article-style">
       
       In a typical “barnyard” experiment in which cells from different species are mixed before loading to the 10x controller, the identification of the species of origin after mapping/counting with the hybrid reference is a problem. People tend to use the ratio of reads mapped to each reference genome to determine which species a cell is from.
@@ -339,7 +425,7 @@ In this paper <a href="https://www.biorxiv.org/content/10.1101/630087v1.full" ta
   </div>
   
   <div>
-    <h2><a href="/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/">My opinionated selection of books/urls for bioinformatics/data science curriculum</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/">My opinionated selection of books/urls for bioinformatics/data science curriculum</a></h2>
     <div class="article-style">
       
       There was a paper on this topic: A New Online Computational Biology Curriculum.
@@ -350,7 +436,7 @@ Unix I suggest people who want to learn bioinformatics starting to learn unix co
   </div>
   
   <div>
-    <h2><a href="/post/develop-bioconductor-packages-with-docker-container/">Develop Bioconductor packages with docker container</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/develop-bioconductor-packages-with-docker-container/">Develop Bioconductor packages with docker container</a></h2>
     <div class="article-style">
       
       Readings links to read:
@@ -360,38 +446,6 @@ Unix I suggest people who want to learn bioinformatics starting to learn unix co
   I am following the last link.
 pull the container docker pull bioconductor/bioconductor_full:devel docker images REPOSITORY TAG IMAGE ID CREATED SIZE bioconductor/bioconductor_full devel ae3ec2be7376 3 hours ago 5.7GB seuratv3 latest 9b358ab1fd63 2 days ago 2.76GB  It is 5.7G in size.
 start the Rstuido from the image. I have another Rstudio instance using port 8787, let me use a different one (e.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/calculate-scatacseq-tss-enrichment-score/">Calculate scATACseq TSS enrichment score</a></h2>
-    <div class="article-style">
-      
-      TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
-From the Encode page:
- Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
-    <div class="article-style">
-      
-      scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
-I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
-A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/split-a-10xscatac-bam-file-by-cluster/">Split a 10xscATAC bam file by cluster</a></h2>
-    <div class="article-style">
-      
-      I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in IGV.
-The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.
       
     </div>
   </div>

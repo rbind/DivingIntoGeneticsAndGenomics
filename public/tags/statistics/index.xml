@@ -2,22 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Statistics on Chatomics</title>
-    <link>/tags/statistics/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/statistics/</link>
     <description>Recent content in Statistics on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sat, 07 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 29 Oct 2025 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/statistics/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/statistics/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Understanding prcomp() center and scale Arguments for Single-Cell RNA-seq PCA</title>
+      <link>https://divingintogeneticsandgenomics.com/post/understanding-prcomp-center-scale-arguments/</link>
+      <pubDate>Wed, 29 Oct 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://divingintogeneticsandgenomics.com/post/understanding-prcomp-center-scale-arguments/</guid>
+      <description>During my work with single-cell RNA-seq data, I’ve often encountered confusion about PCA and specifically when to use the center and scale arguments in R’s prcomp() function. While tools like Seurat’s RunPCA() abstract away these details, understanding what happens under the hood is crucial for proper analysis and troubleshooting.
+In this post, I’ll show you exactly what center and scale do, why they matter, and what happens when you get them wrong.</description>
+    </item>
+    
+    <item>
       <title>How to test if two distributions are different </title>
-      <link>/post/how-to-test-if-two-distributions-are-different/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-test-if-two-distributions-are-different/</link>
       <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-test-if-two-distributions-are-different/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-test-if-two-distributions-are-different/</guid>
       <description>I asked this question on Twitter:
  what test to test if two distributions are different? I am aware of KS test. When n is large (which is common in genomic studies), the p-value is always significant. better to test against an effect size? how to do it in this context?
  In genomics studies, it is very common to have large N (e.g., the number of introns, promoters in the genome, number of cells in the single-cell studies).</description>
@@ -25,10 +35,10 @@
     
     <item>
       <title>compare slopes in linear regression</title>
-      <link>/post/compare-slopes-in-linear-regression/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/compare-slopes-in-linear-regression/</link>
       <pubDate>Fri, 02 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/compare-slopes-in-linear-regression/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/compare-slopes-in-linear-regression/</guid>
       <description>I asked this question on twitter.
 load the package library(tidyverse)  make some dummy data The dummy example: We have two groups of samples: disease and health. We treat those cells in vitro with different dosages (0, 1, 5) of a chemical X and count the cell number after 3 hours.
 x &amp;lt;- tibble( &amp;#39;0&amp;#39; = c(8.66, 11.50, 7.01, 13.40, 11.30, 8.13, 5.92, 7.54), &amp;#39;1&amp;#39; = c(22.10, 23.00, 22.00, 35.70, 32.</description>
@@ -36,10 +46,10 @@ x &amp;lt;- tibble( &amp;#39;0&amp;#39; = c(8.66, 11.50, 7.01, 13.40, 11.30, 8.1
     
     <item>
       <title>Modeling single cell RNAseq data with multinomial distribution </title>
-      <link>/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/</link>
       <pubDate>Tue, 26 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/modeling-single-cell-rnaseq-data-with-multinomial-distribution/</guid>
       <description>I was reading Feature Selection and Dimension Reduction for Single Cell RNA-Seq based on a Multinomial Model. In the paper, the authors model the scRNAseq counts using a multinomial distribution.
 I was using negative binomial distribution for modeling in my last post, so I asked the question on twitter:
 for modeling RNAseq counts, what&#39;s the difference/advantages using negative binomial and multinomial distribution? — Ming Tang (@tangming2005) November 26, 2019   some quotes from the answers I get from Matthew</description>

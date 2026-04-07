@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Rstats on Chatomics</title>
-    <link>/tags/rstats/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/rstats/</link>
     <description>Recent content in Rstats on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Fri, 17 May 2024 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/rstats/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/rstats/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>How to level up Real-life bioinformatics skill: from dealing with one sample to a lot of samples</title>
-      <link>/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</link>
       <pubDate>Fri, 17 May 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 The other day, I saw this tweet:
 Machine learning and bioinformatics tutorials these days pic.twitter.com/0FhWWG09TB — Ramon Massoni Badosa (@rmassonix) May 15, 2024   Many of the bioinformatics tutorials are like that. I am not saying the tutorial is not good. For beginners, we need something basic first to understand it.</description>
@@ -25,10 +25,10 @@ Machine learning and bioinformatics tutorials these days pic.twitter.com/0FhWWG0
     
     <item>
       <title>How to separate a comma delimited string into multiple lines in R and python </title>
-      <link>/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</link>
       <pubDate>Thu, 09 May 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 The problem df&amp;lt;- data.frame(id = c(1,2,3), value = c(&amp;#39;x,y&amp;#39;, &amp;#39;z,w&amp;#39;, &amp;#39;a&amp;#39;)) df #&amp;gt; id value #&amp;gt; 1 1 x,y #&amp;gt; 2 2 z,w #&amp;gt; 3 3 a we want to put x,y in the first row into two rows:
 1, x
@@ -39,20 +39,20 @@ and put z,w into two rows too.
     
     <item>
       <title>S3 and S4 objects in R explained </title>
-      <link>/post/s3-and-s4-objects-in-r-explained/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/s3-and-s4-objects-in-r-explained/</link>
       <pubDate>Tue, 07 May 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/s3-and-s4-objects-in-r-explained/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/s3-and-s4-objects-in-r-explained/</guid>
       <description>In R, S3 and S4 objects are related to object-oriented programming (OOP), which allows you to create custom data structures with associated behaviors and methods. Let me explain them using simple language and metaphors, along with practical examples.
 S3 Objects Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.</description>
     </item>
     
     <item>
       <title>Part 4 CITE-seq normalization using empty droplets with the dsb package</title>
-      <link>/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/</link>
       <pubDate>Mon, 18 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/</guid>
       <description>In this post, we are going to try a CITE-seq normalization method called dsb published in Normalizing and denoising protein expression data from droplet-based single cell profiling
  two major components of protein expression noise in droplet-based single cell experiments: (1) protein-specific noise originating from ambient, unbound antibody encapsulated in droplets that can be accurately estimated via the level of “ambient” ADT counts in empty droplets,
   and (2) droplet/cell-specific noise revealed via the shared variance component associated with isotype antibody controls and background protein counts in each cell.</description>
@@ -60,29 +60,29 @@ S3 Objects Imagine you have a collection of toys, like cars, dolls, and action f
     
     <item>
       <title>Generative AI: Text generation using Long short-term memory (LSTM) model</title>
-      <link>/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</link>
       <pubDate>Sun, 24 Sep 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/generative-ai-text-generation-using-long-short-term-memory-lstm-model/</guid>
       <description>In the world of deep learning, generating sequence data is a fundamental task. Typically, this involves training a network, often an RNN (Recurrent Neural Network) or a convnet (Convolutional Neural Network), to predict the next token or a sequence of tokens in a given sequence, using the preceding tokens as input. For example, when provided with the input “the cat is on the ma,” the network’s objective is to predict the next character, such as ‘t.</description>
     </item>
     
     <item>
       <title>use random forest and boost trees to find marker genes in scRNAseq data</title>
-      <link>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</link>
       <pubDate>Sun, 03 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</guid>
       <description>This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: logistic regression and partial least square regression.
 This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost). I highly recommend going through https://app.learney.me/maps/StatQuest for related sections by Josh Starmer. Note, all the tree based methods can be used to do both classification and regression.</description>
     </item>
     
     <item>
       <title>compare slopes in linear regression</title>
-      <link>/post/compare-slopes-in-linear-regression/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/compare-slopes-in-linear-regression/</link>
       <pubDate>Fri, 02 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/compare-slopes-in-linear-regression/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/compare-slopes-in-linear-regression/</guid>
       <description>I asked this question on twitter.
 load the package library(tidyverse)  make some dummy data The dummy example: We have two groups of samples: disease and health. We treat those cells in vitro with different dosages (0, 1, 5) of a chemical X and count the cell number after 3 hours.
 x &amp;lt;- tibble( &amp;#39;0&amp;#39; = c(8.66, 11.50, 7.01, 13.40, 11.30, 8.13, 5.92, 7.54), &amp;#39;1&amp;#39; = c(22.10, 23.00, 22.00, 35.70, 32.</description>
@@ -90,10 +90,10 @@ x &amp;lt;- tibble( &amp;#39;0&amp;#39; = c(8.66, 11.50, 7.01, 13.40, 11.30, 8.1
     
     <item>
       <title>Monty Hall problem- a peek through simulation</title>
-      <link>/post/monty-hall-problem-a-peek-through-simulation/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/monty-hall-problem-a-peek-through-simulation/</link>
       <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/monty-hall-problem-a-peek-through-simulation/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/monty-hall-problem-a-peek-through-simulation/</guid>
       <description>I am taking this STATE-80 course from Harvard Extension School. This course teaches commonly used distributions and probability theory. The instructor Hatch is a really good teacher and he uses simulation for all the demonstrations along with the formulas.
 In week 6, we revisited the Monty Hall problem which we played on the first day of class.
 If you have not heard about it, I quoted from the wiki:
@@ -102,10 +102,10 @@ If you have not heard about it, I quoted from the wiki:
     
     <item>
       <title>Align multiple ggplot2 plots by axis</title>
-      <link>/post/align-multiple-ggplot2-plots-by-axis/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/align-multiple-ggplot2-plots-by-axis/</link>
       <pubDate>Fri, 07 Feb 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/align-multiple-ggplot2-plots-by-axis/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/align-multiple-ggplot2-plots-by-axis/</guid>
       <description>I used to use cowplot to align multiple ggplot2 plots but when the x-axis are of different ranges, some extra work is needed to align the axis as well.
 The other day I was reading a blog post by GuangChuang Yu and he exactly tackled this problem. His packages such as ChIPseeker, ClusterProfiler, ggtree are quite popular among the users.
 Some dummy example from his post:

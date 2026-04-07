@@ -18,7 +18,7 @@
   <meta name="description" content="Director of Bioinformatics">
 
   
-  <link rel="alternate" hreflang="en-us" href="/categories/bioinformatics/">
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">
 
   
 
@@ -75,15 +75,15 @@
   
 
   
-  <link rel="alternate" href="/categories/bioinformatics/index.xml" type="application/rss+xml" title="Chatomics">
-  <link rel="feed" href="/categories/bioinformatics/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/categories/bioinformatics/">
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -91,16 +91,69 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="Chatomics">
-  <meta property="og:url" content="/categories/bioinformatics/">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">
   <meta property="og:title" content="Bioinformatics | Chatomics">
   <meta property="og:description" content="Director of Bioinformatics">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2019-01-28T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2019-05-29T00:00:00&#43;00:00">
   
 
   
   
+
+
+
+
+
+<meta name="description" content="">
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">
+<meta property="og:title" content="Bioinformatics | Chatomics">
+
+<meta property="og:description" content="">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="Bioinformatics">
+
+<meta name="twitter:description" content="">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <title>Bioinformatics | Chatomics</title>
 
@@ -284,7 +337,39 @@
   
   
   <div>
-    <h2><a href="/post/how-to-make-a-transcript-to-gene-mapping-file/">How to make a transcript to gene mapping file</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/calculate-scatacseq-tss-enrichment-score/">Calculate scATACseq TSS enrichment score</a></h2>
+    <div class="article-style">
+      
+      TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
+From the Encode page:
+ Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
+    <div class="article-style">
+      
+      scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
+I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
+A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/split-a-10xscatac-bam-file-by-cluster/">Split a 10xscATAC bam file by cluster</a></h2>
+    <div class="article-style">
+      
+      I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in IGV.
+The first thing I did was googling to see if anyone has written such a tool (Do not reinvent the wheels!). People have done that because I saw figures from the scATAC papers. I just could not find it. Maybe I need to refine my googling skills.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/how-to-make-a-transcript-to-gene-mapping-file/">How to make a transcript to gene mapping file</a></h2>
     <div class="article-style">
       
       I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.

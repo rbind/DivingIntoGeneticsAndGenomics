@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ggplot on Chatomics</title>
-    <link>/tags/ggplot/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/ggplot/</link>
     <description>Recent content in Ggplot on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Thu, 08 Jun 2023 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/ggplot/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/ggplot/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>How to add boxplots or density plots side-by-side a scatterplot: a single cell case study</title>
-      <link>/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/</link>
       <pubDate>Thu, 08 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/</guid>
       <description>introduce ggside using single cell data The ggside R package provides a new way to visualize data by combining the flexibility of ggplot2 with the power of side-by-side plots.
 We will use a single cell dataset to demonstrate its usage.
 ggside allows users to create side-by-side plots of multiple variables, such as gene expression, cell type, and experimental conditions. This can be helpful for identifying patterns and trends in scRNA-seq data that would be difficult to see in individual plots.</description>
@@ -25,10 +25,10 @@ ggside allows users to create side-by-side plots of multiple variables, such as 
     
     <item>
       <title>How to deal with overplotting without being fooled </title>
-      <link>/post/how-to-deal-with-overplotting-without-being-fooled/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/</link>
       <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-deal-with-overplotting-without-being-fooled/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
  The problem Let me be clear, when you have gazillions of data points in a scatter plot, you want to deal with the overplotting to avoid drawing misleading conclusions.
 Let’s start with a single-cell example.

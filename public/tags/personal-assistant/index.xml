@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Personal-assistant on Chatomics</title>
+    <link>https://divingintogeneticsandgenomics.com/tags/personal-assistant/</link>
+    <description>Recent content in Personal-assistant on Chatomics</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
+    <lastBuildDate>Mon, 06 Apr 2026 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/personal-assistant/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>I Built a Personal AI Assistant on a Mac Mini</title>
+      <link>https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/</link>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/</guid>
+      <description>My first blog post in a long time!
+I wanted an AI assistant that knew me. Knew my research. Knew my content calendar. Knew that when I say &amp;ldquo;write a thread about batch effects,&amp;rdquo; I mean single-cell RNA-seq batch effects with Harmony and Seurat code, for an audience of computational biologists who already know what a UMAP is.
+So I built Helix. An OpenClaw agent running on a Mac Mini in my home office in Boston, connected to my Google Calendar, my content docs, and a deep memory system that learns my preferences over time.</description>
+    </item>
+    
+  </channel>
+</rss>

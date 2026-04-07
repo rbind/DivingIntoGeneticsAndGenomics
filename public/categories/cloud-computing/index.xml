@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Cloud computing on Chatomics</title>
-    <link>/categories/cloud-computing/</link>
+    <link>https://divingintogeneticsandgenomics.com/categories/cloud-computing/</link>
     <description>Recent content in Cloud computing on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Wed, 15 Nov 2023 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/cloud-computing/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/categories/cloud-computing/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>My take on Data Challenges in Immuno-oncology, the Role of the Cloud, and Growing a Computational Biology Team</title>
-      <link>/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</link>
       <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</guid>
       <description>The original link. https://connect.corrdyn.com/blog/ming-tang-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team
 Guest Profile Tommy Tang&amp;rsquo;s career began when he pursued his Ph.D. in genetics and genomics at the University of Florida. Initially trained in molecular biology in the wet lab, he was driven to explore computational biology after encountering the limitations of traditional analysis methods. Through self-study, Tommy developed skills that enabled him to analyze complex genomic data sets.
 Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to Harvard and the Dana Farber Cancer Institute, where he worked on single-cell RNA sequencing.</description>
@@ -25,20 +25,20 @@ Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to H
     
     <item>
       <title>Navigating Variant Calling for Disease-Causing Mutations: The state-of-art process</title>
-      <link>/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</link>
       <pubDate>Sat, 15 Jul 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</guid>
       <description>Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
 Variant calling is the process of identifying and categorizing genetic variants in sequencing data. It is a critical step in the analysis of whole-genome sequencing (WGS) and whole-exome sequencing (WES) data, as it allows researchers to identify potential disease-causing mutations.</description>
     </item>
     
     <item>
       <title>Unlock the Power of Genomics Data Analysis: Watershed&#39;s Seamless Cloud Computing Solution</title>
-      <link>/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</link>
       <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</guid>
       <description>Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
 As an experienced bioinformatician who understands the needs of biotech startups, I know the challenges that arise when analyzing genomics data. The first solution that comes to mind is cloud computing. Unsurprisingly, AWS and Google Cloud Platform (GCP) are commonly used options.</description>
     </item>

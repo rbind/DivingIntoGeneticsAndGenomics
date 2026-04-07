@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ssh on Chatomics</title>
-    <link>/tags/ssh/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/ssh/</link>
     <description>Recent content in Ssh on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Wed, 10 Oct 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/ssh/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/ssh/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>open files on remote with sublime by ssh</title>
-      <link>/post/open-files-on-remote-with-sublime-by-ssh/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/open-files-on-remote-with-sublime-by-ssh/</link>
       <pubDate>Wed, 10 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/open-files-on-remote-with-sublime-by-ssh/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/open-files-on-remote-with-sublime-by-ssh/</guid>
       <description>I am still suck at vim or emacs. I use nano to edit files on remote machines. But for more complicated editing, I prefer to use sublime.
 use this https://github.com/randy3k/RemoteSubl for editing remote files.
 Steps:
@@ -26,10 +26,10 @@ on remote machine, install rmate ssh bio1 curl -o ~/bin/rmate https://raw.github
     
     <item>
       <title>set up ssh odyssey HPC</title>
-      <link>/post/set-up-ssh-odyssey-hpc/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/set-up-ssh-odyssey-hpc/</link>
       <pubDate>Thu, 04 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/set-up-ssh-odyssey-hpc/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/set-up-ssh-odyssey-hpc/</guid>
       <description>request an account following here.
  Harvard odyssey HPC requires a two-factor security login. First set up the VPN following here
  Then read about OpenAuth here. One can download mobile apps such as Duo and google-Authenticator on your phone, but then each time you will need to type the password to the terminal. Or you can download the java program for desktop, if you have a FAS research computing account, you should be able to download it from the link FASRC send you.</description>

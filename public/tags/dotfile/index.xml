@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Dotfile on Chatomics</title>
-    <link>/tags/dotfile/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/dotfile/</link>
     <description>Recent content in Dotfile on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Tue, 09 Oct 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/dotfile/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/dotfile/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>set up odyssey HPC dot files</title>
-      <link>/post/set-up-odyssey-hpc-dot-files/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/set-up-odyssey-hpc-dot-files/</link>
       <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/set-up-odyssey-hpc-dot-files/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/set-up-odyssey-hpc-dot-files/</guid>
       <description>dot files Those files are originally got from Samir Amin, my labmate in Roel Verhaak&amp;rsquo;s lab. Thanks for sharing!
 .screenrc
 .bashrc

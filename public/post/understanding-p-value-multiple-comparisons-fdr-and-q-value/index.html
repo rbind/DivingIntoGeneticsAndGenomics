@@ -21,7 +21,7 @@
 This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advanced Statistics for the Life Sciences on edx taught by Rafael Irizarry. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">
 
   
 
@@ -78,15 +78,15 @@ This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advance
   
 
   
-  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
-  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -94,7 +94,7 @@ This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advance
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="Chatomics">
-  <meta property="og:url" content="/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">
   <meta property="og:title" content="Understanding p value, multiple comparisons, FDR and q value | Chatomics">
   <meta property="og:description" content="UPDATE 01/29/2019. Read this awesome paper Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations.
 This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advanced Statistics for the Life Sciences on edx taught by Rafael Irizarry. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn.">
@@ -102,11 +102,144 @@ This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advance
   
   <meta property="article:published_time" content="2019-01-13T00:00:00&#43;00:00">
   
-  <meta property="article:modified_time" content="2019-01-13T00:00:00&#43;00:00">
+  <meta property="article:modified_time" content="2019-01-29T15:39:10-05:00">
   
 
   
   
+
+
+
+
+
+<meta name="description" content="UPDATE 01/29/2019. Read this awesome paper Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations.
+This was an old post I …">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">
+<meta property="og:title" content="Understanding p value, multiple comparisons, FDR and q value | Chatomics">
+
+<meta property="og:description" content="UPDATE 01/29/2019. Read this awesome paper Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations.
+This was an old post I …">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="Understanding p value, multiple comparisons, FDR and q value">
+
+<meta name="twitter:description" content="UPDATE 01/29/2019. Read this awesome paper Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations.
+This was an old post I …">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+<meta property="article:published_time" content="2019-01-13T00:00:00Z">
+<meta property="article:modified_time" content="2019-01-29T15:39:10-05:00">
+<meta property="article:author" content="Ming Tommy Tang">
+
+<meta property="article:tag" content="FDR">
+
+<meta property="article:tag" content="pvalue">
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<meta name="keywords" content="FDR, pvalue">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Understanding p value, multiple comparisons, FDR and q value",
+  "description": "UPDATE 01/29/2019. Read this awesome paper Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations.\nThis was an old post I wrote 3 years ago after I took HarvardX: …",
+  "author": {
+    "@type": "Person",
+    "name": "Ming Tommy Tang",
+    "jobTitle": "Director of Bioinformatics",
+    "url": "https://divingintogeneticsandgenomics.com/"
+  },
+  "datePublished": "2019-01-13",
+  "dateModified": "2019-01-29",
+  "image": "https://divingintogeneticsandgenomics.com/img/icon-192.png",
+  "url": "https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/",
+  "keywords": "FDR, pvalue",
+  "proficiencyLevel": "Beginner to Advanced",
+  "dependencies": "R, Bioconductor, FDR, pvalue",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "publisher": {
+    "@type": "Organization",
+    "name": "Chatomics",
+    "url": "https://divingintogeneticsandgenomics.com/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://divingintogeneticsandgenomics.com/img/icon-192.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/"
+  }
+}
+</script>
+
+
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://divingintogeneticsandgenomics.com/"
+    },
+    
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog Posts",
+      "item": "https://divingintogeneticsandgenomics.com/post/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Understanding p value, multiple comparisons, FDR and q value",
+      "item": "https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/"
+    }
+    
+  ]
+}
+</script>
+
+
+
+
+
+
 
   <title>Understanding p value, multiple comparisons, FDR and q value | Chatomics</title>
 
@@ -292,8 +425,10 @@ This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advance
 
   <span class="article-date">
     
+        Last updated on
+    
     <time datetime="2019-01-13 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
-      Jan 13, 2019
+      Jan 29, 2019
     </time>
   </span>
   <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
@@ -310,7 +445,7 @@ This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advance
   
   
   <span class="middot-divider"></span>
-  <a href="/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/#disqus_thread"></a>
+  <a href="https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/#disqus_thread"></a>
   
 
   
@@ -320,10 +455,10 @@ This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advance
   <span class="article-categories">
     <i class="fa fa-folder"></i>
     
-    <a href="/categories/r/">R</a
+    <a href="https://divingintogeneticsandgenomics.com/categories/r/">R</a
     >, 
     
-    <a href="/categories/genomics/">genomics</a
+    <a href="https://divingintogeneticsandgenomics.com/categories/genomics/">genomics</a
     >
     
   </span>
@@ -336,35 +471,35 @@ This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advance
   <ul class="share">
     <li>
       <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value&amp;url=%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f"
+         href="https://twitter.com/intent/tweet?text=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value&amp;url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-twitter"></i>
       </a>
     </li>
     <li>
       <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f"
+         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-facebook"></i>
       </a>
     </li>
     <li>
       <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f&amp;title=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f&amp;title=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value"
          target="_blank" rel="noopener">
         <i class="fa fa-linkedin"></i>
       </a>
     </li>
     <li>
       <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f&amp;title=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value"
+         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f&amp;title=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value"
          target="_blank" rel="noopener">
         <i class="fa fa-weibo"></i>
       </a>
     </li>
     <li>
       <a class="email"
-         href="mailto:?subject=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value&amp;body=%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f">
+         href="mailto:?subject=Understanding%20p%20value%2c%20multiple%20comparisons%2c%20FDR%20and%20q%20value&amp;body=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2funderstanding-p-value-multiple-comparisons-fdr-and-q-value%2f">
         <i class="fa fa-envelope"></i>
       </a>
     </li>
@@ -588,9 +723,9 @@ Use the qvalue function in the bioconductor package “qvalue”</p>
 
 <div class="article-tags">
   
-  <a class="btn btn-primary btn-outline" href="/tags/fdr/">FDR</a>
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/fdr/">FDR</a>
   
-  <a class="btn btn-primary btn-outline" href="/tags/pvalue/">pvalue</a>
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/pvalue/">pvalue</a>
   
 </div>
 
@@ -606,13 +741,13 @@ Use the qvalue function in the bioconductor package “qvalue”</p>
   
   <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/post/how-to-make-a-transcript-to-gene-mapping-file/" rel="next">How to make a transcript to gene mapping file</a>
+    <a href="https://divingintogeneticsandgenomics.com/post/how-to-make-a-transcript-to-gene-mapping-file/" rel="next">How to make a transcript to gene mapping file</a>
   </div>
   
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="/post/permute-test-for-pca-components/" rel="prev">permutation test for PCA components</a>
+    <a href="https://divingintogeneticsandgenomics.com/post/permute-test-for-pca-components/" rel="prev">permutation test for PCA components</a>
   </div>
   
 </div>

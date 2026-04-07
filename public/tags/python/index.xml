@@ -2,22 +2,33 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Python on Chatomics</title>
-    <link>/tags/python/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/python/</link>
     <description>Recent content in Python on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Thu, 09 May 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Nov 2025 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/python/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets</title>
+      <link>https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/</link>
+      <pubDate>Sun, 09 Nov 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/</guid>
+      <description>I started to learn bioinformatics because I needed to analyze public ChIP-seq data in 2012. That&amp;rsquo;s how I got to know Shirley Liu&amp;rsquo;s lab at Dana-Farber Cancer Institute.
+And God knows that I would join her group in 2020 for a staff scientist position to lead the CIDC bioinformatic project.
+I witnessed the development of many groundbreaking computational tools for genomics in Shirley&amp;rsquo;s lab. One tool that I found particularly elegant was BETA (Binding and Expression Target Analysis), developed by Su Wang and published in Nature Protocols in 2013.</description>
+    </item>
+    
+    <item>
       <title>How to separate a comma delimited string into multiple lines in R and python </title>
-      <link>/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</link>
       <pubDate>Thu, 09 May 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-separate-a-comma-delimited-string-into-multiple-lines-in-r-and-python/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 The problem df&amp;lt;- data.frame(id = c(1,2,3), value = c(&amp;#39;x,y&amp;#39;, &amp;#39;z,w&amp;#39;, &amp;#39;a&amp;#39;)) df #&amp;gt; id value #&amp;gt; 1 1 x,y #&amp;gt; 2 2 z,w #&amp;gt; 3 3 a we want to put x,y in the first row into two rows:
 1, x
@@ -28,19 +39,19 @@ and put z,w into two rows too.
     
     <item>
       <title>Snakemake pipeline post-processing scATAC-seq</title>
-      <link>/project/single-cell-atacseq/</link>
+      <link>https://divingintogeneticsandgenomics.com/project/single-cell-atacseq/</link>
       <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>/project/single-cell-atacseq/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/project/single-cell-atacseq/</guid>
       <description>What does it do? For single cell ATACseq experiment, one gets a merged bam file for all cells. After going through clustering, one groups similar cells into cell types (cell states). This workflow will split the bam by clusters to create a pseudo bulk bam for each cluster, create bigwig tracks for visulization, call peaks for each cluster and merge the peaks across the clusters. Finally it will count reads per peak per cell from the original bam file on the merged peaks.</description>
     </item>
     
     <item>
       <title>How to make a transcript to gene mapping file</title>
-      <link>/post/how-to-make-a-transcript-to-gene-mapping-file/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-make-a-transcript-to-gene-mapping-file/</link>
       <pubDate>Mon, 28 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-make-a-transcript-to-gene-mapping-file/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-make-a-transcript-to-gene-mapping-file/</guid>
       <description>I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
 Please read the specifications of those two file formats.</description>
     </item>

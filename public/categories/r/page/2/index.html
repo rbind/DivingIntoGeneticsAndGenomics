@@ -18,7 +18,7 @@
   <meta name="description" content="Director of Bioinformatics">
 
   
-  <link rel="alternate" hreflang="en-us" href="/categories/r/">
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/categories/r/">
 
   
 
@@ -75,15 +75,15 @@
   
 
   
-  <link rel="alternate" href="/categories/r/index.xml" type="application/rss+xml" title="Chatomics">
-  <link rel="feed" href="/categories/r/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/categories/r/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/categories/r/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/categories/r/">
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/categories/r/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -91,16 +91,69 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="Chatomics">
-  <meta property="og:url" content="/categories/r/">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/categories/r/">
   <meta property="og:title" content="R | Chatomics">
   <meta property="og:description" content="Director of Bioinformatics">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2020-09-10T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2021-10-17T00:00:00&#43;00:00">
   
 
   
   
+
+
+
+
+
+<meta name="description" content="">
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/categories/r/">
+<meta property="og:title" content="R | Chatomics">
+
+<meta property="og:description" content="">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="R">
+
+<meta name="twitter:description" content="">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/categories/r/">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <title>R | Chatomics</title>
 
@@ -284,7 +337,17 @@
   
   
   <div>
-    <h2><a href="/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/">Enhancement of scRNAseq heatmap using complexheatmap</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/be-careful-when-left-join-tables-with-duplicated-rows/">Be careful when left_join tables with duplicated rows</a></h2>
+    <div class="article-style">
+      
+      This is going to be a really short blog post. I recently found that if I join two tables with one of the tables having duplicated rows, the final joined table also contains the duplicated rows. It could be the expected behavior for others but I want to make a note here for myself.
+library(tidyverse) df1&lt;- tibble(key = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;), value = 1:5) df1 ## # A tibble: 5 x 2 ## key value ## &lt;chr&gt; &lt;int&gt; ## 1 A 1 ## 2 B 2 ## 3 C 3 ## 4 D 4 ## 5 E 5 dataframe 2 has two identical rows for B.
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/enhancement-of-scrnaseq-heatmap-using-complexheatmap/">Enhancement of scRNAseq heatmap using complexheatmap</a></h2>
     <div class="article-style">
       
       When it comes to make a heatmap, ComplexHeatmap by Zuguang Gu is my favorite. Check it out! You will be amazed on how flexible it is and the documentation is in top niche.
@@ -295,7 +358,7 @@ For Single-cell RNAseq, Seurat provides a DoHeatmap function using ggplot2. Ther
   </div>
   
   <div>
-    <h2><a href="/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/">stacked violin plot for visualizing single-cell data in Seurat</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/">stacked violin plot for visualizing single-cell data in Seurat</a></h2>
     <div class="article-style">
       
       In scanpy, there is a function to create a stacked violin plot.
@@ -308,7 +371,7 @@ The idea is to create a violin plot per gene using the VlnPlot in Seurat, then c
   </div>
   
   <div>
-    <h2><a href="/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/compare-kallisto-bustools-and-cellranger-for-single-nuclei-seqencing-data/">compare kallisto-bustools and cellranger for single nuclei sequencing data</a></h2>
     <div class="article-style">
       
       In my last post, I tried to include transgenes to the cellranger reference and want to get the counts for the transgenes. However, even after I extended the Tdtomato and Cre with the potential 3’UTR, I still get very few cells express them. This is confusing to me.
@@ -318,7 +381,7 @@ My next thought is: maybe the STAR aligner is doing something weird that exclude
   </div>
   
   <div>
-    <h2><a href="/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/">My opinionated selection of books/urls for bioinformatics/data science curriculum</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/my-opinionated-selection-of-books-for-bioinformatics-data-science-curriculum/">My opinionated selection of books/urls for bioinformatics/data science curriculum</a></h2>
     <div class="article-style">
       
       There was a paper on this topic: A New Online Computational Biology Curriculum.
@@ -329,7 +392,7 @@ Unix I suggest people who want to learn bioinformatics starting to learn unix co
   </div>
   
   <div>
-    <h2><a href="/post/develop-bioconductor-packages-with-docker-container/">Develop Bioconductor packages with docker container</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/develop-bioconductor-packages-with-docker-container/">Develop Bioconductor packages with docker container</a></h2>
     <div class="article-style">
       
       Readings links to read:
@@ -344,7 +407,7 @@ start the Rstuido from the image. I have another Rstudio instance using port 878
   </div>
   
   <div>
-    <h2><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
     <div class="article-style">
       
       scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
@@ -355,7 +418,7 @@ A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Ce
   </div>
   
   <div>
-    <h2><a href="/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></h2>
     <div class="article-style">
       
       This post was inspired by Andrew Hill’s recent blog post.
@@ -366,7 +429,7 @@ Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGeno
   </div>
   
   <div>
-    <h2><a href="/post/use-docopt-to-write-command-line-r-utilities/">Use docopt to write command line R utilities </a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/use-docopt-to-write-command-line-r-utilities/">Use docopt to write command line R utilities </a></h2>
     <div class="article-style">
       
       I was writing an R script to plot the ATACseq fragment length distribution and wanted to turn the R script to a command line utility.
@@ -376,22 +439,11 @@ I then (re)discovered this awesome docopt.R. One just needs to write the help me
   </div>
   
   <div>
-    <h2><a href="/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">Understanding p value, multiple comparisons, FDR and q value</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/">Understanding p value, multiple comparisons, FDR and q value</a></h2>
     <div class="article-style">
       
       UPDATE 01/29/2019. Read this awesome paper Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations.
 This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advanced Statistics for the Life Sciences on edx taught by Rafael Irizarry. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/permute-test-for-pca-components/">permutation test for PCA components</a></h2>
-    <div class="article-style">
-      
-      PCA is a critical method for dimension reduction for high-dimensional data. High-dimensional data are data with features (p) a lot more than observations (n). However, this is changing with single-cell RNAseq data. Now, we can sequence millions (n) of single cells and each cell has ~20,000 genes/features (p).
-I suggest you read my previous blog post on using svd to calculate PCs.
-Single-cell expression data PCA In single-cell RNAseq analysis, feature selection will be performed first.
       
     </div>
   </div>

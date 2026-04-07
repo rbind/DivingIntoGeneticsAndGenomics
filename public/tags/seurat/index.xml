@@ -2,41 +2,41 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Seurat on Chatomics</title>
-    <link>/tags/seurat/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/seurat/</link>
     <description>Recent content in Seurat on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Wed, 20 Mar 2024 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/seurat/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/seurat/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Fine tune the best clustering resolution for scRNAseq data: trying out callback</title>
-      <link>/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</link>
       <pubDate>Wed, 20 Mar 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</guid>
       <description>Context and Problem In scRNA-seq, each cell is sequenced individually, allowing for the analysis of gene expression at the single-cell level. This provides a wealth of information about the cellular identities and states. However, the high dimensionality of the data (thousands of genes) and the technical noise in the data can lead to challenges in accurately clustering the cells. Over-clustering is one such challenge, where cells that are biologically similar are clustered into distinct clusters.</description>
     </item>
     
     <item>
       <title>Do you really understand log2Fold change in single-cell RNAseq data?</title>
-      <link>/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</link>
       <pubDate>Tue, 05 Mar 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</guid>
       <description>In Single-cell RNAseq analysis, there is a step to find the marker genes for each cluster. The output from Seurat FindAllMarkers has a column called avg_log2FC. It is the gene expression log2 fold change between cluster x and all other clusters.
 How is that calculated? In this tweet thread by Lior Pachter, he said that there was a discrepancy for the logFC changes between Seurat and Scanpy: Actually, both Scanpy and Seurat calculate it wrong.</description>
     </item>
     
     <item>
       <title>Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data</title>
-      <link>/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/</link>
       <pubDate>Mon, 11 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/</guid>
       <description>Following my last blog post, download the CITE-seq protein and RNA count data at here.
 library(Seurat) library(ggplot2) library(dplyr) pbmc&amp;lt;- readRDS(&amp;quot;~/blog_data/CITEseq/pbmc1k_adt.rds&amp;quot;) How to normalize protein ADT count data? Seurat uses the centered log ratio (CLR) to normalize protein count data.
 In the Seurat github page:
@@ -45,20 +45,20 @@ In the Seurat github page:
     
     <item>
       <title>scRNAseq clustering significance test: an unsolvable problem?</title>
-      <link>/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</link>
       <pubDate>Sun, 23 Jul 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</guid>
       <description>Introductioon In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights.
 The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the resolution parameter. However, whether the newly generated clusters are meaningful or not is a question.</description>
     </item>
     
     <item>
       <title>Reuse the single cell data! How to create a seurat object from GEO datasets</title>
-      <link>/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</link>
       <pubDate>Fri, 14 Jul 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</guid>
       <description>Download the data https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256
 cd data/GSE116256 wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar tar xvf GSE116256_RAW.tar rm GSE116256_RAW.tar Depending on how the authors upload their data.
 Some authors may just upload the merged count matrix file. This is the easiest situation.
@@ -69,20 +69,20 @@ You can inspect the files in command line:</description>
     
     <item>
       <title>use random forest and boost trees to find marker genes in scRNAseq data</title>
-      <link>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</link>
       <pubDate>Sun, 03 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</guid>
       <description>This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: logistic regression and partial least square regression.
 This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost). I highly recommend going through https://app.learney.me/maps/StatQuest for related sections by Josh Starmer. Note, all the tree based methods can be used to do both classification and regression.</description>
     </item>
     
     <item>
       <title>customize FeaturePlot in Seurat for multi-condition comparisons using patchwork</title>
-      <link>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</link>
       <pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/customize-featureplot-in-seurat-for-multi-condition-comparisons-using-patchwork/</guid>
       <description>Seurat is great for scRNAseq analysis and it provides many easy-to-use ggplot2 wrappers for visualization. However, this brings the cost of flexibility. For example, In FeaturePlot, one can specify multiple genes and also split.by to further split to multiple the conditions in the meta.data. If split.by is not NULL, the ncol is ignored so you can not arrange the grid.
 This is best to understand with an example.
 library(dplyr) library(Seurat) library(patchwork) library(ggplot2) # Load the PBMC dataset pbmc.</description>

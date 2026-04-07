@@ -18,7 +18,7 @@
   <meta name="description" content="Director of Bioinformatics">
 
   
-  <link rel="alternate" hreflang="en-us" href="/tags/tidyverse/">
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/tags/tidyverse/">
 
   
 
@@ -75,15 +75,15 @@
   
 
   
-  <link rel="alternate" href="/tags/tidyverse/index.xml" type="application/rss+xml" title="Chatomics">
-  <link rel="feed" href="/tags/tidyverse/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/tags/tidyverse/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/tags/tidyverse/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/tags/tidyverse/">
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/tags/tidyverse/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -91,7 +91,7 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="Chatomics">
-  <meta property="og:url" content="/tags/tidyverse/">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/tags/tidyverse/">
   <meta property="og:title" content="Tidyverse | Chatomics">
   <meta property="og:description" content="Director of Bioinformatics">
   <meta property="og:locale" content="en-us">
@@ -101,6 +101,59 @@
 
   
   
+
+
+
+
+
+<meta name="description" content="">
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/tags/tidyverse/">
+<meta property="og:title" content="Tidyverse | Chatomics">
+
+<meta property="og:description" content="">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="Tidyverse">
+
+<meta name="twitter:description" content="">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/tags/tidyverse/">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <title>Tidyverse | Chatomics</title>
 
@@ -284,7 +337,7 @@
   
   
   <div>
-    <h2><a href="/post/use-random-forest-as-a-clustering-method/">How to use random forest as a clustering method</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/use-random-forest-as-a-clustering-method/">How to use random forest as a clustering method</a></h2>
     <div class="article-style">
       
       If you ask me: what’s your favorite machine learning algorithm? I would answer logistic regression (with regularization: Lasso, Ridge and Elastic) followed by random forest. In fact, that’s how we try those methods in order. Deep learning can perform well for tabular data with complicated architecture while random forest or boost tree based method usually work well out of the box. Regression and random forest are more interpretable too.
@@ -293,7 +346,7 @@
   </div>
   
   <div>
-    <h2><a href="/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/">How to do gene correlation for single-cell RNAseq data (part 1)</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/">How to do gene correlation for single-cell RNAseq data (part 1)</a></h2>
     <div class="article-style">
       
       Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) set.seed(1234)  prepare the data data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 features across 2700 samples within 1 assay #&gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&lt;- pbmc3k %&gt;% NormalizeData(normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000) %&gt;% FindVariableFeatures(selection.method = &quot;vst&quot;, nfeatures = 2000) %&gt;% ScaleData() %&gt;% RunPCA(verbose = FALSE) %&gt;% FindNeighbors(dims = 1:10, verbose = FALSE) %&gt;% FindClusters(resolution = 0.
@@ -302,7 +355,7 @@
   </div>
   
   <div>
-    <h2><a href="/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/">transpose single-cell cell x gene dataframe to gene x cell </a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/">transpose single-cell cell x gene dataframe to gene x cell </a></h2>
     <div class="article-style">
       
       Single cell matrix is often represented as gene x cell in R/Seurat, but it is represented as cell x gene in python/scanpy.
@@ -314,7 +367,7 @@ wget <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/
   </div>
   
   <div>
-    <h2><a href="/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/dplyr-count-misses-factor-levels-a-case-in-comparing-scrnaseq-cell-type-abundance/">dplyr::count misses factor levels: a case in comparing scRNAseq cell type abundance </a></h2>
     <div class="article-style">
       
       It is very common to see in the scRNAseq papers that the authors compare cell type abundance across groups (e.g., treatment vs control, responder vs non-responder).

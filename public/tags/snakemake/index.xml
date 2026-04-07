@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Snakemake on Chatomics</title>
-    <link>/tags/snakemake/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/snakemake/</link>
     <description>Recent content in Snakemake on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Wed, 17 Jul 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/snakemake/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/snakemake/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Snakemake pipeline post-processing scATAC-seq</title>
-      <link>/project/single-cell-atacseq/</link>
+      <link>https://divingintogeneticsandgenomics.com/project/single-cell-atacseq/</link>
       <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>/project/single-cell-atacseq/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/project/single-cell-atacseq/</guid>
       <description>What does it do? For single cell ATACseq experiment, one gets a merged bam file for all cells. After going through clustering, one groups similar cells into cell types (cell states). This workflow will split the bam by clusters to create a pseudo bulk bam for each cluster, create bigwig tracks for visulization, call peaks for each cluster and merge the peaks across the clusters. Finally it will count reads per peak per cell from the original bam file on the merged peaks.</description>
     </item>
     
     <item>
       <title>Snakemake Pipelines</title>
-      <link>/project/snakemake-pipelines/</link>
+      <link>https://divingintogeneticsandgenomics.com/project/snakemake-pipelines/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
       
-      <guid>/project/snakemake-pipelines/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/project/snakemake-pipelines/</guid>
       <description>Snakemake is a python extension for writing workflows. Genomics data processing usually requires bundling many different tools to reach a stage that is ready for downstream analysis.
 I have been using snakemake writing workflows for various genomic and epigenomic datasets.
  pyflow-ChIP-seq

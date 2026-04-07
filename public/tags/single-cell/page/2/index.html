@@ -18,7 +18,7 @@
   <meta name="description" content="Director of Bioinformatics">
 
   
-  <link rel="alternate" hreflang="en-us" href="/tags/single-cell/">
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/tags/single-cell/">
 
   
 
@@ -75,15 +75,15 @@
   
 
   
-  <link rel="alternate" href="/tags/single-cell/index.xml" type="application/rss+xml" title="Chatomics">
-  <link rel="feed" href="/tags/single-cell/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/tags/single-cell/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/tags/single-cell/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/tags/single-cell/">
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/tags/single-cell/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -91,16 +91,69 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="Chatomics">
-  <meta property="og:url" content="/tags/single-cell/">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/tags/single-cell/">
   <meta property="og:title" content="Single-cell | Chatomics">
   <meta property="og:description" content="Director of Bioinformatics">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2022-05-15T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2022-06-16T00:00:00&#43;00:00">
   
 
   
   
+
+
+
+
+
+<meta name="description" content="">
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/tags/single-cell/">
+<meta property="og:title" content="Single-cell | Chatomics">
+
+<meta property="og:description" content="">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="Single-cell">
+
+<meta name="twitter:description" content="">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/tags/single-cell/">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <title>Single-cell | Chatomics</title>
 
@@ -284,7 +337,22 @@
   
   
   <div>
-    <h2><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></h2>
+    <div class="article-style">
+      
+      This is an extension of my last blog post marker gene selection using logistic regression and regularization for scRNAseq.
+Let’s use the same PBMC single-cell RNAseq data as an example.
+Load libraries
+library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # for plotting library(patchwork) Preprocess the data</p>
+
+<h1 id="load-the-pbmc-dataset-pbmc-data-lt-read10x-data-dir-quot-blog-data-filtered-gene-bc-matrices-hg19-quot-initialize-the-seurat-object-with-the-raw-non-normalized-data-pbmc-lt-createseuratobject-counts-pbmc-data-project-quot-pbmc3k-quot-min">Load the PBMC dataset pbmc.data &lt;- Read10X(data.dir = &quot;~/blog_data/filtered_gene_bc_matrices/hg19/&quot;) # Initialize the Seurat object with the raw (non-normalized data). pbmc &lt;- CreateSeuratObject(counts = pbmc.data, project = &quot;pbmc3k&quot;, min.</h1>
+
+      
+    </div>
+  </div>
+  
+  <div>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></h2>
     <div class="article-style">
       
       why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
@@ -295,7 +363,7 @@
   </div>
   
   <div>
-    <h2><a href="/post/matrix-factorization-for-single-cell-rnaseq-data/">Matrix Factorization for single-cell RNAseq data</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/matrix-factorization-for-single-cell-rnaseq-data/">Matrix Factorization for single-cell RNAseq data</a></h2>
     <div class="article-style">
       
       I am interested in learning more on matrix factorization and its application in scRNAseq data. I want to shout out to this paper: Enter the Matrix: Factorization Uncovers Knowledge from Omics by Elana J. Fertig group.
@@ -305,7 +373,7 @@ A matrix is decomposed to two matrices: the amplitude matrix and the pattern mat
   </div>
   
   <div>
-    <h2><a href="/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/clustering-scatacseq-data-the-tf-idf-way/">clustering scATACseq data: the TF-IDF way</a></h2>
     <div class="article-style">
       
       scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
@@ -316,7 +384,7 @@ A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Ce
   </div>
   
   <div>
-    <h2><a href="/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/plot-10x-scatac-coverage-by-cluster-group/">plot 10x scATAC coverage by cluster/group</a></h2>
     <div class="article-style">
       
       This post was inspired by Andrew Hill’s recent blog post.
@@ -327,7 +395,7 @@ Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGeno
   </div>
   
   <div>
-    <h2><a href="/post/split-a-10xscatac-bam-file-by-cluster/">Split a 10xscATAC bam file by cluster</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/split-a-10xscatac-bam-file-by-cluster/">Split a 10xscATAC bam file by cluster</a></h2>
     <div class="article-style">
       
       I want to split the PBMC scATAC bam from 10x by cluster id. So, I can then make a bigwig for each cluster to visualize in IGV.

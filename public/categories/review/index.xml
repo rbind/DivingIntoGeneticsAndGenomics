@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Review on Chatomics</title>
-    <link>/categories/review/</link>
+    <link>https://divingintogeneticsandgenomics.com/categories/review/</link>
     <description>Recent content in Review on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Sun, 02 Mar 2025 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/review/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/categories/review/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap</title>
-      <link>/post/bioinfo-roadmap/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/bioinfo-roadmap/</link>
       <pubDate>Sun, 02 Mar 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/bioinfo-roadmap/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/bioinfo-roadmap/</guid>
       <description>You Can Change Your Appetites Linear algebra, statistics, machine learning—these used to feel abstract to me. I had zero experience of bioinformatics when I was studying my PhD in a wet lab.
 I memorized formulas without truly understanding them. But over time, I found the right resources that made these concepts click, especially in the context of bioinformatics.
 I wrote a blog post: My opinionated selection of books/urls for bioinformatics/data science curriculum six years ago, and many links are broken.</description>
@@ -25,10 +25,10 @@ I wrote a blog post: My opinionated selection of books/urls for bioinformatics/d
     
     <item>
       <title>PCA analysis on TCGA bulk RNAseq data continued</title>
-      <link>/post/pca-tcga2/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/pca-tcga2/</link>
       <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/pca-tcga2/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/pca-tcga2/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 In my last blog post, I showed you how to download TCGA RNAseq count data and do PCA and make a heatmap. It is interesting to see some of the LUSC samples mix with the LUAD samples and vice versa.
 In this post, we will continue to use PCA to do more Exploratory data analysis (EDA).</description>
@@ -36,10 +36,10 @@ In this post, we will continue to use PCA to do more Exploratory data analysis (
     
     <item>
       <title>PCA analysis on scATACseq data</title>
-      <link>/post/pca-scatac/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/pca-scatac/</link>
       <pubDate>Sun, 02 Feb 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/pca-scatac/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/pca-scatac/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 In my last post, I showed you how to use PCA for bulk RNAseq data.
 Today, let’s see how we can use it for scATACseq data.
@@ -50,10 +50,10 @@ Download the atac_pbmc_5k_v1_filtered_peak_bc_matrix.tar.gz file and unzip it.</
     
     <item>
       <title>PCA analysis on TCGA bulk RNAseq data</title>
-      <link>/post/pca-tcga/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/pca-tcga/</link>
       <pubDate>Wed, 29 Jan 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/pca-tcga/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/pca-tcga/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 what is PCA? Principal Component Analysis (PCA) is a mathematical technique used to reduce the dimensionality of large datasets while preserving the most important patterns in the data.
 It transforms the original high-dimensional data into a smaller set of new variables called principal components (PCs), which capture the most variation in the data.</description>
@@ -61,20 +61,20 @@ It transforms the original high-dimensional data into a smaller set of new varia
     
     <item>
       <title>Biotech Data Strategy: Building a Scalable Foundation for Startups</title>
-      <link>/post/biotech-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/biotech-data/</link>
       <pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/biotech-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/biotech-data/</guid>
       <description>In a biotech startup, an early data strategy is key to ensure public and private data remain useful and valuable. As AI hype reaches new heights, I want to emphasize that a data strategy must precede any AI strategy.
 Data is the oil of the AI engine. Unfortunately, the real-world data are usually messy and not AI-ready. Without a robust data strategy, you are building an AI system on a shaky foundation.</description>
     </item>
     
     <item>
       <title>Review 2024</title>
-      <link>/post/review-2024/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/review-2024/</link>
       <pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/review-2024/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/review-2024/</guid>
       <description>As 2024 wraps up, it’s the perfect time to reflect and prepare for the new year. I wrote the review for 2023 here.
 Goals reached ✅ I lost 12 lb in 6 weeks!
  ✅ Supported the clinical trial to identify bio markers for potential responders to our drug at Immunitas. Helped with indication selection for the second and third program. I moved to Astrazeneca in August. I really appreciate my experience at Immunitas and learned a lot.</description>
@@ -82,10 +82,10 @@ Goals reached ✅ I lost 12 lb in 6 weeks!
     
     <item>
       <title>Review 2022</title>
-      <link>/post/review-2022/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/review-2022/</link>
       <pubDate>Fri, 30 Dec 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/review-2022/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/review-2022/</guid>
       <description>Every year, I write a review for the past 12 months. Find my review for 2021.
 Some top wins:  Anna was born in September! It is a lot of work with three kids, but they are cute!
  I am grateful for our CSO Thomas Tan, who has confidence in me to lead the team. We built an amazing computational biology team at Immunitas. I am so fortunate to have Matt, Tim and Michelle in the group.</description>
@@ -93,10 +93,10 @@ Some top wins:  Anna was born in September! It is a lot of work with three kids,
     
     <item>
       <title>The end of 2018</title>
-      <link>/post/the-end-of-2018/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/the-end-of-2018/</link>
       <pubDate>Fri, 28 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/the-end-of-2018/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/the-end-of-2018/</guid>
       <description>It is almost the end of 2018. It is a good time to review what I have achieved during the year and look forward to a brand new 2019. I wrote a similar post for 2017 here.
 Some highlights of the year 2018:  My son Noah Tang was born in April. He is so lovely and we love him so much. Can&amp;rsquo;t believe he is almost 9 months old.</description>
     </item>

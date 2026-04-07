@@ -2,22 +2,34 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Bioinformatics on Chatomics</title>
-    <link>/tags/bioinformatics/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/bioinformatics/</link>
     <description>Recent content in Bioinformatics on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sun, 17 Aug 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 23 Sep 2025 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/bioinformatics/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/bioinformatics/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Do not repeat yourself: List column to do RNAseq differential expression analysis</title>
+      <link>https://divingintogeneticsandgenomics.com/post/list-column-rnaseq/</link>
+      <pubDate>Tue, 23 Sep 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://divingintogeneticsandgenomics.com/post/list-column-rnaseq/</guid>
+      <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+In this blog post, I am going to show you how to use list column and purrr::map(), a powerful toolkit in your belt to avoid repetition in your bioinformatics analysis.
+To demonstrate the usage, We will use RNAseq differential expression analysis and pathway enrichment analysis as an example.
+Let’s use a real example https://www.</description>
+    </item>
+    
+    <item>
       <title>Reproducible Computing in Bioinformatics: Lessons from My Latest Talk</title>
-      <link>/post/repro-comp/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/repro-comp/</link>
       <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/repro-comp/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/repro-comp/</guid>
       <description>Hey everyone, it’s Tommy here. If you’ve been following my blog or my Twitter/X (@tangming2005), you know I love diving into the practical side of bioinformatics and genomics.
 Recently, I gave a talk titled “Good Enough Practices for Reproducible Computing” at Moderna, where I spent a good chunk of time chatting about reproducible computing.
 Why? Because in our field, where data is exploding and analyses get complex, making sure your work can be repeated—by you or anyone else—is a game-changer.</description>
@@ -25,10 +37,10 @@ Why? Because in our field, where data is exploding and analyses get complex, mak
     
     <item>
       <title>How to create a GenomicRanges object in Bioconductor using canonical transcripts</title>
-      <link>/post/canonical-tx/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/canonical-tx/</link>
       <pubDate>Tue, 15 Jul 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/canonical-tx/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/canonical-tx/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 Introduction to Annotation Data Packages in Bioconductor Accurate gene and transcript annotation is the foundation of many bioinformatics workflows, including RNA-seq analysis, functional genomics, and variant annotation.
 In the R/Bioconductor ecosystem, dedicated annotation data packages make it easy for researchers to access, query, and leverage gene models sourced from major biological databases.</description>
@@ -36,10 +48,10 @@ In the R/Bioconductor ecosystem, dedicated annotation data packages make it easy
     
     <item>
       <title>Mastering Bioinformatics in the Age of AI: Foundational Skills for the Modern Scientist</title>
-      <link>/post/ai-bioinformatics/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/ai-bioinformatics/</link>
       <pubDate>Fri, 04 Jul 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/ai-bioinformatics/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/ai-bioinformatics/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 AI is transforming every field — and bioinformatics is no exception. From designing drug molecules in minutes to writing entire pipelines, generative AI is making it faster than ever to process biological data. But here’s the truth:
  AI doesn’t understand biology — you do.
@@ -48,10 +60,10 @@ AI is transforming every field — and bioinformatics is no exception. From desi
     
     <item>
       <title>How Cancer Drugs Really Work</title>
-      <link>/post/cancer-drug/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/cancer-drug/</link>
       <pubDate>Fri, 20 Jun 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/cancer-drug/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/cancer-drug/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 Suna was 28. She had melanoma. Chemo left her wrecked—her hair gone, her strength gone, and her hope fading. Doctors gave her weeks.
 Then they tried something different.
@@ -61,10 +73,10 @@ Her own T-cells found the cancer. Attacked it. Killed it.</description>
     
     <item>
       <title>How to calculate partial correlation controlling cancer types</title>
-      <link>/post/partial-cor/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/partial-cor/</link>
       <pubDate>Thu, 22 May 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/partial-cor/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/partial-cor/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 What is partial correlation Partial correlation measures the relationship between two variables while controlling for the effect of one or more other variables.
 Suppose you want to know how X and Y are related, independent of how both are influenced by Z. Partial correlation helps answer:
@@ -73,10 +85,10 @@ Suppose you want to know how X and Y are related, independent of how both are in
     
     <item>
       <title>Multi-Omics Integration Strategy and Deep Diving into MOFA2</title>
-      <link>/post/multiomics-mofa2/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/multiomics-mofa2/</link>
       <pubDate>Sat, 17 May 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/multiomics-mofa2/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/multiomics-mofa2/</guid>
       <description>body { text-align: justify}  Today’s guest blog post on multiOmics integration is written by Aditi Qamra and edited by Tommy.
 If you want to do a guest posting in my blog which gets 30k views per month, feel free to contact me on LinkedIn.
  Aditi is a senior data scientist working on biomarker discovery and early product development at Roche, using multimodal clinical and genomic data. She has a PhD and postdoc in epigenomics of solid tumors and enjoys upskilling herself in stats topics.</description>
@@ -84,10 +96,10 @@ If you want to do a guest posting in my blog which gets 30k views per month, fee
     
     <item>
       <title>How I Would Learn Bioinformatics From Scratch 12 Years Later: A Roadmap</title>
-      <link>/post/bioinfo-roadmap/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/bioinfo-roadmap/</link>
       <pubDate>Sun, 02 Mar 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/bioinfo-roadmap/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/bioinfo-roadmap/</guid>
       <description>You Can Change Your Appetites Linear algebra, statistics, machine learning—these used to feel abstract to me. I had zero experience of bioinformatics when I was studying my PhD in a wet lab.
 I memorized formulas without truly understanding them. But over time, I found the right resources that made these concepts click, especially in the context of bioinformatics.
 I wrote a blog post: My opinionated selection of books/urls for bioinformatics/data science curriculum six years ago, and many links are broken.</description>
@@ -95,10 +107,10 @@ I wrote a blog post: My opinionated selection of books/urls for bioinformatics/d
     
     <item>
       <title>PCA analysis on TCGA bulk RNAseq data continued</title>
-      <link>/post/pca-tcga2/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/pca-tcga2/</link>
       <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/pca-tcga2/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/pca-tcga2/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 In my last blog post, I showed you how to download TCGA RNAseq count data and do PCA and make a heatmap. It is interesting to see some of the LUSC samples mix with the LUAD samples and vice versa.
 In this post, we will continue to use PCA to do more Exploratory data analysis (EDA).</description>
@@ -106,10 +118,10 @@ In this post, we will continue to use PCA to do more Exploratory data analysis (
     
     <item>
       <title>PCA analysis on scATACseq data</title>
-      <link>/post/pca-scatac/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/pca-scatac/</link>
       <pubDate>Sun, 02 Feb 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/pca-scatac/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/pca-scatac/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 In my last post, I showed you how to use PCA for bulk RNAseq data.
 Today, let’s see how we can use it for scATACseq data.
@@ -120,10 +132,10 @@ Download the atac_pbmc_5k_v1_filtered_peak_bc_matrix.tar.gz file and unzip it.</
     
     <item>
       <title>PCA analysis on TCGA bulk RNAseq data</title>
-      <link>/post/pca-tcga/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/pca-tcga/</link>
       <pubDate>Wed, 29 Jan 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/pca-tcga/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/pca-tcga/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 what is PCA? Principal Component Analysis (PCA) is a mathematical technique used to reduce the dimensionality of large datasets while preserving the most important patterns in the data.
 It transforms the original high-dimensional data into a smaller set of new variables called principal components (PCs), which capture the most variation in the data.</description>
@@ -131,20 +143,20 @@ It transforms the original high-dimensional data into a smaller set of new varia
     
     <item>
       <title>Biotech Data Strategy: Building a Scalable Foundation for Startups</title>
-      <link>/post/biotech-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/biotech-data/</link>
       <pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/biotech-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/biotech-data/</guid>
       <description>In a biotech startup, an early data strategy is key to ensure public and private data remain useful and valuable. As AI hype reaches new heights, I want to emphasize that a data strategy must precede any AI strategy.
 Data is the oil of the AI engine. Unfortunately, the real-world data are usually messy and not AI-ready. Without a robust data strategy, you are building an AI system on a shaky foundation.</description>
     </item>
     
     <item>
       <title>Review 2024</title>
-      <link>/post/review-2024/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/review-2024/</link>
       <pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate>
       
-      <guid>/post/review-2024/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/review-2024/</guid>
       <description>As 2024 wraps up, it’s the perfect time to reflect and prepare for the new year. I wrote the review for 2023 here.
 Goals reached ✅ I lost 12 lb in 6 weeks!
  ✅ Supported the clinical trial to identify bio markers for potential responders to our drug at Immunitas. Helped with indication selection for the second and third program. I moved to Astrazeneca in August. I really appreciate my experience at Immunitas and learned a lot.</description>
@@ -152,10 +164,10 @@ Goals reached ✅ I lost 12 lb in 6 weeks!
     
     <item>
       <title>I regret not doing so</title>
-      <link>/post/learn-linear-algebra/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/learn-linear-algebra/</link>
       <pubDate>Sun, 27 Oct 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/learn-linear-algebra/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/learn-linear-algebra/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 My regret is not learning linear algebra well during college.
 I barely passed the exam for it (and calculus, it was a nightmare :) ).
@@ -166,10 +178,10 @@ Many years later, I started to learn bioinformatics.</description>
     
     <item>
       <title>How CCA alignment and cell label transfer work in Seurat</title>
-      <link>/post/cca-alignment/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/cca-alignment/</link>
       <pubDate>Sat, 19 Oct 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/cca-alignment/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/cca-alignment/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 Understand CCA Following my last blog post on PCA projection and cell label transfer, we are going to talk about CCA.
 In single-cell RNA-seq data integration using Canonical Correlation Analysis (CCA), we typically align two matrices representing different datasets, where both datasets have the same set of genes but different numbers of cells.</description>
@@ -177,10 +189,10 @@ In single-cell RNA-seq data integration using Canonical Correlation Analysis (CC
     
     <item>
       <title>How PCA projection and cell label transfer work in Seurat</title>
-      <link>/post/pca-projection/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/pca-projection/</link>
       <pubDate>Thu, 17 Oct 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/pca-projection/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/pca-projection/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 Understand the example datasets We will use PBMC3k and PBMC10k data. We will project the PBMC3k data to the PBMC10k data and get the labels
 library(Seurat) library(Matrix) library(irlba) # For PCA library(RcppAnnoy) # For fast nearest neighbor search library(dplyr) # Assuming the PBMC datasets (3k and 10k) are already normalized # and represented as sparse matrices # devtools::install_github(&amp;#39;satijalab/seurat-data&amp;#39;) library(SeuratData) #AvailableData() #InstallData(&amp;quot;pbmc3k&amp;quot;) pbmc3k&amp;lt;-UpdateSeuratObject(pbmc3k) pbmc3k@meta.</description>
@@ -188,10 +200,10 @@ library(Seurat) library(Matrix) library(irlba) # For PCA library(RcppAnnoy) # Fo
     
     <item>
       <title>You need to master it if you deal with genomics data</title>
-      <link>/post/genomic-interval/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/genomic-interval/</link>
       <pubDate>Sat, 21 Sep 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/genomic-interval/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/genomic-interval/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 Motivation What’s the most common problem you need to solve when dealing with genomics data?
 For me, it is Genomic Intervals!
@@ -201,10 +213,10 @@ We use it to define a region in the genome ( A peak from ChIP-seq data); the loc
     
     <item>
       <title>A docker image to keep this site alive</title>
-      <link>/post/docker-mac-m3/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/docker-mac-m3/</link>
       <pubDate>Mon, 26 Aug 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/docker-mac-m3/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/docker-mac-m3/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 I have been writing blog posts for over 10 years. I was using blogspot and in 2018, I switched to blogdown and I love it.
 My blogdown website divingintogeneticsandgenomics.com was using Hugo v0.42 and blogdown v1.0. It has been many years and now I have a macbook pro with an M3 chip. I could not install the old versions of the R packages to serve the site.</description>
@@ -212,10 +224,10 @@ My blogdown website divingintogeneticsandgenomics.com was using Hugo v0.42 and b
     
     <item>
       <title>The Most Common Mistake In Bioinformatics, one-off error</title>
-      <link>/post/most-common-mistake-for-bioinformatics/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/most-common-mistake-for-bioinformatics/</link>
       <pubDate>Mon, 19 Aug 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/most-common-mistake-for-bioinformatics/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/most-common-mistake-for-bioinformatics/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 In my last blog post, I talked about some common bioinformatics mistakes.
 Today, we are going to talk about THE MOST common bioinformatics mistake people make. And I think it deserves a separate post about it. Even some experienced programmers get it wrong and the mistake prevails in many bioinformatics software:
@@ -224,10 +236,10 @@ The one-off mistake!</description>
     
     <item>
       <title>The Most Common Stupid Mistakes In Bioinformatics</title>
-      <link>/post/stupid-mistakes-for-bioinformatics/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/stupid-mistakes-for-bioinformatics/</link>
       <pubDate>Tue, 13 Aug 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/stupid-mistakes-for-bioinformatics/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/stupid-mistakes-for-bioinformatics/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 This post is inspired by this popular thread in https://www.biostars.org/.
 Common mistakes in general  Off-by-One Errors:  Mistakes occur when switching between different indexing systems. For example, BED files are 0-based while GFF/GTF files are 1-based, leading to potential misinterpretations of genomic coordinates.   This is one of the most common mistakes!</description>
@@ -235,10 +247,10 @@ Common mistakes in general  Off-by-One Errors:  Mistakes occur when switching be
     
     <item>
       <title>Six tips to build a strong Bioinformatics CV</title>
-      <link>/post/six-tips-to-build-a-strong-bioinformatics-cv/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/six-tips-to-build-a-strong-bioinformatics-cv/</link>
       <pubDate>Thu, 06 Jun 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/six-tips-to-build-a-strong-bioinformatics-cv/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/six-tips-to-build-a-strong-bioinformatics-cv/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 If you apply for a Bioinformatics position, hundreds of CVs get to sent to the hiring manager. How to stand out among all of them? Below are 6 tips from my hiring experience:
 Include a GitHub Link: Ensure your CV has a GitHub link with relevant content like Python or R packages, data analysis projects, or replicated figures from published papers.</description>
@@ -246,10 +258,10 @@ Include a GitHub Link: Ensure your CV has a GitHub link with relevant content li
     
     <item>
       <title>R or Python for Bioinformatics?</title>
-      <link>/post/r-or-python-for-bioinformatics/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/r-or-python-for-bioinformatics/</link>
       <pubDate>Wed, 05 Jun 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/r-or-python-for-bioinformatics/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/r-or-python-for-bioinformatics/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 R or Python for Bioinformatics? Watch the video here:
     If you need to pick Python or R for bioinformatics, which one should you choose? This is a decades-old question from many beginners.
@@ -259,10 +271,10 @@ I started learning Unix Commands 12 years ago (See an example of how powerful Un
     
     <item>
       <title>How to level up Real-life bioinformatics skill: from dealing with one sample to a lot of samples</title>
-      <link>/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</link>
       <pubDate>Fri, 17 May 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/real-life-bioinformatics-skill-deal-with-one-sample-to-a-lot-of-samples/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 The other day, I saw this tweet:
 Machine learning and bioinformatics tutorials these days pic.twitter.com/0FhWWG09TB — Ramon Massoni Badosa (@rmassonix) May 15, 2024   Many of the bioinformatics tutorials are like that. I am not saying the tutorial is not good. For beginners, we need something basic first to understand it.</description>
@@ -270,20 +282,20 @@ Machine learning and bioinformatics tutorials these days pic.twitter.com/0FhWWG0
     
     <item>
       <title>S3 and S4 objects in R explained </title>
-      <link>/post/s3-and-s4-objects-in-r-explained/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/s3-and-s4-objects-in-r-explained/</link>
       <pubDate>Tue, 07 May 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/s3-and-s4-objects-in-r-explained/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/s3-and-s4-objects-in-r-explained/</guid>
       <description>In R, S3 and S4 objects are related to object-oriented programming (OOP), which allows you to create custom data structures with associated behaviors and methods. Let me explain them using simple language and metaphors, along with practical examples.
 S3 Objects Imagine you have a collection of toys, like cars, dolls, and action figures. Each toy has its own set of properties (color, size, material) and behaviors (move, make sounds, etc.</description>
     </item>
     
     <item>
       <title>Bioinformatics is not (just) statistics </title>
-      <link>/post/bioinformatics-is-not-just-statistics/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/bioinformatics-is-not-just-statistics/</link>
       <pubDate>Wed, 27 Mar 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/bioinformatics-is-not-just-statistics/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/bioinformatics-is-not-just-statistics/</guid>
       <description>I was asked this question very often: “Tommy, what’s the p-value cutoff should I use to determine the differentially expressed genes; what log2 Fold change cutoff should I use too?”
 For single-cell RNAseq quality control, what’s the cutoff for mitochondrial content?
 My answer is always: it depends. I was joking: determining a cutoff is 90% of the work a bioinformatician does.
@@ -293,19 +305,19 @@ Biology is more than just statistics.</description>
     
     <item>
       <title>Fine tune the best clustering resolution for scRNAseq data: trying out callback</title>
-      <link>/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</link>
       <pubDate>Wed, 20 Mar 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</guid>
       <description>Context and Problem In scRNA-seq, each cell is sequenced individually, allowing for the analysis of gene expression at the single-cell level. This provides a wealth of information about the cellular identities and states. However, the high dimensionality of the data (thousands of genes) and the technical noise in the data can lead to challenges in accurately clustering the cells. Over-clustering is one such challenge, where cells that are biologically similar are clustered into distinct clusters.</description>
     </item>
     
     <item>
       <title>Downstream of bulk RNAseq: read in salmon output using tximport and then DESeq2</title>
-      <link>/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</link>
       <pubDate>Mon, 18 Mar 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/downstream-of-bulk-rnaseq-read-in-salmon-output-using-tximport-and-then-deseq2/</guid>
       <description>Join my newsletter to not miss a post like this
 In the last blog post, I showed you how to use salmon to get counts from fastq files downloaded from GEO. In this post, I am going to show you how to read in the .sf salmon quantification file into R; how to get the tx2gene.txt file and do DESeq2 for differential gene expression analysis. Let’s dive in!
 library(tximport) library(dplyr) library(ggplot2) files&amp;lt;- list.</description>
@@ -313,10 +325,10 @@ library(tximport) library(dplyr) library(ggplot2) files&amp;lt;- list.</descript
     
     <item>
       <title>How to preprocess GEO bulk RNAseq data with salmon </title>
-      <link>/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/</link>
       <pubDate>Wed, 13 Mar 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-preprocess-geo-bulk-rnaseq-data-with-salmon/</guid>
       <description>Install fastq-dl To easily download fastq from GEO or ENA, use fastq-dl
 Assume you already have conda installed, do the following:
 conda config --add channels conda-forge conda config --add channels bioconda conda create -n fastq_download -c conda-forge -c bioconda fastq-dl conda activate fastq_download  Tip: use mamba if conda is too slow for you. They are all big snakes!!
@@ -325,50 +337,50 @@ We will use bulk RNAseq data from this GEO accession ID: https://www.</descripti
     
     <item>
       <title>Do you really understand log2Fold change in single-cell RNAseq data?</title>
-      <link>/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</link>
       <pubDate>Tue, 05 Mar 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</guid>
       <description>In Single-cell RNAseq analysis, there is a step to find the marker genes for each cluster. The output from Seurat FindAllMarkers has a column called avg_log2FC. It is the gene expression log2 fold change between cluster x and all other clusters.
 How is that calculated? In this tweet thread by Lior Pachter, he said that there was a discrepancy for the logFC changes between Seurat and Scanpy: Actually, both Scanpy and Seurat calculate it wrong.</description>
     </item>
     
     <item>
       <title>Hidden skills beyond programming for computational biology</title>
-      <link>/post/hidden-skills-beyond-programming-for-computational-biology/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/hidden-skills-beyond-programming-for-computational-biology/</link>
       <pubDate>Fri, 23 Feb 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/hidden-skills-beyond-programming-for-computational-biology/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/hidden-skills-beyond-programming-for-computational-biology/</guid>
       <description>There are some hidden gems beyond the typical programming skills that have been instrumental in my journey. These are the often-overlooked yet crucial practices that have empowered me to tackle challenges and make sense of data in meaningful ways.
 Firstly, let’s talk about patience. It’s not as glamorous as diving straight into analysis, but taking the time for thorough quality control is invaluable. Before you get carried away, understand the experimental design.</description>
     </item>
     
     <item>
       <title>Great Things Take Time: How Decades of Effort Led to My Dream Career</title>
-      <link>/post/great-things-take-time-how-decades-of-effort-led-to-my-dream-career/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/great-things-take-time-how-decades-of-effort-led-to-my-dream-career/</link>
       <pubDate>Thu, 04 Jan 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/great-things-take-time-how-decades-of-effort-led-to-my-dream-career/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/great-things-take-time-how-decades-of-effort-led-to-my-dream-career/</guid>
       <description>Everyone is unique. Only you can talk about the story about yourself, and I realized that no matter how many times I have told my story, I have to tell it again, again, again, and again. Because no matter how many times I tell it, there is always someone who hear my story the first time. I hope it can inspire more people every time I tell it.
 Fast backward 37 years ago, 1986.</description>
     </item>
     
     <item>
       <title>Review 2023</title>
-      <link>/post/review-2023/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/review-2023/</link>
       <pubDate>Sun, 31 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/review-2023/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/review-2023/</guid>
       <description>By the end of every year, I write a review of the past year. It is a great time to reflect on the Losses and Wins and plan for the new year. I can not believe 2024 is right at the corner. My review of 2022 can be found at https://divingintogeneticsandgenomics.com/post/review-2022/.
 Goals reached for 2023 This is in the same order of the goals of 2023 in my last year’s review.</description>
     </item>
     
     <item>
       <title>Part 4 CITE-seq normalization using empty droplets with the dsb package</title>
-      <link>/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/</link>
       <pubDate>Mon, 18 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/</guid>
       <description>In this post, we are going to try a CITE-seq normalization method called dsb published in Normalizing and denoising protein expression data from droplet-based single cell profiling
  two major components of protein expression noise in droplet-based single cell experiments: (1) protein-specific noise originating from ambient, unbound antibody encapsulated in droplets that can be accurately estimated via the level of “ambient” ADT counts in empty droplets,
   and (2) droplet/cell-specific noise revealed via the shared variance component associated with isotype antibody controls and background protein counts in each cell.</description>
@@ -376,10 +388,10 @@ Goals reached for 2023 This is in the same order of the goals of 2023 in my last
     
     <item>
       <title>Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data</title>
-      <link>/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/</link>
       <pubDate>Mon, 11 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/</guid>
       <description>Following my last blog post, download the CITE-seq protein and RNA count data at here.
 library(Seurat) library(ggplot2) library(dplyr) pbmc&amp;lt;- readRDS(&amp;quot;~/blog_data/CITEseq/pbmc1k_adt.rds&amp;quot;) How to normalize protein ADT count data? Seurat uses the centered log ratio (CLR) to normalize protein count data.
 In the Seurat github page:
@@ -388,10 +400,10 @@ In the Seurat github page:
     
     <item>
       <title>Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</title>
-      <link>/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/</link>
       <pubDate>Tue, 05 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/</guid>
       <description>In my last post, I showed you how to get the protein and RNA counts from a CITE-seq experiment using Simpleaf.
 Now that we have the raw count matrices, we are ready to explore them within R.
 To follow the tutorial, you can download the associated data from here.
@@ -400,19 +412,19 @@ Load the data suppressPackageStartupMessages({ library(fishpond) library(ggplot2
     
     <item>
       <title>Part 1 How to use Salmon/Alevin to preprocess CITE-seq data</title>
-      <link>/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/</link>
       <pubDate>Sun, 03 Dec 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-use-salmon-alevin-to-preprocess-cite-seq-data/</guid>
       <description>Introduction A state-of-the-art method called CITE-seq (Cellular Indexing of Transcriptomes and Epitopes by Sequencing) allows surface protein levels and RNA expression to be measured simultaneously in individual cells. CITE-seq uses traditional single-cell RNA-sequencing to read out both transcriptome and proteomic information from the same cell after labeling it with oligo-conjugated antibodies. This gets over the drawbacks of techniques that just test proteins or RNA separately. CITE-seq reveals coordinated control of gene and protein activity, offering a potent multidimensional perspective of cell states.</description>
     </item>
     
     <item>
       <title>My take on Data Challenges in Immuno-oncology, the Role of the Cloud, and Growing a Computational Biology Team</title>
-      <link>/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</link>
       <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</guid>
       <description>The original link. https://connect.corrdyn.com/blog/ming-tang-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team
 Guest Profile Tommy Tang&amp;rsquo;s career began when he pursued his Ph.D. in genetics and genomics at the University of Florida. Initially trained in molecular biology in the wet lab, he was driven to explore computational biology after encountering the limitations of traditional analysis methods. Through self-study, Tommy developed skills that enabled him to analyze complex genomic data sets.
 Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to Harvard and the Dana Farber Cancer Institute, where he worked on single-cell RNA sequencing.</description>
@@ -420,19 +432,19 @@ Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to H
     
     <item>
       <title>How to use random forest as a clustering method</title>
-      <link>/post/use-random-forest-as-a-clustering-method/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/use-random-forest-as-a-clustering-method/</link>
       <pubDate>Mon, 06 Nov 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/use-random-forest-as-a-clustering-method/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/use-random-forest-as-a-clustering-method/</guid>
       <description>If you ask me: what’s your favorite machine learning algorithm? I would answer logistic regression (with regularization: Lasso, Ridge and Elastic) followed by random forest. In fact, that’s how we try those methods in order. Deep learning can perform well for tabular data with complicated architecture while random forest or boost tree based method usually work well out of the box. Regression and random forest are more interpretable too.</description>
     </item>
     
     <item>
       <title>How to convert raw counts to TPM for TCGA data and make a heatmap across cancer types</title>
-      <link>/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</link>
       <pubDate>Thu, 26 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-convert-raw-counts-to-tpm-for-tcga-data-and-make-a-heatmap-across-cancer-types/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
 The Cancer Genome Atlas (TCGA) project is probably one of the most well-known large-scale cancer sequencing project. It sequenced ~10,000 treatment-naive tumors across 33 cancer types. Different data including whole-exome, whole-genome, copy-number (SNP array), bulk RNAseq, protein expression (Reverse-Phase Protein Array), DNA methylation are available.
 TCGA is a very successful large sequencing project. I highly recommend learning from the organization of it.</description>
@@ -440,20 +452,20 @@ TCGA is a very successful large sequencing project. I highly recommend learning 
     
     <item>
       <title>Predict TCR cancer specificity using 1d convolutional and LSTM neural networks</title>
-      <link>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</link>
       <pubDate>Tue, 03 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/predict-tcr-cancer-specificity-using-1d-convolutional-and-lstm-neural-networks/</guid>
       <description>The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
 The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock. When the TCR encounters a target it recognizes, it sends signals to the T-cell telling it to attack and destroy the invader.</description>
     </item>
     
     <item>
       <title>How to create pseudobulk from single-cell RNAseq data </title>
-      <link>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</link>
       <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</guid>
       <description>What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
 Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
 In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.</description>
@@ -461,39 +473,39 @@ In this blog post, I’ll guide you through the art of creating pseudobulk data 
     
     <item>
       <title>Omics Playground: Derive biological insights from your omics data at your fingertip</title>
-      <link>/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/</link>
       <pubDate>Mon, 11 Sep 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/omics-playground-derive-biological-insights-from-your-omics-data-at-your-fingertip/</guid>
       <description>Disclaimer: This post is sponsored by BigOmics platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer.
 A brief description of the platform. What challenges could the platform solve? The BigOmics platform - Omics Playground- provides a simplified approach for the effective processing of bulk RNA-seq data and proteomics data, resolving many issues experienced by scientists in the field.</description>
     </item>
     
     <item>
       <title>How to use 1d convolutional neural network (conv1d) to predict DNA sequence binding to protein</title>
-      <link>/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</link>
       <pubDate>Sat, 09 Sep 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-use-1d-convolutional-neural-network-conv1d-to-predict-dna-sequence-binding-to-protein/</guid>
       <description>In the mysterious world of DNA, where the secrets of life are encoded, scientists are harnessing the power of cutting-edge technology to decipher the language of genes. One of the remarkable tools they’re using is the 1D Convolutionary Neural Network, or 1D CNN, which might sound like jargon from a sci-fi movie, but it’s actually a game-changer in DNA sequence analysis.
 Imagine DNA as a long, intricate string of letters, like a never-ending alphabet book.</description>
     </item>
     
     <item>
       <title>multi-omics data integration: a case study with transcriptomics and genomics mutation data</title>
-      <link>/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/</link>
       <pubDate>Tue, 22 Aug 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/multi-omics-data-integration-a-case-study-with-transcriptomics-and-genomics-mutation-data/</guid>
       <description>Multi-omics data analysis is a cutting-edge approach in biology that involves studying and integrating information from multiple biological “omics” sources. These omics sources include genomics (genes and their variations), transcriptomics (gene expression and RNA data), proteomics (proteins and their interactions), metabolomics (small molecules and metabolites), epigenomics (epigenetic modifications), and more. By analyzing data from various omics levels together, we can gain a more comprehensive and detailed understanding of biological systems and their complexities.</description>
     </item>
     
     <item>
       <title>neighborhood/cellular niches analysis with spatial transcriptome data in Seurat and Bioconductor</title>
-      <link>/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</link>
       <pubDate>Tue, 08 Aug 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data-in-seurat-and-bioconductor/</guid>
       <description>Spatial transcriptome cellular niche analysis using 10x xenium data go to https://www.10xgenomics.com/resources/datasets
 There is a lung cancer and a breast cancer dataset. Let’s work on the lung cancer one.
 https://www.10xgenomics.com/resources/datasets/xenium-human-lung-preview-data-1-standard
@@ -504,30 +516,30 @@ wget https://s3-us-west-2.amazonaws.com/10x.files/samples/xenium/1.3.0/Xenium_Pr
     
     <item>
       <title>scRNAseq clustering significance test: an unsolvable problem?</title>
-      <link>/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</link>
       <pubDate>Sun, 23 Jul 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/scrnaseq-clustering-significant-test-an-unsolvable-problem/</guid>
       <description>Introductioon In scRNA-seq data analysis, one of the most crucial and demanding tasks is determining the optimal resolution and cluster number. Achieving an appropriate balance between over-clustering and under-clustering is often intricate, as it directly impacts the identification of distinct cell populations and biological insights.
 The clustering algorithms have many parameters to tune and it can generate more clusters if e.g., you increase the resolution parameter. However, whether the newly generated clusters are meaningful or not is a question.</description>
     </item>
     
     <item>
       <title>Navigating Variant Calling for Disease-Causing Mutations: The state-of-art process</title>
-      <link>/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</link>
       <pubDate>Sat, 15 Jul 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/navigating-variant-calling-for-disease-causing-mutations-the-state-of-art-process/</guid>
       <description>Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
 Variant calling is the process of identifying and categorizing genetic variants in sequencing data. It is a critical step in the analysis of whole-genome sequencing (WGS) and whole-exome sequencing (WES) data, as it allows researchers to identify potential disease-causing mutations.</description>
     </item>
     
     <item>
       <title>Reuse the single cell data! How to create a seurat object from GEO datasets</title>
-      <link>/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</link>
       <pubDate>Fri, 14 Jul 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</guid>
       <description>Download the data https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256
 cd data/GSE116256 wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar tar xvf GSE116256_RAW.tar rm GSE116256_RAW.tar Depending on how the authors upload their data.
 Some authors may just upload the merged count matrix file. This is the easiest situation.
@@ -538,10 +550,10 @@ You can inspect the files in command line:</description>
     
     <item>
       <title>10 single-cell data benchmarking papers</title>
-      <link>/post/ten-single-cell-data-benchmarking-papers/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/ten-single-cell-data-benchmarking-papers/</link>
       <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/ten-single-cell-data-benchmarking-papers/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/ten-single-cell-data-benchmarking-papers/</guid>
       <description>I tweeted it at https://twitter.com/tangming2005/status/1679120948140572672
 I got asked to put all my posts in a central place and I think it is a good idea. And here it is!
  Benchmarking integration of single-cell differential expression
@@ -552,10 +564,10 @@ I got asked to put all my posts in a central place and I think it is a good idea
     
     <item>
       <title>Has AI changed the course of Drug Development?</title>
-      <link>/post/has-ai-changed-the-course-of-drug-development/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/has-ai-changed-the-course-of-drug-development/</link>
       <pubDate>Thu, 15 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/has-ai-changed-the-course-of-drug-development/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/has-ai-changed-the-course-of-drug-development/</guid>
       <description>What’s the drug development process? Has AI changed the course of Drug Development? To answer this question, we need first to understand the drug development process.
 The whole process includes the following:
  target identification target pharmacology and biomarker development lead identification, lead optimization Clinical research &amp;amp; development regulatory review of IND (investigational new drug) and later phase clinical trials post-marketing knowledge  Biologics/antibodies drug development follows a similar path (you can find the map in the same link).</description>
@@ -563,10 +575,10 @@ The whole process includes the following:
     
     <item>
       <title>How to add boxplots or density plots side-by-side a scatterplot: a single cell case study</title>
-      <link>/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/</link>
       <pubDate>Thu, 08 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-add-boxplots-or-density-plots-side-by-side-a-scatterplot-a-single-cell-case-study/</guid>
       <description>introduce ggside using single cell data The ggside R package provides a new way to visualize data by combining the flexibility of ggplot2 with the power of side-by-side plots.
 We will use a single cell dataset to demonstrate its usage.
 ggside allows users to create side-by-side plots of multiple variables, such as gene expression, cell type, and experimental conditions. This can be helpful for identifying patterns and trends in scRNA-seq data that would be difficult to see in individual plots.</description>
@@ -574,20 +586,20 @@ ggside allows users to create side-by-side plots of multiple variables, such as 
     
     <item>
       <title>Unlock the Power of Genomics Data Analysis: Watershed&#39;s Seamless Cloud Computing Solution</title>
-      <link>/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</link>
       <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</guid>
       <description>Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
 As an experienced bioinformatician who understands the needs of biotech startups, I know the challenges that arise when analyzing genomics data. The first solution that comes to mind is cloud computing. Unsurprisingly, AWS and Google Cloud Platform (GCP) are commonly used options.</description>
     </item>
     
     <item>
       <title>How to do neighborhood/cellular niches analysis with spatial transcriptome data </title>
-      <link>/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/</link>
       <pubDate>Fri, 14 Apr 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-do-neighborhood-cellular-niches-analysis-with-spatial-transcriptome-data/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
 In a previous blog post, I showed you how to make a Seurat spatial object from Vizgen spatial transcriptome data. In this post, I am going to show you how to identify clusters of neighborhood or cellular niches where specific cell types tend to co-localize.
  read in the data and pre-process library(Seurat) library(here) library(ggplot2) library(dplyr) # the LoadVizgen function requires the raw segmentation files which is too big.</description>
@@ -595,20 +607,20 @@ In a previous blog post, I showed you how to make a Seurat spatial object from V
     
     <item>
       <title>How to construct a spatial object in Seurat</title>
-      <link>/post/how-to-construct-a-spatial-object-in-seurat/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-construct-a-spatial-object-in-seurat/</link>
       <pubDate>Thu, 30 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-construct-a-spatial-object-in-seurat/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-construct-a-spatial-object-in-seurat/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
 Single-cell spatial transcriptome data is a new and advanced technology that combines the study of individual cells’ genes and their location in a tissue to understand the complex cellular and molecular differences within it. This allows scientists to investigate how genes are expressed and how cells interact with each other with much greater detail than before.</description>
     </item>
     
     <item>
       <title>Deep learning to predict cancer from healthy controls using TCRseq data</title>
-      <link>/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/</link>
       <pubDate>Fri, 24 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/deep-learning-to-predict-cancer-from-healthy-controls-using-tcrseq-data/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
 The T-cell receptor (TCR) is a special molecule found on the surface of a type of immune cell called a T-cell. Think of T-cells like soldiers in your body’s defense system that help identify and attack foreign invaders like viruses and bacteria.
 The TCR is like a sensor or antenna that allows T-cells to recognize specific targets, kind of like how a key fits into a lock.</description>
@@ -616,10 +628,10 @@ The TCR is like a sensor or antenna that allows T-cells to recognize specific ta
     
     <item>
       <title>How to deal with overplotting without being fooled </title>
-      <link>/post/how-to-deal-with-overplotting-without-being-fooled/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/</link>
       <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-deal-with-overplotting-without-being-fooled/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
  The problem Let me be clear, when you have gazillions of data points in a scatter plot, you want to deal with the overplotting to avoid drawing misleading conclusions.
 Let’s start with a single-cell example.
@@ -630,19 +642,19 @@ data(&amp;quot;pbmc3k&amp;quot;) pbmc3k #&amp;gt; An object of class Seurat #&am
     
     <item>
       <title>How to do gene correlation for single-cell RNAseq data (part 1)</title>
-      <link>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/</link>
       <pubDate>Fri, 13 Jan 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-do-gene-correlation-for-single-cell-rnaseq-data-part-1/</guid>
       <description>Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) set.seed(1234)  prepare the data data(&amp;quot;pbmc3k&amp;quot;) pbmc3k #&amp;gt; An object of class Seurat #&amp;gt; 13714 features across 2700 samples within 1 assay #&amp;gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&amp;lt;- pbmc3k %&amp;gt;% NormalizeData(normalization.method = &amp;quot;LogNormalize&amp;quot;, scale.factor = 10000) %&amp;gt;% FindVariableFeatures(selection.method = &amp;quot;vst&amp;quot;, nfeatures = 2000) %&amp;gt;% ScaleData() %&amp;gt;% RunPCA(verbose = FALSE) %&amp;gt;% FindNeighbors(dims = 1:10, verbose = FALSE) %&amp;gt;% FindClusters(resolution = 0.</description>
     </item>
     
     <item>
       <title>transpose single-cell cell x gene dataframe to gene x cell </title>
-      <link>/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/</link>
       <pubDate>Wed, 04 Jan 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/transpose-single-cell-cell-x-gene-dataframe-to-gene-x-cell/</guid>
       <description>Single cell matrix is often represented as gene x cell in R/Seurat, but it is represented as cell x gene in python/scanpy.
 Let’s use a real example to show how to transpose between the two formats. The GEO accession page is at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154763
 Download the data We can use command line to download the count matrix at ftp: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/
@@ -651,10 +663,10 @@ wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE154nnn/GSE154763/suppl/GSE154763
     
     <item>
       <title>How to run dockerized Rstudio server on google cloud</title>
-      <link>/post/how-to-run-dockerized-rstudio-server-on-google-cloud/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-run-dockerized-rstudio-server-on-google-cloud/</link>
       <pubDate>Sun, 18 Dec 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-run-dockerized-rstudio-server-on-google-cloud/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-run-dockerized-rstudio-server-on-google-cloud/</guid>
       <description>Create a google VM Follow the process using the console https://cloud.google.com/compute/docs/instances/create-start-instance#console_1
 Install docker Follow https://docs.docker.com/engine/install/debian/
 Note this example for the debian build. If you created your VM using ubuntu as the boot disk, you should follow the ubuntu section https://docs.docker.com/engine/install/ubuntu/.
@@ -664,10 +676,10 @@ sudo apt-get update sudo apt-get install \ ca-certificates \ curl \ gnupg \ lsb-
     
     <item>
       <title>Are PDL1 RNA and protein levels correlated in cancer cell lines?</title>
-      <link>/post/are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines/</link>
       <pubDate>Thu, 06 Oct 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/are-pdl1-rna-and-protein-levels-correlated-in-cancer-cell-lines/</guid>
       <description>Are protein and RNA levels correlated? This is a big question.
 see replies to this tweet at https://twitter.com/slavov_n/status/1561844133496512512. In general, RNA and protein abundances should be correlated but there are exceptions of course. Biology is complicated/weird!
  One of my favorite examples is Hypoxia-inducible factor 1-alpha, HIF-1α. The protein is efficiently degraded in most tissues most of the time unless stabilized by hypoxia.</description>
@@ -675,20 +687,20 @@ see replies to this tweet at https://twitter.com/slavov_n/status/156184413349651
     
     <item>
       <title>use random forest and boost trees to find marker genes in scRNAseq data</title>
-      <link>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</link>
       <pubDate>Sun, 03 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/use-random-forest-and-boost-trees-to-find-marker-genes-in-scrnaseq-data/</guid>
       <description>This is a blog post for a series of posts on marker gene identification using machine learning methods. Read the previous posts: logistic regression and partial least square regression.
 This blog post will explore the tree based method: random forest and boost trees (gradient boost tree/XGboost). I highly recommend going through https://app.learney.me/maps/StatQuest for related sections by Josh Starmer. Note, all the tree based methods can be used to do both classification and regression.</description>
     </item>
     
     <item>
       <title>Partial least square regression for marker gene identification in scRNAseq data</title>
-      <link>/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</link>
       <pubDate>Thu, 16 Jun 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</guid>
       <description>This is an extension of my last blog post marker gene selection using logistic regression and regularization for scRNAseq.
 Let’s use the same PBMC single-cell RNAseq data as an example.
 Load libraries
@@ -698,10 +710,10 @@ library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # fo
     
     <item>
       <title>marker gene selection using logistic regression and regularization for scRNAseq </title>
-      <link>/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</link>
       <pubDate>Sun, 15 May 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</guid>
       <description>why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
  Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
  I am interested in using logistic regression to find marker genes and want to try fitting the model in the tidymodel ecosystem and using different regularization methods.</description>
@@ -709,10 +721,10 @@ library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # fo
     
     <item>
       <title>CANCER IMMUNOLOGIC DATA COMMONS(CIDC)</title>
-      <link>/project/cimac-cidc/</link>
+      <link>https://divingintogeneticsandgenomics.com/project/cimac-cidc/</link>
       <pubDate>Sat, 26 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>/project/cimac-cidc/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/project/cimac-cidc/</guid>
       <description>The CIMAC-CIDC Network is an NCI Cancer Moonshot initiative that provides cutting-edge technology and expertise in genomic, proteomic, and functional molecular analysis to enhance clinical trials in cancer immune therapies.
 The four Cancer Immune Monitoring and Analysis Centers (CIMACs) are at Dana-Farber Cancer Institute, Stanford University, MD Anderson, and Mount Sinai.
 I am now leading the bioinformatics effort in the Cancer Immunologic Data Commons(CIDC) as part of the NCI Cancer Moonshot project on cancer immunotherapy.</description>

@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ScATACseq on Chatomics</title>
-    <link>/categories/scatacseq/</link>
+    <link>https://divingintogeneticsandgenomics.com/categories/scatacseq/</link>
     <description>Recent content in ScATACseq on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Tue, 17 Mar 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/scatacseq/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/categories/scatacseq/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>stacked violin plot for visualizing single-cell data in Seurat</title>
-      <link>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</link>
       <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</guid>
       <description>In scanpy, there is a function to create a stacked violin plot.
 There is no such function in Seurat, and many people were asking for this feature. e.g. https://github.com/satijalab/seurat/issues/300
 https://github.com/satijalab/seurat/issues/463
@@ -27,10 +27,10 @@ The idea is to create a violin plot per gene using the VlnPlot in Seurat, then c
     
     <item>
       <title>Calculate scATACseq TSS enrichment score</title>
-      <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/calculate-scatacseq-tss-enrichment-score/</link>
       <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/calculate-scatacseq-tss-enrichment-score/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/calculate-scatacseq-tss-enrichment-score/</guid>
       <description>TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
 From the Encode page:
  Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).</description>
@@ -38,10 +38,10 @@ From the Encode page:
     
     <item>
       <title>clustering scATACseq data: the TF-IDF way</title>
-      <link>/post/clustering-scatacseq-data-the-tf-idf-way/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/clustering-scatacseq-data-the-tf-idf-way/</link>
       <pubDate>Fri, 03 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/clustering-scatacseq-data-the-tf-idf-way/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/clustering-scatacseq-data-the-tf-idf-way/</guid>
       <description>scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
 I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
 A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.</description>

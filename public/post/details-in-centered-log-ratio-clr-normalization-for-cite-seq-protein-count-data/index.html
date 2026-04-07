@@ -23,7 +23,7 @@ In the Seurat github page:
 # https://github.com/satijalab/seurat/blob/fc4a4f5203227832477a576bfe01bc6efeb23f51/R/preprocessing.R#L1768-L1769 clr_function &lt;- function(x) { return(log1p(x = x / (exp(x = sum(log1p(x = x[x &gt; 0]), na.rm = TRUE) / length(x = x))))) } log1p(x) computes log(1&#43;x) accurately also for |x| &lt;&lt; 1.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">
 
   
 
@@ -80,15 +80,15 @@ In the Seurat github page:
   
 
   
-  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
-  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -96,7 +96,7 @@ In the Seurat github page:
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="Chatomics">
-  <meta property="og:url" content="/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">
   <meta property="og:title" content="Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data | Chatomics">
   <meta property="og:description" content="Following my last blog post, download the CITE-seq protein and RNA count data at here.
 library(Seurat) library(ggplot2) library(dplyr) pbmc&lt;- readRDS(&quot;~/blog_data/CITEseq/pbmc1k_adt.rds&quot;) How to normalize protein ADT count data? Seurat uses the centered log ratio (CLR) to normalize protein count data.
@@ -106,11 +106,144 @@ In the Seurat github page:
   
   <meta property="article:published_time" content="2023-12-11T00:00:00&#43;00:00">
   
-  <meta property="article:modified_time" content="2023-12-11T00:00:00&#43;00:00">
+  <meta property="article:modified_time" content="2023-12-11T15:32:33-05:00">
   
 
   
   
+
+
+
+
+
+<meta name="description" content="Following my last blog post, download the CITE-seq protein and RNA count data at here.
+library(Seurat) library(ggplot2) library(dplyr) pbmc&amp;amp;amp;lt;- …">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">
+<meta property="og:title" content="Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data | Chatomics">
+
+<meta property="og:description" content="Following my last blog post, download the CITE-seq protein and RNA count data at here.
+library(Seurat) library(ggplot2) library(dplyr) pbmc&amp;amp;amp;lt;- …">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data">
+
+<meta name="twitter:description" content="Following my last blog post, download the CITE-seq protein and RNA count data at here.
+library(Seurat) library(ggplot2) library(dplyr) pbmc&amp;amp;amp;lt;- …">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+<meta property="article:published_time" content="2023-12-11T00:00:00Z">
+<meta property="article:modified_time" content="2023-12-11T15:32:33-05:00">
+<meta property="article:author" content="Ming Tommy Tang">
+
+<meta property="article:tag" content="bioinformatics">
+
+<meta property="article:tag" content="Seurat">
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<meta name="keywords" content="bioinformatics, Seurat">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/">
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data",
+  "description": "Following my last blog post, download the CITE-seq protein and RNA count data at here.\nlibrary(Seurat) library(ggplot2) library(dplyr) pbmc\u0026amp;lt;- readRDS(\u0026amp;quot;~/blog_data/CITEseq/pbmc1k_adt.rds\u0026amp;quot;) …",
+  "author": {
+    "@type": "Person",
+    "name": "Ming Tommy Tang",
+    "jobTitle": "Director of Bioinformatics",
+    "url": "https://divingintogeneticsandgenomics.com/"
+  },
+  "datePublished": "2023-12-11",
+  "dateModified": "2023-12-11",
+  "image": "https://divingintogeneticsandgenomics.com/img/icon-192.png",
+  "url": "https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/",
+  "keywords": "bioinformatics, Seurat",
+  "proficiencyLevel": "Beginner to Advanced",
+  "dependencies": "R, Bioconductor, bioinformatics, Seurat",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "publisher": {
+    "@type": "Organization",
+    "name": "Chatomics",
+    "url": "https://divingintogeneticsandgenomics.com/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://divingintogeneticsandgenomics.com/img/icon-192.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/"
+  }
+}
+</script>
+
+
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://divingintogeneticsandgenomics.com/"
+    },
+    
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog Posts",
+      "item": "https://divingintogeneticsandgenomics.com/post/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data",
+      "item": "https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/"
+    }
+    
+  ]
+}
+</script>
+
+
+
+
+
+
 
   <title>Part 3 Centered log ratio (CLR) normalization for CITE-seq protein count data | Chatomics</title>
 
@@ -296,6 +429,8 @@ In the Seurat github page:
 
   <span class="article-date">
     
+        Last updated on
+    
     <time datetime="2023-12-11 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
       Dec 11, 2023
     </time>
@@ -314,7 +449,7 @@ In the Seurat github page:
   
   
   <span class="middot-divider"></span>
-  <a href="/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/#disqus_thread"></a>
+  <a href="https://divingintogeneticsandgenomics.com/post/details-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data/#disqus_thread"></a>
   
 
   
@@ -324,10 +459,10 @@ In the Seurat github page:
   <span class="article-categories">
     <i class="fa fa-folder"></i>
     
-    <a href="/categories/cite-seq/">CITE-seq</a
+    <a href="https://divingintogeneticsandgenomics.com/categories/cite-seq/">CITE-seq</a
     >, 
     
-    <a href="/categories/bioinformatics/">bioinformatics</a
+    <a href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">bioinformatics</a
     >
     
   </span>
@@ -340,35 +475,35 @@ In the Seurat github page:
   <ul class="share">
     <li>
       <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data&amp;url=%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f"
+         href="https://twitter.com/intent/tweet?text=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data&amp;url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-twitter"></i>
       </a>
     </li>
     <li>
       <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f"
+         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-facebook"></i>
       </a>
     </li>
     <li>
       <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f&amp;title=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f&amp;title=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data"
          target="_blank" rel="noopener">
         <i class="fa fa-linkedin"></i>
       </a>
     </li>
     <li>
       <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f&amp;title=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data"
+         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f&amp;title=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data"
          target="_blank" rel="noopener">
         <i class="fa fa-weibo"></i>
       </a>
     </li>
     <li>
       <a class="email"
-         href="mailto:?subject=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data&amp;body=%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f">
+         href="mailto:?subject=Part%203%20Centered%20log%20ratio%20%28CLR%29%20normalization%20for%20CITE-seq%20protein%20count%20data&amp;body=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fdetails-in-centered-log-ratio-clr-normalization-for-cite-seq-protein-count-data%2f">
         <i class="fa fa-envelope"></i>
       </a>
     </li>
@@ -561,9 +696,9 @@ hp1 + hp2 </code></pre>
 
 <div class="article-tags">
   
-  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/bioinformatics/">bioinformatics</a>
   
-  <a class="btn btn-primary btn-outline" href="/tags/seurat/">Seurat</a>
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/seurat/">Seurat</a>
   
 </div>
 
@@ -597,13 +732,13 @@ hp1 + hp2 </code></pre>
   
   <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/" rel="next">Part 4 CITE-seq normalization using empty droplets with the dsb package</a>
+    <a href="https://divingintogeneticsandgenomics.com/post/part-4-cite-seq-normalization-using-empty-droplets-with-the-dsb-package/" rel="next">Part 4 CITE-seq normalization using empty droplets with the dsb package</a>
   </div>
   
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/" rel="prev">Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</a>
+    <a href="https://divingintogeneticsandgenomics.com/post/cite-seq-downstream-analysis-from-alevin-output-to-seurat-visualization/" rel="prev">Part 2 CITE-seq downstream analysis: From Alevin output to Seurat visualization</a>
   </div>
   
 </div>

@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>GEO on Chatomics</title>
-    <link>/tags/geo/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/geo/</link>
     <description>Recent content in GEO on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Wed, 01 Dec 2021 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/geo/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/geo/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Obtain metadata for public datasets in GEO</title>
-      <link>/post/obtain-metadata-for-public-datasets-in-geo/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/obtain-metadata-for-public-datasets-in-geo/</link>
       <pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate>
       
-      <guid>/post/obtain-metadata-for-public-datasets-in-geo/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/obtain-metadata-for-public-datasets-in-geo/</guid>
       <description>There are so many public datasets there waiting for us to mine! It is the blessing and cursing as a computational biologist!
 Metadata, or the data describing (e.g., responder or non-responder for the treatment) the data are critical in interpreting the analysis. Without metadata, your data are useless.
 People usually go to GEO or ENA to download public data. I asked this question on twitter, and I will show you how to get the metadata as suggested by all the awesome tweeps.</description>
@@ -25,10 +25,10 @@ People usually go to GEO or ENA to download public data. I asked this question o
     
     <item>
       <title>How to upload files to GEO</title>
-      <link>/post/how-to-upload-files-to-geo/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-upload-files-to-geo/</link>
       <pubDate>Fri, 22 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-upload-files-to-geo/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-upload-files-to-geo/</guid>
       <description>readings links: http://yeolab.github.io/onboarding/geo.html
 http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf
 https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html

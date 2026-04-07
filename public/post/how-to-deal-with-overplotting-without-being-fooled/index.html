@@ -25,7 +25,7 @@ library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(Compl
 data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 features across 2700 samples within 1 assay #&gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&lt;- pbmc3k %&gt;% NormalizeData(normalization.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/post/how-to-deal-with-overplotting-without-being-fooled/">
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/">
 
   
 
@@ -82,15 +82,15 @@ data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 feat
   
 
   
-  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Chatomics">
-  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/post/how-to-deal-with-overplotting-without-being-fooled/">
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -98,7 +98,7 @@ data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 feat
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="Chatomics">
-  <meta property="og:url" content="/post/how-to-deal-with-overplotting-without-being-fooled/">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/">
   <meta property="og:title" content="How to deal with overplotting without being fooled  | Chatomics">
   <meta property="og:description" content="Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
  The problem Let me be clear, when you have gazillions of data points in a scatter plot, you want to deal with the overplotting to avoid drawing misleading conclusions.
@@ -110,11 +110,144 @@ data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 feat
   
   <meta property="article:published_time" content="2023-03-05T00:00:00&#43;00:00">
   
-  <meta property="article:modified_time" content="2023-03-05T00:00:00&#43;00:00">
+  <meta property="article:modified_time" content="2023-03-08T21:28:35-05:00">
   
 
   
   
+
+
+
+
+
+<meta name="description" content="Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+ The problem Let me be clear, when you have …">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/">
+<meta property="og:title" content="How to deal with overplotting without being fooled  | Chatomics">
+
+<meta property="og:description" content="Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+ The problem Let me be clear, when you have …">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="How to deal with overplotting without being fooled ">
+
+<meta name="twitter:description" content="Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
+ The problem Let me be clear, when you have …">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+<meta property="article:published_time" content="2023-03-05T00:00:00Z">
+<meta property="article:modified_time" content="2023-03-08T21:28:35-05:00">
+<meta property="article:author" content="Ming Tommy Tang">
+
+<meta property="article:tag" content="ggplot">
+
+<meta property="article:tag" content="bioinformatics">
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<meta name="keywords" content="ggplot, bioinformatics">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/">
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "How to deal with overplotting without being fooled ",
+  "description": "Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter\n The problem Let me be clear, when you have gazillions of data points in a scatter plot, …",
+  "author": {
+    "@type": "Person",
+    "name": "Ming Tommy Tang",
+    "jobTitle": "Director of Bioinformatics",
+    "url": "https://divingintogeneticsandgenomics.com/"
+  },
+  "datePublished": "2023-03-05",
+  "dateModified": "2023-03-08",
+  "image": "https://divingintogeneticsandgenomics.com/img/icon-192.png",
+  "url": "https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/",
+  "keywords": "ggplot, bioinformatics",
+  "proficiencyLevel": "Beginner to Advanced",
+  "dependencies": "R, Bioconductor, ggplot, bioinformatics",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "publisher": {
+    "@type": "Organization",
+    "name": "Chatomics",
+    "url": "https://divingintogeneticsandgenomics.com/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://divingintogeneticsandgenomics.com/img/icon-192.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/"
+  }
+}
+</script>
+
+
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://divingintogeneticsandgenomics.com/"
+    },
+    
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog Posts",
+      "item": "https://divingintogeneticsandgenomics.com/post/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "How to deal with overplotting without being fooled ",
+      "item": "https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/"
+    }
+    
+  ]
+}
+</script>
+
+
+
+
+
+
 
   <title>How to deal with overplotting without being fooled  | Chatomics</title>
 
@@ -300,8 +433,10 @@ data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 feat
 
   <span class="article-date">
     
+        Last updated on
+    
     <time datetime="2023-03-05 00:00:00 &#43;0000 UTC" itemprop="datePublished dateModified">
-      Mar 5, 2023
+      Mar 8, 2023
     </time>
   </span>
   <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
@@ -318,7 +453,7 @@ data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 feat
   
   
   <span class="middot-divider"></span>
-  <a href="/post/how-to-deal-with-overplotting-without-being-fooled/#disqus_thread"></a>
+  <a href="https://divingintogeneticsandgenomics.com/post/how-to-deal-with-overplotting-without-being-fooled/#disqus_thread"></a>
   
 
   
@@ -328,10 +463,10 @@ data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 feat
   <span class="article-categories">
     <i class="fa fa-folder"></i>
     
-    <a href="/categories/bioinformatics/">bioinformatics</a
+    <a href="https://divingintogeneticsandgenomics.com/categories/bioinformatics/">bioinformatics</a
     >, 
     
-    <a href="/categories/visualization/">visualization</a
+    <a href="https://divingintogeneticsandgenomics.com/categories/visualization/">visualization</a
     >
     
   </span>
@@ -344,35 +479,35 @@ data(&quot;pbmc3k&quot;) pbmc3k #&gt; An object of class Seurat #&gt; 13714 feat
   <ul class="share">
     <li>
       <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=How%20to%20deal%20with%20overplotting%20without%20being%20fooled%20&amp;url=%2fpost%2fhow-to-deal-with-overplotting-without-being-fooled%2f"
+         href="https://twitter.com/intent/tweet?text=How%20to%20deal%20with%20overplotting%20without%20being%20fooled%20&amp;url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fhow-to-deal-with-overplotting-without-being-fooled%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-twitter"></i>
       </a>
     </li>
     <li>
       <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=%2fpost%2fhow-to-deal-with-overplotting-without-being-fooled%2f"
+         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fhow-to-deal-with-overplotting-without-being-fooled%2f"
          target="_blank" rel="noopener">
         <i class="fa fa-facebook"></i>
       </a>
     </li>
     <li>
       <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fhow-to-deal-with-overplotting-without-being-fooled%2f&amp;title=How%20to%20deal%20with%20overplotting%20without%20being%20fooled%20"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fhow-to-deal-with-overplotting-without-being-fooled%2f&amp;title=How%20to%20deal%20with%20overplotting%20without%20being%20fooled%20"
          target="_blank" rel="noopener">
         <i class="fa fa-linkedin"></i>
       </a>
     </li>
     <li>
       <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=%2fpost%2fhow-to-deal-with-overplotting-without-being-fooled%2f&amp;title=How%20to%20deal%20with%20overplotting%20without%20being%20fooled%20"
+         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fhow-to-deal-with-overplotting-without-being-fooled%2f&amp;title=How%20to%20deal%20with%20overplotting%20without%20being%20fooled%20"
          target="_blank" rel="noopener">
         <i class="fa fa-weibo"></i>
       </a>
     </li>
     <li>
       <a class="email"
-         href="mailto:?subject=How%20to%20deal%20with%20overplotting%20without%20being%20fooled%20&amp;body=%2fpost%2fhow-to-deal-with-overplotting-without-being-fooled%2f">
+         href="mailto:?subject=How%20to%20deal%20with%20overplotting%20without%20being%20fooled%20&amp;body=https%3a%2f%2fdivingintogeneticsandgenomics.com%2fpost%2fhow-to-deal-with-overplotting-without-being-fooled%2f">
         <i class="fa fa-envelope"></i>
       </a>
     </li>
@@ -552,9 +687,9 @@ However, when you have millions of cells, you may want to give <code>scattermore
 
 <div class="article-tags">
   
-  <a class="btn btn-primary btn-outline" href="/tags/ggplot/">ggplot</a>
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/ggplot/">ggplot</a>
   
-  <a class="btn btn-primary btn-outline" href="/tags/bioinformatics/">bioinformatics</a>
+  <a class="btn btn-primary btn-outline" href="https://divingintogeneticsandgenomics.com/tags/bioinformatics/">bioinformatics</a>
   
 </div>
 
@@ -588,13 +723,13 @@ However, when you have millions of cells, you may want to give <code>scattermore
   
   <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/post/deep-learning-with-keras-using-mnst-dataset/" rel="next">Deep learning with Keras using MNIST dataset </a>
+    <a href="https://divingintogeneticsandgenomics.com/post/deep-learning-with-keras-using-mnst-dataset/" rel="next">Deep learning with Keras using MNIST dataset </a>
   </div>
   
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="/post/how-to-commit-changes-to-a-docker-image/" rel="prev">How to commit changes to a docker image</a>
+    <a href="https://divingintogeneticsandgenomics.com/post/how-to-commit-changes-to-a-docker-image/" rel="prev">How to commit changes to a docker image</a>
   </div>
   
 </div>

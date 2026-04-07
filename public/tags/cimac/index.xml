@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>CIMAC on Chatomics</title>
-    <link>/tags/cimac/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/cimac/</link>
     <description>Recent content in CIMAC on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Sat, 26 Sep 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/cimac/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/cimac/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>CANCER IMMUNOLOGIC DATA COMMONS(CIDC)</title>
-      <link>/project/cimac-cidc/</link>
+      <link>https://divingintogeneticsandgenomics.com/project/cimac-cidc/</link>
       <pubDate>Sat, 26 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>/project/cimac-cidc/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/project/cimac-cidc/</guid>
       <description>The CIMAC-CIDC Network is an NCI Cancer Moonshot initiative that provides cutting-edge technology and expertise in genomic, proteomic, and functional molecular analysis to enhance clinical trials in cancer immune therapies.
 The four Cancer Immune Monitoring and Analysis Centers (CIMACs) are at Dana-Farber Cancer Institute, Stanford University, MD Anderson, and Mount Sinai.
 I am now leading the bioinformatics effort in the Cancer Immunologic Data Commons(CIDC) as part of the NCI Cancer Moonshot project on cancer immunotherapy.</description>

@@ -2,22 +2,33 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Config on Chatomics</title>
-    <link>/categories/config/</link>
+    <link>https://divingintogeneticsandgenomics.com/categories/config/</link>
     <description>Recent content in Config on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Wed, 03 Oct 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 06 Apr 2026 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/config/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/categories/config/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>I Built a Personal AI Assistant on a Mac Mini</title>
+      <link>https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/</link>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://divingintogeneticsandgenomics.com/post/openclaw-ai-assistant-mac-mini-setup/</guid>
+      <description>My first blog post in a long time!
+I wanted an AI assistant that knew me. Knew my research. Knew my content calendar. Knew that when I say &amp;ldquo;write a thread about batch effects,&amp;rdquo; I mean single-cell RNA-seq batch effects with Harmony and Seurat code, for an audience of computational biologists who already know what a UMAP is.
+So I built Helix. An OpenClaw agent running on a Mac Mini in my home office in Boston, connected to my Google Calendar, my content docs, and a deep memory system that learns my preferences over time.</description>
+    </item>
+    
+    <item>
       <title>set up my new mac laptop</title>
-      <link>/post/set-up-my-new-mac-laptop/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/set-up-my-new-mac-laptop/</link>
       <pubDate>Wed, 03 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/set-up-my-new-mac-laptop/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/set-up-my-new-mac-laptop/</guid>
       <description>I am starting my first day at Harvard FAS informatics and I will keep a note here on how I set up my new laptop.
 customize terminal following this gist:
 download iterm2 for mac here.

@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Docker on Chatomics</title>
-    <link>/tags/docker/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/docker/</link>
     <description>Recent content in Docker on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Mon, 26 Aug 2024 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/docker/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>A docker image to keep this site alive</title>
-      <link>/post/docker-mac-m3/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/docker-mac-m3/</link>
       <pubDate>Mon, 26 Aug 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/docker-mac-m3/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/docker-mac-m3/</guid>
       <description>To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
 I have been writing blog posts for over 10 years. I was using blogspot and in 2018, I switched to blogdown and I love it.
 My blogdown website divingintogeneticsandgenomics.com was using Hugo v0.42 and blogdown v1.0. It has been many years and now I have a macbook pro with an M3 chip. I could not install the old versions of the R packages to serve the site.</description>
@@ -25,10 +25,10 @@ My blogdown website divingintogeneticsandgenomics.com was using Hugo v0.42 and b
     
     <item>
       <title>How to commit changes to a docker image</title>
-      <link>/post/how-to-commit-changes-to-a-docker-image/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-commit-changes-to-a-docker-image/</link>
       <pubDate>Thu, 16 Feb 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-commit-changes-to-a-docker-image/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-commit-changes-to-a-docker-image/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
 Start here Docker is a great tool to ensure reproducibility of your computing work. I was using the bioconductor image on google cloud, but the image does not have the gsutil command.
 You can install once in the container, but once you exit the container, the gsutil command will be gone. You will need to modify the docker image if you want to keep using it.</description>
@@ -36,10 +36,10 @@ You can install once in the container, but once you exit the container, the gsut
     
     <item>
       <title>How to run dockerized Rstudio server on google cloud</title>
-      <link>/post/how-to-run-dockerized-rstudio-server-on-google-cloud/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-run-dockerized-rstudio-server-on-google-cloud/</link>
       <pubDate>Sun, 18 Dec 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-run-dockerized-rstudio-server-on-google-cloud/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-run-dockerized-rstudio-server-on-google-cloud/</guid>
       <description>Create a google VM Follow the process using the console https://cloud.google.com/compute/docs/instances/create-start-instance#console_1
 Install docker Follow https://docs.docker.com/engine/install/debian/
 Note this example for the debian build. If you created your VM using ubuntu as the boot disk, you should follow the ubuntu section https://docs.docker.com/engine/install/ubuntu/.
@@ -49,10 +49,10 @@ sudo apt-get update sudo apt-get install \ ca-certificates \ curl \ gnupg \ lsb-
     
     <item>
       <title>Run Rstudio server with singularity on HPC</title>
-      <link>/post/run-rstudio-server-with-singularity-on-hpc/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/run-rstudio-server-with-singularity-on-hpc/</link>
       <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/run-rstudio-server-with-singularity-on-hpc/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/run-rstudio-server-with-singularity-on-hpc/</guid>
       <description>Background Please read the following before go ahead:
  what is docker?
  what is Rocker?

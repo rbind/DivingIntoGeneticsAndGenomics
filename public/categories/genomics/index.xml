@@ -2,22 +2,33 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Genomics on Chatomics</title>
-    <link>/categories/genomics/</link>
+    <link>https://divingintogeneticsandgenomics.com/categories/genomics/</link>
     <description>Recent content in Genomics on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Sun, 05 Feb 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Nov 2025 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/genomics/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/categories/genomics/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Reviving BETA for Python 3: Integrating ChIP-seq and RNA-seq to Predict TF Targets</title>
+      <link>https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/</link>
+      <pubDate>Sun, 09 Nov 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://divingintogeneticsandgenomics.com/post/reviving-beta-chip-seq-rna-seq-integration-python3/</guid>
+      <description>I started to learn bioinformatics because I needed to analyze public ChIP-seq data in 2012. That&amp;rsquo;s how I got to know Shirley Liu&amp;rsquo;s lab at Dana-Farber Cancer Institute.
+And God knows that I would join her group in 2020 for a staff scientist position to lead the CIDC bioinformatic project.
+I witnessed the development of many groundbreaking computational tools for genomics in Shirley&amp;rsquo;s lab. One tool that I found particularly elegant was BETA (Binding and Expression Target Analysis), developed by Su Wang and published in Nature Protocols in 2013.</description>
+    </item>
+    
+    <item>
       <title>How to make a triangle correlation heatmap with p-values labeled </title>
-      <link>/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</link>
       <pubDate>Sun, 05 Feb 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-make-a-triangle-correlation-heatmap-with-p-values-labeled/</guid>
       <description>In this blog post, I am going to show you how to make a correlation heatmap with p-values and significant values labeled in the heatmap body. Let’s use the PBMC single cell data as an example.
 You may want to read my previous blog post How to do gene correlation for single-cell RNAseq data.
 Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2) library(ComplexHeatmap) library(SeuratData) library(hdWGCNA) library(WGCNA) set.seed(1234)  prepare the data data(&amp;quot;pbmc3k&amp;quot;) pbmc3k #&amp;gt; An object of class Seurat #&amp;gt; 13714 features across 2700 samples within 1 assay #&amp;gt; Active assay: RNA (13714 features, 0 variable features) ## routine processing pbmc3k&amp;lt;- pbmc3k %&amp;gt;% NormalizeData(normalization.</description>
@@ -25,10 +36,10 @@ Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2
     
     <item>
       <title>Run Rstudio server with singularity on HPC</title>
-      <link>/post/run-rstudio-server-with-singularity-on-hpc/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/run-rstudio-server-with-singularity-on-hpc/</link>
       <pubDate>Sun, 09 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/run-rstudio-server-with-singularity-on-hpc/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/run-rstudio-server-with-singularity-on-hpc/</guid>
       <description>Background Please read the following before go ahead:
  what is docker?
  what is Rocker?
@@ -40,10 +51,10 @@ Load libraries library(dplyr) library(Seurat) library(patchwork) library(ggplot2
     
     <item>
       <title>Calculate scATACseq TSS enrichment score</title>
-      <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/calculate-scatacseq-tss-enrichment-score/</link>
       <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/calculate-scatacseq-tss-enrichment-score/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/calculate-scatacseq-tss-enrichment-score/</guid>
       <description>TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
 From the Encode page:
  Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).</description>
@@ -51,10 +62,10 @@ From the Encode page:
     
     <item>
       <title>understand 10x scRNAseq and scATAC fastqs</title>
-      <link>/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
       <pubDate>Wed, 06 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/understand-10x-scrnaseq-and-scatac-fastqs/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/understand-10x-scrnaseq-and-scatac-fastqs/</guid>
       <description>single cell RNAseq Please read the following posts by Dave Tang. When I google, I always find his posts on top of the pages. Thanks for sharing your knowledge.
 https://davetang.org/muse/2018/06/06/10x-single-cell-bam-files/ https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/
 From the 10x manual:
@@ -63,40 +74,40 @@ From the 10x manual:
     
     <item>
       <title>How to make a transcript to gene mapping file</title>
-      <link>/post/how-to-make-a-transcript-to-gene-mapping-file/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-make-a-transcript-to-gene-mapping-file/</link>
       <pubDate>Mon, 28 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-make-a-transcript-to-gene-mapping-file/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-make-a-transcript-to-gene-mapping-file/</guid>
       <description>I need a transcript to gene mapping file for Salmon. I am aware of annotation bioconductor packages that can do this job. However, I was working on a species which does not have the annotation in a package format (I am going to use Drosphila as an example for this blog post). I had to go and got the gtf file and made such a file from scratch.
 Please read the specifications of those two file formats.</description>
     </item>
     
     <item>
       <title>Understanding p value, multiple comparisons, FDR and q value</title>
-      <link>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</link>
       <pubDate>Sun, 13 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/understanding-p-value-multiple-comparisons-fdr-and-q-value/</guid>
       <description>UPDATE 01/29/2019. Read this awesome paper Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations.
 This was an old post I wrote 3 years ago after I took HarvardX: PH525.3x Advanced Statistics for the Life Sciences on edx taught by Rafael Irizarry. It is still one of the best courses to get you started using R for genomics. I am very thankful to have those high quality classes available to me when I started to learn.</description>
     </item>
     
     <item>
       <title>PCA in action</title>
-      <link>/post/pca-in-action/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/pca-in-action/</link>
       <pubDate>Tue, 18 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/pca-in-action/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/pca-in-action/</guid>
       <description>PCA in practice. Principal Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).
 Let’s use a microarray data for demonstration.</description>
     </item>
     
     <item>
       <title>Three gotchas when using R for Genomic data analysis</title>
-      <link>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/three-gotchas-when-using-r-for-genomic-data-analysis/</link>
       <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/three-gotchas-when-using-r-for-genomic-data-analysis/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/three-gotchas-when-using-r-for-genomic-data-analysis/</guid>
       <description>During my daily work with R for genomic data analysis, I encountered several instances that R gives me some (bad) surprises.
 1. The devil 1 and 0 coordinate system read detail here https://github.com/crazyhottommy/DNA-seq-analysis#tips-and-lessons-learned-during-my-dna-seq-data-analysis-journey
 some files such as bed file is 0 based. Two genomic regions:
@@ -106,19 +117,19 @@ chr1 1 1000 chr1 1002 2000  The function convert it to 1 based internally (R is 
     
     <item>
       <title>Compute averages/sums on GRanges or equal length bins</title>
-      <link>/post/compute-averages-sums-on-granges-or-equal-length-bins/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/compute-averages-sums-on-granges-or-equal-length-bins/</link>
       <pubDate>Fri, 07 Sep 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/compute-averages-sums-on-granges-or-equal-length-bins/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/compute-averages-sums-on-granges-or-equal-length-bins/</guid>
       <description>Googling is a required technique for programmers. Once I have a programming problem in mind, the first thing I do is to google to see if other people have encountered the same problem and maybe they already have a solution. Do not re-invent the wheels. Actually, reading other people’s code and mimicing their code is a great way of learning. Today, I am going to show you how to compute binned averages/sums along a genome or any genomic regions of interest.</description>
     </item>
     
     <item>
       <title>How to upload files to GEO</title>
-      <link>/post/how-to-upload-files-to-geo/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-upload-files-to-geo/</link>
       <pubDate>Fri, 22 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-upload-files-to-geo/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-upload-files-to-geo/</guid>
       <description>readings links: http://yeolab.github.io/onboarding/geo.html
 http://www.hildeschjerven.net/Protocols/Submission_of_HighSeq_data_to_GEO.pdf
 https://www.ncbi.nlm.nih.gov/geo/info/submissionftp.html

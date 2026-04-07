@@ -2,51 +2,61 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Single-cell on Chatomics</title>
-    <link>/categories/single-cell/</link>
+    <link>https://divingintogeneticsandgenomics.com/categories/single-cell/</link>
     <description>Recent content in Single-cell on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
-    <lastBuildDate>Wed, 20 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 29 Oct 2025 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/single-cell/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/categories/single-cell/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Understanding prcomp() center and scale Arguments for Single-Cell RNA-seq PCA</title>
+      <link>https://divingintogeneticsandgenomics.com/post/understanding-prcomp-center-scale-arguments/</link>
+      <pubDate>Wed, 29 Oct 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://divingintogeneticsandgenomics.com/post/understanding-prcomp-center-scale-arguments/</guid>
+      <description>During my work with single-cell RNA-seq data, I’ve often encountered confusion about PCA and specifically when to use the center and scale arguments in R’s prcomp() function. While tools like Seurat’s RunPCA() abstract away these details, understanding what happens under the hood is crucial for proper analysis and troubleshooting.
+In this post, I’ll show you exactly what center and scale do, why they matter, and what happens when you get them wrong.</description>
+    </item>
+    
+    <item>
       <title>Fine tune the best clustering resolution for scRNAseq data: trying out callback</title>
-      <link>/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</link>
       <pubDate>Wed, 20 Mar 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/</guid>
       <description>Context and Problem In scRNA-seq, each cell is sequenced individually, allowing for the analysis of gene expression at the single-cell level. This provides a wealth of information about the cellular identities and states. However, the high dimensionality of the data (thousands of genes) and the technical noise in the data can lead to challenges in accurately clustering the cells. Over-clustering is one such challenge, where cells that are biologically similar are clustered into distinct clusters.</description>
     </item>
     
     <item>
       <title>Do you really understand log2Fold change in single-cell RNAseq data?</title>
-      <link>/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</link>
       <pubDate>Tue, 05 Mar 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/</guid>
       <description>In Single-cell RNAseq analysis, there is a step to find the marker genes for each cluster. The output from Seurat FindAllMarkers has a column called avg_log2FC. It is the gene expression log2 fold change between cluster x and all other clusters.
 How is that calculated? In this tweet thread by Lior Pachter, he said that there was a discrepancy for the logFC changes between Seurat and Scanpy: Actually, both Scanpy and Seurat calculate it wrong.</description>
     </item>
     
     <item>
       <title>How to make a multi-group dotplot for single-cell RNAseq data</title>
-      <link>/post/how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data/</link>
       <pubDate>Tue, 16 Jan 2024 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data/</guid>
       <description>Dotplots are very popular for visualizing single-cell RNAseq data. In essence, the dot size represents the percentage of cells that are positive for that gene; the color intensity represents the average gene expression of that gene in a cell type.
 It is easy to plot one using Seurat::dotplot or Sccustomize::clustered_dotplot. However, when you have multiple groups/conditions in your data and you want to visualize it by groups, it is not that straightforward.</description>
     </item>
     
     <item>
       <title>How to create pseudobulk from single-cell RNAseq data </title>
-      <link>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</link>
       <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/</guid>
       <description>What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
 Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
 In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.</description>
@@ -54,10 +64,10 @@ In this blog post, I’ll guide you through the art of creating pseudobulk data 
     
     <item>
       <title>Reuse the single cell data! How to create a seurat object from GEO datasets</title>
-      <link>/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</link>
       <pubDate>Fri, 14 Jul 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/</guid>
       <description>Download the data https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256
 cd data/GSE116256 wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar tar xvf GSE116256_RAW.tar rm GSE116256_RAW.tar Depending on how the authors upload their data.
 Some authors may just upload the merged count matrix file. This is the easiest situation.
@@ -68,10 +78,10 @@ You can inspect the files in command line:</description>
     
     <item>
       <title>10 single-cell data benchmarking papers</title>
-      <link>/post/ten-single-cell-data-benchmarking-papers/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/ten-single-cell-data-benchmarking-papers/</link>
       <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/ten-single-cell-data-benchmarking-papers/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/ten-single-cell-data-benchmarking-papers/</guid>
       <description>I tweeted it at https://twitter.com/tangming2005/status/1679120948140572672
 I got asked to put all my posts in a central place and I think it is a good idea. And here it is!
  Benchmarking integration of single-cell differential expression
@@ -82,20 +92,20 @@ I got asked to put all my posts in a central place and I think it is a good idea
     
     <item>
       <title>How to construct a spatial object in Seurat</title>
-      <link>/post/how-to-construct-a-spatial-object-in-seurat/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/how-to-construct-a-spatial-object-in-seurat/</link>
       <pubDate>Thu, 30 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/how-to-construct-a-spatial-object-in-seurat/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/how-to-construct-a-spatial-object-in-seurat/</guid>
       <description>Sign up for my newsletter to not miss a post like this https://divingintogeneticsandgenomics.ck.page/newsletter
 Single-cell spatial transcriptome data is a new and advanced technology that combines the study of individual cells’ genes and their location in a tissue to understand the complex cellular and molecular differences within it. This allows scientists to investigate how genes are expressed and how cells interact with each other with much greater detail than before.</description>
     </item>
     
     <item>
       <title>Partial least square regression for marker gene identification in scRNAseq data</title>
-      <link>/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</link>
       <pubDate>Thu, 16 Jun 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/</guid>
       <description>This is an extension of my last blog post marker gene selection using logistic regression and regularization for scRNAseq.
 Let’s use the same PBMC single-cell RNAseq data as an example.
 Load libraries
@@ -105,10 +115,10 @@ library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # fo
     
     <item>
       <title>marker gene selection using logistic regression and regularization for scRNAseq </title>
-      <link>/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</link>
       <pubDate>Sun, 15 May 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/</guid>
       <description>why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
  Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
  I am interested in using logistic regression to find marker genes and want to try fitting the model in the tidymodel ecosystem and using different regularization methods.</description>
@@ -116,10 +126,10 @@ library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # fo
     
     <item>
       <title>stacked violin plot for visualizing single-cell data in Seurat</title>
-      <link>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</link>
       <pubDate>Tue, 17 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/</guid>
       <description>In scanpy, there is a function to create a stacked violin plot.
 There is no such function in Seurat, and many people were asking for this feature. e.g. https://github.com/satijalab/seurat/issues/300
 https://github.com/satijalab/seurat/issues/463
@@ -129,10 +139,10 @@ The idea is to create a violin plot per gene using the VlnPlot in Seurat, then c
     
     <item>
       <title>Calculate scATACseq TSS enrichment score</title>
-      <link>/post/calculate-scatacseq-tss-enrichment-score/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/calculate-scatacseq-tss-enrichment-score/</link>
       <pubDate>Wed, 29 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/calculate-scatacseq-tss-enrichment-score/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/calculate-scatacseq-tss-enrichment-score/</guid>
       <description>TSS enrichment score serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
 From the Encode page:
  Transcription Start Site (TSS) Enrichment Score - The TSS enrichment calculation is a signal to noise calculation. The reads around a reference set of TSSs are collected to form an aggregate distribution of reads centered on the TSSs and extending to 1000 bp in either direction (for a total of 2000bp).</description>
@@ -140,10 +150,10 @@ From the Encode page:
     
     <item>
       <title>clustering scATACseq data: the TF-IDF way</title>
-      <link>/post/clustering-scatacseq-data-the-tf-idf-way/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/clustering-scatacseq-data-the-tf-idf-way/</link>
       <pubDate>Fri, 03 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/clustering-scatacseq-data-the-tf-idf-way/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/clustering-scatacseq-data-the-tf-idf-way/</guid>
       <description>scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of scATACseq data, there are some preprocessing steps need to be done.
 I want to reproduce what has been done after reading the method section of these two recent scATACseq paper:
 A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Cell 2018   Latent Semantic Indexing Cluster Analysis  In order to get an initial sense of the relationship between individual cells, we first broke the genome into 5kb windows and then scored each cell for any insertions in these windows, generating a large, sparse, binary matrix of 5kb windows by cells for each tissue.</description>
@@ -151,10 +161,10 @@ A Single-Cell Atlas of In Vivo Mammalian Chromatin Accessibility Darren et.al Ce
     
     <item>
       <title>plot 10x scATAC coverage by cluster/group</title>
-      <link>/post/plot-10x-scatac-coverage-by-cluster-group/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/plot-10x-scatac-coverage-by-cluster-group/</link>
       <pubDate>Mon, 29 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/plot-10x-scatac-coverage-by-cluster-group/</guid>
       <description>This post was inspired by Andrew Hill’s recent blog post.
 Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGenomics. Would still definitely have to split BAM files for other tasks, so easy to use tools for that are super useful too!
 &amp;mdash; Andrew J Hill (@ahill_tweets) April 13, 2019  Andrew wrote that blog post in light of my other recent blog post and Tim’s (developer of the almighty Seurat package) blog post.</description>
@@ -162,10 +172,10 @@ Inspired by some nice posts by @timoast and @tangming2005 and work from @10xGeno
     
     <item>
       <title>understand 10x scRNAseq and scATAC fastqs</title>
-      <link>/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/understand-10x-scrnaseq-and-scatac-fastqs/</link>
       <pubDate>Wed, 06 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/understand-10x-scrnaseq-and-scatac-fastqs/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/understand-10x-scrnaseq-and-scatac-fastqs/</guid>
       <description>single cell RNAseq Please read the following posts by Dave Tang. When I google, I always find his posts on top of the pages. Thanks for sharing your knowledge.
 https://davetang.org/muse/2018/06/06/10x-single-cell-bam-files/ https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/
 From the 10x manual:

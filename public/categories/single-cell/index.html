@@ -18,7 +18,7 @@
   <meta name="description" content="Director of Bioinformatics">
 
   
-  <link rel="alternate" hreflang="en-us" href="/categories/single-cell/">
+  <link rel="alternate" hreflang="en-us" href="https://divingintogeneticsandgenomics.com/categories/single-cell/">
 
   
 
@@ -75,15 +75,15 @@
   
 
   
-  <link rel="alternate" href="/categories/single-cell/index.xml" type="application/rss+xml" title="Chatomics">
-  <link rel="feed" href="/categories/single-cell/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="alternate" href="https://divingintogeneticsandgenomics.com/categories/single-cell/index.xml" type="application/rss+xml" title="Chatomics">
+  <link rel="feed" href="https://divingintogeneticsandgenomics.com/categories/single-cell/index.xml" type="application/rss+xml" title="Chatomics">
   
 
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/categories/single-cell/">
+  <link rel="canonical" href="https://divingintogeneticsandgenomics.com/categories/single-cell/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -91,18 +91,71 @@
   <meta property="twitter:creator" content="@https://twitter.com/tangming2005">
   
   <meta property="og:site_name" content="Chatomics">
-  <meta property="og:url" content="/categories/single-cell/">
-  <meta property="og:title" content="Single-cell | Chatomics">
+  <meta property="og:url" content="https://divingintogeneticsandgenomics.com/categories/single-cell/">
+  <meta property="og:title" content="Single cell | Chatomics">
   <meta property="og:description" content="Director of Bioinformatics">
   <meta property="og:locale" content="en-us">
   
-  <meta property="og:updated_time" content="2024-03-20T00:00:00&#43;00:00">
+  <meta property="og:updated_time" content="2024-10-19T00:00:00&#43;00:00">
   
 
   
   
 
-  <title>Single-cell | Chatomics</title>
+
+
+
+
+<meta name="description" content="">
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://divingintogeneticsandgenomics.com/categories/single-cell/">
+<meta property="og:title" content="Single cell | Chatomics">
+
+<meta property="og:description" content="">
+
+
+<meta property="og:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+<meta property="og:site_name" content="Chatomics">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@tangming2005">
+<meta name="twitter:creator" content="@tangming2005">
+<meta name="twitter:title" content="Single cell">
+
+<meta name="twitter:description" content="">
+
+
+<meta name="twitter:image" content="https://divingintogeneticsandgenomics.com/img/icon-192.png">
+
+
+
+
+
+
+<meta name="author" content="Ming Tommy Tang">
+
+<link rel="canonical" href="https://divingintogeneticsandgenomics.com/categories/single-cell/">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <title>Single cell | Chatomics</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -277,74 +330,145 @@
 
 <div class="universal-wrapper">
 
-  <h1>Single-cell</h1>
+  <h1>Single cell</h1>
 
   
 
   
   
   <div>
-    <h2><a href="/post/fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback/">Fine tune the best clustering resolution for scRNAseq data: trying out callback</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/cca-alignment/">How CCA alignment and cell label transfer work in Seurat</a></h2>
     <div class="article-style">
       
-      Context and Problem In scRNA-seq, each cell is sequenced individually, allowing for the analysis of gene expression at the single-cell level. This provides a wealth of information about the cellular identities and states. However, the high dimensionality of the data (thousands of genes) and the technical noise in the data can lead to challenges in accurately clustering the cells. Over-clustering is one such challenge, where cells that are biologically similar are clustered into distinct clusters.
+      To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Understand CCA Following my last blog post on PCA projection and cell label transfer, we are going to talk about CCA.
+In single-cell RNA-seq data integration using Canonical Correlation Analysis (CCA), we typically align two matrices representing different datasets, where both datasets have the same set of genes but different numbers of cells.
       
     </div>
   </div>
   
   <div>
-    <h2><a href="/post/do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data/">Do you really understand log2Fold change in single-cell RNAseq data?</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/pca-projection/">How PCA projection and cell label transfer work in Seurat</a></h2>
     <div class="article-style">
       
-      In Single-cell RNAseq analysis, there is a step to find the marker genes for each cluster. The output from Seurat FindAllMarkers has a column called avg_log2FC. It is the gene expression log2 fold change between cluster x and all other clusters.
-How is that calculated? In this tweet thread by Lior Pachter, he said that there was a discrepancy for the logFC changes between Seurat and Scanpy: Actually, both Scanpy and Seurat calculate it wrong.
+      To not miss a post like this, sign up for my newsletter to learn computational biology and bioinformatics.
+Understand the example datasets We will use PBMC3k and PBMC10k data. We will project the PBMC3k data to the PBMC10k data and get the labels
+library(Seurat) library(Matrix) library(irlba) # For PCA library(RcppAnnoy) # For fast nearest neighbor search library(dplyr) # Assuming the PBMC datasets (3k and 10k) are already normalized # and represented as sparse matrices # devtools::install_github(&#39;satijalab/seurat-data&#39;) library(SeuratData) #AvailableData() #InstallData(&quot;pbmc3k&quot;) pbmc3k&lt;-UpdateSeuratObject(pbmc3k) pbmc3k@meta.
       
     </div>
   </div>
   
-  <div>
-    <h2><a href="/post/how-to-make-a-multi-group-dotplot-for-single-cell-rnaseq-data/">How to make a multi-group dotplot for single-cell RNAseq data</a></h2>
-    <div class="article-style">
-      
-      Dotplots are very popular for visualizing single-cell RNAseq data. In essence, the dot size represents the percentage of cells that are positive for that gene; the color intensity represents the average gene expression of that gene in a cell type.
-It is easy to plot one using Seurat::dotplot or Sccustomize::clustered_dotplot. However, when you have multiple groups/conditions in your data and you want to visualize it by groups, it is not that straightforward.
-      
+
+  
+
+
+</div>
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 Ming &lsquo;Tommy&rsquo; Tang &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
     </div>
   </div>
-  
-  <div>
-    <h2><a href="/post/how-to-create-pseudobulk-from-single-cell-rnaseq-data/">How to create pseudobulk from single-cell RNAseq data </a></h2>
-    <div class="article-style">
+</div>
+
+    
+
+    
+    
+    <script id="dsq-count-scr" src="//divingintogeneticsandgenomics.disqus.com/count.js" async></script>
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
       
-      What is pseduobulk? Many of you have heard about bulk-RNAseq data. What is pseduobulk?
-Single-cell RNAseq can profile the gene expression at single-cell resolution. For differential expression, psedobulk seems to perform really well(see paper muscat detects subpopulation-specific state transitions from multi-sample multi-condition single-cell transcriptomics data). To create a pseudobulk, one can artificially add up the counts for cells from the same cell type of the same sample.
-In this blog post, I’ll guide you through the art of creating pseudobulk data from scRNA-seq experiments.
       
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets/">Reuse the single cell data! How to create a seurat object from GEO datasets</a></h2>
-    <div class="article-style">
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
       
-      Download the data <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256" target="_blank">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116256</a>
-cd data/GSE116256 wget <a href="https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar" target="_blank">https://ftp.ncbi.nlm.nih.gov/geo/series/GSE116nnn/GSE116256/suppl/GSE116256_RAW.tar</a> tar xvf GSE116256_RAW.tar rm GSE116256_RAW.tar Depending on how the authors upload their data.
-Some authors may just upload the merged count matrix file. This is the easiest situation.
-In this dataset, each sample has a separate set of matrix (*dem.txt.gz), features and barcodes.
-Total, there are 43 samples. For each sample, it has an associated metadata file (*anno.txt.gz) too.
-You can inspect the files in command line:
+
       
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/ten-single-cell-data-benchmarking-papers/">10 single-cell data benchmarking papers</a></h2>
-    <div class="article-style">
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
       
-      I tweeted it at <a href="https://twitter.com/tangming2005/status/1679120948140572672" target="_blank">https://twitter.com/tangming2005/status/1679120948140572672</a>
-I got asked to put all my posts in a central place and I think it is a good idea. And here it is!
- Benchmarking integration of single-cell differential expression
- Benchmarking atlas-level data integration in single-cell genomics
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/shell.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
+    
+    
+
+  </body>
+</html>
+
+
+
+ata integration in single-cell genomics
  A review of computational strategies for denoising and imputation of single-cell transcriptomic data
  Benchmarking spatial and single-cell transcriptomics integration methods for transcript distribution prediction and cell type deconvolution
       
@@ -352,7 +476,7 @@ I got asked to put all my posts in a central place and I think it is a good idea
   </div>
   
   <div>
-    <h2><a href="/post/how-to-construct-a-spatial-object-in-seurat/">How to construct a spatial object in Seurat</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/how-to-construct-a-spatial-object-in-seurat/">How to construct a spatial object in Seurat</a></h2>
     <div class="article-style">
       
       Sign up for my newsletter to not miss a post like this <a href="https://divingintogeneticsandgenomics.ck.page/newsletter" target="_blank">https://divingintogeneticsandgenomics.ck.page/newsletter</a>
@@ -362,7 +486,7 @@ Single-cell spatial transcriptome data is a new and advanced technology that com
   </div>
   
   <div>
-    <h2><a href="/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data/">Partial least square regression for marker gene identification in scRNAseq data</a></h2>
     <div class="article-style">
       
       This is an extension of my last blog post marker gene selection using logistic regression and regularization for scRNAseq.
@@ -377,25 +501,12 @@ library(Seurat) library(tidyverse) library(tidymodels) library(scCustomize) # fo
   </div>
   
   <div>
-    <h2><a href="/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></h2>
+    <h2><a href="https://divingintogeneticsandgenomics.com/post/marker-gene-selection-using-logistic-regression-and-regularization-for-scrnaseq/">marker gene selection using logistic regression and regularization for scRNAseq </a></h2>
     <div class="article-style">
       
       why this blog post? I saw a biorxiv paper titled A comparison of marker gene selection methods for single-cell RNA sequencing data
  Our results highlight the efficacy of simple methods, especially the Wilcoxon rank-sum test, Student’s t-test and logistic regression
  I am interested in using logistic regression to find marker genes and want to try fitting the model in the tidymodel ecosystem and using different regularization methods.
-      
-    </div>
-  </div>
-  
-  <div>
-    <h2><a href="/post/stacked-violin-plot-for-visualizing-single-cell-data-in-seurat/">stacked violin plot for visualizing single-cell data in Seurat</a></h2>
-    <div class="article-style">
-      
-      In scanpy, there is a function to create a stacked violin plot.
-There is no such function in Seurat, and many people were asking for this feature. e.g. <a href="https://github.com/satijalab/seurat/issues/300" target="_blank">https://github.com/satijalab/seurat/issues/300</a>
-<a href="https://github.com/satijalab/seurat/issues/463" target="_blank">https://github.com/satijalab/seurat/issues/463</a>
-The developers have not implemented this feature yet. In this post, I am trying to make a stacked violin plot in Seurat.
-The idea is to create a violin plot per gene using the VlnPlot in Seurat, then customize the axis text/tick and reduce the margin for each plot and finally concatenate by cowplot::plot_grid or patchwork::wrap_plots.
       
     </div>
   </div>

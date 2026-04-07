@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Reproducible research on Chatomics</title>
-    <link>/tags/reproducible-research/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/reproducible-research/</link>
     <description>Recent content in Reproducible research on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Wed, 15 Nov 2023 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/reproducible-research/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/reproducible-research/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>My take on Data Challenges in Immuno-oncology, the Role of the Cloud, and Growing a Computational Biology Team</title>
-      <link>/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</link>
       <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/my-take-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team/</guid>
       <description>The original link. https://connect.corrdyn.com/blog/ming-tang-on-data-challenges-in-immuno-oncology-the-role-of-the-cloud-and-growing-a-computational-biology-team
 Guest Profile Tommy Tang&amp;rsquo;s career began when he pursued his Ph.D. in genetics and genomics at the University of Florida. Initially trained in molecular biology in the wet lab, he was driven to explore computational biology after encountering the limitations of traditional analysis methods. Through self-study, Tommy developed skills that enabled him to analyze complex genomic data sets.
 Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to Harvard and the Dana Farber Cancer Institute, where he worked on single-cell RNA sequencing.</description>
@@ -25,10 +25,10 @@ Following his Ph.D., Tommy joined MD Anderson Cancer Center and later moved to H
     
     <item>
       <title>setting up Travis CI for github repos</title>
-      <link>/post/setting-up-travis-ci-for-github-repos/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/setting-up-travis-ci-for-github-repos/</link>
       <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/setting-up-travis-ci-for-github-repos/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/setting-up-travis-ci-for-github-repos/</guid>
       <description>I wanted to set up Travis CI long time ago. Finally, I have a chance to do so. There are already many posts on how to do it. I write it down here for my own future reference. Thanks Tao Liu for the instructions. I have been learning a lot from him in collabrating with the MAESTRO project.
  read the official documentation https://docs.travis-ci.com/user/tutorial/ Jean Fan&amp;rsquo;s blog post https://jef.works/blog/2019/02/17/automate-testing-of-your-R-package/ R specific https://docs.</description>
     </item>

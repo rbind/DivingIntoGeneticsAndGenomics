@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Mac setup on Chatomics</title>
-    <link>/tags/mac-setup/</link>
+    <link>https://divingintogeneticsandgenomics.com/tags/mac-setup/</link>
     <description>Recent content in Mac setup on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Wed, 03 Oct 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/mac-setup/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/tags/mac-setup/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>set up my new mac laptop</title>
-      <link>/post/set-up-my-new-mac-laptop/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/set-up-my-new-mac-laptop/</link>
       <pubDate>Wed, 03 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/set-up-my-new-mac-laptop/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/set-up-my-new-mac-laptop/</guid>
       <description>I am starting my first day at Harvard FAS informatics and I will keep a note here on how I set up my new laptop.
 customize terminal following this gist:
 download iterm2 for mac here.

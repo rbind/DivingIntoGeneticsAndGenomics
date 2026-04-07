@@ -2,32 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Data management on Chatomics</title>
-    <link>/categories/data-management/</link>
+    <link>https://divingintogeneticsandgenomics.com/categories/data-management/</link>
     <description>Recent content in Data management on Chatomics</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018 Ming &#39;Tommy&#39; Tang</copyright>
     <lastBuildDate>Wed, 07 Jun 2023 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/data-management/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://divingintogeneticsandgenomics.com/categories/data-management/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Unlock the Power of Genomics Data Analysis: Watershed&#39;s Seamless Cloud Computing Solution</title>
-      <link>/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</link>
       <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/unlock-the-power-of-genomics-data-analysis-watershed-s-seamless-cloud-computing-solution/</guid>
       <description>Disclaimer: This post is sponsored by Watershed Omics Bench platform. I have personally tested the platform. The opinions and views expressed in this post are solely those of the author and do not represent the views of my employer
 As an experienced bioinformatician who understands the needs of biotech startups, I know the challenges that arise when analyzing genomics data. The first solution that comes to mind is cloud computing. Unsurprisingly, AWS and Google Cloud Platform (GCP) are commonly used options.</description>
     </item>
     
     <item>
       <title>Backup automatically with cron</title>
-      <link>/post/crontab-for-backup/</link>
+      <link>https://divingintogeneticsandgenomics.com/post/crontab-for-backup/</link>
       <pubDate>Wed, 27 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/crontab-for-backup/</guid>
+      <guid>https://divingintogeneticsandgenomics.com/post/crontab-for-backup/</guid>
       <description>Data backup is an essential step in the data analysis life cycle. As shown in a pic below taken from DataOne.
 There are so many important things you may want to back up: your raw/processed data, your code, and your dot configuration files. While for every project, I have git version control my scripts (not the data) and push it to github or gitlab to have a backup, big files can not be hosted on github or gitlab.</description>
     </item>
