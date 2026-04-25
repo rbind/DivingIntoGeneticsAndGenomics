@@ -146,7 +146,7 @@ His broader work makes the same case in regulatory genomics: lightweight interpr
 
 Single-cell RNA-seq has its own artifacts: heat shock from the cell isolation protocol, transcriptional drift, dropout. The cells you end up sequencing are not the cells you started with.
 
-There is also a fundamental issue with the kind of data we collect. We destroy the cells and read out their final state with NGS. The cells are dead by the time we get the matrix. The biology that mattered, the dynamics that produced the state, is lost. I wrote about this on [LinkedIn recently](https://www.linkedin.com/posts/ming-tommy-tang-40650014_unlocking-the-true-potential-of-ai-and-activity-7448727853799497729-ixK1/): until we get high-throughput real-time biology, we will keep training models on snapshots of dead cells.
+There is also a fundamental issue with the kind of data we collect. We destroy the cells and read out their final state with NGS. The cells are dead by the time we get the matrix. The biology that mattered, the dynamics that produced the state, is lost. I wrote about this on [LinkedIn recently](https://www.linkedin.com/posts/%F0%9F%8E%AF-ming-tommy-tang-40650014_unlocking-the-true-potential-of-ai-and-activity-7448727853799497729-ixK1): until we get high-throughput real-time biology, we will keep training models on snapshots of dead cells.
 
 The obvious response to all this is to generate better data with lab automation. [Medra](https://www.medra.ai/) is the company everyone is posting about right now. They raised a `$52M` Series A in December 2025 to build "Physical AI scientists," robots that run wet-lab experiments end to end, with a partnership signed with Genentech. The pitch is compelling: standardized, reproducible, machine-readable biology at scale. The training data problem solves itself if a robot generates the data.
 
@@ -268,5 +268,5 @@ What is your take? Where are you seeing AI actually move the needle in drug deve
 **My own posts**
 
 - The 2023 original: [Has AI Changed the Course of Drug Development?](/post/has-ai-changed-the-course-of-drug-development/)
-- Real-time biology and the limits of NGS snapshots: [LinkedIn post](https://www.linkedin.com/posts/ming-tommy-tang-40650014_unlocking-the-true-potential-of-ai-and-activity-7448727853799497729-ixK1/)
+- Real-time biology and the limits of NGS snapshots: [LinkedIn post](https://www.linkedin.com/posts/%F0%9F%8E%AF-ming-tommy-tang-40650014_unlocking-the-true-potential-of-ai-and-activity-7448727853799497729-ixK1)
 - Pre/post definition issues in clinical trial genomics: [LinkedIn post](https://www.linkedin.com/posts/%F0%9F%8E%AF-ming-tommy-tang-40650014_1-you-think-clinical-trial-genomics-is-simple-activity-7342540627386986496-TR3r/)
