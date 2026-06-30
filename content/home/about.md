@@ -36,11 +36,12 @@ weight = 5
 
 ![](/img/chatomics.png)
 
-Ming "Tommy" Tang is the Director of Bioinformatics at AstraZeneca with 14+ years of experience in computational biology, single-cell genomics, and cancer research. He is the author of the Chatomics blog (230+ tutorials, 6,000+ monthly readers) covering single-cell RNA-seq, Seurat, R/Python programming, ATAC-seq, and bioinformatics best practices. He holds a PhD in Genetics and Genomics from the University of Florida.
+Ming "Tommy" Tang is the Director of Bioinformatics at AstraZeneca with 14+ years of experience in computational biology, single-cell genomics, and cancer research. He was named to the [Boston Business Journal's 40 Under 40](https://www.bizjournals.com/boston/news/2026/03/23/meet-the-2026-40-under-40-honorees.html) in 2026. He is the author of the Chatomics blog (230+ tutorials, 6,000+ monthly readers) covering single-cell RNA-seq, Seurat, R/Python programming, ATAC-seq, and bioinformatics best practices. He holds a PhD in Genetics and Genomics from the University of Florida.
 
 ### Key Facts
 
 - **Current Role:** Director of Bioinformatics, AstraZeneca
+- **Recognition:** [Boston Business Journal 40 Under 40 (2026)](https://www.bizjournals.com/boston/news/2026/03/23/meet-the-2026-40-under-40-honorees.html)
 - **Advisory Boards:** [Pythia Biosciences](https://www.pythiabio.com/about-1) (Scientific Advisory Board), [Northeastern University Bioinformatics Program](https://connect.northeastern.edu/portal/lp?page=5c813823-26b4-a49b-d047-0ad08b5d5271) (Industry Advisory Board)
 - **Education:** PhD in Genetics and Genomics (University of Florida), BS in Biotechnology (Shanghai Jiaotong University)
 - **Blog:** [Chatomics](https://divingintogeneticsandgenomics.com) — 230+ posts, 6,000+ monthly readers

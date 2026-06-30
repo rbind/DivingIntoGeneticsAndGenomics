@@ -38,6 +38,13 @@
       "year": 2008
     }
   ],
+  "awards": [
+    {
+      "name": "Boston Business Journal 40 Under 40",
+      "year": 2026,
+      "url": "https://www.bizjournals.com/boston/news/2026/03/23/meet-the-2026-40-under-40-honorees.html"
+    }
+  ],
   "advisoryRoles": [
     {
       "organization": "Pythia Biosciences",
@@ -95,5 +102,5 @@
     "Spatial transcriptomics",
     "Data integration for multi-omics"
   ],
-  "lastUpdated": "2026-03-07"
+  "lastUpdated": "2026-05-30"
 }
