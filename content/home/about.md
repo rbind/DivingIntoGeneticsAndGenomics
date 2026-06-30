@@ -36,11 +36,11 @@ weight = 5
 
 ![](/img/chatomics.png)
 
-Ming "Tommy" Tang is the Director of Bioinformatics at AstraZeneca with 14+ years of experience in computational biology, single-cell genomics, and cancer research. He was named to the [Boston Business Journal's 40 Under 40](https://www.bizjournals.com/boston/news/2026/03/23/meet-the-2026-40-under-40-honorees.html) in 2026. He is the author of the Chatomics blog (230+ tutorials, 6,000+ monthly readers) covering single-cell RNA-seq, Seurat, R/Python programming, ATAC-seq, and bioinformatics best practices. He holds a PhD in Genetics and Genomics from the University of Florida.
+Ming "Tommy" Tang is the Director of Bioinformatics at AstraZeneca with 14+ years of experience in computational biology, single-cell genomics, and cancer research. He was named to the [Boston Business Journal's 40 Under 40](https://www.bizjournals.com/boston/news/2026/03/23/meet-the-2026-40-under-40-honorees.html) in 2026. His mission is to teach 1 million people bioinformatics, an effort [profiled by LA Wire](https://lawire.com/ming-tommy-tang-diving-into-genetics-and-genomics-teaching-bioinformatics-at-scale/). He is the author of the Chatomics blog (230+ tutorials, 6,000+ monthly readers) covering single-cell RNA-seq, Seurat, R/Python programming, ATAC-seq, and bioinformatics best practices. He holds a PhD in Genetics and Genomics from the University of Florida.
 
 ### Community and civic involvement
 
-Dr. Tang contributes to Boston's scientific and Asian-American professional communities at local, national, and global scales. He serves as a board member of the Chinese Biopharmaceutical Association – New England (CBA-NE), volunteers with the Sino-American Pharmaceutical Professionals Association (SAPA), and holds the role of VP of Public Relations for his Toastmasters chapter.
+Dr. Tang contributes to Boston's scientific and Asian-American professional communities at local, national, and global scales. He volunteers with the Sino-American Pharmaceutical Professionals Association (SAPA) and holds the role of VP of Public Relations for his Toastmasters chapter.
 
 In Boston, he mentors early-career scientists and leads career panels at local academic institutions. He is co-chairing a full-afternoon industry workshop at ISMB 2026, the world's largest computational biology conference, featuring four panel discussions with leaders from big pharma, biotech, genomics companies, and healthcare VCs. He was invited to speak on engineering biology and AI at the British Consulate Boston as part of the UK Science and Technology Network series.
 
