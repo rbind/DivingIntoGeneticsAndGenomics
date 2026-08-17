@@ -21,7 +21,7 @@ publication = "In *bioRxiv* (preprint), 2026.08.01.741526."
 publication_short = "In *bioRxiv*"
 
 # Abstract and optional shortened version.
-abstract = "Epigenetic aberrations are a hallmark of cancer; however, systematic chromatin state maps of cancer cell lines have been lacking. In this work we build and analyze the chromatin landscape across a broad panel of cancer cell lines and use it to identify functionally distinct enhancer subtypes that connect chromatin state to gene regulation and lineage biology."
+abstract = "Epigenetic aberrations are a hallmark of cancer; however, systematic chromatin state maps of cancer cells are unavailable. We generated and analyzed 803 histone mark profiles in 142 cancer cell lines and 114 human tumors belonging to 9 solid tumor types. Irrespective of their cell-of-origin, cancer cells segregate from normal tissues based on their enhancer patterns, suggesting enhancer deregulation is a fundamental epigenetic feature in cancer. Enhancer based clustering defined 5 distinct subgroups of cancer cells (EpiC1-5) with unique developmental trajectories, molecular features and dependencies. Importantly, we define a set of core TFs that are critical for EpiC-specific enhancer patterns and survival. Notably, EpiC4 represented a predominantly epigenetic, pan-cancer subtype that displays poor survival, activation and dependence on a FN1-CAV1-SRC-PI3K-AKT signaling network. Together, these data uncover enhancer heterogeneity in pan-cancer systems with identification of a novel enhancer-based subtype and identify potential new therapeutic targets associated with unique epigenetic features."
 
 # Featured image thumbnail (optional)
 image_preview = ""
