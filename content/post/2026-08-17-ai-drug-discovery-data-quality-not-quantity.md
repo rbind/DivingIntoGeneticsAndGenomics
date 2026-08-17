@@ -140,6 +140,7 @@ If you push back on my framing of data quality vs quantity, or if you have count
 - ISMB 2026 industry workshop (co-hosted with Shirley Liu, includes Anthony Philippakis panel). [Workshop site](https://ismb-2026-industry-workshop.vercel.app/)
 - My LinkedIn post on the hammer-and-nail analogy from that panel. [LinkedIn](https://www.linkedin.com/feed/update/urn:li:share:7491489595222667264/)
 - Kedzierska et al. Deep-learning-based gene perturbation effect prediction does not yet outperform simple linear baselines. *Nature Methods*, 2025. [Paper](https://www.nature.com/articles/s41592-025-02772-6)
+- The Data Wire interview with me on AI data quality challenges in life sciences. [Article](https://www.thedatawire.com/news/ai-data-quality-challenges-life-sciences-ming-tommy-tang-bioinformatics-director-astrazeneca)
 - Anshul Kundaje on virtual cell models. [X thread](https://x.com/anshulkundaje/status/2034317728878907546)
 - My earlier take: [Has AI Changed the Course of Drug Development? Three Years Later](/post/has-ai-changed-drug-development-3-years-later/)
 - My biotech data strategy post: [How to Build a Data Strategy for Your Biotech Startup](/post/biotech-data/)
