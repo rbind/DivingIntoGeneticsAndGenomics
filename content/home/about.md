@@ -42,7 +42,7 @@ Ming "Tommy" Tang is the Director of Bioinformatics at AstraZeneca with 14+ year
 
 Dr. Tang contributes to Boston's scientific and Asian-American professional communities at local, national, and global scales. He volunteers with the Sino-American Pharmaceutical Professionals Association (SAPA) and holds the role of VP of Public Relations for his Toastmasters chapter.
 
-In Boston, he mentors early-career scientists and leads career panels at local academic institutions. He is co-chairing a full-afternoon industry workshop at ISMB 2026, the world's largest computational biology conference, featuring four panel discussions with leaders from big pharma, biotech, genomics companies, and healthcare VCs. He was invited to speak on engineering biology and AI at the British Consulate Boston as part of the UK Science and Technology Network series.
+In Boston, he mentors early-career scientists and leads career panels at local academic institutions. He is co-chairing a full-afternoon [industry workshop at ISMB 2026](https://ismb-2026-industry-workshop.vercel.app/), the world's largest computational biology conference, featuring four panel discussions with leaders from big pharma, biotech, genomics companies, and healthcare VCs. He was invited to speak on engineering biology and AI at the British Consulate Boston as part of the UK Science and Technology Network series.
 
 His educational outreach spans four continents and ten countries, including invited talks in Nigeria, Turkey, Chile, Peru, India, Pakistan, Brazil, Singapore, Germany, and the UK, and seven podcast appearances as an expert voice in computational biology and AI.
 
