@@ -35,6 +35,8 @@ caption = ""
 
 +++
 
+![DataDrivenPharma East 2026](/img/datadrivenphama.png)
+
 Two sessions at [DataDrivenPharma East 2026](https://www.datadrivenpharma.com/ddp-east):
 
 - **Panelist**, *Personal branding in biotech and pharma* (1:15 PM). Moderator: Ilya Captain (DataDrivenPharma). Fellow panelists: Dean Lee (Novartis), Joanna Ghayad (Joanna Ghayad Coaching), Joanna Sadowska (Nanolive SA).
