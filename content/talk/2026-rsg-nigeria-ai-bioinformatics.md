@@ -18,7 +18,7 @@ selected = true
 
 # Links (optional).
 url_pdf = ""
-url_slides = ""
+url_slides = "https://docs.google.com/presentation/d/11SawHEDvJVSHd-juOxjL7BpNDKR4jC7H7kVZpt7biKU/edit?usp=sharing"
 url_video = ""
 url_code = ""
 
@@ -38,3 +38,5 @@ caption = ""
 ![AI in Bioinformatics: Will You Be the Pilot or the Passenger? — RSG Nigeria August 2026 Webinar](/img/nigeria_talk.jpeg)
 
 Webinar for the [ISCB Student Council RSG-Nigeria](https://luma.com/7v198yof) August 2026 Webinar Series on AI in bioinformatics: how to use the tools effectively, where the models fall short, and the mindset shift needed to steer the tools rather than be steered by them.
+
+[Slides on Google Docs](https://docs.google.com/presentation/d/11SawHEDvJVSHd-juOxjL7BpNDKR4jC7H7kVZpt7biKU/edit?usp=sharing)
