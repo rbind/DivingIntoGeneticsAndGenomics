@@ -6,6 +6,7 @@ Allow: /
 
 # Sitemap
 Sitemap: https://divingintogeneticsandgenomics.com/sitemap.xml
+Sitemap: https://divingintogeneticsandgenomics.com/learn/sitemap.xml
 
 # Block non-content directories to save crawl budget
 Disallow: /rmarkdown-libs/
