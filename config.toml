@@ -311,6 +311,11 @@ enableRobotsTXT = true
   weight = 2
   
 [[menu.main]]
+  name = "Field Guide"
+  url = "/learn/"
+  weight = 6
+
+[[menu.main]]
   name = "Contact"
   url = "#contact"
   weight = 8
