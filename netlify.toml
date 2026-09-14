@@ -15,14 +15,17 @@ HUGO_ENV = "production"
 # The X-Pseo-Proxy header tells the origin the request came through this proxy; direct hits on
 # the *.vercel.app origin are served with X-Robots-Tag: noindex so only these URLs get indexed.
 [[redirects]]
-  from = "/learn"
-  to = "/learn/"
-  status = 301
-  force = true
-
-[[redirects]]
   from = "/learn/*"
   to = "https://chatomics-learn.vercel.app/learn/:splat"
+  status = 200
+  force = true
+  headers = {X-Pseo-Proxy = "128f1ae0c3001d33a51e978790bd7db7fbbcb4b878979558"}
+
+# Bare /learn (no trailing slash). Netlify matches "/learn" for "/learn/" as well, so this must
+# be a 200 proxy, never a redirect to "/learn/" (that loops).
+[[redirects]]
+  from = "/learn"
+  to = "https://chatomics-learn.vercel.app/learn/"
   status = 200
   force = true
   headers = {X-Pseo-Proxy = "128f1ae0c3001d33a51e978790bd7db7fbbcb4b878979558"}
