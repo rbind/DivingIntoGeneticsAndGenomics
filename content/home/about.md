@@ -57,7 +57,7 @@ His educational outreach spans four continents and ten countries, including invi
 - **Social Media:** 120K+ followers across platforms, 30M+ impressions per year
 - **Speaking:** 50+ talks at Stanford, EMBL, 10x Genomics, Festival of Genomics, and more
 - **Publications:** [Google Scholar](https://scholar.google.com/citations?user=6uF4Sa8AAAAJ)
-- **Book:** [From Cell Line to Command Line](https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line)
+- **Book (pre-launch):** [What They Don't Teach You in Bioinformatics](https://divingintogeneticsandgenomics.kit.com/wtdt_bioinformatics?utm_source=website&utm_medium=about_page&utm_campaign=book_prelaunch) — 290 hard-won lessons, the best of three years of daily posts, distilled
 
 ### What I Write About
 
@@ -74,8 +74,9 @@ I also have a great interest in promoting open science and reforming bioinformat
 
 I also have a YouTube channel [chatomics](https://www.youtube.com/@chatomics) where I share bioinformatics tips and tutorials.
 
-**[Grab my book](https://divingintogeneticsandgenomics.ck.page/products/cell-line-to-command-line) to transform yourself into a computational biologist.**
-![](/img/bookcover.png)
+**[Get on the founding-reader waitlist for my second book, *What They Don't Teach You in Bioinformatics*](https://divingintogeneticsandgenomics.kit.com/wtdt_bioinformatics?utm_source=website&utm_medium=about_page&utm_campaign=book_prelaunch).** 290 hard-won lessons on the judgment no course teaches, from a wet-lab biologist who became a Big Pharma bioinformatics director. Free 15-lesson sampler for signing up.
+
+[![What They Don't Teach You in Bioinformatics — founding-reader waitlist](https://embed.filekitcdn.com/e/4Wxdam7qvnmm4RU95aHyfL/dSzZDMDRJyxgR6ojv7kUjB/email)](https://divingintogeneticsandgenomics.kit.com/wtdt_bioinformatics?utm_source=website&utm_medium=about_page&utm_campaign=book_prelaunch)
 
 ### My back story
 
