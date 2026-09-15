@@ -54,7 +54,7 @@ His educational outreach spans four continents and ten countries, including invi
 - **Education:** PhD in Genetics and Genomics (University of Florida), BS in Biotechnology (Shanghai Jiaotong University)
 - **Blog:** [Chatomics](https://divingintogeneticsandgenomics.com) — 230+ posts, 6,000+ monthly readers
 - **YouTube:** [chatomics](https://www.youtube.com/@chatomics) — bioinformatics tutorials and tips
-- **Social Media:** 120K+ followers across platforms, 30M+ impressions per year
+- **Social Media:** 140K+ followers across platforms, 30M+ impressions per year
 - **Speaking:** 50+ talks at Stanford, EMBL, 10x Genomics, Festival of Genomics, and more
 - **Publications:** [Google Scholar](https://scholar.google.com/citations?user=6uF4Sa8AAAAJ)
 - **Book (pre-launch):** [What They Don't Teach You in Bioinformatics](https://divingintogeneticsandgenomics.kit.com/wtdt_bioinformatics?utm_source=website&utm_medium=about_page&utm_campaign=book_prelaunch) — 290 hard-won lessons, the best of three years of daily posts, distilled
