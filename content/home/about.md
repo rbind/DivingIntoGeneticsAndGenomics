@@ -76,7 +76,7 @@ I also have a YouTube channel [chatomics](https://www.youtube.com/@chatomics) wh
 
 **[Get on the founding-reader waitlist for my second book, *What They Don't Teach You in Bioinformatics*](https://divingintogeneticsandgenomics.kit.com/wtdt_bioinformatics?utm_source=website&utm_medium=about_page&utm_campaign=book_prelaunch).** 290 hard-won lessons on the judgment no course teaches, from a wet-lab biologist who became a Big Pharma bioinformatics director. Free 15-lesson sampler for signing up.
 
-[![What They Don't Teach You in Bioinformatics — founding-reader waitlist](https://embed.filekitcdn.com/e/4Wxdam7qvnmm4RU95aHyfL/dSzZDMDRJyxgR6ojv7kUjB/email)](https://divingintogeneticsandgenomics.kit.com/wtdt_bioinformatics?utm_source=website&utm_medium=about_page&utm_campaign=book_prelaunch)
+[![What They Don't Teach You in Bioinformatics — founding-reader waitlist](/img/what_they_do_not_teach_bioinfo.jpeg)](https://divingintogeneticsandgenomics.kit.com/wtdt_bioinformatics?utm_source=website&utm_medium=about_page&utm_campaign=book_prelaunch)
 
 ### My back story
 
