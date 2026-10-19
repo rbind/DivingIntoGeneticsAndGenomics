@@ -5,7 +5,7 @@ date: '2020-03-17'
 slug: stacked-violin-plot-for-visualizing-single-cell-data-in-seurat
 categories:
   - R
-  - single-cell
+  - single cell
   - visualization
   - scATACseq
   - scRNAseq
@@ -15,7 +15,6 @@ header:
   caption: ''
   image: ''
 ---
-
 In `scanpy`, there is a [function](https://icb-scanpy-tutorials.readthedocs-hosted.com/en/latest/visualizing-marker-genes.html) to create a stacked violin plot.
 
 ![](/img/posts_img/scanpy.png)

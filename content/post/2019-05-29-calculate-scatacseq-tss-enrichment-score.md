@@ -7,7 +7,7 @@ categories:
   - bioinformatics
   - genomics
   - scATACseq
-  - single-cell
+  - single cell
 tags:
   - ATACseq
   - genomics
@@ -16,7 +16,6 @@ header:
   caption: ''
   image: ''
 ---
-
 [TSS enrichment score](https://www.encodeproject.org/data-standards/terms/#enrichment) serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
 
 From the Encode page:

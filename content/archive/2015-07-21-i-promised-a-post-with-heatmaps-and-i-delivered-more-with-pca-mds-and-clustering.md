@@ -8,7 +8,7 @@ tags:
 - clustering
 - heatmap
 - MDS
-- PCA
+- pca
 - R
 math: false
 blackfriday:
@@ -21,7 +21,6 @@ header:
   caption: ''
   image: ''
 ---
-
 I am back from the 1st summer Institute in statistics for big data held in the university of Washington. I have learned so much!
 
 I wrote up a short tutorial for

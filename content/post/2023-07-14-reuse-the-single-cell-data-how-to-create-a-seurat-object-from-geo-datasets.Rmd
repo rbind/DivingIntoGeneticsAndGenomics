@@ -5,7 +5,7 @@ date: '2023-07-14'
 slug: reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets
 categories:
   - bioinformatics
-  - single-cell
+  - single cell
 tags:
   - single-cell
   - Seurat
@@ -16,7 +16,6 @@ header:
 editor_options: 
   chunk_output_type: console
 ---
-
 ```{r, include=FALSE}
 knitr::opts_chunk$set(
   comment = "#>", echo = TRUE, message= FALSE, warning = FALSE

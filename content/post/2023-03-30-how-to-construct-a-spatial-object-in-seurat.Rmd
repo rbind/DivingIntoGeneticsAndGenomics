@@ -7,7 +7,7 @@ categories:
   - bioinformatics
   - spatial
   - R
-  - single-cell
+  - single cell
 tags:
   - bioinformatics
   - R
@@ -19,7 +19,6 @@ header:
 editor_options: 
   chunk_output_type: console
 ---
-
 ### Sign up for my newsletter to not miss a post like this
 
 https://divingintogeneticsandgenomics.ck.page/newsletter

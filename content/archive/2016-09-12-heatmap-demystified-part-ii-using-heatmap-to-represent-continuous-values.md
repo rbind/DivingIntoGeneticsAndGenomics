@@ -6,7 +6,7 @@ lastmod: '2016-09-12T08:37:00-07:00'
 slug: heatmap-demystified-part-ii-using-heatmap-to-represent-continuous-values
 tags:
 - heatmap
-- PCA
+- pca
 - R
 math: false
 blackfriday:
@@ -19,7 +19,6 @@ header:
   caption: ''
   image: ''
 ---
-
 ### Using heatmap to represent continuous values.
 
 ### 

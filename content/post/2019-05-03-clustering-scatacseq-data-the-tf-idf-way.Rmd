@@ -5,7 +5,7 @@ date: '2019-05-03'
 slug: clustering-scatacseq-data-the-tf-idf-way
 categories:
   - R
-  - single-cell
+  - single cell
   - scATACseq
   - bioinformatics
 tags:
@@ -16,7 +16,6 @@ header:
   caption: ''
   image: ''
 ---
-
 scATACseq data are very sparse. It is sparser than scRNAseq. To do clustering of 
 scATACseq data, there are some preprocessing steps need to be done.
 

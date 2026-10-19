@@ -5,7 +5,7 @@ date: '2023-07-13'
 slug: ten-single-cell-data-benchmarking-papers
 categories:
   - bioinformatics
-  - single-cell
+  - single cell
 tags:
   - bioinformatics
   - single-cell
@@ -13,7 +13,6 @@ header:
   caption: ''
   image: ''
 ---
-
 I tweeted it at https://twitter.com/tangming2005/status/1679120948140572672
 
 I got asked to put all my posts in a central place and I think it is a good idea.

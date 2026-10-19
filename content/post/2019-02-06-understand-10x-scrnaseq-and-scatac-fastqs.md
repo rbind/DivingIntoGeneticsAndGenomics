@@ -5,7 +5,7 @@ date: '2019-02-06'
 slug: understand-10x-scrnaseq-and-scatac-fastqs
 categories:
   - genomics
-  - single-cell
+  - single cell
 tags:
   - genomics
   - ATACseq
@@ -14,8 +14,6 @@ header:
   caption: ''
   image: ''
 ---
-
-
 ### single cell RNAseq
 
 Please read the following posts by Dave Tang. When I google, I always find his posts on top of the pages. Thanks for sharing your knowledge.
