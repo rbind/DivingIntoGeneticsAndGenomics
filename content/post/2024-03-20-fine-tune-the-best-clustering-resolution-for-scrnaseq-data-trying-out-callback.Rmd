@@ -2,6 +2,7 @@
 title: 'Fine tune the best clustering resolution for scRNAseq data: trying out callback'
 author: Ming Tommy Tang
 date: '2024-03-20'
+lastmod: '2024-03-23T14:20:35-04:00'
 slug: fine-tune-the-best-clustering-resolution-for-scrnaseq-data-trying-out-callback
 categories:
   - bioconductor
@@ -17,6 +18,7 @@ header:
 editor_options: 
   chunk_output_type: console
 ---
+
 ```{r, include=FALSE}
 knitr::opts_chunk$set(
   comment = "#>", echo = TRUE, message= FALSE, warning = FALSE

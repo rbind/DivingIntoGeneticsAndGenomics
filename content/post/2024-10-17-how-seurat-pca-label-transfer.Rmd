@@ -2,6 +2,7 @@
 title: How PCA projection and cell label transfer work in Seurat
 author: Ming Tommy Tang
 date: '2024-10-17'
+lastmod: '2024-10-20T11:54:42-04:00'
 slug: pca-projection
 categories:
   - education
@@ -19,6 +20,7 @@ header:
 editor_options: 
   chunk_output_type: console
 ---
+
 **To not miss a post like this, sign up for my [newsletter](https://divingintogeneticsandgenomics.ck.page/profile) to learn computational
 biology and bioinformatics.**
 

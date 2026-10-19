@@ -2,6 +2,7 @@
 title: PCA in action
 author: Ming Tang
 date: '2018-12-18'
+lastmod: '2020-04-09T16:38:10-04:00'
 slug: pca-in-action
 categories:
   - genomics
@@ -11,6 +12,7 @@ header:
   caption: ''
   image: ''
 ---
+
 ### PCA in practice.
 Principal Component Analysis(PCA) is a very important skill for dimention reduction to analyze high-dimentional data. High-dimentional data are data with features (p) a lot more than observations (n). This types of data are very commonly generated from high-throuput sequencing experiments. For example, an RNA-seq or microarry experiment measures expression of tens of thousands of genes for only 8 samples (4 controls and 4 treatments).
 

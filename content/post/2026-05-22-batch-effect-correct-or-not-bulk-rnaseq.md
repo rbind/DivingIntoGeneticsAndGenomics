@@ -3,6 +3,7 @@ title: "Batch Effect: To Correct or Not for Bulk RNA-seq Data"
 description: "When should you use limma::removeBatchEffect() on bulk RNA-seq data? A practical guide with R code, PCA examples, and the visualization vs differential expression distinction every bioinformatician should know."
 author: Ming Tang
 date: '2026-05-22'
+lastmod: '2026-05-22T11:42:58-04:00'
 slug: batch-effect-correct-or-not-bulk-rnaseq
 categories:
   - bioinformatics
@@ -21,6 +22,7 @@ header:
   caption: ''
   image: ''
 ---
+
 A colleague sent me a PCA plot last week. Three replicates per condition, control vs KO of a gene. PC1 cleanly separated replicate 1 from replicate 2 from replicate 3. PC2 separated control vs KO. The question that followed: should we run `limma::removeBatchEffect()` before differential expression?
 
 The answer is "it depends," and most of the time the answer is "no, do not pre-correct the matrix before DE testing." But the question hides a few subtleties worth unpacking, because I have seen people both under-correct (ignore a real block effect) and over-correct (treat true biological variation as batch and squash it).

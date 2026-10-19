@@ -2,6 +2,7 @@
 title: How to construct a spatial object in Seurat
 author: Ming Tang
 date: '2023-03-30'
+lastmod: '2023-03-30T20:42:00-04:00'
 slug: how-to-construct-a-spatial-object-in-seurat
 categories:
   - bioinformatics
@@ -19,6 +20,7 @@ header:
 editor_options: 
   chunk_output_type: console
 ---
+
 ### Sign up for my newsletter to not miss a post like this
 
 https://divingintogeneticsandgenomics.ck.page/newsletter

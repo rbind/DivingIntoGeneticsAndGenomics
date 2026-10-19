@@ -2,6 +2,7 @@
 title: understand 10x scRNAseq and scATAC fastqs
 author: Ming Tang
 date: '2019-02-06'
+lastmod: '2019-02-13T14:20:38-05:00'
 slug: understand-10x-scrnaseq-and-scatac-fastqs
 categories:
   - genomics
@@ -14,6 +15,8 @@ header:
   caption: ''
   image: ''
 ---
+
+
 ### single cell RNAseq
 
 Please read the following posts by Dave Tang. When I google, I always find his posts on top of the pages. Thanks for sharing your knowledge.

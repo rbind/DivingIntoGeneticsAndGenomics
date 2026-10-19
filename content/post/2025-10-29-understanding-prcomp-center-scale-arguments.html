@@ -2,6 +2,7 @@
 title: "Understanding prcomp() center and scale Arguments for Single-Cell RNA-seq PCA"
 author: Ming Tang
 date: '2025-10-29'
+lastmod: '2025-10-31T15:59:47-04:00'
 slug: understanding-prcomp-center-scale-arguments
 categories:
   - R
@@ -21,6 +22,9 @@ header:
 editor_options: 
   chunk_output_type: console
 ---
+
+
+
 <p>During my work with single-cell RNA-seq data, I’ve often encountered confusion about PCA and specifically when to use the <code>center</code> and <code>scale</code> arguments in R’s <code>prcomp()</code> function. While tools like Seurat’s <code>RunPCA()</code> abstract away these details, understanding what happens under the hood is crucial for proper analysis and troubleshooting.</p>
 <p>In this post, I’ll show you exactly what <code>center</code> and <code>scale</code> do, why they matter, and what happens when you get them wrong. We’ll start with a simple synthetic example to build intuition, then dive into real single-cell RNA-seq data from the pbmc3k dataset.</p>
 <div id="what-does-prcomp-actually-do" class="section level2">

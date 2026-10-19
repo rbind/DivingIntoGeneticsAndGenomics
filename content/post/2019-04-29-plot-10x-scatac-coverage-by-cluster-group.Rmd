@@ -2,6 +2,7 @@
 title: plot 10x scATAC coverage by cluster/group
 author: Ming Tang
 date: '2019-04-29'
+lastmod: '2019-04-29T23:37:30-04:00'
 slug: plot-10x-scatac-coverage-by-cluster-group
 categories:
   - R
@@ -17,6 +18,7 @@ header:
   caption: ''
   image: ''
 ---
+
 This post was inspired by [Andrew Hill](https://twitter.com/ahill_tweets)'s [recent blog post](http://andrewjohnhill.com/blog/2019/04/12/streamlining-scatac-seq-visualization-and-analysis/).
 
 ```{r echo=FALSE}

@@ -2,6 +2,7 @@
 title: Reuse the single cell data! How to create a seurat object from GEO datasets
 author: Ming Tang
 date: '2023-07-14'
+lastmod: '2023-07-14T13:51:44-04:00'
 slug: reuse-the-single-cell-data-how-to-create-a-seurat-object-from-geo-datasets
 categories:
   - bioinformatics
@@ -16,6 +17,7 @@ header:
 editor_options: 
   chunk_output_type: console
 ---
+
 ```{r, include=FALSE}
 knitr::opts_chunk$set(
   comment = "#>", echo = TRUE, message= FALSE, warning = FALSE

@@ -2,6 +2,7 @@
 title: Calculate scATACseq TSS enrichment score
 author: Ming Tang
 date: '2019-05-29'
+lastmod: '2019-07-11T12:31:59-04:00'
 slug: calculate-scatacseq-tss-enrichment-score
 categories:
   - bioinformatics
@@ -16,6 +17,7 @@ header:
   caption: ''
   image: ''
 ---
+
 [TSS enrichment score](https://www.encodeproject.org/data-standards/terms/#enrichment) serves as an important quality control metric for ATACseq data. I want to write a script for single cell ATACseq data.
 
 From the Encode page:

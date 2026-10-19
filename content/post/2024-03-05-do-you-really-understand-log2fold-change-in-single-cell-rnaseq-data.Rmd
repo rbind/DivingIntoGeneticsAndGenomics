@@ -2,6 +2,7 @@
 title: Do you really understand log2Fold change in single-cell RNAseq data?
 author: Ming Tang
 date: '2024-03-05'
+lastmod: '2024-03-07T10:36:01-05:00'
 slug: do-you-really-understand-log2fold-change-in-single-cell-rnaseq-data
 categories:
   - bioinformatics
@@ -16,6 +17,7 @@ header:
 editor_options: 
   chunk_output_type: console
 ---
+
 ```{r, include=FALSE}
 knitr::opts_chunk$set(
   comment = "#>", echo = TRUE, message= FALSE, warning = FALSE
