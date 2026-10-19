@@ -3,10 +3,11 @@ title: Partial least square regression for marker gene identification in scRNAse
   data
 author: Ming Tang
 date: '2022-06-16'
+lastmod: '2022-06-21T08:04:19-04:00'
 slug: partial-least-square-regression-for-marker-gene-identification-in-scrnaseq-data
 categories:
   - bioinformatics
-  - single-cell
+  - single cell
 tags:
   - bioinformatics
   - Bioconductor

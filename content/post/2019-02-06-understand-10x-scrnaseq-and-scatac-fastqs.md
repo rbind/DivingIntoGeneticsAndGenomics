@@ -2,10 +2,11 @@
 title: understand 10x scRNAseq and scATAC fastqs
 author: Ming Tang
 date: '2019-02-06'
+lastmod: '2019-02-13T14:20:38-05:00'
 slug: understand-10x-scrnaseq-and-scatac-fastqs
 categories:
   - genomics
-  - single-cell
+  - single cell
 tags:
   - genomics
   - ATACseq

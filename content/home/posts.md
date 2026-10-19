@@ -26,3 +26,5 @@ count = 200
 list_format = 0
 +++
 
+[Browse all posts by year, back to 2013 »](/archive/)
+

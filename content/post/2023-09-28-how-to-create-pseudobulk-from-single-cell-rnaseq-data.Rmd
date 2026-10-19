@@ -2,10 +2,11 @@
 title: 'How to create pseudobulk from single-cell RNAseq data '
 author: Ming Tang
 date: '2023-09-28'
+lastmod: '2023-09-28T23:57:42-04:00'
 slug: how-to-create-pseudobulk-from-single-cell-rnaseq-data
 categories:
   - bioinformatics
-  - single-cell
+  - single cell
   - R
 tags:
   - bioinformatics

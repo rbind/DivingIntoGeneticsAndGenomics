@@ -2,12 +2,13 @@
 title: How to construct a spatial object in Seurat
 author: Ming Tang
 date: '2023-03-30'
+lastmod: '2023-03-30T20:42:00-04:00'
 slug: how-to-construct-a-spatial-object-in-seurat
 categories:
   - bioinformatics
   - spatial
   - R
-  - single-cell
+  - single cell
 tags:
   - bioinformatics
   - R

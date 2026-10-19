@@ -2,10 +2,11 @@
 title: 10 single-cell data benchmarking papers
 author: Ming Tang
 date: '2023-07-13'
+lastmod: '2023-07-14T12:43:21-04:00'
 slug: ten-single-cell-data-benchmarking-papers
 categories:
   - bioinformatics
-  - single-cell
+  - single cell
 tags:
   - bioinformatics
   - single-cell

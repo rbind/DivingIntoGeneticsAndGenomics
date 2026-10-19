@@ -1,0 +1,45 @@
+{{ partial "header.html" . }}
+{{ partial "navbar.html" . }}
+
+{{ partial "header_image.html" . }}
+
+<style>
+  .archive-years { margin: 1em 0 2em; line-height: 2; }
+  .archive-years a { white-space: nowrap; }
+  .archive-year { margin-top: 1.6em; }
+  .archive-year small { font-size: 0.6em; color: #777; }
+  .archive-date { display: inline-block; min-width: 4em; color: #777; }
+</style>
+
+<div class="universal-wrapper">
+
+  <h1>{{ .Title }}</h1>
+
+  {{ with .Content }}
+  <div class="article-style" itemprop="articleBody">{{ . }}</div>
+  {{ end }}
+
+  {{/* Every post on the site: current posts (content/post) plus the
+       Blogger posts migrated into content/archive, grouped by year,
+       newest year first. */}}
+  {{ $all := where .Site.RegularPages "Section" "in" (slice "post" "archive") }}
+  {{ $years := $all.GroupByDate "2006" }}
+
+  <p class="archive-years">
+    {{ range $i, $y := $years }}{{ if $i }} &middot; {{ end }}<a href="#year-{{ $y.Key }}">{{ $y.Key }}</a>{{ end }}
+  </p>
+
+  {{ range $years }}
+  <h2 id="year-{{ .Key }}" class="archive-year">{{ .Key }} <small>{{ len .Pages }} {{ if eq (len .Pages) 1 }}post{{ else }}posts{{ end }}</small></h2>
+  {{ range .Pages }}
+  <div class="pub-list-item" itemscope itemprop="blogPost" itemtype="http://schema.org/BlogPosting">
+    <i class="fa fa-newspaper-o pub-icon" aria-hidden="true"></i>
+    <span class="archive-date">{{ .Date.Format "Jan 2" }}</span>
+    <a href="{{ .Permalink }}" itemprop="url"><span itemprop="headline">{{ .Title }}</span></a>
+  </div>
+  {{ end }}
+  {{ end }}
+
+</div>
+{{ partial "footer_container.html" . }}
+{{ partial "footer.html" . }}

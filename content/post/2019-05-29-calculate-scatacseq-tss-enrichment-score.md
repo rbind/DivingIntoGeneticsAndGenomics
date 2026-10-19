@@ -2,12 +2,13 @@
 title: Calculate scATACseq TSS enrichment score
 author: Ming Tang
 date: '2019-05-29'
+lastmod: '2019-07-11T12:31:59-04:00'
 slug: calculate-scatacseq-tss-enrichment-score
 categories:
   - bioinformatics
   - genomics
   - scATACseq
-  - single-cell
+  - single cell
 tags:
   - ATACseq
   - genomics

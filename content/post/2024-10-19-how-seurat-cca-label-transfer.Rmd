@@ -2,6 +2,7 @@
 title: How CCA alignment and cell label transfer work in Seurat
 author: Ming Tommy Tang
 date: '2024-10-19'
+lastmod: '2024-10-26T16:42:20-04:00'
 slug: cca-alignment
 categories:
   - education
@@ -12,7 +13,7 @@ categories:
 tags:
   - bioinformatics
   - education
-  - PCA
+  - pca
   - CCA
 header:
   caption: ''

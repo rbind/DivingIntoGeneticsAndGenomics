@@ -125,6 +125,19 @@
       "name": {{ .Title | jsonify }},
       "item": "{{ .Permalink }}"
     }
+    {{ else if eq .Section "archive" }}
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Archive",
+      "item": "{{ .Site.BaseURL }}archive/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": {{ .Title | jsonify }},
+      "item": "{{ .Permalink }}"
+    }
     {{ else }}
     {
       "@type": "ListItem",

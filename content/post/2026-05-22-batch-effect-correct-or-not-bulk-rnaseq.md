@@ -3,6 +3,7 @@ title: "Batch Effect: To Correct or Not for Bulk RNA-seq Data"
 description: "When should you use limma::removeBatchEffect() on bulk RNA-seq data? A practical guide with R code, PCA examples, and the visualization vs differential expression distinction every bioinformatician should know."
 author: Ming Tang
 date: '2026-05-22'
+lastmod: '2026-05-22T11:42:58-04:00'
 slug: batch-effect-correct-or-not-bulk-rnaseq
 categories:
   - bioinformatics
@@ -11,7 +12,7 @@ tags:
   - RNA-seq
   - batch-effect
   - limma
-  - PCA
+  - pca
   - bulk-rnaseq
   - differential-expression
   - tutorial

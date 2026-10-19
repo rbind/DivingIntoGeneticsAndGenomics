@@ -53,6 +53,12 @@ enableRobotsTXT = true
   fractions = true  # `false` disables smart fractions (e.g. 5/12 formatted as a fraction).
   smartypants = true  # `false` disables all smart punctuation substitutions (e.g. smart quotes, dashes, fractions).
 
+# Prefer an explicit `lastmod` in front matter over the git commit date.
+# Only posts migrated from Blogger (content/archive/) set lastmod, so every
+# other page keeps using its git date exactly as before.
+[frontmatter]
+  lastmod = ["lastmod", ":git", "date", "publishDate"]
+
 [params]
   # SEO - Site description for search engines
   description = "Learn bioinformatics, genomics, and computational biology through practical tutorials. Expert guides on single-cell RNA-seq, R programming, Python, data analysis, and bioinformatics workflows."
