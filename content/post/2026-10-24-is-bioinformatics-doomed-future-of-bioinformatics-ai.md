@@ -112,7 +112,7 @@ AI can write you an awk command that runs fast and trims the wrong bases. Would 
 
 When an agent rewrites 12 files, `git diff` is how you see what changed, and git is how you roll it back.
 
-Kevin Libuit made this point well when we talked recently. He does not use git much day to day anymore. But because he knows the concepts, he can tell his agent "make a dev branch, I want to test this feature" and coordinate it like a small dev team. The same goes for unit tests and code review. If you do not know a practice exists, you cannot ask the AI to follow it.
+[Kevin Libuit](https://www.linkedin.com/in/libuitkg/) made this point well when we talked recently. He does not use git much day to day anymore. But because he knows the concepts, he can tell his agent "make a dev branch, I want to test this feature" and coordinate it like a small dev team. The same goes for unit tests and code review. If you do not know a practice exists, you cannot ask the AI to follow it.
 
 ### 5. Statistics
 
